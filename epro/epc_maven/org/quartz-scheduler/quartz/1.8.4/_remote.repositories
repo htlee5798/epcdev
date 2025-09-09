@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:28 KST 2025
+quartz-1.8.4-sources.jar>neonexus=
+quartz-1.8.4.jar>neonexus=
+quartz-1.8.4.pom>neonexus=

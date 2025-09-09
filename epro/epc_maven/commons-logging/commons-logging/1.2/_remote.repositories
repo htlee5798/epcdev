@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:07 KST 2025
+commons-logging-1.2.pom>central=
+commons-logging-1.2.jar>neonexus=
+commons-logging-1.2-sources.jar>neonexus=

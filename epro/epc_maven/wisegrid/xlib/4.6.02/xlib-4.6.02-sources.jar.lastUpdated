@@ -1,0 +1,8 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:04:17 KST 2025
+http\://10.52.18.45\:8081/repository/maven-3rdparty/.error=
+https\://repo.maven.apache.org/maven2/.lastUpdated=1736831057005
+http\://10.52.18.45\:8081/repository/maven-public/.lastUpdated=1736831056956
+http\://10.52.18.45\:8081/repository/maven-3rdparty/.lastUpdated=1736831056967
+https\://repo.maven.apache.org/maven2/.error=
+http\://10.52.18.45\:8081/repository/maven-public/.error=

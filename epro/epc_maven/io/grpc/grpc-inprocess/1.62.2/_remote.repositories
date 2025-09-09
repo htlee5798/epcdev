@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 15:58:42 KST 2025
+grpc-inprocess-1.62.2.jar>neonexus=
+grpc-inprocess-1.62.2-sources.jar>neonexus=
+grpc-inprocess-1.62.2.pom>neonexus=

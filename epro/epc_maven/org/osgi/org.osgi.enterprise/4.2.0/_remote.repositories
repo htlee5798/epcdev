@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Mar 11 10:34:16 KST 2025
+org.osgi.enterprise-4.2.0.pom>neonexus=
+org.osgi.enterprise-4.2.0.jar>neonexus=
+org.osgi.enterprise-4.2.0-sources.jar>neonexus=

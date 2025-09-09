@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:44 KST 2025
+httpcore-4.2.4.jar>neonexus=
+httpcore-4.2.4-sources.jar>neonexus=
+httpcore-4.2.4.pom>neonexus=

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 15:58:40 KST 2025
+gax-grpc-2.48.0.jar>neonexus=
+gax-grpc-2.48.0-sources.jar>neonexus=
+gax-grpc-2.48.0.pom>neonexus=

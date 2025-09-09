@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 16:00:00 KST 2025
+jersey-core-1.9.pom>neonexus=
+jersey-core-1.9.jar>neonexus=
+jersey-core-1.9-sources.jar>neonexus=

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 15:59:10 KST 2025
+grpc-protobuf-lite-1.62.2.jar>neonexus=
+grpc-protobuf-lite-1.62.2.pom>neonexus=
+grpc-protobuf-lite-1.62.2-sources.jar>neonexus=

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Apr 15 16:33:31 KST 2025
+postgresql-42.7.5-sources.jar>neonexus=
+postgresql-42.7.5.jar>neonexus=
+postgresql-42.7.5.pom>neonexus=

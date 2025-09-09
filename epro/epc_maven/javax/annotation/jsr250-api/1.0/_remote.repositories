@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:04:14 KST 2025
+jsr250-api-1.0.jar>central=
+jsr250-api-1.0-sources.jar>neonexus=
+jsr250-api-1.0.pom>central=

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:56 KST 2025
+httpclient-4.2.1-sources.jar>neonexus=
+httpclient-4.2.1.pom>central=
+httpclient-4.2.1.jar>central=

@@ -1,0 +1,6 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Mar 31 14:56:22 KST 2025
+jackson-databind-2.5.4.pom>neonexus=
+jackson-databind-2.5.4-sources.jar>neonexus=
+jackson-databind-2.5.4.jar>neonexus=
+jackson-databind-2.5.4-sources.jar>central=
