@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0060">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <!-- 상품... SQLINES DEMO *** -->
+    <select id="selectImsiProduct" resultClass="dataMap">
+    /* SQLINES DEMO *** ectImsiProduct */
+    <![CDATA[
+    SELECT *
+      FROM (SELECT CEIL(ROWNUM / #rowsPerPage# ) PAGE
+                 , COUNT(*) OVER() TOTAL_COUNT
+                 , C.*
+              FROM (SELECT B.*
+                         , RANK()OVER(ORDER BY B.PGM_ID DESC) AS NUM
+                      FROM (SELECT TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE
+                                 , A.PGM_ID
+                                 , A.PROD_NM
+                                 , A.L1_CD
+                                 , (SELECT CAT_NM FROM TCA_MD_CATEGORY WHERE CAT_CD = A.L1_CD) AS L1_NM
+                                 , CASE WHEN (SELECT COUNT(*) FROM TPC_VAR_ATT WHERE PGM_ID = A.PGM_ID) = 0 THEN 'N' ELSE 'Y' END AS OPT_YN
+                                 , A.NOR_PROD_SALE_PRC AS SELL_PRC
+                                 , A.NOR_PROD_PCOST AS BUY_PRC
+                                 , NVL(A.PRFT_RATE, '0') AS PRFT_RATE
+                                 , CASE WHEN (SELECT COUNT(*) FROM TPC_NEW_PROD_DESCR WHERE PGM_ID = A.PGM_ID) = 0 THEN 'N' ELSE 'Y' END AS DESC_YN
+                                 , CASE WHEN A.IMG_NCNT > 2 THEN 'Y' ELSE 'N' END AS IMG_YN
+                                 , CASE WHEN (SELECT COUNT(AA.INFO_GRP_CD) CNT
+                                                FROM TPR_PROD_ADD_INFO_VAL AA
+                                                   , V_PR_ADD_INFO B 
+                                               WHERE AA.INFO_GRP_CD = B.INFO_GRP_CD
+                                                 AND AA.INFO_COL_CD = B.INFO_COL_CD
+                                                 AND AA.PROD_CD = A.PGM_ID
+                                                 AND B.L3_CD = A.L3_CD ) = 0 THEN 'N'
+                                        WHEN (SELECT COUNT(AA.INFO_GRP_CD) CNT
+                                                FROM TPR_PROD_ADD_INFO_VAL AA 
+                                                   , V_PR_ADD_INFO B 
+                                               WHERE AA.INFO_GRP_CD = B.INFO_GRP_CD
+                                                 AND AA.INFO_COL_CD = B.INFO_COL_CD
+                                                 AND AA.PROD_CD = A.PGM_ID
+                                                 AND B.L3_CD = A.L3_CD) =
+                                             (SELECT COUNT(AA.INFO_GRP_CD) CNT
+                                                FROM V_PR_ADD_INFO AA
+                                               WHERE AA.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE PROD_CD = A.PGM_ID)
+                                                 AND AA.L3_CD = A.L3_CD) THEN 'Y'
+                                        ELSE 'N' END
+                                   AS NOR_PROD_YN
+                                 , CASE WHEN (SELECT COUNT(*) FROM TPR_PROD_CERT_INFO_VAL WHERE PROD_CD = A.PGM_ID) = 0 THEN 'N' ELSE 'Y' END AS KC_YN
+                                 , A.NOR_PROD_INFO_GRP_CD
+                                 , A.KC_INFO_GRP_CD
+                                 , CASE WHEN (SELECT COUNT(*) FROM TPC_PRODUCT_KEYWORD WHERE PGM_ID = A.PGM_ID) = 0 THEN 'N' ELSE 'Y' END AS KEYWORD_YN
+                                 , DECODE(A.STAFF_MALL_SELL_PSBT_YN, NULL, 'N', DECODE(A.STAFF_MALL_SELL_PSBT_YN, 1, 'Y', 'N')) AS STAFF_MALL_SELL_PSBT_YN
+                              FROM TPC_NEW_PROD_REG A
+                             WHERE A.ONOFF_DIVN_CD = '1'
+                               AND A.MD_SEND_DIVN_CD IS NULL
+                               AND A.NEW_PROD_GEN_DIVN_CD = 'BATCH_EDI'
+                               AND NVL(A.DEAL_REP_PROD_YN,'N') <> 'Y'
+                               AND NVL(A.CTPD_YN,'N') <> 'Y'
+                               AND TO_CHAR(A.REG_DATE,'YYYYMMDD') BETWEEN #srchStartDt# AND #srchEndDt# 
+                            ]]>
+                            <isNotEmpty property="l1Cd" prepend="AND"> A.L1_CD = #l1Cd# </isNotEmpty>
+                            <isNotEmpty property="srchProductDivnCode" prepend="AND"> A.PROD_DIVN_CD = #srchProductDivnCode# </isNotEmpty>
+                            <isNotEmpty property="entp_cd" prepend="AND"> A.ENTP_CD = #entp_cd# </isNotEmpty>
+                            <isEmpty property="entp_cd">
+                            <isNotEmpty property="venCds" prepend="AND"> <iterate prepend="A.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate> </isNotEmpty>
+                            </isEmpty>
+                           ) B
+                   ) C
+           )
+     WHERE PAGE = #currentPage#
+    </select>
+
+    <select id="selectImsiProductCnt" resultClass="Integer">
+    /* SQLINES DEMO *** ectImsiProductCnt */
+    SELECT COUNT(*)
+      FROM TPC_NEW_PROD_REG
+     WHERE PGM_ID = #pgmId#
+    </select>
+
+    <select id="selectOnlineRepresentProdctInfo" resultClass="dataMap">
+    /* SQLINES DEMO *** ectOnlineRepresentProdctCnt */
+    SELECT P.PROD_NM AS ONLINE_PROD_NM
+         , P.PROD_CD AS SELL_CD
+         , P.PROFIT_RATE AS PRFT_RATE
+         , P.TAXAT_DIVN_CD
+      FROM TPR_PRODUCT P  LEFT JOIN  TPC_L1_CD  T
+        ON  P.CAT_CD = T.L3_CD
+     WHERE P.REP_PROD_CD_YN = 'Y'
+       AND P.DEL_STOP_DIVN_YN = '0'
+       AND ( P.NEW_PROD_FG IS NULL OR P.NEW_PROD_FG != '3')    /* SQLINES DEMO *** 행사상품 제외 노출  */
+       AND P.VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCd#)
+       AND P.MD_PROD_CD = #ONLINE_REP_PROD_CD#
+     GROUP BY P.PROD_NM, P.PROD_CD, P.PROFIT_RATE, T.L3_NM, P.TAXAT_DIVN_CD
+    </select>
+
+    <!-- 이미... SQLINES DEMO *** -->
+    <select id="selectImsiProductNm" resultClass="dataMap">
+    /* SQLINES DEMO *** ectImsiProductNm */
+    SELECT A.PGM_ID
+         , A.PROD_NM
+         , '' AS IMG_NM
+      FROM TPC_NEW_PROD_REG A
+    WHERE 1=1
+    <iterate prepend="AND A.PGM_ID IN " property="pgmIdArr" open="(" close=")" conjunction=","> #pgmIdArr[]# </iterate>
+    </select>
+
+    <!-- SQLINES DEMO ***  -->
+    <select id="selectBatchNorProdCode" resultClass="dataMap">
+    /* SQLINES DEMO *** ectBatchNorProdCode */
+    SELECT REG.PROD_NM
+         , REG.PGM_ID
+         , DET.INFO_GRP_CD
+         , DET.INFO_COL_CD
+         , DET.INFO_COL_NM
+         , '' AS COL_VAL
+      FROM TPR_PROD_ADD_INFO_MST MST 
+         , TPR_PROD_ADD_INFO_DET DET
+         , TPC_NEW_PROD_REG REG
+     WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+       AND MST.INFO_GRP_CD = REG.NOR_PROD_INFO_GRP_CD
+       AND MST.CAT_CD = REG.L1_CD
+       <iterate prepend="AND REG.PGM_ID IN " property="pgmIdArr" open="(" close=")" conjunction=","> #pgmIdArr[]# </iterate>
+     ORDER BY REG.PGM_ID, DET.INFO_COL_CD 
+    </select>
+
+    <!-- SQLINES DEMO *** 회 -->
+    <select id="selectBatchKcProdCode" resultClass="dataMap">
+    /* SQLINES DEMO *** ectBatchKcProdCode */
+    SELECT REG.PROD_NM
+         , REG.PGM_ID
+         , DET.INFO_GRP_CD
+         , DET.INFO_COL_CD
+         , DET.INFO_COL_NM
+         , CASE DET.INFO_GRP_CD WHEN 'KC001' THEN MST.INFO_GRP_NM ELSE '' END AS COL_VAL
+      FROM TPR_PROD_CERT_INFO_MST MST 
+         , TPR_PROD_CERT_INFO_DET DET
+         , TPC_NEW_PROD_REG REG
+     WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+       AND MST.INFO_GRP_CD = REG.KC_INFO_GRP_CD
+       AND MST.CAT_CD = REG.L1_CD
+       <iterate prepend="AND REG.PGM_ID IN " property="pgmIdArr" open="(" close=")" conjunction=","> #pgmIdArr[]# </iterate>
+    ORDER BY REG.PGM_ID, DET.INFO_COL_CD
+    </select>
+
+    <insert id="insertProductInfo">
+    /* SQLINES DEMO *** ertProductInfo */
+    INSERT INTO TPC_NEW_PROD_REG
+    ( PGM_ID
+    , PROD_DIVN_CD
+    , SELL_CD
+    , TEAM_CD
+    , L1_CD
+    , L2_CD
+    , L3_CD
+    , CATEGORY_ID
+    , NOR_PROD_SALE_PRC
+    , NOR_PROD_SALE_CURR
+    , NOR_PROD_PCOST
+    , TAXAT_DIVN_CD
+    , DP_UNIT_CD
+    , DP_BASE_QTY
+    , PROD_STANDARD_NM
+    , DP_TOT_QTY
+    , ONLINE_REP_PROD_CD
+    , ONLINE_PROD_NM
+    , PRFT_RATE
+    , PROD_NM
+    , PROD_HRZN_LENG
+    , PROD_VTCL_LENG
+    , PROD_HIGT
+    , SIZE_UNIT
+    , SESN_YEAR_CD
+    , SESN_DIVN_CD
+    , HOME_CD
+    , MIN_ORD_PSBT_QTY
+    , MAX_ORD_PSBT_QTY
+    , ENTP_IN_PROD_CD
+    , RSERV_ORD_PSBT_START_DY
+    , RSERV_ORD_PSBT_END_DY
+    , RSERV_PROD_PICK_IDCT_DY
+    , ONLINE_PROD_TYPE_CD
+    , HOPE_DELI_PSBT_DD
+    , OPTN_LOAD_SET_QTY
+    , OPTN_LOAD_CONTENT
+    , ECO_YN
+    , ECO_NM
+    , PRODUCT_DY
+    , PRC_ISSUE_DIVN_CD
+    , QTY_WEGT_DIVN_CD
+    , MODEL_NM
+    , BRAND_NM
+    , MAKER_NM
+    , NOR_PROD_INFO_GRP_CD
+    , KC_INFO_GRP_CD
+    , OPTN_PROD_PRC_MGR_YN
+    , MD_VALI_SELL_CD
+    , NEW_PROD_GEN_DIVN_CD
+    , ONOFF_DIVN_CD
+    , REG_DATE
+    , REG_ID
+    , ENTP_CD
+    , SELL_PRC  <!-- 20... SQLINES DEMO *** -->
+    , ADL_YN
+    , ADM_FG )
+    VALUES
+    ( #PGM_ID#
+    , #PROD_DIVN_CD#
+    , #SELL_CD#
+    , #TEAM_CD#
+    , #L1_CD#
+    , #L2_CD#
+    , #L3_CD#
+    , #CATEGORY_ID#
+    , #NOR_PROD_SALE_PRC#
+    , #NOR_PROD_SALE_CURR#
+    , #NOR_PROD_PCOST#
+    , #TAXAT_DIVN_CD#
+    , #DP_UNIT_CD#
+    , #DP_BASE_QTY#
+    , #PROD_STANDARD_NM#
+    , #DP_TOT_QTY#
+    , #ONLINE_REP_PROD_CD#
+    , #ONLINE_PROD_NM#
+    , #PRFT_RATE#
+    , #PROD_NM#
+    , #PROD_HRZN_LENG#
+    , #PROD_VTCL_LENG#
+    , #PROD_HIGT#
+    , #SIZE_UNIT#
+    , #SESN_YEAR_CD#
+    , #SESN_DIVN_CD#
+    , #HOME_CD#
+    , #MIN_ORD_PSBT_QTY#
+    , #MAX_ORD_PSBT_QTY#
+    , #ENTP_IN_PROD_CD#
+    , #RSERV_ORD_PSBT_START_DY#
+    , #RSERV_ORD_PSBT_END_DY#
+    , #RSERV_PROD_PICK_IDCT_DY#
+    , #ONLINE_PROD_TYPE_CD#
+    , #HOPE_DELI_PSBT_DD#
+    , #OPTN_LOAD_SET_QTY#
+    , #OPTN_LOAD_CONTENT#
+    , #ECO_YN#
+    , #ECO_NM#
+    , #PRODUCT_DY#
+    , #PRC_ISSUE_DIVN_CD#
+    , #QTY_WEGT_DIVN_CD#
+    , #MODEL_NM#
+    , #BRAND_NM#
+    , #MAKER_NM#
+    , #NOR_PROD_INFO_GRP_CD#
+    , #KC_INFO_GRP_CD#
+    , #OPTN_PROD_PRC_MGR_YN#
+    , #MD_VALI_SELL_CD#
+    , 'BATCH_EDI'
+    , '1'
+    , CURRENT_TIMESTAMP(0)
+    , #entpCd#
+    , #entpCd#
+    , #SELL_PRC#  <!-- 20... SQLINES DEMO *** -->
+    , CASE COALESCE(TRIM(#ADL_YN#), 'N')  WHEN 'Y' THEN  'Y' ELSE 'N' END
+    , '1' )
+    </insert>
+
+    <insert id="insertProductItemInfo">
+    /* SQLINES DEMO *** ertProductInfo */
+    INSERT INTO  TPC_VAR_ATT
+    ( PGM_ID
+    , ITEM_CD
+    , VARIANT
+    , CLASS
+    , ATT_CD
+    , ATT_VALUE
+    , ENTP_CD
+    , SELL_CD
+    , REG_DATE
+    , REG_ID
+    , OPTN_DESC
+    , STK_MGR_YN
+    , RSERV_STK_QTY
+    , OPTN_AMT )
+    VALUES 
+    ( #PGM_ID#
+    , #ITEM_CD#
+    , #ITEM_CD#  /* variant */
+    , '000'
+    , '000'
+    , '000'
+    , #entpCd#
+    , #SELL_CD#
+    , CURRENT_TIMESTAMP(0)
+    , #entpCd#
+    , #OPTN_DESC#
+    , #STK_MGR_YN#
+    , #RSERV_STK_QTY#
+    , #OPTN_AMT# )
+    </insert>
+
+    <!-- 전상... SQLINES DEMO *** -->
+    <insert id="saveProdAddDetail">
+    /* SQLINES DEMO *** eProdAddDetail */
+    MERGE INTO TPR_PROD_ADD_INFO_VAL A
+    USING ( SELECT #PGM_ID# AS PROD_CD
+                 , #INFO_GRP_CD# AS INFO_GRP_CD
+                 , #INFO_COL_CD# AS INFO_COL_CD
+                 , #COL_VAL# AS COL_VAL
+                 , #entpCd# AS ENTP_CD
+          ) B 
+      ON (A.PROD_CD = B.PROD_CD AND A.INFO_GRP_CD = B.INFO_GRP_CD AND A.INFO_COL_CD = B.INFO_COL_CD)
+    WHEN MATCHED THEN
+    UPDATE
+       SET COL_VAL = B.COL_VAL
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = B.ENTP_CD
+    WHEN NOT MATCHED THEN
+    INSERT
+    ( INFO_GRP_CD
+    , INFO_COL_CD
+    , PROD_CD
+    , NEW_PROD_CD
+    , COL_VAL
+    , DISP_YN
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID ) 
+     VALUES
+    ( B.INFO_GRP_CD
+    , B.INFO_COL_CD
+    , B.PROD_CD
+    , B.PROD_CD
+    , B.COL_VAL
+    , 'Y'
+    , CURRENT_TIMESTAMP(0)
+    , B.ENTP_CD
+    , CURRENT_TIMESTAMP(0)
+    , B.ENTP_CD )
+    </insert>
+
+    <!-- KC... SQLINES DEMO *** -->
+    <insert id="saveProdCertDetail">
+    /* SQLINES DEMO *** eProdCertDetail */
+    MERGE INTO TPR_PROD_CERT_INFO_VAL A USING
+    (
+    SELECT #PGM_ID# AS PROD_CD
+         , #INFO_GRP_CD# AS INFO_GRP_CD
+         , #INFO_COL_CD# AS INFO_COL_CD
+         , #COL_VAL# AS COL_VAL
+         , #entpCd# AS ENTP_CD
+    ) B
+      ON (A.PROD_CD = B.PROD_CD AND A.INFO_GRP_CD = B.INFO_GRP_CD AND A.INFO_COL_CD = B.INFO_COL_CD)
+     WHEN MATCHED THEN
+     UPDATE SET COL_VAL = B.COL_VAL
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+          , MOD_ID = B.ENTP_CD
+     WHEN NOT MATCHED THEN
+     INSERT
+     (
+      INFO_GRP_CD
+        ,INFO_COL_CD
+        ,PROD_CD
+        ,NEW_PROD_CD
+        ,COL_VAL
+        ,DISP_YN
+        ,REG_DATE
+        ,REG_ID
+        ,MOD_DATE
+        ,MOD_ID
+     ) 
+     VALUES
+     (
+      B.INFO_GRP_CD
+        ,B.INFO_COL_CD
+        ,B.PROD_CD
+        ,B.PROD_CD
+        ,B.COL_VAL
+        ,'Y'
+        ,CURRENT_TIMESTAMP(0)
+        ,B.ENTP_CD
+        ,CURRENT_TIMESTAMP(0)
+        ,B.ENTP_CD
+     )
+    </insert>
+
+    <!-- SQLINES DEMO *** ate -->
+    <update id="updateNewProdRegDesc">
+    /* SQLINES DEMO *** ateNewProdRegDesc */
+    UPDATE TPC_NEW_PROD_REG
+       SET PROD_DESC = #prodDesc#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #entpCd#
+     WHERE PGM_ID = #pgmId#
+    </update>
+
+    <insert id="saveNewProdDescr">
+    /* SQLINES DEMO *** eNewProdDescr */
+    MERGE INTO TPC_NEW_PROD_DESCR A USING
+    (
+    SELECT #pgmId# AS PGM_ID
+         , #prodNm# AS PROD_NM
+         , #prodDesc# AS PROD_DESC
+         , #entpCd# AS ENTP_CD
+    ) B 
+      ON (A.PGM_ID = B.PGM_ID)
+     WHEN MATCHED THEN
+     UPDATE SET TITLE = B.PROD_NM
+          , ADD_DESC = B.PROD_DESC
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+          , MOD_ID = B.ENTP_CD
+     WHEN NOT MATCHED THEN
+     INSERT
+     (
+      PGM_ID
+     ,SEQ
+     ,TITLE
+     ,ADD_DESC
+     ,REG_DATE
+     ,REG_ID
+     ,MOD_DATE
+     ,MOD_ID
+     ) 
+     VALUES
+     (
+      B.PGM_ID
+        ,1
+        ,B.PROD_NM
+        ,B.PROD_DESC
+        ,CURRENT_TIMESTAMP(0)
+        ,B.ENTP_CD
+        ,CURRENT_TIMESTAMP(0)
+        ,B.ENTP_CD
+     )
+    </insert>
+
+    <insert id="insertEcProductCategory">
+    /* SQLINES DEMO *** ertEcProductCategory */
+    INSERT INTO TEC_CAT_PROD_MAPPING
+    ( PROD_CD
+    , PGM_ID
+    , STD_CAT_CD
+    , DISP_CAT_CD
+    , DISP_YN
+    , USE_YN
+    , REG_ID
+    , REG_DATE
+    , MOD_ID
+    , MOD_DATE )
+    (SELECT #PROD_CD#  AS PROD_CD  -- SQLINES DEMO *** UPDATE
+         , #PGM_ID#  AS PGM_ID
+         , TSDM.STD_CAT_CD  AS STD_CAT_CD
+         , TDC.DISP_CAT_CD  AS DISP_CAT_CD
+         , TDC.DISP_YN  AS DISP_YN
+         , 'Y'  AS USE_YN
+         , #regId#  AS REG_ID
+         , CURRENT_TIMESTAMP(0)  AS REG_DATE
+         , #regId#  AS MOD_ID
+         , CURRENT_TIMESTAMP(0)  AS MOD_DATE
+      FROM TEC_STD_DISP_MAPPING TSDM
+         , TEC_DISP_CATEGORY TDC
+     WHERE TSDM.STD_CAT_CD = #STD_CAT_CD#
+       AND TSDM.DISP_CAT_CD = #DISP_CAT_CD#
+       AND TDC.DISP_CAT_CD = TSDM.DISP_CAT_CD
+       AND TSDM.USE_YN = 'Y'
+       AND TDC.USE_YN = 'Y'
+    )
+    </insert>
+
+    <insert id="insertEcProductAttribute">
+    /* SQLINES DEMO *** ertEcProductAttribute */
+    INSERT INTO TEC_ATTR_PROD_MAPPING
+    ( PROD_CD
+    , PGM_ID
+    , ITEM_CD
+    , STD_CAT_CD
+    , ATTR_ID
+    , ATTR_VAL_ID
+    , ATTR_VAL
+    , ATTR_DTL_VAL
+    , ATTR_CODE_USE_YN
+    , USE_YN
+    , REG_ID
+    , REG_DATE
+    , MOD_ID
+    , MOD_DATE )
+    VALUES
+    ( #PGM_ID#
+    , #PGM_ID#
+    , #ITEM_CD#
+    , #STD_CAT_CD#
+    , #ATTR_ID#
+    , #ATTR_VAL_ID#
+    , #ATTR_VAL#
+    , NULL
+    <isNotEmpty property="ATTR_VAL">, 'N'</isNotEmpty>
+    <isEmpty property="ATTR_VAL">, 'Y'</isEmpty>
+    , 'Y'
+    , #entpCd#
+    , CURRENT_TIMESTAMP(0)
+    , #entpCd#
+    , CURRENT_TIMESTAMP(0) )
+    </insert>
+
+    <!-- SQLINES DEMO ***  기능 추가 -->
+    <select id="selectCodeInfo02" resultClass="dataMap">
+    /* SQLINES DEMO *** ectCodeInfo02 */
+    SELECT L1.TEAM_CD
+         , L1.TEAM_NM
+         , L1.L1_CD
+         , L1.L1_NM
+         , MST.INFO_GRP_CD
+         , MST.INFO_GRP_NM
+      FROM TPR_PROD_ADD_INFO_MST MST 
+         , (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_DET WHERE USE_YN = 'Y' GROUP BY INFO_GRP_CD) DET
+         , (SELECT TEAM_CD, TEAM_NM, L1_CD, L1_NM FROM TPC_L1_CD WHERE TEAM_NM NOT IN ( SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'PRD75' AND USE_YN = 'Y' ) GROUP BY TEAM_CD, TEAM_NM, L1_CD, L1_NM) L1
+    WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+      AND MST.CAT_CD = L1.L1_CD
+      AND MST.USE_YN = 'Y' 
+    ORDER BY TEAM_CD, L1_CD, INFO_GRP_CD
+    </select>
+
+    <select id="selectCodeInfo03" resultClass="dataMap">
+    /* SQLINES DEMO *** ectCodeInfo03 */
+    SELECT L1.TEAM_CD
+         , L1.TEAM_NM
+         , L1.L1_CD
+         , L1.L1_NM
+         , MST.INFO_GRP_CD
+         , MST.INFO_GRP_NM
+      FROM TPR_PROD_CERT_INFO_MST MST
+          , (SELECT INFO_GRP_CD FROM TPR_PROD_CERT_INFO_DET WHERE USE_YN = 'Y' GROUP BY INFO_GRP_CD) DET
+          , (SELECT TEAM_CD, TEAM_NM, L1_CD, L1_NM FROM TPC_L1_CD WHERE TEAM_NM NOT IN ( SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'PRD75' AND USE_YN = 'Y' ) GROUP BY TEAM_CD, TEAM_NM, L1_CD, L1_NM) L1
+      WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+        AND MST.CAT_CD = L1.L1_CD
+        AND MST.USE_YN = 'Y'
+     ORDER BY TEAM_CD, L1_CD, INFO_GRP_CD
+    </select>
+    <!-- SQLINES DEMO ***  기능 추가 -->
+
+    <!-- SQLINES DEMO ***  (현재 전시에서 사용하지 않는 것도 포함) -->
+    <select id="selectEcStdDispMappingCnt" resultClass="int">
+    SELECT COUNT(*)
+     FROM TEC_STD_CATEGORY TSC
+        , TEC_STD_DISP_MAPPING TSDM
+        , TEC_DISP_CATEGORY TDC
+    WHERE TSC.LEAF_YN='Y'
+      AND TSC.STD_CAT_CD = TSDM.STD_CAT_CD
+      AND TDC.DISP_CAT_CD = TSDM.DISP_CAT_CD
+      AND TSDM.USE_YN='Y'
+      AND TSC.DISP_YN='Y'
+      AND TSC.DISP_YN='Y'
+      AND TDC.LEAF_YN='Y'
+      AND TDC.DISP_YN='Y'
+      AND TDC.USE_YN='Y'
+      <isNotEmpty property="lrgStdCatCd">AND TSC.LRG_STD_CAT_CD = #lrgStdCatCd#</isNotEmpty>
+      <isNotEmpty property="midStdCatCd">AND TSC.MID_STD_CAT_CD = #midStdCatCd#</isNotEmpty>
+      <isNotEmpty property="smlStdCatCd">AND TSC.SML_STD_CAT_CD = #smlStdCatCd#</isNotEmpty>
+      <isNotEmpty property="subStdCatCd">AND TSC.SUB_STD_CAT_CD = #subStdCatCd#</isNotEmpty>
+    </select>
+
+    <select id="selectEcStdDispMappingList" resultClass="dataMap">
+    /* SQLINES DEMO *** ectEcStdDispMappingList - 표준분류카테고리할당 리스트 조회 */
+    SELECT RNUM
+         , STD_CAT_CD
+         , STD_CAT_NM
+         , LRG_STD_CAT_CD
+         , LRG_STD_CAT_NM
+         , MID_STD_CAT_CD
+         , MID_STD_CAT_NM
+         , SML_STD_CAT_CD
+         , SML_STD_CAT_NM
+         , SUB_STD_CAT_CD
+         , SUB_STD_CAT_NM
+         , STD_USE_YN
+         , MALL_CD
+         , DISP_CAT_CD
+         , DISP_CAT_NM
+         , DISP_USE_YN
+      FROM ( SELECT ROW_NUMBER() OVER(ORDER BY TSC.STD_CAT_CD ASC) RNUM
+                  , COALESCE(TSC.STD_CAT_CD ,'-') AS STD_CAT_CD
+                  , CONCAT(TSC.LRG_STD_CAT_NM 
+                    , CASE WHEN TSC.MID_STD_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TSC.MID_STD_CAT_NM) END
+                    , CASE WHEN TSC.SML_STD_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TSC.SML_STD_CAT_NM) END
+                    , CASE WHEN TSC.SUB_STD_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TSC.SUB_STD_CAT_NM) END) AS STD_CAT_NM
+                  , COALESCE(TSC.LRG_STD_CAT_CD ,'-') AS LRG_STD_CAT_CD
+                  , COALESCE(TSC.LRG_STD_CAT_NM ,'-') AS LRG_STD_CAT_NM
+                  , COALESCE(TSC.MID_STD_CAT_CD ,'-') AS MID_STD_CAT_CD
+                  , COALESCE(TSC.MID_STD_CAT_NM ,'-') AS MID_STD_CAT_NM
+                  , COALESCE(TSC.SML_STD_CAT_CD ,'-') AS SML_STD_CAT_CD
+                  , COALESCE(TSC.SML_STD_CAT_NM ,'-') AS SML_STD_CAT_NM
+                  , COALESCE(TSC.SUB_STD_CAT_CD ,'-') AS SUB_STD_CAT_CD
+                  , COALESCE(TSC.SUB_STD_CAT_NM ,'-') AS SUB_STD_CAT_NM
+                  , COALESCE(TSC.USE_YN,'-') AS STD_USE_YN
+                  , CASE 
+                       WHEN TDC.MALL_CD = 'LTON' THEN '롯데ON'
+                       WHEN TDC.MALL_CD IN ('LTMT', 'TOYS') THEN '롯데마트몰'
+                       ELSE '-'
+                    END AS MALL_CD
+                  , COALESCE(TDC.DISP_CAT_CD,'-') AS DISP_CAT_CD
+                  , CONCAT(TDC.LRG_DISP_CAT_NM 
+                    , CASE WHEN TDC.MID_DISP_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TDC.MID_DISP_CAT_NM) END
+                    , CASE WHEN TDC.SML_DISP_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TDC.SML_DISP_CAT_NM) END
+                    , CASE WHEN TDC.SUB_DISP_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TDC.SUB_DISP_CAT_NM) END) AS DISP_CAT_NM
+                  , COALESCE(TDC.USE_YN,'-') AS DISP_USE_YN
+               FROM TEC_STD_CATEGORY TSC
+                  , TEC_STD_DISP_MAPPING TSDM
+                  , TEC_DISP_CATEGORY TDC 
+              WHERE TSC.LEAF_YN='Y'
+                AND TSC.STD_CAT_CD = TSDM.STD_CAT_CD
+                AND TDC.DISP_CAT_CD = TSDM.DISP_CAT_CD
+                AND TSDM.USE_YN='Y'
+                AND TSC.DISP_YN='Y'
+                AND TSC.USE_YN='Y'
+                AND TDC.LEAF_YN='Y'
+                AND TDC.DISP_YN='Y'
+                AND TDC.USE_YN='Y'
+                <isNotEmpty property="lrgStdCatCd">AND TSC.LRG_STD_CAT_CD = #lrgStdCatCd#</isNotEmpty>
+                <isNotEmpty property="midStdCatCd">AND TSC.MID_STD_CAT_CD = #midStdCatCd#</isNotEmpty>
+                <isNotEmpty property="smlStdCatCd">AND TSC.SML_STD_CAT_CD = #smlStdCatCd#</isNotEmpty>
+                <isNotEmpty property="subStdCatCd">AND TSC.SUB_STD_CAT_CD = #subStdCatCd#</isNotEmpty>
+              ORDER BY RNUM ASC
+           )
+       WHERE RNUM BETWEEN #startRow# AND #endRow#
+    </select>
+
+    <!-- SQLINES DEMO ***  (현재 전시에서 사용하지 않는 것도 포함) -->
+    <select id="selectEcStdAttrMappingCnt" resultClass="int">
+    SELECT COUNT(*)
+      FROM TEC_STD_CATEGORY TSC
+         , TEC_ATTR_CAT_MAPPING TACM
+         , TEC_ATTR_CD TAC
+         , TEC_ATTR_VAL TAV
+     WHERE TSC.LEAF_YN='Y'
+       AND TSC.STD_CAT_CD = TACM.STD_CAT_CD
+       AND TACM.ATTR_ID = TAC.ATTR_ID
+       AND TAC.ATTR_ID = TAV.ATTR_ID
+       AND TACM.USE_YN='Y'
+       AND TAC.USE_YN='Y'
+       AND TAV.USE_YN='Y'
+       <isNotEmpty property="lrgStdCatCd">AND TSC.LRG_STD_CAT_CD = #lrgStdCatCd#</isNotEmpty>
+       <isNotEmpty property="midStdCatCd">AND TSC.MID_STD_CAT_CD = #midStdCatCd#</isNotEmpty>
+       <isNotEmpty property="smlStdCatCd">AND TSC.SML_STD_CAT_CD = #smlStdCatCd#</isNotEmpty>
+       <isNotEmpty property="subStdCatCd">AND TSC.SUB_STD_CAT_CD = #subStdCatCd#</isNotEmpty>
+       <isNotEmpty property="attrPiType">AND TAC.ATTR_PI_TYPE = #attrPiType#</isNotEmpty>
+    </select>
+
+    <select id="selectEcStdAttrMappingList" resultClass="dataMap">
+    /* SQLINES DEMO *** ectEcStdAttrMappingList - 표준분류카테고리할당 리스트 조회 */
+    SELECT RNUM
+         , STD_CAT_CD
+         , STD_CAT_NM
+         , LRG_STD_CAT_CD
+         , LRG_STD_CAT_NM
+         , MID_STD_CAT_CD
+         , MID_STD_CAT_NM
+         , SML_STD_CAT_CD
+         , SML_STD_CAT_NM
+         , SUB_STD_CAT_CD
+         , SUB_STD_CAT_NM
+         , STD_USE_YN
+         , ATTR_PI_TYPE
+         , ATTR_ID
+         , ATTR_NM
+         , ATTR_VAL_ID
+         , ATTR_VAL_NM
+      FROM ( SELECT ROW_NUMBER() OVER(ORDER BY TSC.STD_CAT_CD, TAC.ATTR_PI_TYPE, TAC.ATTR_ID, TAV.ATTR_VAL_ID) RNUM
+                  , COALESCE(TSC.STD_CAT_CD ,'-') AS STD_CAT_CD
+                  , CONCAT(TSC.LRG_STD_CAT_NM 
+                    , CASE WHEN TSC.MID_STD_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TSC.MID_STD_CAT_NM) END
+                    , CASE WHEN TSC.SML_STD_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TSC.SML_STD_CAT_NM) END
+                    , CASE WHEN TSC.SUB_STD_CAT_NM IS NOT NULL
+                            THEN Concat(' > ' , TSC.SUB_STD_CAT_NM) END) AS STD_CAT_NM
+                  , COALESCE(TSC.LRG_STD_CAT_CD ,'-') AS LRG_STD_CAT_CD
+                  , COALESCE(TSC.LRG_STD_CAT_NM ,'-') AS LRG_STD_CAT_NM
+                  , COALESCE(TSC.MID_STD_CAT_CD ,'-') AS MID_STD_CAT_CD
+                  , COALESCE(TSC.MID_STD_CAT_NM ,'-') AS MID_STD_CAT_NM
+                  , COALESCE(TSC.SML_STD_CAT_CD ,'-') AS SML_STD_CAT_CD
+                  , COALESCE(TSC.SML_STD_CAT_NM ,'-') AS SML_STD_CAT_NM
+                  , COALESCE(TSC.SUB_STD_CAT_CD ,'-') AS SUB_STD_CAT_CD
+                  , COALESCE(TSC.SUB_STD_CAT_NM ,'-') AS SUB_STD_CAT_NM
+                  , COALESCE(TSC.USE_YN,'-') AS STD_USE_YN
+                  , COALESCE(TAC.ATTR_PI_TYPE ,'-') AS ATTR_PI_TYPE
+                  , COALESCE(TAC.ATTR_ID ,'-') AS ATTR_ID
+                  , COALESCE(TAC.ATTR_NM ,'-') AS ATTR_NM
+                  , COALESCE(TAV.ATTR_VAL_ID ,'-') AS ATTR_VAL_ID
+                  , COALESCE(TAV.ATTR_VAL_NM ,'-') AS ATTR_VAL_NM
+               FROM TEC_STD_CATEGORY TSC
+                  , TEC_ATTR_CAT_MAPPING TACM
+                  , TEC_ATTR_CD TAC
+                  , TEC_ATTR_VAL TAV
+              WHERE TSC.LEAF_YN='Y'
+                AND TSC.STD_CAT_CD = TACM.STD_CAT_CD
+                AND TACM.ATTR_ID = TAC.ATTR_ID
+                AND TAC.ATTR_ID = TAV.ATTR_ID
+                AND TACM.USE_YN='Y' 
+                AND TAC.USE_YN='Y' 
+                AND TAV.USE_YN='Y'   
+                <isNotEmpty property="lrgStdCatCd">AND TSC.LRG_STD_CAT_CD = #lrgStdCatCd#</isNotEmpty>
+                <isNotEmpty property="midStdCatCd">AND TSC.MID_STD_CAT_CD = #midStdCatCd#</isNotEmpty>
+                <isNotEmpty property="smlStdCatCd">AND TSC.SML_STD_CAT_CD = #smlStdCatCd#</isNotEmpty>
+                <isNotEmpty property="subStdCatCd">AND TSC.SUB_STD_CAT_CD = #subStdCatCd#</isNotEmpty>
+                <isNotEmpty property="attrPiType">AND TAC.ATTR_PI_TYPE = #attrPiType#</isNotEmpty>
+              ORDER BY RNUM ASC
+           )
+       WHERE RNUM BETWEEN #startRow# AND #endRow#
+    </select>
+
+</sqlMap>

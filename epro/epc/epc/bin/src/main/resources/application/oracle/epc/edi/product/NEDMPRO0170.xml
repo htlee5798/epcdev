@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0170">
+	<typeAlias alias="nedmpro0170vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0170VO" />
+	
+	<resultMap id="disconProductListMap" class="nedmpro0170vo">
+		<result column="DISCON_APPLY_DT"		property="disconApplyDt"		/>	<!-- 변경... SQLINES DEMO *** -->
+		<result column="RNUM"					property="rnum" 				/>	<!-- 순번... SQLINES DEMO *** -->
+		<result column="STD_DATE"				property="stdDate" 				/>	<!-- 기준... SQLINES DEMO *** -->
+		<result column="ENTP_CD"				property="entpCd" 				/>	<!-- 업체... SQLINES DEMO *** -->
+		<result column="ENTP_NM"				property="entpNm" 				/>	<!-- 업체... SQLINES DEMO *** -->
+		<result column="PROD_CD"				property="prodCd" 				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_NM"				property="prodNm" 				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="REG_DT"					property="regDt" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="REG_TM"					property="regTm" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="REG_NM"					property="regNm" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="MOD_DT"					property="modDt" 				/> 	<!-- 수정... SQLINES DEMO *** -->
+		<result column="MOD_TM"					property="modTm" 				/> 	<!-- 수정... SQLINES DEMO *** -->
+		<result column="MOD_NM"					property="modNm" 				/> 	<!-- 수정... SQLINES DEMO *** -->
+		<result column="MSTATE"					property="mstate"				/>	<!-- 상태... SQLINES DEMO *** -->
+		<result column="ZSTAT"					property="zstat"				/>	<!-- EC... SQLINES DEMO *** -->
+		<result column="WERKS_CNT"				property="werksCnt" 			/>	<!-- 점포... SQLINES DEMO *** -->
+		<result column="DISCON_REASON"			property="disconReason"			/>	<!-- 변경... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"				property="srcmkCd"			 	/>	<!-- 판매... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<select id="selectCurrDate" resultClass="String">
+		/* SQLINES DEMO *** ectCurrDate */
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') 
+	</select>
+	
+
+	<select id="selectDisconProductCount" resultClass="Integer" parameterClass="nedmpro0170vo">
+		/* SQLINES DEMO *** ectDisconProductCount */
+		SELECT 	COUNT(1) AS CNT
+		FROM 	TPC_DISCON	A
+		WHERE 	<!-- SQLINES DEMO *** '899466' -->
+			<isEmpty property="entpCd">
+				<!-- SQLINES DEMO *** rty="entpCds" prepend="AND"> -->
+				<isNotEmpty property="entpCds" >
+					<iterate prepend="A.ENTP_CD IN " property="entpCds" open="(" close=")" conjunction=",">
+						#entpCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<!-- SQLINES DEMO *** erty="entpCd"  prepend="AND"> -->
+			<isNotEmpty  property="entpCd" >
+				A.ENTP_CD = #entpCd#
+			</isNotEmpty>		
+	</select>
+	
+
+	<select id="selectProductList" resultMap="disconProductListMap" parameterClass="nedmpro0170vo">
+		/* SQLINES DEMO *** ectProductList */
+		SELECT	
+                T1.RNUM
+             ,  T1.STD_DATE
+             ,  T1.DISCON_APPLY_DT
+             ,  T1.ENTP_CD
+             ,  T1.ENTP_NM
+             ,  T1.PROD_CD
+             ,  T3.PROD_NM
+             ,  T1.REG_DT
+             ,  T1.REG_TM
+             ,  T1.REG_NM
+             ,  T1.MOD_DT
+             ,  T1.MOD_TM
+             ,  T1.MOD_NM
+             ,  T1.MSTATE
+             ,  T1.ZSTAT
+             ,  T1.DISCON_REASON
+             ,  T3.SRCMK_CD
+             ,  T2.WERKS_CNT
+		FROM
+		(
+			SELECT 	ROW_NUMBER() OVER(ORDER BY B.VEN_CD, B.PROD_CD) AS RNUM
+				,	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') AS STD_DATE
+				,	A.DISCON_APPLY_DT
+				, 	B.VEN_CD AS ENTP_CD
+				,   (
+						SELECT VEN_NM
+						FROM HQ_VEN
+						WHERE VEN_CD=B.VEN_CD
+					) AS ENTP_NM
+				, 	C.PROD_CD
+				,   A.REG_DT
+				,   A.REG_TM
+				,   A.REG_NM
+				,	A.MOD_DT
+				,   A.MOD_TM
+				,   A.MOD_NM
+				,	A.MSTATE
+				,	A.ZSTAT
+				,	A.DISCON_REASON
+				,	B.SRCMK_CD
+			FROM 	TPC_DISCON	A
+				,	PRODUCT     B
+				,	(
+						SELECT PROD_CD
+						FROM SALE_MST
+						WHERE ORD_ABLE_FG = 'X'
+						  AND EAN_TYPE ='1'
+						  <isNotEmpty  property="srchSrcmkCd" >
+						  AND SRCMK_CD=	#srchSrcmkCd#
+						  </isNotEmpty>
+						GROUP BY PROD_CD
+					) C
+			WHERE 	<!-- SQLINES DEMO *** '899466' -->
+				<isEmpty property="entpCd"> 
+					<!-- SQLINES DEMO *** rty="entpCds" prepend="AND"> -->
+					<isNotEmpty property="entpCds" >
+						<iterate prepend="B.VEN_CD IN " property="entpCds" open="(" close=")" conjunction=",">
+							#entpCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				
+				<!-- SQLINES DEMO *** erty="entpCd"  prepend="AND"> -->
+				<isNotEmpty  property="entpCd" >
+					B.VEN_CD = #entpCd#
+				</isNotEmpty>
+					AND A.DISCON_APPLY_DT <![CDATA[ > ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+					AND B.PROD_CD=A.PROD_CD
+				<isNotEmpty  property="srchSrcmkCd" >
+					AND	B.PROD_CD=C.PROD_CD			<!-- 구매... SQLINES DEMO *** -->
+				</isNotEmpty>
+				<isEmpty  property="srchSrcmkCd" >
+					AND	B.PROD_CD=C.PROD_CD			<!-- 구매... SQLINES DEMO *** -->
+				</isEmpty>
+		) T1,
+		(
+            SELECT SUBSTR(MATNR,-10,10) AS PROD_CD, COUNT(WERKS) AS WERKS_CNT
+            FROM 
+            (
+                SELECT *
+                FROM TPC_WERKS_POG_INFO_SAP
+                WHERE WERKS <![CDATA[<>]]> '999'
+                  AND FACE_QTY > 0
+            ) A
+            GROUP BY MATNR
+        ) T2,
+        ( 
+            SELECT PROD_NM,PROD_CD,SRCMK_CD
+            FROM PRODUCT
+        ) T3
+        WHERE T1.PROD_CD=T2.PROD_CD
+          AND T1.PROD_CD=T3.PROD_CD
+       	ORDER BY T1.RNUM
+		<!-- SQLINES DEMO *** #firstIndex#) + 1 <![CDATA[<=]]> RNUM
+			AND RNUM <![CDATA[<]]> CAST(#lastIndex# AS FLOAT) + 1 -->
+	</select>
+	
+
+	<insert id="insertDisconProduct" parameterClass="nedmpro0170vo">
+		/* SQLINES DEMO *** ertDisconProduct */
+		INSERT INTO TPC_DISCON
+                    (
+                         DISCON_APPLY_DT
+                      ,  ENTP_CD      
+                      ,  PROD_CD       
+                      ,  REG_DT        
+                      ,  REG_TM        
+                      ,  REG_NM        
+                      ,  MOD_DT        
+                      ,  MOD_TM        
+                      ,  MOD_NM        
+                      ,  MSTATE      
+                      ,  DISCON_REASON  
+                    )
+               VALUES
+                    (
+                         #disconApplyDt#
+                      ,  #entpCd#
+                      ,  #prodCd#
+                      ,  #regDt#
+                      ,  #regTm#
+                      ,  #regNm#
+                      ,  #modDt#
+                      ,  #modTm#
+                      ,  #modNm#
+                      ,  #mstate#
+                      ,	 #disconReason#
+                    )
+	</insert>
+	
+
+	<delete id="deleteDisconProduct" parameterClass="nedmpro0170vo">
+		/* SQLINES DEMO *** eteDisconProduct */
+		DELETE 
+		FROM 	TPC_DISCON
+		WHERE 	PROD_CD 		= #prodCd# 
+		  AND   ENTP_CD 		= #entpCd#
+		  AND   TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') <![CDATA[ < ]]> DISCON_APPLY_DT
+	</delete>
+	
+
+	<select id="selectDisconProductList" resultMap="disconProductListMap" parameterClass="nedmpro0170vo">
+		/* SQLINES DEMO *** ectDisconProductList*/
+		SELECT	
+                T1.RNUM
+             ,  T1.STD_DATE
+             ,  T1.DISCON_APPLY_DT
+             ,  T1.ENTP_CD
+             ,  T1.ENTP_NM
+             ,  T3.PROD_CD
+             ,  T3.PROD_NM
+             ,  T1.REG_DT
+             ,  T1.REG_TM
+             ,  T1.REG_NM
+             ,  T1.MOD_DT
+             ,  T1.MOD_TM
+             ,  T1.MOD_NM
+             ,  T1.MSTATE
+             ,  T1.ZSTAT
+             ,  T1.DISCON_REASON
+             ,  T3.SRCMK_CD
+             ,  T2.WERKS_CNT
+		FROM
+		(
+			SELECT 	ROW_NUMBER() OVER(ORDER BY A.DISCON_APPLY_DT, A.ENTP_CD, A.PROD_CD) AS RNUM
+				,	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') AS STD_DATE
+				,	A.DISCON_APPLY_DT
+				, 	A.ENTP_CD
+				,   (
+						SELECT VEN_NM
+						FROM HQ_VEN
+						WHERE VEN_CD=A.ENTP_CD
+					) AS ENTP_NM
+				, 	A.PROD_CD
+				,   A.REG_DT
+				,   A.REG_TM
+				,   A.REG_NM
+				,	A.MOD_DT
+				,   A.MOD_TM
+				,   A.MOD_NM
+				,	A.MSTATE
+				,   B.ZSTAT
+				,	A.DISCON_REASON
+			FROM 	TPC_DISCON	A
+				 LEFT OUTER JOIN   DISCON_SAP  B
+			ON 	A.DISCON_APPLY_DT = B.DISCON_APPLY_DT
+			  AND	A.ENTP_CD		  = SUBSTR(B.ENTP_CD,5,6)
+			  AND   A.PROD_CD		  = SUBSTR(B.PROD_CD,9,10)			  		  
+			 <!-- SQLINES DEMO *** rty="entpCds" prepend="AND"> -->
+			 <isNotEmpty property="entpCds" >
+				AND
+				<iterate prepend="A.ENTP_CD IN " property="entpCds" open="(" close=")" conjunction=",">
+					#entpCds[]#
+				</iterate>
+			 </isNotEmpty>
+			 <isEmpty property="entpCds" >
+			 	AND 1=0
+			 </isEmpty>
+				
+		) T1,
+		(
+            SELECT SUBSTR(MATNR,-10,10) AS PROD_CD, COUNT(WERKS) AS WERKS_CNT
+            FROM 
+            (
+                SELECT *
+                FROM TPC_WERKS_POG_INFO_SAP
+                WHERE WERKS <![CDATA[<>]]> '999'
+                  AND FACE_QTY > 0
+            ) A
+            GROUP BY MATNR
+        ) T2,
+        ( 
+            SELECT PROD_CD,PROD_NM,SRCMK_CD
+            FROM
+            (
+                <isEmpty  property="srchSrcmkCd" >
+                SELECT PROD_CD, PROD_NM, SRCMK_CD
+                FROM PRODUCT 
+				</isEmpty>
+				
+				<isNotEmpty  property="srchSrcmkCd"  >
+				SELECT A.PROD_CD, A.PROD_NM, A.SRCMK_CD
+				FROM PRODUCT A LEFT OUTER JOIN
+					 SALE_MST B
+				ON A.PROD_CD = B.PROD_CD
+				  WHERE B.SRCMK_CD = #srchSrcmkCd#
+				</isNotEmpty>
+            ) A
+        ) T3
+        WHERE T1.PROD_CD=T2.PROD_CD
+          <isEmpty  property="srchSrcmkCd" prepend="AND" >
+			  T1.PROD_CD=T3.PROD_CD
+		  </isEmpty>
+          <isNotEmpty  property="srchSrcmkCd" prepend="AND" >
+			  T1.PROD_CD=T3.PROD_CD	
+		  </isNotEmpty>
+		ORDER BY T1.RNUM
+		<!-- SQLINES DEMO *** #firstIndex#) + 1 <![CDATA[<=]]> RNUM
+			AND RNUM <![CDATA[<]]> CAST(#lastIndex# AS FLOAT) + 1 -->
+	</select>
+	
+
+	<select id="selectDisconProductListByDate" resultMap="disconProductListMap" parameterClass="nedmpro0170vo">
+		/* SQLINES DEMO *** ectDisconProductListByDate */
+		SELECT	
+                T1.RNUM
+             ,  T1.STD_DATE
+             ,  T1.DISCON_APPLY_DT
+             ,  T1.ENTP_CD
+             ,  T1.ENTP_NM
+             ,  T3.PROD_CD
+             ,  T3.PROD_NM
+             ,  T1.REG_DT
+             ,  T1.REG_TM
+             ,  T1.REG_NM
+             ,  T1.MOD_DT
+             ,  T1.MOD_TM
+             ,  T1.MOD_NM
+             ,  T1.MSTATE
+             ,  T1.ZSTAT
+             ,  T1.DISCON_REASON
+             ,  T3.SRCMK_CD
+             ,  T2.WERKS_CNT
+		FROM
+		(
+			SELECT 	ROW_NUMBER() OVER(ORDER BY A.DISCON_APPLY_DT, A.ENTP_CD, A.PROD_CD) AS RNUM
+				,	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') AS STD_DATE
+				,	A.DISCON_APPLY_DT
+				, 	A.ENTP_CD
+				,   (
+						SELECT VEN_NM
+						FROM HQ_VEN
+						WHERE VEN_CD=A.ENTP_CD
+					) AS ENTP_NM
+				, 	A.PROD_CD
+				,   A.REG_DT
+				,   A.REG_TM
+				,   A.REG_NM
+				,	A.MOD_DT
+				,   A.MOD_TM
+				,   A.MOD_NM
+				,	A.MSTATE
+				,	B.ZSTAT
+				,	A.DISCON_REASON 
+			FROM 	TPC_DISCON	A
+				 LEFT OUTER JOIN   DISCON_SAP  B ON A.DISCON_APPLY_DT = B.DISCON_APPLY_DT AND	A.ENTP_CD		  = SUBSTR AND   A.PROD_CD		  = SUBSTR
+			WHERE 	A.DISCON_APPLY_DT = #disconApplyDt#
+			<isNotEmpty property="entpCds" >
+				AND
+				<iterate prepend="A.ENTP_CD IN " property="entpCds" open="(" close=")" conjunction=",">
+					#entpCds[]#
+				</iterate>
+			 </isNotEmpty>
+			 <isEmpty property="entpCds" >
+			 	AND 1=0
+			 </isEmpty>
+		) T1 LEFT OUTER JOIN (
+            SELECT SUBSTR(MATNR,-10,10) AS PROD_CD, COUNT(WERKS) AS WERKS_CNT
+            FROM 
+            (
+                SELECT *
+                FROM TPC_WERKS_POG_INFO_SAP
+                WHERE WERKS <![CDATA[<>]]> '999'
+                  AND FACE_QTY > 0
+            ) A
+            GROUP BY MATNR
+        ) T2 ON T1.PROD_CD=T2.PROD_CD
+        LEFT OUTER JOIN ( 
+            SELECT PROD_CD,PROD_NM,SRCMK_CD
+            FROM
+            (
+                <isEmpty  property="srchSrcmkCd">
+                SELECT PROD_CD, PROD_NM, SRCMK_CD
+                FROM PRODUCT 
+				</isEmpty>
+				
+				<isNotEmpty  property="srchSrcmkCd" >
+				SELECT A.PROD_CD, A.PROD_NM, A.SRCMK_CD
+				FROM PRODUCT A LEFT OUTER JOIN
+					 SALE_MST B
+				ON A.PROD_CD = B.PROD_CD
+				  WHERE B.SRCMK_CD = #srchSrcmkCd#
+				</isNotEmpty>
+			)
+        ) T3
+        WHERE T1.PROD_CD=T2.PROD_CD
+          <isEmpty  property="srchSrcmkCd" prepend="AND" >
+			  T1.PROD_CD=T3.PROD_CD
+		  </isEmpty>
+          <isNotEmpty  property="srchSrcmkCd" prepend="AND" >
+			  T1.PROD_CD=T3.PROD_CD	
+		  </isNotEmpty>
+		ORDER BY T1.RNUM
+		<!-- SQLINES DEMO *** #firstIndex#) + 1 <![CDATA[<=]]> RNUM
+			AND RNUM <![CDATA[<]]> CAST(#lastIndex# AS FLOAT) + 1 -->
+	</select>
+	
+</sqlMap>

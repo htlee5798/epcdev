@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0530">
+	<typeAlias alias="NEDMPRO0530VO" type="com.lottemart.epc.edi.product.model.NEDMPRO0530VO" />
+	
+	<!-- 확장가능 상품내역 리스트 검색조건 -->
+	<sql id="selectExtAvailProdList_Where">
+		/* NEDMPRO0530.selectExtAvailProdList_Where */
+		AND (A.ZZMKT_FG_1 IS NULL OR A.ZZMKT_FG_2 IS NULL OR A.ZZMKT_FG_3 IS NULL OR A.ZZMKT_FG_4 IS NULL)	/* 한개라도 확장할 수 있는 상품 조회 */
+		AND (A.LIQUOR_CH IS NULL OR A.LIQUOR_CH = '' OR A.DANGER_TYP IS NULL OR A.DANGER_TYP != '1') 			/* 확장불가:주류 - 주류유통구분 없거나 유해상품 = 주류가 아닌 것만 조회 */
+		AND A.PROD_STATUS = '01'	/* 정상운영상품만 조회 */
+		AND A.PROD_PAT_FG <![CDATA[<>]]> '0'	/* 신선(비규격) 상품 제외 */
+		AND A.L3_CD NOT IN (SELECT L3_CD FROM TB_FRESH_CATEGORY)		/* 신선카테고리 상품제외 */
+		<isEmpty  property="srchVenCd"  prepend="AND">	<!-- 파트너사 코드 미선택 시, 본인이 속한 회사의 모든 데이터 조회 --> 
+			<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+				#venCds[]# 
+			</iterate>
+	  	</isEmpty>	
+		<isNotEmpty property="srchVenCd">
+		AND A.VEN_CD = #srchVenCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchSrcmkCd">	<!-- like 검색시 속도 저하 문제로 인해 equal 로 변경 -->
+		AND B.SRCMK_CD = #srchSrcmkCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchPrgsSts">
+		AND EXISTS (
+			SELECT 1
+			FROM TPC_EXT_PROD_REG TEPR
+			LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP TNPRS ON TEPR.PGM_ID = TNPRS.PGM_ID
+			WHERE A.PROD_CD = TEPR.PROD_CD
+			<isEqual property="srchPrgsSts" compareValue="00">	<!-- 임시저장 -->
+				AND TEPR.PRGS_STS = '00'
+			</isEqual>
+			<isEqual property="srchPrgsSts" compareValue="01">	<!-- 요청 -->
+				AND TEPR.PRGS_STS = '01'
+				AND (TNPRS.CFM_FG IS NULL OR TNPRS.CFM_FG NOT IN ('3', '5', '6', '7', '8'))
+			</isEqual>
+			<isEqual property="srchPrgsSts" compareValue="02">	<!-- 승인 -->
+				AND TEPR.PRGS_STS = '01'
+				AND TNPRS.CFM_FG = '3'
+			</isEqual>
+			<isEqual property="srchPrgsSts" compareValue="03">	<!-- 반려 -->
+				AND TEPR.PRGS_STS = '01'
+				AND TNPRS.CFM_FG IN ('5', '6', '7', '8')
+			</isEqual>
+		)
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 확장가능 상품내역 리스트 카운트 -->
+	<select id="selectExtAvailProdListCount" parameterClass="NEDMPRO0530VO" resultClass="Integer">
+		/* NEDMPRO0530.selectExtAvailProdListCount */
+		WITH TB_FRESH_CATEGORY AS (
+			<!-- 신선카테고리 상품제외를 위한 캐싱 -->
+		    SELECT DISTINCT L3_CD FROM V_FRESH_CATEGORY
+		),
+		TB_TRN_PROD AS (
+			/* 대표상품 - 판매코드로 검색가능하게 하기위해 판매마스터에서 대표상품코드(상품코드앞7자리)로 JOIN */
+			SELECT A.PROD_CD, B.SRCMK_CD
+			FROM PRODUCT A
+			LEFT OUTER JOIN SALE_MST B ON B.EAN_TYPE = '1' AND SUBSTR(A.PROD_CD, 4, 10) = SUBSTR(B.PROD_CD, 1, 7)
+			WHERE A.PROD_ATT_TYP_FG = '01'
+			<include refid="selectExtAvailProdList_Where"/>
+		),
+		TB_NOR_PROD AS (
+			/* 일반상품 - 상품코드로 join */
+			SELECT A.PROD_CD, B.SRCMK_CD
+			FROM PRODUCT A
+			LEFT OUTER JOIN SALE_MST B ON B.EAN_TYPE = '1' AND A.PROD_CD = B.PROD_CD 
+			WHERE A.PROD_ATT_TYP_FG NOT IN ('01', '02')
+			<include refid="selectExtAvailProdList_Where"/>
+		),
+		TB_PROD_SALES AS (
+			/* 대상 상품별 판매코드 MERGE */
+			SELECT SS.PROD_CD, STRING_AGG(DISTINCT SS.SRCMK_CD, ',') AS SRCMK_CD
+			FROM (
+				SELECT * FROM TB_NOR_PROD
+				UNION ALL
+				SELECT * FROM TB_TRN_PROD
+			)SS
+			GROUP BY SS.PROD_CD
+		),
+		TB_EXT_REQ AS (
+			/* 요청 확정된 채널 --> 실시간 상품확장된 정보 내려오지 않으므로 추가 */
+			SELECT
+				S1.PROD_CD
+				, MAX(S2.ZZMKT_FG_1)	AS ZZMKT_FG_1    /* 마트 */  
+				, MAX(S2.ZZMKT_FG_2)	AS ZZMKT_FG_2    /* MAXX */
+				, MAX(S2.ZZMKT_FG_3)    AS ZZMKT_FG_3    /* 슈퍼 */  
+				, MAX(S2.ZZMKT_FG_4)    AS ZZMKT_FG_4    /* 오카도 */ 
+			FROM TPC_EXT_PROD_REG S1
+			INNER JOIN TPC_NEW_PROD_REG_SAP S2 ON S1.PGM_ID = S2.PGM_ID AND S2.CFM_FG = '3'
+			GROUP BY S1.PROD_CD
+		)
+		SELECT COUNT(1) AS TOTAL_COUNT
+		FROM PRODUCT T1
+		INNER JOIN TB_PROD_SALES T2 ON T1.PROD_CD = T2.PROD_CD
+		LEFT OUTER JOIN TB_EXT_REQ T3 ON T1.PROD_CD = T3.PROD_CD
+	</select>
+	
+	<!-- 확장가능 상품내역 리스트 resultMap -->
+	<resultMap id="selectExtAvailProdListMap" class="NEDMPRO0530VO">
+		<result property="rnum"			column="RNUM"			/>	<!-- 행번호 -->
+		<result property="prgsStsNm"	column="PRGS_STS_NM"	/>	<!-- 진행상태명 -->
+		<result property="prodCd"		column="PROD_CD"		/>	<!-- 상품코드 -->
+		<result property="srcmkCdAll"	column="SRCMK_CD_ALL"	/>	<!-- 판매코드전체 -->
+		<result property="prodNm"		column="PROD_NM"		/>	<!-- 상품명 -->
+		<result property="venCd"		column="VEN_CD"			/>	<!-- 협력업체코드 -->
+		<result property="prodTypFg"	column="PROD_TYP_FG"	/>	<!-- NB,PB구분 -->
+		<result property="chanCd"		column="CHAN_CD"		/>	<!-- 채널코드 -->
+		<result property="chanNm"		column="CHAN_NM"		/>	<!-- 채널명 -->
+	</resultMap>
+	
+	<!-- 확장가능 상품내역 리스트 조회 -->
+	<select id="selectExtAvailProdList" parameterClass="NEDMPRO0530VO" resultMap="selectExtAvailProdListMap">
+		/* NEDMPRO0530.selectExtAvailProdList */
+		WITH TB_FRESH_CATEGORY AS (
+			<!-- 신선카테고리 상품제외를 위한 캐싱 -->
+		    SELECT DISTINCT L3_CD FROM V_FRESH_CATEGORY
+		),
+		TB_TRN_PROD AS (
+			/* 대표상품 - 판매코드로 검색가능하게 하기위해 판매마스터에서 대표상품코드(상품코드앞7자리)로 JOIN */
+			SELECT A.PROD_CD, B.SRCMK_CD
+			FROM PRODUCT A
+			LEFT OUTER JOIN SALE_MST B ON B.EAN_TYPE = '1' AND SUBSTR(A.PROD_CD, 4, 10) = SUBSTR(B.PROD_CD, 1, 7)
+			WHERE A.PROD_ATT_TYP_FG = '01'
+			<include refid="selectExtAvailProdList_Where"/>
+		),
+		TB_NOR_PROD AS (
+			/* 일반상품 - 상품코드로 join */
+			SELECT A.PROD_CD, B.SRCMK_CD
+			FROM PRODUCT A
+			LEFT OUTER JOIN SALE_MST B ON B.EAN_TYPE = '1' AND A.PROD_CD = B.PROD_CD 
+			WHERE A.PROD_ATT_TYP_FG NOT IN ('01', '02')
+			<include refid="selectExtAvailProdList_Where"/>
+		),
+		TB_PROD_SALES AS (
+			/* 대상 상품별 판매코드 MERGE */
+			SELECT SS.PROD_CD, STRING_AGG(DISTINCT SS.SRCMK_CD, ',') AS SRCMK_CD
+			FROM (
+				SELECT * FROM TB_NOR_PROD
+				UNION ALL
+				SELECT * FROM TB_TRN_PROD
+			)SS
+			GROUP BY SS.PROD_CD
+		),
+		TB_EXT_REQ AS (
+			/* 요청 확정된 채널 --> 실시간 상품확장된 정보 내려오지 않으므로 추가 */
+			SELECT
+				S1.PROD_CD
+				, MAX(S2.ZZMKT_FG_1)	AS ZZMKT_FG_1    /* 마트 */  
+				, MAX(S2.ZZMKT_FG_2)	AS ZZMKT_FG_2    /* MAXX */
+				, MAX(S2.ZZMKT_FG_3)    AS ZZMKT_FG_3    /* 슈퍼 */  
+				, MAX(S2.ZZMKT_FG_4)    AS ZZMKT_FG_4    /* 오카도 */ 
+			FROM TPC_EXT_PROD_REG S1
+			INNER JOIN TPC_NEW_PROD_REG_SAP S2 ON S1.PGM_ID = S2.PGM_ID AND S2.CFM_FG = '3'
+			GROUP BY S1.PROD_CD
+		)
+		SELECT
+			T.RNUM
+			, T.PRGS_STS_NM
+			, T.PROD_CD
+			, T.SRCMK_CD_ALL
+			, T.PROD_NM
+			, T.VEN_CD
+			, T.PROD_TYP_FG	
+			, T.CHAN_CD
+			, T.CHAN_NM
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY T1.PROD_NM, T1.SRCMK_CD) AS RNUM
+				, '' AS PRGS_STS_NM	/* 진행상태표시 TEXT */
+				, T1.PROD_CD		/* 상품코드 */
+				, T2.SRCMK_CD AS SRCMK_CD_ALL	/* 판매코드 전체 */		
+				, T1.PROD_NM		/* 상품명 */
+				, T1.VEN_CD			/* 협력사코드 */
+				, T1.PROD_TYP_FG	/* NB,PB 구분 */
+				, CONCAT_WS(
+					','
+					, CASE WHEN T1.ZZMKT_FG_1 = 'X' OR T3.ZZMKT_FG_1 = 'X' THEN 'KR02' ELSE NULL END	/* 마트 */
+					, CASE WHEN T1.ZZMKT_FG_2 = 'X' OR T3.ZZMKT_FG_2 = 'X' THEN 'KR03' ELSE NULL END	/* MAXX */
+					, CASE WHEN T1.ZZMKT_FG_3 = 'X' OR T3.ZZMKT_FG_3 = 'X' THEN 'KR04' ELSE NULL END	/* 슈퍼 */
+					, CASE WHEN T1.ZZMKT_FG_4 = 'X' OR T3.ZZMKT_FG_4 = 'X' THEN 'KR09' ELSE NULL END	/* 오카도 */
+				) AS CHAN_CD	/* 적용된 채널코드 > PRODUCT + 요청확정건 확인 */
+				, CONCAT_WS(
+					','
+					, CASE WHEN T1.ZZMKT_FG_1 = 'X' OR T3.ZZMKT_FG_1 = 'X' THEN FN_NEW_CODE_RTN('PURDE', 'KR02') ELSE NULL END	/* 마트 */
+					, CASE WHEN T1.ZZMKT_FG_2 = 'X' OR T3.ZZMKT_FG_2 = 'X' THEN FN_NEW_CODE_RTN('PURDE', 'KR03') ELSE NULL END	/* MAXX */
+					, CASE WHEN T1.ZZMKT_FG_3 = 'X' OR T3.ZZMKT_FG_3 = 'X' THEN FN_NEW_CODE_RTN('PURDE', 'KR04') ELSE NULL END	/* 슈퍼 */
+					, CASE WHEN T1.ZZMKT_FG_4 = 'X' OR T3.ZZMKT_FG_4 = 'X' THEN FN_NEW_CODE_RTN('PURDE', 'KR09') ELSE NULL END	/* 오카도 */
+				) AS CHAN_NM	/* 적용된 채널명 > PRODUCT + 요청확정건 확인 */
+			FROM PRODUCT T1
+			INNER JOIN TB_PROD_SALES T2 ON T1.PROD_CD = T2.PROD_CD
+			LEFT OUTER JOIN TB_EXT_REQ T3 ON T1.PROD_CD = T3.PROD_CD
+		)T
+		WHERE T.RNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- 확장가능 상세정보 resultMap -->
+	<resultMap id="selectTpcProdChanExtendDetailInfoMap" class="NEDMPRO0530VO">
+		<result property="pgmId"			column="PGM_ID"					/>	<!-- 프로그램아이디 -->
+		<result property="newYn"			column="NEW_YN"					/>	<!-- 신규추가여부 -->
+		<result property="prodCd"			column="PROD_CD"				/>	<!-- 상품코드 -->
+		<result property="srcmkCd"			column="SRCMK_CD"				/>	<!-- 판매코드 -->
+		<result property="extChanCd"		column="EXT_CHAN_CD"			/>	<!-- 확장채널코드 -->
+		<result property="venCd"			column="VEN_CD"					/>	<!-- 협력업체코드 -->
+		<result property="newProdPromoFg"	column="NEW_PROD_PROMO_FG"		/>	<!-- 신상품장려금여부 -->
+		<result property="newProdStDy"		column="NEW_PROD_ST_DY"			/>	<!-- 신상품출시일 -->
+		<result property="overPromoFg"		column="OVER_PROMO_FG"			/>	<!-- 성과초과장려금여부 -->
+		<result property="sNewProdPromoFg"	column="S_NEW_PROD_PROMO_FG"	/>	<!-- (슈퍼) 신상품장려금여부 -->
+		<result property="sNewProdStDy"		column="S_NEW_PROD_ST_DY"		/>	<!-- (슈퍼) 신상품출시일 -->
+		<result property="sOverPromoFg"		column="S_OVER_PROMO_FG"		/>	<!-- (슈퍼) 성과초과장려금여부 -->
+		<result property="norProdPcost"		column="NOR_PROD_PCOST"			/>	<!-- 마트_원가 -->
+		<result property="norProdCurr"		column="NOR_PROD_CURR"			/>	<!-- 마트_원가화폐단위 -->
+		<result property="norProdSalePrc"	column="NOR_PROD_SALE_PRC"		/>	<!-- 마트_매가 -->
+		<result property="norProdSaleCurr"	column="NOR_PROD_SALE_CURR"		/>	<!-- 마트_매가화폐단위 -->
+		<result property="prftRate"			column="PRFT_RATE"				/>	<!-- 마트_이익률 -->
+		<result property="wnorProdPcost"	column="WNOR_PROD_PCOST"		/>	<!-- MAXX_원가 -->
+		<result property="wnorProdCurr"		column="WNOR_PROD_CURR"			/>	<!-- MAXX_원가화폐단위 -->
+		<result property="wnorProdSalePrc"	column="WNOR_PROD_SALE_PRC"		/>	<!-- MAXX_매가 -->
+		<result property="wnorProdSaleCurr"	column="WNOR_PROD_SALE_CURR"	/>	<!-- MAXX_매가화폐단위 -->
+		<result property="wprftRate"		column="WPRFT_RATE"				/>	<!-- MAXX_이익률 -->
+		<result property="snorProdPcost"	column="SNOR_PROD_PCOST"		/>	<!-- 슈퍼_원가 -->
+		<result property="snorProdCurr"		column="SNOR_PROD_CURR"			/>	<!-- 슈퍼_원가화폐단위 -->
+		<result property="snorProdSalePrc"	column="SNOR_PROD_SALE_PRC"		/>	<!-- 슈퍼_매가 -->
+		<result property="snorProdSaleCurr"	column="SNOR_PROD_SALE_CURR"	/>	<!-- 슈퍼_매가화폐단위 -->
+		<result property="sprftRate"		column="SPRFT_RATE"				/>	<!-- 슈퍼_이익률 -->
+		<result property="onorProdPcost"	column="ONOR_PROD_PCOST"		/>	<!-- CFC_원가 -->
+		<result property="onorProdCurr"		column="ONOR_PROD_CURR"			/>	<!-- CFC_원가화폐단위 -->
+		<result property="onorProdSalePrc"	column="ONOR_PROD_SALE_PRC"		/>	<!-- CFC_매가 -->
+		<result property="onorProdSaleCurr"	column="ONOR_PROD_SALE_CURR"	/>	<!-- CFC_매가화폐단위 -->
+		<result property="oprftRate"		column="OPRFT_RATE"				/>	<!-- CFC_이익률 -->
+		<result property="prgsSts"			column="PRGS_STS"				/>	<!-- 진행상태코드 -->
+		<result property="prgsStsNm"		column="PRGS_STS_NM"			/>	<!-- 진행상태코드명 -->
+		<result property="regDy"			column="REG_DY"					/>	<!-- 최초등록일자 -->
+		<result property="cfmFg"			column="CFM_FG"					/>	<!-- 확정상태코드 -->
+	</resultMap>
+	
+	<!-- 채널확장 상세정보 조회 -->
+	<select id="selectTpcProdChanExtendDetailInfo" parameterClass="NEDMPRO0530VO" resultMap="selectTpcProdChanExtendDetailInfoMap">
+		/* NEDMPRO0530.selectTpcProdChanExtendDetailInfo */
+		SELECT
+			T.PGM_ID					/* 프로그램아이디 */
+			, 'N' AS NEW_YN				/* 신규추가여부 */
+			, T.PROD_CD					/* 상품코드 */
+			, T.SRCMK_CD				/* 판매코드 */
+			, T.EXT_CHAN_CD				/* 확장채널코드 */
+			, T.VEN_CD 					/* 협력업체코드 */
+			, T.NEW_PROD_PROMO_FG 		/* 신상품장려금여부 */
+			, T.NEW_PROD_ST_DY 			/* 신상품출시일 */
+			, T.OVER_PROMO_FG			/* 성과초과장려금여부 */
+			, T.S_NEW_PROD_PROMO_FG 	/* (슈퍼) 신상품장려금여부 */ 
+			, T.S_NEW_PROD_ST_DY        /* (슈퍼) 신상품출시일 */   
+			, T.S_OVER_PROMO_FG         /* (슈퍼) 성과초과장려금여부 */
+			, T.NOR_PROD_PCOST 			/* 마트_원가 */
+			, T.NOR_PROD_CURR 			/* 마트_원가화폐단위 */
+			, T.NOR_PROD_SALE_PRC 		/* 마트_매가 */
+			, T.NOR_PROD_SALE_CURR 		/* 마트_매가화폐단위 */
+			, T.PRFT_RATE				/* 마트_이익률 */
+			, T.WNOR_PROD_PCOST 		/* MAXX_원가 */
+			, T.WNOR_PROD_CURR 			/* MAXX_원가화폐단위 */
+			, T.WNOR_PROD_SALE_PRC 		/* MAXX_매가 */
+			, T.WNOR_PROD_SALE_CURR 	/* MAXX_매가화폐단위 */
+			, T.WPRFT_RATE				/* MAXX_이익률 */
+			, T.SNOR_PROD_PCOST         /* 슈퍼_원가 */              
+			, T.SNOR_PROD_CURR          /* 슈퍼_원가화폐단위 */          
+			, T.SNOR_PROD_SALE_PRC      /* 슈퍼_매가 */              
+			, T.SNOR_PROD_SALE_CURR     /* 슈퍼_매가화폐단위 */          
+			, T.SPRFT_RATE              /* 슈퍼_이익률 */             
+			, T.ONOR_PROD_PCOST         /* CFC_원가 */              
+			, T.ONOR_PROD_CURR          /* CFC_원가화폐단위 */          
+			, T.ONOR_PROD_SALE_PRC      /* CFC_매가 */              
+			, T.ONOR_PROD_SALE_CURR     /* CFC_매가화폐단위 */          
+			, T.OPRFT_RATE              /* CFC_이익률 */             
+			, T.PRGS_STS 				/* 진행상태코드 */
+			, FN_NEW_CODE_RTN('EXTST', T.PRGS_STS) AS PRGS_STS_NM	/* 진행상태코드명 */
+			, TO_CHAR(T.REG_DATE, 'YYYYMMDD') AS REG_DY	/* 최초등록일자 */
+			, T.CFM_FG					/* 확정상태코드 */
+		FROM (
+			SELECT
+				A.PGM_ID					/* 프로그램아이디 */
+				, A.PROD_CD					/* 상품코드 */
+				, A.SRCMK_CD				/* 판매코드 */
+				, A.EXT_CHAN_CD				/* 확장채널코드 */
+				, A.VEN_CD 					/* 협력업체코드 */
+				, A.NEW_PROD_PROMO_FG 		/* 신상품장려금여부 */
+				, A.NEW_PROD_ST_DY 			/* 신상품출시일 */
+				, A.OVER_PROMO_FG			/* 성과초과장려금여부 */
+				, A.S_NEW_PROD_PROMO_FG 	/* (슈퍼) 신상품장려금여부 */ 
+				, A.S_NEW_PROD_ST_DY        /* (슈퍼) 신상품출시일 */   
+				, A.S_OVER_PROMO_FG         /* (슈퍼) 성과초과장려금여부 */
+				, A.NOR_PROD_PCOST 			/* 마트_원가 */
+				, A.NOR_PROD_CURR 			/* 마트_원가화폐단위 */
+				, A.NOR_PROD_SALE_PRC 		/* 마트_매가 */
+				, A.NOR_PROD_SALE_CURR 		/* 마트_매가화폐단위 */
+				, A.PRFT_RATE				/* 마트_이익률 */
+				, A.WNOR_PROD_PCOST 		/* MAXX_원가 */
+				, A.WNOR_PROD_CURR 			/* MAXX_원가화폐단위 */
+				, A.WNOR_PROD_SALE_PRC 		/* MAXX_매가 */
+				, A.WNOR_PROD_SALE_CURR 	/* MAXX_매가화폐단위 */
+				, A.WPRFT_RATE				/* MAXX_이익률 */
+				, A.SNOR_PROD_PCOST         /* 슈퍼_원가 */              
+				, A.SNOR_PROD_CURR          /* 슈퍼_원가화폐단위 */          
+				, A.SNOR_PROD_SALE_PRC      /* 슈퍼_매가 */              
+				, A.SNOR_PROD_SALE_CURR     /* 슈퍼_매가화폐단위 */          
+				, A.SPRFT_RATE              /* 슈퍼_이익률 */             
+				, A.ONOR_PROD_PCOST         /* CFC_원가 */              
+				, A.ONOR_PROD_CURR          /* CFC_원가화폐단위 */          
+				, A.ONOR_PROD_SALE_PRC      /* CFC_매가 */              
+				, A.ONOR_PROD_SALE_CURR     /* CFC_매가화폐단위 */          
+				, A.OPRFT_RATE              /* CFC_이익률 */             
+				, CASE
+					WHEN A.PRGS_STS = '01' AND COALESCE(B.CFM_FG, '') IN ('5', '6', '7', '8') THEN '03'
+					WHEN A.PRGS_STS = '01' AND COALESCE(B.CFM_FG, '') = '3' THEN '02'
+					ELSE A.PRGS_STS
+				END AS PRGS_STS				/* 진행상태코드 */
+				, A.REG_DATE
+				, B.CFM_FG					/* 확정상태코드 */
+			FROM TPC_EXT_PROD_REG A
+			LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID
+			WHERE A.PGM_ID = #pgmId#
+		)T
+	</select>
+	
+	<!-- 채널확장정보 등록 -->
+	<update id="updateTpcProdChanExtendDetailInfo" parameterClass="NEDMPRO0530VO">
+		/* NEDMPRO0530.updateTpcProdChanExtendDetailInfo */
+		MERGE INTO TPC_EXT_PROD_REG A
+		USING(
+			SELECT
+				#pgmId# 				AS PGM_ID				/* 프로그램아이디 */
+				, #prodCd# 				AS PROD_CD				/* 상품코드 */
+<!-- 				, #srcmkCd# 			AS SRCMK_CD				/* 판매코드 */ -->
+				, #extChanCd# 			AS EXT_CHAN_CD			/* 확장채널코드 */
+				, #venCd# 				AS VEN_CD 				/* 협력업체코드 */
+				, #newProdPromoFg# 		AS NEW_PROD_PROMO_FG	/* 신상품장려금여부 */
+				, #newProdStDy# 		AS NEW_PROD_ST_DY 		/* 신상품출시일 */
+				, #overPromoFg# 		AS OVER_PROMO_FG		/* 성과초과장려금여부 */
+				, #sNewProdPromoFg# 	AS S_NEW_PROD_PROMO_FG 	/* (슈퍼) 신상품장려금여부 */ 
+				, #sNewProdStDy# 		AS S_NEW_PROD_ST_DY		/* (슈퍼) 신상품출시일 */   
+				, #sOverPromoFg#		AS S_OVER_PROMO_FG		/* (슈퍼) 성과초과장려금여부 */
+				, CAST(NULLIF(#norProdPcost#, '') AS NUMERIC) 		AS NOR_PROD_PCOST 		/* 마트_원가 */
+				, #norProdCurr# 									AS NOR_PROD_CURR		/* 마트_원가화폐단위 */
+				, CAST(NULLIF(#norProdSalePrc#, '') AS NUMERIC) 	AS NOR_PROD_SALE_PRC	/* 마트_매가 */
+				, #norProdSaleCurr# 								AS NOR_PROD_SALE_CURR 	/* 마트_매가화폐단위 */
+				, CAST(NULLIF(#prftRate#, '') AS NUMERIC) 			AS PRFT_RATE			/* 마트_이익률 */
+				, CAST(NULLIF(#wnorProdPcost#, '') AS NUMERIC) 		AS WNOR_PROD_PCOST 		/* MAXX_원가 */
+				, #wnorProdCurr# 									AS WNOR_PROD_CURR		/* MAXX_원가화폐단위 */
+				, CAST(NULLIF(#wnorProdSalePrc#, '') AS NUMERIC) 	AS WNOR_PROD_SALE_PRC	/* MAXX_매가 */
+				, #wnorProdSaleCurr# 								AS WNOR_PROD_SALE_CURR 	/* MAXX_매가화폐단위 */
+				, CAST(NULLIF(#wprftRate#, '') AS NUMERIC) 			AS WPRFT_RATE			/* MAXX_이익률 */
+				, CAST(NULLIF(#snorProdPcost#, '') AS NUMERIC) 		AS SNOR_PROD_PCOST 		/* 슈퍼_원가 */
+				, #snorProdCurr# 									AS SNOR_PROD_CURR		/* 슈퍼_원가화폐단위 */
+				, CAST(NULLIF(#snorProdSalePrc#, '') AS NUMERIC) 	AS SNOR_PROD_SALE_PRC	/* 슈퍼_매가 */
+				, #snorProdSaleCurr# 								AS SNOR_PROD_SALE_CURR 	/* 슈퍼_매가화폐단위 */
+				, CAST(NULLIF(#sprftRate#, '') AS NUMERIC) 			AS SPRFT_RATE			/* 슈퍼_이익률 */
+				, CAST(NULLIF(#onorProdPcost#, '') AS NUMERIC) 		AS ONOR_PROD_PCOST 		/* CFC_원가 */
+				, #onorProdCurr# 									AS ONOR_PROD_CURR		/* CFC_원가화폐단위 */
+				, CAST(NULLIF(#onorProdSalePrc#, '') AS NUMERIC) 	AS ONOR_PROD_SALE_PRC	/* CFC_매가 */
+				, #onorProdSaleCurr# 								AS ONOR_PROD_SALE_CURR 	/* CFC_매가화폐단위 */
+				, CAST(NULLIF(#oprftRate#, '') AS NUMERIC) 			AS OPRFT_RATE			/* CFC_이익률 */
+				<isNotEmpty property="prgsSts">
+				, #prgsSts#				AS PRGS_STS
+				</isNotEmpty>
+				, #workId#				AS WORK_ID
+		) B ON A.PGM_ID = B.PGM_ID
+		WHEN MATCHED THEN 
+			UPDATE SET
+				EXT_CHAN_CD				= B.EXT_CHAN_CD
+				, VEN_CD 				= B.VEN_CD
+				, NEW_PROD_PROMO_FG 	= B.NEW_PROD_PROMO_FG
+				, NEW_PROD_ST_DY		= B.NEW_PROD_ST_DY
+				, OVER_PROMO_FG			= B.OVER_PROMO_FG
+				, S_NEW_PROD_PROMO_FG 	= B.S_NEW_PROD_PROMO_FG
+				, S_NEW_PROD_ST_DY		= B.S_NEW_PROD_ST_DY
+				, S_OVER_PROMO_FG		= B.S_OVER_PROMO_FG
+				, NOR_PROD_PCOST		= B.NOR_PROD_PCOST
+				, NOR_PROD_CURR			= B.NOR_PROD_CURR
+				, NOR_PROD_SALE_PRC		= B.NOR_PROD_SALE_PRC
+				, NOR_PROD_SALE_CURR 	= B.NOR_PROD_SALE_CURR
+				, PRFT_RATE				= B.PRFT_RATE
+				, WNOR_PROD_PCOST		= B.WNOR_PROD_PCOST
+				, WNOR_PROD_CURR		= B.WNOR_PROD_CURR
+				, WNOR_PROD_SALE_PRC	= B.WNOR_PROD_SALE_PRC
+				, WNOR_PROD_SALE_CURR 	= B.WNOR_PROD_SALE_CURR
+				, WPRFT_RATE			= B.WPRFT_RATE
+				, SNOR_PROD_PCOST		= B.SNOR_PROD_PCOST
+				, SNOR_PROD_CURR		= B.SNOR_PROD_CURR
+				, SNOR_PROD_SALE_PRC	= B.SNOR_PROD_SALE_PRC
+				, SNOR_PROD_SALE_CURR 	= B.SNOR_PROD_SALE_CURR
+				, SPRFT_RATE			= B.SPRFT_RATE
+				, ONOR_PROD_PCOST		= B.ONOR_PROD_PCOST
+				, ONOR_PROD_CURR		= B.ONOR_PROD_CURR
+				, ONOR_PROD_SALE_PRC	= B.ONOR_PROD_SALE_PRC
+				, ONOR_PROD_SALE_CURR 	= B.ONOR_PROD_SALE_CURR
+				, OPRFT_RATE			= B.OPRFT_RATE
+				<isNotEmpty property="prgsSts">
+				, PRGS_STS			= B.PRGS_STS
+				</isNotEmpty>
+				, MOD_ID			= B.WORK_ID
+				, MOD_DATE			= NOW()
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				PGM_ID					/* 프로그램아이디 */
+				, PROD_CD				/* 상품코드 */
+<!-- 				, SRCMK_CD				/* 판매코드 */ -->
+				, EXT_CHAN_CD			/* 확장채널코드 */
+				, VEN_CD 				/* 협력업체코드 */
+				, NEW_PROD_PROMO_FG 	/* 신상품장려금여부 */
+				, NEW_PROD_ST_DY 		/* 신상품출시일 */
+				, OVER_PROMO_FG			/* 성과초과장려금여부 */
+				, S_NEW_PROD_PROMO_FG 	/* (슈퍼) 신상품장려금여부 */ 
+				, S_NEW_PROD_ST_DY      /* (슈퍼) 신상품출시일 */   
+				, S_OVER_PROMO_FG       /* (슈퍼) 성과초과장려금여부 */
+				, NOR_PROD_PCOST 		/* 마트_원가 */
+				, NOR_PROD_CURR 		/* 마트_원가화폐단위 */
+				, NOR_PROD_SALE_PRC 	/* 마트_매가 */
+				, NOR_PROD_SALE_CURR 	/* 마트_매가화폐단위 */
+				, PRFT_RATE				/* 마트_이익률 */
+				, WNOR_PROD_PCOST 		/* MAXX_원가 */
+				, WNOR_PROD_CURR 		/* MAXX_원가화폐단위 */
+				, WNOR_PROD_SALE_PRC 	/* MAXX_매가 */
+				, WNOR_PROD_SALE_CURR 	/* MAXX_매가화폐단위 */
+				, WPRFT_RATE			/* MAXX_이익률 */
+				, SNOR_PROD_PCOST       /* 슈퍼_원가 */              
+				, SNOR_PROD_CURR        /* 슈퍼_원가화폐단위 */          
+				, SNOR_PROD_SALE_PRC    /* 슈퍼_매가 */              
+				, SNOR_PROD_SALE_CURR   /* 슈퍼_매가화폐단위 */          
+				, SPRFT_RATE            /* 슈퍼_이익률 */             
+				, ONOR_PROD_PCOST       /* CFC_원가 */              
+				, ONOR_PROD_CURR        /* CFC_원가화폐단위 */          
+				, ONOR_PROD_SALE_PRC    /* CFC_매가 */              
+				, ONOR_PROD_SALE_CURR   /* CFC_매가화폐단위 */          
+				, OPRFT_RATE            /* CFC_이익률 */             
+				, PRGS_STS 				/* 진행상태코드 */
+				, REG_ID
+				, REG_DATE
+			)
+			VALUES
+			(
+				B.PGM_ID				/* 프로그램아이디 */
+				, B.PROD_CD				/* 상품코드 */
+<!-- 				, B.SRCMK_CD			/* 판매코드 */ -->
+				, B.EXT_CHAN_CD			/* 확장채널코드 */
+				, B.VEN_CD 				/* 협력업체코드 */
+				, B.NEW_PROD_PROMO_FG 	/* 신상품장려금여부 */
+				, B.NEW_PROD_ST_DY 		/* 신상품출시일 */
+				, B.OVER_PROMO_FG		/* 성과초과장려금여부 */
+				, B.S_NEW_PROD_PROMO_FG /* (슈퍼) 신상품장려금여부 */ 
+				, B.S_NEW_PROD_ST_DY    /* (슈퍼) 신상품출시일 */   
+				, B.S_OVER_PROMO_FG     /* (슈퍼) 성과초과장려금여부 */
+				, B.NOR_PROD_PCOST 		/* 마트_원가 */
+				, B.NOR_PROD_CURR 		/* 마트_원가화폐단위 */
+				, B.NOR_PROD_SALE_PRC 	/* 마트_매가 */
+				, B.NOR_PROD_SALE_CURR 	/* 마트_매가화폐단위 */
+				, B.PRFT_RATE			/* 마트_이익률 */
+				, B.WNOR_PROD_PCOST 	/* MAXX_원가 */
+				, B.WNOR_PROD_CURR 		/* MAXX_원가화폐단위 */
+				, B.WNOR_PROD_SALE_PRC 	/* MAXX_매가 */
+				, B.WNOR_PROD_SALE_CURR /* MAXX_매가화폐단위 */
+				, B.WPRFT_RATE			/* MAXX_이익률 */
+				, B.SNOR_PROD_PCOST     /* 슈퍼_원가 */              
+				, B.SNOR_PROD_CURR      /* 슈퍼_원가화폐단위 */          
+				, B.SNOR_PROD_SALE_PRC  /* 슈퍼_매가 */              
+				, B.SNOR_PROD_SALE_CURR /* 슈퍼_매가화폐단위 */          
+				, B.SPRFT_RATE          /* 슈퍼_이익률 */             
+				, B.ONOR_PROD_PCOST     /* CFC_원가 */              
+				, B.ONOR_PROD_CURR      /* CFC_원가화폐단위 */          
+				, B.ONOR_PROD_SALE_PRC  /* CFC_매가 */              
+				, B.ONOR_PROD_SALE_CURR /* CFC_매가화폐단위 */          
+				, B.OPRFT_RATE          /* CFC_이익률 */             
+				, '00'		 			/* 진행상태코드 */
+				, B.WORK_ID
+				, NOW()
+			);
+	</update>
+	
+	<!-- 등록된 확장요청 정보 조회 (TAB 구성용) Map -->
+	<resultMap id="extendOkChanListMap" class="NEDMPRO0530VO">
+		<result property="rnum"				column="RNUM"			/>	<!-- 행번호 -->
+		<result property="pgmId"			column="PGM_ID"			/>	<!-- 문서번호 -->
+		<result property="prgsSts"			column="PRGS_STS"		/>	<!-- 요청상태 -->
+		<result property="prgsStsNm"		column="PRGS_STS_NM"	/>	<!-- 요청상태명 -->
+		<result property="cfmFg"			column="CFM_FG"			/>	<!-- 확정상태 -->
+	</resultMap>
+	
+	<!-- 등록된 확장요청 정보 조회 (TAB 구성용) -->
+	<select id="selectExtTabList" parameterClass="NEDMPRO0530VO" resultMap="extendOkChanListMap">
+		/* NEDMPRO0530.selectExtTabList */
+		SELECT
+			T.RNUM
+			, T.PGM_ID
+			, T.PRGS_STS
+			, FN_NEW_CODE_RTN('EXTST', T.PRGS_STS) AS PRGS_STS_NM	/* 진행상태코드명 */
+			, T.CFM_FG
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.PGM_ID) AS RNUM
+				, A.PGM_ID		/* 문서번호 */
+				, CASE
+					WHEN A.PRGS_STS = '01' AND COALESCE(B.CFM_FG, '') IN ('5', '6', '7', '8') THEN '03'
+					WHEN A.PRGS_STS = '01' AND COALESCE(B.CFM_FG, '') = '3' THEN '02'
+					ELSE A.PRGS_STS
+				END AS PRGS_STS				/* 진행상태코드 */
+				, B.CFM_FG		/* 확정상태 */
+			FROM TPC_EXT_PROD_REG A
+			LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID
+			WHERE A.PROD_CD = #prodCd#
+<!-- 			AND A.SRCMK_CD = #srcmkCd# -->
+		)T
+	</select>
+	
+	<!-- 상품별 채널 확장 가능 상태 확인 Map -->
+	<resultMap id="chkExtAbleProdChanMap" class="NEDMPRO0530VO">
+		<result property="chanCd"			column="CHAN_CD"		/>	<!-- 채널코드 -->
+		<result property="chanNm"			column="CHAN_NM"		/>	<!-- 채널명 -->
+		<result property="extAbleSts"		column="EXT_ABLE_STS"	/>	<!-- 확장가능상태 (체크용) -->
+	</resultMap>
+	
+	<!-- 상품별 채널 확장 가능 상태 확인 -->
+	<select id="selectChkExtAbleProdChan" parameterClass="NEDMPRO0530VO" resultMap="chkExtAbleProdChanMap">
+		/* NEDMPRO0530.selectChkExtAbleProdChan */
+		WITH TB_ALDY AS (
+			/* 1) 상품마스터에 등록된 채널 */
+			SELECT
+				A.PROD_CD		/* 상품코드 */
+<!-- 				, A.SRCMK_CD	/* 판매코드 */ -->
+				, UNNEST(STRING_TO_ARRAY(CONCAT_WS(
+			    	','
+			    	, CASE WHEN A.ZZMKT_FG_1 = 'X' THEN 'KR02' ELSE NULL END	/* 마트 */
+			    	, CASE WHEN A.ZZMKT_FG_2 = 'X' THEN 'KR03' ELSE NULL END	/* MAXX */
+			    	, CASE WHEN A.ZZMKT_FG_3 = 'X' THEN 'KR04' ELSE NULL END	/* 슈퍼 */
+			    	, CASE WHEN A.ZZMKT_FG_4 = 'X' THEN 'KR09' ELSE NULL END	/* 오카도 */
+			    ), ',')) AS CHAN_CD	/* 채널코드 */
+			    , '3' AS CFM_FG		/* 확정승인상태 - 3 확정 */
+			    , '01' AS PRGS_STS	/* 확장요청상태 - 요청 */
+			FROM PRODUCT A
+			LEFT OUTER JOIN SALE_MST B ON A.PROD_CD = B.PROD_CD AND B.EAN_TYPE = '1'
+			WHERE A.PROD_CD = #prodCd#
+<!-- 			AND A.SRCMK_CD = #srcmkCd# -->
+		)
+		, TB_ALDY_EXT AS (
+			/* 2) 확장 승인된 채널 */
+			SELECT
+				A.PROD_CD		/* 상품코드 */
+<!-- 				, A.SRCMK_CD	/* 판매코드 */ -->
+				, UNNEST(STRING_TO_ARRAY(A.EXT_CHAN_CD, ',')) AS CHAN_CD
+				, B.CFM_FG		/* 확정승인상태 */
+				, A.PRGS_STS	/* 확장요청상태 */
+			FROM TPC_EXT_PROD_REG A
+			INNER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID AND B.CFM_FG = '3'
+			WHERE A.PROD_CD = #prodCd#
+<!-- 			AND A.SRCMK_CD = #srcmkCd# -->
+		)
+		, TB_PRGS_EXT AS (
+			/* 3) 현재 건 제외하고, 확장요청 진행중(임시저장, 승인대기)인 채널 */
+			SELECT
+				A.PROD_CD		/* 상품코드 */
+<!-- 				, A.SRCMK_CD	/* 판매코드 */ -->
+				, UNNEST(STRING_TO_ARRAY(A.EXT_CHAN_CD, ',')) AS CHAN_CD
+				, B.CFM_FG AS CFM_FG	/* 확정승인상태 */
+				, A.PRGS_STS	/* 확장요청상태 */
+			FROM TPC_EXT_PROD_REG A
+			LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID
+			WHERE A.PROD_CD = #prodCd#
+<!-- 			AND A.SRCMK_CD = #srcmkCd# -->
+			<isNotEmpty property="pgmId">
+			AND A.PGM_ID <![CDATA[<>]]> #pgmId#
+			</isNotEmpty>
+			AND (B.CFM_FG IS NULL OR B.CFM_FG = '' OR B.CFM_FG NOT IN ('5', '6', '7', '8'))	/* 반려, 거절된건 제외 */
+		)
+		, TB_ALL AS (	/* 확장요청정보 저장, 요청 불가 채널 전체 */
+			SELECT * FROM TB_ALDY
+			UNION ALL
+			SELECT * FROM TB_ALDY_EXT
+			UNION ALL
+			SELECT * FROM TB_PRGS_EXT
+		)
+		SELECT
+			T1.MINOR_CD AS CHAN_CD
+			, T1.CD_NM	AS CHAN_NM
+			, CASE
+				WHEN EXISTS (SELECT 1 FROM TB_ALL S1 WHERE T1.MINOR_CD = S1.CHAN_CD AND S1.CFM_FG = '3') THEN 'C'					/* 이미 적용된 채널 */
+				WHEN EXISTS (SELECT 1 FROM TB_ALL S1 WHERE T1.MINOR_CD = S1.CHAN_CD AND S1.PRGS_STS = '00') THEN 'T'				/* 현재 문서가 아닌 임시저장건 존재하는 채널 */
+				WHEN EXISTS (SELECT 1 FROM TB_ALL S1 WHERE T1.MINOR_CD = S1.CHAN_CD AND S1.PRGS_STS = '01' AND NULLIF(S1.CFM_FG, '') IS NULL) THEN 'P'	/* 이미 확장요청 중인 채널 */
+				ELSE 'A'
+			END AS EXT_ABLE_STS
+		FROM TPC_NEW_CODE T1
+		WHERE T1.MAJOR_CD = 'PURDE'
+		AND T1.LET_1_REF = '1'
+		<isNotEmpty property="chanCds" prepend="AND T1.MINOR_CD IN" open="(" close=")">
+			<iterate property="chanCds" conjunction=",">
+				#chanCds[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 확장요청 상태 업데이트 -->
+	<update id="updateTpcProdExtendSts" parameterClass="NEDMPRO0530VO">
+		/* NEDMPRO0530.updateTpcProdExtendSts */
+		UPDATE TPC_EXT_PROD_REG A
+		SET PRGS_STS = #prgsSts#
+			, MOD_ID = #workId#
+			, MOD_DATE = NOW()
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND A.PGM_ID IN " open="(" close=")">
+			<iterate property="prodArr" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<isEmpty property="prodArr">
+			AND A.PGM_ID = #pgmId#
+		</isEmpty>
+	</update>
+	
+	<!-- 확장요청정보 전송 DATA resultMap -->
+	<resultMap id="extendProxyDataResultMap" class="java.util.HashMap">
+		<result property="pgm_id"				column="pgm_id"					nullValue="" />	<!-- 프로그램아이디 -->
+		<result property="prod_cd"				column="prod_cd"				nullValue="" />	<!-- 상품코드 -->
+		<result property="ven_cd"				column="ven_cd"					nullValue="" />	<!-- 협력업체코드 -->
+		<result property="new_prod_promo_fg"	column="new_prod_promo_fg"		nullValue="" />	<!-- 신상품장려금여부 -->
+		<result property="new_prod_st_dy"		column="new_prod_st_dy"			nullValue="" />	<!-- 신상품출시일 -->
+		<result property="over_promo_fg"		column="over_promo_fg"			nullValue="" />	<!-- 성과초과장려금여부 -->
+		<result property="s_new_prod_promo_fg"	column="s_new_prod_promo_fg"	nullValue="" />	<!-- (슈퍼) 신상품장려금여부 -->
+		<result property="s_new_prod_st_dy"		column="s_new_prod_st_dy"		nullValue="" />	<!-- (슈퍼) 신상품출시일 -->
+		<result property="s_over_promo_fg"		column="s_over_promo_fg"		nullValue="" />	<!-- (슈퍼) 성과초과장려금여부 -->
+		<result property="buy_prc"				column="buy_prc"				nullValue="" />	<!-- 마트_정상원가 -->
+		<result property="waers"				column="waers"					nullValue="" />	<!-- 마트_정상원가단위 -->
+		<result property="sale_prc"				column="sale_prc"				nullValue="" />	<!-- 마트_정상매가 -->
+		<result property="vwaer"				column="vwaer"					nullValue="" />	<!-- 마트_정상매가단위 -->
+		<result property="profit_rt"			column="profit_rt"				nullValue="" />	<!-- 마트_이익률 -->
+		<result property="w_buy_prc"			column="w_buy_prc"				nullValue="" />	<!-- MAXX_정상원가 -->
+		<result property="w_waers"				column="w_waers"				nullValue="" />	<!-- MAXX_정상원가단위 -->
+		<result property="w_sale_prc"			column="w_sale_prc"				nullValue="" />	<!-- MAXX_정상매가 -->
+		<result property="w_vwaer"				column="w_vwaer"				nullValue="" />	<!-- MAXX_정상매가단위 -->
+		<result property="w_profit_rt"			column="w_profit_rt"			nullValue="" />	<!-- MAXX_이익률 -->
+		<result property="s_netpr"				column="s_netpr"				nullValue="" />	<!-- 슈퍼_정상원가 -->
+		<result property="s_waers"				column="s_waers"				nullValue="" />	<!-- 슈퍼_정상원가단위 -->
+		<result property="s_endpr"				column="s_endpr"				nullValue="" />	<!-- 슈퍼_정상매가 -->
+		<result property="s_vwaer"				column="s_vwaer"				nullValue="" />	<!-- 슈퍼_정상매가단위 -->
+		<result property="s_spane"				column="s_spane"				nullValue="" />	<!-- 슈퍼_이익률 -->
+		<result property="o_netpr"				column="o_netpr"				nullValue="" />	<!-- CFC_정상원가 -->
+		<result property="o_waers"				column="o_waers"				nullValue="" />	<!-- CFC_정상원가단위 -->
+		<result property="o_endpr"				column="o_endpr"				nullValue="" />	<!-- CFC_정상매가 -->
+		<result property="o_vwaer"				column="o_vwaer"				nullValue="" />	<!-- CFC_정상매가단위 -->
+		<result property="o_spane"				column="o_spane"				nullValue="" />	<!-- CFC_이익률 -->
+		<result property="zzmkt_fg_1"			column="zzmkt_fg_1"				nullValue="" />	<!-- 채널적용여부_마트 -->
+		<result property="zzmkt_fg_2"			column="zzmkt_fg_2"				nullValue="" />	<!-- 채널적용여부_MAXX -->
+		<result property="zzmkt_fg_3"			column="zzmkt_fg_3"				nullValue="" />	<!-- 채널적용여부_슈퍼 -->
+		<result property="zzmkt_fg_4"			column="zzmkt_fg_4"				nullValue="" />	<!-- 채널적용여부_CFC -->
+		<result property="zzmkt_fg_5"			column="zzmkt_fg_5"				nullValue="" />	<!-- 채널적용여부_미지정1 -->
+		<result property="zzmkt_fg_6"			column="zzmkt_fg_6"				nullValue="" />	<!-- 채널적용여부_미지정2 -->
+	</resultMap>
+	
+	<!-- 확장요청정보 전송 DATA -->
+	<select id="selectTpcProdChanExtendProxyData" parameterClass="NEDMPRO0530VO" resultMap="extendProxyDataResultMap">
+		/* NEDMPRO0530.selectTpcProdChanExtendProxyData */
+		SELECT
+			A.PGM_ID					/* 프로그램아이디 */
+			, A.PROD_CD					/* 상품코드 */
+			, A.VEN_CD 					/* 협력업체코드 */
+			, A.NOR_PROD_PCOST 		AS BUY_PRC		/* 마트_원가 */
+			, A.NOR_PROD_CURR 		AS WAERS		/* 마트_원가화폐단위 */
+			, A.NOR_PROD_SALE_PRC 	AS SALE_PRC		/* 마트_매가 */
+			, A.NOR_PROD_SALE_CURR 	AS VWAER		/* 마트_매가화폐단위 */
+			, A.PRFT_RATE			AS PROFIT_RT	/* 마트_이익률 */
+			, A.WNOR_PROD_PCOST 	AS W_BUY_PRC	/* MAXX_원가 */
+			, A.WNOR_PROD_CURR 		AS W_WAERS		/* MAXX_원가화폐단위 */
+			, A.WNOR_PROD_SALE_PRC 	AS W_SALE_PRC	/* MAXX_매가 */
+			, A.WNOR_PROD_SALE_CURR AS W_VWAER		/* MAXX_매가화폐단위 */
+			, A.WPRFT_RATE			AS W_PROFIT_RT	/* MAXX_이익률 */
+			, A.SNOR_PROD_PCOST     AS S_NETPR		/* 슈퍼_원가 */              
+			, A.SNOR_PROD_CURR      AS S_WAERS		/* 슈퍼_원가화폐단위 */          
+			, A.SNOR_PROD_SALE_PRC  AS S_ENDPR		/* 슈퍼_매가 */              
+			, A.SNOR_PROD_SALE_CURR AS S_VWAER		/* 슈퍼_매가화폐단위 */          
+			, A.SPRFT_RATE          AS S_SPANE		/* 슈퍼_이익률 */        
+			, A.ONOR_PROD_PCOST     AS O_NETPR		/* CFC_원가 */              
+			, A.ONOR_PROD_CURR      AS O_WAERS		/* CFC_원가화폐단위 */          
+			, A.ONOR_PROD_SALE_PRC  AS O_ENDPR		/* CFC_매가 */              
+			, A.ONOR_PROD_SALE_CURR AS O_VWAER		/* CFC_매가화폐단위 */          
+			, A.OPRFT_RATE          AS O_SPANE		/* CFC_이익률 */             
+			, CASE WHEN 'KR02' = ANY(STRING_TO_ARRAY(A.EXT_CHAN_CD, ',')) THEN 'X' ELSE NULL END AS ZZMKT_FG_1	/* 채널적용여부(롯데마트) */
+			, CASE WHEN 'KR03' = ANY(STRING_TO_ARRAY(A.EXT_CHAN_CD, ',')) THEN 'X' ELSE NULL END AS ZZMKT_FG_2	/* 채널적용여부(maxx) */
+			, CASE WHEN 'KR04' = ANY(STRING_TO_ARRAY(A.EXT_CHAN_CD, ',')) THEN 'X' ELSE NULL END AS ZZMKT_FG_3	/* 채널적용여부(롯데슈퍼) */
+			, CASE WHEN 'KR09' = ANY(STRING_TO_ARRAY(A.EXT_CHAN_CD, ',')) THEN 'X' ELSE NULL END AS ZZMKT_FG_4	/* 채널적용여부(오카도) */
+			, NULL 					AS ZZMKT_FG_5	/* 채널적용여부(미지정) */
+			, NULL 					AS ZZMKT_FG_6	/* 채널적용여부(미지정1) */
+			, NULL 					AS ZZMKT_FG_7	/* 채널적용여부(미지정2) */
+			, A.NEW_PROD_PROMO_FG 		/* 신상품장려금여부 */
+			, A.NEW_PROD_ST_DY 			/* 신상품출시일 */
+			, A.OVER_PROMO_FG			/* 성과초과장려금여부 */
+			, A.S_NEW_PROD_PROMO_FG 	/* (슈퍼) 신상품장려금여부 */ 
+			, A.S_NEW_PROD_ST_DY        /* (슈퍼) 신상품출시일 */   
+			, A.S_OVER_PROMO_FG         /* (슈퍼) 성과초과장려금여부 */
+		FROM TPC_EXT_PROD_REG A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND A.PGM_ID IN " open="(" close=")">
+			<iterate property="prodArr" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<isEmpty property="prodArr">
+			AND A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- 상품마스터에서 상품속성 확인 ResultMap -->
+	<resultMap id="productDetailMap" class="NEDMPRO0530VO">
+		<result column="TAX_FG"		property="taxFg"		/>	<!-- 면과세구분 -->
+	</resultMap>
+	
+	<!-- 상품마스터에서 상품속성 확인 -->
+	<select id="selectProductDetails" parameterClass="NEDMPRO0530VO" resultMap="productDetailMap">
+		/* NEDMPRO0530.selectProductDetails */
+		SELECT A.TAX_FG 	/* 면과세구분 */
+		FROM PRODUCT A
+		WHERE A.PROD_CD = #prodCd#
+	</select>
+	
+	<!-- 확장요청정보 삭제 -->
+	<delete id="deleteTpcExtProdReg" parameterClass="NEDMPRO0530VO">
+		/* NEDMPRO0530.deleteTpcExtProdReg */
+		DELETE FROM TPC_EXT_PROD_REG A
+		WHERE A.PGM_ID = #pgmId#
+	</delete>
+</sqlMap>

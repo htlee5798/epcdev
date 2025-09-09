@@ -1,0 +1,76 @@
+@charset "utf-8";
+
+/* Reset */
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select,blockquote {margin:0;padding:0}
+body,input,select,textarea,button,table {font:14px/1.25em Malgun Gothic,arial,tahoma,sans-serif,Helvetica;color:#222;letter-spacing:-0.5px;}
+body {background:#fff;-webkit-text-size-adjust:none}
+fieldset,img,iframe,frame {border:0}
+legend,caption {overflow:hidden;position:absolute;font-size:0;line-height:0;visibility:hidden}
+h1,h2,h3,h4,h5,h6 {font-size:1em}
+img {vertical-align:middle}
+img,input,textarea,fieldset {border:0 none;}
+ul,ol {list-style:none}
+em,address {font-style:normal}
+a {color:#666;text-decoration:none;}
+a:link,a:visited,a:hover,a:active,a:focus {outline:none;text-decoration:none;}
+strong {font-weight:bold}
+legend,hr,caption {display:none}
+table {border-spacing:0}
+input,select,textarea,button {vertical-align:middle;}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {display:block;}
+u {text-decoration:none;}
+figure {margin:0;padding:0;}
+input[type='text'], input[type='password'], input[type='search'], input[type='number']{-webkit-appearance:none;-webkit-border-radius:0}
+input:checked[type='checkbox'] {border:2px solid #ccc;background:#fff;-webkit-appearance:checkbox;}
+button,input[type='submit'],input[type='button'] {cursor:pointer;}
+pre {margin:0;padding:0;}
+::-webkit-input-placeholder {color:#acacac;}
+input[type='text'], input[type='tel'] {height:25px;text-indent:1px;color:#666;}
+input[type='text']:focus, input[type='tel']:focus {color:#666;}
+input[type='password'] {height:25px;text-indent:1px;color:#666;}
+input[type='password']:focus {color:#666;}
+input[type='search']::-webkit-search-cancel-button {display:none;}
+textarea {resize:none;overflow:auto;}
+
+.clfix:after { content:""; display:block; clear:both; }
+.clfix { *zoom:1; }
+
+.checkbox {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	margin-right:5px;
+	background:url("/images/mcs/mobile/common/input-check-radio.png") no-repeat left top;
+	background-size:45px 38px;
+	vertical-align:-5px;
+	cursor:pointer;
+}
+.radio {
+	display:inline-block;
+	width:18px;
+	height:18px;
+	margin-right:5px;
+	overflow:hidden;
+	background: url("/images/mcs/mobile/common/input-check-radio.png") no-repeat left bottom;
+	background-size:45px 38px;
+	vertical-align:-5px;
+	cursor:pointer;
+}
+.selected_c {background-position:right top;}
+.selected_r {background-position:right bottom;}
+
+
+/* Align */
+.alignC { text-align:center; }
+
+/* Margin & Padding */
+.mt40 { margin-top:40px !important; }
+.mt10 { margin-top:10px !important; }
+
+.ml4 { margin-left:4px !important; }
+.ml30 { margin-left:30px !important; }
+
+.mb10 { margin-bottom:10px !important; }
+.mb15 { margin-bottom:15px !important; }
+.mb20 { margin-bottom:20px !important; }
+.mb30 { margin-bottom:30px !important; }

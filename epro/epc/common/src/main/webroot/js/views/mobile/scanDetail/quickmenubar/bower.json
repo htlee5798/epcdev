@@ -1,0 +1,20 @@
+{
+  "name": "quickmenubar",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "mzhyyoon <hyyoon@mz.co.kr>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "^1.2.0"
+  }
+}

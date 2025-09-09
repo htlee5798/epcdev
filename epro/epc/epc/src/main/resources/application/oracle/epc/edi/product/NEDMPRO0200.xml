@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0200">
+	<typeAlias alias="nedmpro0200vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0200VO" />
+
+	<resultMap id="selectNutAttMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+	</resultMap>
+	
+    <!-- 소분류별 영양성분 조회 -->
+    <select id="selectNutAtt" parameterClass="String" resultMap="selectNutAttMap">
+        /* NEDMPRO0200.selectNutAtt */
+        SELECT 
+            NUT_CD
+        FROM 
+            TPC_NUT_L3CD
+        WHERE 
+            L3_CD = #l3Cd#
+        AND COALESCE(DEL_FG, ' ') != 'D' 
+        AND NUT_CD IS NOT NULL  
+        GROUP BY 
+            NUT_CD
+        ORDER BY NUT_CD
+    </select>
+
+	<resultMap id="selectNutAttInfoMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+		<result column="NUT_NM" 	property="NUT_NM"	nullValue="" />
+		<result column="UNIT"	property="UNIT"		nullValue="" /> 
+	</resultMap>
+		
+    <!-- 소분류별 영양성분 값 조회 -->
+    <select id="selectNutAttInfo" parameterClass="String" resultMap="selectNutAttInfoMap">
+        /* NEDMPRO0200.selectNutAttInfo */
+        SELECT 
+            NUT_CD
+          , NUT_NM
+          , UNIT
+        FROM 
+            TPC_NUT_MST
+        WHERE 
+            NUT_CD IN (
+                SELECT 
+                    NUT_CD
+                FROM 
+                    TPC_NUT_L3CD
+                WHERE 
+                    L3_CD = #l3Cd#
+                AND COALESCE(DEL_FG, ' ') != 'D'
+                AND NUT_CD IS NOT NULL
+                GROUP BY 
+                    NUT_CD
+            )
+        ORDER BY NUT_CD
+    </select>
+
+	<!-- 영양성분 삭제 상품코드로 -->
+    <delete id="deleteNutAmtSaved">
+		/* NEDMPRO0200.deleteNutAttOptSaved */
+        DELETE 
+        FROM 
+            TPC_NUT_ATT_TMP
+        WHERE 
+            PROD_CD = #prodCd#
+    </delete>
+    
+    <!-- 영양성분 저장 -->
+    <update id="mergeNutAmtTmp" parameterClass="java.util.Map">
+        /* NEDMPRO0200.mergeNutAmtTmp */
+        MERGE INTO
+            TPC_NUT_ATT_TMP TNAT
+            USING (
+                SELECT 
+                    #prodCd#   AS PROD_CD
+                  , #nutCd#    AS NUT_CD
+                  , #nutAmt#   AS NUT_AMT
+                  , #entpCd#   AS ENTP_CD
+                  , #workId#   AS WORK_ID
+            ) NUT_ATT
+            ON (TNAT.PROD_CD = NUT_ATT.PROD_CD AND TNAT.NUT_CD = NUT_ATT.NUT_CD)
+        WHEN MATCHED
+        THEN 
+            UPDATE
+            SET
+                NUT_AMT  = cast(NUT_ATT.NUT_AMT as numeric)
+<!--               , MOD_ID   = NUT_ATT.ENTP_CD -->
+              , MOD_ID   = NUT_ATT.WORK_ID
+              , MOD_DATE = CURRENT_TIMESTAMP(0)
+        WHEN NOT MATCHED
+        THEN
+            INSERT 
+            (
+                PROD_CD
+              , NUT_CD
+              , NUT_AMT
+              , REG_DATE
+              , REG_ID
+              , CHG_FG
+            )
+            VALUES
+            (
+                NUT_ATT.PROD_CD
+              , NUT_ATT.NUT_CD
+              , cast(NUT_ATT.NUT_AMT as numeric)
+              , CURRENT_TIMESTAMP(0)
+<!--               , NUT_ATT.ENTP_CD -->
+              , NUT_ATT.WORK_ID
+              , 'M'
+            )
+    </update>
+    
+    <!-- 순번 획득 -->
+    <select id="getProdNutMaxSeq" parameterClass="String" resultClass="String">
+       /* NEDMPRO0200.getProdNutMaxSeq */
+       SELECT 
+           MAX(SEQ)
+       FROM 
+           TPC_NUT_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+    </select>
+    
+    <!-- 요청에 응답오지 않은 속성값 개수 -->
+    <select id="getCntNotNutAttRes" parameterClass="nedmpro0200vo" resultClass="Integer">
+        /* NEDMPRO0200.getCntNotNutAttRes */
+        SELECT 
+				    COUNT(*) AS CNT
+				FROM
+				    TPC_NUT_ATT_REQ TNAR
+				    LEFT JOIN
+				    NUT_ATT_REQ_SAP NARS
+				        ON TNAR.PROD_CD           = SUBSTR(NARS.PROD_CD, 9)
+				       AND LPAD(TNAR.SEQ, 3, '0') = SUBSTR(NARS.SEQ, 8) 
+				       AND TNAR.NUT_CD            = NARS.NUT_CD
+				WHERE
+				    TNAR.PROD_CD = #prodCd#
+					AND TNAR.SEQ = #seq#
+        			AND (NARS.SEQ IS NULL OR NARS.SEQ = '')
+    </select>
+
+	<resultMap id="selectNutAmtSavedMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+		<result column="NUT_AMT" 	property="NUT_AMT"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	
+    <!-- 영양성분 저장한 값 불러오기 -->
+    <select id="selectNutAmtSaved" parameterClass="String" resultMap="selectNutAmtSavedMap">
+        /* NEDMPRO0200.selectNutAmtSaved */
+        SELECT 
+            NUT_CD
+          , NUT_AMT
+          , CHG_FG
+        FROM
+            TPC_NUT_ATT_TMP
+        WHERE
+            PROD_CD = #prodCd#
+    </select>
+ 
+ 	<resultMap id="selectNutAmtEcoSavedMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+		<result column="NUT_AMT" 	property="NUT_AMT"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	   
+    <!-- ECO에 저장되어있는 영양성분 값 조회 -->
+     <select id="selectNutAmtEcoSaved" parameterClass="String" resultMap="selectNutAmtEcoSavedMap">
+        /* NEDMPRO0200.selectNutAmtEcoSaved */
+        SELECT 
+            NUT_CD
+          , NUT_AMT
+          , 'M' AS CHG_FG
+        FROM
+            NUT_ATT_PROD_SAP
+        WHERE
+            PROD_CD = #prodCd#
+        AND COALESCE(LOEKZ, ' ') != 'D'
+    </select>
+    
+     <!-- 분석속성 요청정보 있는지 확인  -->
+     <select id="selectCntNutReq" parameterClass="nedmpro0200vo" resultClass="Integer">
+     /* NEDMPRO0200.selectCntNutReq */
+        SELECT 
+            COUNT(*)
+        FROM
+            TPC_NUT_ATT_REQ
+        WHERE
+            PROD_CD = #prodCd#
+        AND SEQ = #seq#
+    </select>  
+    
+    <!-- 영양성분 수정가능 구분자 수정 -->
+    <update id="updateNutModifyStatus" parameterClass="nedmpro0200vo" >
+        /* NEDMPRO0200.updateNutModifyStatus */
+        UPDATE 
+            TPC_NUT_ATT_TMP
+        SET
+            CHG_FG   = #chgFg#
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+<!--           , MOD_ID   = #entpCd# -->
+          , MOD_ID   = #modId#
+        WHERE
+            PROD_CD = #prodCd#   
+    </update>
+    
+    <!-- 요청분석속성 저장 -->
+    <insert id="insertNutAmtReq" parameterClass="java.util.Map">
+        /* NEDMPRO0200.insertNutAmtReq */
+        INSERT INTO 
+            TPC_NUT_ATT_REQ
+            (
+                SEQ
+              , PROD_CD
+              , NUT_CD
+              , NUT_AMT
+              , APRV_FG
+              , REG_DT
+              , REG_TM
+              , REG_ID
+            )
+            VALUES
+            (
+                #SEQ#
+              , #PROD_CD#
+              , #NUT_CD#
+              , CAST(#NUT_AMT# AS NUMERIC)
+              , #APRV_FG#
+              , #REG_DT#
+              , #REG_TM#
+              , #REG_ID#
+            )
+    </insert>
+    
+    <!-- 요청분석속성 삭제 -->
+    <delete id="deleteNutAmtReq" parameterClass="nedmpro0200vo">
+       /* NEDMPRO0200.deleteNutAmtReq */
+       DELETE 
+       FROM 
+           TPC_NUT_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+       AND SEQ     = #seq#
+    </delete>
+</sqlMap>

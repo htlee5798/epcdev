@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EpcLogin">
+
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    
+    <!-- [세션] 클라이언트 정보 Map -->
+    <resultMap id="clientLoginInfoMap" class="dataMap">
+    	<result column="VEN_CD"			property="VEN_CD"			nullValue=""/>	<!-- 협력사 코드 		-->
+    	<result column="VEN_NM"			property="VEN_NM"			nullValue=""/>	<!-- 협력사 명 		-->
+    	<result column="BMAN_NO"		property="BMAN_NO"			nullValue=""/>	<!-- 사업자번호			-->
+    	<result column="VEN_TYPE_CD"	property="VEN_TYPE_CD"		nullValue=""/>	<!-- 협력사유형코드		-->
+    	<result column="TRD_TYP_FG"		property="TRD_TYP_FG"		nullValue=""/>	<!-- 거래유형			-->
+    	<result column="TRD_TYP_NM"		property="TRD_TYP_NM"		nullValue=""/>	<!-- 거래유형명			-->
+    	<result column="ZZORG"			property="ZZORG"			nullValue=""/>	<!-- 조직구분			-->
+    	<result column="ZZORG_NM"		property="ZZORG_NM"			nullValue=""/>	<!-- 조직구분명(전체)	-->
+    </resultMap>
+    
+    <!-- [세션] 클라이언트 정보 조회 -->
+    <select id="getClientLoginInfo" resultMap="clientLoginInfoMap">
+    	/* EpcLogin.getClientLoginInfo */
+   		SELECT
+   			T1.VEN_CD
+   			, T1.VEN_NM
+   			, T1.BMAN_NO
+   			, T1.VEN_TYPE_CD
+   			, T1.TRD_TYP_FG
+   			, T1.TRD_TYP_NM
+   			, T1.ZZORG
+   			, T1.ZZORG_NM
+   		FROM (
+   			SELECT
+				A.VENDOR_ID			AS VEN_CD	/* 파트너사코드 */
+				, A.VENDOR_NM		AS VEN_NM	/* 파트너사명 */
+				, A.CONO			AS BMAN_NO	/* 사업자번호 */
+				, CASE WHEN
+					(
+						SELECT COUNT(1) AS CNT
+						FROM TVE_VENDOR S1
+						WHERE S1.CONO = A.CONO
+						AND S1.VENDOR_ID IN (
+							SELECT SS1.LET_1_REF
+							FROM TET_CODE SS1
+							WHERE SS1.MAJOR_CD = 'ET036'
+							AND SS1.USE_YN = 'Y'
+						)
+					) > 0
+					THEN '06'
+					ELSE ''
+				END AS VEN_TYPE_CD				/* 협력사유형코드 (06 or empty) */
+				, A.TRD_TYP_FG					/* 거래유형 */
+				, FN_TET_CODE_RTN('SRR02', A.TRD_TYP_FG) AS TRD_TYP_NM		/* 거래유형명 */
+				, CONCAT_WS(
+					','
+					, CASE WHEN B.ZZORG_M = 'X' THEN 'MT' ELSE NULL END		/* 마트 */
+					, CASE WHEN B.ZZORG_S = 'X' THEN 'SP' ELSE NULL END		/* 슈퍼 */
+					, CASE WHEN B.ZZORG_C = 'X' THEN 'CS' ELSE NULL END		/* CS */
+				) AS ZZORG
+				, CONCAT_WS(
+					'/'
+					, CASE WHEN B.ZZORG_M = 'X' THEN '마트' ELSE NULL END
+					, CASE WHEN B.ZZORG_S = 'X' THEN '슈퍼' ELSE NULL END
+					, CASE WHEN B.ZZORG_C = 'X' THEN 'CS' ELSE NULL END
+				) AS ZZORG_NM					/* 조직명 */
+			FROM TVE_VENDOR A
+			INNER JOIN HQ_VEN B ON A.VENDOR_ID = B.VEN_CD AND CHG_FG <![CDATA[<>]]> 'D'
+			WHERE 1=1
+			<iterate prepend="AND A.CONO IN" property="cono" open="(" close=")" conjunction=",">
+				#cono[]#
+			</iterate>
+			ORDER BY A.VENDOR_ID
+   		)T1
+    </select>
+
+    <!-- 클라이언트로그인정보 조회_OLD250710 -->
+    <select id="getClientLoginInfo_OLD250710" resultClass="dataMap">
+    SELECT /* EpcLogin.getClienLoginInfo_OLD250710 */
+           VENDOR_ID AS VEN_CD
+         , MAX(VENDOR_NM) as VEN_NM
+         , MAX(CONO) as BMAN_NO
+         , NVL(MAX(VENDOR_TYPE_CD),'') AS VEN_TYPE_CD
+         , NVL(MAX(TRD_TYP_FG),'') AS TRD_TYP_FG
+         , NVL(MAX(TRD_TYP_NM),'') AS TRD_TYP_NM
+      FROM ( SELECT VENDOR_ID
+                  , VENDOR_NM
+                  , CONO
+                  , (SELECT '06'
+                       FROM TVE_VENDOR
+                      WHERE CONO = EV.CONO
+                        AND VENDOR_ID IN (SELECT LET_1_REF
+                                            FROM TET_CODE
+                                           WHERE MAJOR_CD = 'ET036'
+                                             AND USE_YN = 'Y')
+                        LIMIT 1) AS VENDOR_TYPE_CD
+                  , TRD_TYP_FG, FN_GET_CODE_NM('SRR02', TRD_TYP_FG) AS TRD_TYP_NM 
+               FROM TVE_VENDOR EV
+              WHERE 1=1
+                <isNotEmpty prepend="AND" property="cono"> <iterate prepend="CONO IN" property="cono" open="(" close=")" conjunction=","> #cono[]# </iterate> </isNotEmpty>
+           )
+     GROUP BY  VENDOR_ID
+     ORDER BY  VENDOR_ID
+    </select>
+
+    <!-- ADMIN정보 조회 -->
+    <select id="checkAdminInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkAdminInfo */
+           ADMIN_NM
+         , PWD
+         , ADMIN_TYPE_CD
+      FROM TAD_ADMIN
+     WHERE LOGIN_ID = #loginId#
+       AND ACTIVE_YN = 'Y'
+    </select>
+
+    <!-- happy call 정보 조회 -->
+    <select id="checkHappyInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkHappyInfo */
+           ADMIN_NM
+         , PWD
+         , ADMIN_TYPE_CD
+      FROM TAD_ADMIN A
+         , TAD_ADMIN_ROLE_ASSIGN B
+     WHERE A.ADMIN_ID = B.ADMIN_ID
+       AND B.ROLE_ID = 'P00000020'
+       AND A.ACTIVE_YN = 'Y'
+       AND A.LOGIN_ID = #loginId#
+    </select>
+
+    <!-- 제휴사 정보 조회 -->
+    <select id="checkAllianceInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkAllianceInfo */
+           ADMIN_NM
+         , PWD
+         , ADMIN_TYPE_CD
+      FROM TPC_ALLIANCE
+     WHERE ACTIVE_YN = 'Y'
+       AND LOGIN_ID = #loginId#
+    </select>
+
+    <select id="checkClientInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkClientInfo */
+           USER_ID
+         , USER_NM
+         , PWD
+         , MKUS_PSBT_IP AS ip
+      FROM TOA_USER
+     WHERE MKUS_PSBT_IP = #ip#
+       <isNotEmpty property="id">AND USER_ID = #id#</isNotEmpty>
+       <isNotEmpty property="pwd">AND PWD = #pwd#</isNotEmpty>
+       LIMIT 1
+    </select>
+
+	<!-- 클라이언트로그인정보 조회 -->
+	<!--<select id="getClientLoginInfo20120510bak" resultClass="dataMap">
+	SELECT /* EpcLogin.getClienLoginInfobak */
+	       DISTINCT VEN_CD
+	      ,VEN_NM
+	      ,BMAN_NO
+	FROM   TED_VENDOR
+	WHERE  1 = 1
+	<isNotEmpty prepend="AND" property="cono">
+		<iterate prepend="BMAN_NO IN" property="cono" open="(" close=")" conjunction=",">
+		#cono[]#
+		</iterate>
+	</isNotEmpty>
+	ORDER BY BMAN_NO, VEN_CD
+	</select>-->
+
+	<!-- 클라이언트로그인정보 조회 -->
+	<!--<select id="getClientLoginInfo20120530bak" resultClass="dataMap">
+	SELECT /* EpcLogin.getClientLoginInfo20120530bak */
+	       DISTINCT VEN_CD,VEN_NM
+	FROM   TED_VENDOR
+	WHERE  1 = 1
+	<isNotEmpty prepend="AND" property="cono">
+		<iterate prepend="BMAN_NO IN" property="cono" open="(" close=")" conjunction=",">
+		#cono[]#
+		</iterate>
+	</isNotEmpty>
+	ORDER BY  VEN_CD
+	</select>-->
+	
+	<update id="updateLastLoginDate">
+	/* EpcLogin.updateLastLoginDate */
+	    UPDATE TAD_ADMIN
+		    SET LAST_LOGIN_DATE = CURRENT_TIMESTAMP(0)
+		    <!-- , MOD_DATE = CURRENT_TIMESTAMP(0) -->
+		    , MOD_ID = 'hpcLogin'
+		WHERE LOGIN_ID = #loginId#
+    </update>
+    
+    <resultMap id="vendorLoginKeyMap" class="dataMap">
+    	<result column="LOGIN_KEY"		property="LOGIN_KEY"/>		<!-- 로그인키 -->
+    	<result column="ISSUED_AT_DT"	property="ISSUED_AT_DT"/>	<!-- 발행일시 -->
+    </resultMap>
+    
+    <!-- [협력사로그인] 업체 로그인 키 정보 조회 -->
+    <select id="selectVendorLoginKeyInfo" resultMap="vendorLoginKeyMap">
+    	/* EpcLogin.selectVendorLoginKeyInfo */
+    	SELECT 
+			A.LOGIN_KEY		/* 로그인키 */
+			, TO_CHAR(A.ISSUED_AT, 'YYYYMMDDHH24MISS') AS ISSUED_AT_DT	/* 키발행일시 */
+		FROM TPC_VEN_LOGIN_KEY A
+		WHERE A.BMAN_NO = #bmanNo#
+		AND A.ISSUED_AT + (#validSec# || ' seconds')::INTERVAL <![CDATA[>=]]> NOW();
+    </select>
+    
+    <!-- [협력사로그인 > 로그인정보 MERGE] HQ_VEN > TVE_VENDOR MERGE -->
+	<update id="updateMergeHqVenToTveVendor" parameterClass="java.util.Map">
+		/* EpcLogin.updateMergeHqVenToTveVendor */
+		MERGE INTO TVE_VENDOR A
+		USING (
+			SELECT	
+				A.VEN_CD
+				, A.COM_NM AS VEN_NM
+				, CASE
+					WHEN A.VEN_KIND_FG = 'KM04' THEN '2158513569'
+					ELSE A.BMAN_NO
+				END AS BMAN_NO
+				, CASE
+					WHEN A.VEN_KIND_FG = 'KM04' THEN '1101110000086'
+					ELSE A.CORP_NO
+				END AS CORP_NO
+				, A.REG_DT AS REG_DT
+				, A.REG_EMP_NO
+				, A.LST_CHG_DT
+				, A.LST_CHG_EMP_NO
+				, A.TRD_TYP_FG
+				, A.VEN_KIND_FG
+				, A.VEN_TYP_FG
+				, A.PRESID_NM
+				, TRIM(A.REP_TEL_NO) AS REP_TEL_NO
+				, TRIM(A.ZIP) AS ZIP
+				, A.ADDR
+				, A.ADDR2
+				, A.EMAIL
+				, B.VENDOR_ID
+				, CASE
+					WHEN A.VEN_KIND_FG = 'KM05' THEN 
+						CASE WHEN NULLIF(B.VENDOR_ID, '') IS NOT NULL THEN 'U' ELSE 'I' END
+					ELSE 'X'
+				END AS VEN_IU
+			FROM HQ_VEN A
+			LEFT OUTER JOIN TVE_VENDOR B ON A.VEN_CD = B.VENDOR_ID
+			WHERE ((A.BMAN_NO <![CDATA[<>]]> '' AND A.TRD_TYP_FG <![CDATA[<>]]> '') OR A.VEN_KIND_FG = 'KM04')
+			AND (A.ZZORG_M = 'X' OR A.ZZORG_S = 'X' OR A.ZZORG_C = 'X')	/* 거래조직이 1개이상 있을 경우에만 조회 */
+			<isNotEmpty property="BMAN_NO">
+			AND A.BMAN_NO = #BMAN_NO#
+			</isNotEmpty>
+			<isNotEmpty property="VEN_CD">
+			AND A.VEN_CD = #VEN_CD#
+			</isNotEmpty>
+		)B ON A.VENDOR_ID = B.VEN_CD
+		WHEN MATCHED THEN
+			UPDATE SET
+				VENDOR_NM	= B.VEN_NM
+				, CONO		= B.BMAN_NO
+				, CEO_IDNO	= B.CORP_NO
+				, CEO_NM	= B.PRESID_NM
+				, REP_TEL_NO = B.REP_TEL_NO
+				, ZIP_CD	= B.ZIP
+				, ADDR_1_NM	= B.ADDR
+				, ADDR_2_NM = B.ADDR2
+				, EMAIL		= B.EMAIL
+				, TRD_TYP_FG = B.TRD_TYP_FG
+				, VENDOR_KIND_CD = B.VEN_KIND_FG
+				, VENDOR_TYPE_CD = B.VEN_TYP_FG
+				, MOD_DATE	= NOW()
+				, MOD_ID	= 'SYSTEM'
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				VENDOR_ID
+		       , VENDOR_NM
+		       , VENDOR_TYPE_CD
+		       , CONO
+		       , CEO_IDNO
+		       , VALI_YN
+		       , REG_DATE
+		       , REG_ID
+		       , MOD_DATE
+		       , MOD_ID
+		       , INET_VENDOR_NM
+		       , SALE_VENDOR_ID
+		       , TRD_TYP_FG
+		       , VENDOR_KIND_CD
+		       , CEO_NM
+		       , REP_TEL_NO
+		       , ZIP_CD
+		       , ADDR_1_NM
+		       , ADDR_2_NM
+		       , EMAIL
+			)
+			VALUES
+			(
+				B.VEN_CD
+		       , B.VEN_NM
+		       , '02'
+		       , B.BMAN_NO
+		       , B.CORP_NO
+		       , 'Y'
+		       , B.REG_DT
+		       , B.REG_EMP_NO
+		       , NOW()
+		       , 'SYSTEM'
+		       , B.VEN_NM
+		       , B.VEN_CD
+		       , B.TRD_TYP_FG
+		       , B.VEN_KIND_FG
+		       , B.PRESID_NM
+		       , B.REP_TEL_NO
+		       , B.ZIP
+		       , B.ADDR
+		       , B.ADDR2
+		       , B.EMAIL
+			);
+	</update>
+	
+	<!-- EPC 시스템관리자 정보 Map -->
+	<resultMap id="epcSysAdminUserInfoMap" class="java.util.HashMap">
+		<result column="USER_ID"	property="USER_ID"		/>		<!-- 시스템관리자 아이디 -->
+		<result column="USER_PWD"	property="USER_PWD"		/>		<!-- 시스템관리자 패스워드 -->
+		<result column="USER_NM"	property="USER_NM"		/>		<!-- 시스템관리자 명 -->
+		<result column="USER_TYPE"	property="USER_TYPE"	/>		<!-- 시스템관리자 유형 -->
+	</resultMap>
+	
+	<!-- EPC 시스템관리자 정보 조회 -->
+	<select id="selectEpcSysAdminUserInfo" parameterClass="String" resultMap="epcSysAdminUserInfoMap">
+		/* EpcLogin.selectEpcSysAdminUserInfo */
+		SELECT
+			A.USER_ID
+			, A.USER_PWD
+			, A.USER_NM
+			, A.USER_TYPE
+		FROM TPC_SYS_USER A
+		WHERE A.USER_ID = #loginId#
+		AND A.USE_YN = 'Y'
+	</select>
+	
+	<!-- EPC 시스템관리자 최종 접속일시 업데이트 -->
+	<update id="updateSysAdminLastLoginDate" parameterClass="String">
+		/* EpcLogin.updateSysAdminLastLoginDate */
+		UPDATE TPC_SYS_USER
+		SET LAST_LOGIN_DATE = NOW()
+		WHERE USER_ID = #loginId#
+	</update>
+	
+</sqlMap>

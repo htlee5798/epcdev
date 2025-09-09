@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMSPW0010">
+
+	<typeAlias alias="srmSpw0010Vo"	type="com.lottemart.epc.edi.srm.model.SRMSPW0010VO" />
+
+	<!-- 비밀번호 변경전 정보확인 Map -->
+	<resultMap id="srmSpw0010VoMap" 	class="srmSpw0010Vo">
+		<result column="SELLER_CODE"		property="sellerCode"	/>	<!-- 업체코드 -->
+		<result column="TEMP_PW"			property="tempPw"		/>	<!-- 비밀번호 -->
+	</resultMap>
+
+	<resultMap id="selectVEmailListMap" class="srmSpw0010Vo">
+		<result column="V_EMAIL"		property="vEmail"		/>
+		<result column="MAX_SEQ"		property="maxSeq"		/>
+	</resultMap>
+
+	<resultMap id="selectVEmailMap" class="srmSpw0010Vo">
+		<result column="USER_NAME"		property="userName"		/>
+		<result column="V_EMAIL"		property="vEmail"		/>
+	</resultMap>
+
+	<!-- 비밀번호 변경전 정보확인  -->
+	<select id="passwdChangeCheck" parameterClass="srmSpw0010Vo" resultMap="srmSpw0010VoMap">
+		/* SRMSPW0010.passwdChangeCheck */
+		SELECT  SELLER_CODE
+			,	TEMP_PW
+		FROM 	SSUGL
+		WHERE 	HOUSE_CODE      = #houseCode#
+			AND	IRS_NO			= #irsNo#
+			AND NVL(COUNTRY, 'KR') = #country#
+
+			<isNotEmpty property="sellerNameLoc">
+				AND	SELLER_NAME_LOC	= #sellerNameLoc#
+			</isNotEmpty>
+
+			<isNotEmpty property="vEmail">
+				AND	SELLER_CEO_EMAIL         = #vEmail#
+			</isNotEmpty>
+
+	</select>
+
+	<!-- #10TOBE 비밀번호 변경 -->
+	<update id="updatePasswdChange"   parameterClass="srmSpw0010Vo">
+		/* SRMSPW0010.updatePasswdChange */
+		UPDATE SSUGL SET
+				TEMP_PW			=	#tempPw#
+			,	PASS_CHECK_CNT 	= 	'0'
+			,	CHANGE_DATE 	=	CURRENT_TIMESTAMP(0)
+	     	,	CHANGE_USER_ID	=	#irsNo#
+			<isEqual property="pwdGbn" compareValue="0">
+			,   TEMP_PW_FLAG    =   'N'
+			</isEqual>
+			<isNotEqual property="pwdGbn" compareValue="0">
+			,   TEMP_PW_FLAG    =   'Y'
+			</isNotEqual>
+	    WHERE	HOUSE_CODE      =	#houseCode#
+	     	AND	SELLER_CODE		=	#sellerCode#
+	</update>
+
+	<!-- 담당자 이메일 리스트 -->
+	<select id="selectVEmailList" parameterClass="srmSpw0010Vo" resultMap="selectVEmailListMap">
+		/* SRMSPW0010.selectVEmailList */
+		SELECT	EMAIL AS V_EMAIL
+			,	MAX(SEQ) AS MAX_SEQ
+		FROM	SSUPI
+		WHERE	HOUSE_CODE 	= #houseCode#
+			AND SELLER_CODE = #sellerCode#
+		GROUP BY EMAIL
+		ORDER BY EMAIL
+	</select>
+
+	<!-- 담당자 이메일 정보 -->
+	<select id="selectVEmail" parameterClass="srmSpw0010Vo" resultMap="selectVEmailMap">
+		/* SRMSPW0010.selectVEmail */
+		SELECT	USER_NAME
+			,	EMAIL		AS V_EMAIL
+		FROM	SSUPI
+		WHERE	HOUSE_CODE 	= #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ			= #maxSeq#
+	</select>
+
+
+	<!-- 임시비밀번호 발급여부 -->
+	<select id="selectTempPwFlag" parameterClass="srmSpw0010Vo" resultClass="String">
+		/* SRMSPW0010.selectTempPwFlag */
+		SELECT  TEMP_PW_FLAG
+		FROM    SSUGL
+		WHERE   HOUSE_CODE  = #houseCode#
+		  AND	IRS_NO       = #irsNo#
+		  AND   SELLER_CODE = #sellerCode#
+	</select>
+
+	<!-- 비밀번호 변경 -->
+	<update id="updateTempPasswdChange"   parameterClass="srmSpw0010Vo">
+		/* SRMSPW0010.updateTempPasswdChange */
+		UPDATE SSUGL
+		SET TEMP_PW			=	#tempPw#
+		,	PASS_CHECK_CNT 	= 	'0'
+		,	CHANGE_DATE 	=	CURRENT_TIMESTAMP(0)
+		,	CHANGE_USER_ID	=	#irsNo#
+		,   TEMP_PW_FLAG    =   'N'
+		WHERE  HOUSE_CODE   =	#houseCode#
+		  AND  IRS_NO       =   #irsNo#
+		  AND  SELLER_CODE  =   #sellerCode#
+	</update>
+
+</sqlMap>

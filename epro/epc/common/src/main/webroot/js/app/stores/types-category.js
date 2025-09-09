@@ -1,0 +1,11 @@
+const PREFIX_CATEGORY = 'category/';
+export const CATEGORY_ID = PREFIX_CATEGORY + 'categoryId';
+export const CATEGORY_NAME = PREFIX_CATEGORY + 'categoryName';
+export const CATEGORY_SUB_DATA = PREFIX_CATEGORY + 'cateogrySubData';
+export const CATEGORY_TOTAL_COUNT = PREFIX_CATEGORY + 'totalCount';
+export const CATEGORY_LIST_DATA = PREFIX_CATEGORY + 'list';
+export const CATEGORY_LIST_UPDATE = PREFIX_CATEGORY + 'list/update';
+export const CATEGORY_LOADING = PREFIX_CATEGORY + 'loading';
+export const CATEGORY_END = PREFIX_CATEGORY + 'end';
+export const CATEGORY_PAGE = PREFIX_CATEGORY + 'page';
+export const CATEGORY_SIZE = PREFIX_CATEGORY + 'size';

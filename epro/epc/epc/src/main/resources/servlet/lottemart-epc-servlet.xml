@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+       ">
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="messages" />
+
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="KO" />
+	</bean>
+	
+	<!-- jxl Excel Download ViewResolver -->
+    <bean id="jxlExcelFileDownLoadViewResolver" class="com.lottemart.epc.common.util.JxlExcelFileDownLoadViewResolver"  />
+    
+    <!-- apachPoiExcelFileDownLoadViewResolver -->
+	<bean id="apachPoiExcelFileDownLoad" class="com.lottemart.epc.common.util.apachPoiExcelFileDownLoadViewResolver"/>
+
+	
+
+	<mvc:interceptors>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/edi/product/PEDMPRO000204.do" />
+			<mvc:mapping path="/edi/product/PEDMPRO000202.do" />
+			<mvc:mapping path="/edi/product/PEDMPRO000802.do" />
+			<bean class="com.lottemart.epc.common.interceptor.EdiImageUploadInterceptor"/>
+		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/edi/product/PEDMPRO000201.do" />
+			<bean class="com.lottemart.epc.common.interceptor.EdiImageUploadInterceptor001"/>
+		</mvc:interceptor>
+
+		<!-- 다국어 설정 Start -->
+		<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang" />
+		</bean>
+		<!-- 다국어 설정 End -->
+
+	</mvc:interceptors>
+
+	<task:executor id="taskExecutor" pool-size="10" queue-capacity="255" rejection-policy="ABORT" />
+	<task:scheduler id="taskScheduler" pool-size="10" />
+	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler" />
+	
+</beans>

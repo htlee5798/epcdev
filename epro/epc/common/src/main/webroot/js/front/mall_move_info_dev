@@ -1,0 +1,120 @@
+{
+  "others" : {
+    "title" : "다양한 쇼핑 경험은 여기서!",
+    "malls" : [ {
+      "androidStoreUrl" : "market://details?id=com.lotte.lottedutyfree",
+      "title" : "롯데면세점",
+      "linkUrl" : "http://m.kor.lottedfs.com/kr",
+      "androidScheme" : "com.lotte.lottedutyfree",
+      "launchAppYn" : "Y",
+      "img" : "http://image.lotte.com/upload/display/corner/5632738_80957_54032_30_13012720_1_20181205142238.png",
+      "iosAppExecUrl" : "",
+      "iosScheme" : "",
+      "iosStoreUrl" : "com"
+    }, {
+      "androidStoreUrl" : "market://details?id=com.lotterental.android.myomee&url=lottemyomee://https://app.myomee.com/main.do",
+      "title" : "묘미",
+      "linkUrl" : "https://m.myomee.com/main.do",
+      "androidScheme" : "com.lotterental.android.myomee",
+      "launchAppYn" : "Y",
+      "img" : "http://image.lotte.com/upload/display/corner/5632738_80957_54031_30_13012720_1_20181205142019.png",
+      "iosAppExecUrl" : "lottemyomee://https://app.myomee.com/main.do",
+      "iosScheme" : "lottemyomee",
+      "iosStoreUrl" : "https://itunes.apple.com/kr/app/id1262974255"
+    }, {
+      "androidStoreUrl" : "market://details?id=com.uniqlo.kr.catalogue",
+      "title" : "유니클로",
+      "linkUrl" : "http://www.uniqlo.com/kr/ko/",
+      "androidScheme" : "com.uniqlo.kr.catalogue",
+      "launchAppYn" : "Y",
+      "img" : "http://image.lotte.com/upload/display/corner/5632738_80957_54030_30_13012720_1_20181130111206.png",
+      "iosAppExecUrl" : "uniqloapp://uniqlo",
+      "iosScheme" : "uniqloapp",
+      "iosStoreUrl" : "https://itunes.apple.com/kr/app/uniqlo-kr/id730814188?mt=8"
+    }, {
+      "androidStoreUrl" : "",
+      "title" : "롯데리아",
+      "androidScheme" : "",
+      "img" : "http://image.lotte.com/upload/display/corner/5632738_80957_54061_30_13012720_1_20181205112924.png"
+    } ]
+  },
+  "ver" : 1,
+	"together" : {
+	    "title" : "롯데를 켜세요",
+	    "desc" : "한 번의 로그인으로 모든 쇼핑 해결!",
+	    "malls" : [ {
+	      "ssoGateUrl" : "http://mprj5.lotte.com/on/sso/ssoGate.do",
+	      "title" : "롯데 ON",
+	      "desc" : "어서오세ON",
+	      "scheme" : "together-on",
+	      "statusColor" : "#ed4046",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53967_30_13012688_1_20190312173211.png",
+	      "domain" : "lotte.com/on/",
+	      "url" : "http://mprj5.lotte.com/on/main.do?"
+	    }, {
+	      "ssoGateUrl" : "https://securemtst5.lotteimall.com/sso/ssoGate.lotte",
+	      "title" : "롯데홈쇼핑",
+	      "desc" : "쇼핑의 즐거움",
+	      "scheme" : "together-hsimall",
+	      "statusColor" : "#ea493e",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53972_30_13012688_1_20181211104108.png",
+	      "domain" : "lotteimall.com",
+	      "url" : "http://mtst5.lotteimall.com/main/viewMain.lotte"
+	    }, {
+	      "ssoGateUrl" : "http://mprj5.lotte.com/sso/ssoGate.do",
+	      "title" : "롯데닷컴",
+	      "desc" : "매일매일 사면특가",
+	      "scheme" : "together-lottecom",
+	      "statusColor" : "#719cff",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53974_30_13012688_1_20181205141718.png",
+	      "domain" : "lotte.com",
+	      "url" : "http://mprj5.lotte.com/main_phone.do"
+	    }, {
+	      "ssoGateUrl" : "https://msecuretst.e-himart.co.kr:1443/app/sso/ssoGate",
+	      "title" : "하이마트",
+	      "desc" : "가전베스트 특가 ",
+	      "scheme" : "together-himart",
+	      "statusColor" : "#ec4147",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53971_30_13012688_1_20190321093700.png",
+	      "domain" : "e-himart.co.kr",
+	      "url" : "http://mtst.e-himart.co.kr/app/display/main"
+	    }, {
+	      "ssoGateUrl" : "https://m.lottemart.com/mobile/sso/ssoGate.do",
+	      "title" : "롯데마트",
+	      "desc" : "9시&16시 천원딜!",
+	      "scheme" : "together-mart",
+	      "statusColor" : "#ed1b24",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53969_30_13012688_1_20181205141550.png",
+	      "domain" : "lottemart.com",
+	      "url" : "http://m.lottemart.com/mobile/todayhot/mobileTodayhotMain.do"
+	    }, {
+	      "ssoGateUrl" : "https://prj.m.members.ellotte.com/members-mo/login/sso/ssoGate",
+	      "title" : "엘롯데",
+	      "desc" : "백화점 공식쇼핑몰",
+	      "scheme" : "together-el",
+	      "statusColor" : "#000000",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53968_30_13012688_1_20181205141529.png",
+	      "domain" : "ellotte.com",
+	      "url" : "https://prj.m.display.ellotte.com/display-mo/shop"
+	    }, {
+	      "ssoGateUrl" : "https://m.lottesuper.co.kr/handler/sso/SSOGate-Start",
+	      "title" : "롯데프레시",
+	      "desc" : "첫구매100원쿠폰",
+	      "scheme" : "together-fresh",
+	      "statusColor" : "#3ca241",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53970_30_13012688_1_20181205141608.png",
+	      "domain" : "lottesuper.co.kr",
+	      "url" : "http://m.lottesuper.co.kr/handler/Index-Start"
+	    }, {
+	      "ssoGateUrl" : "https://mstg.lohbs.co.kr/login/sso/ssoGate",
+	      "title" : "롭스",
+	      "desc" : "향기미술관 향수증정",
+	      "scheme" : "together-lohbs",
+	      "statusColor" : "#ff4e00",
+	      "img" : "http://image.lotte.com/upload/display/corner/5632738_80355_53973_30_13012688_1_20181205141702.png",
+	      "domain" : "lohbs.co.kr",
+	      "url" : "https://mstg.lohbs.co.kr"
+	    } ],
+	    "url" : "m.lotteon.com"
+	 }
+}

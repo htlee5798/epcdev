@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0002">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="searchParam"   type="com.lottemart.epc.edi.comm.model.SearchParam" />
+<typeAlias alias="ediCommonCode" type="com.lottemart.epc.edi.comm.model.EdiCommonCode" />
+
+<!-- 입점상담 SELECT-->
+<select id="TSC_CONSULT_ADMIN-SELECT01" parameterClass="map" resultClass="resultClass">
+SELECT * FROM ( 
+     SELECT A.*,  
+                 ROWNUM AS RNUM, 
+                 FLOOR((ROWNUM-1)/ #recordCountPerPage# + 1) AS PAGE, 
+                 COUNT(*) OVER() AS TOTCNT FROM (
+		SELECT  A.ORG_NM AS TEAM_CLASS,
+				A.CAT_NM AS BIG_CLASS,
+				TO_CHAR(C.REG_DATE,'YYYY-MM-DD') AS REG_DATE,
+		 	    C.HND_NM AS HND_NM,
+		  	    C.BKIND_NM, 
+			    
+			    NVL(C.PAPE_JGM_RSLT_DIVN_CD, 'M') AS PAPE_JGM_RSLT_DIVN_CD,   
+			    C.PAPE_JGM_RETN_DIVN_CD,
+			    C.PAPE_JGM_UTAKMN_TEL_NO,
+			    C.PAPE_JGM_PROC_CONTENT,
+			    
+			    NVL(C.CNSL_RSLT_DIVN_CD, 'M') AS CNSL_RSLT_DIVN_CD,    
+			    C.CNSL_RETN_DIVN_CD,
+			    C.CNSL_UTAKMN_TEL_NO,
+			    C.CNSL_PROC_CONTENT,
+			    
+			    NVL(C.ENTSHP_RSLT_DIVN_CD, 'M') AS ENTSHP_RSLT_DIVN_CD,     
+			    C.ENTSHP_RETN_DIVN_CD,
+			    C.ENTSHP_UTAKMN_TEL_NO,
+			    C.ENTSHP_PROC_CONTENT,
+			    
+			    DECODE(C.PAPE_JGM_PROC_DY,'','',TO_CHAR(C.PAPE_JGM_PROC_DY,'mm/dd')) AS PAPE_JGM_PROC_DY,
+			    DECODE(C.CNSL_PROC_DY,'','',TO_CHAR(C.CNSL_PROC_DY,'mm/dd')) AS CNSL_PROC_DY,
+			    DECODE(C.ENTSHP_PROC_DY,'','',TO_CHAR(C.ENTSHP_PROC_DY,'mm/dd')) AS ENTSHP_PROC_DY,
+			    
+			    C.BMAN_NO, 
+			    C.ORG_CD
+		FROM    TED_L1_CD A LEFT OUTER JOIN  TED_VENDOR_EDI C ON A.ORG_CD=C.ORG_CD
+		
+		WHERE   NVL(C.PAPE_JGM_RSLT_DIVN_CD, 'M') IN ('Y', 'N', 'M')  AND C.CHG_STATUS_CD IN ('1', '2')
+		  AND   TO_CHAR(C.REG_DATE,'yyyymmdd') BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','') 
+		  
+	   		 <isNotEqual property="teamCode" compareValue="all">
+	   		     <isNotEqual property="l1GroupCode" compareValue="all" prepend="AND">	
+	   	       		 C.ORG_CD = #l1GroupCode#
+	   			 </isNotEqual>
+	   			 
+	   			 <isEqual property="l1GroupCode" compareValue="all" prepend="AND">
+	   			     A.TEAM_CD = #teamCode#
+	   			 </isEqual>
+	   		 </isNotEqual>
+	   		 
+	   		 <isNotEqual property="paperState" compareValue="all" prepend="AND">	
+	   	        C.PAPE_JGM_RSLT_DIVN_CD = #paperState#
+	   		 </isNotEqual>
+		
+		 GROUP BY A.ORG_NM, A.CAT_NM, C.REG_DATE, C.HND_NM, C.BKIND_NM
+				 ,C.PAPE_JGM_RSLT_DIVN_CD   ,C.PAPE_JGM_RETN_DIVN_CD   ,C.PAPE_JGM_UTAKMN_TEL_NO   ,C.PAPE_JGM_PROC_CONTENT
+   				 ,C.CNSL_RSLT_DIVN_CD   ,C.CNSL_RETN_DIVN_CD   ,C.CNSL_UTAKMN_TEL_NO   ,C.CNSL_PROC_CONTENT
+      			 ,C.ENTSHP_RSLT_DIVN_CD   ,C.ENTSHP_RETN_DIVN_CD   ,C.ENTSHP_UTAKMN_TEL_NO   ,C. ENTSHP_PROC_CONTENT
+        		 ,C.PAPE_JGM_PROC_DY   ,C.CNSL_PROC_DY  ,C.ENTSHP_PROC_DY   ,C.BMAN_NO,    C.ORG_CD
+          
+		ORDER BY C.REG_DATE DESC,
+				 A.ORG_NM ASC,
+        	     A.CAT_NM ASC,
+		         C.REG_DATE ASC,
+		         C.HND_NM ASC 
+		    ) A 
+) WHERE PAGE = #currentPage#
+
+</select>
+
+
+
+
+<!-- 서류심사 통과  업데이트 -->
+<update id="TSC_CONSULT_ADMIN_PAPE-UPDATE01" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+						
+	SET  	PAPE_JGM_RSLT_DIVN_CD = 'Y'		,	
+			PAPE_JGM_PROC_DY = CURRENT_TIMESTAMP(0)	,
+			PAPE_JGM_UTAKMN_TEL_NO = #pape_tel#						
+	 										
+	WHERE BMAN_NO = #inputBmanNo#
+
+</update>
+
+<!-- 서류심사 반려  업데이트 -->
+<update id="TSC_CONSULT_ADMIN_PAPE-UPDATE02" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+						
+	SET  	PAPE_JGM_RSLT_DIVN_CD = 'N'		,	
+			PAPE_JGM_PROC_DY = CURRENT_TIMESTAMP(0)	,
+			PAPE_JGM_RETN_DIVN_CD = #papeNotVal#,
+			PAPE_JGM_PROC_CONTENT = #pape_detail#
+	 										
+	WHERE BMAN_NO = #inputBmanNo#
+
+</update>
+
+<!-- 상담결과 합격  업데이트 -->
+<update id="TSC_CONSULT_ADMIN_CNSL-UPDATE01" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+						
+	SET  	CNSL_RSLT_DIVN_CD = 'Y'		,	
+			CNSL_PROC_DY = CURRENT_TIMESTAMP(0)	,
+			CNSL_UTAKMN_TEL_NO = #cnsl_tel#						
+	 										
+	WHERE BMAN_NO = #inputBmanNo#
+
+</update>
+
+<!-- 상담결과 반려  업데이트 -->
+<update id="TSC_CONSULT_ADMIN_CNSL-UPDATE02" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+						
+	SET  	CNSL_RSLT_DIVN_CD = 'N'		,	
+			CNSL_PROC_DY = CURRENT_TIMESTAMP(0)	,
+			CNSL_RETN_DIVN_CD = #cnslNotVal#,
+			CNSL_PROC_CONTENT = #cnsl_detail#
+	 										
+	WHERE BMAN_NO = #inputBmanNo#
+
+</update>
+
+<!-- 품평회/입점 합격  업데이트 -->
+<update id="TSC_CONSULT_ADMIN_ENTSHP-UPDATE01" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+						
+	SET  	ENTSHP_RSLT_DIVN_CD = 'Y'		,	
+			ENTSHP_RETN_DIVN_CD = 'N'		,
+			ENTSHP_PROC_DY = CURRENT_TIMESTAMP(0)	,
+			CHG_STATUS_CD = '2'			,
+			ENTSHP_UTAKMN_TEL_NO = #entshp_tel#						
+	 										
+	WHERE BMAN_NO = #inputBmanNo#
+
+</update>
+
+<!-- 품평회/입점 불합격  업데이트 -->
+<update id="TSC_CONSULT_ADMIN_ENTSHP-UPDATE02" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+						
+	SET  	ENTSHP_RSLT_DIVN_CD = 'N'		,
+			ENTSHP_RETN_DIVN_CD = 'Y'		,		
+			ENTSHP_PROC_DY = CURRENT_TIMESTAMP(0)	,
+			ENTSHP_UTAKMN_TEL_NO = #entshp_tel#						
+	 										
+	WHERE BMAN_NO = #inputBmanNo#
+
+
+</update>
+
+<!-- 입점상담 SELECT 상세페이지 현재-->
+<select id="TSC_CONSULT_ADMIN-SELECT02" parameterClass="String" resultClass="resultClass">
+	SELECT BMAN_NO, 
+	       TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE,
+		   NVL(PAPE_JGM_RSLT_DIVN_CD, 'M') AS PAPE_JGM_RSLT_DIVN_CD,   
+		   PAPE_JGM_RETN_DIVN_CD,
+		   PAPE_JGM_UTAKMN_TEL_NO,
+		   PAPE_JGM_PROC_CONTENT,
+		   NVL(CNSL_RSLT_DIVN_CD, 'M') AS CNSL_RSLT_DIVN_CD,    
+		   CNSL_RETN_DIVN_CD,
+		   CNSL_UTAKMN_TEL_NO,
+		   CNSL_PROC_CONTENT,
+		   NVL(ENTSHP_RSLT_DIVN_CD, 'M') AS ENTSHP_RSLT_DIVN_CD,     
+		   ENTSHP_RETN_DIVN_CD,
+		   ENTSHP_UTAKMN_TEL_NO,
+		   ENTSHP_PROC_CONTENT,		
+	       TO_CHAR(PAPE_JGM_PROC_DY,'YYYY-MM-DD') PAPE_JGM_PROC_DY,
+		   TO_CHAR(CNSL_PROC_DY,'YYYY-MM-DD') CNSL_PROC_DY,
+		   TO_CHAR(ENTSHP_PROC_DY,'YYYY-MM-DD') ENTSHP_PROC_DY,
+		   CHG_STATUS_CD,
+		   NVL2(ENTSHP_UTAKMN_TEL_NO, ENTSHP_UTAKMN_NM||'('||ENTSHP_UTAKMN_TEL_NO||')', 
+                NVL2(CNSL_UTAKMN_TEL_NO, CNSL_UTAKMN_NM||'('||CNSL_UTAKMN_TEL_NO||')', 
+                    NVL2(PAPE_JGM_UTAKMN_TEL_NO, PAPE_JGM_UTAKMN_NM||'('||PAPE_JGM_UTAKMN_TEL_NO||')','서류심사중')
+                )
+           ) AS LAST_UTAKMN
+		FROM TED_VENDOR_EDI WHERE BMAN_NO = #businessNo#
+</select>
+
+<!-- 입점상담 SELECT 상세페이지 과거이력-->
+<select id="TSC_CONSULT_ADMIN_PAST-SELECT01" parameterClass="String" resultClass="resultClass">
+	SELECT BMAN_NO, 
+	       TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE,
+		   NVL(PAPE_JGM_RSLT_DIVN_CD, 'M') AS PAPE_JGM_RSLT_DIVN_CD,   
+		   PAPE_JGM_RETN_DIVN_CD,
+		   PAPE_JGM_UTAKMN_TEL_NO,
+		   PAPE_JGM_PROC_CONTENT,
+		   NVL(CNSL_RSLT_DIVN_CD, 'M') AS CNSL_RSLT_DIVN_CD,    
+		   CNSL_RETN_DIVN_CD,
+		   CNSL_UTAKMN_TEL_NO,
+		   CNSL_PROC_CONTENT,
+		   NVL(ENTSHP_RSLT_DIVN_CD, 'M') AS ENTSHP_RSLT_DIVN_CD,     
+		   ENTSHP_RETN_DIVN_CD,
+		   ENTSHP_UTAKMN_TEL_NO,
+		   ENTSHP_PROC_CONTENT,		
+	       TO_CHAR(PAPE_JGM_PROC_DY,'YYYY-MM-DD') PAPE_JGM_PROC_DY,
+		   TO_CHAR(CNSL_PROC_DY,'YYYY-MM-DD') CNSL_PROC_DY,
+		   TO_CHAR(ENTSHP_PROC_DY,'YYYY-MM-DD') ENTSHP_PROC_DY,
+		   NVL2(ENTSHP_UTAKMN_TEL_NO, ENTSHP_UTAKMN_NM||'('||ENTSHP_UTAKMN_TEL_NO||')', 
+                NVL2(CNSL_UTAKMN_TEL_NO, CNSL_UTAKMN_NM||'('||CNSL_UTAKMN_TEL_NO||')', 
+                    NVL2(PAPE_JGM_UTAKMN_TEL_NO, PAPE_JGM_UTAKMN_NM||'('||PAPE_JGM_UTAKMN_TEL_NO||')','서류심사중')
+                )
+           ) AS LAST_UTAKMN
+	FROM TED_VENDOR_EDI_HIST WHERE BMAN_NO = #businessNo#
+	
+	ORDER BY SEQ DESC
+</select>
+
+
+
+<insert id="TED_VENDOR_EDI_HIST-INSERT01" parameterClass="map">
+INSERT INTO TED_VENDOR_EDI_HIST
+  (
+   BMAN_NO
+  ,SEQ                   
+  ,PWD                      
+  ,HND_NM                   
+  ,CORPN_DIVN_CD            
+  ,CORPN_NM                 
+  ,CEO_NM                   
+  ,BMAN_KIND_CD             
+  ,AFF_YN                   
+  ,FOU_YYYY                 
+  ,CORPN_RSDT_NO            
+  ,BKIND_NM                 
+  ,BTYP_NM                  
+  ,ZIP_NO                   
+  ,SPMN_ADDR_1_NM           
+  ,SPMN_ADDR_2_NM           
+  ,UTAKMN_NM                
+  ,TEL_NO                   
+  ,FAX_NO                   
+  ,CELL_NO                  
+  ,REP_TEL_NO               
+  ,FTRY_TF                  
+  ,CAP_AMT                  
+  ,EMAIL                    
+  ,HMPG_ADDR                
+  ,MANFC_PRODS_NM           
+  ,YY_SALE_AMT              
+  ,MM_SALE_AMT              
+  ,REG_DIVN_CD              
+  ,ORG_CD                   
+  ,PECU_SBJT_CONTENT        
+  ,ATCH_FILE_CD             
+  ,CHG_STATUS_CD            
+  ,COM_CHAR_CD              
+  ,COM_CHAR_ETC_CONTENT     
+  ,LOTTE_AFF_TRD_CD         
+  ,LOTTE_AFF_TRD_ETC_CONTENT
+  ,PAPE_JGM_RSLT_DIVN_CD    
+  ,PAPE_JGM_RETN_DIVN_CD    
+  ,PAPE_JGM_UTAKMN_TEL_NO   
+  ,PAPE_JGM_UTAKMN_NM       
+  ,PAPE_JGM_PROC_CONTENT    
+  ,PAPE_JGM_PROC_DY         
+  ,CNSL_RSLT_DIVN_CD        
+  ,CNSL_RETN_DIVN_CD        
+  ,CNSL_UTAKMN_TEL_NO       
+  ,CNSL_UTAKMN_NM           
+  ,CNSL_PROC_CONTENT        
+  ,CNSL_PROC_DY             
+  ,ENTSHP_RSLT_DIVN_CD      
+  ,ENTSHP_RETN_DIVN_CD      
+  ,ENTSHP_UTAKMN_TEL_NO     
+  ,ENTSHP_UTAKMN_NM         
+  ,ENTSHP_PROC_CONTENT      
+  ,ENTSHP_PROC_DY           
+  ,REG_DATE                 
+  ,REG_ID                   
+  ,MOD_DATE                 
+  ,MOD_ID)
+SELECT 
+   BMAN_NO
+  ,(SELECT NVL(MAX(SEQ),0)+1   FROM TED_VENDOR_EDI_HIST   WHERE BMAN_NO = #inputBmanNo# )  SEQ           
+  ,PWD                      
+  ,HND_NM                   
+  ,CORPN_DIVN_CD            
+  ,CORPN_NM                 
+  ,CEO_NM                   
+  ,BMAN_KIND_CD             
+  ,AFF_YN                   
+  ,FOU_YYYY                 
+  ,CORPN_RSDT_NO            
+  ,BKIND_NM                 
+  ,BTYP_NM                  
+  ,ZIP_NO                   
+  ,SPMN_ADDR_1_NM           
+  ,SPMN_ADDR_2_NM           
+  ,UTAKMN_NM                
+  ,TEL_NO                   
+  ,FAX_NO                   
+  ,CELL_NO                  
+  ,REP_TEL_NO               
+  ,FTRY_TF                  
+  ,CAP_AMT                  
+  ,EMAIL                    
+  ,HMPG_ADDR                
+  ,MANFC_PRODS_NM           
+  ,YY_SALE_AMT              
+  ,MM_SALE_AMT              
+  ,REG_DIVN_CD              
+  ,ORG_CD                   
+  ,PECU_SBJT_CONTENT        
+  ,ATCH_FILE_CD             
+  ,CHG_STATUS_CD            
+  ,COM_CHAR_CD              
+  ,COM_CHAR_ETC_CONTENT     
+  ,LOTTE_AFF_TRD_CD         
+  ,LOTTE_AFF_TRD_ETC_CONTENT
+  ,PAPE_JGM_RSLT_DIVN_CD    
+  ,PAPE_JGM_RETN_DIVN_CD    
+  ,PAPE_JGM_UTAKMN_TEL_NO   
+  ,PAPE_JGM_UTAKMN_NM       
+  ,PAPE_JGM_PROC_CONTENT    
+  ,PAPE_JGM_PROC_DY         
+  ,CNSL_RSLT_DIVN_CD        
+  ,CNSL_RETN_DIVN_CD        
+  ,CNSL_UTAKMN_TEL_NO       
+  ,CNSL_UTAKMN_NM           
+  ,CNSL_PROC_CONTENT        
+  ,CNSL_PROC_DY             
+  ,ENTSHP_RSLT_DIVN_CD      
+  ,ENTSHP_RETN_DIVN_CD      
+  ,ENTSHP_UTAKMN_TEL_NO     
+  ,ENTSHP_UTAKMN_NM         
+  ,ENTSHP_PROC_CONTENT      
+  ,ENTSHP_PROC_DY           
+  ,REG_DATE                 
+  ,REG_ID                   
+  ,MOD_DATE                 
+  ,MOD_ID
+ FROM TED_VENDOR_EDI
+ WHERE BMAN_NO = #inputBmanNo#
+</insert>
+
+ <resultMap id="teamListResultMap" class="ediCommonCode">
+    <result property="teamCode" column="ORG_CD" columnIndex="1"/>
+    <result property="teamName" column="CAT_NM"  columnIndex="2"/>
+  </resultMap>
+  
+   <resultMap id="teamListResultMapApply" class="ediCommonCode">
+    <result property="l1Cd" column="L1_CD" columnIndex="1"/>
+    <result property="l1Nm" column="L1_NM"  columnIndex="2"/>
+  </resultMap>
+  
+  
+  <resultMap id="teamListMap" class="ediCommonCode">
+    <result property="teamCode" column="TEAM_CD" columnIndex="1"/>
+    <result property="teamName" column="ORG_NM"  columnIndex="2"/>
+  </resultMap>
+  
+<!-- 입점상담  분류 AJAX -->
+<select id="getTeamList" resultMap="teamListMap" parameterClass="searchParam">
+   		SELECT 
+   			DISTINCT TEAM_CD, ORG_NM
+   		FROM TED_L1_CD
+	   	ORDER BY TEAM_CD 
+  </select>
+  
+<select id="getL1List" resultMap="teamListResultMap" parameterClass="searchParam">
+   		SELECT 
+   			DISTINCT ORG_CD, CAT_NM
+   		FROM TED_L1_CD
+	   	WHERE TEAM_CD = #groupCode#
+	   	ORDER BY ORG_CD
+  </select>
+  
+  
+  <select id="getL1ListApply" resultMap="teamListResultMapApply" parameterClass="searchParam">
+   	  /*PEDMSCT0002.getL1ListApply*/
+	SELECT 
+		A.L1_CD,A.L1_NM
+		FROM TED_CONSULT_TEAM_L1CD A, TED_CONSULT_TEAMCD B
+		WHERE   A.TEAM_CD=B.TEAM_CD
+        AND     A.USE_YN='Y'
+        AND     B.XTNC_YN='Y'
+		AND     A.TEAM_CD=#groupCode#
+		GROUP BY A.L1_CD,A.L1_NM
+	 	ORDER BY A.L1_CD
+  </select>
+
+</sqlMap>

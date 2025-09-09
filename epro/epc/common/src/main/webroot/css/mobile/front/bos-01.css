@@ -1,0 +1,47 @@
+@charset "utf-8";
+
+/************************************************************************
+ * filename     : bos-01.css
+ * description  : 관리자 CSS  
+ * date         : 2012.01.26
+************************************************************************/
+
+* {margin:0; padding:0}
+img {border:0; vertical-align:top;}
+ol, ul {list-style:none;}
+table {border-collapse:collapse; border-spacing:0; white-space:nowrap;}
+th {font-weight:normal;}
+
+body {height:100%; font-size:12px; line-height:16px; font-family:'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif; color:#4c4c4c; letter-spacing:-1px;}
+input.txt {padding:5px; font-size:12px; color:#808080;}
+textarea.txt {padding:10px;}
+
+.t-point-red {color:#ee1c24;}
+
+table th.color, table td.color {background-color:#f1f1f1;}
+.table-01 tr {border:1px solid #d3d9db;}
+.table-01 th {padding:10px; border:1px solid #dbdbdb; background-color:#f5f9fa; color:#333; text-align:left; vertical-align:top;}
+.table-01 td {padding:10px; border:1px solid #dbdbdb;}
+.table-01 td.form {padding:5px 10px;}
+.table-02 tr {border:1px solid #d3d9db;}
+.table-02 th {padding:10px; border:1px solid #dbdbdb; background-color:#f5f9fa; color:#333; text-align:center; vertical-align:top;}
+.table-02 td {padding:10px; border:1px solid #dbdbdb; text-align:center}
+.table-02 td.form {padding:5px 10px;}
+
+.wrap-botton-r {text-align:left; margin:10px 0;}
+
+.pagenate  {position:relative; width:750px; margin-top:16px;}
+.pagenate  .btn_l  {position:absolute; top:0; left:0; margin:0; padding:0;}
+.pagenate  .btn_r  {position:absolute; top:0; right:0; margin:0; padding:0;}
+.page    {text-align:center;}
+.page    img    {margin-top:1px; vertical-align:middle;}
+.page    .page_num    {color:#555555; font-family:sans-serif;}
+.page    .page_num    a    {display:inline-block; padding:0 3px; margin:0 2px;}
+.page    .page_num    a,
+.page    .page_num    a:visited    {color:#555555;}
+.page    .page_num    a:hover    {color:#D12D30;}
+.page    .page_num    strong    {display:inline-block; padding:0 3px; color:#D12D30;}
+
+.wrap-bos {padding:20px 10px;}
+.wrap-bos h2 {margin-bottom:8px; font-size:18px; line-height:24px;}
+.wrap-bos h3 {margin-bottom:8px; font-size:14px; line-height:18px;}

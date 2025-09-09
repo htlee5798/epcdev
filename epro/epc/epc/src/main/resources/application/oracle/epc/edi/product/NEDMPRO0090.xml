@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0090">
+	<typeAlias alias="nedmpro0090vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0090VO" />
+
+	<resultMap id="selectGrpAttMap"	class="java.util.HashMap">
+		<result column="ATT_ID"		 	property="ATT_ID"			nullValue="" /> 
+		<result column="ATT_NM" 		property="ATT_NM"			nullValue="" />
+		<result column="ATT_VAL_ID"		property="ATT_VAL_ID"		nullValue="" /> 
+		<result column="ATT_VAL_NM"		property="ATT_VAL_NM"		nullValue="" /> 
+		<result column="SEL_ATT_VAL_ID"	property="SEL_ATT_VAL_ID"	nullValue="" /> 
+	</resultMap>
+	
+    <!-- 소분류별 그룹분석속성 조회 -->
+    <select id="selectGrpAtt" parameterClass="String"  resultMap="selectGrpAttMap">
+        /* NEDMPRO0090.selectGrpAtt */
+        SELECT 
+            ATT_ID
+          , ATT_NM
+          , '' AS ATT_VAL_ID
+          , '' AS ATT_VAL_NM
+          , '' AS SEL_ATT_VAL_ID
+        FROM 
+            GRP_L3_GRPCST_PUR_ATT
+        WHERE 
+            L3_CD = #l3Cd#
+        AND COALESCE(LOEKZ, ' ') != 'D' 
+        AND ATT_ID IS NOT NULL  
+        GROUP BY 
+            ATT_ID
+          , ATT_NM
+        ORDER BY ATT_ID
+    </select>
+
+	<resultMap id="selectGrpAttOptMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 	property="ATT_ID"		nullValue="" /> 
+		<result column="ATT_NM" 	property="ATT_NM"		nullValue="" />
+		<result column="ATT_VAL_ID"	property="ATT_VAL_ID"	nullValue="" /> 
+		<result column="ATT_VAL_NM"	property="ATT_VAL_NM"	nullValue="" /> 
+	</resultMap>
+	   	
+    <!-- 소분류별 그룹분석속성 속성값 Option 조회 -->
+    <select id="selectGrpAttOpt" parameterClass="String" resultMap="selectGrpAttOptMap">
+        /* NEDMPRO0090.selectGrpAttOpt */
+        SELECT 
+            ATT_ID
+          , '' AS ATT_NM
+          , ATT_VAL_ID
+          , ATT_VAL_NM
+        FROM 
+            GRP_CST_PUR_ATT A
+        WHERE 
+            ATT_ID IN (
+                SELECT 
+                    ATT_ID
+                FROM 
+                    GRP_L3_GRPCST_PUR_ATT
+                WHERE 
+                    L3_CD = #l3Cd#
+                AND COALESCE(LOEKZ, ' ') != 'D'
+                AND ATT_ID IS NOT NULL
+                GROUP BY 
+                    ATT_ID
+                  , ATT_NM
+            )
+        ORDER BY ATT_ID, ATT_VAL_ID, ATT_VAL_NM
+    </select>
+
+    <!-- 분석속성 삭제 상품코드로 -->
+    <delete id="deleteGrpAttOptSaved">
+        /* NEDMPRO0090.deleteGrpAttOptSaved */
+        DELETE 
+        FROM 
+            TPC_GRP_ATT_TMP
+        WHERE 
+            PROD_CD = #prodCd#
+    </delete>
+    
+    <!-- 분석속성 저장 -->
+    <update id="mergeGrpAttOptTmp" parameterClass="java.util.Map">
+        /* NEDMPRO0090.mergeGrpAttOptTmp */
+		MERGE INTO TPC_GRP_ATT_TMP TGAT
+		USING (
+			SELECT
+				  #prodCd#   AS PROD_CD
+				, #attId#    AS ATT_ID
+				, #attValId# AS ATT_VAL_ID
+				, #entpCd#   AS ENTP_CD
+				, #workId#	 AS WORK_ID
+		) GRP_ATT
+			ON (TGAT.PROD_CD = GRP_ATT.PROD_CD AND TGAT.ATT_ID = GRP_ATT.ATT_ID)
+		WHEN MATCHED THEN 
+			UPDATE
+            SET
+                ATT_VAL_ID = GRP_ATT.ATT_VAL_ID
+<!--               , MOD_ID     = GRP_ATT.ENTP_CD -->
+              , MOD_ID     = GRP_ATT.WORK_ID
+              , MOD_DATE   = CURRENT_TIMESTAMP(0)
+        WHEN NOT MATCHED THEN
+            INSERT 
+            (
+                PROD_CD
+              , ATT_ID
+              , ATT_VAL_ID
+              , REG_DATE
+              , REG_ID
+              , CHG_FG
+            )
+            VALUES
+            (
+                GRP_ATT.PROD_CD
+              , GRP_ATT.ATT_ID
+              , GRP_ATT.ATT_VAL_ID
+              , CURRENT_TIMESTAMP(0)
+<!--               , GRP_ATT.ENTP_CD -->
+              , GRP_ATT.WORK_ID
+              , 'M'
+            );
+    </update>
+    
+    <!-- 순번 획득 -->
+    <select id="getMaxSeqAttr" parameterClass="String" resultClass="String">
+       /* NEDMPRO0090.getMaxSeqAttr */
+       SELECT 
+           MAX(SEQ)
+       FROM 
+           TPC_GRP_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+    </select>
+    
+    <!-- 분석속성 요청에 응답오지 않은 분석속성 응답 -->
+    <select id="getCntNotResponseAttr" parameterClass="nedmpro0090vo" resultClass="Integer">
+    	/* NEDMPRO0090.getCntNotResponseAttr */
+        SELECT 
+		    COUNT(*) AS CNT
+		FROM
+		    TPC_GRP_ATT_REQ TGAR
+		    LEFT JOIN
+		    GRP_ATT_REQ_SAP GARS
+		        ON TGAR.PROD_CD = SUBSTR(GARS.PROD_CD, 9)
+		       AND LPAD(TGAR.SEQ, 3, '0') = SUBSTR(GARS.SEQ, 8) 
+		       AND TGAR.ATT_ID = GARS.ATT_ID
+		WHERE
+		    TGAR.PROD_CD = #prodCd#
+		AND TGAR.SEQ = #seq#
+        AND (GARS.SEQ IS NULL OR GARS.SEQ = '')
+    </select>
+
+
+	<resultMap id="selectGrpAttrSelectedOptInfoMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 	property="ATT_ID"	nullValue="" /> 
+		<result column="ATT_VAL_ID" 	property="ATT_VAL_ID"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	
+    <!-- 분석속성 저장한 값 불러오기 -->
+    <select id="selectGrpAttrSelectedOptInfo" parameterClass="String" resultMap="selectGrpAttrSelectedOptInfoMap">
+        /* NEDMPRO0090.selectGrpAttrSelectedOptInfo */
+        SELECT 
+            ATT_ID
+          , ATT_VAL_ID
+          , CHG_FG
+        FROM
+            TPC_GRP_ATT_TMP
+        WHERE
+            PROD_CD = #prodCd#
+    </select>
+ 
+ 
+	<resultMap id="selectGrpAttrEcoSavedOptInfoMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 		property="ATT_ID"		nullValue="" /> 
+		<result column="ATT_VAL_ID" 	property="ATT_VAL_ID"	nullValue="" />
+		<result column="CHG_FG"			property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	
+	   
+    <!-- ECO에 저장되어있는 분석속성 값 불러오기 -->
+	<select id="selectGrpAttrEcoSavedOptInfo" parameterClass="String"  resultMap="selectGrpAttrEcoSavedOptInfoMap">
+        /* NEDMPRO0090.selectGrpAttrEcoSavedOptInfo */
+        SELECT 
+            ATT_ID
+          , ATT_VAL_ID
+          , 'M' AS CHG_FG
+        FROM
+            GRP_ATT_PROD_SAP
+        WHERE
+            PROD_CD = #prodCd#
+        AND COALESCE(LOEKZ, ' ') != 'D'
+    </select> 
+    
+    <!-- 분석속성 속성변경가능구분 수정 -->
+    <update id="updateModifyStatusAttr" parameterClass="nedmpro0090vo" >
+    	/* NEDMPRO0090.updateModifyStatusAttr */
+		UPDATE 
+            TPC_GRP_ATT_TMP
+        SET
+            CHG_FG   = #chgFg#
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+<!--           , MOD_ID   = #entpCd# -->
+          , MOD_ID   = #modId#
+        WHERE
+            PROD_CD = #prodCd#   
+    </update>
+    
+    <!-- 분석속성 요청정보 있는지 확인  -->
+     <select id="selectCntGrpReq" parameterClass="nedmpro0090vo" resultClass="Integer">
+	/* NEDMPRO0090.selectCntGrpReq */
+        SELECT 
+            COUNT(*) AS CNT
+        FROM
+            TPC_GRP_ATT_REQ
+        WHERE
+            PROD_CD = #prodCd#
+        AND SEQ = #seq#
+    </select> 
+    
+	<!-- 요청분석속성 저장 -->
+    <insert id="insertGrpAttOptReq" parameterClass="java.util.Map">
+        /* NEDMPRO0090.insertGrpAttOptReq */
+        INSERT INTO 
+            TPC_GRP_ATT_REQ
+            (
+                SEQ
+              , PROD_CD
+              , ATT_VAL_iD
+              , ATT_ID
+              , APRV_FG
+              , REG_DT
+              , REG_TM
+              , REG_ID
+            )
+            VALUES
+            (
+                #SEQ#
+              , #PROD_CD#
+              , #ATT_VAL_ID#
+              , #ATT_ID#
+              , #APRV_FG#
+              , #REG_DT#
+              , #REG_TM#
+              , #REG_ID#
+            )
+    </insert>
+    
+   	<!-- 요청분석속성 삭제 -->
+    <delete id="deleteGrpAttOptReq" parameterClass="nedmpro0090vo">
+    	/* NEDMPRO0090.deleteGrpAttOptReq */
+		DELETE FROM TPC_GRP_ATT_REQ
+		WHERE PROD_CD = #prodCd#
+		AND SEQ     = #seq#::VARCHAR
+    </delete>
+</sqlMap>

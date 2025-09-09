@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMMNT0010">
+	
+	<typeAlias alias="SRMMNT0010VO"		type="com.lottemart.epc.edi.srm.model.SRMMNT0010VO"/>
+
+	<!--메일 인증 확인 resultMap-->
+	<resultMap id="selectCEOSRMmoniteringLoginResultMap" class="SRMMNT0010VO">
+		<result column="AUTH_MAX_CNT" 					property="authMaxCnt"					/><!---->
+		<result column="AUTH_CNT" 						property="authCnt"						/><!---->
+		<result column="AUTH_CD" 						property="authCd"						/><!---->
+	</resultMap>
+
+	<!--메일 인증 확인-->
+	<select id="selectCEOSRMmoniteringLogin" parameterClass="SRMMNT0010VO" resultMap="selectCEOSRMmoniteringLoginResultMap">
+		/*SRMMNT0010.selectCEOSRMmoniteringLogin*/
+		SELECT
+				AUTH_MAX_CNT
+				,AUTH_CNT
+				,AUTH_CD
+		FROM
+				SSUGL_CEO_AUTH
+		WHERE
+				IRS_NO = #irsNo#
+			AND EMAIL = #email#
+	</select>
+
+	<!--대표자 로그인 횟수 update-->
+	<update id="updateCEOSRMmoniteringLogin" parameterClass="SRMMNT0010VO">
+		/*SRMMNT0010.updateCEOSRMmoniteringLogin*/
+		UPDATE 	SSUGL_CEO_AUTH
+		SET
+				AUTH_CNT = NVL(AUTH_CNT,0)+1
+				,CHANGE_DATE = CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID = #irsNo#
+		WHERE
+				IRS_NO = #irsNo#
+			AND EMAIL = #email#
+			AND AUTH_CD = #authCd#
+	</update>
+
+	<!--대표자 로그인 로그-->
+	<insert id="insertCEOSRMmoniteringLoginLog" parameterClass="SRMMNT0010VO">
+		/*SRMMNT0010.insertCEOSRMmoniteringLoginLog*/
+		INSERT INTO SSUGL_CEO_AUTH_H
+					(AUTH_DT
+					,AUTH_SEQ
+					,IRS_NO
+					,EMAIL
+					,AUTH_MAX_CNT
+					,AUTH_DATE
+					,IP_ADDRESS)
+		VALUES
+					(TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMM')
+					,(SELECT NVL(MAX(AUTH_SEQ),0)+1 FROM SSUGL_CEO_AUTH_H)
+					,#irsNo#
+					,#email#
+					,#authMaxCnt#
+					,CURRENT_TIMESTAMP(0)
+					,#ipAddress#)
+	</insert>
+</sqlMap>
+

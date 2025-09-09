@@ -1,0 +1,166 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: main.css
+ * description	: main, CSS import
+ * date			: 2011.08.06
+************************************************************************/
+
+@import url(layout.css);
+
+body	{background:url('/images/front/common/bg-gnb-main.gif') repeat-x 0 0 #FFF;}
+
+#wrap	#contents, #UxWrapper	#contents	{width:960px; padding:0 0 0 0;}
+
+/*library*/
+.library_wrap	{position:relative; z-index:100; width:950px; margin-top:-8px;}
+.library_wrap	.fl_lib	{float:left;}
+.library_wrap	.fl_lib	ul	{float:left; height:64px;}
+.library_wrap	.fl_lib	li	{float:left; width:106px; height:54px; padding-top:10px; background:url('/images/front/common/line-fl-lib.gif') no-repeat right bottom; word-break:keep-all; white-space:nowrap}
+.library_wrap	.fl_lib	li	a	{width:105px; display:block;}
+.library_wrap	.fl_lib	li	a	span.lib_img	{cursor:pointer}
+.library_wrap	.fl_lib	li	a	span.lib_txt	{display:block; font:normal 12px malgun, "Malgun Gothic"; color:#999; text-align:center; line-height:14px;}
+.library_wrap	.fl_lib	li	a:hover	{color:#ee1c24; text-decoration:none}
+.library_wrap	.fl_lib	li	a:hover	span.lib_txt	{color:#ee1c24;}
+.library_wrap	.fl_lib	.lib_made {float:left; width:530px; padding-left:22px; background:url('/images/front/common/flag-lib-made.gif') no-repeat 0 0;}
+.library_wrap	.fl_lib	.lib_recommend {float:left; width:212px; padding-left:56px; background:url('/images/front/common/flag-lib-recommend.gif') no-repeat 34px 0;}
+.fl_history	{padding-top:20px;}
+.fl_history	.click_btn_dsc	{top:52px;}
+
+.leaflet_wrap	{position:relative; z-index:1; width:1000px; height:1px; margin:10px -21px 0 -20px;}
+.leaflet_wrap	.lf_menu	{position:absolute; z-index:5; left:0; top:9px; height:38px; overflow:hidden;}
+.leaflet_wrap	.lf_menu	p	{float:left;}
+.leaflet_wrap	.lf_menu	p.prev	{width:36px; height:38px;}
+.leaflet_wrap	.lf_menu	p.next	{width:38px; height:38px;}
+.leaflet_wrap	.lf_menu	p	a	img	{margin-top:0;}
+.leaflet_wrap	.lf_menu	p	a:hover	img	{margin-top:-38px;}
+.leaflet_wrap	.lf_menu	ul	{float:left; height:38px;}
+.leaflet_wrap	.lf_menu	li	{float:left;}
+.leaflet_wrap	.lf_menu	li	a	img	{margin-top:0;font-size:0;}
+.leaflet_wrap	.lf_menu	li	a:hover	img	{margin-top:-38px;}
+.leaflet_wrap	.lf_menu	li.on	a	img	{margin-top:-38px;}
+.leaflet_wrap	.lf_menu	li.on	a:hover	img	{margin-top:-38px;}
+
+.leaflet	{position:relative; z-index:0; width:1000px; height:871px; margin:-1px 0 0 -20px; overflow:hidden;}
+.leaflet	h2	{position:absolute; left:388px; top:15px; width:204px; text-align:center;}
+.leaflet	.lf_date	{position:absolute; left:780px; top:23px; width:160px; font:normal 12px malgun, "Malgun Gothic"; color:#999; text-align:right;}
+.leaflet	.btn_cart	{display:none; position:absolute; z-index:100; width:62px;}
+.leaflet_1	{position:absolute; left:0; top:0; z-index:1;}
+.leaflet_2	{position:absolute; left:1000px; top:0; z-index:1;}
+.leaflet_3	{position:absolute; left:2000px; top:0; z-index:1;}
+.leaflet_4	{position:absolute; left:3000px; top:0; z-index:1;}
+
+/* 금주전단 */
+.leaflet_1	.box_leaflet	{width:1000px; background:url('/images/front/home/box-start.gif') repeat-y 20px 0;}
+.leaflet_1	.box_leaflet_t	{background:url('/images/front/home/box-start-top.gif') no-repeat 20px 0;}
+.leaflet_1	.box_leaflet_b	{height:871px; background:url('/images/front/home/box-start-bottom.gif') no-repeat 20px bottom;}
+.leaflet_1	.lf_plan	{position:absolute; left:35px; top:62px; width:629px; height:342px;}
+.leaflet_1	.lf_event	{position:absolute; left:664px; top:62px; width:306px; height:171px; overflow:hidden;}
+.leaflet_1	.lf_event	.lf_num	{left:16px; bottom:15px;}
+.leaflet_1	.lf_todays_hot	{position:absolute; left:664px; top:233px; width:306px; height:171px;}
+.leaflet_1	.lf_theme	{position:absolute; left:503px; top:404px; width:465px; height:452px;}
+.leaflet_1	.lf_goods	{position:absolute; left:35px; top:404px; width:483px;}
+.leaflet_1	.lf_goods	.goods_list	{width:100%; background:url('/images/front/home/line-leaflet-1-goods.gif') repeat-y 0 0; overflow:hidden; zoom:1;}
+.leaflet_1	.lf_goods	.goods_list	li	{float:left; width:146px; height:224px; padding:0 15px 0 0; _padding:0 15px 0 0;}
+
+/* 신선식품 */
+.leaflet_2	.box_leaflet	{width:1000px; background:url('/images/front/home/box-leaflet.gif') repeat-y 0 0;}
+.leaflet_2	.box_leaflet_t	{background:url('/images/front/home/box-leaflet-top.gif') no-repeat 0 0;}
+.leaflet_2	.box_leaflet_b	{height:871px; background:url('/images/front/home/box-leaflet-bottom.gif') no-repeat 0 bottom;}
+.leaflet_2	.lf_plan	{position:absolute; left:341px; top:62px; width:629px; height:228px;}
+.leaflet_2	.lf_plan	.lf_num	{left:28px; bottom:25px;}
+.leaflet_2	.lf_event	{position:absolute; left:35px; top:62px; width:306px; height:342px;}
+.leaflet_2	.lf_event	li	{line-height:0;}
+.leaflet_2	.lf_todays_hot	{position:absolute; left:35px; top:404px; width:306px; height:224px; overflow:hidden; zoom:1;}
+.leaflet_2	.lf_todays_hot	li	{float:left;}
+.leaflet_2	.lf_theme	{position:absolute; left:341px; top:290px; width:629px; height:337px;}
+.leaflet_2	.lf_goods	{position:absolute; left:35px; top:628px; width:980px;}
+.leaflet_2	.lf_goods	.goods_list	{width:100%; background:url('/images/front/home/line-leaflet-2-goods.gif') repeat-y 0 0; overflow:hidden; zoom:1;}
+.leaflet_2	.lf_goods	.goods_list	li	{float:left; width:146px; height:223px; padding:0 15px 0 0; _padding:0 15px 0 0;}
+
+/* 가공 */
+.leaflet_3	.box_leaflet	{width:1000px; background:url('/images/front/home/box-leaflet.gif') repeat-y 0 0;}
+.leaflet_3	.box_leaflet_t	{background:url('/images/front/home/box-leaflet-top.gif') no-repeat 0 0;}
+.leaflet_3	.box_leaflet_b	{height:871px; background:url('/images/front/home/box-leaflet-bottom.gif') no-repeat 0 bottom;}
+.leaflet_3	.lf_plan	{position:absolute; left:35px; top:62px; width:629px; height:342px;}
+.leaflet_3	.lf_event	{position:absolute; left:664px; top:62px; width:306px; height:342px;}
+.leaflet_3	.lf_event	li	{line-height:0;}
+.leaflet_3	.lf_todays_hot	{position:absolute; left:35px; top:627px; width:628px; height:224px;}
+.leaflet_3	.lf_goods	{position:absolute; left:35px; top:404px; width:980px;}
+.leaflet_3	.lf_goods	.goods_list	{width:100%; height:447px; background:url('/images/front/home/line-leaflet-3-goods.gif') repeat-y 0 0; overflow:hidden; zoom:1;}
+.leaflet_3	.lf_goods	.goods_list	li	{float:left; width:146px; height:224px; padding:0 15px 0 0; _padding:0 15px 0 0;}
+.leaflet_3	.lf_goods	.goods_list	.r1	{position:absolute; left:644px; top:223px;}
+.leaflet_3	.lf_goods	.goods_list	.r2	{position:absolute; left:805px; top:223px;}
+
+/* 유아 아동 */
+.leaflet_4	.box_leaflet	{width:1000px; background:url('/images/front/home/box-leaflet.gif') repeat-y 0 0;}
+.leaflet_4	.box_leaflet_t	{background:url('/images/front/home/box-leaflet-top.gif') no-repeat 0 0;}
+.leaflet_4	.box_leaflet_b	{height:871px; background:url('/images/front/home/box-leaflet-bottom.gif') no-repeat 0 bottom;}
+.leaflet_4	.lf_todays_hot	{position:absolute; left:35px; top:62px; width:306px; height:566px;}
+.leaflet_4	.lf_todays_hot	li	{float:left;line-height:0;}
+.leaflet_4	.lf_plan	{position:absolute; left:341px; top:62px; width:629px; height:395px;}
+.leaflet_4	.lf_event{position:absolute; left:341px; top:457px; width:629px; height:171px; overflow:hidden;}
+.leaflet_4	.lf_event	li	{float:left;}
+.leaflet_4	.lf_goods	{position:absolute; left:35px; top:628px; width:980px;}
+.leaflet_4	.lf_goods	.goods_list	{width:100%; background:url('/images/front/home/line-leaflet-4-goods.gif') repeat-y 0 0; overflow:hidden; zoom:1;}
+.leaflet_4	.lf_goods	.goods_list	li	{float:left; width:146px; height:223px; padding:0 15px 0 0; _padding:0 15px 0 0;}
+
+
+
+.lf_banner	{width:100%; height:100%; overflow:hidden;}
+.lf_num	{position:absolute; overflow:hidden;}
+.lf_num	li	{float:left; font:normal 12px CoHead;}
+.lf_num	li	a,	.lf_num	li	a:active	{display:inline-block; padding:5px; font:normal 12px CoHead; color:#999;}
+.lf_num	li	a:hover {color:#333; text-decoration:none}
+.lf_num	li.on	a,	.lf_num	li.on	a:active,	.lf_num	li.on	a:hover	{color:#333;}
+
+.main_common	{width:100%; height:248px; overflow:hidden; margin-top:10px; border-top:1px solid #eaeaea; border-bottom:1px solid #eaeaea;}
+.main_common	.only_lotte	{position:relative; float:left; width:321px; height:248px; border-right:1px solid #eaeaea;}
+.main_common	.only_lotte	.lf_num	{right:15px; top:11px;}
+.main_common	.m_theme	{position:relative; float:left; width:321px; height:248px; border-right:1px solid #eaeaea;}
+.main_common	.m_theme	.lf_num	{right:15px; top:11px;}
+.main_common	.m_recipe	{float:left; width:316px; height:154px; border-bottom:1px solid #eaeaea;}
+.main_common	.m_notice	{float:left; width:316px; height:32px; padding-top:14px; border-bottom:1px solid #eaeaea;}
+.main_common	.m_winners	{float:left; width:316px; height:32px; padding-top:14px;}
+.m_notice	h3.m_tit	{float:left; width:66px; padding-top:3px; text-align:right;}
+.m_notice	.jq_marquee	{float:left; width:162px; height:18px; overflow:hidden; padding-left:15px;}
+.m_notice	.jq_marquee	p	{width:100%; font:normal 12px malgun, "Malgun Gothic"; line-height:18px;}
+.m_notice	.btn	{float:left; width:56px;}
+.m_winners	h3.m_tit	{float:left; width:66px; padding-top:3px; text-align:right;}
+.m_winners	.jq_marquee	{float:left; width:162px; height:18px; overflow:hidden; padding-left:15px;}
+.m_winners	.jq_marquee	p	{width:100%; font:normal 12px malgun, "Malgun Gothic"; line-height:18px;}
+.m_winners	.btn	{float:left; width:56px;}
+
+/*button*/
+.btn_c_wrap	{text-align:center;}
+.btn_c_wrap_20	{margin-top:20px; text-align:center;}
+.btn_wrap	{display:block; width:100%; height: 1%; *zoom:1;}
+.btn_wrap:after {content:""; display:block; clear:both; height:0; visibility:hidden; font-size:0;}
+/* Hides from IE-mac \*/
+.btn_wrap	{display:inline-block;}
+.btn_wrap	{display:block;}
+.btn_wrap	{display: block;}
+/* End hide from IE-mac */
+.btn_wrap	.btn_l	{float:left;}
+.btn_wrap	.btn_r	{float:right;}
+
+/*button : white button*/
+.btn_white	{display:inline-block; *display:inline; min-width:1%; background:url('/images/front/common/btn-white-r.gif') no-repeat right top; vertical-align:middle}
+.btn_white span	{display:inline-block; background:url('/images/front/common/btn-white-l.gif') no-repeat left top; color:#666; font-size:16px; font-weight:bold;}
+.btn_white a	{display:inline-block; min-width:100px; height:32px; padding:18px 20px 0 20px; *height:37px; *padding:13px 20px 0 20px; *line-height:20px; font-weight:bold; white-space:nowrap; text-align:center;}
+.btn_white a:hover,	.btn_white a:link,	.btn_white a:visited,	.btn_white a:active	{color:#666; text-decoration:none;}
+.btn_white	span	span	{display:inline-block; min-width:100px; height:32px; padding:18px 20px 0 20px; *height:37px; *padding:13px 20px 0 20px; *line-height:20px; font-weight:bold; color:#666; white-space:nowrap; text-align:center;}
+.btn_white	input	{height:50px; border:none; background:url('/images/front/common/btn-white-l.gif') no-repeat left top; color:#666; font:bold 16px malgun, "Malgun Gothic"; cursor:pointer}
+
+.btn_w_s	{background:url('/images/front/common/btn-w-small-l.gif') no-repeat left top; padding-left:3px;}
+.btn_w_s	span	 {background:url('/images/front/common/btn-w-small-r.gif') no-repeat right top; font-weight:normal;}
+.btn_w_s	a	{min-width:1px; height:22px; margin-left:-3px; padding:8px 14px 0 14px; *height:24px; *padding:6px 14px 0 14px; line-height:16px !important; font-weight:normal !important;}
+	:root	.btn_w_s	a	{height:24px; padding:6px 14px 0 14px;}
+.btn_w_s	span	span	{min-width:1px; height:22px; padding:8px 17px 0 14px; *height:24px; *padding:6px 17px 0 14px; line-height:16px !important; font-weight:normal !important;}
+	:root	.btn_w_s	span	span	{height:24px; padding:6px 17px 0 14px;}
+.btn_w_s	input	{height:30px; border:none; background:url('/images/front/common/btn-w-small-r.gif') no-repeat right top; font-weight:normal; cursor:pointer}
+
+.btn_w_arr_ls	{background:url('/images/front/common/btn-w-lsmall-l.gif') no-repeat left top; padding-left:3px;}
+.btn_w_arr_ls	span	 {background:url('/images/front/common/btn-w-lsmall-arr-r.gif') no-repeat right top; color:#999; font-family:Dotum !important; font-size:11px;}
+.btn_w_arr_ls	a	{min-width:1px; height:16px; margin-left:-3px; padding:4px 15px 0 10px; *height:19px; *padding:1px 10px 0 10px; color:#999; font-weight:normal !important;}
+.btn_w_arr_ls	span	span	{min-width:1px; height:16px; margin-left:0; padding:4px 15px 0 10px; *height:19px; *padding:1px 10px 0 10px; color:#999; font-weight:normal !important;}
+.btn_w_arr_ls a:hover,	.btn_w_arr_ls a:link,	.btn_w_arr_ls a:visited,	.btn_w_arr_ls a:active	{color:#999;}

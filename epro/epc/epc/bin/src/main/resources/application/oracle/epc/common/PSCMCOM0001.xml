@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EpcLogin">
+
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <!-- 클라이언트로그인정보 조회 -->
+    <select id="getClientLoginInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.getClienLoginInfo */
+           VENDOR_ID AS VEN_CD
+         , MAX(VENDOR_NM) as VEN_NM
+         , MAX(CONO) as BMAN_NO
+         , NVL(MAX(VENDOR_TYPE_CD),'') AS VEN_TYPE_CD
+         , NVL(MAX(TRD_TYP_FG),'') AS TRD_TYP_FG
+         , NVL(MAX(TRD_TYP_NM),'') AS TRD_TYP_NM
+      FROM ( SELECT VENDOR_ID
+                  , VENDOR_NM
+                  , CONO
+                  , (SELECT '06'
+                       FROM TVE_VENDOR
+                      WHERE CONO = EV.CONO
+                        AND VENDOR_ID IN (SELECT LET_1_REF
+                                            FROM TET_CODE
+                                           WHERE MAJOR_CD = 'ET036'
+                                             AND USE_YN = 'Y')
+                        LIMIT 1) AS VENDOR_TYPE_CD
+                  , TRD_TYP_FG, FN_GET_CODE_NM('SRR02', TRD_TYP_FG) AS TRD_TYP_NM 
+               FROM TVE_VENDOR EV
+              WHERE 1=1
+                <isNotEmpty prepend="AND" property="cono"> <iterate prepend="CONO IN" property="cono" open="(" close=")" conjunction=","> #cono[]# </iterate> </isNotEmpty>
+           )
+     GROUP BY  VENDOR_ID
+     ORDER BY  VENDOR_ID
+    </select>
+
+    <!-- ADMIN정보 조회 -->
+    <select id="checkAdminInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkAdminInfo */
+           ADMIN_NM
+         , PWD
+         , ADMIN_TYPE_CD
+      FROM TAD_ADMIN
+     WHERE LOGIN_ID = #loginId#
+       AND ACTIVE_YN = 'Y'
+    </select>
+
+    <!-- happy call 정보 조회 -->
+    <select id="checkHappyInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkHappyInfo */
+           ADMIN_NM
+         , PWD
+         , ADMIN_TYPE_CD
+      FROM TAD_ADMIN A
+         , TAD_ADMIN_ROLE_ASSIGN B
+     WHERE A.ADMIN_ID = B.ADMIN_ID
+       AND B.ROLE_ID = 'P00000020'
+       AND A.ACTIVE_YN = 'Y'
+       AND A.LOGIN_ID = #loginId#
+    </select>
+
+    <!-- 제휴사 정보 조회 -->
+    <select id="checkAllianceInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkAllianceInfo */
+           ADMIN_NM
+         , PWD
+         , ADMIN_TYPE_CD
+      FROM TPC_ALLIANCE
+     WHERE ACTIVE_YN = 'Y'
+       AND LOGIN_ID = #loginId#
+    </select>
+
+    <select id="checkClientInfo" resultClass="dataMap">
+    SELECT /* EpcLogin.checkClientInfo */
+           USER_ID
+         , USER_NM
+         , PWD
+         , MKUS_PSBT_IP AS ip
+      FROM TOA_USER
+     WHERE MKUS_PSBT_IP = #ip#
+       <isNotEmpty property="id">AND USER_ID = #id#</isNotEmpty>
+       <isNotEmpty property="pwd">AND PWD = #pwd#</isNotEmpty>
+       LIMIT 1
+    </select>
+
+	<!-- 클라이언트로그인정보 조회 -->
+	<!--<select id="getClientLoginInfo20120510bak" resultClass="dataMap">
+	SELECT /* EpcLogin.getClienLoginInfobak */
+	       DISTINCT VEN_CD
+	      ,VEN_NM
+	      ,BMAN_NO
+	FROM   TED_VENDOR
+	WHERE  1 = 1
+	<isNotEmpty prepend="AND" property="cono">
+		<iterate prepend="BMAN_NO IN" property="cono" open="(" close=")" conjunction=",">
+		#cono[]#
+		</iterate>
+	</isNotEmpty>
+	ORDER BY BMAN_NO, VEN_CD
+	</select>-->
+
+	<!-- 클라이언트로그인정보 조회 -->
+	<!--<select id="getClientLoginInfo20120530bak" resultClass="dataMap">
+	SELECT /* EpcLogin.getClientLoginInfo20120530bak */
+	       DISTINCT VEN_CD,VEN_NM
+	FROM   TED_VENDOR
+	WHERE  1 = 1
+	<isNotEmpty prepend="AND" property="cono">
+		<iterate prepend="BMAN_NO IN" property="cono" open="(" close=")" conjunction=",">
+		#cono[]#
+		</iterate>
+	</isNotEmpty>
+	ORDER BY  VEN_CD
+	</select>-->
+	
+	<update id="updateLastLoginDate">
+	/* EpcLogin.updateLastLoginDate */
+	    UPDATE TAD_ADMIN
+		    SET LAST_LOGIN_DATE = CURRENT_TIMESTAMP(0)
+		    <!-- , MOD_DATE = CURRENT_TIMESTAMP(0) -->
+		    , MOD_ID = 'hpcLogin'
+		WHERE LOGIN_ID = #loginId#
+    </update>
+
+</sqlMap>

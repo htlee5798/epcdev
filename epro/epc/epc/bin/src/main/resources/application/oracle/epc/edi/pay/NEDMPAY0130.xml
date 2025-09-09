@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0130">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	<!-- 잔액조회 -->
+	<typeAlias alias="NEDMPAY0130VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0130VO" />
+	<resultMap id="NEDMPAY0130VOMap" class="NEDMPAY0130VO">
+		<result property="buyYm" 		column="BUY_YM" />
+		<result property="strCd" 		column="STR_CD" />
+		<result property="strNm" 		column="STR_NM" />
+		<result property="bmanNo" 		column="BMAN_NO" />
+		<result property="remBuyAmt" 		column="REM_BUY_AMT" />
+		<result property="remVat" 		column="REM_VAT" />
+		<result property="remSum" 		column="REM_SUM" />
+	</resultMap>
+
+	<select id="TSC_CRED_LED_STORE-SELECT01" resultMap="NEDMPAY0130VOMap" parameterClass="NEDMPAY0130VO">
+		/* NEDMPAY0130.TSC_CRED_LED_STORE-SELECT01 */
+		SELECT	A.BUY_YM
+			,	B.STR_CD
+			,	B.STR_NM
+			,	A.BMAN_NO
+			,	NVL(SUM(REM_BUY_AMT), 0) AS REM_BUY_AMT
+			,	NVL(SUM(REM_VAT), 0) AS REM_VAT
+			,	NVL(SUM(REM_BUY_AMT), 0) + NVL(SUM(REM_VAT), 0) AS REM_SUM
+		FROM 	TPC_CRED_BUY_LED A INNER JOIN STORE B ON A.STR_CD = B.STR_CD
+		WHERE 	BUY_YM BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>	
+			</isEmpty>
+						
+			<isNotEmpty prepend="AND" property="searchEntpCd">
+				VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty  property="searchStoreAl"  prepend="AND">
+				<iterate prepend="B.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+		
+		GROUP BY A.BUY_YM, B.STR_CD, B.STR_NM, A.BMAN_NO
+		ORDER BY A.BUY_YM, A.BMAN_NO, B.STR_CD
+	</select>
+
+</sqlMap>

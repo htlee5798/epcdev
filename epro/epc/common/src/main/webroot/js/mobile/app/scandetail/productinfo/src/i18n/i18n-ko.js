@@ -1,0 +1,11 @@
+export const TITLE_PRODUCTINFO = '상품기본정보';
+export const TITLE_ZOOM_VIEW = '상품 이미지 확대보기';
+export const UNIT = '원';
+export const TEXT_CURRPRICE = '판매가';
+export const TEXT_MAXPURCHASE = '최저가';
+export const TEXT_PERIOD = '정기배송가';
+export const TITLE_RANK = (rank) => `주간판매 ${rank}위`;
+export const TAG_NAME_EXPERIENCE = '체험매장상품';
+export const TITLE_POPUP_MAXPURCHASE = '최저가 안내';
+export const BTN_CLOSE = '닫기';
+export const DESCRIPTION_MAXPURCHASE = '구매 예정 금액과 상이할 수 있습니다.';

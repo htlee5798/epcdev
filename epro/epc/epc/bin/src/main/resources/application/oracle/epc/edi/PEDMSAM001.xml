@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSAM001">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<select id="TSC_ORD_PROD-SELECT01" parameterClass="map" resultClass="resultClass">
+	  SELECT  TO_CHAR(TO_DATE(TSC_ORD_PROD.PUR_DY,'yyymmdd'),'YYYY-MM-DD') PUR_DY
+	         ,TSC_ORD_PROD.PROD_CD
+	         ,TSC_ORD_PROD.PROD_NM
+	         ,TSC_ORD_PROD.PUR_INRCNT_QTY
+	         ,TSC_ORD_PROD.PUR_UNIT_CD
+	         ,TET_CODE.CD_NM AS PUR_UNIT_CD_NM
+	         ,SUM(TSC_ORD_PROD.PUR_QTY)  AS PUR_QTY
+	         ,SUM(TSC_ORD_PROD.PCOST)    AS PCOST
+	    FROM TSC_ORD_PROD
+	        ,TSC_VENDOR
+	        ,TET_CODE
+	  WHERE TSC_ORD_PROD.ENTP_CD = TSC_VENDOR.ENTP_CD
+	    AND TET_CODE.MAJOR_CD = 'CSA01' 
+	    AND TET_CODE.MINOR_CD = TSC_ORD_PROD.PUR_UNIT_CD
+	    <isNotEmpty prepend="AND" property="bmanNos"> 
+	      <iterate prepend="TSC_VENDOR.BMAN_NO IN " property="bmanNos" open="(" close=")" conjunction=","> 
+	        #bmanNos[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    <isNotEmpty prepend="AND" property="entp_cd"> 
+	    	TSC_ORD_PROD.ENTP_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="startDate">
+	     	<isNotEmpty  property="endDate">
+	     		AND TSC_ORD_PROD.PUR_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	     	</isNotEmpty> 
+	     </isNotEmpty>
+	     
+         GROUP BY 
+	          TSC_ORD_PROD.PUR_DY
+	         ,TSC_ORD_PROD.PROD_CD
+	         ,TSC_ORD_PROD.PROD_NM
+	         ,TSC_ORD_PROD.PUR_INRCNT_QTY
+	         ,TSC_ORD_PROD.PUR_UNIT_CD
+	         ,TET_CODE.CD_NM 
+</select>
+ 
+</sqlMap>

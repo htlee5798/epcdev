@@ -1,0 +1,131 @@
+	a:link {text-decoration:none;}
+	a:visited {text-decoration:none;; color: #006699}
+	a:active {text-decoration:none; color:5b5b5b}
+	a:hover { color:000000 }
+	td, th {font-size:9pt; font-family:굴림}
+	input {font-size:9pt; font-family:굴림}
+.unnamed1 {  }
+.title {color:#000033; font-size : 10pt;}
+.subtitle {color:#000033;}
+.ttxt {color:#3E4859; }
+.ttxtb {color:#3E4859; font-weight: bold;}
+.ttxt1 {color:#666666; }
+.atr {color:#ECEAEA; }
+.atd {color:#E8EDEE; }
+.atdtitle {color:#3E4859; font-weight: bold;}
+.copyright {color:#666666; font-size:9pt;}
+
+.input_basic {
+	BORDER-RIGHT: #959595 1px solid; BORDER-TOP: #959595 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #959595 1px solid; COLOR: #000000; BORDER-BOTTOM: #959595 1px solid; FONT-FAMILY: "Arial", "굴림"; BACKGROUND-COLOR: #ffffff
+}
+.input_black {
+	BORDER-RIGHT: #4b4b4b 1px solid; BORDER-TOP: #4b4b4b 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #4b4b4b 1px solid; COLOR: #000000; BORDER-BOTTOM: #4b4b4b 1px solid; FONT-FAMILY: "Arial", "굴림"; BACKGROUND-COLOR: #ffffff
+}
+.input_else {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+.input_hidden {
+	BORDER-RIGHT: #ffffff 1px ; BORDER-TOP: #ffffff 1px ; FONT-SIZE: 9pt; BORDER-LEFT: #ffffff 1px ; COLOR: #000000; BORDER-BOTTOM: #ffffff 1px solid; FONT-FAMILY: "Arial", "굴림"; BACKGROUND-COLOR: #ffffff
+}
+.input_num {
+	BORDER-RIGHT: #959595 1px solid; BORDER-TOP: #959595 1px solid; FONT-SIZE: 9pt; BORDER-LEFT: #959595 1px solid; COLOR: #000000; BORDER-BOTTOM: #959595 1px solid; FONT-FAMILY: "Arial", "굴림"; BACKGROUND-COLOR: #ffffff; text-align:right;
+}
+
+.box
+{
+    BORDER-RIGHT: 1px solid;
+    BORDER-TOP: 1px solid;
+    FONT-SIZE: 8pt;
+    BORDER-LEFT: 1px solid;
+    COLOR: #3c3c3c;
+    BORDER-BOTTOM: 1px solid;
+    HEIGHT: 14pt;
+    BACKGROUND-COLOR: #ffffff
+}
+.box1
+{
+    BORDER-RIGHT: 1px solid;
+    BORDER-TOP: 1px solid;
+    FONT-SIZE: 8pt;
+    BORDER-LEFT: 1px solid;
+    COLOR: #3c3c3c;
+    BORDER-BOTTOM: 1px solid;
+    BACKGROUND-COLOR: #e6e4e1
+}
+.box2
+{
+    BORDER-RIGHT: 0px solid;
+    BORDER-TOP: 0px solid;
+    FONT-SIZE: 9pt;
+    BORDER-LEFT: 0px solid;
+    COLOR: #3c3c3c;
+    BORDER-BOTTOM: 0px solid;
+    HEIGHT: 14pt;
+    BACKGROUND-COLOR: #ffffff
+}
+
+.noticetxt_051031 
+{
+	font-family:굴림;
+	color:#000000; font-size:12px;
+}
+
+.noticetxt_051031_2 
+{
+	font-family:굴림;
+	color:#ffffff; font-size:12px;
+}
+
+.noticetxt_051031_title
+{
+	font-family:굴림;
+	color:#000000; font-size:18px;
+	font-weight:bold;
+}
+
+.stepStyle
+{
+	font-family:굴림;
+	color:#a7a6aa; font-size:15px;	
+}
+/* 이용약관 */
+.terms_box
+{
+	position:relative;	
+	margin-top:11px;
+	padding:8px 10px;
+	border:1px solid #f0f0f0;
+	scrollbar-base-color:#d9d9d9;
+	scrollbar-3dlight-color:#d9d9d9;
+	scrollbar-darkshadow-color:#d9d9d9;
+	scrollbar-face-color:#d9d9d9;
+	scrollbar-highlight-color:#d9d9d9;
+	scrollbar-shadow-color:#d9d9d9;
+	scrollbar-track-color:#f2f2f2;
+	-webkit-overflow-scrolling:touch;
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	overflow:auto;
+	height:300px;
+	}
+.article {
+	margin-top: 10px;
+}
+.article .article__title,
+.clause .clause__title,
+.paragraph .paragraph__title {
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 16px;
+}
+.article .article__text {}
+
+table.type4 {width:100%;}
+table.type4 th,
+table.type4 td { border:1px solid #cbd5e1; font-size:13px;	font-size: 12px; font-weight: bold; line-height:1.5em;}
+table.type4 thead th { padding:6px; color:#445571; background:#f5f5f5;}
+table.type4 tr th { padding:6px; color:#445571; background:#f5f5f5;}
+table.type4 tbody td {padding:3px; line-height:1.5em;}
+table.type4 td.tdm {padding:3px; text-align:center;}
+table.type4 td.tdr {padding:3px; text-align:right;}

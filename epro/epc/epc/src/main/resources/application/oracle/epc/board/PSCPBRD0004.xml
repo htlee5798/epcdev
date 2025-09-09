@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+    <sqlMap namespace="PSCPBRD0004">
+		<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+		<typeAlias alias="pscpbrd0004SearchVO" type="com.lottemart.epc.board.model.PSCPBRD0004SearchVO"/>
+
+    <resultMap id="viewcounselDetail" class="com.lottemart.epc.board.model.PSCPBRD0004SearchVO">
+		<result property="counselSeq" column="COUNSEL_SEQ"/>
+		<result property="clmLgrpCd" column="CLM_LGRP_CD_NM"/>
+		<result property="clmMgrpCd" column="CLM_MGRP_CD_NM"/>
+		<result property="acceptLocaCd" column="ACCEPT_LOCA_CD_NM"/>
+		<result property="memberNo" column="MEMBER_NO"/>
+		<result property="email" column="EMAIL"/>
+		<result property="cellNo" column="TELL_NO"/>
+		<result property="title" column="TITLE"/>
+		<result property="content" column="CONTENT"/>
+		<result property="orderId" column="ORDER_ID"/>
+		<result property="regDate" column="REG_DATE"/>
+		<result property="acceptId" column="ACCEPT_ID"/>
+		<result property="ansMngrId" column="ACCEPT_NM"/> 
+		<result property="delYn" column="DEL_YN"/>
+		<result property="strNm" column="STR_NM"/>
+		<result property="memoTC" column="MEMO_TC"/>
+		<result property="memoTCT" column="MEMO_TCT"/>
+		<result property="answer" column="ANSWER"/>
+		<result property="boardPrgsStsCd" column="BOARD_PRGS_STS_CD"/>
+		<result property="boardPrgsStsCdNm" column="BOARD_PRGS_STS_CD_NM"/>
+	</resultMap>
+
+    <select id="selectCounselPopupDetail" resultMap="viewcounselDetail">
+    <![CDATA[
+        /* PSCPBRD0004.selectCounselPopupDetail */
+        SELECT
+            DECODE(NVL(TC.CALL_ID, ''), '', 'N', 'Y')                       AS DEL_YN               --녹취여부(Call ID 존재시 청취 할수있음.)
+          , TC.COUNSEL_SEQ                                                  AS COUNSEL_SEQ          --상담순번
+          , (
+              SELECT T.CONTENT FROM TOR_COUNSEL T
+               WHERE T.COUNSEL_SEQ != T.UP_COUNSEL_SEQ
+                 AND T.UP_COUNSEL_SEQ = TC.COUNSEL_SEQ  LIMIT 1
+            )                                                               AS ANSWER               --답글(상담원)
+          , PG_UTIL.FN_GET_CD_NM('QA001', TC.CLM_LGRP_CD)                   AS CLM_LGRP_CD_NM       --고객문의(문의유형(대)명칭(QA001))
+          , (
+              SELECT T.CD_NM FROM TET_CODE T WHERE T.MINOR_CD = TC.CLM_MGRP_CD AND LET_4_REF IN('QAH01', 'QA001')
+            )                                                               AS CLM_MGRP_CD_NM       --문의유형(소)명칭(QA100, (QA999))
+          , TC.TITLE                                                        AS TITLE                --문의제목
+          , TC.CONTENT                                                      AS CONTENT              --문의내용
+          , TC.MEMO                                                         AS MEMO_TC              --메모(업체)
+          , TCT.MEMO                                                        AS MEMO_TCT             --메모(상담원)
+          , TC.BOARD_PRGS_STS_CD                                            AS BOARD_PRGS_STS_CD    --처리상태코드(QA004)
+          , PG_UTIL.FN_GET_CD_NM('QA004', TC.BOARD_PRGS_STS_CD)             AS BOARD_PRGS_STS_CD_NM --처리상태명칭(QA004)
+          , PG_UTIL.FN_GET_CD_NM('QA005', TC.ACCEPT_LOCA_CD)                AS ACCEPT_LOCA_CD_NM    --접수처
+          , TC.ACCEPT_ID                                                    AS ACCEPT_ID            --접수자ID
+          , (SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = TC.ACCEPT_ID)  AS ACCEPT_NM            --접수자명
+          , TO_CHAR(TC.REG_DATE, 'YYYY-MM-DD HH24:MI:SS')                   AS REG_DATE             --접수일시
+          , TC.MEMBER_NO                                                    AS MEMBER_NO            --회원ID
+          , NVL(TC.CELL_NO, TC.TEL_NO)                                      AS TELL_NO              --전화번호
+          , TC.EMAIL                                                        AS EMAIL                --EMAIL
+          , TC.ORDER_ID                                                     AS ORDER_ID             --주문번호
+          , DECODE(TC.QSTN_OBJECT_CD_STR_CD, NULL, '', 
+                    (SELECT TST.STR_NM FROM TST_STORE TST WHERE TST.STR_CD = TC.QSTN_OBJECT_CD_STR_CD)
+                  )                                                         AS STR_NM               --점포명 
+        FROM
+            TOR_COUNSEL          TC
+          , TOR_COUNSEL_TRANSFER TCT
+        WHERE 1=1
+        AND TC.COUNSEL_SEQ = TCT.COUNSEL_SEQ
+        AND TC.COUNSEL_SEQ = #counselSeq#
+        AND TCT.TRANSFER_SEQ = #transferSeq#
+        AND TCT.TRANSFER_OBJECT_CD IS NOT NULL
+    ]]>
+    </select>
+
+    <update id="updateMemo">
+        /* PSCPBRD0004.updateMemo */
+        UPDATE TOR_COUNSEL 
+        SET MEMO = #memoTC#
+          , BOARD_PRGS_STS_CD = '3'
+        WHERE 
+            COUNSEL_SEQ = #counselSeq#
+    </update>
+
+</sqlMap>

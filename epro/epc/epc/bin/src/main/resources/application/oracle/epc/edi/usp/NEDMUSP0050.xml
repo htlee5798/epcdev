@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMUSP0050">
+
+	<typeAlias alias="NEDMUSP0050VO" type="com.lottemart.epc.edi.usply.model.NEDMUSP0050VO"/>
+	
+	<!-- 미납사유조회 -->
+	<resultMap id="NEDMUSP0050VOMap" class="NEDMUSP0050VO">
+		<result property="regVseq"				column="REG_VSEQ"			/>	<!-- 등록순번 -->
+		<result property="splyDy"				column="SPLY_DY"			/>	<!-- 미납일 -->
+		<result property="srcmkCd"				column="SRCMK_CD"			/>	<!-- 판매코드 -->
+	 	<result property="prodNm"				column="PROD_NM"			/>	<!-- 상푸명 -->
+	 	<result property="prodStd"				column="PROD_STD"			/>	<!-- 상품규격 -->
+	 	<result property="ordIpsu"				column="ORD_IPSU"			/>	<!-- 발주입수 -->
+	 	<result property="ordUnit"				column="ORD_UNIT"			/>	<!-- 발주단위 -->
+	 	<result property="strNm"				column="STR_NM"				/>	<!-- 점포명 -->
+	 	<result property="usplyQty"				column="USPLY_QTY"			/>	<!-- 미납수량 -->
+	 	<result property="usplyBuyAmt"			column="USPLY_BUY_AMT"		/>	<!-- 미납원가금액 -->
+	 	<result property="venReasonNm"			column="VEN_REASON_NM"		/>	<!--  -->
+	 	<result property="venDetailNm"			column="VEN_DETAIL_NM"		/>	<!--  -->
+	 	<result property="regReasonFg"			column="REG_REASON_FG"		/>	<!-- 등록사유구분 -->
+	 	<result property="cfmReasonFg"			column="CFM_REASON_FG"		/>	<!-- 확정사유구분 -->
+	 	<result property="regDetailFg"			column="REG_DETAIL_FG"		/>	<!-- 등록사유상세구분 -->
+	 	<result property="cfmDetailFg"			column="CFM_DETAIL_FG"		/>	<!-- 확정사유상세구분 -->
+	 	<result property="prodCd"				column="PROD_CD"			/>	<!-- 상품코드 -->
+	 	<result property="ordSlipNo"			column="ORD_SLIP_NO"		/>	<!-- 발주전표번호 -->
+	 	<result property="venReasonFg"			column="VEN_REASON_FG"		/>	<!-- 협력업체사유구분 -->
+	 	<result property="venDetailFg"			column="VEN_DETAIL_FG"		/>	<!-- 협력업체사유상세구분 -->
+	 	<result property="venCfmFg"				column="VEN_CFM_FG"			/>	<!-- 협력업체확인구분 -->
+	</resultMap>
+	
+	<!-- List 조회 -->
+	<select id="TSC_USPLY_REASON-SELECT01" resultMap="NEDMUSP0050VOMap" parameterClass="NEDMUSP0050VO">
+		/* NEDMUSP0050.TSC_USPLY_REASON-SELECT01 */
+		<![CDATA[
+		SELECT	A.SPLY_DY
+			, 	B.REG_VSEQ
+			,	DECODE(B.SRCMK_CD, NULL, C.SRCMK_CD, B.SRCMK_CD) AS SRCMK_CD
+			,   B.PROD_CD
+			,	C.PROD_NM
+			,	B.PROD_STD
+			,	B.ORD_IPSU
+			,	(
+					SELECT 	CD_NM
+					FROM 	TPC_CODE
+					WHERE	MAJOR_CD = 'CSA01'
+						AND MINOR_CD = B.ORD_UNIT
+				) AS ORD_UNIT
+			,	D.STR_NM
+			,	B.USPLY_QTY
+			,	B.USPLY_BUY_AMT 
+			,	DECODE(F.VEN_REASON_FG, '1', '협력업체', '2', '롯데마트', '미등록') AS VEN_REASON_NM
+			,	NVL((SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'USL04' AND MINOR_CD = F.VEN_DETAIL_FG), '미등록') AS VEN_DETAIL_NM 
+			,	NVL(B.REG_REASON_FG, '') REG_REASON_FG
+			,	NVL(B.CFM_REASON_FG, '') CFM_REASON_FG
+			,	NVL(B.REG_DETAIL_FG, '') REG_DETAIL_FG
+			,	NVL(B.CFM_DETAIL_FG, '') CFM_DETAIL_FG
+			,	B.PROD_CD
+			,	B.ORD_SLIP_NO
+			,	NVL(F.VEN_REASON_FG, '') AS VEN_REASON_FG
+			,	NVL(F.VEN_DETAIL_FG, '') AS VEN_DETAIL_FG
+			,	B.VEN_CFM_FG
+		FROM 	UNSUPPLY_SAP	A
+			,	USPLY_PROD_SAP	B
+			,	PRODUCT			C
+			,	STORE			D
+			,	HQ_VEN			E
+			,	TPC_USPLY_PROD	F
+		WHERE 	A.ORD_SLIP_NO	= B.ORD_SLIP_NO
+			AND B.PROD_CD		= C.PROD_CD
+			AND B.ORD_SLIP_NO	= F.ORD_SLIP_NO(+)
+			AND B.PROD_CD		= F.PROD_CD(+)
+			AND A.STR_CD 		= D.STR_CD
+			AND A.VEN_CD		= E.VEN_CD
+			AND A.TRD_TYP_FG	= '1'
+			AND B.PROD_CD		NOT LIKE '0%'
+			AND B.ORD_TYP_FG	IN (SELECT MINOR_CD FROM TPC_CODE WHERE MAJOR_CD = 'USL07')
+			AND B.USPLY_BUY_AMT > 0
+		    AND B.CFM_REASON_FG IS NULL
+			--AND E.USPLY_PENALTY_FG = 'X'	/* 롯디S발 2019-134호 */
+			AND A.VEN_CD IS NOT NULL	/* 센터에서 점포로 출하되는 정보는 제외  */
+		]]>
+		
+			AND A.SPLY_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			                       
+			<isNotEmpty  property="srchSellCode"  prepend="AND">
+				C.SRCMK_CD = #srchSellCode#
+			</isNotEmpty>
+			
+			<isNotEmpty  property="searchProductVal"  prepend="AND">
+				C.PROD_CD = #searchProductVal#
+			</isNotEmpty>
+			
+			
+	
+	</select>
+
+
+
+	
+	<!-- List 조회 -->
+	<select id="TSC_USPLY_UPDATEREASON-SELECT01" resultMap="NEDMUSP0050VOMap" parameterClass="NEDMUSP0050VO">
+		/* NEDMUSP0050.TSC_USPLY_UPDATEREASON-SELECT01 */
+		<![CDATA[
+		SELECT	A.SPLY_DY
+			,	B.REG_VSEQ
+			,	DECODE(B.SRCMK_CD, NULL, C.SRCMK_CD, B.SRCMK_CD) AS SRCMK_CD
+			,	B.PROD_CD
+			,	C.PROD_NM
+			,	B.PROD_STD
+			,	B.ORD_IPSU
+			,	(
+					SELECT 	CD_NM
+					FROM 	TPC_CODE
+					WHERE	MAJOR_CD = 'CSA01'
+						AND MINOR_CD = B.ORD_UNIT
+				) AS ORD_UNIT
+			,	D.STR_NM
+			,	B.USPLY_QTY
+			,	B.USPLY_BUY_AMT 
+			,	DECODE(F.VEN_REASON_FG, '1', '협력업체', '2', '롯데마트', '미등록') AS VEN_REASON_NM
+			,	NVL((SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'USL04' AND MINOR_CD = F.VEN_DETAIL_FG), '미등록') AS VEN_DETAIL_NM 
+			,	NVL(B.REG_REASON_FG, '') REG_REASON_FG
+			,	NVL(B.CFM_REASON_FG, '') CFM_REASON_FG
+			,	NVL(B.REG_DETAIL_FG, '') REG_DETAIL_FG
+			,	NVL(B.CFM_DETAIL_FG, '') CFM_DETAIL_FG
+			,	B.PROD_CD
+			,	B.ORD_SLIP_NO
+			,	NVL(F.VEN_REASON_FG, '') AS VEN_REASON_FG
+			,	NVL(F.VEN_DETAIL_FG, '') AS VEN_DETAIL_FG
+			,	B.VEN_CFM_FG
+		FROM 	UNSUPPLY_SAP	A
+			,	USPLY_PROD_SAP	B
+			,	PRODUCT			C
+			,	STORE			D
+			,	HQ_VEN			E
+			,	TPC_USPLY_PROD	F
+		WHERE 	A.ORD_SLIP_NO	= B.ORD_SLIP_NO
+			AND B.PROD_CD		= C.PROD_CD
+			AND B.ORD_SLIP_NO	= F.ORD_SLIP_NO(+)
+			AND B.PROD_CD		= F.PROD_CD(+)
+			AND A.STR_CD 		= D.STR_CD
+			AND A.VEN_CD		= E.VEN_CD
+			AND A.TRD_TYP_FG	= '1'
+			AND B.PROD_CD		NOT LIKE '0%'
+			AND B.ORD_TYP_FG	IN (SELECT MINOR_CD FROM TPC_CODE WHERE MAJOR_CD = 'USL07')
+			AND B.USPLY_BUY_AMT > 0
+		    AND B.CFM_REASON_FG IS NULL
+		    AND A.SPLY_DY>=TO_CHAR(CURRENT_TIMESTAMP(0)-3,'YYYYMMDD')
+			--AND E.USPLY_PENALTY_FG = 'X'	/* 롯디S발 2019-134호 */
+			AND A.VEN_CD IS NOT NULL	/* 센터에서 점포로 출하되는 정보는 제외  */
+		]]>
+		
+			AND A.SPLY_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			<isNotEmpty  property="srchSellCode"  prepend="AND">
+				C.SRCMK_CD = #srchSellCode#
+			</isNotEmpty>
+			<isNotEmpty  property="searchProductVal"  prepend="AND">
+				C.PROD_CD = #searchProductVal#
+			</isNotEmpty>
+			
+	
+	</select>
+
+
+
+	<!-- 미납사유등록  -->
+	<update id="TSC_USPLY_REASON-UPDATE01" parameterClass="NEDMUSP0050VO">
+		/* NEDMUSP0050.TSC_USPLY_REASON-UPDATE01 */
+		<!-- MERGE INTO TPC_USPLY_PROD A USING
+		(SELECT #ordSlipNo# AS ORD_SLIP_NO , #prodCd# AS PROD_CD FROM DUAL) B
+		ON (A.ORD_SLIP_NO = B.ORD_SLIP_NO AND A.PROD_CD = B.PROD_CD)
+		WHEN MATCHED THEN
+			UPDATE
+			SET		VEN_REASON_FG 	= #venReasonFg# 
+				,	VEN_DETAIL_FG 	= #venDetailFg#
+				,	VEN_CFM_FG 		= '1'
+				,	VEN_CFM_DT 		= CURRENT_TIMESTAMP(0)
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+					ORD_SLIP_NO
+				, 	PROD_CD
+				, 	VEN_REASON_FG
+				, 	VEN_DETAIL_FG
+				, 	VEN_CFM_FG
+				, 	VEN_CFM_DT
+			)
+			VALUES
+			(
+					#ordSlipNo#
+				,	#prodCd#
+				,	#venReasonFg#
+				,	#venDetailFg#
+				,	'1'
+				,	CURRENT_TIMESTAMP(0)
+			) -->
+			
+		UPDATE 	TPC_USPLY_PROD
+		SET		VEN_REASON_FG 	= #venReasonFg# 
+			,	VEN_DETAIL_FG 	= #venDetailFg#
+			,	VEN_CFM_FG 		= '1'
+			,	VEN_CFM_DT 		= CURRENT_TIMESTAMP(0)
+		WHERE 	ORD_SLIP_NO 	= #ordSlipNo#
+			AND	PROD_CD 		= #prodCd#
+	</update>
+
+	
+</sqlMap>

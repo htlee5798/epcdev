@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration WARN="true">
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+        	<charset>UTF-8</charset>
+            <pattern>%d %-5level [%thread] %-70.70logger{70} - %msg%n</pattern>
+            <immediateFlush>true</immediateFlush>
+            <outputPatternAsHeader>false</outputPatternAsHeader>
+        </encoder>
+    </appender>
+
+    <logger name="com.lottemart.epc"            level="WARN" additivity="true"></logger>
+    <logger name="com.lottemart.epc.common.interceptor.EpcUserInterceptor"    level="WARN" additivity="true"></logger>
+    <logger name="com.lottemart.common.file.service"    level="WARN" additivity="true"></logger>
+    <logger name="org.springframework.aop"      level="WARN"  additivity="true"></logger>
+    <logger name="org.springframework.core"     level="WARN"  additivity="true"></logger>
+    <logger name="org.springframework.beans"    level="WARN"  additivity="true"></logger>
+    <logger name="org.springframework.context"  level="WARN"  additivity="true"></logger>
+    <logger name="org.springframework.context.support"  level="WARN"  additivity="true"></logger>
+    <logger name="org.springframework.web"      level="WARN"  additivity="true"></logger>
+    <logger name="org.apache.commons.digester"  level="WARN"  additivity="true"></logger>
+    <logger name="org.apache.commons.beanutils" level="WARN"  additivity="true"></logger>
+
+    <logger name="lcn.module"                   level="WARN"  additivity="true"></logger>
+    <logger name="java.sql.PreparedStatement"   level="WARN"  additivity="true"></logger>
+    <logger name="java.sql.Connection"          level="WARN"  additivity="true"></logger>
+    <logger name="java.sql.Statement"           level="WARN"  additivity="true"></logger>
+    <logger name="java.sql.ResultSet"           level="WARN"  additivity="true"></logger>
+
+    <root level="WARN">
+        <appender-ref ref="console" />
+    </root>
+
+</configuration>

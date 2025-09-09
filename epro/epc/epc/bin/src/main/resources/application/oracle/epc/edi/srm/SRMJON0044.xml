@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0044">
+
+
+	<typeAlias alias="SRMJON0044VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0044VO" />
+
+	<!-- 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectGlobalHiddenCompInfoResultMap" class="SRMJON0044VO">
+		<result column="HOUSE_CODE"						property="houseCode" 				/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"					property="sellerCode" 				/>	<!-- 업체코드 -->
+		<result column="CHANNEL_CODE"					property="channelCode" 				/>	<!-- 채널선택{scode_type=SRM053} -->
+		<result column="REQ_SEQ"						property="reqSeq" 					/>	<!-- 순번 -->
+		<result column="SHIPPER_TYPE"					property="shipperType" 				/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="CAT_LV1_CODE"					property="catLv1Code" 				/>	<!-- 대분류 -->
+		<result column="CAT_LV1_CODE_NM"				property="catLv1CodeNm" 			/>	<!-- 대분류 -->
+		<result column="IRS_NO"							property="irsNo" 					/>	<!-- 사업자등록번호 -->
+		<result column="TEMP_PW"						property="tempPw" 					/>	<!-- 임시비밀번호 -->
+		<result column="SELLER_NAME_LOC"				property="sellerNameLoc" 			/>	<!-- 업체명{한글} -->
+		<result column="SELLER_CEO_NAME"				property="sellerCeoName" 			/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<result column="V_MAIN_NAME"					property="vMainName" 				/>	<!-- 업체마트 담당자(이름) -->
+		<result column="V_PHONE1"						property="vPhone1"		 			/>	<!-- 등록자 유선 전화번호 -->
+		<result column="PHONE_NO"						property="phoneNo"		 			/>	<!-- 등록자 유선 전화번호 -->
+		<result column="V_MOBILE_PHONE"					property="vMobilePhone" 			/>	<!-- 모바일(이동전화) -->
+		<result column="V_EMAIL"						property="vEmail" 					/>	<!-- BDC EMAIL CHECK 필요 -->
+		<result column="FAX_FHONE"						property="faxFhone" 				/>	<!-- FAX -->
+		<result column="ZIPCODE"						property="zipcode" 					/>	<!-- 우편번호 -->
+		<result column="ADDRESS1"						property="address1" 				/>	<!-- 주소2 -->
+		<result column="COUNTRY"						property="country" 					/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="FOUNDATION_DATE"				property="foundationDate" 			/>	<!-- 설립일자 -->
+		<result column="BASIC_AMT"						property="basicAmt" 				/>	<!-- 자본금 -->
+		<result column="SALES_AMT"						property="salesAmt" 				/>	<!-- 연간 매출액(최근 3년) -->
+		<result column="EMP_COUNT"						property="empCount" 				/>	<!-- 종업원 수(정규직) -->
+		<result column="PLANT_OWN_TYPE"					property="plantOwnType" 			/>	<!-- 공장소유구분 -->
+		<result column="COMPANY_INTRO_ATTACH_NO"		property="companyIntroAttachNo" 			/>	<!--  -->
+
+		<result column="ONLINE_MAIL_TARGET"				property="onlineMailTarget" 	/>	<!--온라인몰 메일발송 대상-->
+		<result column="LOCAL_FOOD_YN"					property="localFoodYn" 			/>	<!--로컬푸드여부-->
+	</resultMap>
+
+
+
+	<!-- 기등록 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectGlobalHiddenCompBasicInfoResultMap" class="SRMJON0044VO">
+		<result column="HOUSE_CODE"						property="houseCode" 				/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"					property="sellerCode" 				/>	<!-- 업체코드 -->
+		<result column="CHANNEL_CODE"					property="channelCode" 				/>	<!-- 채널선택{scode_type=SRM053} -->
+		<result column="SHIPPER_TYPE"					property="shipperType" 				/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="IRS_NO"							property="irsNo" 					/>	<!-- 사업자등록번호 -->
+		<result column="TEMP_PW"						property="tempPw" 					/>	<!-- 임시비밀번호 -->
+		<result column="SELLER_NAME_LOC"				property="sellerNameLoc" 			/>	<!-- 업체명{한글} -->
+		<result column="SELLER_CEO_NAME"				property="sellerCeoName" 			/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<result column="V_PHONE1"						property="vPhone1"		 			/>	<!-- 등록자 유선 전화번호 -->
+		<result column="ZIPCODE"						property="zipcode" 					/>	<!-- 우편번호 -->
+		<result column="ADDRESS1"						property="address1" 				/>	<!-- 주소2 -->
+		<result column="COUNTRY"						property="country" 					/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="FOUNDATION_DATE"				property="foundationDate" 			/>	<!-- 설립일자 -->
+		<result column="BASIC_AMT"						property="basicAmt" 				/>	<!-- 자본금 -->
+		<result column="SALES_AMT"						property="salesAmt" 				/>	<!-- 연간 매출액(최근 3년) -->
+		<result column="EMP_COUNT"						property="empCount" 				/>	<!-- 종업원 수(정규직) -->
+		<result column="PLANT_OWN_TYPE"					property="plantOwnType" 			/>	<!-- 공장소유구분 -->
+	</resultMap>
+
+	<!-- 잠재업체 기본정보조회 -->
+	<select id="selectGlobalHiddenCompInfo" parameterClass="SRMJON0044VO" resultMap="selectGlobalHiddenCompInfoResultMap">
+		/*SRMJON0044.selectHiddenCompInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, B.CHANNEL_CODE
+				, B.REQ_SEQ
+				, B.CAT_LV1_CODE
+				, GETSGCLASS('000', UPPER(#locale#), '1', B.CAT_LV1_CODE) AS CAT_LV1_CODE_NM
+				, A.SHIPPER_TYPE
+				, A.IRS_NO
+				, A.TEMP_PW
+				, A.SELLER_NAME_LOC
+				, A.SELLER_CEO_NAME
+				, C.USER_NAME AS V_MAIN_NAME
+				, A.V_PHONE1
+				, C.PHONE_NO
+				, C.MOBILE_NO AS V_MOBILE_PHONE
+				, C.EMAIL AS V_EMAIL
+				, A.SELLER_CEO_EMAIL
+				, C.FAX_NO AS FAX_FHONE
+				, A.ZIPCODE
+				, A.ADDRESS1
+				, A.COUNTRY
+				, A.FOUNDATION_DATE
+				, A.BASIC_AMT
+				, A.SALES_AMT
+				, A.EMP_COUNT
+				, A.PLANT_OWN_TYPE
+				, C.COMPANY_INTRO_ATTACH_NO
+				, B.ONLINE_MAIL_TARGET
+				, NVL(B.LOCAL_FOOD_YN,'N') AS LOCAL_FOOD_YN
+		FROM
+				SSUGL A
+				, SINRQ B
+				, SSUPI C
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE(+)
+			AND A.SELLER_CODE = B.VENDOR_CODE(+)
+			AND B.HOUSE_CODE = C.HOUSE_CODE(+)
+			AND B.VENDOR_CODE = C.SELLER_CODE(+)
+			AND B.REQ_SEQ= C.SEQ(+)
+			AND	A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND B.REQ_SEQ = #reqSeq#
+			AND A.COUNTRY = #country#
+	</select>
+
+
+	<!-- 기등록 잠재업체 기본정보조회 -->
+	<select id="selectGlobalHiddenCompBasicInfo" parameterClass="SRMJON0044VO" resultMap="selectGlobalHiddenCompBasicInfoResultMap">
+		/*SRMJON0044.selectGlobalHiddenCompBasicInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, A.CHANNEL_CODE
+				, A.SHIPPER_TYPE
+				, A.IRS_NO
+				, A.TEMP_PW
+				, A.SELLER_NAME_LOC
+				, A.SELLER_CEO_NAME
+				, A.V_PHONE1
+				, A.ZIPCODE
+				, A.ADDRESS1
+				, A.COUNTRY
+				, A.FOUNDATION_DATE
+				, A.BASIC_AMT
+				, A.SALES_AMT
+				, A.EMP_COUNT
+				, A.PLANT_OWN_TYPE
+		FROM
+				SSUGL A
+		WHERE
+				A.HOUSE_CODE = #houseCode#
+		AND A.SELLER_CODE = #sellerCode#
+		AND A.COUNTRY = #country#
+	</select>
+
+	<!--잠재업체 중복검사-->
+	<select id="selectGlobalHiddenCompCheck" parameterClass="SRMJON0044VO" resultClass="INTEGER">
+		/*SRMJON0044.selectGlobalHiddenCompCheck*/
+		SELECT
+				COUNT(1)
+		FROM
+				SSUGL
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND COUNTRY = #country#
+	</select>
+
+
+	<!--잠재업체 정보등록-->
+	<insert id="insertGlobalHiddenCompInfo" parameterClass="SRMJON0044VO">
+		/*SRMJON0044.insertGlobalHiddenCompInfo*/
+		INSERT INTO SSUGL
+				( HOUSE_CODE
+				, SELLER_CODE
+				, PLANT_CODE
+				, CHANNEL_CODE
+				, SHIPPER_TYPE
+				, IRS_NO
+				, TEMP_PW
+				, SELLER_NAME_LOC
+				, SELLER_CEO_NAME
+				, V_MAIN_NAME
+				, V_PHONE1
+				, V_MOBILE_PHONE
+				, V_EMAIL
+				, FAX_FHONE
+				, ZIPCODE
+				, ADDRESS1
+				, COUNTRY
+				, FOUNDATION_DATE
+				, BASIC_AMT
+				, SALES_AMT
+				, EMP_COUNT
+				, PLANT_OWN_TYPE
+				, ADD_DATE
+				, ADD_USER_ID
+				, CHANGE_DATE
+				, CHANGE_USER_ID)
+		VALUES
+				( #houseCode#
+				, #sellerCode#
+				, '*'
+				, #channelCode#
+				, #shipperType#
+				, #irsNo#
+				, #tempPw#
+				, #sellerNameLoc#
+				, #sellerCeoName#
+				, #vMainName#
+				, #vPhone1#
+				, #vMobilePhone#
+				, #vEmail#
+				, #faxFhone#
+				, #zipcode#
+				, #address1#
+				, #country#
+				, #foundationDate#
+				, #basicAmt#
+				, #salesAmt#
+				, #empCount#
+				, #plantOwnType#
+				, CURRENT_TIMESTAMP(0)
+				, #irsNo#
+				, CURRENT_TIMESTAMP(0)
+				, #irsNo#)
+	</insert>
+
+	<!--잠재업체 정보수정-->
+	<update id="updateGlobalHiddenCompInfo" parameterClass="SRMJON0044VO">
+		/*SRMJON0044.updateGlobalHiddenCompInfo*/
+		UPDATE 	SSUGL
+		SET 	CHANNEL_CODE 			= #channelCode#
+				, SHIPPER_TYPE 			= #shipperType#
+				, IRS_NO 				= #irsNo#
+				<isNotEmpty property="tempPw">
+					, TEMP_PW 				= #tempPw#
+				</isNotEmpty>
+				, SELLER_NAME_LOC 		= #sellerNameLoc#
+				, SELLER_CEO_NAME 		= #sellerCeoName#
+				, V_MAIN_NAME 			= #vMainName#
+				, V_PHONE1 				= #vPhone1#
+				, V_MOBILE_PHONE 		= #vMobilePhone#
+				, V_EMAIL 				= #vEmail#
+				, FAX_FHONE 			= #faxFhone#
+				, ZIPCODE 				= #zipcode#
+				, ADDRESS1 				= #address1#
+				, COUNTRY 				= #country#
+				, FOUNDATION_DATE		= #foundationDate#
+				, BASIC_AMT				= #basicAmt#
+				, SALES_AMT				= #salesAmt#
+				, EMP_COUNT				= #empCount#
+				, PLANT_OWN_TYPE		= #plantOwnType#
+				, CHANGE_DATE			= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID		= #irsNo#
+		WHERE
+				HOUSE_CODE = '000'
+			AND SELLER_CODE = #sellerCode#
+	</update>
+
+	<!--잠재업체 담당자정보 등록-->
+	<insert id="insertGlobalHiddenCompInfoSSUPI" parameterClass="SRMJON0044VO">
+		/*SRMJON0044.insertGlobalHiddenCompInfoSSUPI*/
+		INSERT INTO SSUPI
+				( HOUSE_CODE
+				, SELLER_CODE
+				, SEQ
+				, ADD_DATE
+				, ADD_TIME
+				, ADD_USER_ID
+				, CHANGE_DATE
+				, CHANGE_TIME
+				, CHANGE_USER_ID
+				, PHONE_NO
+				, USER_NAME
+				, FAX_NO
+				, MOBILE_NO
+				, EMAIL
+				, DEL_FLAG
+				, COMPANY_INTRO_ATTACH_NO
+				)
+		VALUES
+				( #houseCode#
+				, #sellerCode#
+				, #reqSeq#
+				, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				, TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+				, #irsNo#
+				, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				, TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+				, #irsNo#
+				, #phoneNo#
+				, #vMainName#
+				, #faxFhone#
+				, #vMobilePhone#
+				, #vEmail#
+				,'0'
+				, #companyIntroAttachNo#)
+	</insert>
+
+	<!--잠재업체 담당자정보 수정-->
+	<update id="updateGlobalHiddenCompInfoSSUPI" parameterClass="SRMJON0044VO">
+		/*SRMJON0044.updateGlobalHiddenCompInfoSSUPI*/
+		UPDATE 	SSUPI
+		SET 	USER_NAME 				= #vMainName#
+				, PHONE_NO 				= #phoneNo#
+				, MOBILE_NO 			= #vMobilePhone#
+				, EMAIL 				= #vEmail#
+				, FAX_NO 				= #faxFhone#
+				, CHANGE_DATE			= TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				, CHANGE_TIME			= TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+				, CHANGE_USER_ID		= #irsNo#
+				, COMPANY_INTRO_ATTACH_NO = #companyIntroAttachNo#
+		WHERE
+				HOUSE_CODE = '000'
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</update>
+
+	<!-- 입점상담 신청 등록-->
+	<insert id="insertGlobalConsultReq" parameterClass="SRMJON0044VO">
+		/*SRMJON0044.insertGlobalConsultReq*/
+		INSERT INTO SINRQ
+				( HOUSE_CODE
+				, VENDOR_CODE
+				, REQ_SEQ
+				, CHANNEL_CODE
+				, PUR_TYPE_CODE
+				, CAT_LV1_CODE
+				, STATUS
+				, DEL_FLAG
+				, ADD_DATE
+				, ADD_USER_ID
+				, CHANGE_DATE
+				, CHANGE_USER_ID
+				, ONLINE_MAIL_TARGET
+				, LOCAL_FOOD_YN)
+		VALUES
+				( #houseCode#
+				, #sellerCode#
+				, #reqSeq#
+				, #channelCode#
+				, ''
+				, #catLv1Code#
+				, ''                    <!--상태-->
+				, '0'
+				, CURRENT_TIMESTAMP(0)
+				, #irsNo#
+				, CURRENT_TIMESTAMP(0)
+				, #irsNo#
+				, #onlineMailTarget#
+				, #localFoodYn#)
+	</insert>
+
+	<!-- 입점상담 신청 등록-->
+
+	<!--입점상담 신청 수정-->
+	<update id="updateGlobalConsultReq" parameterClass="SRMJON0044VO">
+		/*SRMJON0030.updateGlobalConsultReq*/
+		UPDATE     SINRQ
+		SET     CHANNEL_CODE  		= #channelCode#
+				, CAT_LV1_CODE 		= #catLv1Code#
+				, LOCAL_FOOD_YN 	= #localFoodYn#
+				, ONLINE_MAIL_TARGET = #onlineMailTarget#
+				, CHANGE_DATE 		= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID 	= #irsNo#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND VENDOR_CODE = #sellerCode#
+			AND REQ_SEQ = #reqSeq#
+	</update>
+
+
+</sqlMap>

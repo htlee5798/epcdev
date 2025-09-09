@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMCAL0002">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmcal0002VO" type="com.lottemart.epc.calculation.model.PSCMCAL0002VO" />
+	
+	<select id="selectDeliveryCostsCalculateCount" resultClass="dataMap">
+		/* PSCMCAL0002.selectDeliveryCostsCalculateCount */
+		SELECT  COUNT(*) TOTAL_COUNT
+		FROM    TOR_ORDER O, TOR_ORDER_ITEM I, 
+				(
+				 SELECT SUB.ORDER_ID, SUB.DELIVERY_ID, SUB.CUST_NM, SUB.DELIVERY_AMT 
+				 FROM TDE_ORDER_DELIVERY SUB
+				 WHERE SUB.DELIVERY_ID != '000'
+				 <isNotEmpty property="vendorId">
+				 AND SUB.VEN_CD 
+					<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">#vendorId[]#</iterate>
+				 </isNotEmpty>
+				) D
+		WHERE   O.ORDER_ID = D.ORDER_ID
+		AND     O.ORDER_ID = I.ORDER_ID
+		AND     D.DELIVERY_ID = I.DELIVERY_ID
+		AND		I.ORD_ITEM_DIVN_CD = '00'
+		AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+	</select>
+	
+	<select id="selectDeliveryCostsCalculateList" resultClass="dataMap">
+		/* PSCMCAL0002.selectDeliveryCostsCalculateList */
+		SELECT ROWNUM as ROW_SEQ,INNER_TABLE.*
+	    FROM (
+			SELECT  O.ORD_DY, O.ORD_TM, O.ORDER_ID, O.UP_ORDER_ID, D.DELIVERY_ID, O.SALE_STS_CD, I.PROD_NM,
+					(SELECT SUB.CD_NM FROM TET_CODE SUB WHERE SUB.MAJOR_CD = 'OR003' AND SUB.MINOR_CD = O.SALE_STS_CD) SALE_STS_NM, 
+			        I.ORD_AMT, D.CUST_NM, D.DELIVERY_AMT, SUB.CNT
+			FROM    TOR_ORDER O, TDE_ORDER_DELIVERY D, TOR_ORDER_ITEM I,
+					(
+						SELECT  D.ORDER_ID, D.DELIVERY_ID, NVL(COUNT(D.DELIVERY_ID), 0) CNT
+			            FROM    TOR_ORDER O, TOR_ORDER_ITEM I,  
+								(
+								 SELECT SUB.ORDER_ID, SUB.DELIVERY_ID, SUB.CUST_NM, SUB.DELIVERY_AMT 
+								 FROM TDE_ORDER_DELIVERY SUB
+								 WHERE SUB.DELIVERY_ID != '000'
+								 <isNotEmpty property="vendorId">
+								 AND SUB.VEN_CD
+									<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">#vendorId[]#</iterate>
+								 </isNotEmpty>
+								) D
+			            WHERE	O.ORDER_ID = D.ORDER_ID
+			            AND     O.ORDER_ID = I.ORDER_ID
+			            AND     D.DELIVERY_ID = I.DELIVERY_ID
+						AND		I.ORD_ITEM_DIVN_CD = '00'
+						AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			            GROUP BY D.ORDER_ID, D.DELIVERY_ID
+					) SUB
+			WHERE	O.ORDER_ID = D.ORDER_ID
+			AND     O.ORDER_ID = I.ORDER_ID
+			AND     D.DELIVERY_ID = I.DELIVERY_ID
+			AND     SUB.ORDER_ID = D.ORDER_ID
+			AND     SUB.DELIVERY_ID = D.DELIVERY_ID
+			AND     D.DELIVERY_ID != '000'
+			AND		I.ORD_ITEM_DIVN_CD = '00'
+			AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			ORDER BY D.ORDER_ID DESC, D.DELIVERY_ID, ORDER_ITEM_SEQ
+	    ) INNER_TABLE
+	</select>
+	
+	<select id="selectDeliveryCostsCalculateOrderStats" resultClass="dataMap">
+		/* PSCMCAL0002.selectDeliveryCostsCalculateStats */
+		SELECT  NVL(COUNT(I.ORD_AMT), 0) ORD_CNT, NVL(SUM(I.ORD_AMT), 0) ORD_AMT
+		FROM    TOR_ORDER O, TOR_ORDER_ITEM I,  
+				(
+				 SELECT SUB.ORDER_ID, SUB.DELIVERY_ID, SUB.CUST_NM, SUB.DELIVERY_AMT 
+				 FROM TDE_ORDER_DELIVERY SUB
+				 WHERE SUB.DELIVERY_ID != '000'
+				 <isNotEmpty property="vendorId">
+				 AND SUB.VEN_CD 
+					<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">#vendorId[]#</iterate>
+				 </isNotEmpty>
+				) D
+		WHERE	O.ORDER_ID = D.ORDER_ID
+		AND     O.ORDER_ID = I.ORDER_ID
+		AND     D.DELIVERY_ID = I.DELIVERY_ID
+		AND		I.ORD_ITEM_DIVN_CD = '00'
+		AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+	</select>
+	
+	<select id="selectDeliveryCostsCalculateDeliveryStats" resultClass="dataMap">
+		/* PSCMCAL0002.selectDeliveryCostsCalculateDeliveryStats */
+		SELECT  NVL(SUM(D.DELIVERY_AMT), 0) DELIVERY_AMT
+		FROM    TOR_ORDER O,  
+				(
+				 SELECT SUB.ORDER_ID, SUB.DELIVERY_ID, SUB.CUST_NM, SUB.DELIVERY_AMT 
+				 FROM TDE_ORDER_DELIVERY SUB
+				 WHERE SUB.DELIVERY_ID != '000'
+				 <isNotEmpty property="vendorId">
+				 AND SUB.VEN_CD 
+					<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">#vendorId[]#</iterate>
+				 </isNotEmpty>
+				) D
+		WHERE	O.ORDER_ID = D.ORDER_ID
+		AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+	</select>
+	
+	
+	<select id="selectDeliveryCostsCalculateListExcel" parameterClass="pscmcal0002VO" resultClass="dataMap">
+	/* PSCMCAL0002.selectDeliveryCostsCalculateListExcel */
+		SELECT  O.ORD_DY, O.ORD_TM, O.ORDER_ID, O.UP_ORDER_ID, D.DELIVERY_ID, O.SALE_STS_CD, I.PROD_NM,
+				(SELECT SUB.CD_NM FROM TET_CODE SUB WHERE SUB.MAJOR_CD = 'OR003' AND SUB.MINOR_CD = O.SALE_STS_CD) SALE_STS_NM, 
+		        I.ORD_AMT, D.CUST_NM, D.DELIVERY_AMT, SUB.CNT
+		FROM    TOR_ORDER O, TDE_ORDER_DELIVERY D, TOR_ORDER_ITEM I,
+				(
+					SELECT  D.ORDER_ID, D.DELIVERY_ID, NVL(COUNT(D.DELIVERY_ID), 0) CNT
+		            FROM    TOR_ORDER O, TOR_ORDER_ITEM I,  
+							(
+							 SELECT SUB.ORDER_ID, SUB.DELIVERY_ID, SUB.CUST_NM, SUB.DELIVERY_AMT 
+							 FROM TDE_ORDER_DELIVERY SUB
+							 WHERE SUB.DELIVERY_ID != '000'
+							 <isNotEmpty property="vendorId">
+							 AND SUB.VEN_CD
+								<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">#vendorId[]#</iterate>
+							 </isNotEmpty>
+							) D
+		            WHERE	O.ORDER_ID = D.ORDER_ID
+		            AND     O.ORDER_ID = I.ORDER_ID
+		            AND     D.DELIVERY_ID = I.DELIVERY_ID
+					AND		I.ORD_ITEM_DIVN_CD = '00'
+					AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		            GROUP BY D.ORDER_ID, D.DELIVERY_ID
+				) SUB
+		WHERE	O.ORDER_ID = D.ORDER_ID
+		AND     O.ORDER_ID = I.ORDER_ID
+		AND     D.DELIVERY_ID = I.DELIVERY_ID
+		AND     SUB.ORDER_ID = D.ORDER_ID
+		AND     SUB.DELIVERY_ID = D.DELIVERY_ID
+		AND     D.DELIVERY_ID != '000'
+		AND		I.ORD_ITEM_DIVN_CD = '00'
+		AND		O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		ORDER BY D.ORDER_ID DESC, D.DELIVERY_ID, ORDER_ITEM_SEQ
+	</select>
+	
+</sqlMap>

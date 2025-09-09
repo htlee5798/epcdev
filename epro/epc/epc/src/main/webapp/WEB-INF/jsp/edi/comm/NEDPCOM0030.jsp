@@ -1,0 +1,22 @@
+<%@page import="com.lottemart.epc.common.util.SecureUtil"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<meta http-equiv="Content-Type" content="application/vnd.ms-excel;charset=UTF-8">
+
+<%
+	request.setCharacterEncoding("UTF-8");
+//	String fileName = request.getParameter("fileName");
+	String fileName = SecureUtil.stripXSS(request.getParameter("fileName"));
+
+	
+	if(fileName==null) fileName = "default.xls";
+	String staticTableBodyValue = request.getParameter("staticTableBodyValue");
+	//System.out.println(staticTableBodyValue);
+	
+	response.setHeader("Content-Type", "application/x-msdownload");
+	response.setHeader("Content-Disposition", "attachment;filename="+fileName+";");
+	response.setHeader("Content-Description", "JSP Generated Data");
+	
+	out.println("<table border=\"1\">");
+	out.println(staticTableBodyValue);
+	out.println("</table>");
+%>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0006">
+
+	<typeAlias alias="pscpprd0006VO" type="com.lottemart.epc.product.model.PSCPPRD0006VO" />
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectPrdImageList" resultClass="pscpprd0006VO">
+	/* pscpprd0006.selectPrdImageList - 이미지 목록 쿼리 */
+	SELECT /*+ optimizer_features_enable('11.2.0.2') */
+	        PROD_CD  AS prodCd
+	      , ITEM_CD  AS itemCd
+	      , MD_SRCMK_CD  AS mdSrcmkCd
+	      , PRODIMAGEPATH  AS prodImagePath
+	      , TITLE  AS title
+	      , '' AS classNm
+	      , '' AS attrsNm
+	      , MAXROW  AS maxRow
+	      , ROWCNT  AS rowCnt
+	      , DELETEROW  AS deleteRow
+	      , IMG_QTY  AS imgQty
+	   FROM (
+	        SELECT /* 신규 등록용 QUERY === */
+	            P.PROD_CD
+	          , PI.ITEM_CD
+	          , PI.MD_SRCMK_CD  AS MD_SRCMK_CD
+	          , SUBSTRB(PI.MD_SRCMK_CD,1,5)  AS PRODIMAGEPATH
+	          , ''  AS TITLE
+	          , COUNT(1) OVER(PARTITION BY P.PROD_CD, PI.ITEM_CD) - 1  AS MAXROW
+	          , PI.IMG_QTY + 1  AS ROWCNT
+	          , 999  AS DELETEROW
+	          , PI.IMG_QTY  AS IMG_QTY
+	        FROM TPR_PRODUCT  P
+	          , TPR_ITEM  PI
+		    WHERE   P.PROD_CD     = PI.PROD_CD
+		    AND     P.PROD_CD     = #prodCd#
+		    AND     PI.ITEM_CD    = '001'
+
+	        UNION ALL
+
+	        SELECT /* 기등록건 조회 QUERY === */
+	            P.PROD_CD
+	          , PI.ITEM_CD
+	          , PI.MD_SRCMK_CD  AS MD_SRCMK_CD
+	          , SUBSTRB(PI.MD_SRCMK_CD,1,5)  AS PRODIMAGEPATH
+	          , SM068.CD_NM  AS TITLE
+	          , COUNT(1) OVER(PARTITION BY P.PROD_CD, PI.ITEM_CD)-1  AS MAXROW  /* 삭제시 UPDATE할 이미지 수량 */
+	          , ROW_NUMBER() OVER(PARTITION BY P.PROD_CD,ITEM_CD ORDER BY P.PROD_CD,ITEM_CD,NUM)  AS ROWCNT  /* 등록시 IMG_QTY시 수량      */
+	          , ROW_NUMBER() OVER(PARTITION BY P.PROD_CD,ITEM_CD ORDER BY P.PROD_CD,ITEM_CD,NUM DESC)  AS DELETEROW  /* 기등록건/신규등록건(999)구분값 */
+	          , PI.IMG_QTY  AS IMG_QTY
+	        FROM TPR_PRODUCT  P
+	          , TET_COPY_NO  CN
+	          , TPR_ITEM  PI
+	          , TET_CODE  SM068
+	        WHERE P.PROD_CD = PI.PROD_CD
+	        AND CN.NUM &lt;= PI.IMG_QTY
+	        AND CN.NUM &lt;= 5
+	        AND MINOR_CD(+) =  LPAD(NUM, '2', '0')
+	        AND MAJOR_CD(+) = 'SM068'
+	        AND P.PROD_CD = #prodCd#
+	        AND PI.ITEM_CD = '001'
+	    ) V
+	    ORDER BY PROD_CD, ITEM_CD, ROWCNT
+	</select>
+
+	<update id="updatePrdImageAdd">
+	/* pscpprd0006.updatePrdImageAdd - 이미지 추가 쿼리 */
+	UPDATE TPR_ITEM
+	SET IMG_QTY = NVL(IMG_QTY, 0) + 1
+	  , MOD_ID = #regId#
+	  , MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE PROD_CD = #prodCd#
+	AND ITEM_CD = #itemCd#
+	</update>
+
+	<update id="updatePrdImageDel">
+	/* pscpprd0006.updatePrdImageDel - 이미지 삭제 쿼리 */
+	UPDATE TPR_ITEM
+	SET IMG_QTY = NVL(IMG_QTY, 0) - 1
+	  , MOD_ID = #regId#
+	  , MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE PROD_CD = #prodCd#
+	AND ITEM_CD = #itemCd#
+	</update>
+
+	<update id="updatePrdImageHist">
+	/* pscpprd0006.updatePrdImageHist */
+	MERGE INTO TPR_PRODUCT_IMG_HIST A
+	USING DUAL ON (A.SEQ = #seq# and A.PROD_IMG_NO = #rowCnt#)
+	WHEN MATCHED THEN
+	UPDATE
+	   SET UPLOAD_DT = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #regId#
+	 WHERE A.SEQ = #seq#
+	   AND A.PROD_IMG_NO  = #rowCnt#
+	WHEN NOT MATCHED THEN
+	INSERT ( SEQ, PROD_IMG_NO, UPLOAD_DT, REG_DATE, REG_ID, MOD_DATE, MOD_ID )
+	VALUES (#seq#, #rowCnt#, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD'), CURRENT_TIMESTAMP(0), #regId#, CURRENT_TIMESTAMP(0), #regId#)
+	</update>
+
+	<!-- 상품행사카피목록 조회 -->
+	<select id="selectYoutubeLink" resultClass="dataMap">
+	/* pscpprd0006.selectYoutubeLink */
+	SELECT PROD_URL FROM TPR_PRODUCT
+	 WHERE PROD_CD = #prodCd#
+	</select>
+
+	<update id="updateYoutubeSave">
+	/* pscpprd0006.updateYoutubeSave - 유튜브 등록 */
+	UPDATE TPR_PRODUCT
+	   SET PROD_URL = #PROD_URL#
+	     , MOD_ID = #REG_ID#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #PROD_CD#
+	</update>
+
+    <select id="selectAprvList" resultClass="dataMap">
+    /* pscpprd0006.selectAprvList */
+	SELECT A.SEQ
+	     , A.PROD_CD
+	     , A.APRV_CD
+	     , A.APRV_DATE
+	     , A.APRV_ID
+	     , A.TYPE_CD
+	     , A.MEMO
+	     , A.VENDOR_ID
+	     , A.REG_DATE
+	     , A.REG_ID
+	     , A.MOD_DATE
+	     , A.MOD_ID
+	     , B.PROD_IMG_NO
+	  FROM TPR_PROD_MD_APRV_MST A, TPR_PRODUCT_IMG_HIST B
+	 WHERE A.PROD_CD = #prodCd#
+	   AND A.TYPE_CD = #typeCd#
+	   AND A.APRV_CD IN ('001','002')
+	   AND A.SEQ = B.SEQ
+	</select>
+
+	<select id="selectWidePrdImageList" resultClass="pscpprd0006VO">
+	/* pscpprd0006.selectWidePrdImageList - 이미지 목록 쿼리 */
+	SELECT /*+ optimizer_features_enable('11.2.0.2') */
+	    PROD_CD             AS prodCd
+	  , ITEM_CD             AS itemCd
+	  , MD_SRCMK_CD         AS mdSrcmkCd
+	  , PRODIMAGEPATH       AS prodImagePath
+	  , TITLE               AS title
+	  , '' AS classNm
+	  , '' AS attrsNm
+	  , MAXROW              AS maxRow
+	  , ROWCNT              AS rowCnt
+	  , DELETEROW           AS deleteRow
+	  , IMG_QTY             AS imgQty
+	FROM (
+	    SELECT /* 신규 등록용 QUERY === */
+	        P.PROD_CD
+	      , PI.ITEM_CD
+	      , PI.MD_SRCMK_CD  AS MD_SRCMK_CD
+	      , SUBSTRB(PI.MD_SRCMK_CD,1,5)  AS PRODIMAGEPATH
+	      , ''  AS TITLE
+	      , COUNT(1) OVER(PARTITION BY P.PROD_CD, PI.ITEM_CD) - 1  AS MAXROW
+	      , PI.IMG_QTY + 1  AS ROWCNT
+	      , 999  AS DELETEROW
+	      , DECODE(P.WIDE_YN, 'Y', PI.IMG_QTY-1, PI.IMG_QTY) AS IMG_QTY
+	    FROM TPR_PRODUCT  P
+	      , TPR_ITEM  PI
+	    WHERE   P.PROD_CD     = PI.PROD_CD
+	    AND     P.PROD_CD     = #prodCd#
+	    AND     PI.ITEM_CD    = '001'
+
+	    UNION ALL
+
+	    SELECT /* 기등록건 조회 QUERY === */
+	        P.PROD_CD
+	      , PI.ITEM_CD
+	      , PI.MD_SRCMK_CD  AS MD_SRCMK_CD
+	      , SUBSTRB(PI.MD_SRCMK_CD,1,5)  AS PRODIMAGEPATH
+	      , SM068.CD_NM  AS TITLE
+	      , COUNT(1) OVER(PARTITION BY P.PROD_CD, PI.ITEM_CD)-1  AS MAXROW  /* 삭제시 UPDATE할 이미지 수량 */
+	      , ROW_NUMBER() OVER(PARTITION BY P.PROD_CD,ITEM_CD ORDER BY P.PROD_CD,ITEM_CD,NUM)  AS ROWCNT  /* 등록시 IMG_QTY시 수량      */
+	      , ROW_NUMBER() OVER(PARTITION BY P.PROD_CD,ITEM_CD ORDER BY P.PROD_CD,ITEM_CD,NUM DESC)  AS DELETEROW /* 기등록건/신규등록건(999)구분값 */
+	      , DECODE(P.WIDE_YN, 'Y', PI.IMG_QTY-1, PI.IMG_QTY)  AS IMG_QTY
+	    FROM TPR_PRODUCT  P
+	      , TET_COPY_NO  CN
+	      , TPR_ITEM  PI
+	      , TET_CODE  SM068
+	    WHERE P.PROD_CD = PI.PROD_CD
+	    AND CN.NUM = '99'
+	    AND MINOR_CD(+) =  LPAD(NUM, '2', '0')
+	    AND MAJOR_CD(+) = 'SM068'
+	    AND P.PROD_CD = #prodCd#
+	    AND PI.ITEM_CD = '001'
+	    AND NVL(P.WIDE_YN,'N') = 'Y' 
+	) V
+	ORDER BY 
+	    PROD_CD
+	  , ITEM_CD
+	  , ROWCNT
+	</select>
+
+	<update id="updateWideImgYN">
+	/* pscpprd0006.updateWideImgYN - 와이드이미지 등록/삭제여부 update (Y:등록,N:삭제)*/
+	UPDATE TPR_PRODUCT
+	   SET WIDE_YN = #wideYN#
+	     , MOD_ID = #modId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #prodCd#
+	</update>
+
+	<select id="selectMdSrcmkCd" resultClass="dataMap">
+	SELECT MD_SRCMK_CD
+	  FROM TPR_PRODUCT
+	 WHERE PROD_CD = #prodCd#
+	   AND VENDOR_ID = #vendorId#
+	</select>
+
+	<select id="selectVideoUrl" resultClass="pscpprd0006VO">
+	SELECT PROD_CD AS prodCd
+	     , VIDEO_URL AS videoUrl
+	  FROM TPR_PRODUCT_EXT
+	 WHERE PROD_CD = #prodCd#
+	</select>
+
+	<update id="updateVideoUrl">
+	/* pscpprd0006.updateVideoUrl */
+	MERGE INTO TPR_PRODUCT_EXT A
+	USING DUAL ON (A.PROD_CD = #prodCd#)
+	 WHEN NOT MATCHED THEN
+	INSERT ( PROD_CD
+	       , VIDEO_URL
+	       , REG_DATE
+	       , REG_ID
+	       , MOD_DATE
+	       , MOD_ID)
+	VALUES ( #prodCd#
+	       , #videoUrl#
+	       , CURRENT_TIMESTAMP(0)
+	       , #modId#
+	       , CURRENT_TIMESTAMP(0)
+	       , #modId#)
+	  WHEN MATCHED THEN
+	UPDATE
+	   SET VIDEO_URL = #videoUrl#
+	     , MOD_ID = #modId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #prodCd#
+	</update>
+
+	<!-- 대표이미지 변경 이력 등록 (For OSP) -->
+	<update id="insertImgChgHist">
+	INSERT INTO TPR_IMG_CHG_HIST
+	( SEQ, PROD_CD, MD_SRCMK_CD, CHG_STATUS, IMG_SEQ, IMG_MOD_DATE, REG_DATE, REG_ID )
+	VALUES
+	( SEQ_IMG_CHG_HIST.NEXTVAL
+	, #prodCd#
+	, #mdSrcmkCd#
+	, #chgStatus#
+	, #rowCnt#
+	, CURRENT_TIMESTAMP(0)
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+	</update>
+
+</sqlMap>

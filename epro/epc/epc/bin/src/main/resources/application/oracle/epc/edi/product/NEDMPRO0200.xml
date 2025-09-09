@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0200">
+	<typeAlias alias="nedmpro0200vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0200VO" />
+
+	<resultMap id="selectNutAttMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+	</resultMap>
+	
+    <!-- 소분... SQLINES DEMO *** -->
+    <select id="selectNutAtt" parameterClass="String" resultMap="selectNutAttMap">
+        /* SQLINES DEMO *** ectNutAtt */
+        SELECT 
+            NUT_CD
+        FROM 
+            TPC_NUT_L3CD
+        WHERE 
+            L3_CD = #l3Cd#
+        AND COALESCE(DEL_FG, ' ') != 'D' 
+        AND NUT_CD IS NOT NULL  
+        GROUP BY 
+            NUT_CD
+        ORDER BY NUT_CD
+    </select>
+
+	<resultMap id="selectNutAttInfoMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+		<result column="NUT_NM" 	property="NUT_NM"	nullValue="" />
+		<result column="UNIT"	property="UNIT"		nullValue="" /> 
+	</resultMap>
+		
+    <!-- 소분... SQLINES DEMO *** -->
+    <select id="selectNutAttInfo" parameterClass="String" resultMap="selectNutAttInfoMap">
+        /* SQLINES DEMO *** ectNutAttInfo */
+        SELECT 
+            NUT_CD
+          , NUT_NM
+          , UNIT
+        FROM 
+            TPC_NUT_MST
+        WHERE 
+            NUT_CD IN (
+                SELECT 
+                    NUT_CD
+                FROM 
+                    TPC_NUT_L3CD
+                WHERE 
+                    L3_CD = #l3Cd#
+                AND COALESCE(DEL_FG, ' ') != 'D'
+                AND NUT_CD IS NOT NULL
+                GROUP BY 
+                    NUT_CD
+            )
+        ORDER BY NUT_CD
+    </select>
+
+    <!-- 영양... SQLINES DEMO *** -->
+    <delete id="deleteNutAmtSaved">
+        /* SQLINES DEMO *** eteNutAttOptSaved */
+        DELETE 
+        FROM 
+            TPC_NUT_ATT_TMP
+        WHERE 
+            PROD_CD = #prodCd#
+    </delete>
+    
+    <!-- 영양... SQLINES DEMO *** -->
+    <update id="mergeNutAmtTmp" parameterClass="java.util.Map">
+        /* SQLINES DEMO *** geNutAmtTmp */
+        MERGE INTO
+            TPC_NUT_ATT_TMP TNAT
+            USING (
+                SELECT 
+                    #prodCd#   AS PROD_CD
+                  , #nutCd#    AS NUT_CD
+                  , #nutAmt#   AS NUT_AMT
+                  , #entpCd#   AS ENTP_CD
+            ) NUT_ATT
+            ON (TNAT.PROD_CD = NUT_ATT.PROD_CD AND TNAT.NUT_CD = NUT_ATT.NUT_CD)
+        WHEN MATCHED
+        THEN 
+            UPDATE
+            SET
+                NUT_AMT  = cast(NUT_ATT.NUT_AMT as numeric)
+              , MOD_ID   = NUT_ATT.ENTP_CD
+              , MOD_DATE = CURRENT_TIMESTAMP(0)
+        WHEN NOT MATCHED
+        THEN
+            INSERT 
+            (
+                PROD_CD
+              , NUT_CD
+              , NUT_AMT
+              , REG_DATE
+              , REG_ID
+              , CHG_FG
+            )
+            VALUES
+            (
+                NUT_ATT.PROD_CD
+              , NUT_ATT.NUT_CD
+              , cast(NUT_ATT.NUT_AMT as numeric)
+              , CURRENT_TIMESTAMP(0)
+              , NUT_ATT.ENTP_CD
+              , 'M'
+            )
+    </update>
+    
+    <!-- 순번... SQLINES DEMO *** -->
+    <select id="getProdNutMaxSeq" parameterClass="String" resultClass="String">
+       /* getProdNutMaxSeq */
+       SELECT 
+           MAX(SEQ)
+       FROM 
+           TPC_NUT_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+    </select>
+    
+    <!-- SQLINES DEMO *** 수 -->
+    <select id="getCntNotNutAttRes" parameterClass="nedmpro0200vo" resultClass="Integer">
+        /* SQLINES DEMO *** CntNotNutAttRes */
+        SELECT 
+				    COUNT(*) AS CNT
+				FROM
+				    TPC_NUT_ATT_REQ TNAR
+				    LEFT JOIN
+				    NUT_ATT_REQ_SAP NARS
+				        ON TNAR.PROD_CD           = SUBSTR(NARS.PROD_CD, -10)
+				       AND LPAD(TNAR.SEQ, 3, '0') = SUBSTR(NARS.SEQ, -3) 
+				       AND TNAR.NUT_CD            = NARS.NUT_CD
+				WHERE
+				    TNAR.PROD_CD = #prodCd#
+				AND TNAR.SEQ = #seq#
+        AND NARS.SEQ IS NULL
+    </select>
+
+	<resultMap id="selectNutAmtSavedMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+		<result column="NUT_AMT" 	property="NUT_AMT"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	
+    <!-- 영양... SQLINES DEMO *** -->
+    <select id="selectNutAmtSaved" parameterClass="String" resultMap="selectNutAmtSavedMap">
+        /* SQLINES DEMO *** ectNutAmtSaved */
+        SELECT 
+            NUT_CD
+          , NUT_AMT
+          , CHG_FG
+        FROM
+            TPC_NUT_ATT_TMP
+        WHERE
+            PROD_CD = #prodCd#
+    </select>
+ 
+ 	<resultMap id="selectNutAmtEcoSavedMap"	class="java.util.HashMap">
+		<result column="NUT_CD"	 	property="NUT_CD"	nullValue="" /> 
+		<result column="NUT_AMT" 	property="NUT_AMT"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	   
+    <!-- SQLINES DEMO *** 값 조회 -->
+     <select id="selectNutAmtEcoSaved" parameterClass="String" resultMap="selectNutAmtEcoSavedMap">
+        /* SQLINES DEMO *** ectNutAmtEcoSaved */
+        SELECT 
+            NUT_CD
+          , NUT_AMT
+          , 'M' AS CHG_FG
+        FROM
+            NUT_ATT_PROD_SAP
+        WHERE
+            PROD_CD = #prodCd#
+        AND COALESCE(LOEKZ, ' ') != 'D'
+    </select>
+    
+     <!-- SQLINES DEMO ***  -->
+     <select id="selectCntNutReq" parameterClass="nedmpro0200vo" resultClass="Integer">
+     /* SQLINES DEMO *** ectCntNutReq */
+        SELECT 
+            COUNT(*)
+        FROM
+            TPC_NUT_ATT_REQ
+        WHERE
+            PROD_CD = #prodCd#
+        AND SEQ = #seq#
+    </select>  
+    
+    <!-- SQLINES DEMO *** -->
+    <update id="updateNutModifyStatus" parameterClass="nedmpro0200vo" >
+        /* SQLINES DEMO *** ateNutModifyStatus */
+        UPDATE 
+            TPC_NUT_ATT_TMP
+        SET
+            CHG_FG   = #chgFg#
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+          , MOD_ID   = #entpCd#
+        WHERE
+            PROD_CD = #prodCd#   
+    </update>
+    
+    <!-- 요청... SQLINES DEMO *** -->
+    <insert id="insertNutAmtReq" parameterClass="java.util.Map">
+        /* SQLINES DEMO *** ertNutAmtReq */
+        INSERT INTO 
+            TPC_NUT_ATT_REQ
+            (
+                SEQ
+              , PROD_CD
+              , NUT_CD
+              , NUT_AMT
+              , APRV_FG
+              , REG_DT
+              , REG_TM
+              , REG_ID
+            )
+            VALUES
+            (
+                #SEQ#
+              , #PROD_CD#
+              , #NUT_CD#
+              , cast(#NUT_AMT# as numeric)
+              , #APRV_FG#
+              , #REG_DT#
+              , #REG_TM#
+              , #REG_ID#
+            )
+    </insert>
+    
+    <!-- 요청... SQLINES DEMO *** -->
+    <delete id="deleteNutAmtReq" parameterClass="nedmpro0200vo">
+        /* SQLINES DEMO *** eteNutAmtReq */
+       DELETE 
+       FROM 
+           TPC_NUT_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+       AND SEQ     = #seq#
+    </delete>
+</sqlMap>

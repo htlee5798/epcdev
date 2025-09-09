@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="PSCMBRD0001">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="pscmbrd0001SearchVO" type="com.lottemart.epc.board.model.PSCMBRD0001SearchVO"/>
+	<typeAlias alias="pscpbrd0002SearchVO" type="com.lottemart.epc.board.model.PSCPBRD0002SearchVO"/>
+	
+	
+	<resultMap id="viewDetail" class="com.lottemart.epc.board.model.PSCPBRD0002SearchVO">
+		<result property="boardSeq" column="BOARD_SEQ"/>
+		<result property="title" column="TITLE"/>
+		<result property="regId" column="REG_ID"/>
+		<result property="wrtDy" column="WRT_DY"/>
+		<result property="content" column="CONTENT"/>
+		<result property="atchFileId" column="ATCH_FILE_ID"/>
+	</resultMap>
+	
+	 
+	
+	<select id="selectToDate" resultClass="dataMap">
+	<![CDATA[	
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0),'YYYY-MM-DD')TO_DATE,
+			   TO_CHAR(CURRENT_TIMESTAMP(0),'YYYY-MM')||'-'||'01'FIRST_DATE
+		FROM DUAL
+	]]>
+	</select>
+
+	 <select id="selectBoardList" resultClass="pscpbrd0002SearchVO">
+
+		/* PSCMBRD0001.selectBoardList */ 
+		SELECT rowNum, TOTAL_COUNT as totalCount, boardSeq, listSeq, upBoardSeq, boardDqSeq, boardDqSeq, scrpObjectCd, childScrpCnt, ntceStartDy, ntceEndDy, depth, memberNo, email, boardStatus, reasonBcd
+         		 , reasonScd, boardGb, title, content, viewCnt, recomCnt, atchFileYn, regId, regDate, pblYn
+        FROM (
+   			SELECT ROWNUM
+   				, CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+				, COUNT(*) OVER() TOTAL_COUNT
+				, C.*   
+			FROM (  
+					SELECT BOARD_SEQ AS boardSeq
+						, A.LIST_SEQ AS listSeq
+						, A.UP_BOARD_SEQ AS upBoardSeq
+						, A.BOARD_DP_SEQ AS boardDqSeq
+						, A.SCRP_OBJECT_CD AS scrpObjectCd
+						, A.CHILD_SCRP_CNT AS childScrpCnt
+						, DECODE( LENGTH(A.NTCE_START_DY), 8, A.NTCE_START_DY,  SUBSTR(A.NTCE_START_DY,1, 8) ) AS ntceStartDy
+						, DECODE( LENGTH(A.NTCE_END_DY), 8, A.NTCE_END_DY,  SUBSTR(A.NTCE_END_DY, 1, 8) ) AS ntceEndDy
+						, A.DEPTH AS depth
+						, A.MEMBER_NO AS memberNo
+						, A.EMAIL AS email
+						, 'SM043' AS boardStatus
+						, 'SM044' AS reasonBcd
+						, 'SM045' AS reasonScd
+						, 'SM004' AS boardGb
+						, DECODE(DEPTH,2,'(RE)',3,'(RE)(RE)',4,'(RE)(RE)(RE)',5,'(RE)(RE)(RE)(RE)','') || TITLE  AS title
+						, A.CONTENT AS content, A.VIEW_CNT AS viewCnt, A.RECOM_CNT AS recomCnt, A.ATCH_FILE_YN AS atchFileYn, NVL(AD.ADMIN_NM, A.REG_ID) AS regId
+						, TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS regDate
+						, DECODE(PBL_YN ,'Y','공개', '비공개') AS pblYn
+                FROM TBO_BOARD A
+                   , TAD_ADMIN AD
+                WHERE 
+                    A.REG_ID = AD.ADMIN_ID(+)
+               	AND BOARD_SEQ IN
+                (
+                    SELECT  BOARD_SEQ FROM
+                    (
+                        SELECT ROWNUM AS NUM, BOARD_SEQ FROM
+                        (
+                            SELECT BOARD_SEQ FROM TBO_BOARD A
+                            WHERE 1 = 1
+                            <isNotEmpty prepend="AND" property="startDate">
+								WRT_DY BETWEEN REPLACE(#startDate#, '-', '')||'000000' AND REPLACE(#endDate#, '-', '')||'235959'
+							</isNotEmpty>
+                            AND PBL_YN = 'Y'
+                            AND BOARD_DIVN_CD = '101'
+							<isNotEmpty property="searchWord">	                            
+                            AND TITLE LIKE #searchWord# || '%'
+							</isNotEmpty>     
+                            ORDER BY BOARD_SEQ DESC 
+                        )
+                    )
+                )
+                ORDER BY BOARD_SEQ DESC
+            ) C
+        )
+         WHERE PAGE = #currentPage#
+
+	</select> 
+	
+	<select id="selectDetailPopup" resultMap="viewDetail">
+		/*    PSCPBRD0002.selectDetailPopup    */
+		SELECT     
+                  BOARD_SEQ
+                    , TITLE
+                    , REG_ID
+                    , WRT_DY
+                    , CONTENT
+                    , ATCH_FILE_ID
+          FROM     TBO_BOARD
+         WHERE     BOARD_SEQ = #boardSeq#
+	</select>
+	
+</sqlMap>

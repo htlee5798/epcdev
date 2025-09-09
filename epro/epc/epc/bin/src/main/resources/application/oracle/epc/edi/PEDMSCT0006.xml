@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0006">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 입점상담 협력업체 SELECT-->
+<select id="TED_VENDOR_EDI-SELECT01" parameterClass="map" resultClass="resultClass">
+  SELECT  BMAN_NO
+         ,PWD
+         ,HND_NM
+         ,CEO_NM
+         ,UTAKMN_NM
+         ,RTRIM(SUBSTR(TEL_NO,1,4))||'-'||
+          RTRIM(SUBSTR(TEL_NO,5,4))||'-'||
+          SUBSTR(TEL_NO,9)  AS TEL_NO
+         ,TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+         ,TO_CHAR(MOD_DATE,'YYYY-MM-DD') AS MOD_DATE 
+    FROM TED_VENDOR_EDI
+    WHERE ( TED_VENDOR_EDI.BMAN_NO = #venderSearch# or  TED_VENDOR_EDI.HND_NM  like '%'||#venderSearch# )
+      LIMIT 1
+</select>
+
+
+<!-- 입점상담업체 pass  업데이트 -->
+<update id="TED_VENDOR_EDI-UPDATE01" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+	SET  	PWD = BMAN_NO
+	WHERE BMAN_NO = #bmanNo#
+
+</update>
+
+<!-- 입점상담업체 상태  업데이트  -->
+<update id="TED_VENDOR_EDI-UPDATE02" parameterClass="map">
+	UPDATE  TED_VENDOR_EDI		
+	SET  	PAPE_JGM_RSLT_DIVN_CD = 'M', PAPE_JGM_RETN_DIVN_CD = '', PAPE_JGM_UTAKMN_TEL_NO = '',PAPE_JGM_PROC_CONTENT = '', PAPE_JGM_PROC_DY = ''
+    	   ,CNSL_RSLT_DIVN_CD     = 'M', CNSL_RETN_DIVN_CD = '', CNSL_UTAKMN_TEL_NO = '',CNSL_PROC_CONTENT = '', CNSL_PROC_DY = ''
+    	   ,ENTSHP_RSLT_DIVN_CD   = 'M', ENTSHP_RETN_DIVN_CD = '', ENTSHP_UTAKMN_TEL_NO = '',ENTSHP_PROC_CONTENT = '', ENTSHP_PROC_DY = ''
+    	   ,CHG_STATUS_CD = '0'
+	WHERE BMAN_NO = #bmanNo#
+</update>
+
+
+   
+   
+
+
+</sqlMap>

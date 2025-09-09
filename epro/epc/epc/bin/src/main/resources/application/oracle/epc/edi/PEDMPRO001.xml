@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO001">
+
+	<typeAlias alias="newProduct"    type="com.lottemart.epc.edi.product.model.NewProduct" />
+	<typeAlias alias="newProductEDI" type="com.lottemart.epc.edi.product.model.NewProduct" />
+	<typeAlias alias="colorSize"     type="com.lottemart.epc.edi.product.model.ColorSize" />
+	<typeAlias alias="searchProduct" type="com.lottemart.epc.edi.product.model.SearchProduct" />
+	<typeAlias alias="pedmPro0005VO" type="com.lottemart.epc.edi.product.model.PEDMPRO0005VO" />
+	<typeAlias alias="pedmPro0009VO" type="com.lottemart.epc.edi.product.model.PEDMPRO0009VO" />
+	<typeAlias alias="offlineImage"  type="com.lottemart.epc.edi.product.model.OfflineImage" />
+	<typeAlias alias="ecProductCategory"    type="com.lottemart.epc.edi.product.model.EcProductCategory" />
+	<typeAlias alias="ecProductAttribute"    type="com.lottemart.epc.edi.product.model.EcProductAttribute" />
+
+	<select id="getNewProductCode" resultClass="String" parameterClass="String">
+	/* SQLINES DEMO *** ewProductCode */ 
+	SELECT CONCAT(TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),LPAD(NEXTVAL('SQ_NEW_PROD_CD')::text, 11 ,0::text))
+	</select>
+ 
+	<resultMap id="colorResultMap" class="colorSize">
+	   <result property="colorCode" column="COLOR_CD" />
+	   <result property="productImageId" column="PROD_IMG_ID" />
+	   <result property="colorName" column="COLOR_NM" />
+    </resultMap>
+ 
+    <!-- SQLINES DEMO *** 라인전용 Map -->
+    <resultMap id="productListMapEDIOld" class="newProductEDI">
+	  <result property="regDate"  	column="REG_DT" />
+	  <result property="confirmFlag" 	column="CFM_FG" />
+	  <result property="adjustFlag" 	column="ADJ_FG" />
+	  <result property="sellCode"  	column="SRCMK_CD" />
+	  <result property="onlineRepProdCd"  	column="ONLINE_REP_PROD_CD" />
+	  <result property="productName" 	column="PROD_NM"  />
+	  <result property="productStand" column="PROD_STD" />
+	  <result property="orderIpsu" 	column="ORD_IPSU" />
+	  <result property="normalProductCost" 	    column="BUY_PRC" />
+	  <result property="normalProductSalePrice"	column="SALE_PRC" />
+	  <result property="profitRate" 	column="PROFIT_RT"  />
+	  <result property="programId" 	column="PGM_ID"  />
+	  <result property="newProductCode" 	column="PROD_CD" />
+	  <result property="entpCode" 	column="VEN_CD"  />
+	  <result property="imageName"	column="IMG_NM"  />
+	  <result property="imageConfirmFlag" column="IMG_CFM_FG"  />
+	  <result property="logiConfirmFlag"	column="LOGI_CFM_FG" />
+	</resultMap>
+
+	<!-- SQLINES DEMO *** ee  TED_COLOR_SIZE => TPC_VAR_ATT , TPR_COLOR => TPR_PROD_ATT_CD -->
+	<select id="selectProductColorList" resultMap="colorResultMap" parameterClass="String">
+	/* SQLINES DEMO *** ctProductColorList */
+	SELECT DISTINCT E.ATT_VALUE , 
+					 E.PROD_IMG_ID,
+					 P.ATT_DETAIL_NM 
+		FROM TPC_VAR_ATT E JOIN  TPR_PROD_ATT_CD P
+			ON      E.L3_CD     = P.PROD_RANGE
+			    AND E.CLASS     = P.CLASS
+			    AND E.ATT_CD    = P.ATT_GRP_CD
+			    AND E.ATT_VALUE = P.ATT_DETAIL_CD
+			    AND P.ATT_GRP_CD = 'ZCOLOR'         -- SQLINES DEMO *** lee 이 부분은 데이터 확인 후 변경이 필요함 
+		WHERE E.PGM_ID = #newProductCode#
+	</select>
+
+	<select id="selectProductColorListOld" resultMap="colorResultMap" parameterClass="String">
+	/* SQLINES DEMO *** ctProductColorList */
+	SELECT DISTINCT E.COLOR_CD , 
+					 E.PROD_IMG_ID,
+					 P.COLOR_NM 
+		FROM TED_COLOR_SIZE E JOIN  TPR_COLOR P
+			ON  E.COLOR_CD  = P.COLOR_CD
+		WHERE E.NEW_PROD_CD = #newProductCode#
+	</select>
+
+    <resultMap id="productListMapEDI" class="newProductEDI">
+    	<result property="regDate"  				column="REG_DT" />
+    	<result property="confirmFlag" 				column="CFM_FG" />
+    	<result property="adjustFlag" 				column="ADJ_FG" />
+    	<result property="sellCode"  				column="SRCMK_CD" />
+    	<result property="onlineRepProdCd"  		column="ONLINE_REP_PROD_CD" />
+    	<result property="productName" 				column="PROD_NM"  />
+    	<result property="productStand" 			column="PROD_STD" />
+    	<result property="orderIpsu" 				column="ORD_IPSU" />
+    	<result property="normalProductCost" 	    column="BUY_PRC"  />
+    	<result property="normalProductSalePrice"	column="SALE_PRC" />
+    	<result property="profitRate" 				column="PROFIT_RT"  />
+    	<result property="programId" 				column="PGM_ID"  />
+    	<result property="newProductCode" 			column="PROD_CD"  />
+    	<result property="entpCode" 				column="VEN_CD"  />
+    	<result property="imageName"				column="IMG_NM"  />
+    	<result property="imageConfirmFlag" 		column="IMG_CFM_FG"  />
+    	<result property="logiConfirmFlag"			column="LOGI_CFM_FG" />
+	</resultMap>
+
+	<!-- SQLINES DEMO *** lee TED_NEW_PROD_REG => TPC_NEW_PROD_REG  TED_NEW_PROD_STS => TPC_NEW_PROD_STS -->
+	<select id="selectNewProductListOnline" resultMap="productListMapEDI" parameterClass="searchProduct">
+	/* SQLINES DEMO *** ctNewProductListOnline */
+	SELECT 
+		 N.REG_DATE 				AS REG_DT,
+		 SUBSTR(S.PRGS_STS,0,1) 	AS CFM_FG,
+		 SUBSTR(S.PRGS_STS,2,1) 	AS ADJ_FG,
+	     N.SELL_CD  				AS SRCMK_CD,
+	     N.ONLINE_REP_PROD_CD,
+	     N.PROD_NM                  as PROD_NM,
+	     N.PROD_STANDARD_NM 		as PROD_STD,
+	     N.PUR_INRCNT_QTY 			as ORD_IPSU,
+	     N.NOR_PROD_PCOST 			as BUY_PRC,
+	     N.NOR_PROD_SALE_PRC 		AS SALE_PRC,
+	     N.PRFT_RATE 				AS PROFIT_RT,
+	     N.NEW_PROD_CD 				AS PGM_ID,
+	     S.PROD_CD 					AS PROD_CD,
+	     N.ENTP_CD  				AS VEN_CD,
+	     'online' 					as IMG_NM,
+	     SUBSTR(S.PRGS_STS,0,1) 	AS IMG_CFM_FG,
+	     'online' 					as LOGI_CFM_FG
+      FROM TPC_NEW_PROD_REG  N LEFT JOIN TPC_NEW_PROD_STS  S
+		ON  N.PGM_ID = S.NEW_PROD_CD
+      WHERE N.ONOFF_DIVN_CD = #onOffDivnCode# and N.MD_SEND_DIVN_CD='S'
+	    <isNotEmpty property="productDivnCode" prepend="AND">
+	    N.PROD_DIVN_CD = #productDivnCode#
+	    </isNotEmpty>
+	    <isEmpty  property="entpCode"  prepend="AND"> 
+			<iterate prepend="N.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		    #venCds[]# 
+		  	</iterate> 
+		</isEmpty>
+	    <isNotEmpty property="entpCode" prepend="AND">
+	    N.ENTP_CD    = #entpCode#
+	    </isNotEmpty>
+	    <isNotEqual property="productStatus" compareValue="99" prepend="AND">
+	    S.PRGS_STS=#productStatus#
+	    </isNotEqual>
+	    <isNotEmpty property="startDate" prepend="AND">
+	    N.REG_DATE BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+	    </isNotEmpty>
+	  ORDER BY N.REG_DATE DESC
+     </select>
+
+	<resultMap id="productInfoMap" class="newProduct">
+    	<result property="regDate"  				column="REG_DATE" />
+    	<result property="sellCode" 				column="SELL_CD" />
+    	<result property="productName" 				column="PROD_NM" />
+    	<result property="productDivnCode"    		column="PROD_DIVN_CD" />
+    	<result property="normalProductCost" 		column="NOR_PROD_PCOST"  />
+    	<result property="normalProductSalePrice" 	column="NOR_PROD_SALE_PRC"  />
+    	<result property="profitRate" 				column="PRFT_RATE"  />
+    	<result property="newProductCode" 			column="PGM_ID"  />
+    	<result property="onOffDivnCode" 			column="ONOFF_DIVN_CD"  />
+    	<result property="officialOrder.publishIncrementQuantity" 	column="PUR_INRCNT_QTY"  />
+	</resultMap>
+
+	 <!-- SQLINES DEMO *** Map -->
+	 <resultMap id="productListMapOld" class="newProduct">
+	    <result property="regDate"  	column="REG_DT" />
+	    <result property="confirmFlag" 	column="CFM_FG" />
+	    <result property="adjustFlag" 	column="ADJ_FG" />
+	    <result property="sellCode"  	column="SRCMK_CD" />
+	    <result property="productName" 	column="PROD_NM"  />
+	    <result property="productStand" column="PROD_STD" />
+	    <result property="orderIpsu" 	column="ORD_IPSU" />
+	    <result property="normalProductCost" column="BUY_PRC" />
+	    <result property="normalProductSalePrice" column="SALE_PRC" />
+	    <result property="profitRate" column="PROFIT_RT" />
+	    <result property="programId" column="PGM_ID" />
+	    <result property="newProductCode" column="PROD_CD" />
+	    <result property="entpCode" column="VEN_CD" />
+	    <result property="imageName" column="IMG_NM" />
+	    <result property="imageConfirmFlag" column="IMG_CFM_FG" />
+	    <result property="logiConfirmFlag" column="LOGI_CFM_FG" />
+	    <result property="colorCodeCd" column="COLOR_CD" />
+	    <result property="sizeName" column="SZ_NM" />
+	    <result property="colorName" column="COLOR_NM" />
+		<result property="colorCount" column="COLOR_CNT" />
+	    <result property="wUseFlag" column="W_USE_FG" />
+	</resultMap>
+
+	<!-- SQLINES DEMO *** ee TED_NEW_PROD_REG => TPC_NEW_PROD_REG -->
+	<select id="selectNewProductInfo" resultMap="productInfoMap" parameterClass="String">
+	/* SQLINES DEMO *** ctNewProductInfo */
+	SELECT T.REG_DATE
+	     , T.SELL_CD
+	     , T.PROD_NM
+	     , T.PROD_DIVN_CD
+	     , T.PUR_INRCNT_QTY
+	     , T.NOR_PROD_PCOST
+	     , T.NOR_PROD_SALE_PRC
+	     , T.PRFT_RATE
+	     , T.PGM_ID
+	     , T.ONOFF_DIVN_CD
+	  FROM TPC_NEW_PROD_REG T
+	 WHERE T.PGM_ID = #newProductCode# 
+	</select>
+
+	<!-- SQLINES DEMO *** ee  TED_NEW_PROD_REG => TPC_NEW_PROD_REG -->
+    <insert id="insertNewOnlineProduct" parameterClass="newProduct">
+	/* SQLINES DEMO *** rtNewOnlineProduct */
+	INSERT INTO TPC_NEW_PROD_REG
+	( PGM_ID  /* 1 */
+	<isNotEmpty property="productName">, PROD_NM  /* 2 */</isNotEmpty>
+	<isNotEmpty property="productShortName">, PROD_SHORT_NM  /* 3 */</isNotEmpty>
+	<isNotEmpty property="onOffDivnCode">, ONOFF_DIVN_CD  /* 4 */</isNotEmpty>
+	<isNotEmpty property="entpCode">, ENTP_CD  /* 5 */</isNotEmpty>
+	<isNotEmpty property="productDivnCode">, PROD_DIVN_CD  /* 6 */</isNotEmpty>
+	<isNotEmpty property="productStandardName">, PROD_STANDARD_NM  /* 7 */</isNotEmpty>
+	<isNotEmpty property="sellCode">, SELL_CD  /* 8 */</isNotEmpty>
+	<isNotEmpty property="displayTotalQuantity">, DP_TOT_QTY  /* 9 */</isNotEmpty>
+	<isNotEmpty property="normalProductCost">, NOR_PROD_PCOST  /* 10 */</isNotEmpty>
+	<isNotEmpty property="displayBaseQuantity">, DP_BASE_QTY  /* 11 */</isNotEmpty>
+	<isNotEmpty property="normalProductSalePrice">, NOR_PROD_SALE_PRC  /* 12 */</isNotEmpty>
+	<isNotEmpty property="displayUnitCode">, DP_UNIT_CD  /* 13 */</isNotEmpty>
+	<isNotEmpty property="eventSellPrice">, EVT_PROD_SELL_PRC  /* 14 */</isNotEmpty>
+	<isNotEmpty property="sellPrice">, SELL_PRC  /* 15 */</isNotEmpty>
+	<isNotEmpty property="taxatDivCode">, TAXAT_DIVN_CD  /* 16 */</isNotEmpty>
+	<isNotEmpty property="priceIssueDivnCode">, PRC_ISSUE_DIVN_CD  /* 17 */</isNotEmpty>
+	<isNotEmpty property="productHorizontalLength">, PROD_HRZN_LENG  /* 18 */</isNotEmpty>
+	<isNotEmpty property="productVerticalLength">, PROD_VTCL_LENG  /* 19 */</isNotEmpty>
+	<isNotEmpty property="productHeight">, PROD_HIGT  /* 20 */</isNotEmpty>
+	<isNotEmpty property="productDescription">, PROD_DESC  /* 21 */</isNotEmpty>
+	, L3_CD  /* 22 소분류 */
+	<isNotEmpty property="onlineProductName">, ONLINE_PROD_NM  /* 23 */</isNotEmpty>
+	<isNotEmpty property="productCountryCode">, HOME_CD  /* 24 */</isNotEmpty>
+	<isNotEmpty property="onlineProductCode">, ONLINE_REP_PROD_CD  /* 25 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.quantityWeightDivnCode">, QTY_WEGT_DIVN_CD  /* 26 */</isNotEmpty>
+	<isNotEmpty property="sesnDivnCd">, SESN_DIVN_CD  /* 27 계절구분  */</isNotEmpty>
+	<isNotEmpty property="sesnYearCd">, SESN_YEAR_CD  /* 27.1 year */</isNotEmpty>
+	<isNotEmpty property="officialOrder.minimumOrderQuantity">, MIN_ORD_PSBT_QTY  /* 28 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.maximumOrderQuantity">, MAX_ORD_PSBT_QTY  /* 29 */</isNotEmpty>
+	<isNotEmpty property="productDay">, PRODUCT_DY  /* 30 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.brandCode">, BRAND_CD  /* 33 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.brandName">, BRAND_NM  /* 34 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.makerCode">, MAKER_CD  /* 35 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.makerName">, MAKER_NM  /* 36 */</isNotEmpty>
+	<isNotEmpty property="tradeTypeCode">, TRD_TYPE_DIVN_CD  /* 37 */</isNotEmpty>
+	<isNotEmpty property="profitRate">, PRFT_RATE  /* 38 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.newProductGeneratedDivnCode">, NEW_PROD_GEN_DIVN_CD  /* 39 */</isNotEmpty>
+	<isNotEmpty property="onlineDisplayCategoryCode">, CATEGORY_ID  /* 40 */</isNotEmpty>
+	<isNotEmpty property="socialProductDeliveryCode">, SOCIAL_PROD_DELI_CD  /* 41 */</isNotEmpty>
+	<isNotEmpty property="nfomlVariationDesc">, NFOML_VARIATION_DESC  /* 42 */</isNotEmpty>
+	<isNotEmpty property="imgNcnt">, IMG_NCNT  /* 43 */</isNotEmpty>
+	<isNotEmpty property="md_vali_sellCode">, MD_VALI_SELL_CD  /* 44 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.modelName">, MODEL_NM  /* 45 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.ecoYn">, ECO_YN  /* 46 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.ecoNm">, ECO_NM  /* 47 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.dlvgaYn">, DLV_GA  /* 48 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.dlvDt">, DLV_DT  /* 49 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.inscoYn">, INS_CO  /* 50 */</isNotEmpty>
+	, TEAM_CD  /* 51 */
+	, L1_CD /* 52 */
+	, L2_CD /* 53 */
+	<isNotEmpty property="entpInProdCd">, ENTP_IN_PROD_CD  /* 54 */</isNotEmpty>
+	<isNotEmpty property="psbtStartDy">, RSERV_ORD_PSBT_START_DY  /* 56 */</isNotEmpty>
+	<isNotEmpty property="psbtEndDy">, RSERV_ORD_PSBT_END_DY  /* 57 */</isNotEmpty>
+	<isNotEmpty property="pickIdctDy">, RSERV_PROD_PICK_IDCT_DY  /* 58 */</isNotEmpty>
+	<isNotEmpty property="onlineProdTypeCd">, ONLINE_PROD_TYPE_CD  /* 59 */</isNotEmpty>
+	<isNotEmpty property="hopeDeliPsbtDd">, HOPE_DELI_PSBT_DD  /* 60 */</isNotEmpty>
+	<isNotEmpty property="setQty">, OPTN_LOAD_SET_QTY  /* 61 */</isNotEmpty>
+	<isNotEmpty property="optnLoadContent">, OPTN_LOAD_CONTENT  /* 62 */</isNotEmpty>
+	<isNotEmpty property="staffSellYn">, STAFF_MALL_SELL_PSBT_YN  /* 63 */</isNotEmpty>
+	<isNotEmpty property="staffDcAmt">, STAFF_DC_AMT  /* 64 */</isNotEmpty>
+	<isNotEmpty property="prodPrcMgrYn">, OPTN_PROD_PRC_MGR_YN  /* 65 */</isNotEmpty>
+	<isNotEmpty property="norProdSaleCurr">, NOR_PROD_SALE_CURR  /* 66 */</isNotEmpty>
+	<isNotEmpty property="sizeUnit">, SIZE_UNIT  /* 67 */</isNotEmpty>
+	<isNotEmpty property="ctpdYn">, CTPD_YN  /* 68 */</isNotEmpty>
+	<isNotEmpty property="dealRepProdYn">, DEAL_REP_PROD_YN  /* 69 */</isNotEmpty>
+	<isNotEmpty property="sellStartDy">, SELL_START_DY  /* 70 */</isNotEmpty>
+	<isNotEmpty property="sellEndDy">, SELL_END_DY  /* 71 */</isNotEmpty>
+	<isNotEmpty property="dealProdDivnCode">, DEAL_PROD_DIVN_CD  /* 72 */</isNotEmpty>
+	<isNotEmpty property="prodOptionDesc">, PROD_OPTION_DESC  /* 73 */</isNotEmpty>
+	, REG_DATE  /* 31 */
+	, REG_ID  /* 32 */
+	, ADM_FG
+	, DEAL_PROD_DESC_SHOW_YN
+	, EXPR_PROD_YN
+	, SELLER_RECOMM
+	<isNotEmpty property="adlYn">, ADL_YN</isNotEmpty>
+	<isNotEmpty property="themaYn">, THEMA_YN</isNotEmpty>
+	<isNotEmpty property="dealViewCd">, DEAL_VIEW_CD</isNotEmpty>
+	<isNotEmpty property="videoUrl">, VIDEO_URL</isNotEmpty>
+	<isNotEmpty property="scDpYn">, DEAL_SC_DP_YN</isNotEmpty>
+	)
+	VALUES 
+	( #newProductCode# /* 1 */
+	<isNotEmpty property="productName">, #productName#  /* 2 */</isNotEmpty>
+	<isNotEmpty property="productShortName">, #productShortName#  /* 3 */</isNotEmpty>
+	<isNotEmpty property="onOffDivnCode">, #onOffDivnCode#  /* 4 */</isNotEmpty>
+	<isNotEmpty property="entpCode">, #entpCode#  /* 5 */</isNotEmpty>
+	<isNotEmpty property="productDivnCode">, #productDivnCode#  /* 6 */</isNotEmpty>
+	<isNotEmpty property="productStandardName">, #productStandardName#  /* 7 */</isNotEmpty>
+	<isNotEmpty property="sellCode">, #sellCode#  /* 8 */</isNotEmpty>
+	<isNotEmpty property="displayTotalQuantity">, #displayTotalQuantity:NUMERIC:0#  /* 9 */</isNotEmpty>
+	<isNotEmpty property="normalProductCost">, #normalProductCost#  /* 10 */</isNotEmpty>
+	<isNotEmpty property="displayBaseQuantity">, #displayBaseQuantity:NUMERIC:0#  /* 11 */</isNotEmpty>
+	<isNotEmpty property="normalProductSalePrice">, #normalProductSalePrice#  /* 12 */</isNotEmpty>
+	<isNotEmpty property="displayUnitCode">, #displayUnitCode#  /* 13 */</isNotEmpty>
+	<isNotEmpty property="eventSellPrice">, #eventSellPrice#  /* 14 */</isNotEmpty>
+	<isNotEmpty property="sellPrice">, #sellPrice#  /* 15 */</isNotEmpty>
+	<isNotEmpty property="taxatDivCode">, #taxatDivCode#  /* 16 */</isNotEmpty>
+	<isNotEmpty property="priceIssueDivnCode">, #priceIssueDivnCode#  /* 17 */</isNotEmpty>
+	<isNotEmpty property="productHorizontalLength">, #productHorizontalLength:NUMERIC:0#  /* 18 */</isNotEmpty>
+	<isNotEmpty property="productVerticalLength">, #productVerticalLength:NUMERIC:0#  /* 19 */</isNotEmpty>
+	<isNotEmpty property="productHeight">, #productHeight:NUMERIC:0#  /* 20 */</isNotEmpty>
+	<isNotEmpty property="productDescription">, #productDescription#  /* 21 */</isNotEmpty>
+	, #l3Cd#  /* 22 */
+	<isNotEmpty property="onlineProductName">, #onlineProductName#  /* 23 */</isNotEmpty>
+	<isNotEmpty property="productCountryCode">, #productCountryCode#  /* 24 */</isNotEmpty>
+	<isNotEmpty property="onlineProductCode">, #onlineProductCode#  /* 25 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.quantityWeightDivnCode">, #officialOrder.quantityWeightDivnCode#  /* 26 */</isNotEmpty>
+	<isNotEmpty property="sesnDivnCd">, #sesnDivnCd#  /* 27 */</isNotEmpty>
+	<isNotEmpty property="sesnYearCd">, #sesnYearCd#  /* SQLINES DEMO *** 인 후 다시 변경필요하면 할것... */</isNotEmpty>
+	<isNotEmpty property="officialOrder.minimumOrderQuantity">, #officialOrder.minimumOrderQuantity#  /* 28 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.maximumOrderQuantity">, #officialOrder.maximumOrderQuantity#  /* 29 */</isNotEmpty>
+	<isNotEmpty property="productDay">, #productDay#  /* 30 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.brandCode">, #officialOrder.brandCode#  /* 33 */</isNotEmpty>  
+	<isNotEmpty property="officialOrder.brandName">, #officialOrder.brandName#  /* 34 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.makerCode">, #officialOrder.makerCode#  /* 35 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.makerName">, #officialOrder.makerName#  /* 36 */</isNotEmpty>
+	<isNotEmpty property="tradeTypeCode">, #tradeTypeCode#  /* 37 */</isNotEmpty>
+	<isNotEmpty property="profitRate">, #profitRate#  /* 38 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.newProductGeneratedDivnCode">, #officialOrder.newProductGeneratedDivnCode#  /* 39 */</isNotEmpty>
+	<isNotEmpty property="onlineDisplayCategoryCode">, #onlineDisplayCategoryCode#  /* 40 */</isNotEmpty>
+	<isNotEmpty property="socialProductDeliveryCode">, #socialProductDeliveryCode#  /* 41 */</isNotEmpty>
+	<isNotEmpty property="nfomlVariationDesc">, #nfomlVariationDesc#  /* 42 */</isNotEmpty>
+	<isNotEmpty property="imgNcnt">, #imgNcnt#  /* 43 */</isNotEmpty>
+	<isNotEmpty property="md_vali_sellCode">, #md_vali_sellCode#  /* 44 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.modelName">, #officialOrder.modelName#  /* 45 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.ecoYn">, #officialOrder.ecoYn#  /* 46 */</isNotEmpty>
+     <isNotEmpty property="officialOrder.ecoNm">, #officialOrder.ecoNm#  /* 47 */</isNotEmpty>
+     <isNotEmpty property="officialOrder.dlvgaYn">, #officialOrder.dlvgaYn#  /* 48 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.dlvDt">, #officialOrder.dlvDt#  /* 49 */</isNotEmpty>
+	<isNotEmpty property="officialOrder.inscoYn">, #officialOrder.inscoYn#  /* 50 */</isNotEmpty>
+	, #teamCd#  /* 51 */
+	, #l1Cd#  /* 52 */
+	, #l2Cd#  /* 53 */
+	<isNotEmpty property="entpInProdCd">, #entpInProdCd#  /* 54 */</isNotEmpty>
+	<isNotEmpty property="psbtStartDy">, #psbtStartDy#  /* 56 */</isNotEmpty>
+	<isNotEmpty property="psbtEndDy">, #psbtEndDy#  /* 57 */</isNotEmpty>
+	<isNotEmpty property="pickIdctDy">, #pickIdctDy#  /* 58 */</isNotEmpty>
+	<isNotEmpty property="onlineProdTypeCd">, #onlineProdTypeCd#  /* 59 */</isNotEmpty>
+	<isNotEmpty property="hopeDeliPsbtDd">, #hopeDeliPsbtDd#  /* 60 */</isNotEmpty>
+	<isNotEmpty property="setQty">, #setQty#  /* 61 */</isNotEmpty>
+	<isNotEmpty property="optnLoadContent">, #optnLoadContent#  /* 62 */</isNotEmpty>
+	<isNotEmpty property="staffSellYn">, #staffSellYn#  /* 63 */</isNotEmpty>
+	<isNotEmpty property="staffDcAmt">, #staffDcAmt#  /* 64 */</isNotEmpty>
+	<isNotEmpty property="prodPrcMgrYn">, #prodPrcMgrYn#  /* 65 */</isNotEmpty>
+	<isNotEmpty property="norProdSaleCurr">, #norProdSaleCurr#  /* 66 */</isNotEmpty>
+	<isNotEmpty property="sizeUnit">, #sizeUnit# /* 67 */</isNotEmpty>
+	<isNotEmpty property="ctpdYn">, #ctpdYn#  /* 68 */</isNotEmpty>
+	<isNotEmpty property="dealRepProdYn">, #dealRepProdYn#  /* 69 */</isNotEmpty>
+	<isNotEmpty property="sellStartDy">, #sellStartDy#  /* 70 */</isNotEmpty>
+	<isNotEmpty property="sellEndDy">, #sellEndDy#  /* 71 */</isNotEmpty>
+	<isNotEmpty property="dealProdDivnCode">, #dealProdDivnCode#  /* 72 */</isNotEmpty>
+	<isNotEmpty property="prodOptionDesc">, #prodOptionDesc#  /* 73 */</isNotEmpty>
+	, CURRENT_TIMESTAMP(0)  /* 31 */
+	, #entpCode#  /* 32 */
+	, '1'
+	<isNotEmpty property="productDescription">, 'Y'</isNotEmpty><isEmpty property="productDescription">, 'N'</isEmpty>
+	, #exprProdYn#
+	, #sellerRecomm#
+	<isNotEmpty property="adlYn">, #adlYn#</isNotEmpty>
+	<isNotEmpty property="themaYn">, #themaYn#</isNotEmpty>
+	<isNotEmpty property="dealViewCd">, #dealViewCd#</isNotEmpty>
+	<isNotEmpty property="videoUrl">, #videoUrl#</isNotEmpty>
+	<isNotEmpty property="scDpYn">, #scDpYn#</isNotEmpty>
+	)
+	</insert>
+
+	<!-- SQLINES DEMO *** ee  TED_NEW_PROD_REG => TPC_NEW_PROD_REG-->
+	<insert id="deleteNewProductInTemp" parameterClass="String">
+	/* SQLINES DEMO *** teNewProductInTemp */
+	DELETE FROM TPC_NEW_PROD_REG 
+    WHERE  PGM_ID = #newProductCode#
+	</insert>
+
+	<insert id="deleteNewProductEcomAddInfoTemp" parameterClass="String">
+	/* SQLINES DEMO *** teNewProductEcomAddInfoTemp */
+	DELETE FROM   TPR_PROD_ADD_INFO_VAL
+    where NEW_PROD_CD = #newProductCode#
+	</insert>
+
+	<!-- SQLINES DEMO *** ee TED_NEW_PROD_DESCR => TPC_NEW_PROD_DESCR -->
+	<insert id="insertProductDescription" parameterClass="newProduct">
+	/* SQLINES DEMO *** rtProductDescription */
+	INSERT INTO  TPC_NEW_PROD_DESCR (
+		 PGM_ID,
+		 SEQ,
+		 TITLE,
+		 ADD_DESC,
+		 REG_DATE,
+		 REG_ID
+		)
+	VALUES ( 
+		 #newProductCode#,
+		 1,
+		 #productName#,
+		 #productDescription#,
+		 current_timestamp(0),
+		 #entpCode#
+		)
+	 </insert>
+	 	 
+	<insert id="insertProductEcomAddInfoCopy" parameterClass="newProduct">
+	/* SQLINES DEMO *** rtProductEcomAddInfoCopy */
+	INSERT INTO TPR_PROD_ADD_INFO_VAL (
+		 INFO_GRP_CD,
+		 INFO_COL_CD,
+		 PROD_CD,
+		 NEW_PROD_CD,
+		 COL_VAL,
+		 DISP_YN,
+		 REG_DATE,
+		 REG_ID,
+		 MOD_DATE,
+		 MOD_ID
+		 )
+    SELECT INFO_GRP_CD,
+    		INFO_COL_CD,
+    		#newProductCode#,
+    		#newProductCode#,
+    		COL_VAL,
+    		DISP_YN,
+    		current_timestamp(0),
+    		REG_ID,
+    		current_timestamp(0),
+    		MOD_ID
+    from TPR_PROD_ADD_INFO_VAL
+    where new_prod_cd = #newProductCode#
+	</insert>
+
+	<select id="selectNormalProductCost" resultClass="String" parameterClass="newProduct">
+	/* SQLINES DEMO *** rtProductInfo (selectNormalProductCost) */
+	SELECT 
+	    CASE WHEN #taxatDivCode# ='1' THEN trunc(coalesce(#normalProductSalePrice#,'0')/1.1*(1-coalesce(#profitRate#,'0')/100 ),0)
+	         ELSE trunc(coalesce(#normalProductSalePrice#,'0')*(1-coalesce(#profitRate#,'0')/100 ),0)
+		END 
+	</select>
+	
+	<resultMap id="onlineRepresentProductMap" class="newProduct">
+	  <result property="onlineProductCode"  	column="PROD_CD"   />
+	  <result property="onlineProductName" 	column="PROD_NM"   />
+	  <result property="profitRate" 			column="PROFIT_RT" />
+	  <result property="sellCode"  			column="SRCMK_CD"  />
+	  <result property="l4CodeName"  			column="L3_NM"  />
+	  <result property="taxatDivCode"  		column="TAX_FG"  />
+	</resultMap>
+
+	<!-- SQLINES DEMO *** ee 온라인 전용 대표상품 코드 조회 관련 필드 변경사항 적용  -->
+	<select id="selectOnlineRepresentProdctList" resultMap="onlineRepresentProductMap" parameterClass="String">
+	  /* SQLINES DEMO *** ctOnlineRepresentProdctList */
+	SELECT P.MD_PROD_CD AS PROD_CD,		                 -- SQLINES DEMO *** d by 주환철 -- PROD_CD
+			P.PROD_NM,	
+			P.PROD_CD AS SRCMK_CD,                         -- SQLINES DEMO *** d by 주환철 -- SRCMK_CD
+			P.PROFIT_RATE AS PROFIT_RT,                     -- SQLINES DEMO *** d by 주환철 -- PROFIT_RT	
+			T.L3_NM,
+			(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'PRD06' AND MINOR_CD = P.TAXAT_DIVN_CD) AS TAX_FG    -- SQLINES DEMO *** d by 주환철 -- TAX_FG
+	-- SQLINES DEMO *** ee TPC_L1_CD -> TED_L1_CD
+	 FROM  TPR_PRODUCT P  LEFT JOIN  TPC_L1_CD  T   -- SQLINES DEMO *** d by 주환철 -- PRODUCT 
+	     ON  P.CAT_CD = T.L3_CD                                   -- SQLINES DEMO *** d by 주환철 -- L3_CD
+	WHERE P.REP_PROD_CD_YN = 'Y'                            -- SQLINES DEMO *** d by 주환철 -- ONLINE_FG = 'X'
+        AND P.DEL_STOP_DIVN_YN = '0'                         -- SQLINES DEMO *** d by 주환철 -- PROD_STATUS = '01'
+        AND P.VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)   -- SQLINES DEMO *** d by 주환철 -- VEN_CD
+		AND ( P.NEW_PROD_FG IS NULL OR P.NEW_PROD_FG != '3')	/* SQLINES DEMO *** 행사상품 제외 노출  */
+	GROUP BY P.MD_PROD_CD, P.PROD_NM, P.PROD_CD, P.PROFIT_RATE, T.L3_NM, P.TAXAT_DIVN_CD
+	</select>
+
+	<resultMap id="onlineRepresentProductMapOld" class="newProduct">
+	  <result property="onlineProductCode"  	column="PROD_CD"   />
+	  <result property="onlineProductName" 	column="PROD_NM"   />
+	  <result property="profitRate" 			column="PROFIT_RT" />
+	  <result property="sellCode"  			column="SRCMK_CD"  />
+	  <result property="l4CodeName"  			column="L4_NM"  />
+	</resultMap>
+
+	<select id="selectOnlineRepresentProdctListOld" resultMap="onlineRepresentProductMapOld" parameterClass="String">
+	/* SQLINES DEMO *** ctOnlineRepresentProdctListOld */
+	SELECT 
+		P.PROD_CD,		P.PROD_NM,	P.SRCMK_CD,
+		P.PROFIT_RT,	T.L4_NM
+	   	FROM PRODUCT P
+      LEFT JOIN
+      TED_L1_CD  T
+      ON P.L4_CD = T.L4_CD
+	WHERE P.ASSORT_FG='8'
+		AND P.DEAL_STOP_FG='0'
+        AND P.VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+	GROUP BY P.PROD_CD, P.PROD_NM, P.SRCMK_CD, P.PROFIT_RT, T.L4_NM
+	</select>
+
+	<!-- SQLINES DEMO *** ee DBLink 삭제 -->
+	<select id="selectCountSellCodeDuplicate" resultClass="Integer" parameterClass="String">
+	/* SQLINES DEMO *** ctCountSellCodeDuplicate */
+	SELECT 
+				COUNT(*)
+		FROM 	SALE_MST
+		WHERE 	SRCMK_CD IN (#sellCode#)
+		AND  	SRCMK_CD NOT  IN ('8809245010018', '8801037085327','8809245014023','8809245014016')
+	</select>
+	
+	<!-- SQLINES DEMO *** ee 테이블 변경 적용  VENDOR@DL_MD_MARTNIS ==> HQ_VEN -->
+	<select id="selectCountVendorStopTrading" resultClass="Integer" parameterClass="String">
+	/* SQLINES DEMO *** ctCountVendorStopTrading */
+	SELECT 
+		       COUNT(*)
+	   FROM    HQ_VEN  
+	   WHERE   VEN_CD  IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+		   <![CDATA[
+			 AND TRD_END_DY > TO_CHAR( CURRENT_TIMESTAMP(0), 'yyyyMMdd')
+			 AND TRD_ST_DY <= TO_CHAR( CURRENT_TIMESTAMP(0), 'yyyyMMdd')  
+		   ]]>
+	</select>
+
+	<select id="selectCountVendorStopTradingOld" resultClass="Integer" parameterClass="String">
+	/* SQLINES DEMO *** ctCountVendorStopTradingOld */
+	SELECT COUNT(*)
+		  FROM VENDOR@DL_MD_MARTNIS  
+		WHERE VEN_CD  IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+		   <![CDATA[
+		--	 AND TRD_END_DY > TO_CHAR( CURRENT_TIMESTAMP(0), 'yyyyMMdd')  
+			 AND STR_CD IN (
+			      SELECT STR_CD 
+			      FROM STORE 
+		--	      WHERE RMST_CRT_DY <= TO_CHAR( CURRENT_TIMESTAMP(0), 'yyyyMMdd')
+			)
+		   ]]>
+	</select>
+
+	<resultMap id="vendorTradeMap" class="newProduct">
+	  <result property="tradeTypeCode"  	column="TRD_TYP_FG" />
+	  <result property="promotionAmountFlag" 	column="PROMO_AMT_RT" />
+	</resultMap>
+
+	<!-- SQLINES DEMO *** ee KMxx 원상복구 -->
+	<select id="selectVendorTradeType" resultMap="vendorTradeMap" parameterClass="String">
+	/* SQLINES DEMO *** ctVendorTradeType (selectVendorTradeType)*/
+	SELECT  TRD_TYP_FG,
+	 		'0' AS PROMO_AMT_RT 
+	FROM 	TVE_VENDOR A
+	WHERE 	A.VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+	LIMIT 1
+	</select>
+
+	<select id="selectVendorTradeTypeOld" resultMap="vendorTradeMap" parameterClass="String">
+	/* SQLINES DEMO *** ctVendorTradeTypeOld (selectVendorTradeType)*/
+	SELECT  A.TRD_TYP_FG , 
+		 (CASE WHEN A.PROMO_AMT_RT = '0' THEN '0' ELSE '1' END)  PROMO_AMT_RT 
+	FROM TED_VENDOR A
+	WHERE A.VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+	LIMIT 1
+	</select>
+
+	<!-- SQLINES DEMO *** ee 테이블 변경 적용  VENDOR@DL_MD_MARTNIS ==> HQ_VEN -->
+	<select id="selectVendorTaxType" resultClass="String" parameterClass="String">
+	/* SQLINES DEMO *** ctVendorTaxType (selectVendorTaxType)*/
+	SELECT  BMAN_TYP_FG
+	FROM    HQ_VEN A
+	WHERE   A.VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+	LIMIT 1
+	</select>
+
+	<select id="selectVendorTaxTypeOld" resultClass="String" parameterClass="String">
+	/* SQLINES DEMO *** ctVendorTaxTypeOld (selectVendorTaxType)*/
+	SELECT  BMAN_TYP_FG
+	FROM VENDOR@dl_md_martnis A
+	WHERE A.VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)
+	LIMIT 1
+	</select>
+
+	<!-- SQLINES DEMO *** ee  TED_COLOR_SIZE => TPC_VAR_ATT -->
+	<insert id="insertFashionProductColorSizeTemp" parameterClass="newProduct">
+	/* SQLINES DEMO *** rtFashionProductColorSizeTemp */
+	INSERT INTO  TPC_VAR_ATT 
+		(
+		 PGM_ID,
+		 ITEM_CD,
+		 VARIANT,
+		 CLASS,
+		 ATT_CD,
+		 ATT_VALUE,
+		 ENTP_CD,
+		 SELL_CD,
+		 REG_DATE,
+		 REG_ID
+		 )
+	VALUES 
+		(
+		 #newProductCode#,
+		 '001',
+		 '001',   	    -- SQLINES DEMO *** ee 임시로 기본값을 설정함. 확인 후 변경필요
+		 '000',
+		 '000',
+		 '000',
+		 #entpCode#,
+		 #sellCode#,
+		 current_timestamp(0),
+		 #entpCode#
+		)
+	</insert>
+
+	<!-- SQLINES DEMO *** ee  TED_COLOR_SIZE => TPC_VAR_ATT -->
+	<insert id="insertProductItemInfo" parameterClass="colorSize">
+	/* SQLINES DEMO *** rtProductItemInfo */
+	INSERT INTO  TPC_VAR_ATT 
+		(
+		 PGM_ID,
+		 ITEM_CD,
+		 VARIANT,
+		 CLASS,
+		 ATT_CD,
+		 ATT_VALUE,
+		 ENTP_CD,
+		 SELL_CD,
+		 REG_DATE,
+		 REG_ID,
+		 OPTN_DESC,
+		 STK_MGR_YN,
+		 RSERV_STK_QTY,
+		 OPTN_AMT
+		 )
+	VALUES 
+		(
+		 #newProductCode#,
+		 #itemCode#,
+		 #itemCode#, /* variant */
+		 '000',
+		 '000',
+		 '000', 
+		 #enterpriseCode#,
+		 #sellCode#,
+		 current_timestamp(0),
+		 #enterpriseCode#,
+		 #optnDesc#,
+		 #stkMgrYn#,
+		 #rservStkQty#,
+		 #optnAmt#
+		)
+	</insert>
+
+    <!-- SQLINES DEMO *** ee TED_NEW_PROD_REG => TPC_NEW_PROD_REG -->
+	<update id="PRODUCT-ONIMG-CNT_UPDATE01" parameterClass="map">
+	UPDATE TPC_NEW_PROD_REG 
+	SET IMG_NCNT = #fileCount#
+	WHERE  PGM_ID = #newProd#
+	</update>
+
+	<update id="PRODUCT-PROD-ADD_DELETE" parameterClass="newProduct">
+	DELETE FROM TPR_PROD_ADD_INFO_VAL
+	 WHERE PROD_CD = #newProductCode#
+    </update>
+
+	<insert id="PRODUCT-PROD-ADD_INSERT" parameterClass="newProduct">
+	/* SQLINES DEMO *** UCT-PROD-ADD_INSERT */
+	INSERT INTO TPR_PROD_ADD_INFO_VAL
+	( INFO_GRP_CD
+	 ,INFO_COL_CD
+	 ,PROD_CD
+	 ,NEW_PROD_CD
+	 ,COL_VAL
+	 ,DISP_YN
+	 ,REG_DATE
+	 ,REG_ID
+	 ,MOD_DATE
+	 ,MOD_ID
+	) VALUES
+	(
+	 #prodAddMasterCd#
+	,#prodAddCd#
+	,#newProductCode#
+	,#newProductCode#
+	,#prodAddNm#
+	,'Y'
+	,CURRENT_TIMESTAMP(0)
+	,#entpCode#
+	,CURRENT_TIMESTAMP(0)
+	,#entpCode#
+	) 
+	</insert>
+	
+	<update id="PRODUCT-PROD-CERT_DELETE" parameterClass="newProduct">
+	DELETE FROM TPR_PROD_CERT_INFO_VAL
+	 WHERE PROD_CD = #newProductCode#
+    </update>
+
+	<insert id="PRODUCT-PROD-CERT_INSERT" parameterClass="newProduct">
+	/* SQLINES DEMO *** UCT-PROD-CERT_INSERT */
+	INSERT INTO TPR_PROD_CERT_INFO_VAL
+	( INFO_GRP_CD
+	 ,INFO_COL_CD
+	 ,PROD_CD
+	 ,NEW_PROD_CD
+	 ,COL_VAL
+	 ,DISP_YN
+	 ,REG_DATE
+	 ,REG_ID
+	 ,MOD_DATE
+	 ,MOD_ID
+	) VALUES
+	(
+	 #prodCertMasterCd#
+	,#prodCertCd#
+	,#newProductCode#
+	,#newProductCode#
+	,#prodCertNm#
+	,'Y'
+	,current_timestamp(0)
+	,#entpCode#
+	,current_timestamp(0)
+	,#entpCode#
+	) 
+	</insert>
+	
+	<!-- SQLINES DEMO *** ee  TED_COLOR_SIZE => TPC_VAR_ATT -->
+	<update id="deleteTempProductItem" parameterClass="map">
+	DELETE 
+	FROM  TPC_VAR_ATT 
+	WHERE ITEM_CD = #itemCode# 
+	AND   PGM_ID  = #newProductCode# 
+	</update>
+	
+	<!-- SQLINES DEMO *** ee  TED_COLOR_SIZE => TPC_VAR_ATT -->
+	<update id="deleteTempProductItemAll" parameterClass="String">
+	DELETE 
+	FROM   TPC_VAR_ATT 
+	WHERE  PGM_ID = #newProductCode# 
+	</update>
+	
+	<!-- SQLINES DEMO *** [온오프 규격 전용]-->
+	<select id="selectNewProductListOnOffOld" resultMap="productListMapOld" parameterClass="searchProduct">
+		/* SQLINES DEMO *** ctNewProductListOnOffOld */
+		SELECT  N.REG_DT,	   N.CFM_FG,  	N.ADJ_FG,	   N.SRCMK_CD,
+			  N.PROD_NM,   N.PROD_STD,	N.ORD_IPSU,    N.BUY_PRC,
+			  N.SALE_PRC,  N.PROFIT_RT, N.PGM_ID,	   N.PROD_CD,
+			  N.VEN_CD,    S.IMG_NM,    S.CFM_FG AS IMG_CFM_FG,
+			  L.LOGI_CFM_FG, L.W_USE_FG, S.COLOR_CD,
+			  '' as  SZ_NM, '' as COLOR_NM, '' COLOR_CNT
+		  FROM NEW_PROD_EDI@DL_MD_MARTNIS  N 
+		  LEFT JOIN SALE_MST_IMG@DL_MD_MARTNIS  S
+		     on N.PGM_ID = S.IMG_SEQ 
+		  LEFT JOIN NEW_LOGI_CD_EDI@DL_MD_MARTNIS  L
+		     on N.PGM_ID = L.PGM_ID and L.SEQ='001'
+		  WHERE	N.PROD_PAT_FG = #productDivnCode#
+		  		
+		  		
+		  		<isEmpty  property="entpCode"  prepend="AND"> 
+		      		<iterate prepend="N.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		#venCds[]# 
+		      		</iterate> 
+		    	</isEmpty>
+		    		  		
+		  		<isNotEmpty property="entpCode" prepend="AND">
+			    	 N.VEN_CD 	  = #entpCode#
+			    </isNotEmpty>
+			  	<isEqual property="productStatus" compareValue="1" prepend="AND">
+			  		N.CFM_FG in ('0', '1', '2', '4')
+			  	</isEqual>
+			  	<isEqual property="productStatus" compareValue="3" >
+			  		AND	N.CFM_FG 	= #productStatus#
+			  		AND ( N.ADJ_FG  = #adjustStatusFlag# or N.ADJ_FG IS NULL ) 	
+			  	</isEqual>
+			  	 <isEqual property="productStatus" compareValue="5" prepend="AND">
+			  		N.CFM_FG 		= #productStatus#
+			  	</isEqual>
+			  	 <isEqual property="productStatus" compareValue="9" prepend="AND">
+			  		N.CFM_FG !='6'
+			  	</isEqual>
+			  	<isNotEmpty property="startDate" prepend="AND">
+			  		 N.REG_DT BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+			  	</isNotEmpty>
+		 ORDER BY N.REG_DT DESC, N.CFM_FG,  	N.ADJ_FG,	   N.SRCMK_CD
+	</select>
+
+	<!-- SQLINES DEMO *** [온오프 패션 전용] -->
+	<select id="selectNewProductListOnOffFassionOld" resultMap="productListMapOld" parameterClass="searchProduct">
+		  /* SQLINES DEMO *** ctNewProductListOnOffFassionOld */
+	SELECT  N.REG_DT,     N.CFM_FG,    N.ADJ_FG,     F.SRCMK_CD,   
+		        case   when F.PROD_NM is null then  N.PROD_NM else F.PROD_NM end as PROD_NM,
+		                      N.PROD_STD,  N.ORD_IPSU,    N.BUY_PRC,  
+		        N.SALE_PRC,  N.PROFIT_RT, N.PGM_ID,      F.PROD_CD,   
+		        N.VEN_CD,    S.IMG_NM,    S.CFM_FG AS IMG_CFM_FG,   
+		        L.LOGI_CFM_FG, SM.COLOR_CD,
+		        J.SZ_NM, I.COLOR_NM, SM.COLOR_CNT,L.W_USE_FG
+      FROM FASH_COLOR_SZ_EDI@DL_MD_MARTNIS F 
+         INNER JOIN NEW_PROD_EDI@DL_MD_MARTNIS  N ON N.PGM_ID   = F.PGM_ID
+         INNER JOIN (SELECT COUNT(*) COLOR_CNT, COLOR_CD, PGM_ID FROM  FASH_COLOR_SZ_EDI@DL_MD_MARTNIS
+                     GROUP BY COLOR_CD,PGM_ID ) SM ON F.PGM_ID = SM.PGM_ID AND F.COLOR_CD = SM.COLOR_CD
+         LEFT OUTER JOIN  SALE_MST_IMG@DL_MD_MARTNIS  S ON F.PGM_ID = S.IMG_SEQ 
+                                                       AND F.COLOR_CD = S.COLOR_CD
+                                                       AND F.SZ_CAT_CD = S.SZ_CAT_CD
+                                                       AND F.SZ_CD = S.SZ_CD
+         LEFT OUTER JOIN NEW_LOGI_CD_EDI@DL_MD_MARTNIS  L on N.PGM_ID = L.PGM_ID and L.SEQ='001'
+         LEFT OUTER JOIN TPR_SIZE  J  ON F.SZ_CAT_CD = J.SZ_CAT_CD AND F.SZ_CD = J.SZ_CD
+         LEFT OUTER JOIN TPR_COLOR I  ON F.COLOR_CD  = I.COLOR_CD
+	      WHERE 	N.PROD_PAT_FG = #productDivnCode#
+				<isEmpty  property="entpCode"  prepend="AND"> 
+		      		<iterate prepend="N.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		#venCds[]# 
+		      		</iterate> 
+		    	</isEmpty>
+		    		  		
+		  		<isNotEmpty property="entpCode" prepend="AND">
+			    	 N.VEN_CD 	  = #entpCode#
+			    </isNotEmpty>
+			  	<isEqual property="productStatus" compareValue="1" prepend="AND">
+			  		N.CFM_FG in ('0', '1', '2', '4')
+			  	</isEqual>
+			  	<isEqual property="productStatus" compareValue="3" >
+			  		AND	N.CFM_FG 	= #productStatus#
+			  		AND ( N.ADJ_FG  = #adjustStatusFlag# or N.ADJ_FG IS NULL ) 	
+			  	</isEqual>
+			  	 <isEqual property="productStatus" compareValue="5" prepend="AND">
+			  		N.CFM_FG 		= #productStatus#
+			  	</isEqual>
+			  	 <isEqual property="productStatus" compareValue="9" prepend="AND">
+			  		N.CFM_FG !='6'
+			  	</isEqual>
+			  	<isNotEmpty property="startDate" prepend="AND">
+			  		 N.REG_DT BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+			  	</isNotEmpty>
+		 ORDER BY F.PGM_ID, N.REG_DT DESC, F.COLOR_CD, F.SZ_CAT_CD, F.SZ_CD, N.CFM_FG, N.ADJ_FG, N.SRCMK_CD
+	</select>
+
+	<!-- SQLINES DEMO *** 라인 전용 -->
+	<select id="selectNewProductListOnlineOld" resultMap="productListMapEDIOld" parameterClass="searchProduct">
+	/* SQLINES DEMO *** ctNewProductListOnlineOld */
+	 SELECT 
+		 N.REG_DATE AS REG_DT,   		  SUBSTR(S.PRGS_STS,0,1) AS CFM_FG,   SUBSTR(S.PRGS_STS,2,1) AS ADJ_FG,
+	     N.SELL_CD  AS SRCMK_CD,  		  N.ONLINE_REP_PROD_CD, 			  N.PROD_NM as PROD_NM,
+	     N.PROD_STANDARD_NM as PROD_STD,  N.PUR_INRCNT_QTY as ORD_IPSU,       N.NOR_PROD_PCOST as BUY_PRC,
+	     N.NOR_PROD_SALE_PRC AS SALE_PRC, N.PRFT_RATE AS PROFIT_RT,           N.NEW_PROD_CD AS PGM_ID,
+	     S.PROD_CD AS PROD_CD,		      N.ENTP_CD  AS VEN_CD,      		  'online' as IMG_NM,
+	     SUBSTR(S.PRGS_STS,0,1) AS IMG_CFM_FG,  'online' as LOGI_CFM_FG
+    FROM 
+     	TED_NEW_PROD_REG  N 
+    LEFT JOIN 
+     	TED_NEW_PROD_STS  S
+    ON  N.NEW_PROD_CD = S.NEW_PROD_CD
+    WHERE  
+	       N.ONOFF_DIVN_CD = #onOffDivnCode# and N.MD_SEND_DIVN_CD='S'
+	        <isNotEmpty property="productDivnCode" prepend="AND">
+	       N.PROD_DIVN_CD    = #productDivnCode#
+	      </isNotEmpty>
+	      <isEmpty  property="entpCode"  prepend="AND"> 
+		  		<iterate prepend="N.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		#venCds[]# 
+		  		</iterate> 
+		  </isEmpty>
+	      <isNotEmpty property="entpCode" prepend="AND">
+	       N.ENTP_CD    = #entpCode#
+	      </isNotEmpty>
+	      <isNotEqual property="productStatus" compareValue="99" prepend="AND">
+	       S.PRGS_STS=#productStatus#
+	      </isNotEqual>
+	      <isNotEmpty property="startDate" prepend="AND">
+	        N.REG_DATE BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+	      </isNotEmpty>
+	   ORDER BY N.REG_DATE DESC
+	</select>
+
+	<!-- SQLINES DEMO *** 입력 기능 추가 -->
+	<typeAlias alias="pedmpro0011VO" type="com.lottemart.epc.edi.product.model.PEDMPRO0011VO" />
+
+    <!-- 신규... SQLINES DEMO *** -->
+    <select id="selectTpcPrdKeywordList" resultClass="pedmpro0011VO">
+    <![CDATA[
+    /* PEDMPRO001.selectTpcPrdKeywordList - 신규 상품키워드 조회 */
+    SELECT	ROWNUM AS num
+    			, A.PGM_ID AS pgmId
+      			, A.SEQ AS seq
+      			, A.SEARCH_KYWRD AS searchKywrd
+      			, (	SELECT COUNT(1) 
+      				FROM TPC_PRODUCT_KEYWORD A 
+      				WHERE A.PGM_ID = B.PGM_ID
+				) AS keyCount
+				, (	SELECT LENGTHB(SEARCH_KYWRD) 
+					FROM TPC_PRODUCT_KEYWORD A 
+					WHERE A.PGM_ID = B.PGM_ID AND A.SEQ ='000'
+				) AS byteChk
+	FROM	TPC_PRODUCT_KEYWORD A, TPC_NEW_PROD_REG B
+    WHERE	A.PGM_ID = B.PGM_ID
+    			AND A.PGM_ID = #newProductCode#
+    			AND A.SEQ != '000'
+    ORDER BY A.SEQ
+    ]]>
+    </select>
+
+	<!-- 신규... SQLINES DEMO *** -->
+	<insert id="insertUpdateTpcPrdKeyword" parameterClass="pedmpro0011VO">
+	/* SQLINES DEMO *** tUpdateTpcPrdKeyword*/
+	MERGE	INTO TPC_PRODUCT_KEYWORD A
+		USING DUAL ON ( A.PGM_ID = #pgmId# AND A.SEQ = #seq# ) 
+	WHEN MATCHED THEN 
+		UPDATE SET 
+			SEARCH_KYWRD = #searchKywrd#
+		  , MOD_ID = #regId#
+		  , MOD_DATE = CURRENT_TIMESTAMP(0)
+		WHERE PGM_ID = #pgmId#
+		AND SEQ = #seq#
+
+	WHEN NOT MATCHED THEN
+		INSERT
+		(
+		    PGM_ID
+		  , SEQ
+		  , SEARCH_KYWRD
+		  , REG_ID
+		  , REG_DATE
+		  , MOD_ID
+		  , MOD_DATE
+		)
+		VALUES
+		(
+		    #pgmId#
+		  , COALESCE((SELECT LPAD(COALESCE(MAX(SEQ)+1,'001'), 3, '0')
+		           FROM TPC_PRODUCT_KEYWORD
+		          WHERE PGM_ID = #pgmId#), '001')
+		  , #searchKywrd#
+		  , #regId#
+		  , CURRENT_TIMESTAMP(0)
+		  , #regId#
+		  , CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+
+    <!-- 신규... SQLINES DEMO *** -->
+    <insert id="insertTpcPrdKeyword">
+    <![CDATA[
+    /* PEDMPRO001.insertTpcPrdKeyword - 신규 상품키워드 등록 */
+    INSERT INTO TPC_PRODUCT_KEYWORD
+    (   PGM_ID
+      , SEQ
+      , SEARCH_KYWRD
+      , REG_ID
+      , REG_DATE
+      , MOD_ID
+      , MOD_DATE
+    )
+    VALUES
+    (   #pgmId#
+      , NVL((SELECT LPAD(NVL(MAX(SEQ)+1,'001'), 3, '0')
+               FROM TPC_PRODUCT_KEYWORD
+              WHERE PGM_ID = #pgmId#), '001')
+      , #searchKywrd#
+      , #regId#
+      , CURRENT_TIMESTAMP(0)
+      , #regId#
+      , CURRENT_TIMESTAMP(0)
+    )
+    ]]>
+    </insert>
+
+	<!-- 신규... SQLINES DEMO *** -->
+    <delete id="deleteTpcPrdKeyword" parameterClass="map">
+    <![CDATA[ 
+    /* PEDMPRO001.deleteTpcPrdTotalKeyword - 신규 상품키워드 삭제 */ 
+    DELETE FROM 
+        TPC_PRODUCT_KEYWORD
+    WHERE 1=1
+    AND PGM_ID = #pgmId#
+    AND SEQ IN(#seq#, '000') 
+    ]]>
+    </delete>
+
+    <!-- 신규... SQLINES DEMO *** -->
+    <delete id="deleteTpcPrdAllKeyword" parameterClass="String">
+    <![CDATA[ 
+    /* PEDMPRO001.deleteTpcPrdAllKeyword - 신규 상품키워드 전체 삭제 */ 
+    DELETE FROM 
+        TPC_PRODUCT_KEYWORD
+    WHERE 1=1
+    AND PGM_ID = #pgmId#
+    ]]>
+    </delete>
+
+    <delete id="deleteTpcNewPrdAllKeyword" parameterClass="String">
+    <![CDATA[ 
+    /* PEDMPRO001.deleteTpcNewPrdAllKeyword - 신규 상품키워드 상품테이블 전체 삭제 */ 
+    DELETE FROM 
+        TPC_NEW_PROD_REG
+    WHERE 1=1
+    AND PGM_ID = #pgmId#
+    ]]>
+    </delete>
+
+    <!-- 신규... SQLINES DEMO *** -->
+    <select id="selectChkTpcPrdTotalKeyword" resultClass="pedmpro0011VO">
+    <![CDATA[
+    /* PEDMPRO001.selectChkTpcTpcPrdTotalKeyword - 신규 상품키워드 전체 조회 */
+    SELECT     
+        K1|| DECODE (K2, '', '', '|')|| K2|| DECODE (K3, '', '', '|')|| K3|| DECODE (K4,  '', '', '|')|| K4||
+        DECODE (K5, '', '', '|')|| K5|| DECODE (K6, '', '', '|')|| K6|| DECODE (K7,  '', '', '|')|| K7||
+        DECODE (K8, '', '', '|')|| K8|| DECODE (K9, '', '', '|')|| K9|| DECODE (K10, '', '', '|')|| K10 AS totalKywrd
+      , ( SELECT MIN(SEQ) FROM TPC_PRODUCT_KEYWORD WHERE PGM_ID = #pgmId# ) AS seq
+    FROM
+    (
+        SELECT
+            MAX(DECODE( P1, '', '',  P1)) K1
+          , MAX(DECODE( P2, '', '',  P2)) K2
+          , MAX(DECODE( P3, '', '',  P3)) K3
+          , MAX(DECODE( P4, '', '',  P4)) K4
+          , MAX(DECODE( P5, '', '',  P5)) K5
+          , MAX(DECODE( P6, '', '',  P6)) K6
+          , MAX(DECODE( P7, '', '',  P7)) K7
+          , MAX(DECODE( P8, '', '',  P8)) K8
+          , MAX(DECODE( P9, '', '',  P9)) K9
+          , MAX(DECODE(P10, '', '', P10)) K10
+        FROM
+        (
+            SELECT
+                MAX(DECODE(NUM,  1, KEYWORD)) P1
+              , MAX(DECODE(NUM,  2, KEYWORD)) P2
+              , MAX(DECODE(NUM,  3, KEYWORD)) P3
+              , MAX(DECODE(NUM,  4, KEYWORD)) P4
+              , MAX(DECODE(NUM,  5, KEYWORD)) P5
+              , MAX(DECODE(NUM,  6, KEYWORD)) P6
+              , MAX(DECODE(NUM,  7, KEYWORD)) P7
+              , MAX(DECODE(NUM,  8, KEYWORD)) P8
+              , MAX(DECODE(NUM,  9, KEYWORD)) P9
+              , MAX(DECODE(NUM, 10, KEYWORD)) P10
+            FROM
+            (
+                SELECT
+                    ROWNUM NUM
+                  , PGM_ID
+                  , SEARCH_KYWRD AS KEYWORD
+                FROM
+                    TPC_PRODUCT_KEYWORD
+                WHERE 1=1
+                AND PGM_ID = #pgmId#
+                AND SEQ != '000'
+            )
+            GROUP BY
+                NUM
+              , PGM_ID
+        )
+    )
+    ]]>
+    </select>
+
+	<!-- 신규... SQLINES DEMO *** -->
+    <insert id="insertTpcPrdTotalKeyword">
+    <![CDATA[
+    /* PEDMPRO001.insertTpcPrdTotalKeyword - 신규 상품키워드 전체 등록 */  
+    INSERT INTO TPC_PRODUCT_KEYWORD
+    ( PGM_ID
+    , SEQ
+    , SEARCH_KYWRD
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID )
+    VALUES
+    ( #pgmId#
+    , '000'
+    , #totalKywrd#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , CURRENT_TIMESTAMP(0)
+    , #regId# )
+    ]]>
+    </insert>
+
+	<!-- 신규... SQLINES DEMO *** -->
+    <update id="updateTpcPrdTotalKeyword">
+    <![CDATA[
+    /* PEDMPRO001.updateTpcPrdTotalKeyword - 신규 상품키워드 전체 수정 */
+    UPDATE TPC_PRODUCT_KEYWORD
+    SET SEARCH_KYWRD = #totalKywrd#
+      , MOD_DATE     = CURRENT_TIMESTAMP(0)
+      , MOD_ID       = #regId#
+    WHERE 1=1
+    AND PGM_ID = #pgmId#
+    AND SEQ     = '000'
+    ]]>
+    </update>
+    <!-- SQLINES DEMO *** 입력 기능 추가 -->
+
+	<delete id="deleteEcProductCategory" parameterClass="String">
+    /* SQLINES DEMO *** teEcProductCategory */
+    DELETE FROM TEC_CAT_PROD_MAPPING
+     WHERE PGM_ID = #pgmId#
+    </delete>
+    
+    <insert id="insertEcProductCategory" parameterClass="ecProductCategory">
+	/* SQLINES DEMO *** rtEcProductCategory */
+	INSERT INTO TEC_CAT_PROD_MAPPING
+	(
+		  PROD_CD
+		, PGM_ID
+		, STD_CAT_CD
+		, DISP_CAT_CD
+		, DISP_YN
+		, USE_YN
+		, REG_ID
+		, REG_DATE
+		, MOD_ID
+		, MOD_DATE
+	)
+	(
+	SELECT #prodCd# 		AS PROD_CD		-- SQLINES DEMO *** UPDATE
+         , #pgmId# 			AS PGM_ID
+         , TSDM.STD_CAT_CD	AS STD_CAT_CD
+		 , TDC.DISP_CAT_CD	AS DISP_CAT_CD
+	     , TDC.DISP_YN		AS DISP_YN
+         , 'Y'				AS USE_YN
+         , #regId#			AS REG_ID
+         , CURRENT_TIMESTAMP(0)			AS REG_DATE
+         , #regId#			AS MOD_ID
+         , CURRENT_TIMESTAMP(0)			AS MOD_DATE
+	  FROM TEC_STD_DISP_MAPPING TSDM
+	     , TEC_DISP_CATEGORY TDC
+	 WHERE TSDM.STD_CAT_CD = #stdCatCd#
+       AND TSDM.DISP_CAT_CD = #dispCatCd#
+	   AND TDC.DISP_CAT_CD = TSDM.DISP_CAT_CD
+	   AND TSDM.USE_YN = 'Y'
+	   AND TDC.USE_YN = 'Y'
+	)
+	</insert>
+
+	<delete id="deleteEcProductAttribute" parameterClass="String">
+	/* SQLINES DEMO *** teEcProductAttribute */
+	DELETE FROM TEC_ATTR_PROD_MAPPING
+	 WHERE PGM_ID = #pgmId#
+    </delete>
+
+    <insert id="insertEcProductAttribute" parameterClass="ecProductAttribute">
+	/* SQLINES DEMO *** rtEcProductAttribute */
+	INSERT INTO TEC_ATTR_PROD_MAPPING
+	( PROD_CD
+	, PGM_ID
+	, ITEM_CD
+	, STD_CAT_CD
+	, ATTR_ID
+	, ATTR_VAL_ID
+	, ATTR_VAL
+	, ATTR_DTL_VAL
+	, ATTR_CODE_USE_YN
+	, USE_YN
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE )
+	VALUES
+	( #prodCd#
+	, #pgmId#
+	, #itemCd#
+	, #stdCatCd#
+	, #attrId#
+	, #attrValId#
+	, #attrVal#
+	, NULL
+	<isNotEmpty property="attrVal">, 'N'</isNotEmpty>
+	<isEmpty property="attrVal">, 'Y'</isEmpty>
+	, 'Y'
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0) )
+	</insert>
+
+</sqlMap>

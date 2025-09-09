@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+         "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+         
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>srm</short-name>
+	<uri>http://lcnjf.lcn.co.kr/taglib/srm</uri>
+	<display-name>srm</display-name>
+	<description>SRM Tag Library</description>
+	
+	<tag>
+        <name>codeTag</name>
+        <tagclass>com.lottemart.epc.edi.comm.taglibs.service.SRMCustomTagService</tagclass>
+		<attribute>
+			<name>comType</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>objName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>objId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>formName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+		<attribute>
+			<name>parentCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>childCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selSubComType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		 <attribute>
+			<name>subCode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+	
+		
+		<attribute>
+			<name>selectParam</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+		<attribute>
+			<name>defName</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>event</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>width</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>attr</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>space</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>dataType</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>defValue</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
+		<attribute>
+			<name>sortStd</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+</taglib>

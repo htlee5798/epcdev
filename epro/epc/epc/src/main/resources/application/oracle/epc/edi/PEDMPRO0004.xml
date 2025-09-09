@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO0004">
+
+	  <typeAlias alias="newProduct"  type="com.lottemart.epc.edi.product.model.NewProduct" />
+	  <typeAlias alias="newProductEDI"  type="com.lottemart.epc.edi.product.model.NewProduct" />
+	  <typeAlias alias="colorSize" 	 type="com.lottemart.epc.edi.product.model.ColorSize" />
+	  <typeAlias alias="searchProduct" type="com.lottemart.epc.edi.product.model.SearchProduct" />
+	  <typeAlias alias="pedmPro0005VO" type="com.lottemart.epc.edi.product.model.PEDMPRO0005VO" />
+
+	<!-- <select id="getNewProductCode" resultClass="String" parameterClass="String">
+	  	/* PEDMPRO001.getNewProductCode */  
+	   	 SELECT CONCAT(TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),LPAD(NEXTVAL('SQ_NEW_PROD_CD')::text, 11 ,0::text))
+   	 </select> -->
+ 
+	 <resultMap id="colorResultMap" class="colorSize">
+	    <result property="colorCode"  	column="COLOR_CD" />
+	    <result property="productImageId" 	column="PROD_IMG_ID" />
+	    <result property="colorName" 	column="COLOR_NM" />
+    </resultMap>
+ 
+	  <select id="selectProductColorList" resultMap="colorResultMap" parameterClass="String">
+	  	  /* SQLINES DEMO *** ctProductColorList */
+	   	 SELECT DISTINCT E.COLOR_CD , 
+	   	 				 E.PROD_IMG_ID,
+	   	 				 P.COLOR_NM 
+	   	 	FROM TED_COLOR_SIZE E JOIN  TPR_COLOR P
+  				ON  E.COLOR_CD  = P.COLOR_CD
+			WHERE E.NEW_PROD_CD = #newProductCode#
+	  </select>
+ 
+ 
+ 
+  <resultMap id="productListMap" class="newProduct">
+    <result property="regDate"  	column="REG_DT" />
+    <result property="confirmFlag" 	column="CFM_FG" />
+    <result property="adjustFlag" 	column="ADJ_FG" />
+    <result property="sellCode"  	column="SRCMK_CD" />
+    
+    <result property="productName" 	column="PROD_NM"  />
+    <result property="productStand" column="PROD_STD" />
+    <result property="orderIpsu" 	column="ORD_IPSU" />
+    <result property="normalProductCost" 	column="BUY_PRC"  />
+    
+    <result property="sellPrice"	column="SALE_PRC" />
+    <result property="profitRate" 	column="PROFIT_RT"  />
+    <result property="programId" 	column="PGM_ID"  />
+    <result property="newProductCode" 	column="PROD_CD"  />
+    
+    <result property="entpCode" 	column="VEN_CD"  />
+    <result property="imageName"	column="IMG_NM"  />
+    <result property="imageConfirmFlag" column="IMG_CFM_FG"  />
+    <result property="logiConfirmFlag"	column="LOGI_CFM_FG" />
+    
+    
+  </resultMap>
+  
+   
+  
+ 
+ 
+ 	  <select id="selectNewProductListOnOff" resultMap="productListMap" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ctNewProductListOnOff */
+	   	SELECT 
+			  N.REG_DT,	   N.CFM_FG,  	N.ADJ_FG,	   N.SRCMK_CD, 	
+			  N.PROD_NM,   N.PROD_STD,	N.ORD_IPSU,    N.BUY_PRC,	
+			  N.SALE_PRC,  N.PROFIT_RT, N.PGM_ID,	   N.PROD_CD,   
+			  N.VEN_CD,    S.IMG_NM,    S.CFM_FG AS IMG_CFM_FG,   
+			  L.LOGI_CFM_FG
+		  FROM 
+		  	 	NEW_PROD_EDI@DL_MD_MARTNIS  N 
+		  LEFT JOIN SALE_MST_IMG@DL_MD_MARTNIS  S
+		     on N.PGM_ID = S.IMG_SEQ 
+		  LEFT JOIN NEW_LOGI_CD_EDI@DL_MD_MARTNIS  L
+		     on N.PGM_ID = L.PGM_ID and L.SEQ='001'
+		  WHERE
+		  		N.PROD_PAT_FG = #productDivnCode#
+		  		
+		  		
+		  		<isEmpty  property="entpCode"  prepend="AND"> 
+		      		<iterate prepend="N.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		#venCds[]# 
+		      		</iterate> 
+		    	</isEmpty>
+		    		  		
+		  		<isNotEmpty property="entpCode" prepend="AND">
+			    	 N.VEN_CD 	  = #entpCode#
+			    </isNotEmpty>
+			  	<isEqual property="productStatus" compareValue="1" prepend="AND">
+			  		N.CFM_FG in ('0', '1', '2', '4')
+			  	</isEqual>
+			  	<isEqual property="productStatus" compareValue="3" >
+			  		AND	N.CFM_FG 	= #productStatus#
+			  		AND ( N.ADJ_FG  = #adjustStatusFlag# or N.ADJ_FG IS NULL ) 	
+			  	</isEqual>
+			  	 <isEqual property="productStatus" compareValue="5" prepend="AND">
+			  		N.CFM_FG 		= #productStatus#
+			  	</isEqual>
+			  	 <isEqual property="productStatus" compareValue="9" prepend="AND">
+			  		N.CFM_FG !='6'
+			  	</isEqual>
+			  	<isNotEmpty property="startDate" prepend="AND">
+			  		 N.REG_DT BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+			  	</isNotEmpty>
+		 ORDER BY N.REG_DT DESC, N.CFM_FG,  	N.ADJ_FG,	   N.SRCMK_CD
+	  </select>
+ 
+   <resultMap id="productListMapEDI" class="newProductEDI">
+    <result property="regDate"  	column="REG_DT" />
+    <result property="confirmFlag" 	column="CFM_FG" />
+    <result property="adjustFlag" 	column="ADJ_FG" />
+    <result property="sellCode"  	column="SRCMK_CD" />
+    <result property="productName" 	column="PROD_NM"  />
+    <result property="productStand" column="PROD_STD" />
+    <result property="orderIpsu" 	column="ORD_IPSU" />
+    <result property="normalProductCost" 	column="BUY_PRC"  />
+    <result property="sellPrice"	column="SALE_PRC" />
+    <result property="profitRate" 	column="PROFIT_RT"  />
+    <result property="programId" 	column="PGM_ID"  />
+    <result property="newProductCode" 	column="PROD_CD"  />
+    <result property="entpCode" 	column="VEN_CD"  />
+    <result property="imageName"	column="IMG_NM"  />
+    <result property="imageConfirmFlag" column="IMG_CFM_FG"  />
+    <result property="logiConfirmFlag"	column="LOGI_CFM_FG" />
+  </resultMap>
+  
+  <select id="selectNewProductListOnline" resultMap="productListMapEDI" parameterClass="searchProduct">
+	 	  /* SQLINES DEMO *** ctNewProductListOnline */
+	 SELECT 
+		 N.REG_DATE AS REG_DT,   		  SUBSTR(S.PRGS_STS,0,1) AS CFM_FG,   SUBSTR(S.PRGS_STS,2,1) AS ADJ_FG,   
+	     N.SELL_CD  AS SRCMK_CD,  		  N.PROD_NM as PROD_NM,          	  N.PROD_STANDARD_NM as PROD_STD, 
+	     N.PUR_INRCNT_QTY as ORD_IPSU,    N.NOR_PROD_PCOST as BUY_PRC,  	  N.NOR_PROD_SALE_PRC AS SALE_PRC,  
+	     N.PRFT_RATE AS PROFIT_RT,        N.NEW_PROD_CD AS PGM_ID,            N.NEW_PROD_CD AS PROD_CD,   
+	     N.ENTP_CD  AS VEN_CD,    		  'online' as IMG_NM,     			  SUBSTR(S.PRGS_STS,0,1) AS IMG_CFM_FG,   
+	     'online' as LOGI_CFM_FG
+    FROM 
+     	TED_NEW_PROD_REG  N 
+    LEFT JOIN 
+     	TED_NEW_PROD_STS  S
+    ON  N.NEW_PROD_CD = S.NEW_PROD_CD
+    WHERE  
+	       N.ONOFF_DIVN_CD = #onOffDivnCode#
+	        <isNotEmpty property="productDivnCode" prepend="AND">
+	       N.PROD_DIVN_CD    = #productDivnCode#
+	      </isNotEmpty>
+	      <isEmpty  property="entpCode"  prepend="AND"> 
+		  		<iterate prepend="N.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		'#venCds[]#' 
+		  		</iterate> 
+		  </isEmpty>
+	      
+	      <isNotEmpty property="entpCode" prepend="AND">
+	       N.ENTP_CD    = #entpCode#
+	      </isNotEmpty>
+	      <isNotEqual property="productStatus" compareValue="99" prepend="AND">
+	       S.PRGS_STS=#productStatus#
+	      </isNotEqual>
+	      <isNotEmpty property="startDate" prepend="AND">
+	        N.REG_DATE BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+	      </isNotEmpty>
+	   ORDER BY N.REG_DATE DESC
+ </select>
+ 
+  <resultMap id="productInfoMap" class="newProduct">
+    <result property="regDate"  	column="REG_DATE" />
+    <result property="sellCode" 	column="SELL_CD"    />
+    <result property="productName" 	column="PROD_NM" 	 />
+    <result property="productDivnCode"    		column="PROD_DIVN_CD"  />
+    <result property="normalProductCost" 		column="NOR_PROD_PCOST"  />
+    <result property="normalProductSalePrice" 	column="NOR_PROD_SALE_PRC"  />
+    <result property="profitRate" 				column="PRFT_RATE"  />
+    <result property="newProductCode" 			column="NEW_PROD_CD"  />
+    <result property="onOffDivnCode" 			column="ONOFF_DIVN_CD"  />
+    <result property="officialOrder.publishIncrementQuantity" 	column="PUR_INRCNT_QTY"  />
+  </resultMap>
+ 
+ 
+ 	  <select id="selectNewProductInfo" resultMap="productInfoMap" parameterClass="String">
+	   	 	  /* SQLINES DEMO *** ctNewProductInfo */
+	   	 SELECT 
+	   	 	T.REG_DATE, 	T.SELL_CD, 	T.PROD_NM, 	T.PROD_DIVN_CD,  	T.PUR_INRCNT_QTY, 		
+	   	 	T.NOR_PROD_PCOST,	   	 	T.NOR_PROD_SALE_PRC, 			T.PRFT_RATE,
+	   	 	T.NEW_PROD_CD, 				T.ONOFF_DIVN_CD 
+	   	 FROM  TED_NEW_PROD_REG T 
+		 WHERE T.NEW_PROD_CD      = #newProductCode# 
+		  
+	  </select>
+ 
+ 
+	  
+	  
+	   <insert id="insertExcelBatchProduct" parameterClass="newProduct">
+	 		  /* SQLINES DEMO *** ertExcelBatchProduct */
+	 	INSERT INTO TED_NEW_PROD_REG_TEMP
+			(
+			 NEW_PROD_CD,  		 PROD_NM, 	     	     PROD_SHORT_NM, 	   
+			 ONOFF_DIVN_CD,    	 ENTP_CD,			     SELL_CD, 		 	   
+			 PROD_DIVN_CD, 	     PROD_STANDARD_NM, 	     DP_TOT_QTY, 	  	  
+			 DP_BASE_QTY,		 NOR_PROD_PCOST, 	     NOR_PROD_SALE_PRC, 	 
+			 DP_UNIT_CD,    	 EVT_PROD_SELL_PRC,      TAXAT_DIVN_CD, 	
+			 PROD_TYPE_DIVN_CD,  CTR_TYPE_DIVN_CD,       PRC_ISSUE_DIVN_CD,  
+			 PROD_HRZN_LENG, 	 PROD_VTCL_LENG, 	     PROD_HIGT, 	 	   
+			 PROD_DESC,     	 ISP_DTL_DESC,		     TEAM_CD,			 
+			 LGRP_CD,			 SUBGRP_CD,			     HOME_CD,			 
+			 PUR_INRCNT_QTY,	 PUR_UNIT_CD,		     PRFT_RATE,		     
+			 FLOW_DD_MGR_CD, 	 NPUR_BUY_PSBT_DIVN_CD,  MAX_KEEP_DD_CNT,
+			 NEW_PROD_FIRST_PUR_DIVN_CD,        MIX_YN,  TOT_INSP_YN,      	   
+			 PROTECT_TAG_DIVN_CD, PROTECT_TAG_TYPE_CD,   TMPRT_DIVN_CD,     
+			 QTY_WEGT_DIVN_CD,	  SESN_DIVN_CD,		     PROD_IMG_ID,
+			 REG_DATE,			  REG_ID, 		         BRAND_CD,		    
+			 BRAND_NM,			  MAKER_CD,			     MAKER_NM,		   
+			 TRD_TYPE_DIVN_CD,    NEW_PROD_GEN_DIVN_CD,	 PRODUCT_DY,
+			 STGE_PSBT_DD,		  PICK_PSBT_DD
+			 )
+		VALUES 
+			(
+			 #newProductCode#,     					#productName#, 	      				      #productShortName#,   
+			 #onOffDivnCode#, 	   					#entpCode#, 		   	    		      #sellCode:VARCHAR:NULL#, 			
+			 #productDivnCode#,     			    #productStandardName:VARCHAR:NULL#,       #displayTotalQuantity:NUMERIC:0#,    
+			 #displayTotalQuantity:NUMERIC:0#,      #normalProductCost#,    			      #normalProductSalePrice#,   
+			 #displayUnitCode:VARCHAR:NULL#,        #eventSellPrice:NUMERIC:0#,   		      #taxatDivCode#, 	   
+			 #productTypeDivnCode#,          	    #officialOrder.centerDivnCode#,   	      #priceIssueDivnCode#,   
+			 #productHorizontalLength:NUMERIC:0#, 	#productVerticalLength:NUMERIC:0#,        #productHeight:NUMERIC:0#, 	    
+			 #productDescription#,  			    #officialOrder.ispDetailDescription#,  	  #officialOrder.teamCode#,			  
+			 #officialOrder.lGroupCode#,    		#officialOrder.subGroupCode#,    	      #productCountryCode#,		
+			 #officialOrder.publishIncrementQuantity#, #officialOrder.publishedUnitCode#,     #profitRate:NUMERIC:0#,    
+			 
+			 #officialOrder.flowDateManageCode:VARCHAR:NULL#,  
+			 #officialOrder.noPublishedBuyPossibleDivnCode#, 
+			 #officialOrder.maxKeepDayCount:NUMERIC:0#,
+			 
+			 #officialOrder.newProductFirstPublishedDivnCode#,     #officialOrder.mixYn#,     #officialOrder.totalInspectYn#,				  
+			 #officialOrder.protectTagDivnCode#,	  #officialOrder.protectTagTypeCode#,     #officialOrder.temperatureDivnCode#,  
+			 #officialOrder.quantityWeightDivnCode#,  #officialOrder.seasonDivnCode#,	   	  #productImageId#,
+			 current_timestamp(0),								  #entpCode#,   					   	  #officialOrder.brandCode:VARCHAR:NULL#, 
+			 #officialOrder.brandName:VARCHAR:NULL#,  #officialOrder.makerCode:VARCHAR:NULL#, #officialOrder.makerName:VARCHAR:NULL#, 
+			 #tradeTypeCode#, 					 #officialOrder.newProductGeneratedDivnCode#, #productDay:VARCHAR:NULL#,
+			 #storeWarehouseDay:VARCHAR:NULL#,   #pickupWarehouseDay:VARCHAR:NULL#		 
+			)
+	 </insert>
+	 
+	 <insert id="insertExcelBatchColorSize" parameterClass="colorSize">
+	 		  /* SQLINES DEMO *** ertExcelBatchColorSize */
+	 	INSERT INTO  TED_COLOR_SIZE_TEMP 
+			(
+			 NEW_PROD_CD,  	ITEM_CD, 	COLOR_CD, 	SZ_CAT_CD, 	 SZ_CD, 
+			 ENTP_CD, 		SELL_CD, 	PROD_NM, 	REG_DATE, 	 REG_ID,
+			 PROD_IMG_ID	  		
+			 )
+		VALUES 
+			(
+			 #newProductCode#,   #itemCode#, 	#colorCode#,   	#sizeCategoryCode#, 	 #sizeCode#, 
+			 #enterpriseCode#, 	 #sellCode#, 	
+			 CASE WHEN  LENGTHB(#productName#)  >  50 
+                  THEN CONCAT(SUBSTR(#productName#,1,15),'...') 
+                ELSE #productName#  END ,
+             current_timestamp(0), 			 	
+			 #enterpriseCode#,
+			 #productImageId#
+			)
+	 </insert>
+	 
+	 
+	 
+	 
+	 <insert id="deleteFashionProductColorSize" parameterClass="String">
+	 		  /* SQLINES DEMO *** eteFashionProductColorSize */
+	 	DELETE FROM   TED_COLOR_SIZE_TEMP 
+		 WHERE
+			 NEW_PROD_CD = #newProductCode#
+	 </insert>
+	 
+	 
+	 
+	 
+	 
+	 <insert id="deleteFashionProductByExcelBatch" parameterClass="String">
+	 	  /* SQLINES DEMO *** eteFashionProductByExcelBatch */
+	 	DELETE FROM   TED_NEW_PROD_REG_TEMP 
+		 WHERE
+			 NEW_PROD_CD = #newProductCode#
+	 </insert>
+	 
+	 
+	 <insert id="insertProductDescription" parameterClass="newProduct">
+	 	  /* SQLINES DEMO *** rtProductDescription */
+	 	INSERT INTO  TED_NEW_PROD_DESCR 
+			(
+			 NEW_PROD_CD,  	SEQ, 		 TITLE, 		
+			 ADD_DESC,	  	REG_DATE, 	 REG_ID	  		
+			)
+		VALUES 
+			(
+			 #newProductCode#,   001, 		#productName#,    
+			 #productDescription#, 	 current_timestamp(0), 	#entpCode#
+			)
+	 </insert>
+	 
+	 
+	 
+  <resultMap id="wholeProductListMap" class="pedmPro0005VO">
+    <result property="regDate"  		column="REG_DT" />
+    <result property="sellCode" 		column="SRCMK_CD"    />
+    <result property="productName" 		column="PROD_NM" 	 />
+    <result property="newProductCode"   column="PROD_CD"  />
+    <result property="logiBarcode" 		column="LOGI_BCD"  />
+    <result property="width" 			column="WIDTH"  />
+    <result property="length" 			column="LENGTH"  />
+    <result property="height" 			column="HEIGHT"  />
+    <result property="weight"			column="WG"  />
+    <result property="mixProductFlag" 		column="MIX_PROD_FG"  />
+    <result property="barcodeDescription" 	column="BAR_DESC"  />
+    <result property="logiBoxIpsu"			column="ORD_IPSU"  />
+    <result property="sorterFlag"			column="SORTER_FG"  />
+    <result property="useFlag"				column="USE_FG"  />
+  </resultMap>
+ 
+   <select id="selectWholeProductCount" resultClass="Integer" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ctWholeProductCount */
+	   	  
+	   	  SELECT 
+	   	  	COUNT(*) 
+	   	  FROM
+	   	  ( 
+	   	  SELECT 
+	   	  	 A.PROD_CD,
+	   	     CASE 
+				    	 WHEN D.LOGI_BCD IS NULL THEN  
+				        (
+					          SELECT COALESCE(MAX('등록대상'), '대상아님')
+					          FROM STR_PROD, STORE
+					          WHERE PROD_CD = A.PROD_CD
+					            AND ORD_STOP_FG = '0'     AND VEN_CD = #entpCode# 				          
+					            AND DEAL_STOP_FG = '0'    AND DEL_STOP_FG = '0'
+					            AND (A.PROD_CD LIKE '1%' OR A.PROD_CD LIKE '5%')
+					            AND A.TRD_TYP_FG NOT IN ('3','5','4') 
+					            AND ((A.TRD_TYP_FG != '2' AND A.TRD_TYP_FG != '4') OR A.NORD_BUY_ABLE_FG = '0') 
+					            <![CDATA[
+									AND STORE.RMST_CRT_DY <= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+						        ]]>
+					            
+					            AND STORE.STR_TYP_FG IN ('2','3')
+					            AND STR_PROD.STR_CD = STORE.STR_CD
+					            AND ROW_NUMBER() OVER () = 1 
+				         ), 
+				         '정상등록'
+				    ) BAR_DESC 
+		  FROM 
+		  	PRODUCT A ,
+		  	
+		    SALE_MST B
+		     LEFT OUTER JOIN 
+		        SALE_LOGI_MAP@DL_MD_MARTNIS C ON B.SRCMK_CD = C.SRCMK_CD
+		    		LEFT OUTER JOIN 
+		    	LOGI_MST@DL_MD_MARTNIS D ON C.LOGI_BCD = D.LOGI_BCD
+		    
+		  WHERE	A.VEN_CD = #entpCode#
+		    AND A.PROD_CD = B.PROD_CD
+		    AND B.ORD_ABLE_FG = '1'  
+		    <isNotEmpty  property="sellCode"  prepend="AND"> 
+		     A.SRCMK_CD =  #sellCode#
+		    </isNotEmpty>
+		    <isEqual property="logiBarcodeStatus" compareValue="10" prepend="AND">
+		    	  D.LOGI_BCD IS NOT NULL 
+		    </isEqual>
+		    <isEqual property="logiBarcodeStatus" compareValue="20" prepend="AND">
+		    	  D.LOGI_BCD IS NULL 
+		    </isEqual>
+		    <isEqual property="logiBarcodeStatus" compareValue="30" prepend="AND">
+		    	  D.LOGI_BCD IS NULL 
+		    </isEqual>
+		   )
+		    <isEqual property="logiBarcodeStatus" compareValue="20" >
+		    	  WHERE BAR_DESC='등록대상'
+		    </isEqual>
+		    <isEqual property="logiBarcodeStatus" compareValue="30">
+		    	  WHERE BAR_DESC='대상아님'
+		    </isEqual>
+	  </select>
+ 
+ 	  <select id="selectWholeProductList" resultMap="wholeProductListMap" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ctWholeProductList */
+		  SELECT 
+		  	* FROM 
+		  	  (
+		  	  	  SELECT * FROM 
+		  	  	  (
+			   	  SELECT 
+			   	  <!-- 
+			   	  /*+ USE_NL(A B C D) */
+			   	   -->
+				    TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT,   B.SRCMK_CD,  A.PROD_CD,  A.PROD_NM,  
+				    D.LOGI_BCD,	D.USE_FG,	 D.WIDTH,      D.LENGTH,   D.HEIGHT,    D.WG,       D.SORTER_FG,
+				    DECODE
+				    ( 	D.LOGI_BCD,      
+				    	NULL, 
+				        (
+					          SELECT COALESCE(MAX('등록대상'), '대상아님')
+					          FROM STR_PROD, STORE
+					          WHERE PROD_CD = A.PROD_CD
+					            AND ORD_STOP_FG = '0'     AND VEN_CD = #entpCode# 				          
+					            AND DEAL_STOP_FG = '0'    AND DEL_STOP_FG = '0'
+					            AND (A.PROD_CD LIKE '1%' OR A.PROD_CD LIKE '5%')
+					            AND A.TRD_TYP_FG NOT IN ('3','5','4') 
+					            AND ((A.TRD_TYP_FG != '2' AND A.TRD_TYP_FG != '4') OR A.NORD_BUY_ABLE_FG = '0') 
+					            <![CDATA[
+									AND STORE.RMST_CRT_DY <= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+						        ]]>
+					            
+					            AND STORE.STR_TYP_FG IN ('2','3')
+					            AND STR_PROD.STR_CD = STORE.STR_CD
+					            AND ROW_NUMBER() OVER () = 1 
+				         ), 
+				         '정상등록'
+				    ) BAR_DESC ,
+				    CASE B.MIX_PROD_FG  WHEN 0 THEN  '단일'  WHEN 1 THEN  '혼재' ELSE '없음' END AS MIX_PROD_FG, 
+				    ROW_NUMBER() OVER(ORDER BY A.REG_DT DESC) as RNUM,
+				    B.ORD_IPSU AS ORD_IPSU
+				  FROM PRODUCT A ,				    
+				    SALE_MST B
+		     			LEFT OUTER JOIN 
+		        		SALE_LOGI_MAP@DL_MD_MARTNIS C ON B.SRCMK_CD = C.SRCMK_CD
+		    			LEFT OUTER JOIN 
+		    			LOGI_MST@DL_MD_MARTNIS D ON C.LOGI_BCD = D.LOGI_BCD
+				  WHERE	A.VEN_CD = #entpCode#
+				    AND A.PROD_CD = B.PROD_CD
+				    AND B.ORD_ABLE_FG = '1'  
+				    <isNotEmpty  property="sellCode"  prepend="AND"> 
+				     A.SRCMK_CD =  #sellCode#
+				    </isNotEmpty>
+				    <isEqual property="logiBarcodeStatus" compareValue="10" prepend="AND">
+				    	  D.LOGI_BCD IS NOT NULL 
+				    </isEqual>
+				    <isEqual property="logiBarcodeStatus" compareValue="20" prepend="AND">
+				    	  D.LOGI_BCD IS NULL 
+				    </isEqual>
+				    <isEqual property="logiBarcodeStatus" compareValue="30" prepend="AND">
+				    	  D.LOGI_BCD IS NULL 
+				    </isEqual>
+				 )
+				  <isEqual property="logiBarcodeStatus" compareValue="20" >
+				   	  WHERE BAR_DESC='등록대상'
+				  </isEqual>
+				  <isEqual property="logiBarcodeStatus" compareValue="30">
+				   	  WHERE BAR_DESC='대상아님'
+				  </isEqual>   
+		      ) 
+		       <isEmpty  property="downloadFlag" > 
+				     <![CDATA[ 
+						where #firstIndex#+1 <= RNUM and RNUM < #lastIndex#+1
+			        ]]> 
+	          </isEmpty>
+	  </select>
+ 
+ 
+ 
+	   
+	  <resultMap id="onlineRepresentProductMap" class="newProduct">
+	    <result property="onlineProductCode"  	column="PROD_CD"   />
+	    <result property="onlineProductName" 	column="PROD_NM"   />
+	    <result property="profitRate" 			column="PROFIT_RT" />
+	    <result property="sellCode"  			column="SRCMK_CD"  />
+   	  </resultMap>
+ 
+ 
+ 	  <select id="selectOnlineRepresentProdctList" resultMap="onlineRepresentProductMap" parameterClass="String">
+	   	  /* SQLINES DEMO *** ctOnlineRepresentProdctList 1*/
+	   	SELECT 
+	   		PROD_CD,	PROD_NM,	SRCMK_CD,	PROFIT_RT 
+	   	FROM PRODUCT@DL_MD_MARTNIS
+		WHERE ASSORT_FG='8'
+			AND DEAL_STOP_FG='0'
+	        AND VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID= #entpCode#) 
+	  </select>
+	  
+	  
+ 	  <select id="selectCountSellCodeDuplicate" resultClass="Integer" parameterClass="String">
+	   	  /* SQLINES DEMO *** ctCountSellCodeDuplicate */
+	   SELECT 
+		 COUNT(*)
+		 FROM SALE_MST@DL_MD_MARTNIS 
+		 WHERE SRCMK_CD IN (#sellCode#)  
+		 AND  SRCMK_CD NOT  IN ('8809245010018', '8801037085327','8809245014023','8809245014016')
+	  </select>
+	  
+	   <select id="selectCountVendorStopTrading" resultClass="Integer" parameterClass="String">
+		 	  /* SQLINES DEMO *** ctCountVendorStopTrading */
+		   SELECT 
+			  COUNT(*)
+			  FROM VENDOR@DL_MD_MARTNIS  
+			WHERE VEN_CD  = #venderCode#
+			   <![CDATA[
+				 AND TRD_END_DY > TO_CHAR( CURRENT_TIMESTAMP(0), 'yyyyMMdd')  
+				 AND STR_CD IN (
+				      SELECT STR_CD 
+				      FROM STORE
+				      WHERE RMST_CRT_DY <= TO_CHAR( CURRENT_TIMESTAMP(0), 'yyyyMMdd')
+				)
+			   ]]>
+	  </select>
+	  
+	  <resultMap id="vendorTradeMap" class="newProduct">
+	    <result property="tradeTypeCode"  	column="TRD_TYP_FG" />
+	    <result property="promotionAmountFlag" 	column="PROMO_AMT_RT" />
+	  </resultMap>
+	  <select id="selectVendorTradeType" resultMap="vendorTradeMap" parameterClass="String">
+	  		  /* SQLINES DEMO *** ctVendorTradeType */
+	  	SELECT  A.TRD_TYP_FG , 
+			 (CASE WHEN A.PROMO_AMT_RT = '0' THEN '0' ELSE '1' END)  PROMO_AMT_RT 
+		FROM TED_VENDOR A
+		WHERE A.VEN_CD = #entpCode#
+	  	LIMIT 1
+	  </select>
+	  
+	  
+	  <select id="selectVendorTaxType" resultClass="String" parameterClass="String">
+	  		  /* SQLINES DEMO *** ctVendorTaxType */
+	  	SELECT  BMAN_TYP_FG
+		FROM VENDOR A
+		WHERE A.VEN_CD = #entpCode#
+	  	LIMIT 1
+	  </select>
+</sqlMap>

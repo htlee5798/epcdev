@@ -1,0 +1,138 @@
+body,td {color: #666666;font-family:  돋움, Verdana ; font-size: 9pt; text-decoration:none;line-height:13pt}
+/*body {background-attachment: scroll;
+					background-image: url(/kor/img/common/bg.gif);
+					background-repeat: repeat-x;
+					margin-bottom:30
+				 }*/
+body {background-attachment: scroll;
+					background-image: url(/images/epc/edi/consult/top_bg.gif);
+					background-repeat: repeat-x;
+					margin-bottom:30
+				 }
+				 
+A {color: #666666;text-decoration:none;}
+A:link {color: #666666; }
+A:visited {color: #666666;}
+A:active {color: #666666;}
+A:hover { color:#892F2F;}
+				 
+img {border:0}
+				 
+.input01{border:#E0E0E0 2px solid; height:19; color: #666666; font-family:돋움, Verdana ; font-size: 9pt;}
+.input02{font-size: 8pt; color:#5E5E5E; background-color:#E4E3E3;}
+.input03{font-size: 8pt; color:#666666;}
+.form   {font-family: "돋움";font-size:9pt;color:#595959;background-color:#FFFFFF;height:auto;}
+.topname{font-family: "돋움";font-size: 8pt;color:#808080;}
+
+/*틀*/
+.bg_t  {background-image: url(/kor/img/common/bg_t.gif);border-right:#F0F0F0 1px solid;border-left:#F0F0F0 1px solid;}
+.bg_t2  {background:#D9D9D9}
+.bg_b  {background-image: url(/kor/img/common/bg_b.gif);border-right:#F0F0F0 1px solid;border-left:#F0F0F0 1px solid;}
+/*.bg_l  {background-image: url(/kor/img/common/bg_l.gif);}*/
+.bg_l  {background-image: url(/kor/img/common/left_bg.gif);}
+.bg_r  {background-image: url(/kor/img/common/bg_r.gif);}
+.bg_r2  {background-image: url(/kor/img/common/bg_r2.gif);}
+.bg_line  {background-image: url(/kor/img/bbs/dot_v.gif);}
+
+.lline_special {border-top:#B0DF22 112px solid;background:#F61414;width:4}	
+.lline_branch  {border-top:#F61414 112px solid;background:#24A685;width:4}	
+.lline_fortune  {border-top:#83CA0E 112px solid;background:#F61414;width:4}	
+.lline_product {border-top:#F61414 112px solid;background:#83CA0E;width:4}	
+.lline_milerige {border-top:#F61414 112px solid;background:#278493;width:4}	
+.lline_village   {border-top:#B0DF22 112px solid;background:#F61414;width:4}	
+.lline_main    {border-top:#B0DF22 112px solid;background:#83C90E;width:4}	
+.lline_bottom  {border-top:#B0DF22 112px solid;background:#F61414;width:4}	
+
+.lbul_special  {background:#FFBE00;}	
+.lbul_branch  {background:#FFBE00;}	
+.lbul_fortune  {background:#FFBE00;}	
+.lbul_product {background:#FFBE00;}	
+.lbul_milerige {background:#FFBE00;}	
+.lbul_vilage   {background:#FFBE00;}	
+.lbul_main   {background:#FFBE00;}	
+.lbul_bottom {background:#FFBE00;}	
+
+.l_special    {width:201;background:#F7E4BA url(/kor/img/left/special.gif);background-repeat:no-repeat}
+.l_branch    {width:201;background:#90DBCC url(/kor/img/left/branch.gif);background-repeat:no-repeat}
+.l_fortune    {width:201;background:#E9C8D4 url(/kor/img/left/fortune.gif);background-repeat:no-repeat}
+.l_product   {width:201;background:#BEE09A url(/kor/img/left/product.gif);background-repeat:no-repeat}
+.l_milerige   {width:201;background:#9AD6E0 url(/kor/img/left/milerige.gif);background-repeat:no-repeat}
+.l_village     {width:201;background:#F7C4BA url(/kor/img/left/village.gif);background-repeat:no-repeat}
+.l_main      {width:201;background:#BEE09A}
+.l_bottom    {width:201;background:#E09AA8 url(/kor/img/left/bottom.gif);background-repeat:no-repeat}
+.l_area    {width:201;background:#E09AA8 url(/kor/img/left/area.gif);background-repeat:no-repeat}
+
+.contents    {width:543;padding:29 0 30 30;height:400}
+
+/*폰트 볼드체*/
+.green01{color:#3C6300;font-weight:bold}
+.green02{color:#4A680C;}
+.violet01{color:#8F2770;font-weight:bold;font-size:10pt}
+.orange01{color:#FF852B;font-weight:bold;}
+.topcopy{color:#737373;font-size:11px;padding:12 13 0 0;}
+
+/*BBS*/
+.title {padding:8 0 26 15;}
+.top1 {background-image: url(/kor/img/bbs/bbs_t.gif);}
+.top2 {background-color:#C0BAB7;border-bottom:3px solid #B7B0AD}
+.top3 {background-color:#C0BAB7;}
+.line_l {border-left:#E6E3E3 3px solid;}
+.line_r {border-right:#E6E3E3 3px solid;}
+.line_m {border-right:#E6E3E3 3px solid;border-left:#E6E3E3 3px solid;padding:20;}
+.over {background-color : #F2E5E4;}
+.out {background-color : #FFFFFF;}
+.out2 {background-color : #F8F8F8;}
+
+/*list*/
+.list {color: #60574A;font-size:8pt;font-family:verdana}
+.list a {color: #60574A;}
+.list a:link {color: #60574A; }
+.list a:visited {color: #60574A;}
+.list a:active {color: #60574A;}
+.list a:hover { color:#60574A;}
+.list_b {color: #E2923C;font-size:8pt;font-family:verdana;font-weight:bold}
+
+/*calendar*/
+.calendar {color: #4A4A4A;font-size:7pt;font-family:verdana;font-weight:bold}
+.calendar a {color: #4A4A4A;}
+.calendar a:link {color: #4A4A4A; }
+.calendar a:visited {color: #4A4A4A;}
+.calendar a:active {color: #4A4A4A;}
+.calendar a:hover { color:#4A4A4A;}
+
+.calendar_b {color: #E65B1B;font-size:7pt;font-family:verdana;font-weight:bold;height:15}
+.calendar_b a {color: #E65B1B;}
+.calendar_b a:link {color: #E65B1B; }
+.calendar_b a:visited {color: #E65B1B;}
+.calendar_b a:active {color: #E65B1B;}
+.calendar_b a:hover { color:#E65B1B;}
+
+
+
+.em01{color:#E2923C;font-weight:bold;}
+
+/*copy*/
+.copy {color: #EEEDEB;font-size:8pt;font-family:돋움; line-height: 14pt;}
+.copy a {color: #EEEDEB;}
+.copy a:link {color: #EEEDEB; }
+.copy a:visited {color: #EEEDEB;}
+.copy a:active {color: #EEEDEB;}
+.copy a:hover { color:#EEEDEB;}
+
+/*간격 조정*/
+.goldclip{padding-top:1; padding-right:33;}    /* 골드 팁 이미지 사이즈 :  68 */
+.banner {padding-top:0; padding-right:0;}    /* 배너 이미지 사이즈 : * */
+/* padding:padding-left:골드 팁 이미지 사이즈(68) + padding-right 
+                padding-right: 배너 이미지 사이즈(*) + padding-right + padding-right */
+.gnb      {padding-left:33;padding-right:0;}
+.menu   {padding-left:33;padding-right:0;}
+.copy    {padding-left:33;padding-right:0;}
+
+
+/*행운카페*/
+.fortune_l {width:104;background:url(/kor/fortune/img/left.gif);background-position:top left;background-repeat:no-repeat}
+.fortune_r {width:100;height:315;background:url(/kor/fortune/img/right2.gif);background-position:right bottom;background-repeat:no-repeat}
+.fortune_b {background:url(/kor/fortune/img/bottom.gif);background-position:right bottom;background-repeat:no-repeat}
+
+/*lotteToday*/
+.today {font-family: "돋움";font-size: 8pt;color:#B67C29; font-weight:bold}

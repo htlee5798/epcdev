@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0011">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmprd0011VO" type="com.lottemart.epc.product.model.PSCMPRD0011VO" />
+	
+	<select id="selectScheduleList" resultClass="PSCMPRD0011VO">
+	/*	PSCMPRD0011.selectScheduleList	*/
+		SELECT RANK_NUM as rankNum, SCDL_SEQS as scdlSeqs, VENDOR_ID as vendorId, VENDOR_NM as vendorNm,
+       				RSERV_START_DY as rservStartDy, RSERV_START_TM as rservStartTm,  rservStartHour, rservStartMin,
+       				RSERV_END_TM as rservEndTm, rservEndHour, rservEndMin,
+       				SCDL_MEMO as scdlMemo, TOTAL_COUNT as totalCount
+		FROM (
+	        SELECT   
+	            CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+	          , COUNT(*) OVER() TOTAL_COUNT
+	          , A.*   
+	        FROM (        
+	            SELECT RANK()OVER(ORDER BY T.RSERV_START_DY, T.RSERV_START_TM, T.RSERV_END_TM, T.SCDL_SEQS) RANK_NUM  
+	                , T.SCDL_SEQS
+	                , T.VENDOR_ID
+	                , (SELECT SUB.VENDOR_NM FROM TVE_VENDOR SUB WHERE T.VENDOR_ID = SUB.VENDOR_ID) VENDOR_NM
+	                , T.RSERV_START_DY
+	                , T.RSERV_START_TM
+	                , SUBSTR(T.RSERV_START_TM, 0, 2) as rservStartHour
+	                , SUBSTR(T.RSERV_START_TM, 3, 4) as rservStartMin
+	                , T.RSERV_END_DY
+	                , T.RSERV_END_TM
+	                , SUBSTR(T.RSERV_END_TM, 0, 2) as rservEndHour
+	                , SUBSTR(T.RSERV_END_TM, 3, 4) as rservEndMin
+	                , T.CELL_NO
+	                , T.SCDL_MEMO
+	                , T.REG_DATE
+	                , T.REG_ID
+	                , T.MOD_DATE
+	                , T.MOD_ID
+	            FROM TOR_SCDL_MGR T
+				WHERE T.RSERV_START_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			)A
+		)
+		WHERE PAGE = #currentPage#
+	</select>
+
+	<update id="updateSchedule">
+	/*	PSCMPRD0009.updateSchedule	*/
+		UPDATE TOR_SCDL_MGR SET
+			RSERV_START_DY = #rservStartDy#,
+			RSERV_START_TM = #rservStartTm#,
+			<isNotEmpty property="rservStartDy">
+			RSERV_END_DY = #rservStartDy#,
+			</isNotEmpty>
+			RSERV_END_TM = #rservEndTm#,
+			<isNotEmpty property="cellNo">
+			CELL_NO = #cellNo#,
+			</isNotEmpty>
+			<isNotEmpty property="scdlMemo">
+			SCDL_MEMO = #scdlMemo#,
+			</isNotEmpty>
+			MOD_DATE = CURRENT_TIMESTAMP(0), 
+			MOD_ID = #vendorId#
+		WHERE SCDL_SEQS = #scdlSeqs#
+	</update>
+	
+	<delete id="deleteSchedule">
+	/*	PSCMPRD0009.deleteSchedule	*/
+		DELETE FROM TOR_SCDL_MGR
+		WHERE SCDL_SEQS = #scdlSeqs#
+	</delete>
+	
+	<select id="selectDupScheduleCount" resultClass="dataMap">
+	/*	PSCMPRD0011.selectDupScheduleCount	*/
+		<![CDATA[
+		SELECT COUNT(*) CNT
+		FROM  TOR_SCDL_MGR
+		WHERE RSERV_START_DY = #rservStartDy#
+		AND  #rservStartTm# < RSERV_END_TM AND #rservEndTm# > RSERV_START_TM
+		]]>
+		<isEqual property="crud" compareValue="U">
+		AND SCDL_SEQS != #scdlSeqs#
+		</isEqual>
+	</select>
+	
+	<select id="selectScheduleMgrListExcel" parameterClass="pscmprd0011VO" resultClass="pscmprd0011VO">
+	/*	PSCMPRD0011.selectScheduleMgrListExcel	*/
+		SELECT T.SCDL_SEQS
+             , T.VENDOR_ID as vendorId
+             , (SELECT SUB.VENDOR_NM FROM TVE_VENDOR SUB WHERE T.VENDOR_ID = SUB.VENDOR_ID) as vendorNm
+             , T.RSERV_START_DY as rservStartDy
+             , SUBSTR(T.RSERV_START_TM, 0, 2) ||':'|| SUBSTR(T.RSERV_START_TM, 3, 4) as rservStartTm
+             , T.RSERV_END_DY as rservEndDy
+             , SUBSTR(T.RSERV_END_TM, 0, 2) ||':'|| SUBSTR(T.RSERV_END_TM, 3, 4)as rservEndTm
+             , T.CELL_NO
+             , T.SCDL_MEMO as scdlMemo
+             , T.REG_DATE
+             , T.REG_ID
+             , T.MOD_DATE
+             , T.MOD_ID
+		FROM TOR_SCDL_MGR T
+		WHERE T.RSERV_START_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		ORDER BY T.RSERV_START_DY, T.RSERV_START_TM, T.RSERV_END_TM, T.SCDL_SEQS
+	</select>
+	
+</sqlMap>

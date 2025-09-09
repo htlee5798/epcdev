@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMDLY0020">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- TOY 현황표 -->
+<select id="TSC_STATUS_TOY-SELECT01" parameterClass="map" resultClass="resultClass">
+		SELECT	SALE_DY,
+				VEN_CD,
+				SUM(ACCEPT_FG0) AS ACCEPT_FG0,
+				SUM(ACCEPT_FG1) AS ACCEPT_FG1,
+				SUM(ACCEPT_FG2) AS ACCEPT_FG2,
+				SUM(ACCEPT_FG3) AS ACCEPT_FG3,
+				SUM(ACCEPT_FG4) AS ACCEPT_FG4
+		FROM  
+		(															
+		SELECT	SALE_DY AS SALE_DY,													
+			    VEN_CD AS VEN_CD,                          
+			    DECODE(ACCEPT_FG, '0', COUNT(RECV_SEQ), 0) AS ACCEPT_FG0,                
+			    DECODE(ACCEPT_FG, '1', COUNT(RECV_SEQ), 0) AS ACCEPT_FG1,              
+			    DECODE(ACCEPT_FG, '2', COUNT(RECV_SEQ), 0) AS ACCEPT_FG2,              
+			    DECODE(ACCEPT_FG, '3', COUNT(RECV_SEQ), 0) AS ACCEPT_FG3,              
+			    DECODE(ACCEPT_FG, '4', COUNT(RECV_SEQ), 0) AS ACCEPT_FG4              
+	    FROM   TICKET_DELI_PROD@DL_MD_MARTNIS  
+	
+     	WHERE SALE_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+<![CDATA[  	
+		  AND CHG_FG <> 'D'
+]]>	  
+	  	    <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+		    </isNotEmpty>
+		    
+		    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+		    </isNotEmpty>
+	
+	  	GROUP BY SALE_DY, VEN_CD, ACCEPT_FG
+		)
+		GROUP BY SALE_DY, VEN_CD
+		ORDER BY SALE_DY, VEN_CD
+</select>
+
+<!-- TOY 접수확인 -->
+<select id="TSC_DELIVERY_ACCEPT_TOY-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT  A.SALE_DY || ' - ' || A.STR_CD || ' - ' || A.POS_NO || ' - ' ||	A.TRD_NO || ' - ' || LPAD(A.RECV_SEQ, 4, 0) AS SLIP_NO, 
+			E.STR_NM,  
+			A.SRCMK_CD AS SRCMK_CD,  
+			D.PROD_NM AS PROD_NM,  
+			A.DELI_QTY AS QTY,  
+			A.ACCEPT_FG AS ACCEPT_FG,  
+			A.SALE_DY AS SALE_DY, 
+			C.CUST_NM AS CUST_NM, 
+			'(' || SUBSTR(C.ZIP, 1, 3) || '-' || SUBSTR(C.ZIP, 4, 3) || ')' || C.ADDR1 || ' ' || C.ADDR2 AS CUST_ADDR, 
+			NVL(C.CUST_TEL_NO1, ' ') AS CUST_TEL_NO1,  
+			NVL(C.CUST_TEL_NO2, ' ') AS CUST_TEL_NO2, 
+			NVL(A.ACCEPT_DY , 'N/A') AS ACCEPT_DY, 
+			B.RECV_NM AS RECV_NM,  
+			'(' || SUBSTR(B.ZIP, 1, 3) || '-' || SUBSTR(B.ZIP, 4, 3) || ')' || B.ADDR1 || ' ' || B.ADDR2 AS RECV_ADDR,  
+			NVL(B.RECV_TEL_NO1, ' ') AS RECV_TEL_NO1, 
+			NVL(B.RECV_TEL_NO2, ' ') AS RECV_TEL_NO2, 
+			B.REMARK AS REMARK,	 
+			A.STR_CD AS STR_CD,	 
+			A.POS_NO AS POS_NO,  
+			A.TRD_NO AS TRD_NO, 
+			A.RECV_SEQ AS RECV_SEQ 	,	
+			B.PROM_DY as PROM_DY
+	FROM	TICKET_DELI_PROD@dl_md_martnis A, 
+			TICKET_DELI_RECV@dl_md_martnis B, 
+			TICKET_DELI_RECEIPT@dl_md_martnis C, 
+			PRODUCT@dl_md_martnis D, 
+			STORE@dl_md_martnis E
+	
+	WHERE	A.STR_CD = B.STR_CD 
+		AND	A.SALE_DY = B.SALE_DY 
+		AND	A.POS_NO = B.POS_NO 
+		AND	A.TRD_NO = B.TRD_NO 
+		AND	A.RECV_SEQ = B.RECV_SEQ 
+		AND	A.STR_CD = C.STR_CD 
+		AND	A.SALE_DY = C.SALE_DY 
+		AND	A.POS_NO = C.POS_NO 
+		AND	A.TRD_NO = C.TRD_NO 
+		AND	A.PROD_CD = D.PROD_CD 
+		
+<![CDATA[
+		AND	A.CHG_FG <> 'D' 
+		AND	B.CHG_FG <> 'D'
+]]>
+		 
+		AND	A.ACCEPT_FG IN ('0','1') 
+		AND	A.STR_CD = E.STR_CD
+		AND A.SALE_DY  BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		
+		<isNotEqual property="hangmok" compareValue="all">
+	    	AND A.ACCEPT_FG = #hangmok#
+	    </isNotEqual>
+		
+		<isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+
+        <isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	ORDER BY SALE_DY    
+</select>
+
+<!-- TOY 접수확인 업데이트 -->
+<update id="TSC_DELIVERY_ACCEPT_TOY-UPDATE01" parameterClass="map">
+	UPDATE  TICKET_DELI_PROD@dl_md_martnis		
+						
+	SET  	ACCEPT_FG='1'		,							
+			ACCEPT_DY=TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),			
+	 		LST_CHG_EMP_NO='111111111',						
+	 		LST_CHG_DT=CURRENT_TIMESTAMP(0),								
+	 		CHG_FG='U'		
+	 										
+	WHERE SALE_DY = #sale_dy#
+	  AND STR_CD = #str_cd#
+	  AND POS_NO = #pos_no#
+	  AND TRD_NO = #trd_no#
+  	  AND SRCMK_CD = #srcmk_cd#
+	  AND RECV_SEQ = #recv_seq#
+</update>
+
+<!-- TOY 완료등록 -->
+<select id="TSC_DELIVERY_REG_TOY-SELECT01" parameterClass="map" resultClass="resultClass">
+		/*PEDMDLY0020.TSC_DELIVERY_REG_TOY-SELECT01*/
+	SELECT	A.SALE_DY || '-' || A.STR_CD || '-' || A.POS_NO || '-' || A.TRD_NO || '-' || LPAD(A.RECV_SEQ, 4, 0) AS SLIP_NO, 
+			E.STR_NM AS STR_NM,  
+			A.SRCMK_CD AS SRCMK_CD,  
+			D.PROD_NM AS PROD_NM,  
+		    A.DELI_QTY AS QTY,  
+		    A.ACCEPT_FG AS ACCEPT_FG,  
+		    NVL(A.UDELI_REASON_FG, ' ')	 AS UDELI_REASON_FG,   
+		    A.SALE_DY AS SALE_DY,   
+			C.CUST_NM AS CUST_NM,  
+		    '(' || SUBSTR(C.ZIP, 1, 3) || '-' || SUBSTR(C.ZIP, 4, 3) || ')' || C.ADDR1 || ' ' || C.ADDR2 AS CUST_ADDR, 
+			NVL(C.CUST_TEL_NO1, '') AS CUST_TEL_NO1, 
+			NVL(C.CUST_TEL_NO2, '') AS CUST_TEL_NO2, 
+			A.ACCEPT_DY AS ACCEPT_DY, 
+			B.RECV_NM AS RECV_NM,  
+			'(' || SUBSTR(B.ZIP, 1, 3) || '-' || SUBSTR(B.ZIP, 4, 3) || ')' || B.ADDR1 || ' ' || B.ADDR2 AS RECV_ADDR, 
+			NVL(B.RECV_TEL_NO1, ' ') AS RECV_TEL_NO1, 
+			NVL(B.RECV_TEL_NO2, ' ') AS RECV_TEL_NO2, 
+			B.REMARK AS REMARK,	 
+			NVL(A.DELI_END_DY, '--')	 AS DELI_END_DY,    
+		 	A.STR_CD AS STR_CD, 
+		 	A.POS_NO AS POS_NO, 
+		 	A.TRD_NO AS TRD_NO, 
+		 	A.RECV_SEQ AS RECV_SEQ ,
+			 B.PROM_DY as PROM_DY
+	FROM	TICKET_DELI_PROD@dl_md_martnis A, 
+	        TICKET_DELI_RECV@dl_md_martnis B, 
+	        TICKET_DELI_RECEIPT@dl_md_martnis C, 
+	        PRODUCT@dl_md_martnis D, 
+	        STORE@dl_md_martnis E
+		
+	WHERE	A.STR_CD = B.STR_CD 
+	AND		A.SALE_DY = B.SALE_DY 
+	AND		A.POS_NO = B.POS_NO 
+	AND		A.TRD_NO = B.TRD_NO 
+	AND		A.RECV_SEQ = B.RECV_SEQ 
+	AND		A.STR_CD = C.STR_CD 
+	AND		A.SALE_DY = C.SALE_DY 
+	AND		A.POS_NO = C.POS_NO 
+	AND		A.TRD_NO = C.TRD_NO 
+	AND		A.PROD_CD = D.PROD_CD 
+	
+<![CDATA[
+	AND		A.CHG_FG <> 'D' 
+	AND		B.CHG_FG <> 'D' 
+	AND		A.ACCEPT_FG <> '0'
+]]>
+ 		
+	AND		A.STR_CD = E.STR_CD
+	AND 	A.SALE_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	
+		<isNotEqual property="hangmok" compareValue="all">
+			AND     A.ACCEPT_FG = #hangmok#	
+		</isNotEqual>
+	    
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]#
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+		<isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	 ORDER BY A.SALE_DY ASC 
+
+</select>
+
+<!-- TOY 완료등록 업데이트 -->
+<update id="TSC_DELIVERY_REG_TOY-UPDATE01" parameterClass="map">
+	
+	<isEqual property="forward_accept" compareValue="1">
+		UPDATE	TICKET_DELI_PROD@dl_md_martnis
+		   SET	ACCEPT_FG='1'
+				,LST_CHG_EMP_NO='111111111'	
+				,UDELI_REASON_FG=''		
+		 		,DELI_END_DY=''	
+		 					 
+		WHERE SALE_DY = #sale_dy#
+		  AND STR_CD = #str_cd#
+		  AND POS_NO = #pos_no#
+		  AND TRD_NO = #trd_no#
+	  	  AND SRCMK_CD = #srcmk_cd#
+		  AND RECV_SEQ = #recv_seq#
+	</isEqual>
+	
+	<isEqual property="forward_accept" compareValue="2">
+		UPDATE  TICKET_DELI_PROD@dl_md_martnis 
+		   SET	ACCEPT_FG='2'
+		        ,DELI_END_DY=TO_CHAR(CURRENT_TIMESTAMP(0),'yyyymmdd')	
+				,LST_CHG_DT=CURRENT_TIMESTAMP(0)		
+				,LST_CHG_EMP_NO='222222222'	
+				,UDELI_REASON_FG=''		
+				 
+		WHERE SALE_DY = #sale_dy#
+		  AND STR_CD = #str_cd#
+		  AND POS_NO = #pos_no#
+		  AND TRD_NO = #trd_no#
+	  	  AND SRCMK_CD = #srcmk_cd#
+		  AND RECV_SEQ = #recv_seq#				 
+	</isEqual>
+	
+	<isEqual property="forward_accept" compareValue="3">
+		UPDATE  TICKET_DELI_PROD@dl_md_martnis 
+		   SET	ACCEPT_FG='3'
+			  	,LST_CHG_DT=CURRENT_TIMESTAMP(0)			 
+		 	    ,UDELI_REASON_FG=#forward_udeli#
+				,LST_CHG_EMP_NO='333333333'	
+		 	    ,DELI_END_DY=replace(#forward_end#,'-','')
+		 	    
+		WHERE SALE_DY = #sale_dy#
+		  AND STR_CD = #str_cd#
+		  AND POS_NO = #pos_no#
+		  AND TRD_NO = #trd_no#
+	  	  AND SRCMK_CD = #srcmk_cd#
+		  AND RECV_SEQ = #recv_seq#	
+	</isEqual>
+	
+	<isEqual property="forward_accept" compareValue="4">
+		UPDATE TICKET_DELI_PROD@dl_md_martnis 
+		   SET ACCEPT_FG='4'
+		 	   ,LST_CHG_DT=CURRENT_TIMESTAMP(0)			 	 
+			   ,LST_CHG_EMP_NO='444444444'		
+			   ,UDELI_REASON_FG=#forward_udeli#			 
+			   ,DELI_END_DY=''
+			   					
+		WHERE SALE_DY = #sale_dy#
+		  AND STR_CD = #str_cd#
+		  AND POS_NO = #pos_no#
+		  AND TRD_NO = #trd_no#
+	  	  AND SRCMK_CD = #srcmk_cd#
+		  AND RECV_SEQ = #recv_seq#				 
+	</isEqual>
+						  
+
+
+</update>
+	
+</sqlMap>

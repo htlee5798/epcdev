@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMCST0210">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="stringClass"	type="String" />
+	
+	<!-- 견적서 입력 -->
+	<typeAlias alias="estimation" type="com.lottemart.epc.edi.consult.model.Estimation" />
+	<typeAlias alias="estimationSheet" type="com.lottemart.epc.edi.consult.model.EstimationSheet" />
+	
+	<insert id="TSC_ESTIMATION-INSERT01" parameterClass="estimation">
+		/* NEDMCST0210.TSC_ESTIMATION-INSERT01 */
+		INSERT INTO TPC_ESTIMATION
+		(
+				PID
+			, 	VEN_CD
+			, 	DOC_NM
+			, 	FILE_SEQ
+			, 	FILE_NM
+			, 	REG_DATE
+		)
+		VALUES
+		(
+				#pid#
+			,	#venCd#
+			, 	#docNm#
+			,	#fileSeq#
+			,	#fileNm#
+			,	CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+	
+	<!-- 견적서 세부 입력 -->
+	<insert id="TSC_ESTIMATION_SHEET-INSERT01"  parameterClass="estimationSheet">
+		/* NEDMCST0210.TSC_ESTIMATION_SHEET-INSERT01 */
+		INSERT INTO TPC_ESTIMATION_SHEET
+		(
+				PID
+			, 	SEQ
+			, 	ES_PC
+			, 	ES_STANDARD
+			, 	ES_PROD_CD
+			, 	ES_PROD_NM
+			, 	ES_PACK_TYPE
+			, 	ES_GRADE
+			, 	ES_PRICE
+			, 	ES_ORGIN
+			, 	ES_DETAIL
+			, 	REG_DATE
+		)
+		VALUES
+		(
+				#pid#
+			, 	#seq#
+			, 	#esPc#
+			, 	#esStandard#
+			, 	#esProdCd#
+			, 	#esProdNm#
+			, 	#esPackType#
+			, 	#esGrade#
+			, 	#esPrice#
+			, 	#esOrgin#
+			, 	#esDetail#
+			, 	CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+
+	<!-- 견적서 세부 Max seq -->
+	<select id="SEQ_SELECT01" parameterClass="String"  resultClass="String">
+		/* NEDMCST0210.SEQ_SELECT01 */
+		SELECT 	MAX(SEQ)
+		FROM 	TPC_ESTIMATION_SHEET
+		WHERE 	PID = #seq#
+	</select>
+
+
+</sqlMap>

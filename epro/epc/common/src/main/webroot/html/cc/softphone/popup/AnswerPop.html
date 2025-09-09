@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>롯데CRM센터</title>
+<meta http-equiv="X-UA-Compatible" content="IE=9" >
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link href="./cti.css" rel="stylesheet" type="text/css">
+
+<style>
+	
+		body { margin:0; padding:0; }
+		.cti td { padding:0 2px; }
+		.cti td img { CURSOR: pointer; }
+
+    body, input, select, textarea, a { font:100%/1.4 'Nanum Gothic', '나눔고딕', Dotum, tahoma, Arial, Helvetica, sans-serif; font-size:13px; color:#333; }
+		
+		table	{ font-size:12; }
+		
+</style>
+
+<script language="JavaScript" src="./../js/SS_siteUtil.js"></script>
+<script language="JavaScript" src="./../js/SE_util.js"></script>
+<script language="JavaScript" src="./../js/SC_msgConstants.js"></script>
+
+<script>
+
+  function answer() {
+  
+    opener.doAnswerCall();
+    self.close();
+    
+  }
+    
+  function keyCheck() {
+    
+    if(event.keyCode == 13) {
+    
+      answer();
+
+    }
+    
+  
+  }
+
+  function setValues() {
+  
+	//window.resizeTo(350,450);
+		window.resizeTo(350,510);
+    
+    
+    var splitData = opener.SiteData.split("/");
+
+        //ARS서비스코드/ARS서비스명/상영관코드(고객번호)/상영관명/인입VDN명/CallRefID/인입VDN/-
+        //00000/상담원연결/0000/00관/없음/268438437/0000/-
+    
+    document.all.customTelNo.innerText = opener.customTelNo.value;
+    document.all.ueiText.innerText = opener.cubeUei.value;
+    
+    if (splitData.length > 0) {
+      
+      document.all.custType.innerText = "["+ splitData[0] + "]" + getInputServieName(splitData[0]);
+      
+      if (splitData[1] == NothingCustCode) {
+      
+        document.all.custNo.innerText = InfoMsgNothing;
+        
+      } else {
+      
+        document.all.custNo.innerText = splitData[2];
+        
+      }
+      
+      document.all.inCode.innerText ="["+ splitData[6] + "]" +  splitData[4];
+      
+      document.all.svcCode.innerText = splitData[5];
+      
+    }
+    
+    userSleep(500);
+    window.focus();
+  
+  }
+
+</script>
+
+</head>
+
+<body onKeyDown="keyCheck();" onload="setValues()">
+
+  <h1 class="makecall">전화 받기</h1>
+
+  <div class="cti">
+    <h2>전화 받기</h2>
+  
+        <!-- 내용 테이블 -->
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:left;">
+        	<tr>
+            <th>고객구분</th>
+        		<td><div id = "custType"></div>
+        		</label></td>
+        	</tr>
+        	<tr>
+            <th>전화번호</th>
+        	   <td><div id = "customTelNo"></div></td>
+        	</tr>            								
+           <tr>
+            <th>인입코드</th>
+        		<td><div id = "inCode"></div></td>
+        	</tr>
+        	<tr>
+            <th>고객번호(상영관)</th>
+        		<td><div id = "custNo"></div></td>
+        	</tr>
+        	<tr>
+            <th>서비스코드</th>
+        		<td><div id = "svcCode"></div>
+        		</td>
+        	</tr>
+        	<tr>
+            <th>전달내용</th>
+        		<td style="text-align: right;">	
+        		  <textArea id="ueiText" cols="27" rows="2" class="CReadOnly">default</textArea>		
+        		</td>
+        	</tr>
+        </table>
+        <!-- //내용 테이블 -->
+  
+    <div class="btn"><span onclick="javascript:answer()">전화받기</span></div>
+        					
+  </div>
+
+</body>
+</html>

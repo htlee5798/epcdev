@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMWEB0016">
+
+<typeAlias alias="resultClass"		type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"		type="lcn.module.common.util.HashBox" />
+<typeAlias alias="searchWebOrder" 	type="com.lottemart.epc.edi.weborder.model.SearchWebOrder"/>
+<typeAlias alias="ediRtnProd"  		type="com.lottemart.epc.edi.weborder.model.EdiRtnProdVO" />
+
+
+	<!--반품  목록 조회 EDI_RETURN_SELECT_01 -->
+ 	<resultMap id="ediRtnListMap" 	class="ediRtnProd">
+  		<result property="rrlReqNo"          	column="RRL_REQ_NO"				/>	<!-- 반품등록번호 	-->   
+  		<result property="venCd"            	column="VEN_CD"           		/>	<!-- 업체코드		-->  
+  		<result property="venNm"            	column="VEN_NM"           		/>	<!-- 업체코드		-->  
+		<result property="prodCd"            	column="PROD_CD"           		/>	<!-- 상품코드		-->   
+		<result property="srcmkCd"           	column="SRCMK_CD"          		/>	<!-- 판매코드		-->
+		<result property="prodNm"   			column="PROD_NM"          		/>	<!-- 상품명		-->
+		<result property="strCd"             	column="STR_CD"            		/>	<!-- 점포코드		-->      
+		<result property="strNm"             	column="STR_NM"            		/>	<!-- 점포명		-->   
+		<result property="prodStd"    			column="PROD_STD"				/>	<!-- 상품규격     -->
+		<result property="ordIpsu"           	column="ORD_IPSU"          		/>	<!-- 발주입수 		-->   
+		<result property="ordUnit"           	column="ORD_UNIT"          		/>	<!-- 단위			-->   
+		<result property="stdSalePrc"        	column="STD_SALE_PRC"      		/>	<!-- 매가-EDI		-->   
+		<result property="stdBuyPrc"         	column="STD_BUY_PRC"       		/>	<!-- 원가-EID		-->   
+		<result property="rrlQty"            	column="RRL_QTY"           		/>	<!-- 반품수량		-->   
+		<result property="stdProdPrc"        	column="STD_PROD_PRC"      		/>	<!-- 반품환산금액(수량*매가)	-->   
+		<result property="regStsCd"          	column="REG_STS_CD"        		/>	<!-- 일괄등록상태코드	-->   
+		<result property="regStsCdNm"        	column="REG_STS_CD_NM"     		/>	<!-- 일괄등록상태명칭	-->   
+		<result property="regStsCdDetail"       column="REG_STS_CD_DETAIL"     	/>	<!-- 일괄등록상태상세	-->   
+ 	</resultMap> 	
+    
+    
+
+    
+    <!--반품  목록 조회 -->
+	<select id="EDI_RETURN_SELECT_01" parameterClass="searchWebOrder" resultMap="ediRtnListMap">
+	    /*PEDMWEB0016.EDI_RETURN_SELECT_01*/  
+	   SELECT *
+	    FROM ( SELECT ROWNUM RNUM , A.* FROM (
+	     SELECT   M1.RRL_REQ_NO
+	     		 ,M1.VEN_CD
+	     		 ,P1.VEN_NM
+	             ,M1.PROD_CD
+	             ,M1.SRCMK_CD
+	             ,M1.PROD_NM
+	             ,M1.STR_CD
+	             ,S1.STR_NM
+	             ,M1.PROD_STD
+	             ,M1.ORD_IPSU
+	             ,M1.ORD_UNIT
+	             ,M1.STD_SALE_PRC
+	             ,M1.STD_BUY_PRC
+	             ,M1.RRL_QTY
+	             ,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+	             ,M1.REG_STS_CD
+	             ,S2.CD_NM REG_STS_CD_NM 
+	             ,S2.CD_DESC REG_STS_CD_DETAIL
+	        FROM TED_PO_RRL_PROD M1 
+			 	INNER JOIN TED_PO_RRL_MST P1 
+       				    ON M1.RRL_DY = P1.RRL_DY
+        			   AND M1.VEN_CD = P1.VEN_CD
+        			   AND M1.RRL_REQ_NO = P1.RRL_REQ_NO 
+	             LEFT OUTER JOIN STORE@dl_md_martnis S1
+	                          ON M1.STR_CD = S1.STR_CD
+	             LEFT OUTER JOIN TED_CODE S2
+	                          ON S2.MAJOR_CD = 'WPO09'
+	                         AND M1.REG_STS_CD = S2.MINOR_CD                 
+	             INNER JOIN TED_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo#
+                             AND SS.VEN_CD = M1.VEN_CD
+	       WHERE M1.RRL_DY BETWEEN #startDate# AND #endDate#
+	         AND M1.VEN_CD = #venCd#
+		<isNotEmpty property="strCd" prepend="AND" >
+			     M1.STR_CD = #strCd#
+		</isNotEmpty> 
+		 <isNotEmpty property="areaCd" prepend="AND" >
+          		 S1.AREA_FG = #areaCd#
+ 		</isNotEmpty>   
+		<isNotEmpty property="prodCd" prepend="AND" >
+				M1.PROD_CD = #prodCd#
+	    </isNotEmpty> 	          
+	       ORDER BY S1.STR_NM, M1.PROD_CD) A) A
+	    WHERE RNUM BETWEEN  #startRowNo# AND #endRowNo#
+    </select> 
+    
+    
+ 
+ <!--반품  목록 조회  count-->
+	<select id="EDI_RETURN_SELECT_02" parameterClass="searchWebOrder"  resultClass="int">
+	    /*PEDMWEB0016.EDI_RETURN_SELECT_02*/  
+	     SELECT COUNT(*) FROM (
+	     SELECT   M1.RRL_REQ_NO
+	             ,M1.PROD_CD
+	             ,M1.SRCMK_CD
+	             ,M1.PROD_NM
+	             ,S1.STR_NM
+	             ,M1.ORD_IPSU
+	             ,M1.ORD_UNIT
+	             ,M1.STD_SALE_PRC
+	             ,M1.STD_BUY_PRC
+	             ,M1.RRL_QTY
+	             ,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+	             ,M1.REG_STS_CD
+	             ,S2.CD_NM REG_STS_CD_NM 
+	        FROM TED_PO_RRL_PROD M1 
+	             LEFT OUTER JOIN STORE@dl_md_martnis S1
+	                          ON M1.STR_CD = S1.STR_CD
+	             LEFT OUTER JOIN TED_CODE S2
+	                          ON S2.MAJOR_CD = 'WPO09'
+	                         AND M1.REG_STS_CD = S2.MINOR_CD      
+	             INNER JOIN TED_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo#
+                             AND SS.VEN_CD = M1.VEN_CD
+	       WHERE M1.RRL_DY BETWEEN #startDate# AND #endDate#
+	         AND M1.VEN_CD = #venCd#
+	                     <isNotEmpty property="strCd" prepend="AND" >
+			               		M1.STR_CD = #strCd#
+			              </isNotEmpty> 
+			              <isNotEmpty property="areaCd" prepend="AND" >
+          					 	S1.AREA_FG = #areaCd#
+ 						   </isNotEmpty>  
+			               <isNotEmpty property="prodCd" prepend="AND" >
+			               		M1.PROD_CD =#prodCd#
+			               </isNotEmpty> 
+	       ORDER BY S1.STR_NM, M1.PROD_CD )
+    </select> 
+        
+    
+ 
+	
+</sqlMap>

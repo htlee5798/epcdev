@@ -1,0 +1,78 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: popup.css
+ * description	: popup, CSS import
+ * date			: 2011.09.23
+************************************************************************/
+
+body	{background-color:#FFF; font:12px Dotum; color:#999;}
+
+#pop_wrap	{background:url('/images/epc/edi/consult/bg-popup.gif') repeat-x left top;}
+#pop_head	{height:42px; padding:17px 0 0 28px; background:url('/images/epc/edi/consult/img-popup-top.gif') no-repeat right top;}
+#pop_contents	{padding:17px 30px 30px;}
+#pop_contents_w_640	{padding:17px 20px 20px;}
+
+/*title*/
+h2.t_malgun	{margin-bottom:5px; font-size:14px; color:#333;}
+h2.t_malgun2 {margin-bottom:17px; font:18px malgun, sans-serif;}
+
+/*팝업넓이*/
+.pop_w_400	 {width:400px;}
+.pop_w_500	 {width:500px;}
+
+/*tbody 에 스크롤이 있을때 넓이 정의 */
+.pop_w_400	.tb_h_c_scroll	{width:340px; overflow:auto;}
+.pop_w_400	.tb_h_c_scroll	table	{width:320px;}
+.pop_w_500	.tb_h_c_scroll	{width:440px; overflow:auto;}
+.pop_w_500	.tb_h_c_scroll	table	{width:420px;}
+
+/*button*/
+.btn_r_s	{background:url('/images/epc/edi/consult/btn-r-small-l.gif') no-repeat left top; padding-left:3px;}
+.btn_r_s	span	 {background:url('/images/epc/edi/consult/btn-r-small-r.gif') no-repeat right top; font:14px malgun, sans-serif;}
+.btn_r_s	a	{min-width:1px; height:25px; margin-left:-3px; padding:5px 20px 0 20px; *height:26px; *padding:4px 20px 0 20px; font-weight:bold;}
+.btn_r_s a:hover,	.btn_r_s a:link,	.btn_r_s a:visited,	 .btn_r_s a:active	{font:14px malgun, sans-serif;}
+.btn_r_s	input	{height:30px; border:none; background:url('/images/epc/edi/consult/btn-r-small-r.gif') no-repeat right top; font:14px malgun, sans-serif; cursor:pointer}
+
+.btn_w_s	span	 {font:14px malgun, sans-serif;}
+.btn_w_s	a	{height:25px; padding:5px 20px 0 20px; *height:26px; *padding:4px 20px 0 20px; font-weight:bold;}
+.btn_w_s a:hover,	.btn_w_s a:link,	.btn_w_s a:visited,	 .btn_w_s a:active	{font:14px malgun, sans-serif;}
+.btn_w_s	input	{font:14px malgun, sans-serif;}
+
+.btn_g_s	span	 {font:14px malgun, sans-serif;}
+.btn_g_s	a	{height:25px; padding:5px 20px 0 20px; *height:26px; *padding:4px 20px 0 20px; font-weight:bold;}
+.btn_g_s a:hover,	.btn_g_s a:link,	.btn_g_s a:visited,	 .btn_g_s a:active	{font:14px malgun, sans-serif;}
+.btn_g_s	input	{font:14px malgun, sans-serif;}
+
+.box_gray_lt .btn_g_s	span	 {font:13px malgun, sans-serif;}
+.box_gray_lt .btn_g_s	a	{height:23px; margin-left:-3px; padding:7px 14px 0 14px; *height:24px; *padding:6px 14px 0 14px; line-height:130% !important; *line-height:16px; font-weight:normal !important; font:13px malgun, sans-serif;}
+.box_gray_lt .btn_g_s a:hover,	.box_gray_lt .btn_g_s a:link,	.box_gray_lt .btn_g_s a:visited,	 .box_gray_lt .btn_g_s a:active	{font:13px malgun, sans-serif;}
+.box_gray_lt .btn_g_s	{font:13px malgun, sans-serif;}
+
+.box_w_440	{width:440px;}
+.box_w_440	.box_gray_lb, .box_w_580	.box_gray_lb	{padding:21px 10px 21px 21px;}
+.box_w_440	.box_gray_lb_pd0	{padding:21px 1px;}
+
+
+.box_login	.box_gray_lb	{padding:21px 26px;}
+.box_gray_lb	.txt_m_info	{margin-top:-3px; margin-bottom:-4px;}
+
+.input_info	{width:409px;}
+.input_info	dt		{float:left; width:85px; color:#666; font:13px Malgun; vertical-align:top; line-height:15px;}
+.input_info	dd	{float:left; padding-bottom:5px;}
+.input_info	dd.end	{padding-bottom:0;}
+
+
+/*input_info dd 에 넓이 정의 */
+.pop_w_500	.input_info	dd	{width:324px;}
+
+/* input 정렬 */
+.input_center	{margin:0 auto;}
+
+/* 상품내역 스크롤 height */
+.product-statement .tb_scroll_1	{height:371px;}
+
+/* 우편번호 찾기 */
+.zipcode_view	.input_info	dt	 {padding-top:3px; line-height:16px;}
+.zipcode_view	.tb_scroll_1	{height:172px}
+.zipcode_view	td.t_left_addr	{padding-left:34px; padding-right:5px; text-align:left;}
+.zipcode_view	.tb_h_common	tbody	td.t_center,	.zipcode_view	.tb_h_common	tbody	td.t_left_addr	 {letter-spacing:0;}

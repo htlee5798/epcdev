@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agentConfig>
+	<ssoProvider code="EPCDEV"
+		fail="https://msssodev.lottemart.com/nsso-authweb/failure.do"
+		ip="127.0.0.1" timeout="5000"
+		url="https://msssodev.lottemart.com/nsso-authweb/agentservice/unity/negotiate.do"
+		validateSecureChannel="false">
+		<X509Certificate>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgB04cmOkGf5CYxYFh9b38Vyc9asUes15xmRSE8CTqmlBtuqKi4GG+cmPqdn/dZK28xaUXJSq+gKWI92EVGKn3w78fM+c7SaiPmjpFnZm4Zfdf65zYfIwHCnMLVh9KPI294xQRSPz8xGAPsIxxo2KAGzi8myxDSVLpIwVFlbEHfxhebKYxrxOjelMa1P9DIKF7Wv8XvorWVhjZSJ4YMaLxPHQL8onjxJ5/6/7EFFI9BDNfAjxviP3v2e0IwrRKlPYI7A9b4ZL7XUp+kZJY5lH0X0Y7EabVBnO0Uve/JnCs5v5V/joMP2A34gDKuywRaqFci7JYyEZ3rV3FDE6vpxmrwIDAQAB</X509Certificate>
+	</ssoProvider>
+</agentConfig>

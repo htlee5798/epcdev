@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PDCPFND0001">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectAcceptList" resultClass="dataMap">
+	/* PDCPFND0001.selectAcceptList 배송상태조회 */
+	SELECT *
+	FROM (
+		SELECT 
+			  CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+			, COUNT(*) OVER() TOTAL_COUNT
+			, M.*
+			, (SELECT X.HODECO_NM FROM THO_HODECO_MST X WHERE X.HODECO_CD = M.HODECO_CD)  HODECO_NM
+			, (SELECT X.CD_NM FROM TET_CODE X WHERE X.MAJOR_CD = 'HO03' AND X.MINOR_CD = M.DELI_TYPE_CD)  DELI_TYPE_CD_NM
+			, (SELECT X.CD_NM FROM TET_CODE X WHERE X.MAJOR_CD = 'HO04' AND X.MINOR_CD = M.DELI_PRGS_STEP_CD)  DELI_PRGS_STEP_CD_NM
+			, (SELECT X.CD_NM FROM TET_CODE X WHERE X.MAJOR_CD = 'HO05' AND X.MINOR_CD = M.DELI_PRGS_STEP_STS_CD)  DELI_PRGS_STEP_STS_CD_NM
+			, (SELECT X.STR_NM FROM STORE X WHERE X.STR_CD = M.DELI_STR_CD)  DELI_STR_CD_NM
+			, (SELECT X.STR_NM FROM STORE X WHERE X.STR_CD = M.SALE_STR_CD)  SALE_STR_CD_NM
+		FROM (
+			SELECT    A.INVOICE_NO
+					, A.HODECO_INVOICE_NO
+					, A.HODECO_CD
+					, A.ACCEPT_NO
+					, A.ACCEPT_DIVN_CD
+					, TO_CHAR(TO_DATE(A.ACCEPT_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')  ACCEPT_DATE
+					, A.DELI_STR_CD
+					, A.SALE_STR_CD
+					, A.DELI_TYPE_CD
+					, A.DELI_PRGS_STEP_CD
+					, A.DELI_PRGS_STEP_STS_CD
+					, A.PKN_STS_CD
+					, B.SEND_PSN_NM
+					, B.SEND_PSN_CELL_NO
+					, B.RECV_PSN_NM
+					, B.RECV_PSN_CELL_NO
+					, B.RECV_PSN_TEL_NO
+					, B.RECV_PSN_ZIP_ADDR
+					, CASE WHEN A.INVOICE_PRT_YN = 'Y' THEN '출력' ELSE '미출력' END INVOICE_PRT_YN
+					, (	SELECT COUNT(1)
+						FROM THO_LOVECALL_RSLT X
+						WHERE X.INVOICE_NO = A.INVOICE_NO
+						AND X.DELI_RSLT_CD IN ('10','20','30','40')
+					)	LOVECALL_CHK
+					, (CASE WHEN A.DELI_TYPE_CD = '20' AND A.DELI_STR_CD NOT IN ('000','01','02','03','04','05','06') THEN 'Y' ELSE 'N' END ) AS GUN_YN
+					, NVL(A.DELI_COMP_CD, '08') AS DELI_COMP_CD
+			FROM      THO_INVOICE_ACCEPT A
+				    , THO_INVOICE_CUST B
+			WHERE A.INVOICE_NO = B.INVOICE_NO
+			<!-- 접수번호 -->
+			<isNotEmpty property="no">
+			AND A.ACCEPT_NO = #no#
+			</isNotEmpty>
+			<!-- 휴대전화번호 -->
+			<isNotEmpty property="no2">
+			AND B.SEND_PSN_CELL_NO  = (CASE WHEN LENGTH(#no2#) = 11 THEN SUBSTR(#no2#, 1, 3) || ' ' || SUBSTR(#no2#, 4, 11)
+											WHEN LENGTH(#no2#) = 10 THEN SUBSTR(#no2#, 1, 3) || ' ' || SUBSTR(#no2#, 4, 3)||' '||SUBSTR(#no2#, 7, 4) 
+											ELSE ' ' END)
+			</isNotEmpty>
+			<!-- 운송장번호 -->
+			<isNotEmpty property="sc_hodeco_invoice_no">
+			AND A.HODECO_INVOICE_NO	= #sc_hodeco_invoice_no#
+			</isNotEmpty>
+			<!-- 
+			접수번호 & 보내는분
+			<isEmpty property="sc_hodeco_invoice_no">
+			AND A.ACCEPT_NO = #no#
+			AND B.SEND_PSN_CELL_NO = (CASE WHEN LENGTH(#no2#) = 11 THEN SUBSTR(#no2#, 1, 3) || ' ' || SUBSTR(#no2#, 4, 11)
+                                           WHEN LENGTH(#no2#) = 10 THEN SUBSTR(#no2#, 1, 3) || ' ' || SUBSTR(#no2#, 4, 3)||' '||SUBSTR(#no2#, 7, 4) 
+                                           ELSE ' ' END)
+			</isEmpty>
+			운송장번호
+			<isNotEmpty property="sc_hodeco_invoice_no">
+			AND		A.HODECO_INVOICE_NO	= #sc_hodeco_invoice_no#
+			</isNotEmpty> -->
+			AND A.DELI_PRGS_STEP_STS_CD NOT IN ('11', '15')
+			ORDER BY A.INVOICE_NO DESC
+		)	M
+	)
+	WHERE PAGE = #currentPage#
+	</select>
+
+	<select id="selectStoreDetailInfo" resultClass="dataMap">
+	/* PDCPFND0001.selectStoreDetailInfo - 점포마스터 상세 조회 */
+	SELECT ST.STR_CD  /* 점포코드 */
+		 , ST.STR_NM  /* 점포명 */
+         , REPLACE(SUBSTR(SM.PICK_ENTP_TEL_NO, 1, 4), ' ', '') AS PICK_ENTP_TEL_NO1	
+         , REPLACE(SUBSTR(SM.PICK_ENTP_TEL_NO, 5, 4), ' ', '') AS PICK_ENTP_TEL_NO2
+         , SUBSTR(SM.PICK_ENTP_TEL_NO, 9, 4) AS PICK_ENTP_TEL_NO3  /* 전화번호 */
+         , SM.PICK_ENTP_UTAKMN_NM  /* 담당자명 */
+         , REPLACE(SUBSTR(SM.PICK_ENTP_UTAKMN_TEL, 1, 4), ' ', '') AS PICK_ENTP_UTAKMN_TEL1
+         , REPLACE(SUBSTR(SM.PICK_ENTP_UTAKMN_TEL, 5, 4), ' ', '') AS PICK_ENTP_UTAKMN_TEL2
+         , SUBSTR(SM.PICK_ENTP_UTAKMN_TEL, 9, 4) AS PICK_ENTP_UTAKMN_TEL3  /* 담당자 전화번호 */
+	  FROM THO_STR_MST SM
+	     , STORE ST
+	     , TAD_ADMIN TA
+	 WHERE SM.STR_CD = ST.STR_CD
+	   AND SM.REG_ID = TA.ADMIN_ID
+	   AND ST.STR_CD = #strCd#
+	</select>
+</sqlMap>

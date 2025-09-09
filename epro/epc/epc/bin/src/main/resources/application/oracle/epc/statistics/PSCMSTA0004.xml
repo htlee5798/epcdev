@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0004">
+	<typeAlias alias="pscmsta0004SearchVO" type="com.lottemart.epc.statistics.model.PSCMSTA0004SearchVO"/>
+	
+	
+	<select id="selectAsianaMileageSum" resultClass="dataMap">
+	/* PSCMSTA0004.selectAsianaMileageSum */ 
+	    SELECT  
+	        COUNT(*) AS CNT
+	        , NVL(SUM(A.SAVU_MILE),0) AS SAVU_MILE
+	        , NVL(SUM(A.SETL_AMT),0) AS SETL_AMT 
+	        , NVL(SUM(A.SAVU_MILE*18),0) AS CHARGE  
+	    FROM TADJ_ASN_MILG_INF A
+	    WHERE A.REG_DATE BETWEEN TO_DATE(#startDate#||'000000', 'YYYYMMDDHH24MISS') 
+	                     AND TO_DATE(#endDate#||'235959', 'YYYYMMDDHH24MISS')
+		<isEqual property="procGbn" compareValue="c">AND A.ERROR_DIVN_CD = '0000' </isEqual>
+		<isEqual property="procGbn" compareValue="e">AND A.ERROR_DIVN_CD != '0000' </isEqual>
+	</select>	
+	
+	<select id="selectAsianaMileageList" resultClass="dataMap">
+		/* PSCMSTA0004.selectAsianaMileageList */ 
+		SELECT 
+ 			* 
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+				SELECT 	ROW_NUMBER()OVER(ORDER BY ORD_DY DESC,A.ALGN_MEMBER_NO, A.RECKON_CD)RANK_NUM,
+                        A.ORD_DY, A.ALGN_MEMBER_NO, 
+						(SELECT CD_NM FROM TET_CODE SUB WHERE MAJOR_CD = 'SM097' AND SUB.MINOR_CD = A.RECKON_CD) ADJ_NAME,  
+						A.SAVU_MILE, A.SETL_AMT, (SAVU_MILE*18) CHARGE, 
+						A.ERROR_DIVN_CD, 
+						(SELECT CD_NM FROM TET_CODE SUB WHERE MAJOR_CD = 'SM098' AND SUB.MINOR_CD = A.ERROR_DIVN_CD) ERROR_DIVN_NM,  
+						TO_CHAR(A.MOD_DATE,'YYYY-MM-DD')UPD_DATE 
+				FROM TADJ_ASN_MILG_INF A
+				WHERE A.REG_DATE BETWEEN TO_DATE(#startDate#||'000000', 'YYYYMMDDHH24MISS') 
+				AND TO_DATE(#endDate#||'235959', 'YYYYMMDDHH24MISS')
+				<isEqual property="procGbn" compareValue="c">AND A.ERROR_DIVN_CD = '0000' </isEqual>
+				<isEqual property="procGbn" compareValue="e">AND A.ERROR_DIVN_CD != '0000' </isEqual>
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+	</select>
+	
+	
+	<select id="selectAsianaMileageListExcel" resultClass="dataMap">
+		/* PSCMSTA0004.selectAsianaMileageListExcel */ 
+		SELECT 	ROW_NUMBER()OVER(ORDER BY ORD_DY DESC,A.ALGN_MEMBER_NO, A.RECKON_CD)RANK_NUM,
+                      A.ORD_DY, A.ALGN_MEMBER_NO, 
+				(SELECT CD_NM FROM TET_CODE SUB WHERE MAJOR_CD = 'SM097' AND SUB.MINOR_CD = A.RECKON_CD) ADJ_NAME,  
+				A.SAVU_MILE, A.SETL_AMT, (SAVU_MILE*18) CHARGE, 
+				A.ERROR_DIVN_CD, 
+				(SELECT CD_NM FROM TET_CODE SUB WHERE MAJOR_CD = 'SM098' AND SUB.MINOR_CD = A.ERROR_DIVN_CD) ERROR_DIVN_NM,  
+				TO_CHAR(A.MOD_DATE,'YYYY-MM-DD')UPD_DATE 
+		FROM TADJ_ASN_MILG_INF A
+		WHERE A.REG_DATE BETWEEN TO_DATE(#startDate#||'000000', 'YYYYMMDDHH24MISS') 
+		AND TO_DATE(#endDate#||'235959', 'YYYYMMDDHH24MISS')
+		<isEqual property="procGbn" compareValue="c">AND A.ERROR_DIVN_CD = '0000' </isEqual>
+		<isEqual property="procGbn" compareValue="e">AND A.ERROR_DIVN_CD != '0000' </isEqual>
+	</select>	
+</sqlMap>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0060">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectStoreList" parameterClass="java.util.HashMap" resultClass="dataMap">
+		<![CDATA[
+		SELECT   STR_CD, STR_NM
+		FROM     TST_STORE
+		WHERE    1=1   
+		AND      STR_CD <> '999'
+		]]>
+		<isEmpty property="searchType">
+		<![CDATA[
+		AND STR_CD <> '981'
+		]]>
+		</isEmpty>
+		<isNotEmpty property="regnCd" prepend="AND">
+			REGN_CD = #regnCd#
+		</isNotEmpty>
+		ORDER BY STR_CD ASC  
+	</select>
+	
+</sqlMap>

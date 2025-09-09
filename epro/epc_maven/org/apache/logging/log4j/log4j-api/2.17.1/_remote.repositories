@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:52 KST 2025
+log4j-api-2.17.1-sources.jar>neonexus=
+log4j-api-2.17.1.jar>neonexus=
+log4j-api-2.17.1.pom>neonexus=

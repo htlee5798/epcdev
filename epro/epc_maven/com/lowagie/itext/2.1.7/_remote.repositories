@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:15 KST 2025
+itext-2.1.7.jar>neonexus=
+itext-2.1.7-sources.jar>neonexus=
+itext-2.1.7.pom>neonexus=

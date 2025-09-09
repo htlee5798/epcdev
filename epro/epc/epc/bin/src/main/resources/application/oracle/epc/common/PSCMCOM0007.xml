@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMCOM0007">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmcom0007VO" type="com.lottemart.epc.common.model.PSCMCOM0007VO" />
+	
+	<select id="selectOrderIdList" parameterClass="pscmcom0007VO" resultClass="dataMap">
+		/*	PSCMCOM0007.selectOrderIdList	*/
+		SELECT O.UP_ORDER_ID
+		    , O.ORDER_ID
+		    , (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = OI.ORDER_ID AND DELIVERY_ID = '000') AS CUST_NM
+		    , DM.RECP_PSN_NM
+		    , DM.VEN_CD
+		    , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE014' AND MINOR_CD = NVL(DM.VEN_DELI_STATUS_CD,'01')) VEN_DELI_STATUS_NM
+		    , V.ROWSPAN
+		    , OI.PROD_NM
+		    , OI.ORD_QTY
+		    , O.ORD_DY
+		FROM TOR_ORDER O, TOR_ORDER_ITEM OI, TDE_DELI_MST DM
+		    , (
+		        SELECT OI.ORDER_ID, COUNT(OI.ORDER_ID) AS ROWSPAN
+		        FROM TOR_ORDER O, TOR_ORDER_ITEM OI, TDE_DELI_MST DM
+		        WHERE O.ORDER_ID = OI.ORDER_ID 
+		        AND OI.ORDER_ID = DM.ORDER_ID
+		        AND OI.DELIVERY_ID = DM.DELIVERY_ID
+		        AND DM.DELIVERY_ID != '000'
+		        AND DM.DELI_METHOD_DIVN_CD = '20'
+		        AND DM.INVOICE_STATUS_CD = '10'
+		        AND DM.DELI_TYPE_CD IN ( '04', '06')
+		        AND O.ORD_DY BETWEEN #fromDate# AND #toDate#
+		        AND DM.VEN_CD = #vendorId#
+		        GROUP BY OI.ORDER_ID
+		    ) V
+		WHERE O.ORDER_ID = OI.ORDER_ID 
+		AND OI.ORDER_ID = DM.ORDER_ID
+		AND OI.ORDER_ID = V.ORDER_ID
+		AND OI.DELIVERY_ID = DM.DELIVERY_ID
+		AND DM.DELIVERY_ID != '000'
+		AND DM.DELI_METHOD_DIVN_CD = '20'
+		AND DM.INVOICE_STATUS_CD = '10'
+		AND DM.DELI_TYPE_CD IN ( '04', '06')
+		AND O.ORD_DY BETWEEN #fromDate# AND #toDate#
+		AND DM.VEN_CD = #vendorId#
+		ORDER BY O.UP_ORDER_ID 
+
+	</select>  
+</sqlMap>

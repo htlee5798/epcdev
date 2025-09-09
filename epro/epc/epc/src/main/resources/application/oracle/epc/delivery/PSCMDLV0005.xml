@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMDLV0005">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmdlv0005VO" type="com.lottemart.epc.delivery.model.PSCMDLV0005VO"/>
+	
+	<select id="selectPartnerFirmsStatus_All"  parameterClass="pscmdlv0005VO"  resultClass="dataMap">
+
+		                  
+		                     /* PSCMDLV0005.selectPartnerFirmsStatus_All */
+			  SELECT /*+ LEADING(O DM) INDEX(O IX_OR_ORDER_01) */ 
+			  NVL ( SUM( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(NVL(O.VEN_DELI_STATUS_CD,'01'),'01',1,0) ELSE 0  END ),0) AD_01, 
+			  NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(O.VEN_DELI_STATUS_CD,'03',1,0) ELSE 0  END ),0) AD_02 
+			  FROM   (
+			          SELECT 
+			                 O.ORD_STS_CD,
+			                 DM.VEN_DELI_STATUS_CD
+			          FROM   (SELECT ORD_STS_CD, ORDER_ID 
+			                  FROM TOR_ORDER 
+			                  where DELI_TYPE_CD IN ('06','04','12') 
+			                    and ORD_DY >= CURRENT_TIMESTAMP(0) - 365 ) O,
+			                 (SELECT ORDER_ID, VEN_DELI_STATUS_CD, DELIVERY_ID
+			                  FROM TDE_DELI_MST 
+			                  where DELI_METHOD_DIVN_CD = '20' 
+			                  and ven_cd in (
+			                  
+			                  
+			                  select distinct vendor_id from tve_vendor where trd_typ_fg='6'
+			                   AND  (0,  vendor_id)
+			                  <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+			                    (0, #vendorId[]# )
+			                  </iterate>
+			                  )
+			                  ) DM 
+			  WHERE  O.ORDER_ID = DM.ORDER_ID
+			  AND EXISTS (
+			              SELECT 1 FROM TOR_ORDER_ITEM OI
+			                 WHERE OI.ORDER_ID = O.ORDER_ID  
+			                   AND OI.DELIVERY_ID = DM.DELIVERY_ID
+			                   AND OI.ORD_ITEM_DIVN_CD = '00'
+			                   AND OI.STR_VENDOR_ID NOT IN ('006203', '005623')
+			            )
+			         ) O
+
+	</select>
+
+	<select id="selectPartnerFirmsStatus_short"  parameterClass="pscmdlv0005VO"  resultClass="dataMap">
+		/* PSCMDLV0005.selectPartnerFirmsStatus_short */ 
+		SELECT 
+				NVL ( SUM( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(NVL(O.VEN_DELI_STATUS_CD,'01'),'01',1,0)
+														 ELSE 0
+						   END ),0)VD_01,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(O.VEN_DELI_STATUS_CD,'02',1,0)
+														 ELSE 0
+						   END ),0)VD_02,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(O.VEN_DELI_STATUS_CD,'03',1,0)
+														 ELSE 0
+						   END ),0)VD_03,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(O.VEN_DELI_STATUS_CD,'04',1,0)
+														 ELSE 0
+						   END ),0)VD_04,
+				NVL( SUM ( CASE WHEN O.DELI_STATUS_CD > '52' THEN 0
+															 ELSE DECODE(O.VEN_DELI_STATUS_CD,'05',1,0)
+						   END ),0)VD_05,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD IN ('40','41','42','43') THEN DECODE(O.DELI_STATUS_CD,'66',1,0)
+																		   ELSE 0
+						   END ),0)VD_06,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD IN ('40','41','42','43') THEN DECODE(O.DELI_STATUS_CD,'64',1,0)
+																		   ELSE 0
+						   END ),0)VD_07,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD IN ('50','51','52','53') THEN DECODE(O.DELI_STATUS_CD,'77',1,0)
+																		   ELSE 0
+						   END ),0)VD_08,
+				NVL( SUM ( CASE WHEN O.DELI_STATUS_CD > '46' THEN 0				
+															 ELSE DECODE(O.VEN_DELI_STATUS_CD,'09',1,0)
+						   END ),0)VD_09,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(O.VEN_DELI_STATUS_CD,'07',1,0)
+														 ELSE 0
+						   END ),0)VD_10
+		  FROM (
+				SELECT /*+ INDEX(DM IX_DE_DELI_MST_11) */ 
+					   O.ORD_STS_CD,					   
+					   DM.VEN_DELI_STATUS_CD,
+					   DM.DELI_STATUS_CD,
+					   DM.DELI_NO
+				  FROM TOR_ORDER O,
+					   TDE_DELI_MST DM
+				 WHERE O.ORDER_ID = DM.ORDER_ID
+				   AND DM.DELI_METHOD_DIVN_CD = '20'
+				   --AND DM.INVOICE_STATUS_CD = '10'
+				   AND O.DELI_TYPE_CD IN ('04','12')			 
+				   AND O.ORD_DY BETWEEN #fromDate#  AND #toDate#
+				   AND DM.DELI_HOPE_DY &gt;= #fromDate#  
+				   AND (0,  DM.VEN_CD)
+				<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+					(0, #vendorId[]# )
+				</iterate>
+				   AND EXISTS (SELECT 1 FROM TOR_ORDER_ITEM OI 
+								WHERE OI.ORDER_ID = O.ORDER_ID 
+								  AND OI.DELIVERY_ID = DM.DELIVERY_ID
+								  AND OI.ORD_ITEM_DIVN_CD = '00'	   
+								  AND OI.STR_VENDOR_ID NOT IN ('006203', '005623')
+						  )
+		   GROUP BY DM.DELI_NO , O.ORD_STS_CD, DM.VEN_DELI_STATUS_CD,DM.DELI_STATUS_CD 
+			   ) O
+			
+	</select>
+
+
+	<select id="selectPartnerFirmsStatus_holy"  parameterClass="pscmdlv0005VO"  resultClass="dataMap">
+		/* PSCMDLV0005.selectPartnerFirmsStatus_holy */ 
+			SELECT /*+ INDEX(DM IX_DE_DELI_MST_11) */
+				NVL ( SUM( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(NVL(MAX(DM.VEN_DELI_STATUS_CD),'01'),'01',1,0)
+														 ELSE 0
+						   END ),0)VD_01,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(MAX(DM.VEN_DELI_STATUS_CD),'02',1,0)
+														 ELSE 0
+						   END ),0)VD_02,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(MAX(DM.VEN_DELI_STATUS_CD),'03',1,0)
+														 ELSE 0
+						   END ),0)VD_03,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(MAX(DM.VEN_DELI_STATUS_CD),'04',1,0)
+														 ELSE 0
+						   END ),0)VD_04,
+				NVL( SUM ( CASE WHEN MAX(DM.DELI_STATUS_CD) > '52' THEN 0
+																   ELSE DECODE(MAX(DM.VEN_DELI_STATUS_CD),'05',1,0)
+						   END ),0)VD_05,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD IN ('40','41','42','43') THEN DECODE(MAX(DM.DELI_STATUS_CD),'66',1,0)
+																		   ELSE 0
+						   END ),0)VD_06,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD IN ('40','41','42','43') THEN DECODE(MAX(DM.DELI_STATUS_CD),'64',1,0)
+														 ELSE 0
+						   END ),0)VD_07,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD IN ('50','51','52','53') THEN DECODE(MAX(DM.DELI_STATUS_CD),'77',1,0)
+																		   ELSE 0
+						   END ),0)VD_08,
+				NVL( SUM ( CASE WHEN MAX(DM.DELI_STATUS_CD) > '46' THEN 0
+																   ELSE DECODE(MAX(DM.VEN_DELI_STATUS_CD),'09',1,0)
+						   END ),0)VD_09,
+				NVL( SUM ( CASE WHEN O.ORD_STS_CD = '11' THEN DECODE(MAX(DM.VEN_DELI_STATUS_CD),'07',1,0)
+														 ELSE 0
+						   END ),0)VD_10
+			  FROM TOR_ORDER O			  	
+				 , TDE_DELI_MST DM
+			 WHERE O.ORDER_ID = DM.ORDER_ID			   
+			   AND DM.DELI_METHOD_DIVN_CD = '20'
+			   --AND DM.INVOICE_STATUS_CD = '10'
+			   AND O.ORD_RTN_DIVN_CD = '11'
+			   AND O.DELI_TYPE_CD = '06'
+			   AND DM.PRST_MALL_DELI_TYPE_CD = '03'
+<!-- 			   AND DM.DELI_DIVN_CD = '10'	-->
+<!-- 			   AND DM.DELI_DIVN_DTL_CD = '11' -->
+			   AND O.ORD_DY BETWEEN #fromDate#  AND #toDate#
+			   AND DM.DELI_HOPE_DY &gt;= #fromDate# 
+			   AND (0, DM.VEN_CD)
+			  <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+				(0, #vendorId[]#) 
+			  </iterate>
+			   AND EXISTS (SELECT 1 FROM TOR_ORDER_ITEM OI 
+							WHERE OI.ORDER_ID = O.ORDER_ID 
+							  AND OI.DELIVERY_ID = DM.DELIVERY_ID 
+							  AND OI.ORD_ITEM_DIVN_CD NOT IN ('11', '25')	   
+							  AND OI.STR_VENDOR_ID NOT IN ('006203', '005623')  
+						  )
+		  GROUP BY DM.DELI_NO, O.ORD_STS_CD, DM.VEN_DELI_STATUS_CD, DM.DELI_STATUS_CD 
+	</select>
+	
+	<select id="selectTotalOrderCnt" resultClass="java.lang.Integer">
+	/* PSCMDLV0005.selectTotalOrderCnt */
+		SELECT /*+ LEADING(DM O) INDEX(O IX_OR_ORDER_13) USE_NL(O) */ 
+			   COUNT(1) CNT
+		  FROM TOR_ORDER O,
+			   TDE_DELI_MST DM
+		 WHERE O.ORDER_ID = DM.ORDER_ID
+		   AND DM.DELI_METHOD_DIVN_CD = '20'
+			--AND	DM.INVOICE_STATUS_CD = '10'
+		   AND O.DELI_TYPE_CD IN ('04','12','06') 
+		   AND (0, DM.VEN_CD)
+			<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+				(0, #vendorId[]#) 
+			</iterate>
+		   AND EXISTS ( SELECT /*+ NO_UNNEST INDEX(OI IX_OR_ORDER_ITEM_03) */
+							   1 
+						  FROM TOR_ORDER_ITEM OI 
+						 WHERE OI.ORDER_ID = O.ORDER_ID 
+						   AND OI.DELIVERY_ID = DM.DELIVERY_ID
+						   AND OI.ORD_ITEM_DIVN_CD = '00'	   
+						   AND OI.STR_VENDOR_ID NOT IN ('006203', '005623')
+					   )
+	</select>
+	
+</sqlMap>

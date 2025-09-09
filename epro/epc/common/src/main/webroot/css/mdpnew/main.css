@@ -1,0 +1,94 @@
+@charset "utf-8";
+@import "default.css";
+/* w: 720px , h: 1280px - 시간알림영역(50px) 포함 */
+body{}
+.wrap{position:relative;min-height:100%;overflow:hidden;background:#ddd;height:100%}
+
+header{width:100%;height:48px;position:relative;background:url(../../images/mdpnew/com/hd_bg.png) repeat-x 0 0;background-size:100% 100%;border-bottom:2px solid #07609e}
+header h1{font-family:MGB;font-size:12px;line-height:45px;height:48px;padding-left:15px}
+header h1 a{color:#fff;font-size:20px;text-shadow: -1px -1px #114e7b;letter-spacing:-1px}
+header h1 a:active{opacity:0.7}
+header .btn_box{position:absolute;right:8px;height:48px;font-size:0;top:0}
+header .btn_box > a{display:inline-block;width:36px;height:48px;text-indent:-9999px;overflow:hidden}
+header .btn_box > a:active{opacity:0.7}
+header .btn_box .notice{background:url(../../images/mdpnew/com/ico4.png) no-repeat 50% 50%;background-size:23px 23px;}
+header .btn_box .setting{background:url(../../images/mdpnew/com/ico5.png) no-repeat 50% 50%;background-size:23px 23px;}
+
+.bg{padding:0 15px 20px 15px;background:url(../../images/mdpnew/com/main_bg.png) no-repeat 0 0;background-size:100% 100%;border-bottom:2px solid #fff}
+
+/* 날씨 */
+.weather{text-align:right;height:48px;font-size:12px;font-family:MGB;color:#fff;line-height:44px;letter-spacing:-1px}
+.weather > span{display:inline-block}
+.weather > span:first-child{background:url(../../images/mdpnew/weather/part.png) no-repeat 100% 17px;background-size:1px 12px;margin-right:2px;padding-right:9px}
+.weather > span > img{vertical-align:middle}
+
+.contents{background:#fff;padding:10px;border:1px solid #989da1;border-radius:4px;box-shadow: 0 2px 0 #12659c  /* x , y , 흐림 */}
+.contents .lnb{}
+.contents .lnb ul{;overflow:hidden}
+.contents .lnb ul li{width:calc(((100% - 4px) / 2) - 4px);height:106px;float:left;border-radius:4px;background:#eee;text-align:center;color:#fff;font-family:MGB;font-size:17px}
+
+.contents .lnb ul li:nth-child(odd){float:left}
+.contents .lnb ul li:nth-child(even){float:right}
+.contents .lnb ul li a{display:block;color:#fff;border-radius:4px}
+/* .contents .lnb ul li:nth-child(1){background-color:#b5cb44} */
+.contents .lnb ul li:nth-child(2){background-color:#f9a51e}
+.contents .lnb ul li:nth-child(1){background-color:#f36c28}
+.contents .lnb ul li:nth-child(3){background-color:#17afe1}
+/* .contents .lnb ul li:nth-child(5){background-color:#5169af} */
+.contents .lnb ul li:nth-child(4){background-color:#fa639a}
+ /*.contents .lnb ul li:nth-child(3n+2){margin-left:9px} 2015-12-14 삭제 */
+.contents .lnb ul li:nth-child(1n+3){margin-top:9px} /* 2015-12-14 수정 */
+
+/* .contents .lnb ul li:nth-child(1) a{border:1px solid #98b122} */
+.contents .lnb ul li:nth-child(2) a{border:1px solid #d8880b}
+.contents .lnb ul li:nth-child(1) a{border:1px solid #d74e08}
+.contents .lnb ul li:nth-child(3) a{border:1px solid #038cba}
+/* .contents .lnb ul li:nth-child(5) a{border:1px solid #34519f} */
+.contents .lnb ul li:nth-child(4) a{border:1px solid #e03b77}
+
+.contents .lnb ul li > a > span{display:block;height:31px;padding-top:73px}
+/* .contents .lnb ul li:nth-child(1) a span{background:url(../../images/mdpnew/com/menu1.png) no-repeat 50% 10px;background-size:66px 66px} */
+.contents .lnb ul li:nth-child(2) a span{background:url(../../images/mdpnew/com/menu2.png) no-repeat 50% 10px;background-size:66px 66px}
+.contents .lnb ul li:nth-child(1) a span{background:url(../../images/mdpnew/com/menu3.png) no-repeat 50% 10px;background-size:66px 66px}
+.contents .lnb ul li:nth-child(3) a span{background:url(../../images/mdpnew/com/menu4.png) no-repeat 50% 10px;background-size:66px 66px}
+/* .contents .lnb ul li:nth-child(5) a span{background:url(../../images/mdpnew/com/menu5.png) no-repeat 50% 10px;background-size:66px 66px} */
+.contents .lnb ul li:nth-child(4) a span{background:url(../../images/mdpnew/com/menu6.png) no-repeat 50% 10px;background-size:66px 66px}
+
+/* .contents .lnb ul li:nth-child(1) a:active{border-color:#778c13;background:url(../../images/mdpnew/com/lnb_active_bg1.png) no-repeat 0 0;background-size:100% 100%} */
+.contents .lnb ul li:nth-child(2) a:active{border-color:#d36301;background:url(../../images/mdpnew/com/lnb_active_bg2.png) no-repeat 0 0;background-size:100% 100%}
+.contents .lnb ul li:nth-child(1) a:active{border-color:#b93d01;background:url(../../images/mdpnew/com/lnb_active_bg3.png) no-repeat 0 0;background-size:100% 100%}
+.contents .lnb ul li:nth-child(3) a:active{border-color:#0975c0;background:url(../../images/mdpnew/com/lnb_active_bg4.png) no-repeat 0 0;background-size:100% 100%}
+/* .contents .lnb ul li:nth-child(5) a:active{border-color:#322b79;background:url(../../images/mdpnew/com/lnb_active_bg5.png) no-repeat 0 0;background-size:100% 100%} */
+.contents .lnb ul li:nth-child(4) a:active{border-color:#c52062;background:url(../../images/mdpnew/com/lnb_active_bg6.png) no-repeat 0 0;background-size:100% 100%}
+
+.status{height: calc(100% - 363px);background:#ddd}
+.status .inner{padding:20px 15px;background:#ddd}
+.status .inner dl{border:1px solid #a1a1a1;border-radius:4px;background:#fff;box-shadow: 0 3px 0 #bdbdbd  /* x , y , 흐림 */}
+.status .inner dl dt{height:52px;line-height:50px;border-bottom:1px solid #cbcbcb;font-size:17px;font-family:MGB;color:#333;padding-left:46px;
+background:#f5f5f5 url(../../images/mdpnew/com/ico6.png) no-repeat 20px 50%;background-size:20px auto;border-top-right-radius:4px;border-top-left-radius:4px}
+.status .inner dl dd{position:relative;border-bottom:1px solid #ccc;margin:0 20px;height:48px;line-height:46px;font-size:16px;font-family:MGB;color:#555}
+.status .inner dl dd:last-child{border-bottom:0}
+.status .inner dl dd span{display:block;position:absolute;top:0px;right:0}
+.status .inner dl dd strong{color:#da291c}
+
+@media all and (max-device-height: 480px) {
+	.bg{padding:0 15px 15px 15px}
+	.weather{height:34px;line-height:30px}
+	.weather > span:first-child{background:url(../../images/mdpnew/weather/part.png) no-repeat 100% 10px;background-size:1px 12px}
+	.contents{padding:10px}
+	.contents .lnb ul li{height:80px}
+	.contents .lnb ul li > a > span{height:28px;padding-top:50px}
+	/* .contents .lnb ul li:nth-child(1) a span{background:url(../../images/mdpnew/com/menu1.png) no-repeat 50% 5px;background-size:50px 50px} */
+	.contents .lnb ul li:nth-child(2) a span{background:url(../../images/mdpnew/com/menu2.png) no-repeat 50% 5px;background-size:50px 50px}
+	.contents .lnb ul li:nth-child(1) a span{background:url(../../images/mdpnew/com/menu3.png) no-repeat 50% 5px;background-size:50px 50px}
+	.contents .lnb ul li:nth-child(3) a span{background:url(../../images/mdpnew/com/menu4.png) no-repeat 50% 5px;background-size:50px 50px}
+	/* .contents .lnb ul li:nth-child(5) a span{background:url(../../images/mdpnew/com/menu5.png) no-repeat 50% 5px;background-size:50px 50px} */
+	.contents .lnb ul li:nth-child(4) a span{background:url(../../images/mdpnew/com/menu6.png) no-repeat 50% 5px;background-size:50px 50px}
+	.status{height: calc(100% - 292px)}
+	
+} 
+@media all and (max-device-width: 320px) {
+	.status .inner{padding:15px}
+	.status .inner dl dt{height:34px;line-height:32px}
+	.status .inner dl dd{height:32px;line-height:30px}
+}

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0025">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+   
+   	<!-- 키워드 조회 -->
+	<select id="selectKeywordSearch" resultClass="dataMap" >
+		/* pcpprd0025.selectKeywordList */
+	<![CDATA[ 
+		SELECT * 
+		  FROM (SELECT          
+                   B.PROD_CD             /* 인터넷상품코드 */
+                 , B.MD_PROD_CD          /* 상품코드 */
+                 , B.MD_SRCMK_CD         /* 판매코드 */
+                 , (select CAT_NM from TCA_MD_CATEGORY where CAT_CD = mc.LGRP_CD) as L1_NM	/* 대분류   */
+                 , (select CAT_NM from TCA_MD_CATEGORY where CAT_CD = mc.MGRP_CD) as L2_NM	/* 중분류   */
+                 , B.PROD_NM             /* 상품명   */
+                 , NVL(A.SEARCH_KYWRD, '미등록') AS SEARCH_KYWRD    /* 키워드   */
+                 , (SELECT COUNT(*) FROM TPR_PRODUCT_KEYWORD
+                     WHERE PROD_CD = B.PROD_CD
+                       AND SEQ <> '000') SEQ_CNT
+              FROM TPR_PRODUCT B
+                 LEFT OUTER JOIN TPR_PRODUCT_KEYWORD A ON B.PROD_CD  =  A.PROD_CD
+                 , TCA_MD_CATEGORY MC
+             WHERE 
+               AND B.CAT_CD = MC.CAT_CD
+               AND B.APRV_YN   = 'Y'
+               AND A.SEQ(+) = '000'
+               AND B.PROD_CD = #prodCd#  /* 인터넷상품코드*/
+               AND B.APRV_YN   = 'Y'
+              )
+          ]]>
+    </select>
+    
+    <!-- 키워드 수정(일반 키워드 반영) -->
+	<update id="keywordUpdate">
+	/* pcpprd0025.keywordUpdate */
+	MERGE 
+	 INTO TPR_PRODUCT_KEYWORD 
+    USING  DUAL ON ( 
+               PROD_CD 						= #prodCd#
+              AND  SEARCH_KYWRD 	= #keyword#
+          )
+     WHEN MATCHED THEN
+          UPDATE   
+              SET  MOD_ID   					= #modId#
+               , MOD_DATE 				        = CURRENT_TIMESTAMP(0)
+               
+	  WHEN NOT MATCHED THEN
+		INSERT  (
+			  PROD_CD
+			, SEQ
+			, SEARCH_KYWRD
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		) VALUES (
+			  #prodCd#
+			, (SELECT LPAD(NVL(MAX(SEQ)+1, 1), 3, 0) 
+			     FROM TPR_PRODUCT_KEYWORD
+			    WHERE PROD_CD = #prodCd#)  
+			, TRIM(#keyword#)
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+		) 
+	</update>	
+
+ <!-- 키워드 수정(구분자 키워드 반영) -->
+<update id="masterKeywordUpdate">
+	/* pcpprd0025.masterKeywordUpdate */
+    <![CDATA[ 
+	MERGE 
+	 INTO TPR_PRODUCT_KEYWORD BBB
+    USING(     
+				SELECT PROD_CD
+				            , LISTAGG(SEARCH_KYWRD, ';') WITHIN GROUP (ORDER BY SEARCH_KYWRD) SEARCH_KYWRD
+				FROM TPR_PRODUCT_KEYWORD
+				WHERE PROD_CD     =  #prodCd# 
+				AND SEQ <> 000
+				GROUP BY PROD_CD
+    ) AAA
+     ON ( 
+            BBB.PROD_CD 	= #prodCd#
+              AND   BBB.SEQ 	= '000'              
+          )
+     WHEN MATCHED THEN
+          UPDATE  SET
+                 BBB.SEARCH_KYWRD = AAA.SEARCH_KYWRD
+               , BBB.MOD_ID   				= #modId#
+               , BBB.MOD_DATE 			= CURRENT_TIMESTAMP(0)
+      WHEN NOT MATCHED THEN
+		INSERT  (
+			  PROD_CD
+			, SEQ
+			, SEARCH_KYWRD
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		) VALUES (
+			  #prodCd#
+			,'000'  
+			, AAA.SEARCH_KYWRD
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+		) 
+		 	]]>
+	</update>
+	
+	<!-- 반영된 키워드 정보 삭제 -->
+	<update id="keywordDelete">
+	<![CDATA[
+		/* pcpprd0025.keywordDelete */
+		DELETE FROM TPR_PRODUCT_KEYWORD 
+		 WHERE PROD_CD = #prodCd#
+	]]>
+	</update>
+
+	<!-- 20180911 상품키워드 입력 기능 추가 -->
+	<update id="keywordHistUpdate">
+	/* pscpprd0025.keywordHistUpdate */
+	MERGE INTO TPR_PRODUCT_KEYWORD_HIST 
+    USING  DUAL ON (
+    	KEYWORD_SEQ = #keywordSeq#
+		AND PROD_CD = #prodCd#
+		AND SEARCH_KYWRD = #keyword#
+	)
+	WHEN MATCHED THEN
+		UPDATE 
+		SET	MOD_ID = #modId#
+			  , MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHEN NOT MATCHED THEN
+		INSERT (
+        	  KEYWORD_SEQ
+      		, PROD_CD
+			, SEQ
+			, SEARCH_KYWRD
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		) VALUES (
+			  #keywordSeq#
+			, #prodCd#
+			, (SELECT LPAD(NVL(MAX(SEQ)+1, 1), 3, 0) 
+			     FROM TPR_PRODUCT_KEYWORD_HIST
+			    WHERE KEYWORD_SEQ = #keywordSeq# AND PROD_CD = #prodCd#)  
+			, TRIM(#keyword#)
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+		) 
+	</update>	
+
+	<update id="masterKeywordHistUpdate">
+	/* pcpprd0025.masterKeywordHistUpdate */
+    <![CDATA[ 
+	MERGE INTO TPR_PRODUCT_KEYWORD_HIST BBB
+    USING (     
+				SELECT	PROD_CD
+							, LISTAGG(SEARCH_KYWRD, ';') WITHIN GROUP (ORDER BY SEQ) SEARCH_KYWRD
+				FROM TPR_PRODUCT_KEYWORD_HIST
+				WHERE	KEYWORD_SEQ = #keywordSeq#
+						AND PROD_CD =  #prodCd# 
+						AND SEQ <> 000
+				GROUP BY PROD_CD
+    ) AAA ON ( 
+    	BBB.KEYWORD_SEQ = #keywordSeq#
+		AND BBB.PROD_CD = #prodCd#
+		AND BBB.SEQ = '000'              
+    )
+	WHEN MATCHED THEN
+		UPDATE 
+		SET	 BBB.SEARCH_KYWRD = AAA.SEARCH_KYWRD
+               , BBB.MOD_ID = #modId#
+               , BBB.MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHEN NOT MATCHED THEN
+		INSERT (
+        	  KEYWORD_SEQ
+      		, PROD_CD
+			, SEQ
+			, SEARCH_KYWRD
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		) VALUES (
+			  #keywordSeq#
+			, #prodCd#
+			, '000'  
+			, AAA.SEARCH_KYWRD
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+			, CURRENT_TIMESTAMP(0)
+			, #modId#
+		)
+	]]>
+	</update>
+	<!-- 20180911 상품키워드 입력 기능 추가 -->
+	
+</sqlMap>

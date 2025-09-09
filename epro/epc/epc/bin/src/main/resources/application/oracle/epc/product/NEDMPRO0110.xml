@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0110">
+	<typeAlias alias="nedmpro0110vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0110VO" />
+	
+	<resultMap id="wholeProductListMap" class="nedmpro0110vo">
+		<result column="REG_DT"				property="regDt" 		/>	<!-- MD... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"			property="srcmkCd" 		/>	<!-- MD... SQLINES DEMO *** -->
+		<result column="PROD_CD"			property="prodCd" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_NM"			property="prodNm" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="LOGI_BCD"			property="logiBcd" 		/>	<!-- 물류... SQLINES DEMO *** -->
+		<result column="USE_FG"				property="useFg" 		/>	<!-- 사용... SQLINES DEMO *** -->
+		<result column="WIDTH"				property="width" 		/>	<!-- 가로... SQLINES DEMO *** -->
+		<result column="LENGTH"				property="length" 		/>	<!-- 세로... SQLINES DEMO *** -->
+		<result column="HEIGHT"				property="height" 		/>	<!-- 높이... SQLINES DEMO *** -->
+		<result column="WG"					property="wg" 			/>	<!-- 중량... SQLINES DEMO *** -->
+		<result column="SORTER_FG"			property="sorterFg" 	/>	<!-- 소터... SQLINES DEMO *** -->
+		<result column="BAR_DESC"			property="barDesc" 		/>	<!--  -... SQLINES DEMO *** -->
+		<result column="MIX_PROD_FG"		property="mixProdFg" 	/>	<!-- 혼재... SQLINES DEMO *** -->
+		<result column="RNUM"				property="rnum" 		/>	<!--  -... SQLINES DEMO *** -->
+		<result column="ORD_IPSU"			property="ordIpsu" 		/>	<!-- 발주... SQLINES DEMO *** -->
+	</resultMap>
+	
+
+	<select id="selectWholeProductCount" resultClass="Integer" parameterClass="nedmpro0110vo">
+		/* SQLINES DEMO *** ectWholeProductCount */
+		SELECT  COUNT(*) AS CNT 
+			FROM
+			(	
+				SELECT 	TO_CHAR(A.REG_DT, 'YYYYMMDD') 						 	AS REG_DT
+					,	B.SRCMK_CD
+					,	A.PROD_CD
+					,	A.PROD_NM
+					,	C.LOGI_BCD
+					,	CASE C.LOGI_BCD  WHEN '' THEN  '' ELSE CASE C.USE_FG  WHEN '' THEN  '0' ELSE '1' END END							AS USE_FG
+					,	C.WIDTH
+					,	C.LENGTH
+					,	C.HEIGHT
+					,	C.WG
+					,	CASE C.LOGI_BCD  WHEN '' THEN  '' ELSE CASE C.SORTER_FG  WHEN '' THEN  '0' ELSE '1' END END						AS SORTER_FG
+					,	CASE  A.MIX_PROD_FG  WHEN '0' THEN  '단일'  WHEN '1' THEN  '혼재' ELSE '없음' END 			AS MIX_PROD_FG
+					,	B.ORD_IPSU 												AS ORD_IPSU
+					,	CASE    WHEN C.LOGI_BCD IS NULL THEN  	(
+														SELECT 	COALESCE(MAX('등록대상'), '대상아님')
+														FROM 	STR_PROD	AA
+															,	STORE		BB
+															,	PRODUCT		CC
+														WHERE 	AA.STR_CD 	= BB.STR_CD
+															AND AA.PROD_CD	= CC.PROD_CD
+															
+															AND A.PROD_CD	= CC.PROD_CD
+															AND BB.STR_CD='302'
+															
+															AND AA.PROD_STATUS 	= '01'
+															AND AA.VEN_CD 		= #srchEntpCode#
+															AND AA.TRD_TYP_FG NOT IN ('3', '4', '5')
+															AND ((AA.TRD_TYP_FG != '2' AND AA.TRD_TYP_FG != '4') OR TRIM(AA.NPUR_ORD_BUY_FG) IS NULL)											
+															AND BB.RMST_CRT_DY <![CDATA[<=]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')															
+															AND BB.STR_TYP_FG IN ('2','3')
+															LIMIT 1
+													) ELSE '정상등록' END  	AS BAR_DESC
+				FROM  PRODUCT A
+					, SALE_MST B
+					LEFT OUTER JOIN LOGI_BCD_SAP C
+						ON 	B.PROD_CD = C.PROD_CD AND B.SRCMK_CD = C.SRCMK_CD	
+				WHERE 
+					A.PROD_CD = B.PROD_CD
+				AND B.ORD_ABLE_FG = 'X'				/* 발주가능구분 */
+				AND B.EAN_TYPE = '1'				/* 1:판매코드, 2:물류바코드 */
+				AND A.VEN_CD = #srchEntpCode#		/* 협력업체코드 */
+			)T1	
+			WHERE 1=1
+			<isNotEmpty property="srchSellCode" prepend="AND">
+				T1.SRCMK_CD = #srchSellCode#
+			</isNotEmpty>
+			<isEqual property="srchLogiBcdFg" compareValue="10" prepend="AND">
+				T1.LOGI_BCD IS NOT NULL
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="20" prepend="AND">
+				T1.LOGI_BCD IS NULL
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="30" prepend="AND">
+				T1.LOGI_BCD IS NULL
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="20">
+				AND T1.BAR_DESC = '등록대상'
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="30">
+				AND T1.BAR_DESC = '대상아님'
+			</isEqual>
+	</select>
+	
+
+	<select id="selectWholeProductList" resultMap="wholeProductListMap" parameterClass="nedmpro0110vo">
+		/* SQLINES DEMO *** ectWholeProductList */
+		SELECT A.*
+		FROM
+		(
+			SELECT  ROW_NUMBER() OVER (ORDER BY T1.REG_DT DESC) 	 			AS RNUM
+				,	T1.REG_DT
+				,	T1.SRCMK_CD
+				,	T1.PROD_CD
+				,	T1.PROD_NM
+				,	T1.LOGI_BCD
+				,	T1.USE_FG
+				,	T1.WIDTH
+				,	T1.LENGTH
+				,	T1.HEIGHT
+				,	T1.WG
+				,	T1.SORTER_FG
+				,	T1.MIX_PROD_FG
+				,	T1.ORD_IPSU
+				,	T1.BAR_DESC
+			FROM
+			(	
+				SELECT 	TO_CHAR(A.REG_DT, 'YYYYMMDD') 						 	AS REG_DT
+					,	B.SRCMK_CD
+					,	A.PROD_CD
+					,	A.PROD_NM
+					,	C.LOGI_BCD
+					,	CASE C.LOGI_BCD  WHEN '' THEN  '' ELSE CASE C.USE_FG  WHEN '' THEN  '0' ELSE '1' END END							AS USE_FG
+					,	C.WIDTH
+					,	C.LENGTH
+					,	C.HEIGHT
+					,	C.WG
+					,	CASE C.LOGI_BCD  WHEN '' THEN  '' ELSE CASE C.SORTER_FG  WHEN '' THEN  '0' ELSE '1' END END						AS SORTER_FG
+					,	CASE A.MIX_PROD_FG  WHEN '0' THEN  '단일'  WHEN '1' THEN  '혼재' ELSE '없음' END 			AS MIX_PROD_FG
+					,	B.ORD_IPSU 												AS ORD_IPSU
+					,	CASE    WHEN C.LOGI_BCD IS NULL THEN  	(
+														SELECT 	COALESCE(MAX('등록대상'), '대상아님')
+														FROM 	STR_PROD	AA
+															,	STORE		BB
+															,	PRODUCT		CC
+														WHERE 	AA.STR_CD 	= BB.STR_CD
+															AND AA.PROD_CD	= CC.PROD_CD
+															AND AA.PROD_STATUS 	= '01'
+															
+															AND A.PROD_CD	= CC.PROD_CD
+															AND BB.STR_CD='302'
+																														
+															AND AA.VEN_CD 		= #srchEntpCode#
+															-- SQLINES DEMO *** KE '1%' OR AA.PROD_CD LIKE '5%')
+															AND AA.TRD_TYP_FG NOT IN ('3', '4', '5')
+															AND ((AA.TRD_TYP_FG != '2' AND AA.TRD_TYP_FG != '4') OR AA.NPUR_ORD_BUY_FG IS NULL)											
+															AND BB.RMST_CRT_DY <![CDATA[<=]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')															
+															AND BB.STR_TYP_FG IN ('2','3')
+															LIMIT 1
+													) ELSE '정상등록' END  	AS BAR_DESC
+				FROM  PRODUCT A 
+					, SALE_MST B
+					LEFT OUTER JOIN LOGI_BCD_SAP C ON B.PROD_CD = C.PROD_CD AND B.SRCMK_CD = C.SRCMK_CD
+				where
+					A.PROD_CD = B.PROD_CD
+				-- SQLINES DEMO *** .SRCMK_CD
+				AND B.ORD_ABLE_FG = 'X'				/* 발주가능구분 */
+				AND B.EAN_TYPE = '1'				/* 1:판매코드, 2:물류바코드 */
+				AND A.VEN_CD = #srchEntpCode#		/* 협력업체코드 */
+			)T1	
+			WHERE 1=1
+			<isNotEmpty property="srchSellCode" prepend="AND">
+				T1.SRCMK_CD = #srchSellCode#
+			</isNotEmpty>
+			<isEqual property="srchLogiBcdFg" compareValue="10" prepend="AND">
+				T1.LOGI_BCD IS NOT NULL
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="20" prepend="AND">
+				T1.LOGI_BCD IS NULL
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="30" prepend="AND">
+				T1.LOGI_BCD IS NULL
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="20">
+				AND T1.BAR_DESC = '등록대상'
+			</isEqual>
+			<isEqual property="srchLogiBcdFg" compareValue="30">
+				AND T1.BAR_DESC = '대상아님'
+			</isEqual>
+		)A		
+		<isEmpty property="downloadFlag">
+			<![CDATA[
+				WHERE CAST(#firstIndex# AS FLOAT) + 1 <= A.RNUM AND A.RNUM < CAST(#lastIndex# AS FLOAT) + 1
+			]]>
+		</isEmpty>		
+	</select>
+	
+</sqlMap>

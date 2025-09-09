@@ -1,0 +1,2201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmexh0100">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    <typeAlias alias="pscmexh010050VO" type="com.lottemart.epc.exhibition.model.PSCMEXH010050VO" />
+
+    <sql id="pre-page-frag">
+		SELECT *
+		  FROM (SELECT SELECT_BOS.*
+		             , CEIL( ROWNUM / #rowsPerPage# ) PAGEINDEX
+		             , COUNT(1) OVER() TOTAL_COUNT
+		          FROM (
+	</sql>
+	<sql id="post-page-frag">
+		                ) SELECT_BOS
+		       )
+		 WHERE PAGEINDEX = #currentPage#
+	</sql>
+
+
+
+	<resultMap id="code" class="com.lottemart.epc.common.model.OptionTagVO">
+	    <result property="code" column="CAT_CD"/>
+	    <result property="name" column="CAT_NM"/>
+	</resultMap>
+
+	<select id="selectExhibitionList" resultClass="dataMap">
+	<![CDATA[
+		/* pscmexh0100.selectExhibitionList  기획전 조회 */
+		SELECT ROWNUM  AS NUM, M.*
+		 FROM ( SELECT  MST.CATEGORY_ID
+						        , MST.MKDP_SEQ
+						        , MST.MKDP_NM
+						        , MST.APRV_STS_CD
+						        , (SELECT T.CD_NM
+						            FROM TET_CODE T
+						           WHERE T.MAJOR_CD = 'SM314' AND T.MINOR_CD = MST.APRV_STS_CD ) APRV_STS_NM /* 승인상태 */
+						        , MST.APRMN
+						        /* 전시상태 */
+						        , CASE WHEN MST.DISP_YN='Y' THEN '전시'
+						               WHEN MST.DISP_YN='N' THEN '전시안함'
+						               ELSE ''
+						           END AS DISP_NM
+						        , MST.DISP_YN
+						         /* 기획전 카테고리 */
+						        , (SELECT CATEGORY_NM
+						             FROM TCA_CATEGORY X
+						            WHERE X.CATEGORY_ID = MST.CATEGORY_ID
+						          ) AS CATEGORY_NM
+						        , MST.MKDP_START_DATE       /* 기획전시작일시  */
+								, MST.MKDP_END_DATE         /* 기획전종료일시  */
+								, TO_CHAR(TO_DATE(MST.MKDP_START_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') AS START_DATE       /* 기획전시작일시  */
+								, TO_CHAR(TO_DATE(MST.MKDP_END_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')   AS END_DATE         /* 기획전종료일시  */
+						        , TO_CHAR(MST.REG_DATE , 'YYYY-MM-DD') AS REG_DATE              /* 기획전종료일시  */
+						        , CASE WHEN MST.APRV_STS_CD!='00' THEN TO_CHAR(MST.REG_DATE , 'YYYY-MM-DD')
+						               ELSE ''
+						           END AS REQ_APRV_DATE
+						        , MST.SCM_YN
+						        , MST.VENDOR_ID
+						        , CASE  WHEN (SELECT T.CD_NM  FROM TET_CODE T  WHERE T.MAJOR_CD = 'SM314' AND T.MINOR_CD = MST.APRV_STS_CD )= '승인취소' THEN MST.RETN_REASON
+                      			ELSE '미반려' END AS RETN_REASON
+		    FROM TCA_MKDP_MST MST
+	  ORDER BY MST.CATEGORY_ID, MST.MKDP_SEQ) M
+		  WHERE 1 = 1
+		      ]]>
+				   <isNotEmpty property="mkdpNm">
+				   AND M.MKDP_NM LIKE #mkdpNm# || '%'           /* 기획전 명 */
+				   </isNotEmpty>
+				   <isNotEmpty property="mkdpSeq">
+				   AND M.MKDP_SEQ LIKE #mkdpSeq# || '%'      /* 기획전 번호 */
+				   </isNotEmpty>
+
+				   <isNotEmpty property="aprvStsCd">
+			        AND M.APRV_STS_CD = #aprvStsCd#       /* 승인상태 */
+				   </isNotEmpty>
+
+				   <isNotEmpty property="dispYn">
+				   AND M.DISP_YN = #dispYn#                   /* 전시유형 */
+				   </isNotEmpty>
+
+				   <isEqual property="mkdpGubn" compareValue="1">
+				   <isNotEmpty property="startDate">
+				   <![CDATA[AND REPLACE(M.REQ_APRV_DATE,'-','') >= #startDate# || '0000']]>           /* 승인 요청일 */
+				   </isNotEmpty>
+				   <isNotEmpty property="endDate">
+				   <![CDATA[AND REPLACE(M.REQ_APRV_DATE,'-','') <= #endDate#  || '2359']]>
+				   </isNotEmpty>
+				   </isEqual>
+
+				   <isEqual property="mkdpGubn" compareValue="2">
+				   <isNotEmpty property="startDate">
+				   <![CDATA[AND M.MKDP_START_DATE >= #startDate# || '0000' ]]>         /* 전시 시작일 */
+				   </isNotEmpty>
+				   <isNotEmpty property="endDate">
+				   <![CDATA[AND M.MKDP_START_DATE <= #endDate# || '2359' ]]>
+				   </isNotEmpty>
+				   </isEqual>
+
+				   <dynamic prepend="AND ">
+					   <iterate property="vendorId" open="M.VENDOR_ID IN (" close=")" conjunction=",">
+			       	     #vendorId[]#
+			       		</iterate>
+				   </dynamic>
+	</select>
+
+
+
+	<select id="selectExhibitionIntList" resultClass="dataMap">
+	<![CDATA[
+		/* pscmexh0100.selectExhibitionIntList  통합기획전 조회 */
+		SELECT ROWNUM  AS NUM, M.*
+		 FROM ( SELECT  MST.CATEGORY_ID
+						        , MST.MKDP_SEQ
+						        , MST.MKDP_NM
+						        , MST.APRV_STS_CD
+						        , (SELECT T.CD_NM
+						            FROM TET_CODE T
+						           WHERE T.MAJOR_CD = 'SM314' AND T.MINOR_CD = MST.APRV_STS_CD ) APRV_STS_NM /* 승인상태 */
+						        , MST.APRMN
+						        /* 전시상태 */
+						        , CASE WHEN MST.DISP_YN='Y' THEN '전시'
+						               WHEN MST.DISP_YN='N' THEN '전시안함'
+						               ELSE ''
+						           END AS DISP_NM
+						        , MST.DISP_YN
+						         /* 기획전 카테고리 */
+						        , (SELECT CATEGORY_NM
+						             FROM TCA_CATEGORY X
+						            WHERE X.CATEGORY_ID = MST.CATEGORY_ID
+						          ) AS CATEGORY_NM
+						        , MST.MKDP_START_DATE       /* 기획전시작일시  */
+								, MST.MKDP_END_DATE         /* 기획전종료일시  */
+								, TO_CHAR(TO_DATE(MST.MKDP_START_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') AS START_DATE       /* 기획전시작일시  */
+								, TO_CHAR(TO_DATE(MST.MKDP_END_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')   AS END_DATE         /* 기획전종료일시  */
+								, TO_CHAR(TO_DATE(MST.MKDP_START_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD hh24:mi') AS START_DATE_POP       /* 통합기획전 상품등록  */
+                				, TO_CHAR(TO_DATE(MST.MKDP_END_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD hh24:mi')   AS END_DATE_POP         /* 통합기획전 상품등록  */
+						        , TO_CHAR(MST.REG_DATE , 'YYYY-MM-DD') AS REG_DATE              /* 기획전종료일시  */
+						        , CASE WHEN MST.APRV_STS_CD!='00' THEN TO_CHAR(MST.REG_DATE , 'YYYY-MM-DD')
+						               ELSE ''
+						           END AS REQ_APRV_DATE
+						        , MST.SCM_YN
+						        , MST.VENDOR_ID
+						        , MST.RETN_REASON
+						        , STR.STR_CD
+						        ,(SELECT STR_NM FROM TST_STORE WHERE STR_CD = STR.STR_CD) AS STR_NM
+						        , MST.DISP_TYPE_CD
+						        , SUBSTR(MST.CATEGORY_ID, 1, 8) AS CATEGORY_PARENT_ID
+                      			, MST.CATEGORY_ID               AS CATEGORY_CHILD_ID
+		    FROM TCA_MKDP_MST MST
+   INNER JOIN TCA_MKDP_MST_STR STR
+        	   ON MST.CATEGORY_ID = STR.CATEGORY_ID
+        	 AND MST.MKDP_SEQ 	 = STR.MKDP_SEQ
+	  ORDER BY MST.CATEGORY_ID, MST.MKDP_SEQ) M
+		  WHERE 1 = 1
+		    AND M.SCM_YN = 'Y'
+		      ]]>
+				   <isNotEmpty property="mkdpNm">
+				   AND M.MKDP_NM LIKE #mkdpNm# || '%'           /* 기획전 명 */
+				   </isNotEmpty>
+				   <isNotEmpty property="mkdpSeq">
+				   AND M.MKDP_SEQ LIKE #mkdpSeq# || '%'      /* 기획전 번호 */
+				   </isNotEmpty>
+
+				   <isNotEmpty property="aprvStsCd">
+			        AND M.APRV_STS_CD = #aprvStsCd#       /* 승인상태 */
+				   </isNotEmpty>
+
+				   <isNotEmpty property="dispYn">
+				   AND M.DISP_YN = #dispYn#                   /* 전시유형 */
+				   </isNotEmpty>
+
+				   <isEqual property="mkdpGubn" compareValue="1">
+				   <isNotEmpty property="startDate">
+				   <![CDATA[AND REPLACE(M.REQ_APRV_DATE,'-','') >= #startDate# ]]>           /* 승인 요청일 */
+				   </isNotEmpty>
+				   <isNotEmpty property="endDate">
+				   <![CDATA[AND REPLACE(M.REQ_APRV_DATE,'-','') <= #endDate#  ]]>
+				   </isNotEmpty>
+				   </isEqual>
+
+				   <isEqual property="mkdpGubn" compareValue="2">
+				   <isNotEmpty property="startDate">
+				   <![CDATA[AND M.MKDP_START_DATE >= #startDate# || '0000' ]]>         /* 전시 시작일 */
+				   </isNotEmpty>
+				   <isNotEmpty property="endDate">
+				   <![CDATA[AND M.MKDP_START_DATE <= #endDate# || '2359' ]]>
+				   </isNotEmpty>
+				   </isEqual>
+	</select>
+
+	<select id="selectCategoryList" resultClass="dataMap">
+	/* pscmexh0100.selectCategoryList */
+		 SELECT CATEGORY_ID
+		      , CATEGORY_NM
+		      , ORDER_SEQ
+		   FROM TCA_CATEGORY
+		  WHERE CATEGORY_ID LIKE 'C206' || '%'
+		    AND DEPTH    = '2'
+		    AND DISP_YN  = 'Y'
+		   <isNotEmpty property="pageDiv">
+		    <isEqual property="pageDiv" compareValue="insert">
+		    <![CDATA[
+		    AND END_DATE || END_TM >= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MI')
+		    ]]>
+		    </isEqual>
+		    </isNotEmpty>
+		  ORDER BY ORDER_SEQ, CATEGORY_ID
+	</select>
+
+	<update id="updateApply">
+	/* pscmexh0100.updateApply */
+		UPDATE tca_mkdp_mst
+		   SET APRV_STS_CD = '03'  /* 승인 */
+		     , MOD_ID      = #modId#
+		     , MOD_DATE    = CURRENT_TIMESTAMP(0)
+		 WHERE CATEGORY_ID = #categoryId#
+		   AND MKDP_SEQ    = #mkdpSeq#
+	</update>
+
+	<update id="updateApplyRetn">
+	/* pscmexh0100.updateApplyRetn */
+		UPDATE tca_mkdp_mst
+		   SET APRV_STS_CD = '02'  /* 반려 */
+		     , MOD_ID      = #modId#
+		     , MOD_DATE    = CURRENT_TIMESTAMP(0)
+		     , RETN_REASON = #retnReason#
+
+		 WHERE CATEGORY_ID = #categoryId#
+		   AND MKDP_SEQ    = #mkdpSeq#
+	</update>
+
+	<insert id="insertExhibitionInfo">
+	/* pscmexh0100.insertExhibitionInfo  기획전 등록 */
+		INSERT
+		  INTO tca_mkdp_mst  			/* 기획전 관리 */
+		     (
+		       CATEGORY_ID         		/* 카테고리번호						*/
+		     , MKDP_SEQ            		/* 기획전번호						*/
+		     , MKDP_NM             		/* 기획전명						*/
+		     , MKDP_SCND_TITLE     		/* 기획전부제목						*/
+		     , MKDP_START_DATE     		/* 기획전시작일시					*/
+		     , MKDP_END_DATE       		/* 기획전종료일시					*/
+		     , MKDP_VIEW_START_DATE     /* 행사시작일시						*/
+		     , MKDP_VIEW_END_DATE       /* 행사종료일시						*/
+		     , MKDP_CAT_CD         		/* 기획전분류코드					*/
+		     , DISP_TYPE_CD        		/* 전시유형코드						*/
+		     , UTAK_MD             		/* 담당MD							*/
+		     , DISP_YN             		/* 전시여부						*/
+		     , DISP_SEQ             	/* 전시순서						*/
+		     , KYWRD               		/* 키워드							*/
+		     , APRV_DATE           		/* 승인일시						*/
+		     , APRMN               		/* 승인자							*/
+		     , APRV_STS_CD         		/* 승인상태코드 01:승인대기 02:반려 03:승인 */
+		     , TEMPLATE_ID         		/* 템플릿ID						*/
+		     , RETN_REASON         		/* 반려사유						*/
+		     , EVNT_CATEGORY       		/* 이벤트 카테고리 번호					*/
+		     , REG_DATE            		/* 등록일							*/
+		     , REG_ID              		/* 등록자							*/
+		     , MOD_DATE            		/* 수정일							*/
+		     , MOD_ID		       		/* 수정자							*/
+		     , VENDOR_ID				/* 협력업체						*/
+		     , SCM_YN					/* SCM 허용여부					*/
+		     , MOBILE_MKDP_NM	   		/* 기획전명(모바일)					*/
+		     , MOBILE_MKDP_SCND_TITLE	/* 전단/코너 타이틀					*/
+		     , DC_INFO			   		/* 혜택할인정보						*/
+		     , EVT_INFO			   		/* 마케팅행사정보					*/
+		     )
+		VALUES
+		     (
+		       #categoryChildId#
+		     , #mkdpSeq#
+		     , #mkdpNm#
+		     , #mkdpScndTitle#
+		     , #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#
+		     , #mkdpEndDate#   || #mkdpEndHh#   || #mkdpEndMm#
+		     , #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#
+		     , #mkdpEndDate#   || #mkdpEndHh#   || #mkdpEndMm#
+		     , #mkdpCatCd#
+		     , #dispTypeCd#
+		     , #utakMd#
+		     , #dispYn#
+		     , '999'
+		     , #kywrd#
+		     , #aprvDate#
+		     , #aprmn#
+		     , '00'            /* 승인상태코드 00:SCM저장 */
+		     , nvl((select a.template_id from tca_template a where a.disp_template_type_cd = '06' and a.category_type_cd = '05' and a.use_yn = 'Y'LIMIT 1),'000463')  /* 템플릿ID */
+		     , #retnReason#
+		     , #evntCategory#
+		     , CURRENT_TIMESTAMP(0)
+		     , #regId#
+		     , CURRENT_TIMESTAMP(0)
+		     , #modId#
+		     , #vendorId#
+		     , 'N'
+		     , #mobileMkdpNm#
+		     , #mobileMkdpScndTitle# ||'@@@'|| #mobileMkdpScndTitle2#
+		     , #dcInfo# ||'@@@'|| #dcInfo2#
+		     , #evtInfo#		     	     
+		     )
+	</insert>
+
+	<update id="updateExhibitionInfo">
+	/* pscmexh0100.updateExhibitionInfo  기획전 수정 */
+		UPDATE tca_mkdp_mst  /* 기획전 관리 */
+		   SET
+		       MKDP_NM         			= #mkdpNm#              									/* 기획전명					*/
+		     , MKDP_SCND_TITLE 			= #mkdpScndTitle#       									/* 기획전부제목					*/
+		     , MKDP_START_DATE 			= #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#      	/* 기획전시작일시				*/
+		     , MKDP_END_DATE   			= #mkdpEndDate#   || #mkdpEndHh# || #mkdpEndMm#          	/* 기획전종료일시				*/
+		     , MKDP_VIEW_START_DATE 	= #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm# 		/* 행사전시작일시 -기획전시작일시 디폴트	*/
+		     , MKDP_VIEW_END_DATE  	 	= #mkdpEndDate#   || #mkdpEndHh# || #mkdpEndMm#     		/* 행사전종료일시 -기획전종료일시 디폴트	*/
+		     , MKDP_CAT_CD     			= #mkdpCatCd#           									/* 기획전분류코드				*/
+		     , DISP_TYPE_CD    			= #dispTypeCd#          									/* 전시유형코드					*/
+		     , UTAK_MD         			= #utakMd#              									/* 담당MD						*/
+		     , DISP_YN         			= #dispYn#              									/* 전시여부					*/
+		     , KYWRD           			= #kywrd#               									/* 키워드						*/
+		     , APRV_DATE       			= #aprvDate#            									/* 승인일시					*/
+		     , APRMN           			= #aprmn#               									/* 승인자						*/
+		     , MOD_ID          			= #modId#               									/* 수정자						*/
+		     , MOD_DATE        			= CURRENT_TIMESTAMP(0)               									/* 수정일						*/
+			 , MOBILE_MKDP_NM  			= #mobileMkdpNm#											/* 기획전명(모바일)				*/
+		     , MOBILE_MKDP_SCND_TITLE 	= #mobileMkdpScndTitle# ||'@@@'|| #mobileMkdpScndTitle2#	/* 전단/코너 타이틀				*/
+		     , DC_INFO		   = #dcInfo#		|| '@@@' || #dcInfo2#								/* 혜택할인정보					*/
+		     , EVT_INFO		   = #evtInfo#															/* 마케팅행사정보				*/
+
+		 WHERE CATEGORY_ID = #categoryChildId#      												/* 카테고리번호					*/
+		   AND MKDP_SEQ    = #mkdpSeq#	            												/* 기획전번호					*/
+	</update>
+
+
+	<resultMap class="dataMap" id="selectExhibitionInfoMap">
+		<result property="CATEGORY_PARENT_ID" 	               javaType="java.lang.String"           column="CATEGORY_PARENT_ID"			jdbcType="VARCHAR2"	/>
+		<result property="CATEGORY_CHILD_ID" 	               javaType="java.lang.String"           column="CATEGORY_CHILD_ID"				jdbcType="VARCHAR2"	/>
+		<result property="CATEGORY_ID" 	                       javaType="java.lang.String"           column="CATEGORY_ID"					jdbcType="VARCHAR2"	/>
+		<result property="MKDP_SEQ" 	                       javaType="java.lang.String"           column="MKDP_SEQ"						jdbcType="VARCHAR2"	/>
+		<result property="APRV_STS_CD" 	                       javaType="java.lang.String"           column="APRV_STS_CD"					jdbcType="VARCHAR2"	/>
+		<result property="CATEGORY_ID" 	                       javaType="java.lang.String"           column="CATEGORY_ID"					jdbcType="VARCHAR2"	/>
+		<result property="MKDP_NM" 	                           javaType="java.lang.String"           column="MKDP_NM"						jdbcType="VARCHAR2"	/>
+		<result property="MKDP_SCND_TITLE" 	                   javaType="java.lang.String"           column="MKDP_SCND_TITLE"				jdbcType="VARCHAR2"	/>
+		<result property="TEMPLATE_ID" 	                       javaType="java.lang.String"           column="TEMPLATE_ID"					jdbcType="VARCHAR2"	/>
+		<result property="MKDP_START_DATE" 	                   javaType="java.lang.String"           column="MKDP_START_DATE"				jdbcType="VARCHAR2"	/>
+		<result property="MKDP_START_HH" 	                   javaType="java.lang.String"           column="MKDP_START_HH"					jdbcType="VARCHAR2"	/>
+		<result property="MKDP_START_MM" 	                   javaType="java.lang.String"           column="MKDP_START_MM"					jdbcType="VARCHAR2"	/>
+		<result property="MKDP_END_DATE" 	                   javaType="java.lang.String"           column="MKDP_END_DATE" 	            jdbcType="VARCHAR2"	/>
+		<result property="MKDP_END_HH" 	                       javaType="java.lang.String"           column="MKDP_END_HH" 	                jdbcType="VARCHAR2"	/>
+		<result property="MKDP_END_MM" 	                       javaType="java.lang.String"           column="MKDP_END_MM" 	                jdbcType="VARCHAR2"	/>
+		<result property="MKDP_CAT_CD" 	                       javaType="java.lang.String"           column="MKDP_CAT_CD" 	                jdbcType="VARCHAR2"	/>
+		<result property="DISP_TYPE_CD" 	                   javaType="java.lang.String"           column="DISP_TYPE_CD" 	                jdbcType="VARCHAR2"	/>
+		<result property="UTAK_MD" 	                           javaType="java.lang.String"           column="UTAK_MD" 	                    jdbcType="VARCHAR2"	/>
+		<result property="DISP_YN" 	                           javaType="java.lang.String"           column="DISP_YN" 	                    jdbcType="VARCHAR2"	/>
+		<result property="DISP_SEQ" 	                       javaType="java.lang.String"           column="DISP_SEQ" 	                    jdbcType="VARCHAR2"	/>
+		<result property="KYWRD" 	                           javaType="java.lang.String"           column="KYWRD" 	                    jdbcType="VARCHAR2"	/>
+		<result property="PROGRESS_STATUS" 	                   javaType="java.lang.String"           column="PROGRESS_STATUS" 	            jdbcType="VARCHAR2"	/>
+		<result property="VIEW_MKDP_START_DATE" 	           javaType="java.lang.String"           column="VIEW_MKDP_START_DATE" 	        jdbcType="VARCHAR2"	/>
+		<result property="VIEW_MKDP_END_DATE" 	          	   javaType="java.lang.String"           column="VIEW_MKDP_END_DATE" 	        jdbcType="VARCHAR2"	/>
+		<result property="UTAK_MD_NM" 	                       javaType="java.lang.String"           column="UTAK_MD_NM" 	                jdbcType="VARCHAR2"	/>
+		<result property="STR_CD" 	                           javaType="java.lang.String"           column="STR_CD" 	                    jdbcType="VARCHAR2"	/>
+		<result property="STR_NM" 	                           javaType="java.lang.String"           column="STR_NM" 	                    jdbcType="VARCHAR2"	/>
+		<result property="VIEW_MKDP_START_YYMMDD" 	  		   javaType="java.lang.String"           column="VIEW_MKDP_START_YYMMDD" 	    jdbcType="VARCHAR2"	/>
+		<result property="VIEW_MKDP_END_YYMMDD" 	      	   javaType="java.lang.String"           column="VIEW_MKDP_END_YYMMDD" 	        jdbcType="VARCHAR2"	/>
+		<result property="REG_METHOD_CD" 	                   javaType="java.lang.String"           column="REG_METHOD_CD" 	            jdbcType="VARCHAR2"	/>
+		<result property="CH_CD" 	                           javaType="java.lang.String"           column="CH_CD" 	                    jdbcType="VARCHAR2"	/>
+		<result property="CONTENTS_DIVN_CD" 	               javaType="java.lang.String"           column="CONTENTS_DIVN_CD" 	            jdbcType="VARCHAR2"	/>
+		<result property="IMG_PATH" 	                       javaType="java.lang.String"           column="IMG_PATH" 	                    jdbcType="VARCHAR2"	/>
+		<result property="CONTENTS_SEQ" 	                   javaType="java.lang.String"           column="CONTENTS_SEQ" 	                jdbcType="VARCHAR2"	/>
+		<result property="INDT_HTML"		 	               javaType="java.lang.String"           column="INDT_HTML"		 	            jdbcType="CLOB"	/>
+		<result property="VENDOR_ID"		 	               javaType="java.lang.String"           column="VENDOR_ID"		 	            jdbcType="VARCHAR2"	/>
+		<result property="APRV_STS_CD"		 	               javaType="java.lang.String"           column="APRV_STS_CD"		 	        jdbcType="VARCHAR2"	/>
+		<result property="MOBILE_MKDP_NM" 	                   javaType="java.lang.String"           column="MOBILE_MKDP_NM" 	            jdbcType="VARCHAR2"	/>
+		<result property="MOBILE_MKDP_SCND_TITLE" 	           javaType="java.lang.String"           column="MOBILE_MKDP_SCND_TITLE"		jdbcType="VARCHAR2"	/>
+		<result property="MOBILE_MKDP_SCND_TITLE2" 	           javaType="java.lang.String"           column="MOBILE_MKDP_SCND_TITLE2"		jdbcType="VARCHAR2"	/>
+		<result property="DC_INFO" 	                           javaType="java.lang.String"           column="DC_INFO"						jdbcType="VARCHAR2"	/>
+		<result property="DC_INFO2" 	                       javaType="java.lang.String"           column="DC_INFO2"						jdbcType="VARCHAR2"	/>
+		<result property="EVT_INFO" 	                       javaType="java.lang.String"           column="EVT_INFO"						jdbcType="VARCHAR2"	/>
+	</resultMap>
+
+	<select id="selectExhibitionInfo" resultMap="selectExhibitionInfoMap">
+	/* pscmexh0100.selectExhibitionInfo  기획전정보 조회 */
+		SELECT SUBSTR(TT.CATEGORY_ID, 1, 8) AS CATEGORY_PARENT_ID
+		     , TT.CATEGORY_ID               AS CATEGORY_CHILD_ID
+		     , TT.CATEGORY_ID               AS CATEGORY_ID									
+		     , TT.MKDP_SEQ                                                                  /* 기획전번호                                        		*/
+			 , TT.APRV_STS_CD                                                               /* 승인상태코드 01:승인대기 02:반려 03:승인 */
+			 , TT.CATEGORY_ID                                                               /* 카테고리번호                                      		*/
+			 , TT.MKDP_NM                                                                   /* 기획전명                                          		*/
+			 , TT.MKDP_SCND_TITLE                                                           /* 기획전부제목                                      		*/
+			 , TT.TEMPLATE_ID                                                               /* 템플릿코드                                        		*/
+			 , SUBSTR(TT.MKDP_START_DATE,  1, 8) AS MKDP_START_DATE                         /* 기획전시작일시 일 					*/
+			 , SUBSTR(TT.MKDP_START_DATE,  9, 2) AS MKDP_START_HH							/* 기획전시작일시 시					*/
+			 , SUBSTR(TT.MKDP_START_DATE, 11, 2) AS MKDP_START_MM							/* 기획전시작일시 분					*/
+			 , SUBSTR(TT.MKDP_END_DATE  ,  1, 8) AS MKDP_END_DATE                           /* 기획전종료일시 일					*/
+			 , SUBSTR(TT.MKDP_END_DATE  ,  9, 2) AS MKDP_END_HH								/* 기획전종료일시 시					*/
+			 , SUBSTR(TT.MKDP_END_DATE  , 11, 2) AS MKDP_END_MM								/* 기획전종료일시 분					*/
+			 , TT.MKDP_CAT_CD                                                               /* 기획전분류코드                                    	*/
+			 , TT.DISP_TYPE_CD                                                              /* 전시유형코드                                      		*/
+			 , TT.UTAK_MD                                                                   /* 담당MD                        	*/
+			 , TT.DISP_YN                                                                   /* 전시여부                                          		*/
+			 , TT.DISP_SEQ                                                                  /* 전시순번                                          		*/
+			 , TT.KYWRD                                                                     /* 키워드                                           	 	*/
+
+               /* 진행상태 PROGRESS_STATUS */
+			   <![CDATA[
+				/* 2015-04-09 < 2016-04-15(오늘일자) = 대기
+				   2015-04-12 < 2016-04-15(오늘일자) = 종료
+				*/
+			 ,    CASE WHEN TO_DATE(TT.MKDP_START_DATE, 'YYYYMMDDHH24MISS') <= CURRENT_TIMESTAMP(0) AND TO_DATE(TT.MKDP_END_DATE, 'YYYYMMDDHH24MISS') >= CURRENT_TIMESTAMP(0)
+				       THEN '진행' 																						/* 진행 		 							*/
+				       WHEN TO_DATE(TT.MKDP_START_DATE, 'YYYYMMDDHH24MISS') > CURRENT_TIMESTAMP(0) THEN '대기'  						/* 대기 		 							*/
+				       WHEN TO_DATE(TT.MKDP_END_DATE  , 'YYYYMMDDHH24MISS') < CURRENT_TIMESTAMP(0) THEN '종료'  						/* 종료		 							*/
+				  END PROGRESS_STATUS
+			   ]]>
+			 , TO_CHAR(TO_DATE(TT.MKDP_START_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD HH:MM') AS VIEW_MKDP_START_DATE		/* 기획전시작일시  							*/
+			 , TO_CHAR(TO_DATE(TT.MKDP_END_DATE  , 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD HH:MM') AS VIEW_MKDP_END_DATE       /* 기획전종료일시  							*/
+			 , (SELECT X.ADMIN_NM FROM TAD_ADMIN X WHERE X.ADMIN_ID = TT.UTAK_MD) AS UTAK_MD_NM                         /* 담당MD 	 							*/
+             , B.STR_CD																									/* 점포코드	 							*/
+             , B.STR_NM																									/* 점포명		 							*/
+             , TO_CHAR(TO_DATE(TT.MKDP_START_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') AS VIEW_MKDP_START_YYMMDD			/* 기획전 시작일시 							*/
+             , TO_CHAR(TO_DATE(TT.MKDP_END_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD')   AS VIEW_MKDP_END_YYMMDD			/* 기획전 종료일시 							*/
+             , C.REG_METHOD_CD AS REG_METHOD_CD																			/* 등록방법코드 01:파일URL 02:에디트편집 			*/
+             , C.CH_CD AS CH_CD																							/* 채널코드 01:PC 02:모바일 03:공용				*/
+             , C.CONTENTS_DIVN_CD AS CONTENTS_DIVN_CD																	/* 컨텐츠구분코드 01:컨텐츠메인 02:컨텐츠서버 03:배너	*/
+             , C.IMG_PATH AS IMG_PATH																					/* 이미지경로								*/
+             , C.CONTENTS_SEQ AS CONTENTS_SEQ																			/* 컨텐츠번호								*/
+             , C.INDT_HTML																								/* HTML									*/
+             , TT.VENDOR_ID																								/* 협력업체								*/
+             , TT.APRV_STS_CD																							/* 승인상태코드 01:승인대기 02:반려 03:승인		*/
+             , TT.MOBILE_MKDP_NM																						/* 기획전명(모바일)							*/
+			 , REGEXP_SUBSTR(TT.MOBILE_MKDP_SCND_TITLE,'[^@@@]+') AS MOBILE_MKDP_SCND_TITLE								/* 전단/코너 타이틀							*/
+			 , REGEXP_SUBSTR(TT.MOBILE_MKDP_SCND_TITLE,'[^@@@]+', 1, 2) AS MOBILE_MKDP_SCND_TITLE2						/* 전단/코너 타이틀2							*/
+			 , REGEXP_SUBSTR(TT.DC_INFO,'[^@@@]+') AS DC_INFO															/* 혜택할인정보								*/
+			 , REGEXP_SUBSTR(TT.DC_INFO,'[^@@@]+', 1, 2) AS DC_INFO2													/* 혜택할인정보2							*/
+			 , TT.EVT_INFO																								/* 마케팅행사정보							*/
+		  FROM TCA_MKDP_MST TT   /* 기획전 관리 */
+		  inner join TCA_MKDP_CONTENTS C ON TT.CATEGORY_ID = C.CATEGORY_ID and TT.MKDP_SEQ = C.MKDP_SEQ
+		  LEFT OUTER
+		  JOIN (SELECT XA.CATEGORY_ID
+		             , XA.MKDP_SEQ
+                     , LISTAGG(XB.STR_CD, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS STR_CD
+     				 , LISTAGG(XB.STR_NM, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS STR_NM
+			      FROM TCA_MKDP_MST_STR XA    /* 기획전관리 점포 */
+                  LEFT OUTER
+                  JOIN TST_STORE XB
+                    ON XB.STR_CD = XA.STR_CD
+			     WHERE XA.CATEGORY_ID = #categoryId#
+			       AND XA.MKDP_SEQ    = #mkdpSeq#
+			     GROUP BY XA.CATEGORY_ID, XA.MKDP_SEQ) B
+		    ON B.CATEGORY_ID = TT.CATEGORY_ID
+		   AND B.MKDP_SEQ    = TT.MKDP_SEQ
+		 /* WHERE TT.CATEGORY_ID = 'C00600380165'   카테고리번호 */
+		 /*  AND TT.MKDP_SEQ    = '000000000001'    기획전번호   */
+		 WHERE TT.CATEGORY_ID = #categoryId#   		/* 카테고리번호 */
+		   AND TT.MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		  /* AND B.STR_CD = '981' */
+		 /*  AND TT.VENDOR_ID = '016812'			협력업체 */
+       	   AND TT.VENDOR_ID = #vendorId#
+		   ORDER BY CONTENTS_SEQ
+	</select>
+
+	<select id="getMkdpSeq"    resultClass="String" >
+	/* pscmexh0100.getMkdpSeq 기획전등록 - 기획전번호 발번  */
+		SELECT LPAD(NVL(MAX(TO_NUMBER(MKDP_SEQ)), 0)+1, 12, '0') AS MKDP_SEQ
+		  FROM TCA_MKDP_MST   /* 기획전 관리 */
+		 WHERE CATEGORY_ID = #categoryChildId#   /* 카테고리번호 */
+	</select>
+
+	<select id="selectCategoryChildIdList" resultMap="code">
+	/* pbomexh0100.selectCategoryChildIdList */
+	     SELECT CATEGORY_ID AS CAT_CD
+		      , CATEGORY_NM AS CAT_NM
+		   FROM TCA_CATEGORY
+		  WHERE CATEGORY_ID LIKE 'C206' || '%'
+		    AND DEPTH    = '3'
+		    AND UP_CATEGORY_ID = #categoryParentId#
+		    AND DISP_YN  = 'Y'
+		    <isNotEmpty property="pageDiv">
+		    <isEqual property="pageDiv" compareValue="insert">
+		    <![CDATA[
+		    AND END_DATE || END_TM >= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MI')
+		    ]]>
+		    </isEqual>
+		    </isNotEmpty>
+
+		  ORDER BY ORDER_SEQ, CATEGORY_ID
+	</select>
+
+
+	<!--============== 구분자 정보 ================== -->
+
+	<select id="selectDivnInfoList" resultClass="dataMap">
+	/* pscmexh0100.selectDivnInfoList  구분자정보목록 조회 */
+		SELECT A.CATEGORY_ID                           /* 카테고리번호         */
+			 , A.MKDP_SEQ                              /* 기획전번호           */
+			 , A.DIVN_SEQ                              /* 구분자번호           */
+			 , A.DIVN_NM                               /* 구분자명             */
+			 , A.DISP_SEQ                              /* 전시순번             */
+			 , A.DIVN_TYPE                             /* 구분자유형코드       */
+			 , A.DISP_YN                               /* 전시여부             */
+			 , A.DIVN_IMG_URL                          /* 구분이미지URL        */
+			 , A.DISP_TO_CD                            /* 전시대상코드         */
+			 , A.DISP_PROD_CNT                         /* 전시상품수           */
+			 , A.PROD_TEMPLATE_CD                      /* 상품전시템플릿SM318  */
+			 , A.START_DATE                            /* 시작일시             */
+			 , A.END_DATE                              /* 종료일시             */
+			 , A.REG_DATE                              /* 등록일               */
+			 , A.REG_ID                                /* 등록자               */
+			 , A.MOD_DATE                              /* 수정일               */
+			 , A.MOD_ID                                /* 수정자               */
+			 , A.PROD_ORD_SETUP                        /* 상품정렬설정SM305    */
+			 , A.PROD_ORD_SETUP_VAL                    /* 상품정렬설정값       */
+			 , A.PROD_ORD_SETUP2                       /* 상품정렬설정2 SM305  */
+
+             , B.STR_CD AS SUB_STR_CD
+             , B.STR_NM AS SUB_STR_NM
+		  FROM TCA_MKDP_DTL A  /* 기획전 관리구분 */
+		  LEFT OUTER
+		  JOIN (SELECT XA.CATEGORY_ID
+		             , XA.MKDP_SEQ
+                     , XA.DIVN_SEQ
+				     , LISTAGG(XB.STR_CD, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS STR_CD
+				     , LISTAGG(XB.STR_NM, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS STR_NM
+			      FROM TCA_MKDP_DTL_STR XA    /* 기획전관리 점포 */
+                  LEFT OUTER
+                  JOIN TST_STORE XB
+                    ON XB.STR_CD = XA.STR_CD
+			     WHERE XA.CATEGORY_ID = #categoryId#
+			       AND XA.MKDP_SEQ    = #mkdpSeq#
+			     GROUP BY XA.CATEGORY_ID, XA.MKDP_SEQ, XA.DIVN_SEQ) B
+		    ON B.CATEGORY_ID = A.CATEGORY_ID
+		   AND B.MKDP_SEQ    = A.MKDP_SEQ
+           AND B.DIVN_SEQ    = A.DIVN_SEQ
+
+		 WHERE A.CATEGORY_ID = #categoryId#        /* 카테고리번호 ex)C0060001  */
+		   AND A.MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		 ORDER BY DISP_SEQ
+	</select>
+
+	<insert id="insertDivnInfo">
+	/* pscmexh0100.insertDivnInfo  구분자정보 등록 */
+		INSERT
+		  INTO TCA_MKDP_DTL A  /* 기획전 관리구분 */
+			 (
+			   CATEGORY_ID                           /* 카테고리번호					*/
+			 , MKDP_SEQ                              /* 기획전번호						*/
+			 , DIVN_SEQ                              /* 구분자번호						*/
+			 , DIVN_NM                               /* 구분자명						*/
+			 , DISP_SEQ                              /* 전시순번						*/
+			 , DIVN_TYPE                             /* 구분자유형코드					*/
+			 , DISP_YN                               /* 전시여부						*/
+			 , DISP_TO_CD                            /* 전시대상코드					*/
+			 , DISP_PROD_CNT                         /* 전시상품수						*/
+			 , PROD_TEMPLATE_CD                      /* 상품전시템플릿SM318				*/
+			 , START_DATE                            /* 시작일시						*/
+			 , END_DATE                              /* 종료일시						*/
+			 , APPLY_START_DATE                      /* 행사적용시작일시 - 기획전시작일시 디폴트	*/
+			 , APPLY_END_DATE                        /* 행사적용종료일시 - 기획전종료일시 디폴트	*/
+			 , REG_DATE                              /* 등록일						*/
+			 , REG_ID                                /* 등록자						*/
+			 , MOD_DATE                              /* 수정일						*/
+			 , MOD_ID		                         /* 수정자						*/
+			 )
+		VALUES
+			 (
+			   #categoryId#
+			 , #mkdpSeq#
+			 , #divnSeq#
+	         , #divnNm#
+	         , #dispSeq#
+	         , #divnType#
+	         , #dispYn#
+	         , #dispToCd#
+	         , #dispProdCnt#
+	         , #prodTemplateCd#
+	         , #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#
+			 , #mkdpEndDate#   || #mkdpEndHh#   || #mkdpEndMm#
+			 , #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#
+			 , #mkdpEndDate#   || #mkdpEndHh#   || #mkdpEndMm#
+			 , CURRENT_TIMESTAMP(0)
+			 , #regId#
+			 , CURRENT_TIMESTAMP(0)
+			 , #modId#
+			 )
+	</insert>
+
+	<update id="updateDivnInfo">
+	/* pscmexh0100.updateDivnInfo  구분자정보 수정 */
+	    UPDATE TCA_MKDP_DTL    /* 기획전 관리구분 */
+	       SET
+	           DIVN_NM           = #divnNm#                                                /* 구분자명							*/
+	         , DISP_SEQ          = #dispSeq#	                                           /* 전시순번							*/
+	         , DIVN_TYPE         = #divnType#	                                           /* 구분자유형코드						*/
+	         , DISP_YN           = #dispYn#	                                               /* 전시여부							*/
+	         , DIVN_IMG_URL      = #divnImgUrl#                                            /* 구분이미지URL						*/
+	         , DISP_TO_CD        = #dispToCd#                                              /* 전시대상코드						*/
+	         , DISP_PROD_CNT     = #dispProdCnt#                                           /* 전시상품수						*/
+	         , PROD_TEMPLATE_CD  = #prodTemplateCd#				                           /* 상품전시템플릿SM318				*/
+	         , START_DATE        = #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#       /* 시작일시							*/
+	         , END_DATE          = #mkdpEndDate#   || #mkdpEndHh#   || #mkdpEndMm#         /* 종료일시							*/
+	         , APPLY_START_DATE  = #mkdpStartDate# || #mkdpStartHh# || #mkdpStartMm#       /* 행사적용시작일시 - 기획전시작일시 디폴트	*/
+	         , APPLY_END_DATE    = #mkdpEndDate#   || #mkdpEndHh#   || #mkdpEndMm#         /* 행사적용종료일시 - 기획전종료일시 디폴트	*/
+	         , MOD_ID            = #modId#
+	         , MOD_DATE          = CURRENT_TIMESTAMP(0)
+	     WHERE CATEGORY_ID = #categoryId#           /* 카테고리번호   */
+	       AND MKDP_SEQ    = #mkdpSeq#	            /* 기획전번호     */
+	       AND DIVN_SEQ    = #divnSeq#              /* 구분자번호     */
+	</update>
+
+	<select id="getDivnSeq" resultClass="String">
+	/* pscmexh0100.getDivnSeq 구분자번호 발번  */
+	    SELECT LPAD(NVL(MAX(TO_NUMBER(DIVN_SEQ)), 0)+1, 3, '0') AS DIVN_SEQ
+	      FROM TCA_MKDP_DTL   /* 기획전 관리구분 */
+	     WHERE CATEGORY_ID = #categoryId#       /* 카테고리번호 */
+	       AND MKDP_SEQ    = #mkdpSeq#          /* 기획전번호   */
+	</select>
+
+
+	<delete id="deleteDivnInfo">
+	/* pscmexh0100.deleteDivnInfo 구분자정보 삭제  */
+		DELETE FROM TCA_MKDP_DTL    /* 기획전 관리구분 */
+	     WHERE CATEGORY_ID = #categoryId#       /* 카테고리번호 */
+	       AND MKDP_SEQ    = #mkdpSeq#          /* 기획전번호   */
+	       <iterate prepend="AND DIVN_SEQ IN " property="arrDivnSeq" open="(" close=")" conjunction=",">
+		        #arrDivnSeq[]#
+		   </iterate>
+	</delete>
+
+	<delete id="deleteDivnStrInfo">
+	/* pscmexh0100.deleteDivnStrInfo 구분자정보 점포 삭제  */
+		DELETE FROM TCA_MKDP_DTL_STR    /* 기획전 관리구분 점포 */
+	     WHERE CATEGORY_ID = #categoryId#       /* 카테고리번호 */
+	       AND MKDP_SEQ    = #mkdpSeq#          /* 기획전번호   */
+	       <iterate prepend="AND DIVN_SEQ IN " property="arrDivnSeq" open="(" close=")" conjunction=",">
+		        #arrDivnSeq[]#
+		   </iterate>
+	</delete>
+
+	<!--============== 이미지/HTML 정보 ================== -->
+	<select id="selectContentsList" resultClass="dataMap">
+	/* pscmexh0100.selectContentsList 이미지/HTML 조회 */
+	    SELECT ROW_NUMBER() OVER (ORDER BY A.CH_CD) RNUM
+	         , 0      AS CHK
+
+             /* 구분 */
+             , CASE WHEN A.IMG_PATH  IS NOT NULL THEN '이미지'
+                    WHEN (A.INDT_FILE IS NOT NULL OR A.INDT_HTML IS NOT NULL) THEN 'HTML'
+               END AS GBN_NM
+
+	         , A.CH_CD                                                      /* 채널코드(01:PC, 02:모바일) */
+	         , (SELECT TC.CD_NM FROM TET_CODE TC
+	             WHERE TC.MAJOR_CD = 'SM310'
+	               AND TC.MINOR_CD = A.CH_CD
+	           ) AS CH_NM
+
+	         , A.IMG_PATH                                                   /* 이미지 파일 경로  */
+	         , A.INDT_FILE                                                  /* HTML 파일 경로    */
+	         , DBMS_LOB.SUBSTR(A.INDT_HTML, 4000, 1) AS INDT_HTML        /* HTML 소스         */
+	         , TO_CHAR(TO_DATE(A.START_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD HH24:MI') AS START_DATE                   /* 시작일시        */
+	         , TO_CHAR(TO_DATE(A.END_DATE  , 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD HH24:MI') AS END_DATE                     /* 종료일시        */
+
+	         , A.CONTENTS_DIVN_CD             /* 컨텐츠구분코드  */
+	         , A.REG_METHOD_CD                /* 등록방법코드    */
+	         , (SELECT TC.CD_NM FROM TET_CODE TC
+	             WHERE TC.MAJOR_CD = 'SM316'
+	               AND TC.MINOR_CD = A.REG_METHOD_CD
+	           ) AS REG_METHOD_NM
+	         , A.REG_DATE                     /* 등록일          */
+	         , A.REG_ID                       /* 등록자          */
+	         , A.MOD_DATE                     /* 수정일          */
+	         , A.MOD_ID                       /* 수정자          */
+
+	         , A.CATEGORY_ID                  /* 카테고리번호    */
+	         , A.MKDP_SEQ                     /* 기획전번호      */
+	         , A.END_DATE  AS SEND_END_DATE   /* 조회키 용도 */
+
+			 , A.DIVN_SEQ
+			 , B.DIVN_NM
+			 , A.CONTENTS_SEQ
+
+			 , C.SUB_STR_CD
+             , C.SUB_STR_NM
+
+	      FROM TCA_MKDP_CONTENTS A         /* 기획전 컨텐츠 */
+	      LEFT OUTER
+	      JOIN TCA_MKDP_DTL B              /* 기획전 관리구분 */
+	        ON B.CATEGORY_ID = A.CATEGORY_ID
+	       AND B.MKDP_SEQ    = A.MKDP_SEQ
+	       AND B.DIVN_SEQ    = A.DIVN_SEQ
+
+		  LEFT OUTER
+		  JOIN (SELECT XA.CATEGORY_ID
+		             , XA.MKDP_SEQ
+		             , XA.CONTENTS_SEQ
+				     , LISTAGG(XB.STR_CD, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS SUB_STR_CD
+				     , LISTAGG(XB.STR_NM, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS SUB_STR_NM
+			      FROM TCA_MKDP_CON_STR XA    /* 기획전 컨텐츠 점포 */
+                  LEFT OUTER
+                  JOIN TST_STORE XB
+                    ON XB.STR_CD = XA.STR_CD
+			     WHERE XA.CATEGORY_ID = #categoryId#
+			       AND XA.MKDP_SEQ    = #mkdpSeq#
+			     GROUP BY XA.CATEGORY_ID, XA.MKDP_SEQ, XA.CONTENTS_SEQ) C
+		    ON C.CATEGORY_ID  = A.CATEGORY_ID
+		   AND C.MKDP_SEQ     = A.MKDP_SEQ
+		   AND C.CONTENTS_SEQ = A.CONTENTS_SEQ
+
+	     WHERE A.CATEGORY_ID      = #categoryId#        /* 카테고리번호 */
+	       AND A.MKDP_SEQ         = #mkdpSeq#           /* 기획전번호   */
+	       AND A.CONTENTS_DIVN_CD = #contentsDivnCd#    /* 컨텐츠구분코드 */
+	     ORDER BY A.CH_CD
+	</select>
+
+	<select id="getMkdpConSeqKey" resultClass="String">
+	/* pscmexh0100.getMkdpConSeqKey  컨텐츠 등록 - 컨텐츠번호 발번  */
+		SELECT LPAD(NVL(MAX(TO_NUMBER(CONTENTS_SEQ)), 0)+1, 12, '0') AS CONTENTS_SEQ
+		  FROM TCA_MKDP_CONTENTS   /* 기획전 컨텐츠 */
+		 WHERE CATEGORY_ID = #categoryChildId#        /* 카테고리번호 */
+	       AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+	</select>
+
+	<insert id="insertContentsInfo">
+	/* pscmexh0100.insertContentsInfo  이미지/HTML 등록 */
+	INSERT
+	  INTO TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+	     (
+	       CATEGORY_ID                           /* 카테고리번호         */
+	     , MKDP_SEQ                              /* 기획전번호           */
+         , CONTENTS_SEQ
+
+	     , DIVN_SEQ                              /* 구분자번호           */
+	     , CONTENTS_DIVN_CD                      /* 컨텐츠구분코드       */
+	     , CH_CD                                 /* 채널코드             */
+	     , INDT_FILE                             /* FILE PATH            */
+	     , INDT_HTML                             /* HTML                 */
+
+	     , REG_METHOD_CD                         /* 등록방법코드         */
+
+	     , REG_DATE                              /* 등록일               */
+	     , REG_ID                                /* 등록자               */
+	     , MOD_DATE                              /* 수정일               */
+	     , MOD_ID                                /* 수정자               */
+
+	     , IMG_PATH                              /* 이미지 경로          */
+	     )
+	VALUES
+	     (
+	       #categoryId#
+	     , #mkdpSeq#
+	     , #contentsSeq#
+
+	     , #divnSeq#                             /* 구분자번호           */
+	     , #contentsDivnCd#                      /* 컨텐츠구분코드       */
+	     , #chCd#                                /* 채널코드             */
+	     , #indtFile#                            /* HTML FILE PATH       */
+	     , #indtHtml#                            /* HTML                 */
+
+	     , #regMethodCd#                         /* 등록방법코드         */
+
+	     , CURRENT_TIMESTAMP(0)
+	     , #regId#
+	     , CURRENT_TIMESTAMP(0)
+	     , #modId#
+
+	     , #imgPath#                             /* 이미지 경로          */
+	     )
+	</insert>
+
+	<update id="updateContentsInfo">
+	/* pscmexh0100.updateContentsInfo  이미지/HTML 등록 */
+	UPDATE TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+	   SET
+	       MOD_ID            = #modId#								/* 수정자          	*/
+	     , MOD_DATE          = CURRENT_TIMESTAMP(0)								/* 수정일          	*/
+	     <isNotEmpty property="imgPath">
+	     , IMG_PATH          = #imgPath#							/* 이미지 경로	*/
+	     </isNotEmpty>
+	 WHERE CATEGORY_ID       = #categoryChildId#					/* 카테고리번호	*/
+	   AND MKDP_SEQ          = #mkdpSeq#							/* 기획전번호     */
+	   AND CONTENTS_SEQ      = #contentSeq#							/* 컨텐츠번호     */
+	</update>
+
+	<select id="selectContentsInfo" resultClass="dataMap">
+	/* pscmexh0100.selectContentsInfo  이미지/HTML정보 조회 */
+        SELECT 'U' AS DB_STATUS
+	         , A.CH_CD                                                      /* 채널코드(01:PC, 02:모바일) */
+
+             , A.IMG_PATH                                                   /* 이미지 파일 경로  */
+	         , A.INDT_FILE                                                  /* HTML 파일 경로    */
+
+			 , SUBSTR(A.START_DATE,  1, 8) AS START_DATE                                   /* 시작일시  */
+			 , SUBSTR(A.START_DATE,  9, 2) AS START_HH
+			 , SUBSTR(A.START_DATE, 11, 2) AS START_MM
+
+			 , TO_CHAR(TO_DATE(A.END_DATE, 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD') AS END_DATE  /* 종료일시  */
+			 , SUBSTR(A.END_DATE  ,  9, 2) AS END_HH
+			 , SUBSTR(A.END_DATE  , 11, 2) AS END_MM
+
+             , A.CONTENTS_DIVN_CD
+             , A.CH_CD
+             , A.END_DATE
+	         , DBMS_LOB.SUBSTR(A.INDT_HTML, 4000, 1) AS INDT_HTML           /* HTML 소스         */
+             , A.DIVN_SEQ                                                   /* 구분자 코드 */
+
+             , A.CATEGORY_ID                  /* 카테고리번호    */
+	         , A.MKDP_SEQ                     /* 기획전번호      */
+	         , A.CONTENTS_SEQ
+
+             , B.SUB_STR_CD
+             , B.SUB_STR_NM
+
+             , A.REG_METHOD_CD                /* 등록방법코드 */
+
+	      FROM TCA_MKDP_CONTENTS A         /* 기획전 컨텐츠 */
+		  LEFT OUTER
+		  JOIN (SELECT XA.CATEGORY_ID
+		             , XA.MKDP_SEQ
+		             , XA.CONTENTS_SEQ
+				     , LISTAGG(XB.STR_CD, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS SUB_STR_CD
+				     , LISTAGG(XB.STR_NM, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS SUB_STR_NM
+			      FROM TCA_MKDP_CON_STR XA    /* 기획전 컨텐츠 점포 */
+                  LEFT OUTER
+                  JOIN TST_STORE XB
+                    ON XB.STR_CD = XA.STR_CD
+			     WHERE XA.CATEGORY_ID = #categoryId#
+			       AND XA.MKDP_SEQ    = #mkdpSeq#
+			     GROUP BY XA.CATEGORY_ID, XA.MKDP_SEQ, XA.CONTENTS_SEQ) B
+		    ON B.CATEGORY_ID  = A.CATEGORY_ID
+		   AND B.MKDP_SEQ     = A.MKDP_SEQ
+		   AND B.CONTENTS_SEQ = A.CONTENTS_SEQ
+
+	     WHERE A.CATEGORY_ID       = #categoryId#                                                   /* 카테고리번호   */
+           AND A.MKDP_SEQ          = #mkdpSeq#                                                      /* 기획전번호     */
+           AND A.CONTENTS_SEQ      = #contentsSeq#                                                  /* 컨텐츠번호     */
+	</select>
+
+	<delete id="deleteContentsImage">
+	/* pscmexh0100.deleteContentsImage */
+		DELETE TCA_MKDP_CONTENTS      /* 기획전 컨텐츠 */
+		 WHERE CATEGORY_ID       = #categoryId#                                                   /* 카테고리번호   */
+           AND MKDP_SEQ          = #mkdpSeq#                                                      /* 기획전번호     */
+           AND CONTENTS_SEQ      = #contentsSeq#                                                  /* 컨텐츠번호     */
+	</delete>
+
+	<select id="selectDivnSeqList" resultClass="dataMap">
+	/* pscmexh0100.selectDivnSeqList  구분자정보목록 조회 */
+	    SELECT DIVN_SEQ AS CODE                             /* 구분자번호           */
+	         , DIVN_NM  AS NAME                             	/* 구분자명             */
+	         , CASE WHEN A.DISP_YN = 'Y' THEN '전시'
+             	        WHEN A.DISP_YN = 'N' THEN '전시안함'
+               ELSE ''
+               END AS CODE_YN									/* 전시여부             */
+	      FROM TCA_MKDP_DTL A    /* 기획전 관리구분 */
+         WHERE CATEGORY_ID      = #categoryId#                                        /* 카테고리번호   */
+	       AND MKDP_SEQ         = #mkdpSeq#                                           /* 기획전번호     */
+	       AND DISP_TO_CD = '01'
+	     ORDER BY DISP_SEQ
+	</select>
+
+
+	<!--============== 기획전 상품등록 ================== -->
+	<select id="selectExhibitionProdInfoList" resultClass="dataMap">
+	/* pscmexh0100.selectExhibitionProdInfoList  기획전정보 상품 조회 */
+   SELECT ROWNUM AS SEQ, M.*
+  FROM (SELECT A.CATEGORY_ID /* 카테고리번호        */,
+               A.MKDP_SEQ /* 기획전번호          */,
+               A.DIVN_SEQ /* 구분자번호          */,
+               A.PROD_CD /* 상품코드            */,
+               A.STR_CD /* 점포코드            */,
+               B.PROD_NM,
+               (SELECT COUNT(X.CATEGORY_ID) AS CNT
+                          FROM TCA_MKDP_DTL_ASSIGN X
+                         WHERE X.CATEGORY_ID = A.CATEGORY_ID
+                           AND X.MKDP_SEQ    = A.MKDP_SEQ
+                       ) AS REG_PROD_CNT,
+               A.DISP_YN /* 전시여부            */,
+               A.ORDER_BEST_PROD_VAL /* 정렬_베스트상품값   */,
+               A.ORDER_PROD_STFD /* 정렬_상품만족도     */,
+               A.DISP_SEQ /* 전시순번            */,
+               TO_CHAR(A.REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
+               A.REG_ID,
+               TO_CHAR(A.MOD_DATE, 'YYYY-MM-DD') AS MOD_DATE,
+               A.MOD_ID,
+               C.STR_NM AS STR_NM /* 점포명   */,
+               (SELECT TV.VENDOR_NM
+                  FROM TPR_PRODUCT TR, TVE_VENDOR TV
+                 WHERE 1 = 1
+                   AND TR.VENDOR_ID = TV.VENDOR_ID
+                   AND TR.PROD_CD = B.PROD_CD) AS VENDOR_NM /* 거래처명       */,
+               B.CMBN_MALL_SELL_PSBT_YN /* 근거리전용여부 */,
+               D.CURR_SELL_PRC /* 판매가         */,
+               /*CASE WHEN SOUT_YN = 'Y' THEN '품절'
+                    WHEN SOUT_YN = 'N' THEN '판매중'
+                    ELSE ''
+               END AS SOUT_NM  품절여부       ,    */
+
+              nvl((select nvl(min(pr.sout_yn),'Y') as sout_yn
+              from tpr_product p
+              join tpr_item itm on (p.prod_cd = itm.prod_cd)
+              join tpr_store_item_price pr  on (itm.prod_cd = pr.prod_cd and itm.item_cd = pr.item_cd and pr.str_cd = '981')
+              where p.prod_cd = A.PROD_CD),'Y') as SOUT_YN /* 품절여부       */,
+
+               /* D.SOUT_YN  품절여부       */
+               'http://img.lottemart.com/images/prodimg' || '/' ||
+               SUBSTRB(B.MD_SRCMK_CD, 1, 5) || '/' || B.MD_SRCMK_CD ||
+               '_1_60.jpg' AS IMG_PATH,
+               '/images/prodimg/'||SUBSTRB(B.MD_SRCMK_CD,1,5)||'/'||B.MD_SRCMK_CD||'_1_250.jpg'  AS IMG250 ,
+               B.BUY_PRC,
+               B.SELL_PRC,
+               B.MAKE_COM_NM,
+               B.MD_SRCMK_CD,
+               A.STR_CD || A.PROD_CD AS CHK_KEY,
+               NVL(A.REG_ID, 'SYSTEM') AS REG_NM,
+               NVL((SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = A.MOD_ID),
+                   'SYSTEM') AS MOD_NM,
+               'Image' AS IMG_PATH_BTN
+          FROM TCA_MKDP_MST MST
+          JOIN TCA_MKDP_DTL_ASSIGN A /* 기획전 상품 */
+            ON (MST.CATEGORY_ID = A.CATEGORY_ID AND MST.MKDP_SEQ = A.MKDP_SEQ)
+          JOIN TPR_PRODUCT B
+            ON B.PROD_CD = A.PROD_CD
+          JOIN TST_STORE C
+            ON C.STR_CD = A.STR_CD
+          LEFT OUTER JOIN TPR_STORE_ITEM_PRICE D
+            ON D.STR_CD = A.STR_CD
+           AND D.PROD_CD = A.PROD_CD
+           and d.item_cd = '001'
+         WHERE A.CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+           AND A.MKDP_SEQ = #mkdpSeq#           /* 기획전번호   */
+              --AND A.DIVN_SEQ    = null           /* 구분자번호   */
+           AND C.STR_CD = '981'
+           --AND NVL(MST.SCM_YN,'N') = 'Y'  /* 통합기획전여부 , SCM기획전여부 */
+           --AND MST.vendor_id = '016812'
+           AND B.VENDOR_ID = #vendorId#
+         ORDER BY A.DISP_SEQ, A.PROD_CD, C.STR_NM
+       ) M
+	</select>
+
+	<insert id="insertExhibitionProdInfo">
+	/* pscmexh0100.insertExhibitionProdInfo  기획전정보 상품 등록 */
+	    INSERT
+	      INTO TCA_MKDP_DTL_ASSIGN A	/* 기획전 상품 */
+	         (
+	           CATEGORY_ID				/* 카테고리번호		*/
+	         , MKDP_SEQ					/* 기획전번호		*/
+	         , DIVN_SEQ					/* 구분자번호		*/
+	         , PROD_CD					/* 상품코드		*/
+	         , STR_CD					/* 점포코드		*/
+	         , DISP_YN					/* 전시여부		*/
+	         , DISP_SEQ					/* 전시순서		*/
+	         , REG_DATE					/* 등록일			*/
+	         , REG_ID					/* 등록자			*/
+	         , MOD_DATE					/* 수정일			*/
+	         , MOD_ID					/* 수정자			*/
+	         )
+	    VALUES
+	         ( #categoryId#
+	         , #mkdpSeq#
+	         , #divnSeq#
+	         , #prodCd#
+	         , #strCd#
+	         , #dispYn#
+	         , #dispSeq#
+	         , CURRENT_TIMESTAMP(0)
+	         , #regId#
+	         , CURRENT_TIMESTAMP(0)
+	         , #modId#
+	         )
+	</insert>
+
+
+
+	<insert id="insertIntExhibitionProdInfo">
+	/* pscmexh0100.insertIntExhibitionProdInfo  통합기획전정보 상품 등록 */
+	    INSERT
+	      INTO TPC_MKDP_DTL_ASSIGN_TMP  /* 기획전 상품 */
+	         (
+	           CATEGORY_ID                  /* 카테고리번호        */
+	         , MKDP_SEQ                     /* 기획전번호          */
+	         , DIVN_SEQ                     /* 구분자번호          */
+	         , PROD_CD                      /* 상품코드            */
+	         , DISP_YN                      /* 전시여부            */
+	         , REG_DATE                     /* 등록일              */
+	         , REG_ID                       /* 등록자              */
+	         , MOD_DATE                     /* 수정일              */
+	         , MOD_ID                       /* 수정자              */
+	         , STS_CD						/*  승인상태코드		*/
+	         )
+	    VALUES
+	         ( #categoryId#
+	         , #mkdpSeq#
+	         , #divnSeq#
+	         , #prodCd#
+	         , #dispYn#
+	         , CURRENT_TIMESTAMP(0)
+	         , #regId#
+	         , CURRENT_TIMESTAMP(0)
+	         , #modId#
+	         , #stsCd#
+	         )
+	</insert>
+ <select id="selectAprvStsCdCheck" resultClass="String">
+	/* pscmexh0100.selectAprvStsCdCheck  기획전정보 승인 조회  */
+	  SELECT APRV_STS_CD
+        FROM TCA_MKDP_MST
+	   WHERE CATEGORY_ID = #categoryId#        	/* 카테고리번호	*/
+		 AND MKDP_SEQ    = #mkdpSeq#           	/* 기획전번호	*/
+	</select>
+
+	<update id="updateAprv">
+	/* pscmexh0100.updateAprv  기획전 승인요청 */
+		UPDATE TCA_MKDP_MST
+		   SET
+		       APRV_STS_CD = #aprvStsCd#		/* 승인요청	*/
+			 , MOD_ID      = #modId#
+			 , MOD_DATE    = CURRENT_TIMESTAMP(0)
+		 WHERE CATEGORY_ID = #categoryId#		/* 카테고리번호	*/
+		   AND MKDP_SEQ    = #mkdpSeq#			/* 기획전번호	*/
+	</update>
+
+
+
+	<update id="updateExhibitionProdInfo">
+	/* pscmexh0100.updateExhibitionProdInfo  기획전정보 상품 수정 */
+		UPDATE TCA_MKDP_DTL_ASSIGN /* 기획전 상품 */
+		   SET
+		       DISP_YN				= #dispYn#		/* 전시여부	*/
+		     , DISP_SEQ             = #dispSeq#		/* 전시순서	*/
+			 , MOD_ID				= #modId#
+			 , MOD_DATE				= CURRENT_TIMESTAMP(0)
+		 WHERE CATEGORY_ID = #categoryId#			/* 카테고리번호	*/
+		   AND MKDP_SEQ    = #mkdpSeq#				/* 기획전번호	*/
+		   AND DIVN_SEQ    = #divnSeq#				/* 구분자번호	*/
+		   AND PROD_CD     = #prodCd#				/* 상품코드	*/
+		   AND STR_CD      = #strCd#				/* 점포코드	*/
+	</update>
+
+	<update id="updateAllStoreExhibitionProdInfo">
+	/* pscmexh0100.updateAllStoreExhibitionProdInfo  기획전 상품 전시순번 수정 - 조회조건 점포 선택후 수정시 */
+		UPDATE TCA_MKDP_DTL_ASSIGN /* 기획전 상품 */
+		   SET
+		       DISP_SEQ            = #dispSeq#              /* 전시순번            */
+			 , MOD_ID              = #modId#
+			 , MOD_DATE            = CURRENT_TIMESTAMP(0)
+		 WHERE CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		   AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   AND DIVN_SEQ    = #divnSeq#           /* 구분자번호   */
+		   AND PROD_CD     = #prodCd#            /* 상품코드     */
+	</update>
+
+	<delete id="deleteExhibitionProdInfo">
+	/* pscmexh0100.deleteExhibitionProdInfo  기획전정보 상품 삭제 */
+		DELETE FROM TCA_MKDP_DTL_ASSIGN    /* 기획전 상품 */
+		 WHERE CATEGORY_ID = #categoryId#		/* 카테고리번호	*/
+		   AND MKDP_SEQ    = #mkdpSeq#			/* 기획전번호	*/
+		   AND DIVN_SEQ    = #divnSeq#			/* 구분자번호	*/
+		   AND PROD_CD     = #prodCd#			/* 상품코드	*/
+	</delete>
+
+	<update id="updateDivnProdSortInfo">
+	/* pscmexh0100.updateDivnProdSortInfo  기획전 상품등록 상품정렬방식 수정 */
+	    UPDATE TCA_MKDP_DTL    /* 기획전 관리구분 */
+	       SET
+	           PROD_ORD_SETUP      = #prodOrdSetup#                                                              /* 1.정렬설정                */
+
+	         , PROD_ORD_SETUP_VAL  = CASE WHEN #prodOrdSetup#  = '07' THEN #prodOrdSetupVal#  ELSE NULL END      /* 2.전시노출개수, 정렬설정  */
+             , PROD_ORD_SETUP2     = CASE WHEN #prodOrdSetup#  = '07' THEN #prodOrdSetup2#    ELSE NULL END
+
+	         , MOD_ID              = #modId#
+	         , MOD_DATE            = CURRENT_TIMESTAMP(0)
+	     WHERE CATEGORY_ID = #categoryId#           /* 카테고리번호   */
+	       AND MKDP_SEQ    = #mkdpSeq#	            /* 기획전번호     */
+	       AND DIVN_SEQ    = #divnSeq#              /* 구분자번호     */
+	</update>
+
+	<select id="selectDivnProdSortInfo" resultClass="dataMap">
+	/* pscmexh0100.selectDivnProdSortInfo  기획전 상품등록 상품정렬방식 조회 */
+	    SELECT PROD_ORD_SETUP	       /* 1.정렬설정                */
+             , PROD_ORD_SETUP_VAL	   /* 2.전시노출개수, 정렬설정  */
+             , PROD_ORD_SETUP2
+          FROM TCA_MKDP_DTL    /* 기획전 관리구분 */
+	     WHERE CATEGORY_ID = #categoryId#			/* 카테고리번호	*/
+	       AND MKDP_SEQ    = #mkdpSeq#	            /* 기획전번호	*/
+	       AND DIVN_SEQ    = #divnSeq#              /* 구분자번호	*/
+	</select>
+
+	<!-- 기획전 복사 - 구분자 정보 -->
+	<insert id="insertCopyExhiDivnInfo">
+	/* pscmexh0100.insertCopyExhiDivnInfo  기획전 복사 - 구분자 정보 */
+		INSERT
+		  INTO TCA_MKDP_DTL A  /* 기획전 관리구분 */
+			 (
+			   CATEGORY_ID							/* 카테고리번호			*/
+			 , MKDP_SEQ								/* 기획전번호			*/
+			 , DIVN_SEQ								/* 구분자번호			*/
+			 , DIVN_NM								/* 구분자명			*/
+			 , DISP_SEQ								/* 전시순번			*/
+			 , DIVN_TYPE							/* 구분자유형코드		*/
+			 , DISP_YN								/* 전시여부			*/
+			 , DIVN_IMG_URL							/* 구분이미지URL		*/
+			 , DISP_TO_CD							/* 전시대상코드			*/
+			 , DISP_PROD_CNT						/* 전시상품수			*/
+			 , PROD_TEMPLATE_CD						/* 상품전시템플릿SM318	*/
+			 , START_DATE							/* 시작일시			*/
+			 , END_DATE								/* 종료일시			*/
+			 , APPLY_START_DATE						/* 행사적용시작일시		*/
+			 , APPLY_END_DATE						/* 행사적용종료일시		*/
+			 , REG_DATE								/* 등록일				*/
+			 , REG_ID								/* 등록자				*/
+			 , MOD_DATE								/* 수정일				*/
+			 , MOD_ID								/* 수정자				*/
+			 , PROD_ORD_SETUP						/* 상품정렬설정SM305	*/
+			 , PROD_ORD_SETUP_VAL					/* 상품정렬설정값		*/
+			 , PROD_ORD_SETUP2						/* 상품정렬설정2 SM305	*/
+			 )
+
+		SELECT CATEGORY_ID							/* 카테고리번호			*/
+			 , #mkdpSeq#     AS MKDP_SEQ			/* 기획전번호			*/
+			 , DIVN_SEQ								/* 구분자번호			*/
+			 , DIVN_NM								/* 구분자명			*/
+			 , DISP_SEQ								/* 전시순번			*/
+			 , DIVN_TYPE							/* 구분자유형코드		*/
+			 , DISP_YN								/* 전시여부			*/
+			 , DIVN_IMG_URL							/* 구분이미지URL		*/
+			 , DISP_TO_CD							/* 전시대상코드			*/
+			 , DISP_PROD_CNT						/* 전시상품수			*/
+			 , PROD_TEMPLATE_CD						/* 상품전시템플릿SM318	*/
+			 , START_DATE							/* 시작일시			*/
+			 , END_DATE								/* 종료일시			*/
+			 , NVL(APPLY_START_DATE, START_DATE) AS APPLY_START_DATE	/* 행사적용시작일시	*/
+			 , NVL(APPLY_END_DATE, END_DATE) AS APPLY_END_DATE			/* 행사적용종료일시	*/
+			 , CURRENT_TIMESTAMP(0)								/* 등록일				*/
+			 , #regId#								/* 등록자				*/
+			 , CURRENT_TIMESTAMP(0)								/* 수정일				*/
+			 , #modId#								/* 수정자				*/
+			 , PROD_ORD_SETUP						/* 상품정렬설정SM305	*/
+			 , PROD_ORD_SETUP_VAL					/* 상품정렬설정값		*/
+			 , PROD_ORD_SETUP2						/* 상품정렬설정2 SM305	*/
+		  FROM TCA_MKDP_DTL A  /* 기획전 관리구분 */
+		 WHERE A.CATEGORY_ID = #categoryChildId#	/* 카테고리번호 ex)C0060001	*/
+		   AND A.MKDP_SEQ    = #oldMkdpSeq#			/* 기획전번호				*/
+	</insert>
+
+
+
+
+	<!-- 기획전 복사 - 이미지/HTML 정보 -->
+	<insert id="insertExhiImageHtml">
+    /* pscmexh0100.insertExhiImageHtml  기획전 저장 - 이미지/HTML 정보 */
+        INSERT
+          INTO TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+             (
+               CATEGORY_ID                           /* 카테고리번호	*/
+             , MKDP_SEQ                              /* 기획전번호		*/
+             , CONTENTS_SEQ                          /* 컨텐츠번호		*/
+             , CONTENTS_DIVN_CD                      /* 컨텐츠구분코드	*/
+             , CH_CD                                 /* 채널코드		*/
+             , INDT_HTML                             /* HTML		*/
+             , START_DATE                            /* 시작일시		*/
+             , END_DATE                              /* 종료일시		*/
+             , REG_METHOD_CD                         /* 등록방법코드	*/
+             , REG_DATE                              /* 등록일		*/
+             , REG_ID                                /* 등록자		*/
+             , MOD_DATE                              /* 수정일		*/
+             , MOD_ID                                /* 수정자		*/
+             )values(
+               #categoryChildId#                     /* 카테고리번호	*/
+             , #mkdpSeq#					         /* 기획전번호		*/
+             , #contentSeq#                          /* 컨텐츠번호		*/
+             , #contentsDivnCd#                  	 /* 컨텐츠구분코드	*/
+             , #chCd#                                /* 채널코드		*/
+             , #content#                             /* HTML		*/
+             , #startDate#                           /* 시작일시		*/
+             , #endDate#                             /* 종료일시		*/
+             , #regMethodCd#                         /* 등록방법코드	*/
+             , CURRENT_TIMESTAMP(0)                               /* 등록일		*/
+             , #modId#                               /* 등록자		*/
+             , CURRENT_TIMESTAMP(0)                               /* 수정일		*/
+             , #modId#                               /* 수정자		*/
+
+             )
+	</insert>
+
+
+	<!-- ==================컨텐츠 등록 - 할당점포========================== -->
+	<insert id="insertConStrAssignInfo">
+	/* pbomexh0100.insertConStrAssignInfo  컨텐츠 등록 */
+		INSERT
+		  INTO TCA_MKDP_CON_STR    /* 기획전관리 컨텐츠 점포 */
+			 (
+			   CATEGORY_ID                           /* 카테고리번호	*/
+			 , MKDP_SEQ                              /* 기획전번호		*/
+			 , CONTENTS_SEQ							 /* 구분자번호		*/
+			 , STR_CD								 /* 점포번호		*/
+			 , REG_DATE                              /* 등록일		*/
+			 , REG_ID                                /* 등록자		*/
+			 , MOD_DATE                              /* 수정일		*/
+			 , MOD_ID		                         /* 수정자		*/
+			 )
+		VALUES
+			 (
+			   #categoryChildId#
+			 , #mkdpSeq#
+			 , #contentSeq#
+			 , #strCd#
+			 , CURRENT_TIMESTAMP(0)
+			 , #regId#
+			 , CURRENT_TIMESTAMP(0)
+			 , #modId#
+			 )
+	</insert>
+
+
+	<!-- 기획전 복사 - 구분자 점포 -->
+	<insert id="insertCopyExhiDivnSubStr">
+	/* pscmexh0100.insertCopyExhiDivnSubStr  기획전 복사 - 구분자 점포 */
+		INSERT
+		  INTO TCA_MKDP_DTL_STR    /* 기획전관리 구분 점포 */
+		     (
+		       CATEGORY_ID							/* 카테고리번호		*/
+		     , MKDP_SEQ                             /* 기획전번호		*/
+		     , DIVN_SEQ                             /* 구분자번호		*/
+		     , STR_CD								/* 점포번호		*/
+		     , REG_DATE                             /* 등록일			*/
+		     , REG_ID                               /* 등록자			*/
+		     , MOD_DATE                             /* 수정일			*/
+		     , MOD_ID		                        /* 수정자			*/
+		     )
+		SELECT
+			   CATEGORY_ID							/* 카테고리번호		*/
+		     , #mkdpSeq#     AS MKDP_SEQ			/* 기획전번호		*/
+		     , DIVN_SEQ								/* 구분자번호		*/
+		     , STR_CD								/* 점포번호		*/
+		     , CURRENT_TIMESTAMP(0)								/* 등록일			*/
+		     , #regId#								/* 등록자			*/
+		     , CURRENT_TIMESTAMP(0)								/* 수정일			*/
+		     , #modId#								/* 수정자			*/
+		  FROM TCA_MKDP_DTL_STR	/* 기획전관리 구분 점포	*/
+		 WHERE CATEGORY_ID = #categoryChildId#		/* 카테고리번호		*/
+		   AND MKDP_SEQ    = #oldMkdpSeq#			/* 기획전번호		*/
+	</insert>
+
+	<!-- 기획전 복사 - 이미지/HTML 점포 -->
+	<insert id="insertCopyConStrAssignInfo">
+	/* pscmexh0100.insertCopyConStrAssignInfo  기획전 복사 - 이미지/HTML 점포 */
+		INSERT
+		  INTO TCA_MKDP_CON_STR    						/* 기획전관리 컨텐츠 점포 */
+		     (
+		       CATEGORY_ID								/* 카테고리번호			*/
+		     , MKDP_SEQ									/* 기획전번호			*/
+		     , CONTENTS_SEQ								/* 구분자번호			*/
+		     , STR_CD									/* 점포번호			*/
+		     , REG_DATE									/* 등록일				*/
+		     , REG_ID                               	/* 등록자				*/
+		     , MOD_DATE                              	/* 수정일				*/
+		     , MOD_ID		                         	/* 수정자				*/
+		     )
+		SELECT CATEGORY_ID								/* 카테고리번호			*/
+		     , #mkdpSeq#     AS MKDP_SEQ				/* 기획전번호			*/
+		     , CONTENTS_SEQ								/* 컨텐츠번호			*/
+		     , STR_CD									/* 점포번호			*/
+		     , CURRENT_TIMESTAMP(0)									/* 등록일				*/
+		     , #regId#									/* 등록자				*/
+		     , CURRENT_TIMESTAMP(0)									/* 수정일				*/
+		     , #modId#									/* 수정자				*/
+		  FROM TCA_MKDP_CON_STR    						/* 기획전관리 컨텐츠 점포	*/
+		 WHERE CATEGORY_ID = #categoryChildId#			/* 카테고리번호			*/
+		   AND MKDP_SEQ    = #oldMkdpSeq#				/* 기획전번호			*/
+	</insert>
+
+
+	<select id="selectProdItemList" resultClass="dataMap">
+		/* pscmexh0100.selectProdItemList */
+		SELECT B.PROD_CD                                      -- 상품코드
+		     , B.PROD_NM                                      -- 상품명
+		     , C.STR_CD                                       -- 점포코드
+		     , D.STR_NM                                       -- 점포명
+		     , C.VENDOR_ID                                    -- 거래처ID
+		     , ( SELECT VENDOR_NM
+		           FROM TVE_VENDOR
+		          WHERE VENDOR_ID = C.VENDOR_ID) AS VENDOR_NM -- 점포명
+		     , B.CMBN_MALL_SELL_PSBT_YN                       -- 근거리전용여부
+		     , C.CURR_SELL_PRC                                -- 판매가
+		     , B.DISP_YN                                      -- 전시여부
+		     , C.SOUT_YN                                      -- 품절여부
+		     , 'http://img.lottemart.com/images/prodimg' || '/' ||
+		       SUBSTRB(B.MD_SRCMK_CD,1,5) || '/' ||
+		       B.MD_SRCMK_CD || '_1_60.jpg' AS IMGPATH        -- 이미지
+		     , TO_CHAR(B.REG_DATE, 'YYYY-MM-DD') AS REG_DATE  -- 등록일자
+		     , B.REG_ID                                       -- 등록자 ID
+		     , NVL(( SELECT ADMIN_NM
+		               FROM TAD_ADMIN
+		              WHERE ADMIN_ID = B.REG_ID ), 'SYSTEM') AS REG_NM
+		     , TO_CHAR(B.MOD_DATE, 'YYYY-MM-DD') AS MOD_DATE  -- 수정일자
+		     , B.MOD_ID                                       -- 수정자 ID
+		     , NVL(( SELECT ADMIN_NM
+		               FROM TAD_ADMIN
+		              WHERE ADMIN_ID = B.MOD_ID ), 'SYSTEM') AS MOD_NM
+		     , C.STR_CD || B.PROD_CD AS CHK_KEY
+		  FROM TPR_PRODUCT B
+             , ( SELECT PROD_CD
+                      , STR_CD
+                      , VENDOR_ID
+                      , CURR_SELL_PRC
+                      , SOUT_YN
+                   FROM TPR_STORE_ITEM_PRICE
+                  WHERE ITEM_CD = '001'
+                ) C
+              , TST_STORE D
+		  WHERE B.PROD_CD = C.PROD_CD
+		    AND C.STR_CD  = D.STR_CD
+		    AND C.STR_CD != '999'
+		    AND B.APRV_YN = 'Y'
+		    AND ( ( #prodDivnCd# = '01'
+		        AND B.FEDAY_MALL_SELL_PSBT_YN = 'N'
+		        AND (D.ONLINE_YN = 'Y'
+		         OR D.CMBN_MALL_REP_STR_YN = 'Y')
+		        AND (D.STR_CD           != '981' ) )
+		         OR ( #prodDivnCd# = '01'
+		          AND B.FEDAY_MALL_SELL_PSBT_YN = 'Y'
+		          AND ( D.FEDAY_MALL_REP_STR_YN  = 'Y'
+		             OR D.ONLINE_YN = 'Y'
+		             OR D.CMBN_MALL_REP_STR_YN = 'Y'
+		             OR D.FEDAY_MALL_YN = 'Y')
+		          AND (D.STR_CD           != '981') )
+		         OR ( #prodDivnCd# = '02' AND D.STR_CD = '981' ) )
+		    AND ( ( D.HODEV_MALL_STR_YN = 'Y'
+		        AND B.FEDAY_MALL_PROD_DIVN_CD != '0') /* 택배점 상품할당시 근거리 전용상품 제외 */
+		         OR (NVL(D.HODEV_MALL_STR_YN, 'N') = 'N' ) )
+		    AND B.PROD_CD = #prodCd#
+	</select>
+
+	<!-- ==================기획전 등록 - 할당점포========================== -->
+	<insert id="insertCopyStrAssignInfo">
+	/* pscmexh0100.insertCopyStrAssignInfo  구분자정보 등록 */
+		INSERT
+		  INTO TCA_MKDP_MST_STR    /* 기획전관리 점포 */
+			 (
+			   CATEGORY_ID                           /* 카테고리번호			*/
+			 , MKDP_SEQ                              /* 기획전번호				*/
+			 , STR_CD								 /*	점포번호				*/
+			 , REG_DATE                              /* 등록일				*/
+			 , REG_ID                                /* 등록자				*/
+			 , MOD_DATE                              /* 수정일				*/
+			 , MOD_ID		                         /* 수정자				*/
+			 )
+		SELECT
+			   CATEGORY_ID
+			 , #mkdpSeq#
+			 , STR_CD
+			 , CURRENT_TIMESTAMP(0)
+			 , #regId#
+			 , CURRENT_TIMESTAMP(0)
+			 , #modId#
+		  FROM TCA_MKDP_MST_STR
+		 WHERE CATEGORY_ID = #categoryChildId#		/* 카테고리번호 ex)C0060001	*/
+		   AND MKDP_SEQ    = #oldMkdpSeq#			/* 기획전번호				*/
+	</insert>
+
+	<!-- ==================구분자 등록 - 할당점포========================== -->
+	<insert id="insertDtlStrAssignInfo">
+	/* pscmexh0100.insertDtlStrAssignInfo  구분자정보 등록 */
+		INSERT
+		  INTO TCA_MKDP_DTL_STR    /* 기획전관리 구분 점포 */
+			 (
+			   CATEGORY_ID                           /* 카테고리번호	*/
+			 , MKDP_SEQ                              /* 기획전번호		*/
+			 , DIVN_SEQ                              /* 구분자번호		*/
+			 , STR_CD								 /* 점포번호		*/
+			 , REG_DATE                              /* 등록일		*/
+			 , REG_ID                                /* 등록자		*/
+			 , MOD_DATE                              /* 수정일		*/
+			 , MOD_ID		                         /* 수정자		*/
+			 )
+		VALUES
+			 (
+			   #categoryId#
+			 , #mkdpSeq#
+			 , #divnSeq#
+			 , #strCd#
+			 , CURRENT_TIMESTAMP(0)
+			 , #regId#
+			 , CURRENT_TIMESTAMP(0)
+			 , #modId#
+			 )
+	</insert>
+
+	<!-- ==================기획전 점포수정시 관련 쿼리========================== -->
+	<delete id="deleteMkdpModifyConStr">
+	/* pscmexh0100.deleteMkdpModifyConStr  기획전수정시 - 컨텐츠 점포 삭제 */
+		DELETE FROM TCA_MKDP_CON_STR    /* 기획전 컨텐츠 점포 */
+		 WHERE CATEGORY_ID = #categoryChildId#   /* 카테고리번호 */
+		   AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   /* 점포코드     */
+		   AND STR_CD      IN (SELECT STR_CD
+		                         FROM TCA_MKDP_MST_STR    /* 기획전관리 점포 */
+		                        WHERE CATEGORY_ID = #categoryChildId#        /* 카테고리번호 */
+		                          AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		                          <iterate prepend="AND STR_CD NOT IN " property="arrStrCd" open="(" close=")" conjunction=",">
+		                               #arrStrCd[]#
+		                          </iterate>
+		                       )
+	</delete>
+
+	<delete id="deleteMkdpModifyDtlStr">
+	/* pscmexh0100.deleteMkdpModifyDtlStr  기획전수정시 - 구분자 점포 삭제 */
+		DELETE FROM TCA_MKDP_DTL_STR    /* 기획전관리 구분 점포 */
+		 WHERE CATEGORY_ID = #categoryChildId#   /* 카테고리번호 */
+		   AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   /* 점포코드     */
+		   AND STR_CD      IN (SELECT STR_CD
+		                         FROM TCA_MKDP_MST_STR    /* 기획전관리 점포 */
+		                        WHERE CATEGORY_ID = #categoryChildId#        /* 카테고리번호 */
+		                          AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		                          <iterate prepend="AND STR_CD NOT IN " property="arrStrCd" open="(" close=")" conjunction=",">
+		                               #arrStrCd[]#
+		                          </iterate>
+		                       )
+	</delete>
+
+	<delete id="deleteMkdpMstStr">
+	/* pscmexh0100.deleteMkdpMstStr  기획전수정시 - 점포 삭제 */
+		DELETE FROM TCA_MKDP_MST_STR    /* 기획전관리 점포 */
+		 WHERE CATEGORY_ID = #categoryChildId#   /* 카테고리번호 */
+		   AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+	</delete>
+
+	<delete id="deleteDtlStrAssignInfo">
+	/* pscmexh0100.deleteDtlStrAssignInfo  구분자정보 점포 삭제 */
+		DELETE FROM TCA_MKDP_DTL_STR    /* 기획전관리 구분 점포 */
+		 WHERE CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		   AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   AND DIVN_SEQ    = #divnSeq#           /* 구분자번호   */
+	</delete>
+
+	<delete id="deleteConStrAssignInfo">
+	/* pscmexh0100.deleteConStrAssignInfo  컨텐츠 점포 삭제 */
+		DELETE FROM TCA_MKDP_CON_STR    /* 기획전 컨텐츠 점포 */
+		 WHERE CATEGORY_ID  = #categoryId#        /* 카테고리번호 */
+		   AND MKDP_SEQ     = #mkdpSeq#           /* 기획전번호   */
+		   AND CONTENTS_SEQ = #contentsSeq#       /* 컨텐츠번호   */
+	</delete>
+
+	<select id="selectMkdpDateCheck" resultClass="String">
+	/* pscmexh0100.selectMkdpDateCheck  기획전 기간 범위 체크 */
+		SELECT CASE WHEN COUNT(A.CATEGORY_ID) > 0 THEN 'Y' ELSE 'N' END AS IS_DATE_YN
+		  FROM TCA_MKDP_MST A        /* 기획전 관리 */
+		 WHERE A.CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		   AND A.MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   AND #startDate# BETWEEN A.MKDP_START_DATE AND A.MKDP_END_DATE
+		   AND #endDate#   BETWEEN A.MKDP_START_DATE AND A.MKDP_END_DATE
+	</select>
+
+	<select id="selectMkdpStoreCheck" resultClass="String">
+	/* pscmexh0100.selectMkdpStoreCheck  기획전 점포 범위 체크 */
+		SELECT CASE WHEN COUNT(CATEGORY_ID) = #storeCount# THEN 'Y' ELSE 'N' END AS IS_STORE_YN
+		  FROM TCA_MKDP_MST_STR A    /* 기획전관리 점포 */
+		 WHERE A.CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		   AND A.MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   <iterate prepend="AND A.STR_CD IN " property="arrStrCd" open="(" close=")" conjunction=",">
+                #arrStrCd[]#
+           </iterate>
+	</select>
+
+	<select id="selectExistMkdpStoreCheck" resultClass="String">
+	/* pscmexh0100.selectExistMkdpStoreCheck  기획전 점포 존재여부 체크 */
+		SELECT CASE WHEN COUNT(CATEGORY_ID) > 0 THEN 'Y' ELSE 'N' END AS IS_STORE_YN
+		  FROM TCA_MKDP_MST_STR A    /* 기획전관리 점포 */
+		 WHERE A.CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		   AND A.MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+		   AND A.STR_CD      = #strCd#             /* 점포코드     */
+	</select>
+
+	<select id="selectContentsChStoreCheck" resultClass="dataMap">
+	/* pscmexh0100.selectContentsChStoreCheck  컨텐츠 채널 및 점포 중복체크 */
+		SELECT A.CH_CD
+		     , MAX(B.SUB_STR_CD) AS SUB_STR_CD
+		  FROM TCA_MKDP_CONTENTS A   /* 기획전 컨텐츠 */
+		  LEFT OUTER
+		  JOIN (SELECT XA.CATEGORY_ID
+		             , XA.MKDP_SEQ
+		             , XA.CONTENTS_SEQ
+		             , LISTAGG(XB.STR_CD, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS SUB_STR_CD
+		             , LISTAGG(XB.STR_NM, ',') WITHIN GROUP(ORDER BY XB.STR_CD) AS SUB_STR_NM
+		          FROM TCA_MKDP_CON_STR XA    /* 기획전 컨텐츠 점포 */
+		          LEFT OUTER
+		          JOIN TST_STORE XB
+		            ON XB.STR_CD = XA.STR_CD
+		         WHERE XA.CATEGORY_ID = #categoryId#
+		           AND XA.MKDP_SEQ    = #mkdpSeq#
+
+		           AND (XA.STR_CD = '999'
+		           		 <isNotEmpty property="arrStrCd">
+				         <iterate prepend="OR XA.STR_CD IN " property="arrStrCd" open="(" close=")" conjunction=",">
+				            #arrStrCd[]#
+				         </iterate>
+				         </isNotEmpty>
+				       )
+				   <isNotEmpty property="contentsSeq">
+				   <![CDATA[
+				   AND XA.CONTENTS_SEQ <> #contentsSeq#
+				   ]]>
+				   </isNotEmpty>
+		         GROUP BY XA.CATEGORY_ID, XA.MKDP_SEQ, XA.CONTENTS_SEQ) B
+		    ON B.CATEGORY_ID  = A.CATEGORY_ID
+		   AND B.MKDP_SEQ     = A.MKDP_SEQ
+		   AND B.CONTENTS_SEQ = A.CONTENTS_SEQ
+		 WHERE A.CATEGORY_ID      = #categoryId#        /* 카테고리번호         */
+		   AND A.MKDP_SEQ         = #mkdpSeq#           /* 기획전번호           */
+		   AND A.CONTENTS_DIVN_CD = #contentsDivnCd#    /* 컨텐츠구분코드       */
+		   AND A.CH_CD            = #chCd#              /* 채널코드             */
+
+		   <isNotEmpty property="divnSeq">
+		   AND A.DIVN_SEQ         = #divnSeq#
+		   </isNotEmpty>
+
+		 GROUP BY A.CH_CD
+	</select>
+
+	<delete id="deleteDivnAssignProd">
+	/* pscmexh0100.deleteDivnAssignProd 구분자정보 삭제시 - 관련 상품 삭제  */
+		DELETE FROM TCA_MKDP_DTL_ASSIGN /* 기획전 상품 */
+		 WHERE CATEGORY_ID      = #categoryId#           /* 카테고리번호 */
+		   AND MKDP_SEQ         = #mkdpSeq#              /* 기획전번호   */
+	       <iterate prepend="AND DIVN_SEQ IN " property="arrDivnSeq" open="(" close=")" conjunction=",">
+		        #arrDivnSeq[]#
+		   </iterate>
+	</delete>
+
+	<update id="updateContentsImgPathInfo">
+	/* pscmexh0100.updateContentsImgPathInfo  이미지 PATH만 수정 */
+		UPDATE TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+		   SET IMG_PATH     = #imgPath#                                                     /* 이미지 경로          */
+		 WHERE CATEGORY_ID      = #categoryId#                                                   /* 카테고리번호   */
+		   AND MKDP_SEQ         = #mkdpSeq#                                                      /* 기획전번호     */
+		   AND CONTENTS_SEQ     = #contentsSeq#                                                  /* 컨텐츠번호     */
+	</update>
+
+	<update id="updateContentsHtml1">
+	/* pscmexh0100.updateContentsHtml  PC 에디터만 수정 */
+		UPDATE TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+		   SET INDT_HTML     = #content1#                                                     /* 이미지 경로          */
+		       , REG_METHOD_CD = #regMethodCd#
+		 WHERE CATEGORY_ID      = #categoryChildId#                                                   /* 카테고리번호   */
+		   AND MKDP_SEQ         = #mkdpSeq#                                                      /* 기획전번호     */
+		   AND CONTENTS_SEQ     = #ContentSeq1#                                                  /* 컨텐츠번호     */
+	</update>
+
+	<update id="updateContentsHtml2">
+	/* pscmexh0100.updateContentsHtml2  MOBILE 에디터만 수정 */
+		UPDATE TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+		   SET INDT_HTML     = #content2#                                                     /* 이미지 경로          */
+		   	   , REG_METHOD_CD = #regMethodCd#
+		 WHERE CATEGORY_ID      = #categoryChildId#                                                   /* 카테고리번호   */
+		   AND MKDP_SEQ         = #mkdpSeq#                                                      /* 기획전번호     */
+		   AND CONTENTS_SEQ     = #ContentSeq2#                                                  /* 컨텐츠번호     */
+	</update>
+
+	<select id="selectMdTotalCnt" resultClass="java.lang.Integer">
+    	/* pscmexh0100.selectMdTotalCnt */
+    	SELECT	COUNT(1) AS  COUNT
+		  FROM TAD_ADMIN A
+         WHERE 1=1
+         <isNotEmpty  property="adminName" >
+           AND ADMIN_NM LIKE #adminName# || '%'
+         </isNotEmpty>
+         <isNotEmpty  property="adminTypeCd" >
+		   AND ADMIN_TYPE_CD LIKE #adminTypeCd# || '%'
+		 </isNotEmpty>
+    </select>
+
+    <select id="selectMdList" resultClass="pscmexh010050VO">
+
+    	/* pscmexh0100.selectMdList */
+		SELECT * FROM
+		(
+			SELECT  RANK()OVER(ORDER BY A.ADMIN_ID DESC) AS  num
+				   ,A.ADMIN_ID AS adminId
+			       ,A.ADMIN_NM AS adminName
+				   ,A.LOGIN_ID AS loginId
+			       ,(SELECT CD_NM FROM TET_CODE AA WHERE MAJOR_CD='SM032' AND AA.MINOR_CD=A.ADMIN_TYPE_CD) adminTypeName
+			       ,(SELECT B.STR_NM  FROM TST_STORE B WHERE B.STR_CD=A.STR_CD) strName
+			  FROM TAD_ADMIN A
+			 WHERE 1=1
+			  <isNotEmpty  property="adminName" >
+	           AND ADMIN_NM LIKE #adminName# || '%'
+	         </isNotEmpty>
+	         <isNotEmpty  property="adminTypeCd" >
+			   AND ADMIN_TYPE_CD LIKE #adminTypeCd# || '%'
+			 </isNotEmpty>
+		)
+   		WHERE num BETWEEN #startRow# AND #endRow#
+    </select>
+
+    <select id="selectDivnSeqlist" resultClass="dataMap">
+	/* pscmexh0100.selectDivnSeqlist  기획전정보 상품 조회 (구분자 조회) */
+  	  SELECT DIVN_SEQ, DIVN_NM
+        FROM TCA_MKDP_DTL
+      WHERE CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+          AND MKDP_SEQ = #mkdpSeq#           /* 기획전번호   */
+          AND DISP_TO_CD = '01'
+  ORDER BY DIVN_SEQ
+	</select>
+
+    <select id="selectExhibitionProdList1" resultClass="dataMap">
+	/* pscmexh0100.selectExhibitionProdList1  기획전정보 상품 조회 (구분자 조회) */
+	SELECT ROWNUM  AS NUM, M.*
+	 FROM (
+		  	  SELECT A.DIVN_SEQ
+				        , A.DIVN_NM
+				        , A.DISP_YN
+				        , A.DISP_SEQ
+				        , B.PROD_CD
+				        , C.PROD_NM
+				        , D.CURR_SELL_PRC
+				        , NVL((SELECT NVL(MIN(PR.SOUT_YN),'Y') AS SOUT_YN
+				              FROM TPR_PRODUCT P
+				              JOIN TPR_ITEM ITM ON (P.PROD_CD = ITM.PROD_CD)
+				              JOIN TPR_STORE_ITEM_PRICE PR ON(ITM.PROD_CD = PR.PROD_CD AND ITM.ITEM_CD = PR.ITEM_CD AND PR.STR_CD = '981')
+				             WHERE P.PROD_CD = B.PROD_CD),'Y') AS SOUT_YN /* 품절여부       */
+				        , C.CMBN_MALL_SELL_PSBT_YN /* 근거리전용여부 */
+				        , 'http://img.lottemart.com/images/prodimg' || '/' ||
+				               SUBSTRB(C.MD_SRCMK_CD, 1, 5) || '/' || C.MD_SRCMK_CD ||
+				               '_1_60.jpg' AS IMG_PATH
+				        , '/images/prodimg/'||SUBSTRB(C.MD_SRCMK_CD,1,5)||'/'||C.MD_SRCMK_CD||'_1_250.jpg'  AS IMG250
+				        , C.MD_SRCMK_CD
+				        , TO_CHAR(A.REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+				        , TO_CHAR(A.MOD_DATE, 'YYYY-MM-DD') AS MOD_DATE
+				        , A.REG_ID
+				        , A.MOD_ID
+				        , X.VENDOR_NM AS VENDOR_NM
+				        ,'Image' AS IMG_PATH_BTN
+		     FROM TCA_MKDP_MST MST
+		       JOIN TCA_MKDP_DTL A ON MST.CATEGORY_ID = A.CATEGORY_ID
+		       AND MST.MKDP_SEQ = A.MKDP_SEQ
+		      JOIN TCA_MKDP_DTL_ASSIGN B ON A.CATEGORY_ID = B.CATEGORY_ID
+		       AND A.MKDP_SEQ = B.MKDP_SEQ
+		       AND A.DIVN_SEQ = B.DIVN_SEQ
+		     JOIN TPR_PRODUCT C ON B.PROD_CD = C.PROD_CD
+		      LEFT OUTER JOIN TPR_STORE_ITEM_PRICE D ON D.STR_CD = '981'
+		      AND D.PROD_CD = B.PROD_CD
+		     JOIN TVE_VENDOR X on (C.VENDOR_ID = X.VENDOR_ID)
+		    WHERE  A.CATEGORY_ID = #categoryId# 		/* 카테고리번호 */
+		      AND A.MKDP_SEQ = #mkdpSeq#           /* 기획전번호   */
+		      <dynamic prepend="AND ">
+				   <iterate property="vendorId" open="C.VENDOR_ID IN (" close=")" conjunction=",">
+		       	     #vendorId[]#
+		       		</iterate>
+			   </dynamic>
+	  ORDER BY A.DISP_SEQ
+			) M
+	</select>
+
+    <select id="selectExhibitionProdList2" resultClass="dataMap">
+	/* pscmexh0100.selectExhibitionProdList2  기획전정보 상품 조회 (구분자 조회) */
+	SELECT ROWNUM  AS NUM, M.*
+	 FROM(
+			   SELECT A.DIVN_SEQ
+			        , A.DIVN_NM
+			        , A.DISP_YN
+			        , B.PROD_CD
+			        , C.PROD_NM
+			        , D.CURR_SELL_PRC
+			        , NVL((SELECT NVL(MIN(PR.SOUT_YN),'Y') AS SOUT_YN
+			              FROM TPR_PRODUCT P
+			              JOIN TPR_ITEM ITM ON (P.PROD_CD = ITM.PROD_CD)
+			              JOIN TPR_STORE_ITEM_PRICE PR ON(ITM.PROD_CD = PR.PROD_CD AND ITM.ITEM_CD = PR.ITEM_CD AND PR.STR_CD = '981')
+			             WHERE P.PROD_CD = B.PROD_CD),'Y') AS SOUT_YN /* 품절여부       */
+			        , 'http://img.lottemart.com/images/prodimg' || '/' ||
+			               SUBSTRB(C.MD_SRCMK_CD, 1, 5) || '/' || C.MD_SRCMK_CD ||
+			               '_1_60.jpg' AS IMG_PATH
+			        , '/images/prodimg/'||SUBSTRB(C.MD_SRCMK_CD,1,5)||'/'||C.MD_SRCMK_CD||'_1_250.jpg'  AS IMG250
+			        , C.MD_SRCMK_CD
+			        , TO_CHAR(A.REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+				    , TO_CHAR(A.MOD_DATE, 'YYYY-MM-DD') AS MOD_DATE
+			        , B.REG_ID
+			        , B.MOD_ID
+			        , X.VENDOR_NM AS VENDOR_NM
+			        ,'Image' AS IMG_PATH_BTN
+			        , B.STS_CD
+			        , '0' AS CHK
+			        , A.DISP_TO_CD
+			     FROM TCA_MKDP_MST MST
+			     JOIN TCA_MKDP_DTL A ON MST.CATEGORY_ID = A.CATEGORY_ID
+			      AND MST.MKDP_SEQ = A.MKDP_SEQ
+			     JOIN TPC_MKDP_DTL_ASSIGN_TMP B ON A.CATEGORY_ID = B.CATEGORY_ID
+			      AND A.MKDP_SEQ = B.MKDP_SEQ
+			      AND A.DIVN_SEQ = B.DIVN_SEQ
+			     JOIN TPR_PRODUCT C ON B.PROD_CD = C.PROD_CD
+			     LEFT OUTER JOIN TPR_STORE_ITEM_PRICE D ON (D.PROD_CD = B.PROD_CD AND D.STR_CD = '981' AND D.ITEM_CD = '001')
+			     JOIN TVE_VENDOR X ON (C.VENDOR_ID = X.VENDOR_ID)
+			    WHERE A.CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+			      AND A.MKDP_SEQ = #mkdpSeq#           /* 기획전번호   */
+			      <dynamic prepend="AND ">
+				   <iterate property="vendorId" open="C.VENDOR_ID IN (" close=")" conjunction=",">
+		       	     #vendorId[]#
+		       		</iterate>
+			   </dynamic>
+			      ORDER BY A.DISP_SEQ
+			) M
+	</select>
+
+    <select id="selectAssignChk" resultClass="dataMap">
+	/* pscmexh0100.selectAssignChk  기획전정보 상품 조회 (구분자 조회) */
+	  SELECT PROD_CD
+        FROM TCA_MKDP_DTL_ASSIGN
+	  WHERE CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		  AND MKDP_SEQ = #mkdpSeq#           /* 기획전번호   */
+	  	<iterate prepend="AND PROD_CD IN" property="prodCd" open="(" close=")" conjunction=",">
+            #prodCd[]#
+        </iterate>
+	</select>
+
+    <update id="updateStsCd">
+	/* pscmexh0100.updateStsCd  통합기획전 할당 요청  */
+		UPDATE TPC_MKDP_DTL_ASSIGN_TMP
+		   SET
+		       STS_CD             		= '01'
+			 , MOD_ID              	= #modId#
+			 , MOD_DATE            	= CURRENT_TIMESTAMP(0)
+		 WHERE CATEGORY_ID 	= #categoryId#        /* 카테고리번호 */
+		   AND MKDP_SEQ    		= #mkdpSeq#           /* 기획전번호   */
+		   AND DIVN_SEQ    		= #divnSeq#           /* 구분자번호   */
+		   AND PROD_CD     		= #prodCd#            /* 상품코드     */
+	</update>
+
+    <delete id="deleteProdCd">
+	/* pscmexh0100.deleteProdCd 구분자정보 삭제  */
+		 DELETE FROM TPC_MKDP_DTL_ASSIGN_TMP    /* 기획전 관리구분 */
+	     WHERE CATEGORY_ID   = #categoryId#       /* 카테고리번호 */
+	         AND MKDP_SEQ      = #mkdpSeq#          /* 기획전번호   */
+	         AND DIVN_SEQ    		= #divnSeq#           /* 구분자번호   */
+		     AND PROD_CD     		= #prodCd#            /* 상품코드     */
+	</delete>
+
+	<select id="selectImageNm" resultClass="java.lang.Integer">
+	/* pscmexh0100.selectImageNm  이미지명 체크 */
+		SELECT COUNT(*)
+		  FROM TCA_MKDP_CONTENTS A
+		WHERE EXISTS (SELECT 'X' FROM TCA_MKDP_CONTENTS B
+		                 --WHERE A.IMG_PATH = '/images/exhibition/exhibition/20160621012344764.jpg'
+		                 WHERE A.IMG_PATH = #filePath#
+		                )
+	</select>
+
+    <select id="selectAdminInfoTotalCnt" resultClass="java.lang.Integer">
+    	/* pbombrd0014.selectAdminInfoTotalCnt */
+    	SELECT	COUNT(1) AS  COUNT
+		  FROM TAD_ADMIN A
+         WHERE 1=1
+         <isNotEmpty  property="adminName" >
+           AND ADMIN_NM LIKE #adminName# || '%'
+         </isNotEmpty>
+         <isNotEmpty  property="adminTypeCd" >
+		   AND ADMIN_TYPE_CD LIKE #adminTypeCd# || '%'
+		 </isNotEmpty>
+    </select>
+
+    <select id="selectAdminInfoList" resultClass="dataMap">
+
+    	/* pbombrd0014.selectAdminInfoList */
+		SELECT * FROM
+		(
+			SELECT  RANK()OVER(ORDER BY A.ADMIN_ID DESC) AS  NUM
+				   ,A.ADMIN_ID AS ADMIN_ID
+			       ,A.ADMIN_NM AS ADMIN_NM
+				   ,A.LOGIN_ID AS LOGIN_ID
+			       ,(SELECT CD_NM FROM TET_CODE AA WHERE MAJOR_CD='SM032' AND AA.MINOR_CD=A.ADMIN_TYPE_CD) ADMIN_TYPE_NAME
+			       ,(SELECT B.STR_NM  FROM TST_STORE B WHERE B.STR_CD=A.STR_CD) STR_NAME
+			  FROM TAD_ADMIN A
+			 WHERE 1=1
+			 <isNotEmpty  property="adminName" >
+	           AND ADMIN_NM LIKE #adminName# || '%'
+	         </isNotEmpty>
+	         <isNotEmpty  property="adminTypeCd" >
+			   AND ADMIN_TYPE_CD LIKE #adminTypeCd# || '%'
+			 </isNotEmpty>
+		)
+   		WHERE num BETWEEN #startRow# AND #endRow#
+    </select>
+
+    <select id="mkdpNm" resultClass="String">
+	/* pscmexh0100.mkdpNm  통합기획전 기획전명 */
+		SELECT MKDP_NM FROM TCA_MKDP_MST
+		 WHERE CATEGORY_ID = #categoryId#        /* 카테고리번호 */
+		   AND MKDP_SEQ    = #mkdpSeq#           /* 기획전번호   */
+	</select>
+
+    <insert id="insertCopyExhibitionInfo">
+	/* pscmexh0100.insertCopyExhibitionInfo  기획전 복사등록 */
+		INSERT
+		  INTO TCA_MKDP_MST  			/* 기획전 관리 */
+		     (
+		       CATEGORY_ID         		/* 카테고리번호									*/
+		     , MKDP_SEQ            		/* 기획전번호									*/
+		     , MKDP_NM             		/* 기획전명									*/
+		     , MKDP_SCND_TITLE     		/* 기획전부제목									*/
+		     , MKDP_START_DATE     		/* 기획전시작일시								*/
+		     , MKDP_END_DATE       		/* 기획전종료일시								*/
+		     , MKDP_VIEW_START_DATE     /* 행사시작일시									*/
+		     , MKDP_VIEW_END_DATE       /* 행사종료일시									*/
+		     , MKDP_CAT_CD         		/* 기획전분류코드								*/
+		     , DISP_TYPE_CD        		/* 전시유형코드									*/
+		     , UTAK_MD             		/* 담당MD										*/
+		     , DISP_YN             		/* 전시여부									*/
+		     , DISP_SEQ             	/* 전시순서									*/
+		     , KYWRD               		/* 키워드										*/
+		     , APRV_DATE           		/* 승인일시									*/
+		     , APRMN               		/* 승인자										*/
+		     , APRV_STS_CD         		/* 승인상태코드 00:SCM저장 01:승인대기 02:반려 03:승인	*/
+		     , TEMPLATE_ID         		/* 템플릿ID									*/
+		     , RETN_REASON         		/* 반려사유									*/
+		     , EVNT_CATEGORY       		/* 이벤트 카테고리 번호								*/
+		     , REG_DATE            		/* 등록일										*/
+		     , REG_ID              		/* 등록자										*/
+		     , MOD_DATE            		/* 수정일										*/
+		     , MOD_ID		       		/* 수정자										*/
+		     , VENDOR_ID				/* 협력업체									*/
+		     , SCM_YN					/* SCM 허용여부								*/
+		     , MOBILE_MKDP_NM	   		/* 기획전명(모바일)								*/
+		     , MOBILE_MKDP_SCND_TITLE	/* 전단/코너 타이틀								*/
+		     , DC_INFO			   		/* 혜택할인정보									*/
+		     , EVT_INFO			   		/* 마케팅행사정보								*/
+		     )
+		SELECT
+		       CATEGORY_ID         													/* 카테고리번호									*/
+		     , #mkdpSeq#     AS MKDP_SEQ             								/* 기획전번호									*/
+		     , MKDP_NM             													/* 기획전명									*/
+		     , MKDP_SCND_TITLE     													/* 기획전부제목									*/
+		     , MKDP_START_DATE     													/* 기획전시작일시								*/
+		     , MKDP_END_DATE       													/* 기획전종료일시								*/
+		     , NVL(MKDP_VIEW_START_DATE, MKDP_START_DATE) AS MKDP_VIEW_START_DATE   /* 행사시작일시									*/
+		     , NVL(MKDP_VIEW_END_DATE, MKDP_END_DATE) AS MKDP_VIEW_END_DATE         /* 행사종료일시									*/
+		     , MKDP_CAT_CD         													/* 기획전분류코드								*/
+		     , DISP_TYPE_CD        													/* 전시유형코드									*/
+		     , UTAK_MD             													/* 담당MD										*/
+		     , DISP_YN             													/* 전시여부									*/
+		     , DISP_SEQ             												/* 전시순서									*/
+		     , KYWRD               													/* 키워드										*/
+		     , APRV_DATE           													/* 승인일시									*/
+		     , APRMN               													/* 승인자										*/
+		     , '00' AS APRV_STS_CD         											/* 승인상태코드 00:SCM저장 01:승인대기 02:반려 03:승인	*/
+		     , TEMPLATE_ID         													/* 템플릿ID									*/
+		     , RETN_REASON         													/* 반려사유									*/
+		     , EVNT_CATEGORY       													/* 이벤트 카테고리 번호								*/
+		     , CURRENT_TIMESTAMP(0)            													/* 등록일										*/
+		     , #regId#                               								/* 등록자										*/
+		     , CURRENT_TIMESTAMP(0)            													/* 수정일										*/
+		     , #modId#                               								/* 수정자										*/
+		     , VENDOR_ID															/* 협력업체									*/
+		     , SCM_YN																/* SCM 허용여부								*/
+		     , MOBILE_MKDP_NM	   													/* 기획전명(모바일)								*/
+		     , MOBILE_MKDP_SCND_TITLE												/* 전단/코너 타이틀								*/
+		     , DC_INFO			   													/* 혜택할인정보									*/
+		     , EVT_INFO			   													/* 마케팅행사정보								*/
+		  FROM TCA_MKDP_MST   														/* 기획전 관리구분								*/
+		 WHERE CATEGORY_ID = #categoryChildId#      								/* 카테고리번호 ex)C0060001						*/
+		   AND MKDP_SEQ    = #oldMkdpSeq#           								/* 기획전번호									*/
+	</insert>
+
+    <!-- 기획전 복사 - 이미지/HTML 정보 -->
+	<insert id="insertCopyExhiImageHtml">
+    /* pscmexh0100.insertCopyExhiImageHtml  기획전 저장 - 이미지/HTML 정보 */
+        INSERT
+          INTO TCA_MKDP_CONTENTS					/* 기획전 컨텐츠 */
+             (
+               CATEGORY_ID							/* 카테고리번호			*/
+             , MKDP_SEQ								/* 기획전번호			*/
+             , CONTENTS_SEQ							/* 컨텐츠번호			*/
+             , CONTENTS_DIVN_CD						/* 컨텐츠구분코드		*/
+             , CH_CD								/* 채널코드			*/
+             , INDT_HTML							/* HTML				*/
+             , START_DATE							/* 시작일시			*/
+             , END_DATE								/* 종료일시			*/
+             , REG_METHOD_CD						/* 등록방법코드			*/
+             , REG_DATE								/* 등록일				*/
+             , REG_ID								/* 등록자				*/
+             , MOD_DATE								/* 수정일				*/
+             , MOD_ID								/* 수정자				*/
+             )
+		SELECT
+               CATEGORY_ID							/* 카테고리번호			*/
+             , #mkdpSeq#     AS MKDP_SEQ			/* 기획전번호			*/
+             , CONTENTS_SEQ							/* 컨텐츠번호			*/
+             , CONTENTS_DIVN_CD						/* 컨텐츠구분코드		*/
+             , CH_CD								/* 채널코드			*/
+             , INDT_HTML							/* HTML				*/
+             , START_DATE							/* 시작일시			*/
+             , END_DATE								/* 종료일시			*/
+             , REG_METHOD_CD						/* 등록방법코드			*/
+             , CURRENT_TIMESTAMP(0)								/* 등록일				*/
+             , #regId#								/* 등록자				*/
+             , CURRENT_TIMESTAMP(0)								/* 수정일				*/
+             , #modId#								/* 수정자				*/
+		  FROM TCA_MKDP_CONTENTS					/* 기획전 관리구분			*/
+		 WHERE CATEGORY_ID  = #categoryChildId#		/* 카테고리번호 ex)C0060001	*/
+		   AND MKDP_SEQ     = #oldMkdpSeq#			/* 기획전번호				*/
+		   AND CONTENTS_SEQ = #contentSeq#			/* 컨텐츠번호				*/
+	</insert>
+
+	<!-- ==================기획전 등록 - 할당점포========================== -->
+	<insert id="insertStrAssignInfo">
+	/* pscmexh0100.insertStrAssignInfo  구분자정보 등록 */
+		INSERT
+		  INTO TCA_MKDP_MST_STR    /* 기획전관리 점포 */
+			 (
+			   CATEGORY_ID                           /* 카테고리번호	*/
+			 , MKDP_SEQ                              /* 기획전번호		*/
+			 , STR_CD								 /* 점포번호		*/
+			 , REG_DATE                              /* 등록일		*/
+			 , REG_ID                                /* 등록자		*/
+			 , MOD_DATE                              /* 수정일		*/
+			 , MOD_ID		                         /* 수정자		*/
+			 )
+		VALUES
+			 (
+			   #categoryChildId#
+			 , #mkdpSeq#
+			 , #strCd#
+			 , CURRENT_TIMESTAMP(0)
+			 , #regId#
+			 , CURRENT_TIMESTAMP(0)
+			 , #modId#
+			 )
+	</insert>
+
+   <select id="selectDivnInfoLength" resultClass="java.lang.Integer">
+	/* pscmexh0100.selectDivnInfoLength  */
+		SELECT COUNT(*)
+		  FROM TCA_MKDP_DTL
+		WHERE CATEGORY_ID = #categoryChildId#      /* 카테고리번호 ex)C0060001  */
+		   AND MKDP_SEQ    = #oldMkdpSeq#           /* 기획전번호   */
+	</select>
+
+   <insert id="insertCopyDivnInfo">
+	/* pscmexh0100.insertCopyDivnInfo  구분자정보 복사등록 */
+		INSERT
+		  INTO TCA_MKDP_DTL A  /* 기획전 관리구분 */
+			 (
+			   CATEGORY_ID                           /* 카테고리번호		*/
+			 , MKDP_SEQ                              /* 기획전번호			*/
+			 , DIVN_SEQ                              /* 구분자번호			*/
+			 , DIVN_NM                               /* 구분자명			*/
+			 , DISP_SEQ                              /* 전시순번			*/
+			 , DIVN_TYPE                             /* 구분자유형코드		*/
+			 , DISP_YN                               /* 전시여부			*/
+			 , DISP_TO_CD                            /* 전시대상코드		*/
+			 , DISP_PROD_CNT                         /* 전시상품수			*/
+			 , PROD_TEMPLATE_CD                      /* 상품전시템플릿SM318	*/
+			 , START_DATE                            /* 시작일시			*/
+			 , END_DATE                              /* 종료일시			*/
+			 , APPLY_START_DATE                      /* 행사적용시작일시		*/
+			 , APPLY_END_DATE                        /* 행사적용종료일시		*/
+			 , REG_DATE                              /* 등록일			*/
+			 , REG_ID                                /* 등록자			*/
+			 , MOD_DATE                              /* 수정일			*/
+			 , MOD_ID		                         /* 수정자			*/
+			 )
+		SELECT
+		  	   CATEGORY_ID                           				  /* 카테고리번호			*/
+			 , #mkdpSeq#     AS MKDP_SEQ             				  /* 기획전번호				*/
+			 , DIVN_SEQ                              				  /* 구분자번호				*/
+			 , DIVN_NM                               				  /* 구분자명				*/
+			 , DISP_SEQ                              				  /* 전시순번				*/
+			 , DIVN_TYPE                             				  /* 구분자유형코드			*/
+			 , DISP_YN                               				  /* 전시여부				*/
+			 , DISP_TO_CD                            				  /* 전시대상코드			*/
+			 , DISP_PROD_CNT                         				  /* 전시상품수				*/
+			 , PROD_TEMPLATE_CD                      				  /* 상품전시템플릿SM318		*/
+			 , START_DATE                            				  /* 시작일시				*/
+			 , END_DATE                              				  /* 종료일시				*/
+			 , NVL(APPLY_START_DATE, START_DATE) AS APPLY_START_DATE  /* 행사적용시작일시			*/
+			 , NVL(APPLY_END_DATE, END_DATE) AS APPLY_END_DATE        /* 행사적용종료일시			*/
+			 , CURRENT_TIMESTAMP(0)                              				  /* 등록일				*/
+			 , #regId#                                				  /* 등록자				*/
+			 , CURRENT_TIMESTAMP(0)                              				  /* 수정일				*/
+			 , #modId#		                         				  /* 수정자				*/
+		  FROM TCA_MKDP_DTL
+		 WHERE CATEGORY_ID = #categoryChildId#      				  /* 카테고리번호 ex)C0060001 */
+		   AND MKDP_SEQ    = #oldMkdpSeq#           			  	  /* 기획전번호				*/
+	</insert>
+
+	<!-- ==================구분자 복사등록 - 할당점포========================== -->
+	<insert id="insertCopyDtlStrAssignInfo">
+	/* pscmexh0100.insertCopyDtlStrAssignInfo  구분자정보 복사등록 */
+		INSERT
+		  INTO TCA_MKDP_DTL_STR    /* 기획전관리 구분 점포 */
+			 (
+			   CATEGORY_ID							/* 카테고리번호		*/
+			 , MKDP_SEQ								/* 기획전번호		*/
+			 , DIVN_SEQ								/* 구분자번호		*/
+			 , STR_CD								/* 점포번호		*/
+			 , REG_DATE								/* 등록일			*/
+			 , REG_ID								/* 등록자			*/
+			 , MOD_DATE								/* 수정일			*/
+			 , MOD_ID								/* 수정자			*/
+			 )
+		SELECT
+			   CATEGORY_ID							/* 카테고리번호		*/
+			 , #mkdpSeq#     AS MKDP_SEQ			/* 기획전번호		*/
+			 , DIVN_SEQ								/* 구분자번호		*/
+			 , STR_CD								/* 점포번호		*/
+			 , CURRENT_TIMESTAMP(0)								/* 등록일			*/
+			 , #regId#								/* 등록자			*/
+			 , CURRENT_TIMESTAMP(0)								/* 수정일			*/
+			 , #modId#								/* 수정자			*/
+		  FROM TCA_MKDP_DTL_STR
+		 WHERE CATEGORY_ID = #categoryChildId#		/* 카테고리번호 ex)C0060001	*/
+		   AND MKDP_SEQ    = #oldMkdpSeq#			/* 기획전번호				*/
+	</insert>
+
+	<insert id="insertCopyExhibitionProdInfo">
+	/* pscmexh0100.insertCopyExhibitionProdInfo  기획전정보 상품 등록 */
+	    INSERT
+	      INTO TCA_MKDP_DTL_ASSIGN A  /* 기획전 상품 */
+	         (
+	           CATEGORY_ID                  		/* 카테고리번호	*/
+	         , MKDP_SEQ                     		/* 기획전번호	*/
+	         , DIVN_SEQ                     		/* 구분자번호	*/
+	         , PROD_CD                      		/* 상품코드	*/
+	         , STR_CD                       		/* 점포코드	*/
+	         , DISP_YN                      		/* 전시여부	*/
+	         , REG_DATE                     		/* 등록일		*/
+	         , REG_ID                       		/* 등록자		*/
+	         , MOD_DATE                     		/* 수정일		*/
+	         , MOD_ID                       		/* 수정자		*/
+	         )
+		SELECT
+	      	   CATEGORY_ID                  		/* 카테고리번호	*/
+	         , #mkdpSeq#                    		/* 기획전번호	*/
+	         , DIVN_SEQ                     		/* 구분자번호	*/
+	         , PROD_CD                      		/* 상품코드	*/
+	         , STR_CD                       		/* 점포코드	*/
+	         , DISP_YN                      		/* 전시여부	*/
+	         , CURRENT_TIMESTAMP(0)
+	         , #regId#
+	         , CURRENT_TIMESTAMP(0)
+	         , #modId#
+	      FROM TCA_MKDP_DTL_ASSIGN
+	     WHERE CATEGORY_ID = #categoryChildId#		/* 카테고리번호	*/
+		   AND MKDP_SEQ    = #oldMkdpSeq#			/* 기획전번호	*/
+	</insert>
+
+	<update id="updateCopyAprv">
+	/* pscmexh0100.updateCopyAprv  기획전 승인요청 */
+		UPDATE TCA_MKDP_MST
+		   SET
+		       APRV_STS_CD = '00'		        /* 승인요청	*/
+			 , MOD_ID      = #modId#			/* 수정자		*/ 
+			 , MOD_DATE    = CURRENT_TIMESTAMP(0)			/* 수정일		*/
+		 WHERE CATEGORY_ID = #categoryId#		/* 카테고리번호	*/
+		   AND MKDP_SEQ    = #mkdpSeq#          /* 기획전번호	*/
+	</update>
+
+	<insert id="insertCopyContentsInfo">
+	/* pscmexh0100.insertCopyContentsInfo  이미지/HTML 등록 */
+	INSERT
+	  INTO TCA_MKDP_CONTENTS    /* 기획전 컨텐츠 */
+	     (
+	       CATEGORY_ID							/* 카테고리번호		*/
+	     , MKDP_SEQ								/* 기획전번호		*/
+         , CONTENTS_SEQ							/* 컨텐츠번호		*/
+	     , DIVN_SEQ								/* 구분자번호		*/
+	     , CONTENTS_DIVN_CD						/* 컨텐츠구분코드	*/
+	     , CH_CD								/* 채널코드		*/
+	     , START_DATE							/* 시작일시		*/
+         , END_DATE								/* 종료일시		*/
+	     , INDT_FILE							/* FILE PATH	*/
+	     , INDT_HTML							/* HTML			*/
+	     , REG_METHOD_CD						/* 등록방법코드		*/
+	     , REG_DATE								/* 등록일			*/
+	     , REG_ID								/* 등록자			*/
+	     , MOD_DATE								/* 수정일			*/
+	     , MOD_ID								/* 수정자			*/
+	     , IMG_PATH								/* 이미지 경로		*/
+	     )
+	SELECT
+	       CATEGORY_ID							/* 카테고리번호		*/
+	     , #mkdpSeq#							/* 기획전번호		*/
+         , CONTENTS_SEQ							/* 컨텐츠번호		*/
+	     , DIVN_SEQ								/* 구분자번호		*/
+	     , CONTENTS_DIVN_CD						/* 컨텐츠구분코드	*/
+	     , CH_CD								/* 채널코드		*/
+	     , START_DATE							/* 시작일시		*/
+         , END_DATE								/* 종료일시		*/
+	     , INDT_FILE							/* FILE PATH	*/
+	     , INDT_HTML							/* HTML			*/
+	     , REG_METHOD_CD						/* 등록방법코드		*/
+	     , CURRENT_TIMESTAMP(0)								/* 등록일			*/
+	     , #regId#								/* 등록자			*/
+	     , CURRENT_TIMESTAMP(0)								/* 수정일			*/
+	     , #modId#								/* 수정자			*/
+	     , IMG_PATH								/* 이미지 경로		*/
+	  FROM TCA_MKDP_CONTENTS
+	 WHERE CATEGORY_ID = #categoryChildId#		/* 카테고리번호		*/
+	   AND MKDP_SEQ    = #oldMkdpSeq#			/* 기획전번호		*/
+	</insert>
+
+
+
+	<!-- 2016-08-12 기획전 구분자 점포 삭제하면 예상되는 점포 미존재 구분자 조회 ================== -->
+	<select id="selectCheckRemoveIsStrMkdp" resultClass="dataMap">
+	/* pbomexh0100.selectCheckRemoveIsStrMkdp  기획전 구분자 점포 삭제하면 예상되는 점포 미존재 구분자 조회 */
+	SELECT LISTAGG(DIVN_NM, ',') WITHIN GROUP(ORDER BY DISP_SEQ) AS DIVN_NM
+	  FROM (
+	        SELECT CATEGORY_ID
+	             , MKDP_SEQ
+	             , DIVN_SEQ
+	             , DIVN_NM
+	             , DISP_SEQ                                                                               /* 삭제후 점포가 미존재하는 구분자 */
+	          FROM TCA_MKDP_DTL    /* 기획전관리 구분*/
+	         WHERE CATEGORY_ID = #categoryChildId#  /* 카테고리번호 */
+	           AND MKDP_SEQ    = #mkdpSeq#          /* 기획전번호   */
+	           AND DIVN_SEQ    NOT IN ( SELECT DIVN_SEQ                                                    /* 삭제후 점포가 존재하는 구분자 */
+	                                      FROM TCA_MKDP_DTL_STR    /* 기획전관리 구분 점포 */
+	                                     WHERE CATEGORY_ID = #categoryChildId#
+	                                       AND MKDP_SEQ    = #mkdpSeq#
+
+										   /* 기존 점포가 전점일 경우 실행 */
+                                           AND STR_CD NOT IN ( SELECT STR_CD
+                                                                 FROM TST_STORE
+                                           						WHERE '999' = NVL((SELECT STR_CD
+                                                                                    FROM TCA_MKDP_MST_STR /* 기획전관리 점포 */
+                                                                                   WHERE CATEGORY_ID = #categoryChildId#
+                                                                                     AND MKDP_SEQ    = #mkdpSeq#
+                                                                                     AND STR_CD      = '999'
+                                                                                   ), 'XXX')
+										                        <iterate prepend="AND STR_CD NOT IN " property="arrStrCd" open="(" close=")" conjunction=",">
+										                             #arrStrCd[]#
+									                            </iterate>
+                                                             )
+
+                                           /* 기존 점포가 전점일 아닐경우 실행 */
+	                                       AND STR_CD NOT IN (SELECT STR_CD
+                                                                FROM TCA_MKDP_MST_STR  /* 기획전관리 점포 */
+                                                               WHERE CATEGORY_ID = #categoryChildId#
+                                                                 AND MKDP_SEQ    = #mkdpSeq#
+										                         <iterate prepend="AND STR_CD NOT IN " property="arrStrCd" open="(" close=")" conjunction=",">
+										                             #arrStrCd[]#
+									                             </iterate>
+                                                                 AND '999' <![CDATA[<>]]> NVL((SELECT STR_CD
+			                                                                                     FROM TCA_MKDP_MST_STR  /* 기획전관리 점포 */
+			                                                                                    WHERE CATEGORY_ID = #categoryChildId#
+			                                                                                      AND MKDP_SEQ    = #mkdpSeq#
+			                                                                                      AND STR_CD      = '999'
+			                                                                                  ), 'XXX')
+	                                                          )
+	                                  )
+	       )
+	</select>
+	
+	<!-- 2016-08-12 기획전 소개 컨텐츠 점포 삭제하면 예상되는 점포 미존재 컨텐츠 번호 조회 ================== -->
+	<select id="selectCheckRemoveIsConStrMkdp" resultClass="dataMap">
+	/* pbomexh0100.selectCheckRemoveIsConStrMkdp  기획전 컨텐츠 점포 삭제하면 예상되는 점포 미존재 구분자 조회 */
+	SELECT LISTAGG(CONTENTS_SEQ, ',') WITHIN GROUP(ORDER BY CONTENTS_SEQ) AS CONTENTS_SEQ
+	  FROM (
+	        SELECT CONTENTS_SEQ                                                                            /* 삭제후 점포가 미존재하는 컨텐츠 */
+	          FROM TCA_MKDP_CONTENTS        /* 기획전 컨텐츠 */
+	         WHERE CATEGORY_ID      = #categoryChildId#  /* 카테고리번호 */
+	           AND MKDP_SEQ         = #mkdpSeq#          /* 기획전번호   */
+	           AND CONTENTS_DIVN_CD = '01'               /* 컨텐츠구분코드(01:기획전소개) */
+	           AND CONTENTS_SEQ NOT IN (SELECT CONTENTS_SEQ                                                /* 삭제후 점포가 존재하는 컨텐츠 */
+	                                      FROM TCA_MKDP_CON_STR    /* 기획전 컨텐츠 점포 */
+	                                     WHERE CATEGORY_ID = #categoryChildId#
+	                                       AND MKDP_SEQ    = #mkdpSeq#
+
+										   /* 기존 점포가 전점일 경우 실행 */
+                                           AND STR_CD NOT IN ( SELECT STR_CD
+                                                                 FROM TST_STORE
+                                           						WHERE '999' = NVL((SELECT STR_CD
+                                                                                    FROM TCA_MKDP_MST_STR /* 기획전관리 점포 */
+                                                                                   WHERE CATEGORY_ID = #categoryChildId#
+                                                                                     AND MKDP_SEQ    = #mkdpSeq#
+                                                                                     AND STR_CD      = '999'
+                                                                                   ), 'XXX')
+										                        <iterate prepend="AND STR_CD NOT IN " property="arrStrCd" open="(" close=")" conjunction=",">
+										                             #arrStrCd[]#
+									                            </iterate>
+                                                             )
+
+                                           /* 기존 점포가 전점일 아닐경우 실행 */
+	                                       AND STR_CD NOT IN (SELECT STR_CD
+                                                                FROM TCA_MKDP_MST_STR  /* 기획전관리 점포 */
+                                                               WHERE CATEGORY_ID = #categoryChildId#
+                                                                 AND MKDP_SEQ    = #mkdpSeq#
+										                         <iterate prepend="AND STR_CD NOT IN " property="arrStrCd" open="(" close=")" conjunction=",">
+										                             #arrStrCd[]#
+									                             </iterate>
+                                                                 AND '999' <![CDATA[<>]]> NVL((SELECT STR_CD
+			                                                                                     FROM TCA_MKDP_MST_STR  /* 기획전관리 점포 */
+			                                                                                    WHERE CATEGORY_ID = #categoryChildId#
+			                                                                                      AND MKDP_SEQ    = #mkdpSeq#
+			                                                                                      AND STR_CD      = '999'
+			                                                                                  ), 'XXX')
+	                                                          )
+	                                  )
+	       )
+	</select>
+
+   </sqlMap>

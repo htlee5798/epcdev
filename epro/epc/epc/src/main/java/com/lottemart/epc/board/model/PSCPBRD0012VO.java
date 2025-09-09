@@ -1,0 +1,517 @@
+package com.lottemart.epc.board.model;
+
+
+import java.io.Serializable;
+
+/**
+ * @Class Name : PSCPBRD0011SaveVO.java
+ * @Description :
+ * @Modification Information
+ * <pre>
+ * << 개정이력(Modification Information) >>
+ *   
+ *   수정일      수정자           수정내용
+ *  -------    --------    ---------------------------
+ * 2016. 01. 18. projectBOS32
+ * 
+ * @Copyright (C) 2000 ~ 2011 롯데정보통신(주) All right reserved.
+ * </pre>
+ */
+public class PSCPBRD0012VO implements Serializable 
+{
+	private static final long serialVersionUID = 2565506451796646460L;
+	
+	private String boardSeq;
+	private String nowBoardSeq;
+	private String boardDivnCd;
+	private String listSeq;
+	private String upBoardSeq;
+	private String ntceStartDy;
+	private String ntceEndDy;
+	private String boardDpSeq;
+	private String title;
+	private String content;
+	private String memo;
+	private String smryContent;
+	private String pwd;
+	private String scrpKindCd;
+	private String wrtrDivnCd;
+	private String memberNo;
+	private String memberNm;
+	private String childScrpCnt;
+	private String depth;
+	private String viewCnt;
+	private String recomCnt;
+	private String recomPnt;
+	private String atchFileYn;
+	private String delYn;
+	private String orderId;
+	private String scrpObjectCd;
+	private String custQstDivnCd;
+	private String custQstMgrpCd;
+	private String clmLgrpCd;
+	private String clmMgrpCd;
+	private String boardPrgsStsCd;
+	private String telNo;
+	private String cellNo;
+	private String cellNo1;
+	private String cellNo2;
+	private String cellNo3;
+	private String email;
+	private String smsDspYn;
+	private String ansSmsRecvYn;
+	private String ordYn;
+	private String wrtDy;
+	private String pblYn;
+	private String email_snd_yn;
+	private String ansEmailRecvYn;
+	private String searchKywrd;
+	private String url;
+	private String wpmnAnncDy;
+	private String prizeContents;
+	private String prizePrvsMethodCd;
+	private String qstnObjectCdStrCd;
+	private String acceptLocaCd;
+	private String acceptId;
+	private String dicmfDeclareYn;
+	private String let1Ref;
+	private String let2Ref;
+	private String let3Ref;
+	private String let4Ref;
+	private String regDate;
+	private String regId;
+	private String modDate;
+	private String modId;
+	private String atchFileId;
+	private String vendorId;
+	private String clmLgrpNm;
+	private String scrpKindNm;
+	private String acceptLocaNm;
+	private String acceptNm;
+	private String regNm;
+	private String modNm;
+	private String adminId;
+	
+	
+	public String getBoardSeq() {
+		return boardSeq;
+	}
+	public void setBoardSeq(String boardSeq) {
+		this.boardSeq = boardSeq;
+	}
+	public String getBoardDivnCd() {
+		return boardDivnCd;
+	}
+	public void setBoardDivnCd(String boardDivnCd) {
+		this.boardDivnCd = boardDivnCd;
+	}
+	public String getListSeq() {
+		return listSeq;
+	}
+	public void setListSeq(String listSeq) {
+		this.listSeq = listSeq;
+	}
+	public String getUpBoardSeq() {
+		return upBoardSeq;
+	}
+	public void setUpBoardSeq(String upBoardSeq) {
+		this.upBoardSeq = upBoardSeq;
+	}
+	public String getNtceStartDy() {
+		return ntceStartDy;
+	}
+	public void setNtceStartDy(String ntceStartDy) {
+		this.ntceStartDy = ntceStartDy;
+	}
+	public String getNtceEndDy() {
+		return ntceEndDy;
+	}
+	public void setNtceEndDy(String ntceEndDy) {
+		this.ntceEndDy = ntceEndDy;
+	}
+	public String getBoardDpSeq() {
+		return boardDpSeq;
+	}
+	public void setBoardDpSeq(String boardDpSeq) {
+		this.boardDpSeq = boardDpSeq;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getMemo() {
+		return memo;
+	}
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+	public String getSmryContent() {
+		return smryContent;
+	}
+	public void setSmryContent(String smryContent) {
+		this.smryContent = smryContent;
+	}
+	public String getPwd() {
+		return pwd;
+	}
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	public String getScrpKindCd() {
+		return scrpKindCd;
+	}
+	public void setScrpKindCd(String scrpKindCd) {
+		this.scrpKindCd = scrpKindCd;
+	}
+	public String getWrtrDivnCd() {
+		return wrtrDivnCd;
+	}
+	public void setWrtrDivnCd(String wrtrDivnCd) {
+		this.wrtrDivnCd = wrtrDivnCd;
+	}
+	public String getMemberNo() {
+		return memberNo;
+	}
+	public void setMemberNo(String memberNo) {
+		this.memberNo = memberNo;
+	}
+	public String getMemberNm() {
+		return memberNm;
+	}
+	public void setMemberNm(String memberNm) {
+		this.memberNm = memberNm;
+	}
+	public String getChildScrpCnt() {
+		return childScrpCnt;
+	}
+	public void setChildScrpCnt(String childScrpCnt) {
+		this.childScrpCnt = childScrpCnt;
+	}
+	public String getDepth() {
+		return depth;
+	}
+	public void setDepth(String depth) {
+		this.depth = depth;
+	}
+	public String getViewCnt() {
+		return viewCnt;
+	}
+	public void setViewCnt(String viewCnt) {
+		this.viewCnt = viewCnt;
+	}
+	public String getRecomCnt() {
+		return recomCnt;
+	}
+	public void setRecomCnt(String recomCnt) {
+		this.recomCnt = recomCnt;
+	}
+	public String getRecomPnt() {
+		return recomPnt;
+	}
+	public void setRecomPnt(String recomPnt) {
+		this.recomPnt = recomPnt;
+	}
+	public String getAtchFileYn() {
+		return atchFileYn;
+	}
+	public void setAtchFileYn(String atchFileYn) {
+		this.atchFileYn = atchFileYn;
+	}
+	public String getDelYn() {
+		return delYn;
+	}
+	public void setDelYn(String delYn) {
+		this.delYn = delYn;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	public String getScrpObjectCd() {
+		return scrpObjectCd;
+	}
+	public void setScrpObjectCd(String scrpObjectCd) {
+		this.scrpObjectCd = scrpObjectCd;
+	}
+	public String getCustQstDivnCd() {
+		return custQstDivnCd;
+	}
+	public void setCustQstDivnCd(String custQstDivnCd) {
+		this.custQstDivnCd = custQstDivnCd;
+	}
+	public String getCustQstMgrpCd() {
+		return custQstMgrpCd;
+	}
+	public void setCustQstMgrpCd(String custQstMgrpCd) {
+		this.custQstMgrpCd = custQstMgrpCd;
+	}
+	public String getClmLgrpCd() {
+		return clmLgrpCd;
+	}
+	public void setClmLgrpCd(String clmLgrpCd) {
+		this.clmLgrpCd = clmLgrpCd;
+	}
+	public String getClmMgrpCd() {
+		return clmMgrpCd;
+	}
+	public void setClmMgrpCd(String clmMgrpCd) {
+		this.clmMgrpCd = clmMgrpCd;
+	}
+	public String getBoardPrgsStsCd() {
+		return boardPrgsStsCd;
+	}
+	public void setBoardPrgsStsCd(String boardPrgsStsCd) {
+		this.boardPrgsStsCd = boardPrgsStsCd;
+	}
+	public String getTelNo() {
+		return telNo;
+	}
+	public void setTelNo(String telNo) {
+		this.telNo = telNo;
+	}
+	public String getCellNo() {
+		return cellNo;
+	}
+	public void setCellNo(String cellNo) {
+		this.cellNo = cellNo;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getSmsDspYn() {
+		return smsDspYn;
+	}
+	public void setSmsDspYn(String smsDspYn) {
+		this.smsDspYn = smsDspYn;
+	}
+	public String getAnsSmsRecvYn() {
+		return ansSmsRecvYn;
+	}
+	public void setAnsSmsRecvYn(String ansSmsRecvYn) {
+		this.ansSmsRecvYn = ansSmsRecvYn;
+	}
+	public String getOrdYn() {
+		return ordYn;
+	}
+	public void setOrdYn(String ordYn) {
+		this.ordYn = ordYn;
+	}
+	public String getWrtDy() {
+		return wrtDy;
+	}
+	public void setWrtDy(String wrtDy) {
+		this.wrtDy = wrtDy;
+	}
+	public String getPblYn() {
+		return pblYn;
+	}
+	public void setPblYn(String pblYn) {
+		this.pblYn = pblYn;
+	}
+	public String getEmail_snd_yn() {
+		return email_snd_yn;
+	}
+	public void setEmail_snd_yn(String email_snd_yn) {
+		this.email_snd_yn = email_snd_yn;
+	}
+	public String getAnsEmailRecvYn() {
+		return ansEmailRecvYn;
+	}
+	public void setAnsEmailRecvYn(String ansEmailRecvYn) {
+		this.ansEmailRecvYn = ansEmailRecvYn;
+	}
+	public String getSearchKywrd() {
+		return searchKywrd;
+	}
+	public void setSearchKywrd(String searchKywrd) {
+		this.searchKywrd = searchKywrd;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getWpmnAnncDy() {
+		return wpmnAnncDy;
+	}
+	public void setWpmnAnncDy(String wpmnAnncDy) {
+		this.wpmnAnncDy = wpmnAnncDy;
+	}
+	public String getPrizeContents() {
+		return prizeContents;
+	}
+	public void setPrizeContents(String prizeContents) {
+		this.prizeContents = prizeContents;
+	}
+	public String getPrizePrvsMethodCd() {
+		return prizePrvsMethodCd;
+	}
+	public void setPrizePrvsMethodCd(String prizePrvsMethodCd) {
+		this.prizePrvsMethodCd = prizePrvsMethodCd;
+	}
+	public String getQstnObjectCdStrCd() {
+		return qstnObjectCdStrCd;
+	}
+	public void setQstnObjectCdStrCd(String qstnObjectCdStrCd) {
+		this.qstnObjectCdStrCd = qstnObjectCdStrCd;
+	}
+	public String getAcceptLocaCd() {
+		return acceptLocaCd;
+	}
+	public void setAcceptLocaCd(String acceptLocaCd) {
+		this.acceptLocaCd = acceptLocaCd;
+	}
+	public String getAcceptId() {
+		return acceptId;
+	}
+	public void setAcceptId(String acceptId) {
+		this.acceptId = acceptId;
+	}
+	public String getDicmfDeclareYn() {
+		return dicmfDeclareYn;
+	}
+	public void setDicmfDeclareYn(String dicmfDeclareYn) {
+		this.dicmfDeclareYn = dicmfDeclareYn;
+	}
+	public String getLet1Ref() {
+		return let1Ref;
+	}
+	public void setLet1Ref(String let1Ref) {
+		this.let1Ref = let1Ref;
+	}
+	public String getLet2Ref() {
+		return let2Ref;
+	}
+	public void setLet2Ref(String let2Ref) {
+		this.let2Ref = let2Ref;
+	}
+	public String getLet3Ref() {
+		return let3Ref;
+	}
+	public void setLet3Ref(String let3Ref) {
+		this.let3Ref = let3Ref;
+	}
+	public String getLet4Ref() {
+		return let4Ref;
+	}
+	public void setLet4Ref(String let4Ref) {
+		this.let4Ref = let4Ref;
+	}
+	public String getRegDate() {
+		return regDate;
+	}
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
+	}
+	public String getRegId() {
+		return regId;
+	}
+	public void setRegId(String regId) {
+		this.regId = regId;
+	}
+	public String getModDate() {
+		return modDate;
+	}
+	public void setModDate(String modDate) {
+		this.modDate = modDate;
+	}
+	public String getModId() {
+		return modId;
+	}
+	public void setModId(String modId) {
+		this.modId = modId;
+	}
+	public String getAtchFileId() {
+		return atchFileId;
+	}
+	public void setAtchFileId(String atchFileId) {
+		this.atchFileId = atchFileId;
+	}
+	public String getVendorId() {
+		return vendorId;
+	}
+	public void setVendorId(String vendorId) {
+		this.vendorId = vendorId;
+	}
+	public String getCellNo1() {
+		return cellNo1;
+	}
+	public void setCellNo1(String cellNo1) {
+		this.cellNo1 = cellNo1;
+	}
+	public String getCellNo2() {
+		return cellNo2;
+	}
+	public void setCellNo2(String cellNo2) {
+		this.cellNo2 = cellNo2;
+	}
+	public String getCellNo3() {
+		return cellNo3;
+	}
+	public void setCellNo3(String cellNo3) {
+		this.cellNo3 = cellNo3;
+	}
+	public String getClmLgrpNm() {
+		return clmLgrpNm;
+	}
+	public void setClmLgrpNm(String clmLgrpNm) {
+		this.clmLgrpNm = clmLgrpNm;
+	}
+	public String getScrpKindNm() {
+		return scrpKindNm;
+	}
+	public void setScrpKindNm(String scrpKindNm) {
+		this.scrpKindNm = scrpKindNm;
+	}
+	public String getAcceptLocaNm() {
+		return acceptLocaNm;
+	}
+	public void setAcceptLocaNm(String acceptLocaNm) {
+		this.acceptLocaNm = acceptLocaNm;
+	}
+	public String getAcceptNm() {
+		return acceptNm;
+	}
+	public void setAcceptNm(String acceptNm) {
+		this.acceptNm = acceptNm;
+	}
+	public String getRegNm() {
+		return regNm;
+	}
+	public void setRegNm(String regNm) {
+		this.regNm = regNm;
+	}
+	public String getModNm() {
+		return modNm;
+	}
+	public void setModNm(String modNm) {
+		this.modNm = modNm;
+	}
+	public String getAdminId() {
+		return adminId;
+	}
+	public void setAdminId(String adminId) {
+		this.adminId = adminId;
+	}
+	public String getNowBoardSeq() {
+		return nowBoardSeq;
+	}
+	public void setNowBoardSeq(String nowBoardSeq) {
+		this.nowBoardSeq = nowBoardSeq;
+	}
+	
+}

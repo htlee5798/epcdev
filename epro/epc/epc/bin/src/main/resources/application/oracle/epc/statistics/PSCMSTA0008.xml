@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0008">
+	<typeAlias alias="pscmsta0008SearchVO" type="com.lottemart.epc.statistics.model.PSCMSTA0008SearchVO"/>
+
+	<select id="selectLotteCardMallCalList" resultClass="dataMap">
+		/* PSCMSTA0008.selectLotteCardMallCalList */ 
+		SELECT * 
+		FROM 
+		(
+			SELECT    CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM 
+			(
+					SELECT
+							RANK()OVER(ORDER BY SH.SALE_DY DESC) RANK_NUM
+						   ,SH.SALE_DY
+						   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND WHERE ORDER_ID=OM.ORDER_ID)) AS ORDER_AMT -- 총주문금액
+						   ,SUM(OD.DPST_AMT) CARD_DPST_AMT 														-- 롯데카드결제금액
+						   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND TOD WHERE TOD.SETL_TYPE_CD='03' AND TOD.ORDER_ID=OM.ORDER_ID)) COUPON_DPST_AMT	-- 쿠폰결제금액
+						   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND TOD WHERE TOD.SETL_TYPE_CD='04' AND TOD.ORDER_ID=OM.ORDER_ID)) POINT_DPST_AMT		-- 포인트결제금액
+						   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND TOD WHERE TOD.SETL_TYPE_CD='09' AND TOD.ORDER_ID=OM.ORDER_ID)) DEPOSIT_DPST_AMT	-- 예치금결제금액
+			  	    FROM    (
+			  	             SELECT DISTINCT TS.WORKSTATIONID AS POS_NO
+                                   ,TS.BUSINESSDAYDATE AS SALE_DY
+                                   ,TS.ORDER_ID         
+                               FROM TSA_TLOGSELECT TS
+                                   ,TLOGSEND LS
+                              WHERE 1=1
+                                AND TS.RECORDQUALIFIER = '1'
+                                AND TS.RETAILSTOREID   = LS.RETAILSTOREID
+                                AND TS.BUSINESSDAYDATE = LS.BUSINESSDAYDATE
+                                AND TS.WORKSTATIONID   = LS.WORKSTATIONID
+                                AND TS.TRANSNUMBER     = LS.TRANSNUMBER
+								AND TS.TRANSTYPECODE   = LS.TRANSTYPECODE	/* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */
+                                AND LS.RESULT_STATUS   = 'C'
+                                AND LS.TRANSTYPECODE NOT IN ('0050','0060')	/* 20160624 김학수 추가 [현금연수증,LPOINT는 매출에서제외(중복제거)] */
+                                AND NOT EXISTS (SELECT 1 FROM TLOGERR LE 
+                                                 WHERE TS.RETAILSTOREID  = LE.RETAILSTOREID
+                                                   AND TS.BUSINESSDAYDATE = LE.BUSINESSDAYDATE
+                                                   AND TS.WORKSTATIONID   = LE.WORKSTATIONID
+                                                   AND TS.TRANSNUMBER     = LE.TRANSNUMBER
+                                                 AND TS.TRANSTYPECODE   = LE.TRANSTYPECODE	/* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */
+                                               )
+			  	            ) SH,  /* TSA_SALE_HEAD_IMALL 변경*/
+						    TOR_ORDER    			OM,
+						    TOR_DEMAND   			OD,
+						    TTR_CARD_TRAN_LOG 		CL
+					WHERE   SH.ORDER_ID          = OM.ORDER_ID
+						    AND    OM.ORDER_ID          = OD.ORDER_ID
+						    AND    SH.SALE_DY           BETWEEN #fromDate# AND #toDate# 	-- 매출일자
+						    AND    SH.POS_NO            IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3') AND USE_YN = 'Y') -- 매출확정
+						    AND    OM.POS_NO            IS NOT NULL
+						    AND    OD.SETL_TYPE_CD      = '01' 					-- 카드
+						    AND    OD.CARDCO_CD         = '0009' 				-- 롯데카드
+                            AND    OM.ORD_STS_CD        = '11' 					-- 결제완료
+                            AND    OM.SALE_STS_CD       = '01' 					-- 매출완료
+						    AND    OD.ORDER_ID          = CL.ORDER_ID
+						    AND    CL.APPRO_TYPE		= '1000'				-- 승인
+						    AND    CL.ERR_TYPE          = 'O'
+						    AND    OM.ORDER_ID IN ( 
+						    						SELECT ORD_BASKET_ID
+						                      		FROM   TOTSD_CHL_INFW_LOG 			-- 외부유입채널 로그
+						                      		WHERE  OTSD_CHL_NO = '00052' 		-- 롯데카드몰 제휴
+						                      		AND    SCT_CD      = '0'			-- 유입구분(주문[0], 장바구니[1])
+						                      	)
+						GROUP BY SH.SALE_DY
+            ) B
+		)
+     	WHERE PAGE = #pageIndex#
+			     	
+	</select>
+	
+	<!-- 2015.12.02 by kmlee 백업 내용인데, 사용하지 않아서 삭제 -->
+	<!-- <select id="selectLotteCardMallCalList20130213bak" resultClass="dataMap"> -->
+	
+	<select id="selectLotteCardMallCalListExcel" resultClass="dataMap">
+		/* PSCMSTA0008.selectLotteCardMallCalListExcel */ 
+		SELECT
+		        RANK()OVER(ORDER BY SH.SALE_DY DESC) RANK_NUM
+			   ,SH.SALE_DY
+			   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND WHERE ORDER_ID=OM.ORDER_ID)) AS ORDER_AMT 										-- 총주문금액(덤)
+			   ,SUM(OD.DPST_AMT) CARD_DPST_AMT 																								-- 롯데카드결제금액
+			   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND TOD WHERE TOD.SETL_TYPE_CD='03' AND TOD.ORDER_ID=OM.ORDER_ID)) COUPON_DPST_AMT	-- 쿠폰결제금액
+			   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND TOD WHERE TOD.SETL_TYPE_CD='04' AND TOD.ORDER_ID=OM.ORDER_ID)) POINT_DPST_AMT		-- 포인트결제금액
+			   ,SUM((SELECT SUM(DPST_AMT) FROM TOR_DEMAND TOD WHERE TOD.SETL_TYPE_CD='09' AND TOD.ORDER_ID=OM.ORDER_ID)) DEPOSIT_DPST_AMT	-- 예치금결제금액
+		FROM   (
+  	            SELECT DISTINCT TS.WORKSTATIONID AS POS_NO
+                      ,TS.BUSINESSDAYDATE AS SALE_DY
+                      ,TS.ORDER_ID         
+                  FROM TSA_TLOGSELECT TS
+                      ,TLOGSEND LS
+                 WHERE 1=1
+                   AND TS.RECORDQUALIFIER = '1'
+                   AND TS.RETAILSTOREID   = LS.RETAILSTOREID
+                   AND TS.BUSINESSDAYDATE = LS.BUSINESSDAYDATE
+                   AND TS.WORKSTATIONID   = LS.WORKSTATIONID
+                   AND TS.TRANSNUMBER     = LS.TRANSNUMBER
+                 AND TS.TRANSTYPECODE   = LS.TRANSTYPECODE	/* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */
+                   AND LS.RESULT_STATUS   = 'C'
+                   AND LS.TRANSTYPECODE NOT IN ('0050','0060')	/* 20160624 김학수 추가 [현금연수증,LPOINT는 매출에서제외(중복제거)] */
+                   AND NOT EXISTS (SELECT 1 FROM TLOGERR LE 
+                                    WHERE TS.RETAILSTOREID  = LE.RETAILSTOREID
+                                      AND TS.BUSINESSDAYDATE = LE.BUSINESSDAYDATE
+                                      AND TS.WORKSTATIONID   = LE.WORKSTATIONID
+                                      AND TS.TRANSNUMBER     = LE.TRANSNUMBER
+                                    AND TS.TRANSTYPECODE   = LE.TRANSTYPECODE	/* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */
+                                  )
+  	            ) SH,  /* TSA_SALE_HEAD_IMALL 변경*/
+			   TOR_ORDER     		OM,
+			   TOR_DEMAND   		OD,
+			   TTR_CARD_TRAN_LOG 	CL
+		WHERE  SH.ORDER_ID          = OM.ORDER_ID
+	    AND    OM.ORDER_ID          = OD.ORDER_ID
+	    AND    SH.SALE_DY           BETWEEN #fromDate# AND #toDate# -- 매출일자
+	    AND    SH.POS_NO            IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3') AND USE_YN = 'Y')
+	    AND    OM.POS_NO            IS NOT NULL
+	    AND    OD.SETL_TYPE_CD 		= '01' 							-- 카드
+	    AND    OD.CARDCO_CD 		= '0009' 						-- 롯데카드
+        AND    OM.ORD_STS_CD		= '11' 							-- 결제완료
+        AND    OM.SALE_STS_CD		= '01' 							-- 매출완료
+	    AND    OD.ORDER_ID			= CL.ORDER_ID
+	    AND    CL.APPRO_TYPE		= '1000' 						-- 승인
+	    AND    CL.ERR_TYPE			= 'O'
+	    AND    OM.ORDER_ID IN ( 
+	    						SELECT ORD_BASKET_ID
+        						FROM   TOTSD_CHL_INFW_LOG 
+			                    WHERE  OTSD_CHL_NO = '00052' 		-- 롯데카드몰 제휴
+						        AND    SCT_CD      = '0'
+						     )
+		GROUP BY SH.SALE_DY
+	</select>
+	
+	
+	<!-- 2015.12.02 by kmlee 백업 내용인데, 사용하지 않아서 삭제 -->
+	<!-- <select id="selectLotteCardMallCalListExcel20130213bak" resultClass="dataMap"> -->
+
+</sqlMap>

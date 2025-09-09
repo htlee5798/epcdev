@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="NEDMPRO0330">
+	<typeAlias alias="nEDMPRO0330VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0330VO" />		<!-- 약정서 조회 VO -->
+
+	<!-- 약정서 조회 Map -->	
+	<resultMap id="selectProdRtnDocMap"		class="nEDMPRO0330VO">
+		<result column="PROD_RTN_NO"		property="prodRtnNo" 	/>	<!-- 반품요청번호 -->
+		<result column="SEQ"				property="seq" 			/>	<!-- 순번 -->
+		<result column="VEN_CD"				property="venCd" 		/>	<!-- 파트너사코드 -->
+		<result column="TEAM_CD"			property="teamCd" 		/>	<!-- 상품팀코드 -->
+		<result column="SRCMK_CD"			property="srcmkCd" 		/>	<!-- 판매코드 -->
+		<result column="PROD_CD"			property="prodCd" 		/>	<!-- 상품코드 -->
+		<result column="RTN_REG_DY"			property="rtnRegDy" 	/>	<!-- 반품등록일 -->
+		<result column="RTN_CLS_DY"			property="rtnClsDy" 	/>	<!-- 반품마감일 -->
+		<result column="REQ_MD_DY"			property="reqMdDy" 		/>	<!-- MD협의요청일 -->
+		<result column="PROD_QTY"			property="prodQty" 		/>	<!-- 수량 -->
+		<result column="RTN_RESN"			property="rtnResn" 		/>	<!-- 반품사유 -->
+		<result column="RTN_RESN_DTL"		property="rtnResnDtl" 	/>	<!-- 반품상세사유 -->
+		<result column="RTN_RESN_PLCE"		property="rtnResnPlce" 	/>	<!-- 반품장소 -->
+		<result column="PRDT_STATUS"		property="prdtStatus" 	/>	<!-- 진행상태 -->
+		<result column="PRDT_STATUS_NM"		property="prdtStatusNm"	/>	<!-- 진행상태명 -->
+		<result column="STR_CD"				property="strCd" 		/>	<!-- 점포코드 -->
+		<result column="IF_REQ_DT"			property="ifReqDt" 		/>	<!-- ERP 인터페이스 송신 일시 -->
+		<result column="IF_RCV_DT"			property="ifRcvDt" 		/>	<!-- ERP 인터페이스 수신 일시 -->
+		<result column="DC_NUM"				property="dcNum" 		/>	<!-- 계약번호(공문번호) -->
+		<result column="DC_STAT"			property="dcStat" 		/>	<!-- 계약(공문)진행상태 -->
+		<result column="MOD_DATE"			property="modDate" 		/>	<!-- 등록아이디 -->
+		<result column="MOD_ID"				property="modId" 		/>	<!-- 등록일시 -->
+		<result column="REG_DATE"			property="regDate" 		/>	<!-- 수정아이디 -->
+		<result column="REG_ID"				property="regId" 		/>	<!-- 수정일시 -->
+	</resultMap>
+
+    <!-- 약정서 카운터 조회 -->
+    <select id="selectProdRtnDocListCount" parameterClass="nEDMPRO0330VO" resultClass="Integer" >
+    /* NEDMPRO0330.selectProdRtnDocListCount */
+	    SELECT COUNT(*)
+	    FROM(
+	    	SELECT 
+				PROD_RTN_NO
+				FROM TPC_PROD_RTN_ITEM
+				WHERE 1=1
+	    )A
+    </select>
+    
+    <!-- 약정서 조회 -->
+    <select id="selectProdRtnDocList" parameterClass="nEDMPRO0330VO" resultMap="selectProdRtnDocMap" >
+    /* NEDMPRO0330.selectProdRtnDocList */
+		SELECT                                     
+			  PROD_RTN_NO				/* 반품요청번호	*/
+			, SEQ                       /* 순번		*/
+			, VEN_CD                    /* 파트너사코드	*/
+			, TEAM_CD                   /* 상품팀코드	*/
+			, SRCMK_CD                  /* 판매코드	*/
+			, PROD_CD                   /* 상품코드	*/
+			, TO_CHAR(CAST(RTN_REG_DY AS TIMESTAMP), 'YYYY-MM-DD') AS RTN_REG_DY /* 반품등록일	*/
+			, TO_CHAR(CAST(RTN_CLS_DY AS TIMESTAMP), 'YYYY-MM-DD') AS RTN_CLS_DY /* 반품마감일	*/
+			, TO_CHAR(REQ_MD_DY,'YYYY-MM-DD') AS REQ_MD_DY   /* MD협의요청일	*/
+			, PROD_QTY                  /* 수량		*/
+			, RTN_RESN                  /* 반품사유	*/
+			, RTN_RESN_DTL              /* 반품상세사유	*/
+			, RTN_RESN_PLCE             /* 반품장소	*/
+			, CASE WHEN PRDT_STATUS = '1' THEN '파트너사등록'
+				   WHEN PRDT_STATUS = '2' THEN 'MD 협의요청'
+				   WHEN PRDT_STATUS = '3' THEN 'MD 승인'
+				   WHEN PRDT_STATUS = '4' THEN 'MD 반려'
+				   ELSE '' END AS PRDT_STATUS_NM   /* 진행상태명	*/
+			, PRDT_STATUS				/* 진행상태	*/	   
+			, STR_CD                    /* 점포코드	*/
+			, TO_CHAR(IF_REQ_DT,'YYYY-MM-DD') AS IF_REQ_DT	/* ERP 인터페이스 송신 일시	*/
+			, TO_CHAR(IF_RCV_DT,'YYYY-MM-DD') AS IF_RCV_DT	/* ERP 인터페이스 수신 일시	*/
+			, DC_NUM                    /* 계약번호(공문번호)	*/
+			, DC_STAT                   /* 계약(공문)진행상태	*/
+			, TO_CHAR(MOD_DATE,'YYYY-MM-DD') AS MOD_DATE  /* 수정일시	*/
+			, MOD_ID                    /* 수정자아이디	*/
+			, TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE  /* 등옥일시	*/
+			, REG_ID                    /* 등록자아이디	*/
+			FROM TPC_PROD_RTN_ITEM
+			WHERE DEL_YN = 'N'
+			ORDER BY RTN_REG_DY DESC, PROD_RTN_NO, SEQ
+    </select>
+	
+	
+	
+	
+	
+	
+	
+	
+</sqlMap>	

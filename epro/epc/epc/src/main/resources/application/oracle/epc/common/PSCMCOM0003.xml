@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMCOM0003">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectDeliCodePopup" resultClass="dataMap">
+		/* PSCMCOM0003.selectDeliCodePopup */ 
+	    SELECT  
+	           CD_NM, MINOR_CD 
+	      FROM TET_CODE
+	     WHERE MAJOR_CD = 'DE011'
+	       AND MINOR_CD != '*'
+	  ORDER BY MINOR_CD  
+	</select>  
+
+
+	
+</sqlMap>

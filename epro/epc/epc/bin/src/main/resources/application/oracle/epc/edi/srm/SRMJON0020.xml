@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0020">
+
+	<typeAlias alias="srmJon0020Vo"	type="com.lottemart.epc.edi.srm.model.SRMJON0020VO" />
+	
+	<!-- 기등록여부 확인 Map -->
+	<resultMap id="srmJon0020VoMap" 	class="srmJon0020Vo">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode"		/>	<!-- 업체코드 -->
+		<result column="IRS_NO"  			property="irsNo" 			/>	<!-- 사업자등록번호-->
+	 	<result column="SELLER_NAME_LOC"  	property="sellerNameLoc" 	/>	<!-- 사업자명(한글)-->
+	 	<result column="COUNTRY"  			property="country" 			/>	<!-- 국가코드 -->
+	 	<result column="SHIPPER_TYPE"  		property="shipperType" 		/>	<!-- 업체 소싱 국가 구분 -->
+	 	<result column="PASS_CHECK_CNT"  	property="passCheckCnt" 	/>	<!-- 비밀번호 오류 횟수 카운트 컬럼 -->
+	</resultMap>
+	
+	<!-- 입점상담 신청 로그인(비밀번호 포함) Map -->
+	<resultMap id="srmJon0020VoMap2" 	class="srmJon0020Vo">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode"		/>	<!-- 업체코드 -->
+		<result column="IRS_NO"  			property="irsNo" 			/>	<!-- 사업자등록번호-->
+	 	<result column="SELLER_NAME_LOC"  	property="sellerNameLoc" 	/>	<!-- 사업자명(한글)-->
+	 	<result column="COUNTRY"  			property="country" 			/>	<!-- 국가코드 -->
+	 	<result column="SHIPPER_TYPE"  		property="shipperType" 		/>	<!-- 업체 소싱 국가 구분 -->
+	 	<result column="TEMP_PW"  			property="tempPw" 			/>	<!-- 비밀번호 -->
+	 	<result column="PASS_CHECK_CNT"  	property="passCheckCnt" 	/>	<!-- 비밀번호 오류 횟수 카운트 컬럼 -->
+	</resultMap>
+	
+	<!-- 상담신청 리스트 조회 Map -->
+	<resultMap id="srmCounselMap" 	class="srmJon0020Vo">
+		<result column="RNUM"				property="rnum" 		/>	<!-- 순번 -->
+		<result column="HOUSE_CODE"			property="houseCode" 	/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode"	/>	<!-- 업체코드 -->
+	 	<result column="REQUEST_DATE"		property="requestDate" 	/>	<!-- 요청일자 -->
+	 	<result column="IRS_NO"				property="irsNo"		/>	<!-- 사업자등록번호 -->
+		<result column="REQ_SEQ"			property="reqSeq"		/>	<!-- 순번 -->
+		<result column="VENDOR_CODE"		property="vendorCode" 	/>	<!-- 업체코드 -->
+		<result column="CHANNEL_CODE"		property="channelCode" 	/>	<!-- 채널 -->
+		<result column="CHANNEL_CODE_NAME" 	property="channelCodeNm"/>	<!-- 채널명 -->
+		<result column="CAT_LV1_CODE"		property="catLv1Code" 	/>	<!-- 대분류코드 -->
+		<result column="CAT_LV1_CODE_NAME"	property="catLv1CodeNm" />	<!-- 대분류코드 이름 -->
+		<result column="STATUS"				property="status" 		/>	<!-- 상태 -->
+		<result column="STATUS_NAME"		property="statusNm"		/>	<!-- 상태명 -->
+		<result column="DEL_FLAG"			property="delFlag" 		/>	<!-- 삭제여부 -->
+		<result column="ADD_DATE"			property="addDate" 		/>	<!-- 등록일자 -->
+	</resultMap>
+	
+	<!-- 사업자명/ 사업자번호 검색 조회 결과 -->
+	<resultMap id="srmSearchMap" 	class="srmJon0020Vo">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode"		/>	<!-- 업체코드 -->
+		<result column="IRS_NO"  			property="irsNo" 			/>	<!-- 사업자등록번호-->		
+	 	<result column="SELLER_NAME_LOC"  	property="sellerNameLoc" 	/>	<!-- 사업자명(한글)-->
+	</resultMap>
+	
+	
+	<!-- 기등록여부 확인  -->
+	<select id="selectSRMJONLogin" parameterClass="srmJon0020Vo" resultMap="srmJon0020VoMap">
+		/* SRMJON0020.selectSRMJONLogin */
+		SELECT 	HOUSE_CODE
+			,	SELLER_CODE
+			,	IRS_NO
+			,	SELLER_NAME_LOC
+			,	NVL(COUNTRY, 'KR') AS COUNTRY
+			,	SHIPPER_TYPE
+			,	NVL(PASS_CHECK_CNT, 0) AS PASS_CHECK_CNT
+		FROM 	SSUGL
+		WHERE 	HOUSE_CODE		= #houseCode#
+		  AND	IRS_NO 			= #irsNo#
+			
+			<!-- 해외업체구분(1:Domestic, 2:Global) -->
+			<!-- <isEqual property="shipperType" compareValue="2">
+				AND NVL(COUNTRY, 'KR') = #country#
+			</isEqual> -->
+			
+	</select>
+	
+	
+	<!-- 사업자명/ 사업자번호 검색 조회 결과 -->
+	<select id="selectSRMJONSearch" parameterClass="srmJon0020Vo" resultMap="srmSearchMap">
+		/* SRMJON0020.selectSRMJONLogin */
+		SELECT 	HOUSE_CODE
+			,	SELLER_CODE			
+			,	IRS_NO
+			,	SELLER_NAME_LOC			
+		FROM 	SSUGL
+		WHERE 	HOUSE_CODE		= #houseCode#	
+		<isNotEmpty property="irsNo">		  
+		AND	IRS_NO 			= #irsNo#
+		</isNotEmpty>		
+					
+	</select>
+	
+	
+	<!-- 입점상담 신청 로그인(비밀번호 포함)  -->
+	<select id="selectSRMJONReLogin" parameterClass="srmJon0020Vo" resultMap="srmJon0020VoMap2">
+		/* SRMJON0020.selectSRMJONReLogin */
+		SELECT 	HOUSE_CODE
+			,	SELLER_CODE
+			,	IRS_NO
+			,	SELLER_NAME_LOC
+			,	NVL(COUNTRY, 'KR') AS COUNTRY
+			,	SHIPPER_TYPE
+			,	TEMP_PW
+			,	NVL(PASS_CHECK_CNT, 0) AS PASS_CHECK_CNT
+		FROM 	SSUGL
+		WHERE 	HOUSE_CODE		= #houseCode#
+		  AND	IRS_NO 			= #irsNo#
+			
+			<!-- 해외업체구분(1:Domestic, 2:Global) -->
+			<!-- <isEqual property="shipperType" compareValue="2">
+				AND NVL(COUNTRY, 'KR') = #country#
+			</isEqual> -->
+			
+	</select>
+	
+	<!-- 상담신청 리스트 조회 카운트 -->
+	<select id="selectCounselListCount" parameterClass="srmJon0020Vo" resultClass="Integer">
+		/* SRMJON0020.selectCounselListCount */
+		SELECT	COUNT(*)
+	    FROM  	SSUGL A
+	        , 	SINRQ B
+	        ,	SSUGL_PROCESS_MAIN C
+	    WHERE 	A.HOUSE_CODE  	= B.HOUSE_CODE(+)
+	      AND A.SELLER_CODE 	= B.VENDOR_CODE(+)
+	      AND B.HOUSE_CODE	= C.HOUSE_CODE(+)
+	      AND B.VENDOR_CODE	= C.SELLER_CODE(+)
+	      AND B.REQ_SEQ		= C.SEQ(+)
+	      AND A.HOUSE_CODE	= #houseCode#
+	      AND A.IRS_NO 		= #irsNo#
+	</select>
+	
+	<!-- 상담신청 리스트 조회 -->
+	<select id="selectCounselList" parameterClass="srmJon0020Vo" resultMap="srmCounselMap">
+		/* SRMJON0020.selectCounselList */
+		SELECT 	D.*
+		FROM
+		(
+			SELECT	ROW_NUMBER() OVER(ORDER BY TO_NUMBER(B.REQ_SEQ) DESC) AS RNUM
+				,	A.HOUSE_CODE
+				,	A.SELLER_CODE
+				, 	TO_CHAR(B.REQUEST_DATE, 'YYYY-MM-DD') AS REQUEST_DATE
+				, 	A.IRS_NO
+				,	B.REQ_SEQ
+				,	B.VENDOR_CODE
+				, 	B.CHANNEL_CODE
+				,	GETCODETEXT1('SRM053',B.CHANNEL_CODE,UPPER(#locale#)) AS CHANNEL_CODE_NAME
+				,	B.CAT_LV1_CODE
+				,	GETSGCLASS('000', UPPER(#locale#), '1', B.CAT_LV1_CODE) AS CAT_LV1_CODE_NAME
+				,	NVL(C.PROCESS_STATUS, B.STATUS) AS STATUS
+				, 	GETCODETEXT1('SRM900',NVL(C.PROCESS_STATUS, B.STATUS),UPPER(#locale#)) AS STATUS_NAME
+				,	B.DEL_FLAG
+				, 	TO_CHAR(B.ADD_DATE, 'YYYY-MM-DD') AS ADD_DATE
+		    FROM  	SSUGL A
+		        , 	SINRQ B
+		        ,	SSUGL_PROCESS_MAIN C
+		    WHERE 	A.HOUSE_CODE  	= B.HOUSE_CODE(+)
+		      AND A.SELLER_CODE 	= B.VENDOR_CODE(+)
+		      AND B.HOUSE_CODE	= C.HOUSE_CODE(+)
+		      AND B.VENDOR_CODE	= C.SELLER_CODE(+)
+		      AND B.REQ_SEQ		= C.SEQ(+)
+		      AND A.HOUSE_CODE	= #houseCode#
+		      AND A.IRS_NO 		= #irsNo#
+		) D
+		WHERE RNUM BETWEEN #firstIndex#+1 AND #lastIndex#
+		ORDER BY RNUM
+	</select>
+	
+	<!-- 패스워드 실패 시 카운트 증가 -->
+	<update id="updatePassCheckCnt" parameterClass="srmJon0020Vo" >
+		/* SRMJON0020.updatePassCheckCnt */
+		UPDATE	SSUGL
+		SET		PASS_CHECK_CNT	=	(	SELECT	NVL(PASS_CHECK_CNT, 0) +1
+										FROM	SSUGL
+										WHERE	HOUSE_CODE = #houseCode#
+										AND		SELLER_CODE = #irsNo#
+									)
+		WHERE	HOUSE_CODE = #houseCode#
+		  AND	SELLER_CODE = #irsNo#
+	</update>
+	
+	<!-- 로그인 성공 시 카운트 초기화 -->
+	<update id="updatePassCheckCntReset" parameterClass="srmJon0020Vo" >
+		/* SRMJON0020.updatePassCheckCntReset */
+		UPDATE	SSUGL
+		SET		PASS_CHECK_CNT	=	'0'
+		WHERE	HOUSE_CODE = #houseCode#
+		  AND	SELLER_CODE = #irsNo#
+	</update>
+	
+</sqlMap>

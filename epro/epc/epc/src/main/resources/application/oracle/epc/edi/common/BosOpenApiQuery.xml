@@ -1,0 +1,3125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="BosOpenAPiQuery">
+
+	<!-- BOS API 구분 코드 조회 -->
+	<select id="selectBosApiUrl" parameterClass="String" resultClass="String">
+		/* BosOpenApiQuery.selectBosApiUrl */
+		SELECT LET_2_REF AS API_URL
+		FROM TPC_NEW_CODE A
+		WHERE A.MAJOR_CD = 'BOSIF'
+		AND A.USE_YN = 'Y'
+		AND A.MINOR_CD = #ifCd#
+	</select>
+
+	<!-- 전상법템플릿 마스터 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpProdAddInfoMst">
+		/* BosOpenApiQuery.deleteTmpProdAddInfoMst */
+		TRUNCATE TABLE TMP_TPR_PROD_ADD_INFO_MST;
+	</delete>
+	
+	<!-- 전상법템플릿 마스터 임시테이블 데이터 저장 -->
+	<insert id="insertTmpProdAddInfoMst" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpProdAddInfoMst */
+		INSERT INTO TMP_TPR_PROD_ADD_INFO_MST
+		(
+			INFO_GRP_CD
+			, CAT_CD
+			, INFO_GRP_NM
+			, INFO_GRP_DESC
+			, USE_YN
+			, VALI_START_DATE
+			, VALI_END_DATE
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].INFO_GRP_CD#
+			, #DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].INFO_GRP_NM#
+			, #DATA_LIST[].INFO_GRP_DESC#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].VALI_START_DATE#
+			, #DATA_LIST[].VALI_END_DATE#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 전상법템플릿 마스터 Temp To Real 이관 -->
+	<update id="mergeTprProdAddInfoMst" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTprProdAddInfoMst */
+		MERGE INTO TPR_PROD_ADD_INFO_MST T
+		USING (
+			SELECT
+				INFO_GRP_CD
+				, CAT_CD
+				, INFO_GRP_NM
+				, INFO_GRP_DESC
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			FROM TMP_TPR_PROD_ADD_INFO_MST
+		)S ON T.INFO_GRP_CD = S.INFO_GRP_CD AND T.CAT_CD = S.CAT_CD
+		WHEN MATCHED THEN
+		UPDATE SET
+			INFO_GRP_NM 		= S.INFO_GRP_NM
+			, INFO_GRP_DESC 	= S.INFO_GRP_DESC
+			, USE_YN			= S.USE_YN
+			, VALI_START_DATE	= S.VALI_START_DATE
+			, VALI_END_DATE		= S.VALI_END_DATE
+			, MOD_DATE			= S.MOD_DATE
+			, MOD_ID			= S.MOD_ID
+		WHEN NOT MATCHED THEN
+		INSERT
+		(
+			INFO_GRP_CD
+			, CAT_CD
+			, INFO_GRP_NM
+			, INFO_GRP_DESC
+			, USE_YN
+			, VALI_START_DATE
+			, VALI_END_DATE
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		(
+			S.INFO_GRP_CD
+			, S.CAT_CD
+			, S.INFO_GRP_NM
+			, S.INFO_GRP_DESC
+			, S.USE_YN
+			, S.VALI_START_DATE
+			, S.VALI_END_DATE
+			, S.REG_DATE
+			, S.REG_ID
+			, S.MOD_DATE
+			, S.MOD_ID
+		);
+	</update>
+	
+	<!-- 전상법템플릿 상세 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpProdAddInfoDet">
+		/* BosOpenApiQuery.deleteTmpProdAddInfoDet */
+		TRUNCATE TABLE TMP_TPR_PROD_ADD_INFO_DET;
+	</delete>
+	
+	<!-- 전상법템플릿 상세 임시테이블 데이터 저장 -->
+	<insert id="insertTmpProdAddInfoDet" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpProdAddInfoDet */
+		INSERT INTO TMP_TPR_PROD_ADD_INFO_DET
+		(
+			INFO_GRP_CD,
+			INFO_COL_CD,
+			INFO_COL_NM,
+			INFO_COL_DESC,
+			ORDER_SEQ,
+			USE_YN,
+			VALI_START_DATE,
+			VALI_END_DATE,
+			REG_DATE,
+			REG_ID,
+			MOD_DATE,
+			MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].INFO_GRP_CD#,
+			#DATA_LIST[].INFO_COL_CD#,
+			#DATA_LIST[].INFO_COL_NM#,
+			#DATA_LIST[].INFO_COL_DESC#,
+			#DATA_LIST[].ORDER_SEQ#,
+			#DATA_LIST[].USE_YN#,
+			#DATA_LIST[].VALI_START_DATE#,
+			#DATA_LIST[].VALI_END_DATE#,
+			TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS'),
+			#DATA_LIST[].REG_ID#,
+			TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS'),
+			#DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+
+	<!-- 전상법템플릿 상세 Temp To Real 이관 -->
+	<update id="mergeTprProdAddInfoDet" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTprProdAddInfoDet */
+		MERGE INTO TPR_PROD_ADD_INFO_DET T
+		USING (
+			SELECT
+				INFO_GRP_CD
+				, INFO_COL_CD
+				, INFO_COL_NM
+				, INFO_COL_DESC
+				, ORDER_SEQ
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			FROM TMP_TPR_PROD_ADD_INFO_DET
+		)S ON T.INFO_GRP_CD = S.INFO_GRP_CD AND T.INFO_COL_CD = S.INFO_COL_CD 
+		WHEN MATCHED THEN
+			UPDATE SET
+				INFO_COL_NM       = S.INFO_COL_NM
+				, INFO_COL_DESC   = S.INFO_COL_DESC
+				, ORDER_SEQ       = S.ORDER_SEQ
+				, USE_YN          = S.USE_YN
+				, VALI_START_DATE = S.VALI_START_DATE
+				, VALI_END_DATE   = S.VALI_END_DATE
+				, MOD_DATE        = S.MOD_DATE
+				, MOD_ID          = S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				INFO_GRP_CD
+				, INFO_COL_CD
+				, INFO_COL_NM
+				, INFO_COL_DESC
+				, ORDER_SEQ
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.INFO_GRP_CD
+				, S.INFO_COL_CD
+				, S.INFO_COL_NM
+				, S.INFO_COL_DESC
+				, S.ORDER_SEQ
+				, S.USE_YN
+				, S.VALI_START_DATE
+				, S.VALI_END_DATE
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	<!-- KC인증품목 마스터 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpProdCertInfoMst">
+		/* BosOpenApiQuery.deleteTmpProdCertInfoMst */
+		TRUNCATE TABLE TMP_TPR_PROD_CERT_INFO_MST;
+	</delete>
+	
+	<!-- KC인증품목 마스터 임시테이블 데이터 저장 -->
+	<insert id="insertTmpProdCertInfoMst" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpProdCertInfoMst */
+		INSERT INTO TMP_TPR_PROD_CERT_INFO_MST
+		(
+			INFO_GRP_CD
+			, CAT_CD
+			, INFO_GRP_NM
+			, INFO_GRP_DESC
+			, USE_YN
+			, VALI_START_DATE
+			, VALI_END_DATE
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].INFO_GRP_CD#
+			, #DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].INFO_GRP_NM#
+			, #DATA_LIST[].INFO_GRP_DESC#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].VALI_START_DATE#
+			, #DATA_LIST[].VALI_END_DATE#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- KC인증품목 마스터 Temp To Real 이관 -->
+	<update id="mergeTprProdCertInfoMst" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTprProdCertInfoMst */
+		MERGE INTO TPR_PROD_CERT_INFO_MST T
+		USING (
+			SELECT
+				INFO_GRP_CD
+				, CAT_CD
+				, INFO_GRP_NM
+				, INFO_GRP_DESC
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			FROM TMP_TPR_PROD_CERT_INFO_MST
+		)S ON T.INFO_GRP_CD = S.INFO_GRP_CD AND T.CAT_CD = S.CAT_CD
+		WHEN MATCHED THEN
+			UPDATE SET
+				INFO_GRP_NM         = S.INFO_GRP_NM
+				, INFO_GRP_DESC     = S.INFO_GRP_DESC
+				, USE_YN            = S.USE_YN
+				, VALI_START_DATE   = S.VALI_START_DATE
+				, VALI_END_DATE     = S.VALI_END_DATE
+				, MOD_DATE          = S.MOD_DATE
+				, MOD_ID            = S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				INFO_GRP_CD
+				, CAT_CD
+				, INFO_GRP_NM
+				, INFO_GRP_DESC
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.INFO_GRP_CD
+				, S.CAT_CD
+				, S.INFO_GRP_NM
+				, S.INFO_GRP_DESC
+				, S.USE_YN
+				, S.VALI_START_DATE
+				, S.VALI_END_DATE
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	<!-- KC인증품목 상세 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpProdCertInfoDet">
+		/* BosOpenApiQuery.deleteTmpProdCertInfoDet */
+		TRUNCATE TABLE TMP_TPR_PROD_CERT_INFO_DET;
+	</delete>
+	
+	<!-- KC인증품목 상세 임시테이블 데이터 저장 -->
+	<insert id="insertTmpProdCertInfoDet" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpProdCertInfoDet */
+		INSERT INTO TMP_TPR_PROD_CERT_INFO_DET
+		(
+			INFO_GRP_CD
+			, INFO_COL_CD
+			, INFO_COL_NM
+			, INFO_COL_DESC
+			, ORDER_SEQ
+			, USE_YN
+			, VALI_START_DATE
+			, VALI_END_DATE
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].INFO_GRP_CD#
+			, #DATA_LIST[].INFO_COL_CD#
+			, #DATA_LIST[].INFO_COL_NM#
+			, #DATA_LIST[].INFO_COL_DESC#
+			, #DATA_LIST[].ORDER_SEQ#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].VALI_START_DATE#
+			, #DATA_LIST[].VALI_END_DATE#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- KC인증품목 상세 Temp To Real 이관 -->
+	<update id="mergeTprProdCertInfoDet" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTprProdCertInfoDet */
+		MERGE INTO TPR_PROD_CERT_INFO_DET T
+		USING (
+			SELECT
+				INFO_GRP_CD
+				, INFO_COL_CD
+				, INFO_COL_NM
+				, INFO_COL_DESC
+				, ORDER_SEQ
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			FROM TMP_TPR_PROD_CERT_INFO_DET
+		)S ON T.INFO_GRP_CD = S.INFO_GRP_CD AND T.INFO_COL_CD = S.INFO_COL_CD 
+		WHEN MATCHED THEN
+			UPDATE SET
+				INFO_COL_NM       = S.INFO_COL_NM
+				, INFO_COL_DESC   = S.INFO_COL_DESC
+				, ORDER_SEQ       = S.ORDER_SEQ
+				, USE_YN          = S.USE_YN
+				, VALI_START_DATE = S.VALI_START_DATE
+				, VALI_END_DATE   = S.VALI_END_DATE
+				, MOD_DATE        = S.MOD_DATE
+				, MOD_ID          = S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				INFO_GRP_CD
+				, INFO_COL_CD
+				, INFO_COL_NM
+				, INFO_COL_DESC
+				, ORDER_SEQ
+				, USE_YN
+				, VALI_START_DATE
+				, VALI_END_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.INFO_GRP_CD
+				, S.INFO_COL_CD
+				, S.INFO_COL_NM
+				, S.INFO_COL_DESC
+				, S.ORDER_SEQ
+				, S.USE_YN
+				, S.VALI_START_DATE
+				, S.VALI_END_DATE
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	<!-- EC표준카테고리 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpStdCategory">
+		/* BosOpenApiQuery.deleteTmpStdCategory */
+		TRUNCATE TABLE TMP_TEC_STD_CATEGORY;
+	</delete>
+	
+	<!-- EC표준카테고리 임시테이블 데이터 저장 -->
+	<insert id="insertTmpStdCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpStdCategory */
+		INSERT INTO TMP_TEC_STD_CATEGORY
+		(
+			STD_CAT_CD
+			, STD_CAT_NM
+			, LRG_STD_CAT_CD
+			, LRG_STD_CAT_NM
+			, MID_STD_CAT_CD
+			, MID_STD_CAT_NM
+			, SML_STD_CAT_CD
+			, SML_STD_CAT_NM
+			, SUB_STD_CAT_CD
+			, SUB_STD_CAT_NM
+			, DEPTH
+			, LEAF_YN
+			, MALL_CD
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+			, DISP_YN
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].STD_CAT_CD#
+			, #DATA_LIST[].STD_CAT_NM#
+			, #DATA_LIST[].LRG_STD_CAT_CD#
+			, #DATA_LIST[].LRG_STD_CAT_NM#
+			, #DATA_LIST[].MID_STD_CAT_CD#
+			, #DATA_LIST[].MID_STD_CAT_NM#
+			, #DATA_LIST[].SML_STD_CAT_CD#
+			, #DATA_LIST[].SML_STD_CAT_NM#
+			, #DATA_LIST[].SUB_STD_CAT_CD#
+			, #DATA_LIST[].SUB_STD_CAT_NM#
+			, #DATA_LIST[].DEPTH#
+			, #DATA_LIST[].LEAF_YN#
+			, #DATA_LIST[].MALL_CD#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].DISP_YN#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- EC표준카테고리 Temp To Real 이관 -->
+	<update id="mergeTecStdCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecStdCategory */
+		MERGE INTO TEC_STD_CATEGORY T
+		USING (
+			SELECT 
+				STD_CAT_CD
+				, STD_CAT_NM
+				, LRG_STD_CAT_CD
+				, LRG_STD_CAT_NM
+				, MID_STD_CAT_CD
+				, MID_STD_CAT_NM
+				, SML_STD_CAT_CD
+				, SML_STD_CAT_NM
+				, SUB_STD_CAT_CD
+				, SUB_STD_CAT_NM
+				, DEPTH
+				, LEAF_YN
+				, MALL_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+				, DISP_YN
+			FROM TMP_TEC_STD_CATEGORY
+		)S ON T.STD_CAT_CD = S.STD_CAT_CD
+		WHEN MATCHED THEN
+			UPDATE SET
+				STD_CAT_NM        = S.STD_CAT_NM      
+				, LRG_STD_CAT_CD  = S.LRG_STD_CAT_CD
+				, LRG_STD_CAT_NM  = S.LRG_STD_CAT_NM
+				, MID_STD_CAT_CD  = S.MID_STD_CAT_CD
+				, MID_STD_CAT_NM  = S.MID_STD_CAT_NM
+				, SML_STD_CAT_CD  = S.SML_STD_CAT_CD
+				, SML_STD_CAT_NM  = S.SML_STD_CAT_NM
+				, SUB_STD_CAT_CD  = S.SUB_STD_CAT_CD
+				, SUB_STD_CAT_NM  = S.SUB_STD_CAT_NM
+				, DEPTH           = S.DEPTH         
+				, LEAF_YN         = S.LEAF_YN       
+				, MALL_CD         = S.MALL_CD       
+				, USE_YN          = S.USE_YN        
+				, MOD_ID          = S.MOD_ID        
+				, MOD_DATE        = S.MOD_DATE      
+				, DISP_YN         = S.DISP_YN
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				STD_CAT_CD
+				, STD_CAT_NM
+				, LRG_STD_CAT_CD
+				, LRG_STD_CAT_NM
+				, MID_STD_CAT_CD
+				, MID_STD_CAT_NM
+				, SML_STD_CAT_CD
+				, SML_STD_CAT_NM
+				, SUB_STD_CAT_CD
+				, SUB_STD_CAT_NM
+				, DEPTH
+				, LEAF_YN
+				, MALL_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+				, DISP_YN
+			)
+			VALUES
+			(
+				S.STD_CAT_CD
+				, S.STD_CAT_NM
+				, S.LRG_STD_CAT_CD
+				, S.LRG_STD_CAT_NM
+				, S.MID_STD_CAT_CD
+				, S.MID_STD_CAT_NM
+				, S.SML_STD_CAT_CD
+				, S.SML_STD_CAT_NM
+				, S.SUB_STD_CAT_CD
+				, S.SUB_STD_CAT_NM
+				, S.DEPTH
+				, S.LEAF_YN
+				, S.MALL_CD
+				, S.USE_YN
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+				, S.DISP_YN
+			);
+	</update>
+	
+	<!-- EC전시카테고리 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpDispCategory">
+		/* BosOpenApiQuery.deleteTmpDispCategory */
+		TRUNCATE TABLE TMP_TEC_DISP_CATEGORY;
+	</delete>
+	
+	<!-- EC전시카테고리 임시테이블 데이터 저장 -->
+	<insert id="insertTmpDispCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpDispCategory */
+		INSERT INTO TMP_TEC_DISP_CATEGORY
+		(
+			DISP_CAT_CD
+			, DISP_CAT_NM
+			, LRG_DISP_CAT_CD
+			, LRG_DISP_CAT_NM
+			, MID_DISP_CAT_CD
+			, MID_DISP_CAT_NM
+			, SML_DISP_CAT_CD
+			, SML_DISP_CAT_NM
+			, SUB_DISP_CAT_CD
+			, SUB_DISP_CAT_NM
+			, DEPTH
+			, LEAF_YN
+			, MALL_CD
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+			, DISP_YN
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].DISP_CAT_CD#
+			, #DATA_LIST[].DISP_CAT_NM#
+			, #DATA_LIST[].LRG_DISP_CAT_CD#
+			, #DATA_LIST[].LRG_DISP_CAT_NM#
+			, #DATA_LIST[].MID_DISP_CAT_CD#
+			, #DATA_LIST[].MID_DISP_CAT_NM#
+			, #DATA_LIST[].SML_DISP_CAT_CD#
+			, #DATA_LIST[].SML_DISP_CAT_NM#
+			, #DATA_LIST[].SUB_DISP_CAT_CD#
+			, #DATA_LIST[].SUB_DISP_CAT_NM#
+			, #DATA_LIST[].DEPTH#
+			, #DATA_LIST[].LEAF_YN#
+			, #DATA_LIST[].MALL_CD#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].DISP_YN#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC전시카테고리 Temp To Real 이관 -->
+	<update id="mergeTecDispCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecDispCategory */
+		MERGE INTO TEC_DISP_CATEGORY T
+		USING (
+			SELECT 
+				DISP_CAT_CD
+				, DISP_CAT_NM
+				, LRG_DISP_CAT_CD
+				, LRG_DISP_CAT_NM
+				, MID_DISP_CAT_CD
+				, MID_DISP_CAT_NM
+				, SML_DISP_CAT_CD
+				, SML_DISP_CAT_NM
+				, SUB_DISP_CAT_CD
+				, SUB_DISP_CAT_NM
+				, DEPTH
+				, LEAF_YN
+				, MALL_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+				, DISP_YN
+			FROM TMP_TEC_DISP_CATEGORY
+		)S ON T.DISP_CAT_CD = S.DISP_CAT_CD
+		WHEN MATCHED THEN
+			UPDATE SET
+				DISP_CAT_NM        = S.DISP_CAT_NM      
+				, LRG_DISP_CAT_CD  = S.LRG_DISP_CAT_CD
+				, LRG_DISP_CAT_NM  = S.LRG_DISP_CAT_NM
+				, MID_DISP_CAT_CD  = S.MID_DISP_CAT_CD
+				, MID_DISP_CAT_NM  = S.MID_DISP_CAT_NM
+				, SML_DISP_CAT_CD  = S.SML_DISP_CAT_CD
+				, SML_DISP_CAT_NM  = S.SML_DISP_CAT_NM
+				, SUB_DISP_CAT_CD  = S.SUB_DISP_CAT_CD
+				, SUB_DISP_CAT_NM  = S.SUB_DISP_CAT_NM
+				, DEPTH           = S.DEPTH         
+				, LEAF_YN         = S.LEAF_YN       
+				, MALL_CD         = S.MALL_CD       
+				, USE_YN          = S.USE_YN        
+				, MOD_ID          = S.MOD_ID        
+				, MOD_DATE        = S.MOD_DATE      
+				, DISP_YN         = S.DISP_YN
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				DISP_CAT_CD
+				, DISP_CAT_NM
+				, LRG_DISP_CAT_CD
+				, LRG_DISP_CAT_NM
+				, MID_DISP_CAT_CD
+				, MID_DISP_CAT_NM
+				, SML_DISP_CAT_CD
+				, SML_DISP_CAT_NM
+				, SUB_DISP_CAT_CD
+				, SUB_DISP_CAT_NM
+				, DEPTH
+				, LEAF_YN
+				, MALL_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+				, DISP_YN
+			)
+			VALUES
+			(
+				S.DISP_CAT_CD
+				, S.DISP_CAT_NM
+				, S.LRG_DISP_CAT_CD
+				, S.LRG_DISP_CAT_NM
+				, S.MID_DISP_CAT_CD
+				, S.MID_DISP_CAT_NM
+				, S.SML_DISP_CAT_CD
+				, S.SML_DISP_CAT_NM
+				, S.SUB_DISP_CAT_CD
+				, S.SUB_DISP_CAT_NM
+				, S.DEPTH
+				, S.LEAF_YN
+				, S.MALL_CD
+				, S.USE_YN
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+				, S.DISP_YN
+			);
+	</update>
+	
+	
+	<!-- EC 표준/전시 카테고리 맵핑 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpStdDispCategoryMapping">
+		/* BosOpenApiQuery.deleteTmpStdDispCategoryMapping */
+		TRUNCATE TABLE TMP_TEC_STD_DISP_MAPPING;
+	</delete>
+	
+	<!-- EC 표준/전시 카테고리 맵핑 임시테이블 데이터 저장 -->
+	<insert id="insertTmpStdDispCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpStdDispCategoryMapping */
+		INSERT INTO TMP_TEC_STD_DISP_MAPPING
+		(
+			STD_CAT_CD
+			, DISP_CAT_CD
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].STD_CAT_CD#
+			, #DATA_LIST[].DISP_CAT_CD#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC 표준/전시 카테고리 맵핑  Temp To Real 이관 -->
+	<update id="mergeTecStdDispCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecDispCategoryMapping */
+		MERGE INTO TEC_STD_DISP_MAPPING T
+		USING (
+			SELECT 
+				DISP_CAT_CD
+				, STD_CAT_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			FROM TMP_TEC_STD_DISP_MAPPING
+		)S ON T.DISP_CAT_CD = S.DISP_CAT_CD AND T.STD_CAT_CD = S.STD_CAT_CD 
+		WHEN MATCHED THEN
+			UPDATE SET
+				 USE_YN          = S.USE_YN        
+				, MOD_ID          = S.MOD_ID        
+				, MOD_DATE        = S.MOD_DATE      
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				DISP_CAT_CD
+				, STD_CAT_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.DISP_CAT_CD
+				, S.STD_CAT_CD
+				, S.USE_YN
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	
+	
+	<!-- EC 표준/마트 카테고리 맵핑 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpStdCatCategoryMapping">
+		/* BosOpenApiQuery.deleteTmpStdDispCategoryMapping */
+		TRUNCATE TABLE TMP_TEC_STD_CAT_MAPPING;
+	</delete>
+	
+	<!-- EC 표준/마트 카테고리 맵핑 임시테이블 데이터 저장 -->
+	<insert id="insertTmpStdCatCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpStdDispCategoryMapping */
+		INSERT INTO TMP_TEC_STD_CAT_MAPPING
+		(
+			STD_CAT_CD
+			, MART_CAT_CD
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].STD_CAT_CD#
+			, #DATA_LIST[].MART_CAT_CD#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC 표준/마트 카테고리 맵핑  Temp To Real 이관 -->
+	<update id="mergeTecStdCatCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecStdCatCategoryMapping */
+		MERGE INTO TEC_STD_CAT_MAPPING T
+		USING (
+			SELECT 
+				MART_CAT_CD
+				, STD_CAT_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			FROM TMP_TEC_STD_CAT_MAPPING
+		)S ON T.MART_CAT_CD = S.MART_CAT_CD AND T.STD_CAT_CD = S.STD_CAT_CD 
+		WHEN MATCHED THEN
+			UPDATE SET
+				 USE_YN          = S.USE_YN        
+				, MOD_ID          = S.MOD_ID        
+				, MOD_DATE        = S.MOD_DATE      
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				MART_CAT_CD
+				, STD_CAT_CD
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.MART_CAT_CD
+				, S.STD_CAT_CD
+				, S.USE_YN
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	
+	<!-- EC 표준카테고리 / EC 상품속성  맵핑 임시테이블 데이터 삭제 -->
+	<delete id="deleteTmpAttrCatCategoryMapping">
+		/* BosOpenApiQuery.deleteTmpAttrCatCategoryMapping */
+		TRUNCATE TABLE TMP_TEC_ATTR_CAT_MAPPING;
+	</delete>
+	
+	<!-- EC 표준카테고리 / EC 상품속성  맵핑 임시테이블 데이터 저장 -->
+	<insert id="insertTmpAttrCatCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpAttrCatCategoryMapping */
+		INSERT INTO TMP_TEC_ATTR_CAT_MAPPING
+		(
+			STD_CAT_CD
+			, ATTR_ID
+			, REQ_YN
+			, PRIO_RNK
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].STD_CAT_CD#
+			, #DATA_LIST[].ATTR_ID#
+			, #DATA_LIST[].REQ_YN#
+			, #DATA_LIST[].PRIO_RNK#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC 표준카테고리 / EC 상품속성  맵핑  Temp To Real 이관 -->
+	<update id="mergeTecAttrCatCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecAttrCatCategoryMapping */
+		MERGE INTO TEC_ATTR_CAT_MAPPING T
+		USING (
+			SELECT 
+				STD_CAT_CD
+				, ATTR_ID
+				, REQ_YN
+				, PRIO_RNK
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			FROM TMP_TEC_ATTR_CAT_MAPPING
+		)S ON T.ATTR_ID = S.ATTR_ID AND T.STD_CAT_CD = S.STD_CAT_CD 
+		WHEN MATCHED THEN
+			UPDATE SET
+				 REQ_YN		=	S.REQ_YN
+				, PRIO_RNK	=	S.PRIO_RNK
+				, USE_YN	=	S.USE_YN
+				, MOD_ID	=	S.MOD_ID
+				, MOD_DATE	=	S.MOD_DATE   
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				STD_CAT_CD
+				, ATTR_ID
+				, REQ_YN
+				, PRIO_RNK
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.STD_CAT_CD
+				, S.ATTR_ID
+				, S.REQ_YN
+				, S.PRIO_RNK
+				, S.USE_YN
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	<!-- EC 상품속성 코드(마스터) 임시테이블 데이터  삭제  -->
+	<delete id="deleteTmpAttrCd">
+		/* BosOpenApiQuery.deleteTmpAttrCd */
+		TRUNCATE TABLE TMP_TEC_ATTR_CD;
+	</delete>
+	
+	
+	<!-- EC 상품 속성 코드 (마스터) 임시테이블 데이터 저장  -->
+	<insert id="insertTmpAttrCd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpAttrCd */
+		INSERT INTO TMP_TEC_ATTR_CD
+		(
+			ATTR_ID
+			, ATTR_NM
+			, ATTR_VAL_FRM_CD
+			, ATTR_PI_TYPE
+			, ATTR_DISP_NM
+			, ATTR_VAL_TP_CD
+			, ATTR_SERVICE_AREA
+			, USE_YN
+			, ATTR_SYNONYM
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].ATTR_ID#
+			, #DATA_LIST[].ATTR_NM#
+			, #DATA_LIST[].ATTR_VAL_FRM_CD#
+			, #DATA_LIST[].ATTR_PI_TYPE#
+			, #DATA_LIST[].ATTR_DISP_NM#
+			, #DATA_LIST[].ATTR_VAL_TP_CD#
+			, #DATA_LIST[].ATTR_SERVICE_AREA#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].ATTR_SYNONYM#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC 상품 속성 코드 (마스터) Temp to Real 이관  -->
+	<update id="mergeTecAttrCd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecAttrCd */
+		MERGE INTO TEC_ATTR_CD T
+		USING (
+			SELECT 
+				ATTR_ID
+				, ATTR_NM
+				, ATTR_VAL_FRM_CD
+				, ATTR_PI_TYPE
+				, ATTR_DISP_NM
+				, ATTR_VAL_TP_CD
+				, ATTR_SERVICE_AREA
+				, USE_YN
+				, ATTR_SYNONYM
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			FROM TMP_TEC_ATTR_CD
+		)S ON T.ATTR_ID = S.ATTR_ID  
+		WHEN MATCHED THEN
+			UPDATE SET
+				 ATTR_NM		=	S.ATTR_NM
+				, ATTR_VAL_FRM_CD	=	S.ATTR_VAL_FRM_CD
+				, ATTR_PI_TYPE	=	S.ATTR_PI_TYPE
+				, ATTR_DISP_NM	=	S.ATTR_DISP_NM
+				, ATTR_VAL_TP_CD	=	S.ATTR_VAL_TP_CD
+				, ATTR_SERVICE_AREA	=	S.ATTR_SERVICE_AREA
+				, USE_YN	=	S.USE_YN
+				, ATTR_SYNONYM	=	S.ATTR_SYNONYM
+				, MOD_ID	=	S.MOD_ID
+				, MOD_DATE	=	S.MOD_DATE   
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				ATTR_ID
+				, ATTR_NM
+				, ATTR_VAL_FRM_CD
+				, ATTR_PI_TYPE
+				, ATTR_DISP_NM
+				, ATTR_VAL_TP_CD
+				, ATTR_SERVICE_AREA
+				, USE_YN
+				, ATTR_SYNONYM
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.ATTR_ID
+				, S.ATTR_NM
+				, S.ATTR_VAL_FRM_CD
+				, S.ATTR_PI_TYPE
+				, S.ATTR_DISP_NM
+				, S.ATTR_VAL_TP_CD
+				, S.ATTR_SERVICE_AREA
+				, S.USE_YN
+				, S.ATTR_SYNONYM
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	
+	<!-- EC 상품속성 코드(아이템) 임시테이블 데이터  삭제  -->
+	<delete id="deleteTmpAttrVal">
+		/* BosOpenApiQuery.deleteTmpAttrVal */
+		TRUNCATE TABLE TMP_TEC_ATTR_VAL;
+	</delete>
+	
+	
+	<!-- EC 상품 속성 코드 (아이템) 임시테이블 데이터 저장  -->
+	<insert id="insertTmpAttrVal" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpAttrVal */
+		INSERT INTO TMP_TEC_ATTR_VAL
+		(
+			ATTR_ID
+			, ATTR_VAL_ID
+			, ATTR_VAL_NM
+			, ATTR_VAL_RNG_STRT
+			, ATTR_VAL_RNG_END
+			, ATTR_VAL_DISP_NM
+			, ATTR_VAL_SORT
+			, ATTR_SYNONYM
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].ATTR_ID#
+			, #DATA_LIST[].ATTR_VAL_ID#
+			, #DATA_LIST[].ATTR_VAL_NM#
+			, #DATA_LIST[].ATTR_VAL_RNG_STRT#
+			, #DATA_LIST[].ATTR_VAL_RNG_END#
+			, #DATA_LIST[].ATTR_VAL_DISP_NM#
+			, #DATA_LIST[].ATTR_VAL_SORT#
+			, #DATA_LIST[].ATTR_SYNONYM#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC 상품 속성 코드 (아이템) Temp to Real 이관  -->
+	<update id="mergeTecAttrVal" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTecAttrVal */
+		MERGE INTO TEC_ATTR_VAL T
+		USING (
+			SELECT 
+				ATTR_ID
+				, ATTR_VAL_ID
+				, ATTR_VAL_NM
+				, ATTR_VAL_RNG_STRT
+				, ATTR_VAL_RNG_END
+				, ATTR_VAL_DISP_NM
+				, ATTR_VAL_SORT
+				, ATTR_SYNONYM
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			FROM TMP_TEC_ATTR_VAL
+		)S ON T.ATTR_ID = S.ATTR_ID  AND T.ATTR_VAL_ID = S.ATTR_VAL_ID 
+		WHEN MATCHED THEN
+			UPDATE SET
+				 ATTR_VAL_NM		=	S.ATTR_VAL_NM
+				, ATTR_VAL_RNG_STRT	=	S.ATTR_VAL_RNG_STRT
+				, ATTR_VAL_RNG_END	=	S.ATTR_VAL_RNG_END
+				, ATTR_VAL_DISP_NM	=	S.ATTR_VAL_DISP_NM
+				, ATTR_VAL_SORT	=	S.ATTR_VAL_SORT
+				, ATTR_SYNONYM	=	S.ATTR_SYNONYM
+				, USE_YN	=	S.USE_YN
+				, MOD_ID	=	S.MOD_ID
+				, MOD_DATE	=	S.MOD_DATE   
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				ATTR_ID
+				, ATTR_VAL_ID
+				, ATTR_VAL_NM
+				, ATTR_VAL_RNG_STRT
+				, ATTR_VAL_RNG_END
+				, ATTR_VAL_DISP_NM
+				, ATTR_VAL_SORT
+				, ATTR_SYNONYM
+				, USE_YN
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.ATTR_ID
+				, S.ATTR_VAL_ID
+				, S.ATTR_VAL_NM
+				, S.ATTR_VAL_RNG_STRT
+				, S.ATTR_VAL_RNG_END
+				, S.ATTR_VAL_DISP_NM
+				, S.ATTR_VAL_SORT
+				, S.ATTR_SYNONYM
+				, S.USE_YN
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	
+	
+	<!-- 온라인 공통 코드 임시테이블 데이터  삭제  -->
+	<delete id="deleteTmpTetCode">
+		/* BosOpenApiQuery.deleteTmpTetCode */
+		TRUNCATE TABLE TMP_TET_CODE;
+	</delete>
+	
+	
+	<!-- 온라인 공통 코드 임시테이블 데이터 저장  -->
+	<insert id="insertTmpTetCode" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTetCode */
+		INSERT INTO TMP_TET_CODE
+		(
+			MAJOR_CD
+			, MINOR_CD
+			, CD_NM
+			, CD_DESC
+			, ORDER_SEQ
+			, LET_1_REF
+			, LET_2_REF
+			, LET_3_REF
+			, LET_4_REF
+			, LET_5_REF
+			, LET_6_REF
+			, LET_7_REF
+			, LET_8_REF
+			, CNT_1_REF
+			, CNT_2_REF
+			, CNT_3_REF
+			, CNT_4_REF
+			, CNT_5_REF
+			, CNT_6_REF
+			, CNT_7_REF
+			, CNT_8_REF
+			, REG_DIVN_CD
+			, USE_YN
+			, VALI_END_DATE
+			, VALI_START_DATE
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].MAJOR_CD#
+			, #DATA_LIST[].MINOR_CD#
+			, #DATA_LIST[].CD_NM#
+			, #DATA_LIST[].CD_DESC#
+			, #DATA_LIST[].ORDER_SEQ#
+			, #DATA_LIST[].LET_1_REF#
+			, #DATA_LIST[].LET_2_REF#
+			, #DATA_LIST[].LET_3_REF#
+			, #DATA_LIST[].LET_4_REF#
+			, #DATA_LIST[].LET_5_REF#
+			, #DATA_LIST[].LET_6_REF#
+			, #DATA_LIST[].LET_7_REF#
+			, #DATA_LIST[].LET_8_REF#
+			, #DATA_LIST[].CNT_1_REF#
+			, #DATA_LIST[].CNT_2_REF#
+			, #DATA_LIST[].CNT_3_REF#
+			, #DATA_LIST[].CNT_4_REF#
+			, #DATA_LIST[].CNT_5_REF#
+			, #DATA_LIST[].CNT_6_REF#
+			, #DATA_LIST[].CNT_7_REF#
+			, #DATA_LIST[].CNT_8_REF#
+			, #DATA_LIST[].REG_DIVN_CD#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].VALI_END_DATE#
+			, #DATA_LIST[].VALI_START_DATE#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 온라인 공통 코드 Temp to Real 이관  -->
+	<update id="mergeTetCode" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTetCode */
+		MERGE INTO TET_CODE T
+		USING (
+			SELECT 
+				MAJOR_CD
+				, MINOR_CD
+				, CD_NM
+				, CD_DESC
+				, ORDER_SEQ
+				, LET_1_REF
+				, LET_2_REF
+				, LET_3_REF
+				, LET_4_REF
+				, LET_5_REF
+				, LET_6_REF
+				, LET_7_REF
+				, LET_8_REF
+				, CNT_1_REF
+				, CNT_2_REF
+				, CNT_3_REF
+				, CNT_4_REF
+				, CNT_5_REF
+				, CNT_6_REF
+				, CNT_7_REF
+				, CNT_8_REF
+				, REG_DIVN_CD
+				, USE_YN
+				, VALI_END_DATE
+				, VALI_START_DATE
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			FROM TMP_TET_CODE
+		)S ON T.MAJOR_CD = S.MAJOR_CD  AND T.MINOR_CD = S.MINOR_CD 
+		WHEN MATCHED THEN
+			UPDATE SET
+				 MAJOR_CD		=	S.MAJOR_CD
+				, MINOR_CD	=	S.MINOR_CD
+				, CD_NM	=	S.CD_NM
+				, CD_DESC	=	S.CD_DESC
+				, ORDER_SEQ	=	S.ORDER_SEQ
+				, LET_1_REF	=	S.LET_1_REF
+				, LET_2_REF	=	S.LET_2_REF
+				, LET_3_REF	=	S.LET_3_REF
+				, LET_4_REF	=	S.LET_4_REF
+				, LET_5_REF	=	S.LET_5_REF
+				, LET_6_REF	=	S.LET_6_REF
+				, LET_7_REF	=	S.LET_7_REF
+				, LET_8_REF	=	S.LET_8_REF
+				, CNT_1_REF	=	S.CNT_1_REF
+				, CNT_2_REF	=	S.CNT_2_REF
+				, CNT_3_REF	=	S.CNT_3_REF
+				, CNT_4_REF	=	S.CNT_4_REF
+				, CNT_5_REF	=	S.CNT_5_REF
+				, CNT_6_REF	=	S.CNT_6_REF
+				, CNT_7_REF	=	S.CNT_7_REF
+				, CNT_8_REF	=	S.CNT_8_REF
+				, REG_DIVN_CD	=	S.REG_DIVN_CD
+				, USE_YN	=	S.USE_YN
+				, VALI_END_DATE	=	S.VALI_END_DATE
+				, VALI_START_DATE	=	S.VALI_START_DATE
+				, MOD_ID	=	S.MOD_ID
+				, MOD_DATE	=	S.MOD_DATE   
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				MAJOR_CD
+				, MINOR_CD
+				, CD_NM
+				, CD_DESC
+				, ORDER_SEQ
+				, LET_1_REF
+				, LET_2_REF
+				, LET_3_REF
+				, LET_4_REF
+				, LET_5_REF
+				, LET_6_REF
+				, LET_7_REF
+				, LET_8_REF
+				, CNT_1_REF
+				, CNT_2_REF
+				, CNT_3_REF
+				, CNT_4_REF
+				, CNT_5_REF
+				, CNT_6_REF
+				, CNT_7_REF
+				, CNT_8_REF
+				, REG_DIVN_CD
+				, USE_YN
+				, VALI_END_DATE
+				, VALI_START_DATE
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.MAJOR_CD
+				, S.MINOR_CD
+				, S.CD_NM
+				, S.CD_DESC
+				, S.ORDER_SEQ
+				, S.LET_1_REF
+				, S.LET_2_REF
+				, S.LET_3_REF
+				, S.LET_4_REF
+				, S.LET_5_REF
+				, S.LET_6_REF
+				, S.LET_7_REF
+				, S.LET_8_REF
+				, S.CNT_1_REF
+				, S.CNT_2_REF
+				, S.CNT_3_REF
+				, S.CNT_4_REF
+				, S.CNT_5_REF
+				, S.CNT_6_REF
+				, S.CNT_7_REF
+				, S.CNT_8_REF
+				, S.REG_DIVN_CD
+				, S.USE_YN
+				, S.VALI_END_DATE
+				, S.VALI_START_DATE
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	
+	
+	<!-- 온라인 전시 카테고리 임시테이블 데이터  삭제  -->
+	<delete id="deleteTmpCategory">
+		/* BosOpenApiQuery.deleteTmpCategory */
+		TRUNCATE TABLE TMP_TCA_CATEGORY;
+	</delete>
+	
+	
+	<!-- 온라인 전시 카테고리 임시테이블 데이터 저장  -->
+	<insert id="insertTmpCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTetCode */
+		INSERT INTO TMP_TCA_CATEGORY
+		(
+			CATEGORY_ID
+			, CATEGORY_NM
+			, UP_CATEGORY_ID
+			, ORDER_SEQ
+			, DEPTH
+			, DISP_YN
+			, TEMPLATE_ID
+			, CATEGORY_TYPE_CD
+			, LEAF_YN
+			, START_DATE
+			, START_TM
+			, END_DATE
+			, END_TM
+			, STDIST_EXUSE_YN
+			, SEARCH_KYWRD
+			, URL
+			, STR_CD
+			, EVNT_PRGS_STS_CD
+			, LOT_CUST_CNT
+			, WPZ_CUST_CNT
+			, ISSUE_BASE_AMT
+			, PRIZE_APLY_START_DY
+			, PRIZE_APLY_END_DY
+			, MKPL_GRP_CD
+			, LOT_ANNC_DY
+			, DISP_TYPE_CD
+			, MKPL_CAT_CD
+			, RECOM_TYPE_CD
+			, CATEGORY_DIVN_CD
+			, DISP_DIVN_CD
+			, TYPE_CD
+			, TYPE_VAL
+			, EVNT_TYPE
+			, APRV_CD
+			, APRV_DATE
+			, APRV_ID
+			, SITE_LOC
+			, MAIN_SCR_YN
+			, ICON_PATH
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].CATEGORY_ID#
+			, #DATA_LIST[].CATEGORY_NM#
+			, #DATA_LIST[].UP_CATEGORY_ID#
+			, #DATA_LIST[].ORDER_SEQ#
+			, #DATA_LIST[].DEPTH#
+			, #DATA_LIST[].DISP_YN#
+			, #DATA_LIST[].TEMPLATE_ID#
+			, #DATA_LIST[].CATEGORY_TYPE_CD#
+			, #DATA_LIST[].LEAF_YN#
+			, #DATA_LIST[].START_DATE#
+			, #DATA_LIST[].START_TM#
+			, #DATA_LIST[].END_DATE#
+			, #DATA_LIST[].END_TM#
+			, #DATA_LIST[].STDIST_EXUSE_YN#
+			, #DATA_LIST[].SEARCH_KYWRD#
+			, #DATA_LIST[].URL#
+			, #DATA_LIST[].STR_CD#
+			, #DATA_LIST[].EVNT_PRGS_STS_CD#
+			, #DATA_LIST[].LOT_CUST_CNT#
+			, #DATA_LIST[].WPZ_CUST_CNT#
+			, #DATA_LIST[].ISSUE_BASE_AMT#
+			, #DATA_LIST[].PRIZE_APLY_START_DY#
+			, #DATA_LIST[].PRIZE_APLY_END_DY#
+			, #DATA_LIST[].MKPL_GRP_CD#
+			, #DATA_LIST[].LOT_ANNC_DY#
+			, #DATA_LIST[].DISP_TYPE_CD#
+			, #DATA_LIST[].MKPL_CAT_CD#
+			, #DATA_LIST[].RECOM_TYPE_CD#
+			, #DATA_LIST[].CATEGORY_DIVN_CD#
+			, #DATA_LIST[].DISP_DIVN_CD#
+			, #DATA_LIST[].TYPE_CD#
+			, #DATA_LIST[].TYPE_VAL#
+			, #DATA_LIST[].EVNT_TYPE#
+			, #DATA_LIST[].APRV_CD#
+			, TO_TIMESTAMP(#DATA_LIST[].APRV_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].APRV_ID#
+			, #DATA_LIST[].SITE_LOC#
+			, #DATA_LIST[].MAIN_SCR_YN#
+			, #DATA_LIST[].ICON_PATH#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 온라인 전시 카테고리 Temp to Real 이관  -->
+	<update id="mergeCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeCategory */
+		MERGE INTO TCA_CATEGORY T
+		USING (
+			SELECT 
+				CATEGORY_ID
+				, CATEGORY_NM
+				, UP_CATEGORY_ID
+				, ORDER_SEQ
+				, DEPTH
+				, DISP_YN
+				, TEMPLATE_ID
+				, CATEGORY_TYPE_CD
+				, LEAF_YN
+				, START_DATE
+				, START_TM
+				, END_DATE
+				, END_TM
+				, STDIST_EXUSE_YN
+				, SEARCH_KYWRD
+				, URL
+				, STR_CD
+				, EVNT_PRGS_STS_CD
+				, LOT_CUST_CNT
+				, WPZ_CUST_CNT
+				, ISSUE_BASE_AMT
+				, PRIZE_APLY_START_DY
+				, PRIZE_APLY_END_DY
+				, MKPL_GRP_CD
+				, LOT_ANNC_DY
+				, DISP_TYPE_CD
+				, MKPL_CAT_CD
+				, RECOM_TYPE_CD
+				, CATEGORY_DIVN_CD
+				, DISP_DIVN_CD
+				, TYPE_CD
+				, TYPE_VAL
+				, EVNT_TYPE
+				, APRV_CD
+				, APRV_DATE
+				, APRV_ID
+				, SITE_LOC
+				, MAIN_SCR_YN
+				, ICON_PATH
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+				FROM TMP_TCA_CATEGORY
+		)S ON T.CATEGORY_ID = S.CATEGORY_ID 
+		WHEN MATCHED THEN
+			UPDATE SET
+				 CATEGORY_ID			=	S.CATEGORY_ID
+				, CATEGORY_NM			=	S.CATEGORY_NM
+				, UP_CATEGORY_ID		=	S.UP_CATEGORY_ID
+				, ORDER_SEQ				=	S.ORDER_SEQ
+				, DEPTH					=	S.DEPTH
+				, DISP_YN				=	S.DISP_YN
+				, TEMPLATE_ID			=	S.TEMPLATE_ID
+				, CATEGORY_TYPE_CD		=	S.CATEGORY_TYPE_CD
+				, LEAF_YN				=	S.LEAF_YN
+				, START_DATE			=	S.START_DATE
+				, START_TM				=	S.START_TM
+				, END_DATE				=	S.END_DATE
+				, END_TM				=	S.END_TM
+				, STDIST_EXUSE_YN		=	S.STDIST_EXUSE_YN
+				, SEARCH_KYWRD			=	S.SEARCH_KYWRD
+				, URL					=	S.URL
+				, STR_CD				=	S.STR_CD
+				, EVNT_PRGS_STS_CD		=	S.EVNT_PRGS_STS_CD
+				, LOT_CUST_CNT			=	S.LOT_CUST_CNT
+				, WPZ_CUST_CNT			=	S.WPZ_CUST_CNT
+				, ISSUE_BASE_AMT		=	S.ISSUE_BASE_AMT
+				, PRIZE_APLY_START_DY	=	S.PRIZE_APLY_START_DY
+				, PRIZE_APLY_END_DY		=	S.PRIZE_APLY_END_DY
+				, MKPL_GRP_CD			=	S.MKPL_GRP_CD
+				, LOT_ANNC_DY			=	S.LOT_ANNC_DY
+				, DISP_TYPE_CD			=	S.DISP_TYPE_CD
+				, MKPL_CAT_CD			=	S.MKPL_CAT_CD
+				, RECOM_TYPE_CD			=	S.RECOM_TYPE_CD
+				, CATEGORY_DIVN_CD		=	S.CATEGORY_DIVN_CD
+				, DISP_DIVN_CD			=	S.DISP_DIVN_CD
+				, TYPE_CD				=	S.TYPE_CD
+				, TYPE_VAL				=	S.TYPE_VAL
+				, EVNT_TYPE				=	S.EVNT_TYPE
+				, APRV_CD				=	S.APRV_CD
+				, APRV_DATE				=	S.APRV_DATE
+				, APRV_ID				=	S.APRV_ID
+				, SITE_LOC				=	S.SITE_LOC
+				, MAIN_SCR_YN			=	S.MAIN_SCR_YN
+				, ICON_PATH				=	S.ICON_PATH
+				, MOD_ID				=	S.MOD_ID
+				, MOD_DATE				=	S.MOD_DATE   
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				CATEGORY_ID
+				, CATEGORY_NM
+				, UP_CATEGORY_ID
+				, ORDER_SEQ
+				, DEPTH
+				, DISP_YN
+				, TEMPLATE_ID
+				, CATEGORY_TYPE_CD
+				, LEAF_YN
+				, START_DATE
+				, START_TM
+				, END_DATE
+				, END_TM
+				, STDIST_EXUSE_YN
+				, SEARCH_KYWRD
+				, URL
+				, STR_CD
+				, EVNT_PRGS_STS_CD
+				, LOT_CUST_CNT
+				, WPZ_CUST_CNT
+				, ISSUE_BASE_AMT
+				, PRIZE_APLY_START_DY
+				, PRIZE_APLY_END_DY
+				, MKPL_GRP_CD
+				, LOT_ANNC_DY
+				, DISP_TYPE_CD
+				, MKPL_CAT_CD
+				, RECOM_TYPE_CD
+				, CATEGORY_DIVN_CD
+				, DISP_DIVN_CD
+				, TYPE_CD
+				, TYPE_VAL
+				, EVNT_TYPE
+				, APRV_CD
+				, APRV_DATE
+				, APRV_ID
+				, SITE_LOC
+				, MAIN_SCR_YN
+				, ICON_PATH
+				, REG_ID
+				, REG_DATE
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.CATEGORY_ID
+				, S.CATEGORY_NM
+				, S.UP_CATEGORY_ID
+				, S.ORDER_SEQ
+				, S.DEPTH
+				, S.DISP_YN
+				, S.TEMPLATE_ID
+				, S.CATEGORY_TYPE_CD
+				, S.LEAF_YN
+				, S.START_DATE
+				, S.START_TM
+				, S.END_DATE
+				, S.END_TM
+				, S.STDIST_EXUSE_YN
+				, S.SEARCH_KYWRD
+				, S.URL
+				, S.STR_CD
+				, S.EVNT_PRGS_STS_CD
+				, S.LOT_CUST_CNT
+				, S.WPZ_CUST_CNT
+				, S.ISSUE_BASE_AMT
+				, S.PRIZE_APLY_START_DY
+				, S.PRIZE_APLY_END_DY
+				, S.MKPL_GRP_CD
+				, S.LOT_ANNC_DY
+				, S.DISP_TYPE_CD
+				, S.MKPL_CAT_CD
+				, S.RECOM_TYPE_CD
+				, S.CATEGORY_DIVN_CD
+				, S.DISP_DIVN_CD
+				, S.TYPE_CD
+				, S.TYPE_VAL
+				, S.EVNT_TYPE
+				, S.APRV_CD
+				, S.APRV_DATE
+				, S.APRV_ID
+				, S.SITE_LOC
+				, S.MAIN_SCR_YN
+				, S.ICON_PATH
+				, S.REG_ID
+				, S.REG_DATE
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+
+	<!-- 마트 기간계 카테고리 / 온라인 전시 카테고리 매핑정보 임시테이블 데이터 삭제  -->
+	<delete id="deleteTmpCategoryMapping">
+		/* BosOpenApiQuery.deleteTmpCategoryMapping */
+		TRUNCATE TABLE TMP_TCA_CATEGORY_MAPPING;
+	</delete>
+	
+	
+	<!-- 마트 기간계 카테고리 / 온라인 전시 카테고리 매핑정보 임시테이블 데이터 저장  -->
+	<insert id="insertTmpCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpCategoryMapping */
+		INSERT INTO TMP_TCA_CATEGORY_MAPPING
+		(
+			CAT_CD
+			, CATEGORY_ID
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].CATEGORY_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 마트 기간계 카테고리 / 온라인 전시 카테고리 매핑정보 Temp to Real  이관  -->
+	<update id="mergeCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeCategoryMapping */
+		MERGE INTO TCA_CATEGORY_MAPPING T
+		USING (
+			SELECT 
+				CAT_CD
+				, CATEGORY_ID
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				FROM TMP_TCA_CATEGORY_MAPPING
+		)S ON T.CAT_CD = S.CAT_CD AND T.CATEGORY_ID = S.CATEGORY_ID  
+		WHEN MATCHED THEN
+			UPDATE SET
+				 MOD_DATE		=	S.MOD_DATE
+				, MOD_ID			=	S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				CAT_CD
+				, CATEGORY_ID
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.CAT_CD
+				, S.CATEGORY_ID
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	<!-- 팀 카테고리 맵핑정보 임시테이블 데이터  삭제  -->
+	<delete id="deleteTmpL1Cd">
+		/* BosOpenApiQuery.deleteTmpL1Cd */
+		TRUNCATE TABLE TMP_TPC_L1_CD;
+	</delete>
+	
+	
+	<!-- 팀 카테고리 맵핑정보 임시테이블 데이터 저장  -->
+	<insert id="insertTmpL1Cd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpL1Cd */
+		INSERT INTO TMP_TPC_L1_CD
+		(
+			TEAM_CD
+			, TEAM_NM
+			, L1_CD
+			, L1_NM
+			, L2_CD
+			, L2_NM
+			, L3_CD
+			, L3_NM
+			, LST_CHG_DT
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].TEAM_CD#
+			, #DATA_LIST[].TEAM_NM#
+			, #DATA_LIST[].L1_CD#
+			, #DATA_LIST[].L1_NM#
+			, #DATA_LIST[].L2_CD#
+			, #DATA_LIST[].L2_NM#
+			, #DATA_LIST[].L3_CD#
+			, #DATA_LIST[].L3_NM#
+			, TO_TIMESTAMP(#DATA_LIST[].LST_CHG_DT#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 팀 카테고리 맵핑정보 Temp to Real 이관  -->
+	<update id="mergeL1Cd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeL1Cd */
+		MERGE INTO TPC_L1_CD T
+		USING (
+			SELECT 
+				TEAM_CD
+				, TEAM_NM
+				, L1_CD
+				, L1_NM
+				, L2_CD
+				, L2_NM
+				, L3_CD
+				, L3_NM
+				, LST_CHG_DT
+				FROM TMP_TPC_L1_CD
+		)S ON T.TEAM_CD = S.TEAM_CD AND T.L1_CD = S.L1_CD AND T.L2_CD = S.L2_CD AND T.L3_CD = S.L3_CD  
+		WHEN MATCHED THEN
+			UPDATE SET
+				 TEAM_NM		=	S.TEAM_NM
+				, L1_NM			=	S.L1_NM
+				, L2_NM			=	S.L2_NM
+				, L3_NM			=	S.L3_NM
+				, LST_CHG_DT	=	S.LST_CHG_DT
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				TEAM_CD
+				, TEAM_NM
+				, L1_CD
+				, L1_NM
+				, L2_CD
+				, L2_NM
+				, L3_CD
+				, L3_NM
+				, LST_CHG_DT
+			)
+			VALUES
+			(
+				S.TEAM_CD
+				, S.TEAM_NM
+				, S.L1_CD
+				, S.L1_NM
+				, S.L2_CD
+				, S.L2_NM
+				, S.L3_CD
+				, S.L3_NM
+				, S.LST_CHG_DT
+			);
+	</update>
+	
+	
+	
+	<!-- 신상품 - 오카도(롯데마트제타) 카테고리 입력 데이터 임시테이블  삭제  -->
+	<delete id="deleteTmpOspCatProdMapping">
+		/* BosOpenApiQuery.deleteTmpOspCatProdMapping */
+		TRUNCATE TABLE TMP_TEC_OSP_CAT_PROD_MAPPING;
+	</delete>
+	
+	
+	<!-- 신상품 - 오카도(롯데마트제타) 카테고리 입력 데이터 임시테이블 저장  -->
+	<insert id="insertTmpOspCatProdMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpOspCatProdMapping */
+		INSERT INTO TMP_TEC_OSP_CAT_PROD_MAPPING
+		(
+			PROD_CD
+			, STD_CAT_CD
+			, OSP_DISP_CAT_CD
+			, RPRT_DCAT_YN
+			, PGM_ID
+			, OSP_DP_YN
+			, REG_DATE
+			, REG_ID
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].PROD_CD#
+			, #DATA_LIST[].STD_CAT_CD#
+			, #DATA_LIST[].OSP_DISP_CAT_CD#
+			, #DATA_LIST[].RPRT_DCAT_YN#
+			, #DATA_LIST[].PGM_ID#
+			, #DATA_LIST[].OSP_DP_YN#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 신상품 - 오카도(롯데마트제타) 카테고리 입력 데이터 Temp to Real 이관  -->
+	<update id="mergeOspCatProdMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeOspCatProdMapping */
+		MERGE INTO TEC_OSP_CAT_PROD_MAPPING T 
+		USING (
+			SELECT 
+				PROD_CD
+				, STD_CAT_CD
+				, OSP_DISP_CAT_CD
+				, RPRT_DCAT_YN
+				, PGM_ID
+				, OSP_DP_YN
+				, REG_DATE
+				, REG_ID
+				, MOD_ID
+				, MOD_DATE
+				FROM TMP_TEC_OSP_CAT_PROD_MAPPING
+		)S ON T.PROD_CD = S.PROD_CD    AND T.STD_CAT_CD = S.STD_CAT_CD AND T.OSP_DISP_CAT_CD = S.OSP_DISP_CAT_CD
+		WHEN MATCHED THEN
+			UPDATE SET
+				 PROD_CD			=	S.PROD_CD
+				, STD_CAT_CD		=	S.STD_CAT_CD
+				, OSP_DISP_CAT_CD	=	S.OSP_DISP_CAT_CD
+				, RPRT_DCAT_YN		=	S.RPRT_DCAT_YN
+				, PGM_ID			=	S.PGM_ID
+				, OSP_DP_YN			=	S.OSP_DP_YN
+				, REG_DATE			=	S.REG_DATE
+				, REG_ID			=	S.REG_ID
+				, MOD_ID			=	S.MOD_ID
+				, MOD_DATE			=	S.MOD_DATE
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				PROD_CD
+				, STD_CAT_CD
+				, OSP_DISP_CAT_CD
+				, RPRT_DCAT_YN
+				, PGM_ID
+				, OSP_DP_YN
+				, REG_DATE
+				, REG_ID
+				, MOD_ID
+				, MOD_DATE
+			)
+			VALUES
+			(
+				S.PROD_CD
+				, S.STD_CAT_CD
+				, S.OSP_DISP_CAT_CD
+				, S.RPRT_DCAT_YN
+				, S.PGM_ID
+				, S.OSP_DP_YN
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_ID
+				, S.MOD_DATE
+			);
+	</update>
+	
+	<!-- 오카도 전시 카테고리 임시테이블 데이터  삭제  -->
+	<delete id="deleteTmpPdDcat">
+		/* BosOpenApiQuery.deleteTmpPdDcat */
+		TRUNCATE TABLE TMP_PD_DCAT;
+	</delete>
+	
+	
+	<!-- 오카도 전시 카테고리 임시테이블 데이터 저장  -->
+	<insert id="insertTmpPdDcat" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpPdDcat */
+		INSERT INTO TMP_PD_DCAT
+		(
+			DCAT_NO
+			, RNKH_DCAT_NO
+			, DCAT_NM
+			, LVL
+			, LF_YN
+			, DP_YN
+			, SORT_SEQC
+			, REG_DTTM
+			, REGR_NO
+			, MOD_DTTM
+			, MODR_NO
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].DCAT_NO#
+			, #DATA_LIST[].RNKH_DCAT_NO#
+			, #DATA_LIST[].DCAT_NM#
+			, #DATA_LIST[].LVL#
+			, #DATA_LIST[].LF_YN#
+			, #DATA_LIST[].DP_YN#
+			, #DATA_LIST[].SORT_SEQC#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REGR_NO#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MODR_NO#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 오카도 전시 카테고리 Temp to Real 이관  -->
+	<update id="mergePdDcat" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeL1Cd */
+		MERGE INTO PD_DCAT T
+		USING (
+			SELECT 
+				DCAT_NO
+				, RNKH_DCAT_NO
+				, DCAT_NM
+				, LVL
+				, LF_YN
+				, DP_YN
+				, SORT_SEQC
+				, REG_DTTM
+				, REGR_NO
+				, MOD_DTTM
+				, MODR_NO
+				FROM TMP_PD_DCAT
+		)S ON T.DCAT_NO = S.DCAT_NO   
+		WHEN MATCHED THEN
+			UPDATE SET
+				 RNKH_DCAT_NO		=	S.RNKH_DCAT_NO
+				, DCAT_NM			=	S.DCAT_NM
+				, LVL				=	S.LVL
+				, LF_YN				=	S.LF_YN
+				, DP_YN				=	S.DP_YN
+				, SORT_SEQC			=	S.SORT_SEQC
+				, REG_DTTM			=	S.REG_DTTM
+				, REGR_NO			=	S.REGR_NO
+				, MOD_DTTM			=	S.MOD_DTTM
+				, MODR_NO			=	S.MODR_NO
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				DCAT_NO
+				, RNKH_DCAT_NO
+				, DCAT_NM
+				, LVL
+				, LF_YN
+				, DP_YN
+				, SORT_SEQC
+				, REG_DTTM
+				, REGR_NO
+				, MOD_DTTM
+				, MODR_NO
+			)
+			VALUES
+			(
+				S.DCAT_NO
+				, S.RNKH_DCAT_NO
+				, S.DCAT_NM
+				, S.LVL
+				, S.LF_YN
+				, S.DP_YN
+				, S.SORT_SEQC
+				, S.REG_DTTM
+				, S.REGR_NO
+				, S.MOD_DTTM
+				, S.MODR_NO
+			);
+	</update>
+	
+	
+	
+	<!-- 오카도 전시 카테고리 / 마트 소분류 코드 매핑정보  임시테이블 데이터 삭제   -->
+	<delete id="deleteTmpPdDcatScatMpng">
+		/* BosOpenApiQuery.deleteTmpPdDcatScatMpng */
+		TRUNCATE TABLE TMP_PD_DCAT_SCAT_MPNG;
+	</delete>
+	
+	
+	<!-- 오카도 전시 카테고리 / 마트 소분류 코드 매핑정보  임시테이블 데이터 저장  -->
+	<insert id="insertTmpPdDcatScatMpng" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpPdDcatScatMpng */
+		INSERT INTO TMP_PD_DCAT_SCAT_MPNG
+		(
+			CAT_CD
+			, DCAT_NO
+			, REG_DTTM
+			, REGR_NO
+			, MOD_DTTM
+			, MODR_NO
+			, REG_USER_NO
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].DCAT_NO#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REGR_NO#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MODR_NO#
+			, #DATA_LIST[].REG_USER_NO#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 오카도 전시 카테고리 / 마트 소분류 코드 매핑정보  Temp to Real   -->
+	<update id="mergePdDcatScatMpng" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergePdDcatScatMpng */
+		MERGE INTO PD_DCAT_SCAT_MPNG T
+		USING (
+			SELECT 
+				CAT_CD
+				, DCAT_NO
+				, REG_DTTM
+				, REGR_NO
+				, MOD_DTTM
+				, MODR_NO
+				, REG_USER_NO
+				FROM TMP_PD_DCAT_SCAT_MPNG
+		)S ON T.CAT_CD = S.CAT_CD   AND T.DCAT_NO = S.DCAT_NO
+		WHEN MATCHED THEN
+			UPDATE SET
+				 REG_DTTM			=	S.REG_DTTM
+				, REGR_NO			=	S.REGR_NO
+				, MOD_DTTM			=	S.MOD_DTTM
+				, MODR_NO			=	S.MODR_NO
+				, REG_USER_NO		=	S.REG_USER_NO
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				CAT_CD
+				, DCAT_NO
+				, REG_DTTM
+				, REGR_NO
+				, MOD_DTTM
+				, MODR_NO
+				, REG_USER_NO
+			)
+			VALUES
+			(
+				S.CAT_CD
+				, S.DCAT_NO
+				, S.REG_DTTM
+				, S.REGR_NO
+				, S.MOD_DTTM
+				, S.MODR_NO
+				, S.REG_USER_NO
+			);
+	</update>
+	
+	<!-- 브랜드 임시 테이블 데이터 삭제   -->
+	<delete id="deleteTmpTprBrand">
+		/* BosOpenApiQuery.deleteTmpTprBrand */
+		TRUNCATE TABLE TMP_TPR_BRAND;
+	</delete>
+	
+	<!-- 브랜드 임시 테이블 데이터 저장  -->
+	<insert id="insertTmpTprBrand" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTprBrand */
+		INSERT INTO TMP_TPR_BRAND
+		(
+			BRAND_CD
+			, BRAND_NM
+			, BRAND_ENG_NM
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].BRAND_CD#
+			, #DATA_LIST[].BRAND_NM#
+			, #DATA_LIST[].BRAND_ENG_NM#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- 브랜드 Temp to Real 이관   -->
+	<update id="mergeTprBrand" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeL1Cd */
+		MERGE INTO TPR_BRAND T
+		USING (
+			SELECT 
+				BRAND_CD
+				, BRAND_NM
+				, BRAND_ENG_NM
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				FROM TMP_TPR_BRAND
+		)S ON T.BRAND_CD = S.BRAND_CD   
+		WHEN MATCHED THEN
+			UPDATE SET
+				 BRAND_CD			=	S.BRAND_CD
+				, BRAND_NM			=	S.BRAND_NM
+				, BRAND_ENG_NM		=	S.BRAND_ENG_NM
+				, REG_DATE			=	S.REG_DATE
+				, REG_ID			=	S.REG_ID
+				, MOD_DATE			=	S.MOD_DATE
+				, MOD_ID			=	S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				BRAND_CD
+				, BRAND_NM
+				, BRAND_ENG_NM
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.BRAND_CD
+				, S.BRAND_NM
+				, S.BRAND_ENG_NM
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	
+	
+	<!-- EC 패션 속성값 임시 테이블 데이터 삭제   -->
+	<delete id="deleteTmpEcAttDisplay">
+		/* BosOpenApiQuery.deleteTmpEcAttDisplay */
+		TRUNCATE TABLE TMP_TPC_EC_ATT_DISPLAY;
+	</delete>
+	
+	
+	<!-- EC 패션 속성값 임시 테이블 데이터 저장  -->
+	<insert id="insertTmpEcAttDisplay" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpEcAttDisplay */
+		INSERT INTO TMP_TPC_EC_ATT_DISPLAY
+		(
+			STD_CAT_CD
+			, ATTR_ID
+			, DISPLAY_FG
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].STD_CAT_CD#
+			, #DATA_LIST[].ATTR_ID#
+			, #DATA_LIST[].DISPLAY_FG#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EC 패션 속성값 Temp to Real 이관   -->
+	<update id="mergeEcAttDisplay" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeEcAttDisplay */
+		MERGE INTO TPC_EC_ATT_DISPLAY T
+		USING (
+			SELECT 
+				STD_CAT_CD
+				, ATTR_ID
+				, DISPLAY_FG
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				FROM TMP_TPC_EC_ATT_DISPLAY
+		)S ON T.STD_CAT_CD = S.STD_CAT_CD  AND T.ATTR_ID = S.ATTR_ID   
+		WHEN MATCHED THEN
+			UPDATE SET
+				 STD_CAT_CD			=	S.STD_CAT_CD
+				, ATTR_ID			=	S.ATTR_ID
+				, DISPLAY_FG		=	S.DISPLAY_FG
+				, REG_DATE			=	S.REG_DATE
+				, REG_ID			=	S.REG_ID
+				, MOD_DATE			=	S.MOD_DATE
+				, MOD_ID			=	S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				STD_CAT_CD
+				, ATTR_ID
+				, DISPLAY_FG
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.STD_CAT_CD
+				, S.ATTR_ID
+				, S.DISPLAY_FG
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	
+	<!-- EDI 코드 임시 테이블 데이터 삭제   -->
+	<delete id="deleteTmpTpcCode">
+		/* BosOpenApiQuery.deleteTmpTpcCode */
+		TRUNCATE TABLE TMP_TPC_CODE;
+	</delete>
+	
+	
+	<!-- EDI 코드 임시 테이블 데이터 저장  -->
+	<insert id="insertTmpTpcCode" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTpcCode */
+		INSERT INTO TMP_TPC_CODE
+		(
+			MAJOR_CD
+			, MINOR_CD
+			, CD_NM
+			, CD_DESC
+			, ORDER_SEQ
+			, LET_1_REF
+			, LET_2_REF
+			, LET_3_REF
+			, LET_4_REF
+			, CNT_1_REF
+			, CNT_2_REF
+			, CNT_3_REF
+			, CNT_4_REF
+			, REG_DIVN_CD
+			, USE_YN
+			, VALI_END_DATE
+			, VALI_START_DATE
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].MAJOR_CD#
+			, #DATA_LIST[].MINOR_CD#
+			, #DATA_LIST[].CD_NM#
+			, #DATA_LIST[].CD_DESC#
+			, #DATA_LIST[].ORDER_SEQ#
+			, #DATA_LIST[].LET_1_REF#
+			, #DATA_LIST[].LET_2_REF#
+			, #DATA_LIST[].LET_3_REF#
+			, #DATA_LIST[].LET_4_REF#
+			, #DATA_LIST[].CNT_1_REF#
+			, #DATA_LIST[].CNT_2_REF#
+			, #DATA_LIST[].CNT_3_REF#
+			, #DATA_LIST[].CNT_4_REF#
+			, #DATA_LIST[].REG_DIVN_CD#
+			, #DATA_LIST[].USE_YN#
+			, #DATA_LIST[].VALI_END_DATE#
+			, #DATA_LIST[].VALI_START_DATE#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	
+	<!-- EDI 코드 Temp to Real 이관   -->
+	<update id="mergeTpcCode" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTpcCode */
+		MERGE INTO TPC_CODE T
+		USING (
+			SELECT 
+				MAJOR_CD
+				, MINOR_CD
+				, CD_NM
+				, CD_DESC
+				, ORDER_SEQ
+				, LET_1_REF
+				, LET_2_REF
+				, LET_3_REF
+				, LET_4_REF
+				, CNT_1_REF
+				, CNT_2_REF
+				, CNT_3_REF
+				, CNT_4_REF
+				, REG_DIVN_CD
+				, USE_YN
+				, VALI_END_DATE
+				, VALI_START_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				FROM TMP_TPC_CODE
+		)S ON T.MAJOR_CD = S.MAJOR_CD  AND T.MINOR_CD = S.MINOR_CD   
+		WHEN MATCHED THEN
+			UPDATE SET
+				 CD_NM			=	S.CD_NM
+				, CD_DESC			=	S.CD_DESC
+				, ORDER_SEQ		=	S.ORDER_SEQ
+				, LET_1_REF		=	S.LET_1_REF
+				, LET_2_REF		=	S.LET_2_REF
+				, LET_3_REF		=	S.LET_3_REF
+				, LET_4_REF		=	S.LET_4_REF
+				, CNT_1_REF		=	S.CNT_1_REF
+				, CNT_2_REF		=	S.CNT_2_REF
+				, CNT_3_REF		=	S.CNT_3_REF
+				, CNT_4_REF		=	S.CNT_4_REF
+				, REG_DIVN_CD	=	S.REG_DIVN_CD
+				, USE_YN		=	S.USE_YN
+				, VALI_END_DATE	=	S.VALI_END_DATE
+				, VALI_START_DATE	=	S.VALI_START_DATE
+				, REG_DATE			=	S.REG_DATE
+				, REG_ID			=	S.REG_ID
+				, MOD_DATE			=	S.MOD_DATE
+				, MOD_ID			=	S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				MAJOR_CD
+				, MINOR_CD
+				, CD_NM
+				, CD_DESC
+				, ORDER_SEQ
+				, LET_1_REF
+				, LET_2_REF
+				, LET_3_REF
+				, LET_4_REF
+				, CNT_1_REF
+				, CNT_2_REF
+				, CNT_3_REF
+				, CNT_4_REF
+				, REG_DIVN_CD
+				, USE_YN
+				, VALI_END_DATE
+				, VALI_START_DATE
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+			)
+			VALUES
+			(
+				S.MAJOR_CD
+				, S.MINOR_CD
+				, S.CD_NM
+				, S.CD_DESC
+				, S.ORDER_SEQ
+				, S.LET_1_REF
+				, S.LET_2_REF
+				, S.LET_3_REF
+				, S.LET_4_REF
+				, S.CNT_1_REF
+				, S.CNT_2_REF
+				, S.CNT_3_REF
+				, S.CNT_4_REF
+				, S.REG_DIVN_CD
+				, S.USE_YN
+				, S.VALI_END_DATE
+				, S.VALI_START_DATE
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+			);
+	</update>
+	
+	<!-- 영양성분 마스터 임시 테이블 데이터 삭제   -->
+	<delete id="deleteTmpTpcNutMst">
+		/* BosOpenApiQuery.deleteTmpTpcNutMst */
+		TRUNCATE TABLE TMP_TPC_NUT_MST;
+	</delete>
+	
+	<!-- 영양성분 마스터 임시 테이블 데이터 저장  -->
+	<insert id="insertTmpTpcNutMst" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTpcNutMst */
+		INSERT INTO TMP_TPC_NUT_MST
+		(
+			NUT_CD
+			, NUT_NM
+			, UNIT
+			, REG_DT
+			, REG_TM
+			, REG_ID
+			, MOD_DT
+			, MOD_TM
+			, MOD_ID
+			, DEL_FG
+			, IF_DT
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].NUT_CD#
+			, #DATA_LIST[].NUT_NM#
+			, #DATA_LIST[].UNIT#
+			, #DATA_LIST[].REG_DT#
+			, #DATA_LIST[].REG_TM#
+			, #DATA_LIST[].REG_ID#
+			, #DATA_LIST[].MOD_DT#
+			, #DATA_LIST[].MOD_TM#
+			, #DATA_LIST[].MOD_ID#
+			, #DATA_LIST[].DEL_FG#
+			, TO_TIMESTAMP(#DATA_LIST[].IF_DT#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 영양성분 마스터 Temp to Real 이관   -->
+	<update id="mergeTpcNutMst" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTpcNutMst */
+		MERGE INTO TPC_NUT_MST T
+		USING (
+			SELECT 
+				NUT_CD
+				, NUT_NM
+				, UNIT
+				, REG_DT
+				, REG_TM
+				, REG_ID
+				, MOD_DT
+				, MOD_TM
+				, MOD_ID
+				, DEL_FG
+				, IF_DT
+			FROM TMP_TPC_NUT_MST
+		)S ON T.NUT_CD = S.NUT_CD   
+		WHEN MATCHED THEN
+			UPDATE SET
+				NUT_NM    = S.NUT_NM
+				, UNIT      = S.UNIT
+				, MOD_DT    = S.MOD_DT
+				, MOD_TM    = S.MOD_TM
+				, MOD_ID    = S.MOD_ID
+				, DEL_FG    = S.DEL_FG
+				, IF_DT		= S.IF_DT
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				NUT_CD
+				, NUT_NM
+				, UNIT
+				, REG_DT
+				, REG_TM
+				, REG_ID
+				, MOD_DT
+				, MOD_TM
+				, MOD_ID
+				, DEL_FG
+				, IF_DT
+			)
+			VALUES
+			(
+				S.NUT_CD
+				, S.NUT_NM
+				, S.UNIT
+				, S.REG_DT
+				, S.REG_TM
+				, S.REG_ID
+				, S.MOD_DT
+				, S.MOD_TM
+				, S.MOD_ID
+				, S.DEL_FG
+				, S.IF_DT
+			);
+	</update>
+	
+	<!-- 영양성분 소분류 매핑 정보 임시 테이블 데이터 삭제   -->
+	<delete id="deleteTmpTpcNutL3Cd">
+		/* BosOpenApiQuery.deleteTmpTpcNutL3Cd */
+		TRUNCATE TABLE TMP_TPC_NUT_L3CD;
+	</delete>
+	
+	<!-- 영양성분 소분류 매핑 정보 임시 테이블 데이터 저장  -->
+	<insert id="insertTmpTpcNutL3Cd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTpcNutL3Cd */
+		INSERT INTO TMP_TPC_NUT_L3CD
+		(
+			L3_CD
+			, NUT_CD
+			, REG_DT
+			, REG_TM
+			, REG_ID
+			, MOD_DT
+			, MOD_TM
+			, MOD_ID
+			, DEL_FG
+			, IF_DT
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].L3_CD#
+			, #DATA_LIST[].NUT_CD#
+			, #DATA_LIST[].REG_DT#
+			, #DATA_LIST[].REG_TM#
+			, #DATA_LIST[].REG_ID#
+			, #DATA_LIST[].MOD_DT#
+			, #DATA_LIST[].MOD_TM#
+			, #DATA_LIST[].MOD_ID#
+			, #DATA_LIST[].DEL_FG#
+			, TO_TIMESTAMP(#DATA_LIST[].IF_DT#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 영양성분 마스터 Temp to Real 이관   -->
+	<update id="mergeTpcNutL3Cd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTpcNutMst */
+		MERGE INTO TPC_NUT_L3CD T
+		USING (
+			SELECT 
+				L3_CD
+				, NUT_CD
+				, REG_DT
+				, REG_TM
+				, REG_ID
+				, MOD_DT
+				, MOD_TM
+				, MOD_ID
+				, DEL_FG
+				, IF_DT
+			FROM TMP_TPC_NUT_L3CD
+		)S ON T.L3_CD = S.L3_CD AND T.NUT_CD = S.NUT_CD   
+		WHEN MATCHED THEN
+			UPDATE SET
+				MOD_DT   = S.MOD_DT
+				, MOD_TM   = S.MOD_TM
+				, MOD_ID   = S.MOD_ID
+				, DEL_FG   = S.DEL_FG
+				, IF_DT    = S.IF_DT
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				L3_CD
+				, NUT_CD
+				, REG_DT
+				, REG_TM
+				, REG_ID
+				, MOD_DT
+				, MOD_TM
+				, MOD_ID
+				, DEL_FG
+				, IF_DT
+			)
+			VALUES
+			(
+				S.L3_CD
+				, S.NUT_CD
+				, S.REG_DT
+				, S.REG_TM
+				, S.REG_ID
+				, S.MOD_DT
+				, S.MOD_TM
+				, S.MOD_ID
+				, S.DEL_FG
+				, S.IF_DT
+			);
+	</update>
+	
+	<!-- 오프라인 카테고리분류 임시 테이블 데이터 삭제   -->
+	<delete id="deleteTmpTcaMdCategory">
+		/* BosOpenApiQuery.deleteTmpTcaMdCategory */
+		TRUNCATE TABLE TMP_TCA_MD_CATEGORY;
+	</delete>
+	
+	<!-- 오프라인 카테고리분류 임시 테이블 데이터 저장  -->
+	<insert id="insertTmpTcaMdCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertTmpTcaMdCategory */
+		INSERT INTO TMP_TCA_MD_CATEGORY
+		(
+			CAT_CD
+			, CAT_NM
+			, LVL_CD
+			, LGRP_CD
+			, MGRP_CD
+			, SGRP_CD
+			, ORDER_SEQ
+			, CHG_STS_CD
+			, AU_USE_YN
+			, AU_CATEGORY_ID
+			, AU_CATEGORY_NM
+			, AU_STOR_CATEGORY_ID
+			, AU_STOR_CATEGORY_NM
+			, SHOW_CART_PROD_NM_LNKG_YN
+			, HOME_DP_YN
+			, WEGT_DP_YN
+			, DELI_REFGT_PRT_YN
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+			, HODEV_PSBT_YN
+			, HLDY_PSBT_YN
+			, MALL_DIVN_CD
+			, UNIT_DISP_YN
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			#DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].CAT_NM#
+			, #DATA_LIST[].LVL_CD#
+			, #DATA_LIST[].LGRP_CD#
+			, #DATA_LIST[].MGRP_CD#
+			, #DATA_LIST[].SGRP_CD#
+			, #DATA_LIST[].ORDER_SEQ#
+			, #DATA_LIST[].CHG_STS_CD#
+			, #DATA_LIST[].AU_USE_YN#
+			, #DATA_LIST[].AU_CATEGORY_ID#
+			, #DATA_LIST[].AU_CATEGORY_NM#
+			, #DATA_LIST[].AU_STOR_CATEGORY_ID#
+			, #DATA_LIST[].AU_STOR_CATEGORY_NM#
+			, #DATA_LIST[].SHOW_CART_PROD_NM_LNKG_YN#
+			, #DATA_LIST[].HOME_DP_YN#
+			, #DATA_LIST[].WEGT_DP_YN#
+			, #DATA_LIST[].DELI_REFGT_PRT_YN#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, #DATA_LIST[].HODEV_PSBT_YN#
+			, #DATA_LIST[].HLDY_PSBT_YN#
+			, #DATA_LIST[].MALL_DIVN_CD#
+			, #DATA_LIST[].UNIT_DISP_YN#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 오프라인 카테고리분류 Temp to Real 이관   -->
+	<update id="mergeTcaMdCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.mergeTcaMdCategory */
+		MERGE INTO TCA_MD_CATEGORY T
+		USING (
+			SELECT 
+				CAT_CD
+				, CAT_NM
+				, LVL_CD
+				, LGRP_CD
+				, MGRP_CD
+				, SGRP_CD
+				, ORDER_SEQ
+				, CHG_STS_CD
+				, AU_USE_YN
+				, AU_CATEGORY_ID
+				, AU_CATEGORY_NM
+				, AU_STOR_CATEGORY_ID
+				, AU_STOR_CATEGORY_NM
+				, SHOW_CART_PROD_NM_LNKG_YN
+				, HOME_DP_YN
+				, WEGT_DP_YN
+				, DELI_REFGT_PRT_YN
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				, HODEV_PSBT_YN
+				, HLDY_PSBT_YN
+				, MALL_DIVN_CD
+				, UNIT_DISP_YN
+			FROM TMP_TCA_MD_CATEGORY
+		)S ON T.CAT_CD = S.CAT_CD
+		WHEN MATCHED THEN
+			UPDATE SET
+				CAT_NM                          = S.CAT_NM
+				, LVL_CD                        = S.LVL_CD
+				, LGRP_CD                       = S.LGRP_CD
+				, MGRP_CD                       = S.MGRP_CD
+				, SGRP_CD                       = S.SGRP_CD
+				, ORDER_SEQ                     = S.ORDER_SEQ
+				, CHG_STS_CD                    = S.CHG_STS_CD
+				, AU_USE_YN                     = S.AU_USE_YN
+				, AU_CATEGORY_ID                = S.AU_CATEGORY_ID
+				, AU_CATEGORY_NM                = S.AU_CATEGORY_NM
+				, AU_STOR_CATEGORY_ID           = S.AU_STOR_CATEGORY_ID
+				, AU_STOR_CATEGORY_NM           = S.AU_STOR_CATEGORY_NM
+				, SHOW_CART_PROD_NM_LNKG_YN     = S.SHOW_CART_PROD_NM_LNKG_YN
+				, HOME_DP_YN                    = S.HOME_DP_YN
+				, WEGT_DP_YN                    = S.WEGT_DP_YN
+				, DELI_REFGT_PRT_YN             = S.DELI_REFGT_PRT_YN
+				, REG_DATE                      = S.REG_DATE
+				, REG_ID                        = S.REG_ID
+				, MOD_DATE                      = S.MOD_DATE
+				, MOD_ID                        = S.MOD_ID
+				, HODEV_PSBT_YN                 = S.HODEV_PSBT_YN
+				, HLDY_PSBT_YN                  = S.HLDY_PSBT_YN
+				, MALL_DIVN_CD                  = S.MALL_DIVN_CD
+				, UNIT_DISP_YN                  = S.UNIT_DISP_YN
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				CAT_CD
+				, CAT_NM
+				, LVL_CD
+				, LGRP_CD
+				, MGRP_CD
+				, SGRP_CD
+				, ORDER_SEQ
+				, CHG_STS_CD
+				, AU_USE_YN
+				, AU_CATEGORY_ID
+				, AU_CATEGORY_NM
+				, AU_STOR_CATEGORY_ID
+				, AU_STOR_CATEGORY_NM
+				, SHOW_CART_PROD_NM_LNKG_YN
+				, HOME_DP_YN
+				, WEGT_DP_YN
+				, DELI_REFGT_PRT_YN
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				, HODEV_PSBT_YN
+				, HLDY_PSBT_YN
+				, MALL_DIVN_CD
+				, UNIT_DISP_YN
+			)
+			VALUES
+			(
+				S.CAT_CD
+				, S.CAT_NM
+				, S.LVL_CD
+				, S.LGRP_CD
+				, S.MGRP_CD
+				, S.SGRP_CD
+				, S.ORDER_SEQ
+				, S.CHG_STS_CD
+				, S.AU_USE_YN
+				, S.AU_CATEGORY_ID
+				, S.AU_CATEGORY_NM
+				, S.AU_STOR_CATEGORY_ID
+				, S.AU_STOR_CATEGORY_NM
+				, S.SHOW_CART_PROD_NM_LNKG_YN
+				, S.HOME_DP_YN
+				, S.WEGT_DP_YN
+				, S.DELI_REFGT_PRT_YN
+				, S.REG_DATE
+				, S.REG_ID
+				, S.MOD_DATE
+				, S.MOD_ID
+				, S.HODEV_PSBT_YN
+				, S.HLDY_PSBT_YN
+				, S.MALL_DIVN_CD
+				, S.UNIT_DISP_YN
+			);
+	</update>
+	
+	<!-- 온라인 전시 카테고리 운영 테이블 데이터 전체 삭제 -->
+	<delete id="deleteRealTcaCategory">
+		/* BosOpenApiQuery.deleteRealTcaCategory */
+		DELETE FROM TCA_CATEGORY;		
+	</delete>
+	
+	<!--  온라인 전시 카테고리 운영 테이블 데이터 BULK INSERT -->
+	<insert id="insertRealTcaCategory" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertRealTcaCategory */
+		INSERT INTO TCA_CATEGORY
+		(
+			CATEGORY_ID
+			, CATEGORY_NM
+			, UP_CATEGORY_ID
+			, ORDER_SEQ
+			, DEPTH
+			, DISP_YN
+			, TEMPLATE_ID
+			, CATEGORY_TYPE_CD
+			, LEAF_YN
+			, START_DATE
+			, START_TM
+			, END_DATE
+			, END_TM
+			, STDIST_EXUSE_YN
+			, SEARCH_KYWRD
+			, URL
+			, STR_CD
+			, EVNT_PRGS_STS_CD
+			, LOT_CUST_CNT
+			, WPZ_CUST_CNT
+			, ISSUE_BASE_AMT
+			, PRIZE_APLY_START_DY
+			, PRIZE_APLY_END_DY
+			, MKPL_GRP_CD
+			, LOT_ANNC_DY
+			, DISP_TYPE_CD
+			, MKPL_CAT_CD
+			, RECOM_TYPE_CD
+			, CATEGORY_DIVN_CD
+			, DISP_DIVN_CD
+			, TYPE_CD
+			, TYPE_VAL
+			, EVNT_TYPE
+			, APRV_CD
+			, APRV_DATE
+			, APRV_ID
+			, SITE_LOC
+			, MAIN_SCR_YN
+			, ICON_PATH
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].CATEGORY_ID#
+			, #DATA_LIST[].CATEGORY_NM#
+			, #DATA_LIST[].UP_CATEGORY_ID#
+			, #DATA_LIST[].ORDER_SEQ#
+			, #DATA_LIST[].DEPTH#
+			, #DATA_LIST[].DISP_YN#
+			, #DATA_LIST[].TEMPLATE_ID#
+			, #DATA_LIST[].CATEGORY_TYPE_CD#
+			, #DATA_LIST[].LEAF_YN#
+			, #DATA_LIST[].START_DATE#
+			, #DATA_LIST[].START_TM#
+			, #DATA_LIST[].END_DATE#
+			, #DATA_LIST[].END_TM#
+			, #DATA_LIST[].STDIST_EXUSE_YN#
+			, #DATA_LIST[].SEARCH_KYWRD#
+			, #DATA_LIST[].URL#
+			, #DATA_LIST[].STR_CD#
+			, #DATA_LIST[].EVNT_PRGS_STS_CD#
+			, #DATA_LIST[].LOT_CUST_CNT#
+			, #DATA_LIST[].WPZ_CUST_CNT#
+			, #DATA_LIST[].ISSUE_BASE_AMT#
+			, #DATA_LIST[].PRIZE_APLY_START_DY#
+			, #DATA_LIST[].PRIZE_APLY_END_DY#
+			, #DATA_LIST[].MKPL_GRP_CD#
+			, #DATA_LIST[].LOT_ANNC_DY#
+			, #DATA_LIST[].DISP_TYPE_CD#
+			, #DATA_LIST[].MKPL_CAT_CD#
+			, #DATA_LIST[].RECOM_TYPE_CD#
+			, #DATA_LIST[].CATEGORY_DIVN_CD#
+			, #DATA_LIST[].DISP_DIVN_CD#
+			, #DATA_LIST[].TYPE_CD#
+			, #DATA_LIST[].TYPE_VAL#
+			, #DATA_LIST[].EVNT_TYPE#
+			, #DATA_LIST[].APRV_CD#
+			, TO_TIMESTAMP(#DATA_LIST[].APRV_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].APRV_ID#
+			, #DATA_LIST[].SITE_LOC#
+			, #DATA_LIST[].MAIN_SCR_YN#
+			, #DATA_LIST[].ICON_PATH#
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 마트 기간계 카테고리 / 온라인 전시 카테고리 매핑정보 운영 테이블 데이터 전체 삭제 -->
+	<delete id="deleteRealTcaCategoryMapping">
+		/* BosOpenApiQuery.deleteRealTcaCategoryMapping */
+		DELETE FROM TCA_CATEGORY_MAPPING;		
+	</delete>
+	
+	<!-- 마트 기간계 카테고리 / 온라인 전시 카테고리 매핑정보 운영 테이블 데이터 BULK INSERT -->
+	<insert id="insertRealTcaCategoryMapping" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertRealTcaCategoryMapping */
+		INSERT INTO TCA_CATEGORY_MAPPING
+		(
+			CAT_CD
+			, CATEGORY_ID
+			, REG_DATE
+			, REG_ID
+			, MOD_DATE
+			, MOD_ID
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].CATEGORY_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REG_ID#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MOD_ID#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 팀 카테고리 매핑정보 운영 테이블 데이터 전체 삭제 -->
+	<delete id="deleteRealTpcL1Cd">
+		/* BosOpenApiQuery.deleteRealTpcL1Cd */
+		DELETE FROM TPC_L1_CD;		
+	</delete>
+	
+	<!-- 팀 카테고리 매핑정보 운영 테이블 데이터 BULK INSERT -->	
+	<insert id="insertRealTpcL1Cd" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertRealTpcL1Cd */
+		INSERT INTO TPC_L1_CD
+		(
+			TEAM_CD
+			, TEAM_NM
+			, L1_CD
+			, L1_NM
+			, L2_CD
+			, L2_NM
+			, L3_CD
+			, L3_NM
+			, LST_CHG_DT
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].TEAM_CD#
+			, #DATA_LIST[].TEAM_NM#
+			, #DATA_LIST[].L1_CD#
+			, #DATA_LIST[].L1_NM#
+			, #DATA_LIST[].L2_CD#
+			, #DATA_LIST[].L2_NM#
+			, #DATA_LIST[].L3_CD#
+			, #DATA_LIST[].L3_NM#
+			, TO_TIMESTAMP(#DATA_LIST[].LST_CHG_DT#, 'YYYYMMDDHH24MISS')
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 오카도 전시 카테고리 운영 테이블 데이터 전체 삭제 -->
+	<delete id="deleteRealPdDcat">
+		/* BosOpenApiQuery.deleteRealPdDcat */
+		DELETE FROM PD_DCAT;		
+	</delete>
+	
+	<!-- 오카도 전시 카테고리 운영 테이블 데이터 BULK INSERT -->
+	<insert id="insertRealPdDcat" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertRealPdDcat */
+		INSERT INTO PD_DCAT
+		(
+			DCAT_NO
+			, RNKH_DCAT_NO
+			, DCAT_NM
+			, LVL
+			, LF_YN
+			, DP_YN
+			, SORT_SEQC
+			, REG_DTTM
+			, REGR_NO
+			, MOD_DTTM
+			, MODR_NO
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].DCAT_NO#
+			, #DATA_LIST[].RNKH_DCAT_NO#
+			, #DATA_LIST[].DCAT_NM#
+			, #DATA_LIST[].LVL#
+			, #DATA_LIST[].LF_YN#
+			, #DATA_LIST[].DP_YN#
+			, #DATA_LIST[].SORT_SEQC#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REGR_NO#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MODR_NO#
+		)
+		</iterate>
+	</insert>
+	
+	<!-- 오카도 전시 카테고리 / 마트 소분류 코드 매핑정보 운영 테이블 데이터 전체 삭제 -->
+	<delete id="deleteRealPdDcatScatMpng">
+		/* BosOpenApiQuery.deleteRealPdDcatScatMpng */
+		DELETE FROM PD_DCAT_SCAT_MPNG;		
+	</delete>
+	
+	<!-- 오카도 전시 카테고리 / 마트 소분류 코드 매핑정보 운영 테이블 데이터 BULK INSERT -->
+	<insert id="insertRealPdDcatScatMpng" parameterClass="java.util.Map">
+		/* BosOpenApiQuery.insertRealPdDcatScatMpng */
+		INSERT INTO PD_DCAT_SCAT_MPNG
+		(
+			CAT_CD
+			, DCAT_NO
+			, REG_DTTM
+			, REGR_NO
+			, MOD_DTTM
+			, MODR_NO
+			, REG_USER_NO
+		)
+		VALUES
+		<iterate property="DATA_LIST" conjunction=",">
+		(
+			 #DATA_LIST[].CAT_CD#
+			, #DATA_LIST[].DCAT_NO#
+			, TO_TIMESTAMP(#DATA_LIST[].REG_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].REGR_NO#
+			, TO_TIMESTAMP(#DATA_LIST[].MOD_DTTM#, 'YYYYMMDDHH24MISS')
+			, #DATA_LIST[].MODR_NO#
+			, #DATA_LIST[].REG_USER_NO#
+		)
+		</iterate>
+	</insert>
+	
+</sqlMap>	

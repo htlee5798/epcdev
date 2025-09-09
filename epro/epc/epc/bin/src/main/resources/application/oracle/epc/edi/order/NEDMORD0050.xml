@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMORD0050">
+
+	<!-- PDC 전표상세 쿼리  -->
+	<typeAlias alias="NEDMORD0050VO"		type="com.lottemart.epc.edi.order.model.NEDMORD0050VO"/>
+	
+ 	<resultMap id="NEDMORD0050VOMap" class="NEDMORD0050VO">
+		<result property="ordSlipNo"			column="ORD_SLIP_NO"		/>	<!-- 발주전표번호 -->
+		<result property="prodCd"				column="PROD_CD"			/>	<!-- 상품코드 -->
+		<result property="ordDy"				column="ORD_DY"				/>	<!-- 발주일 -->
+		<result property="strNm"				column="STR_NM"				/>	<!-- 점포명 -->
+		<result property="ctnNm"				column="CTN_NM"				/>	<!-- 센터명 -->
+		<result property="ordFg"				column="ORD_FG"				/>	<!-- 발주구분 -->
+		<result property="totQty"				column="TOT_QTY"			/>	<!-- 발주총수량 -->
+		<result property="totPrc"				column="TOT_PRC"			/>	<!-- 발주총금액 -->
+		<result property="ctrArrDy"				column="CTR_ARR_DY"			/>	<!-- 센터입하일자 -->
+		<result property="splyDy"				column="SPLY_DY"			/>	<!-- 납품일자 -->
+		<result property="userHit"				column="USER_HIT"			/>	<!-- 사용자조회일시 -->
+		<result property="venCd"				column="VEN_CD"				/>	<!-- 업체코드 -->
+		<result property="strCd"				column="STR_CD"				/>	<!-- 점포코드 -->
+		<result property="prodPatFg"			column="PROD_PAT_FG"		/>	<!-- 상품패턴구분 -->
+		<result property="routeFg"				column="ROUTE_FG"			/>	<!-- 루트구분 -->
+		<result property="srcmkCd"				column="SRCMK_CD"			/>	<!-- 판매코드 -->
+		<result property="prodNm"				column="PROD_NM"			/>	<!-- 상품명 -->
+		<result property="ordIpsu"				column="ORD_IPSU"			/>	<!-- 발주입수 -->
+		<result property="prodStd"				column="PROD_STD"			/>	<!-- 상품규격 -->
+		<result property="ordQty"				column="ORD_QTY"			/>	<!-- 발주수량 -->
+		<result property="buyPrc"				column="BUY_PRC"			/>	<!-- 원가 -->
+		<result property="ordUnit"				column="ORD_UNIT"			/>	<!-- 발주단위 -->
+		<result property="splyAbleQty"			column="SPLY_ABLE_QTY"		/>	<!-- 납품가능수량 -->
+		<result property="protectTagFg"			column="PROTECT_TAG_FG"		/>	<!-- 도난방지태그여부 -->
+		<result property="homeNm"				column="HOME_NM"			/>	<!-- 원산지명 -->
+		<result property="taxVat"				column="TAX_VAT"			/>	<!-- VAT -->
+		<result property="buyDan"				column="BUY_DAN"			/>	<!-- 상품매입단가 -->
+		<result property="evtCd"				column="EVT_CD"				/>	<!-- 행사코드 -->
+		<result property="negoBuyPrc"			column="NEGO_BUY_PRC"		/>	<!-- 협상원가 -->
+		<result property="producer"				column="PRODUCER"			/>	<!--원산지명  -->
+		<result property="purUnitCdNm"			column="PUR_UNIT_CD_NM"		/>	<!-- 발주단위명 -->
+	</resultMap>
+
+	<select id="TSC_JUNPYO_DETAIL_PDC-SELECT01" resultMap="NEDMORD0050VOMap" parameterClass="NEDMORD0050VO">
+		/* NEDMORD0050.TSC_JUNPYO_DETAIL_PDC-SELECT01 */ 	
+		SELECT	/*+ INDEX (A PK_TPC_ORD) INDEX (B IX_TPC_ORD_PROD_2) */
+				A.ORD_SLIP_NO
+			,	B.PROD_CD
+			,	TO_CHAR(TO_DATE(A.ORD_DY,'yyyymmdd'),'YYYY-MM-DD') 		AS	ORD_DY
+			,	(SELECT STR_NM FROM STORE WHERE STR_CD = B.STR_CD)		AS  STR_NM	/* 점포명  */
+			,	(SELECT STR_NM FROM STORE WHERE STR_CD = B.CTR_CD) 		AS 	CTN_NM	/* 센터명  */
+			,	A.ORD_FG
+			,	A.TOT_QTY
+			,	A.TOT_PRC
+			,	TO_CHAR(TO_DATE(A.CTR_ARR_DY,'yyyymmdd'),'YYYY-MM-DD') 	AS	CTR_ARR_DY
+			,	TO_CHAR(TO_DATE(A.SPLY_DY,'yyyymmdd'),'YYYY-MM-DD') 		AS	SPLY_DY
+			,	DECODE(A.USER_HIT_DT,NULL,'N','Y') AS USER_HIT
+			,	A.VEN_CD
+			,	A.STR_CD
+			,	A.PROD_PAT_FG
+			,	A.ROUTE_FG
+			,	B.SRCMK_CD
+			,	B.PROD_NM
+			,	B.ORD_IPSU
+			,	B.PROD_STD
+			,	B.ORD_QTY
+			,	B.BUY_PRC
+			,	B.ORD_UNIT
+			,	B.SPLY_ABLE_QTY
+			,	DECODE(B.PROTECT_TAG_FG,'9','Y','') 						AS PROTECT_TAG_FG
+			,	B.HOME_NM
+			,	DECODE(B.TAX_FG,'2',BUY_PRC,'0') 							AS TAX_VAT
+			,	B.BUY_DAN
+			,	B.EVT_CD
+			,	B.NEGO_BUY_PRC
+			,	B.PRODUCER
+			,	(SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'CSA01' AND MINOR_CD = B.ORD_UNIT) AS PUR_UNIT_CD_NM
+			,	DECODE(B.PDC_ORD_SLIP_NO, NULL, '0', '1') 				AS PDC_ORD_SLIP_NO
+		FROM 	TPC_ORD 		A
+			,	TPC_ORD_PROD 	B
+		WHERE 	A.ORD_SLIP_NO = B.ORD_SLIP_NO
+			AND B.PDC_ORD_SLIP_NO IS NOT NULL
+			AND B.ORD_DY BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')
+			
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchEntpCd">
+				B.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchStoreAl">
+				<iterate prepend="B.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchProductVal">
+				B.PROD_CD = #searchProductVal#
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchOrdering">
+				<isNotEqual property="searchOrdering" compareValue="ALL">
+					AND A.ORD_FG = #searchOrdering#
+				</isNotEqual>
+			</isNotEmpty>
+		
+		ORDER BY A.ORD_SLIP_NO, B.PROD_CD
+	</select>
+
+</sqlMap>

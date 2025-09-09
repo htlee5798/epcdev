@@ -1,0 +1,196 @@
+/* 팝업 */
+.popupbox {
+	width: 310px;
+	height: 150px;
+	font-size: 14px;
+	background: #efefef;
+	border-radius: 8px;
+	overflow: hidden;
+	display: none; /* Hidden as default */
+	float: left;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 1000;
+	-webkit-box-shadow: 0px 0px 20px #000;
+	-moz-box-shadow: 0px 0px 20px #000;
+	box-shadow: 0px 0px 20px #000;
+}
+.popupbox.basic {
+	z-index: 1050;
+}
+.popupbox.confirm, .popupbox.error {
+	z-index: 1100;
+}
+.popupbox h2 {
+	height: 40px;
+	line-height: 40px;
+	font-size: 18px;
+	font-weight: 600;
+	text-align: left;
+	padding-left: 15px;
+	color: #fff;
+	background: #2a263f;
+	background: -ms-linear-gradient(top, #35324f 0%, #2a263f 100%); /* IE10+ */
+	background: linear-gradient(top, #35324f 0%, #2a263f 100%); /* W3C */
+	background: #EEEEEE -webkit-gradient(linear, 0% 0%, 0% 100%, from(#35324f), to(#2a263f)); /* 크롬, 사파리 browsers */
+	background: #EEEEEE -moz-linear-gradient(top, #35324f, #2a263f); /* 파이어폭스 3.6+ */
+}
+.popupbox h2 i {
+	margin-right: 6px;
+	color: #bebec3;
+}
+.popupbox .close {
+	position: absolute;
+	font-size: 24px;
+	top: 5px;
+	right: 5px;
+	cursor: pointer;
+}
+.popupbox .pop-con {
+	height: 64px;
+	padding: 0 15px;
+	line-height: 64px;
+	text-align: center;
+	background: #fff;
+	border-bottom: 1px dashed #ddd;
+}
+.popupbox .pop-bot {
+	padding: 8px 10px 0 10px;
+}
+.popupbox.confirm {
+	width: 290px;
+	height: 80px;
+	text-align: center;
+}
+.popupbox.confirm p {
+	line-height: 80px;
+}
+.popupbox.confirm p i {
+	font-size: 24px;
+	vertical-align: middle;
+	color: #157ec2;
+	margin-right: 5px;
+}
+.popupbox.error {
+	width: 310px;
+	height: 116px;
+	text-align: center;
+}
+.popupbox.error i {
+	font-size: 24px;
+	vertical-align: middle;
+	color: #d56817;
+	margin-right: 5px;
+}
+.popupbox.error .pop-con {
+	width: 310px;
+	height: 64px;
+	padding: 0 15px;
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 18px;
+	background: #fff;
+	border-bottom: 1px dashed #ddd;
+}
+.popupbox.change {
+	width: 310px;
+	height: auto;
+	text-align: center;
+}
+.popupbox.change .pop-con {
+	height: auto;
+	padding: 15px 15px;
+	line-height: 18px;
+	background: #fff;
+	border-bottom: 1px dashed #ddd;
+}
+.popupbox.change .pop-con2 {
+	height: 400px;
+	padding: 0px 15px;
+	line-height: 18px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	overflow: scroll;
+}
+.popupbox.change .pop-con3 {
+	height: 400px;
+	padding: 0px 15px;
+	line-height: 18px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.popupbox.change .pop-bot {
+	padding: 8px 10px
+}
+.popupbox.change .close {
+	position: absolute;
+	font-size: 24px;
+	color: #fff;
+	top: 5px;
+	right: 10px;
+	cursor: pointer;
+}
+.popupbox.change h3 {
+	position: relative;
+	margin-bottom: 10px;
+}
+.popupbox.change h3 button {
+	position: absolute;
+	right: 0;
+	top: -10px;
+}
+.popupbox.change h3.middle-title {
+	margin-top: 20px;
+	padding-top: 15px;
+}
+.popupbox.loading {
+	text-align: center;
+	border: none;
+	background: none;
+	box-shadow: none;
+	min-height: 0px;
+	height: auto;
+}
+.popupbox.loading p {
+	font-size: 12px;
+	color: #bbb;
+}
+.line_box {
+	width: 100%;
+	padding: 10px;
+	border: 1px dashed #ccc;
+	border-radius: 6px;
+	text-align: center;
+}
+#fade, #fade2, #fade3 {
+	display: none; /* Hidden as default */
+	background: #000;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+}
+#fade2 {
+	z-index: 1045;
+}
+#fade3 {
+	z-index: 1099;
+}
+.popupbox table td a {
+	display: block;
+	color: #666;
+}
+.bg_white {
+	background: #fff;
+}
+.h_scroll {
+	height: 215px;
+	overflow: scroll;
+}
+.h_scroll2 {
+	height: 150px;
+	overflow: scroll;
+}

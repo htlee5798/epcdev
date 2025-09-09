@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0160">
+	<typeAlias alias="nedmpro0160vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0160VO" />
+	
+	<resultMap id="pbProductListMap" class="nedmpro0160vo">
+		<result column="RNUM"					property="rnum" 				/>	<!-- 순번... SQLINES DEMO *** -->
+		<result column="SEQ"					property="seq" 					/>	<!-- 이벤... SQLINES DEMO *** -->
+		<result column="SEQ_NM"					property="seqNm" 				/>	<!-- 이벤... SQLINES DEMO *** -->
+		<result column="VEN_CD"					property="venCd" 				/>	<!-- 업체... SQLINES DEMO *** -->
+		<result column="VEN_NM"					property="venNm" 				/>	<!-- 업체... SQLINES DEMO *** -->
+		
+		<result column="L1_NM"					property="l1Nm" 				/>	<!-- 대분... SQLINES DEMO *** -->
+		<result column="L2_NM"					property="l2Nm" 				/>	<!-- 중분... SQLINES DEMO *** -->
+		<result column="L3_NM"					property="l3Nm" 				/>	<!-- 소분... SQLINES DEMO *** -->
+		
+		<result column="PROD_CD"				property="prodCd" 				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"				property="srcmkCd" 				/>	<!-- 판매... SQLINES DEMO *** -->
+		<result column="PROD_NM"				property="prodNm" 				/>	<!-- 상품... SQLINES DEMO *** -->
+		
+		<result column="TRD_TYP_NM"				property="trdTypNm" 			/>	<!-- 거래... SQLINES DEMO *** -->
+		<result column="STR_FG"					property="strFg" 				/>	<!-- 점포... SQLINES DEMO *** -->
+		
+		
+	</resultMap>
+	
+	<!-- CO... SQLINES DEMO *** -->
+	<select id="selectPbProductCount" resultClass="Integer" parameterClass="nedmpro0160vo">
+		/* SQLINES DEMO *** ectPbProductCount */
+		SELECT 	COUNT(1) AS CNT
+		FROM TPC_PROD_STOP A
+		WHERE 1=1
+			AND COALESCE(A.DEL_FG, ' ') <![CDATA[<>]]> 'X'
+			<isNotEmpty property="srchSrcmkCd" prepend="AND">
+				A.YYYY = #srchSrcmkCd#		/* 년도 */
+			</isNotEmpty>
+			
+			<isEmpty property="srchEntpCd">
+				<isNotEmpty property="venCds" prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty  property="srchEntpCd"  prepend="AND">
+				A.VEN_CD = #srchEntpCd#
+			</isNotEmpty>		
+			
+	</select>
+	
+	<!-- LI... SQLINES DEMO *** -->
+	<select id="selectPbProductList" resultMap="pbProductListMap" parameterClass="nedmpro0160vo">
+		/* SQLINES DEMO *** ectPbProductList */
+		SELECT	*
+		FROM
+		(
+			SELECT ROW_NUMBER() OVER(ORDER BY A.VEN_CD, A.PROD_CD) AS RNUM
+	            , A.SEQ
+	            , A.SEQ_NM
+	            , A.VEN_CD
+	            , (SELECT T.VEN_NM
+	            	FROM HQ_VEN T
+	            	WHERE T.VEN_CD = A.VEN_CD) AS VEN_NM
+	            , A.L1_NM
+	            , A.L2_NM
+	            , A.L3_NM
+	            , A.PROD_CD
+	            , A.SRCMK_CD
+	            , A.PROD_NM
+	            , A.TRD_TYP_NM
+	            , A.STR_FG
+	        FROM TPC_PROD_STOP A
+			WHERE 1=1
+				AND COALESCE(A.DEL_FG, ' ') <![CDATA[<>]]> 'X'
+				<isNotEmpty property="srchSrcmkCd" prepend="AND">
+					A.YYYY = #srchSrcmkCd#		/* 년도 */
+				</isNotEmpty>
+				
+				<isEmpty property="srchEntpCd">
+					<isNotEmpty property="venCds" prepend="AND">
+						<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				
+				<isNotEmpty  property="srchEntpCd"  prepend="AND">
+					A.VEN_CD = #srchEntpCd#
+				</isNotEmpty>
+				
+				
+		) A
+		WHERE 	CAST(#firstIndex# AS FLOAT) + 1 <![CDATA[<=]]> A.RNUM
+			AND A.RNUM <![CDATA[<]]> CAST(#lastIndex# AS FLOAT) + 1
+	</select>
+</sqlMap>

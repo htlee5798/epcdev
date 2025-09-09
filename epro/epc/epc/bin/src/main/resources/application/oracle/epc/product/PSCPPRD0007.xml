@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0007">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    
+    <select id="selectLocationList" resultClass="DataMap">
+    	/* pscpprd0007.selectLocationList */
+    	SELECT   MINOR_CD	
+        		,CD_NM		
+		FROM 
+		(
+		    SELECT       MINOR_CD	
+		    			,CD_NM		
+		    FROM        TET_CODE
+		    WHERE       MAJOR_CD    =   'PRD16'
+		    AND         MINOR_CD    NOT IN  ('*','09','XX')
+		    ORDER BY    CD_NM
+		)
+		
+		UNION ALL
+		   
+		SELECT   MINOR_CD	
+		        ,CD_NM		
+		FROM    TET_CODE
+		WHERE   MAJOR_CD    =   'PRD16'
+		AND     MINOR_CD    IN	('09','XX')
+    </select>
+	
+</sqlMap>

@@ -1,0 +1,1654 @@
+@charset "utf-8";
+
+body {color:#666; font:13px Dotum, "돋움", Gulim, "굴림", sans-serif; line-height:100%;}
+
+#skip a {display:block; position:absolute; left:0; top:-10000px; width:100%; height:45px; padding-top:20px; background:#96111b; color:#fff; text-align:center; z-index:100;}
+#skip a:hover, #skip a:focus, #skip a:active {top:0;}
+
+div#UxWrapper {width:100%; margin:0 auto; background:url('/images/contentimg/main/uxindex/201307/bg_header.png') repeat-x 0 -79px; letter-spacing:-1px;}
+div#UxWrapper {*background-position: 0 -21px;}
+div#UxWrapper img {vertical-align:top;}
+div#UxControl {width:1104px; margin:0 auto;}
+div#UxHeader {/* position:relative; */width:950px; margin:0; padding:0; *padding:58px 0 0 0; z-index:2;}
+
+/* 타이틀, 즐겨찾기, 이벤트 영역 */
+div#UxHeader div.Title {position:absolute;}
+div#UxHeader div.Title h1 {position:absolute; top:51px; left:20px; z-index:64;}
+div#UxHeader div.Title p {position:absolute; top:45px; left:2px; padding:0; z-index:7;}
+div#UxHeader div.RecoEvent {position:absolute; top:87px; /*left:50%;*/	margin-left:738px;
+	/*
+	z-index:2;
+	position:absolute;
+	top:30px; right:0;
+	font-size:0;
+	line-height:0;
+	*/}
+
+/* 상단 메뉴 영역 */
+div.UxHgroup {position:relative; width:950px; height:29px; margin:58px 0 0 0; z-index:65; /*border-bottom:1px solid #dfdfdf; background:#f9f9f9;*/}
+div.UxHgroup ul.L-menu {position:absolute; top:9px; left:0;	overflow:hidden; zoom:1;}
+div.UxHgroup ul.L-menu li {float:left; padding:0 7px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_stk_v1.gif') no-repeat 0 0;	font-size:0; line-height:0;}
+div.UxHgroup ul.L-menu li.first {padding-left:2px; background:none;}
+div.UxHgroup ul.R-menu {width:450px; position:absolute;	top:8px; right:0;overflow: hidden; zoom:1;}
+div.UxHgroup ul.R-menu li {float:right;	padding:0 7px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_stk_v2.gif') no-repeat 0 50%; font-size:0;	line-height:0;}
+div.UxHgroup ul.R-menu li a {display:block;	color:#848388; font-size:11px; line-height:15px;}
+div.UxHgroup ul.R-menu li.first {background:none;}
+div.UxHgroup ul.R-menu li.go img {display:inline-block; margin:-2px 0 0 2px; vertical-align:top;}
+div.UxHgroup ul.R-menu li.mymarket a {padding:0 12px 0 0; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_arrow_v1.gif') no-repeat 100% 50%;}
+div.UxHgroup ul.F-menu {position:absolute; top:8px; right:-148px; overflow:hidden; *zoom:1;}
+div.UxHgroup ul.F-menu li {float:left; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_stk_v2.gif') no-repeat 0 50%;}
+div.UxHgroup ul.F-menu li a {color:#848388; font-size:11px; line-height:15px;}
+div.UxHgroup ul.F-menu li.faverite {padding:0 0 0 7px;}
+div.UxHgroup ul.F-menu li.faverite a {padding:0 7px 0 15px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/icon_star.png') no-repeat 0 0;}
+div.UxHgroup ul.F-menu li.mobile {padding:0 0 0 7px;}
+div.UxHgroup ul.F-menu li.mobile a {padding:0 0 0 10px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/icon_mobile.png') no-repeat 0 0;}
+
+div.UxHgroup ul.market-off {display:none; position:relative; position:absolute; top:26px; left:636px; width:82px; height:95px; padding:4px 0 0;	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_market.gif') no-repeat 0 0; z-index:1;}
+div.UxHgroup ul.market-off.on {display:block;}
+div.UxHgroup ul.market-off li {float:none; padding:0 6px; border-left:1px solid #dfdfdf; border-right:1px solid #dfdfdf; background:#f9f9f9; font-size:0; line-height:0;}
+div.UxHgroup ul.market-off li.last {border-bottom:1px solid #dfdfdf;}
+div.UxHgroup ul.market-off li a {display:block;	height:15px; padding:3px 0 0 0; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_dotted_v6.gif') repeat-x 0 0; color:#848388; text-decoration:none; font-size:11px; line-height:14px; letter-spacing:-2px; white-space:nowrap;}
+:root div.UxHgroup ul.market-off li a {height:16px; padding:2px 0 0 0;}
+div.UxHgroup ul.market-off li.on a,
+div.UxHgroup ul.market-off li a:hover {color:#333333;}
+div.UxHgroup ul.market-off li.first a {height:17px;	padding:4px 0 0; background:none;}
+div.UxHgroup ul.market-off li.last a {height:17px; padding:4px 0 0;}
+:root div.UxHgroup ul.market-off li.first a,
+:root div.UxHgroup ul.market-off li.last a {height:18px; padding:3px 0 0;}
+div.UxHgroup div.ux-menu-go-layer {display:none; position:absolute;	top:26px; right:0;}
+div.UxHgroup div.ux-menu-go-layer.on {display:block;}
+
+/* 검색영역 */
+div.UxSearch {position:relative; width:710px; height:90px; z-index:60;}
+div.UxSearch div.searches {position:absolute; top:63px; left:275px;	width:375px; height:18px; text-align:center; /* overflow:hidden; zoom:1; */}
+div.UxSearch div.searches h2 {display:inline; line-height:0; font-size:0;}
+#UxWrapper div.UxSearch div.searches h2 img {padding-top:2px;}
+div.UxSearch div.searches div {display: inline-block; *display:inline; *zoom:1;}
+div.UxSearch div.searches div ul li {display: inline; padding:0 0 0 10px;}
+div.UxSearch div.searches div ul li a {color:#fff; font-size:11px;}
+
+div.UxSearch div.search dl {position:absolute; top:27px; left:275px; width:371px; height:25px; padding:2px;	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_search_bx.gif') no-repeat 0 0;}
+div.UxSearch div.search dl dt,
+div.UxSearch div.search dl dd {position:relative; float:left; height:25px; font-size:12px; line-height:16px;}
+div.UxSearch div.search dl dt {width:100px;}
+div.UxSearch div.search dl dt strong {display:block; width:60px; height:21px; padding:4px 20px 0 12px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/blt_arrow_v4.gif') no-repeat 100% 0; color:#ec1d23;	font-weight:normal;	vertical-align:top;	cursor:pointer;}
+div.UxSearch div.search dl dt div {display:none;}
+div.UxSearch div.search dl dt div.click-on {z-index:2; display:block; position:absolute; top:26px; left:-2px; width:92px; border:1px solid #7d0a0e; border-left:1px solid #7d0a0e; background:#fff;}
+div.UxSearch div.search dl dt div.click-on ul {width:100%; padding:6px 0 5px;}
+div.UxSearch div.search dl dt div.click-on ul li {font-size:0; line-height:0;}
+div.UxSearch div.search dl dt div.click-on ul li a {display:block; height:20px; padding:0 0 0 12px; text-decoration:none; font-size:12px; line-height:14px; vertical-align:top;}
+div.UxSearch div.search dl dt div.click-on ul li a:hover {color:#7d0a0e;}
+div.UxSearch div.search dl dd {width:271px;}
+div.UxSearch div.search dl dd input.text {
+	width:218px;
+	margin:4px 0 0;
+	*margin:2px 0 0;
+	letter-spacing:-1px;
+	word-spacing:2px;
+}
+div.UxSearch div.search dl dd input.image {
+	display:inline-block;
+	margin:0 0 0 11px;
+	padding:0;
+	font-size:0;
+	line-height:0;
+	vertical-align:top;
+}
+div.UxSearch div.search dl dd div {display:none;}
+div.UxSearch div.search dl dd div.click-on {
+	z-index:1;
+	display:block;
+	position:relative;
+	overflow:hidden; zoom:1;
+	position:absolute;
+	top:26px; left:-8px;
+	width:269px;
+	height:516px;
+	padding:10px 0 0 10px;
+	border:1px solid #fc1002;
+	background:#fff;
+}
+div.UxSearch div.search dl dd div.click-on strong,
+div.UxSearch div.search dl dd div.click-on span,
+div.UxSearch div.search dl dd div.click-on em {
+	display:block;
+	font-size:11px;
+	line-height:14px;
+	vertical-align:top;
+}
+div.UxSearch div.search dl dd div.click-on p.txt {
+	color:#333333;
+}
+div.UxSearch div.search dl dd div.click-on p.txt strong,
+div.UxSearch div.search dl dd div.click-on p.txt em {
+	display:inline-block;
+	color:#ee1c24;
+	font-weight:bold;
+}
+div.UxSearch div.search dl dd div.click-on p.txt strong {margin:1px 0 0;}
+div.UxSearch div.search dl dd div.click-on p.txt em {margin:2px 0 0;}
+div.UxSearch div.search dl dd div.click-on ul {
+	overflow-y:scroll;
+	height:475px;
+}
+div.UxSearch div.search dl dd div.click-on ul li {
+	overflow:hidden; zoom:1;
+	height:85px;
+	padding:10px 0 0;
+	font-size:0;
+	line-height:0;
+	cursor:pointer;
+}
+div.UxSearch div.search dl dd div.click-on ul li span.goods {
+	float:left;
+	margin:0 5px 0 0;
+}
+div.UxSearch div.search dl dd div.click-on ul li div {
+	display:block;
+	float:left;
+}
+div.UxSearch div.search dl dd div.click-on ul li div strong {
+	display:inline-block;
+	padding:1px 0 0;
+	color:#ee1c24;
+	font-family:'CoHead';
+	font-size:14px;
+	line-height:18px;
+}
+div.UxSearch div.search dl dd div.click-on ul li div strong span {
+	display:inline-block;
+	margin:3px 0 0 2px;
+	*margin:5px 0 0 2px;
+	color:#666666;
+	font-weight:normal;
+	font-size:11px;
+	line-height:14px;
+	letter-spacing:0;
+}
+div.UxSearch div.search dl dd div.click-on ul li div p {
+	padding:8px 0 0;
+	color:#333333;
+	font-size:11px;
+	line-height:14px;
+}
+div.UxSearch div.search dl dd div.click-on ul li div em {
+	padding:3px 0 0;
+	color:#8bbd19;
+}
+div.UxSearch div.search dl dd div.click-on div.btnClose {
+	display:block;
+	position:absolute;
+	bottom:0; left:0;
+	width:100%;
+	height:25px;
+	text-align:right;
+	background:#f4f4f4;
+}
+div.UxSearch div.search dl dd div.click-on div.btnClose a {
+	display:inline-block;
+	margin:4px 10px 0 0;
+	color:#666666;
+	vertical-align:top;
+}
+/* 2012-12-12 ~ 2012-12-22 */
+div.UxSearch div.serachResult {
+	overflow:hidden; zoom:1;
+	position:absolute;
+	top:26px; left:-8px;
+	width:279px;
+	border:1px solid #7d0a0e;
+	background:#fff;
+}
+div.UxSearch div.serachResult.open,
+div.UxSearch div.serachResult .open {
+	display:block !important;
+}
+div.UxSearch div.serachResult h2 {
+	display:none;
+	height:27px;
+	padding:5px 0 0 18px;
+	background:#fcdede;
+	color:#f1191e;
+	font-weight:bold;
+	font-size:12px;
+	line-height:18px;
+}
+div.UxSearch div.serachResult ul {
+	display:none;
+	overflow:hidden; zoom:1;
+	width:100%;
+	padding:6px 0 0;
+}
+div.UxSearch div.serachResult ul li {
+	overflow:hidden; zoom:1;
+	height:20px;
+	padding:2px 14px 3px 0;
+	color:#333333;
+	text-overflow:ellipsis;
+	font-size:12px;
+	line-height:18px;
+	cursor:pointer;
+	white-space:nowrap;
+}
+div.UxSearch div.serachResult ul li a {color:#737373; text-decoration:none;}
+div.UxSearch div.serachResult ul.query.open-views,
+div.UxSearch div.serachResult ul.query.open-delete {
+	display:block;
+}
+div.UxSearch div.serachResult ul.query li {
+	position:relative;
+	padding-left:18px;
+}
+div.UxSearch div.serachResult ul.query li strong {display:inline-block; *display:inline; /* color:#ff0000; */ color:#737373; font-weight:normal;	vertical-align:top;}
+div.UxSearch div.serachResult ul.query li em,
+div.UxSearch div.serachResult ul.query li span {
+	display:none;
+	position:absolute;
+	right:14px;
+}
+div.UxSearch div.serachResult ul.query li em {top:2px;}
+div.UxSearch div.serachResult ul.query li span {
+	top:6px;
+	width:13px;
+	height:13px;
+	background:url('//simage.lottemart.com/images/contentimg/main/LunarNewYear/btn_close_v1.gif') no-repeat 0 0;
+	font-size:0;
+	line-height:0;
+	letter-spacing:0;
+}
+div.UxSearch div.serachResult ul.query.open-views li em,
+div.UxSearch div.serachResult ul.query.open-delete li span {
+	display:block;
+}
+div.UxSearch div.serachResult ul.query li:hover {background:#e5e5e5;}
+div.UxSearch div.serachResult ul.exhibitions-v1 {padding:6px 0;	border-bottom:1px solid #e5e5e5;}
+div.UxSearch div.serachResult ul.exhibitions-v1 li,
+div.UxSearch div.serachResult ul.exhibitions-v2 li {padding-left:30px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/blt_com_arrow.png') no-repeat 18px 7px;}
+div.UxSearch div.serachResult ul.exhibitions-v1 li:hover,
+div.UxSearch div.serachResult ul.exhibitions-v2 li:hover {background:#e5e5e5 url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/blt_com_arrow.png') no-repeat 18px 7px;}
+div.UxSearch div.serachResult div.btnClose {display:none; height:20px; padding:0 14px 0 0; background:#f4f4f4; text-align:right; font-size:12px; line-height:18px;}
+div.UxSearch div.serachResult div.btnClose a {display:inline-block; color:#737373; text-decoration:none;}
+div.UxSearch div.serachResult div.btnClose2 {position:absolute;	top:10px; right:12px;}
+div.UxSearch div.serachResult div.btnClose2 a {color:#737373; font-size:11px; text-decoration:none;}
+
+.sc_pr_lay { display:none; position:absolute; z-index:265; left:377px; top:30px; width:300px !important; /*background:url('//simage.lottemart.com/images/front/common/bg-search-left-top_2012.gif') no-repeat 0 0 !important;*/}
+.sc_pr_lay .in {width:270px !important; padding:13px 0 11px 10px; background:url('//simage.lottemart.com/images/front/common/bg-search-left-btm_2012.gif') no-repeat 0 bottom !important;} /* 2012-04-25 */
+.sc_pr_lay .txt {padding-right:11px; font:normal 12px malgun, "Malgun Gothic"; color:#333;}
+.sc_pr_lay .txt em, .sc_pr_lay .txt strong {color:#ee1c24;}
+.sc_pr_lay .list_pr {width:269px !important; height:418px; overflow-y:scroll; overflow:-moz-scrollbars-vertical;
+	 scrollbar-face-color: #fff;
+	 scrollbar-shadow-color: #e6e6e6;
+	 scrollbar-highlight-color: #fff;
+	 scrollbar-3dlight-color: #e6e6e6;
+	 scrollbar-darkshadow-color: #f3f3f3;
+	 scrollbar-track-color: #f3f3f3;
+	 scrollbar-arrow-color: #e6e6e6;
+	 scrollbar-base-color: #FFFFFF;
+} /* 2012-04-25 검색레이어 */
+.sc_pr_lay .list_product {float:left; width:250px !important; background:none;} /* 2012-04-25 */
+
+.sc_pr_lay .list_product ul {width:250px !important;}
+.sc_pr_lay .list_product li {width:250px !important; height:75px; padding:10px 0 0 0; _padding:10px 0 0 0; font:normal 12px malgun, "Malgun Gothic";}
+.sc_pr_lay .list_product li .pr_wrap {width:100%;}
+.sc_pr_lay .list_product li .photo_wrap2 {float:left; width:75px; margin-bottom:0;}
+.sc_pr_lay .list_product li .pr_price {float:left; width:170px !important; margin-bottom:2px;} /* 2012-04-25 */
+.sc_pr_lay .list_product li .pr_price .t_roman {font:16px/18px CoHead;  }
+.sc_pr_lay .list_product li .pr_name {float:left; width:165px !important; height:18px; font:normal 12px malgun, "Malgun Gothic"; color:#333;}
+.sc_pr_lay .list_product li .pr_name a:link, .sc_pr_lay .list_product li .pr_name a:hover, .sc_pr_lay .list_product li .pr_name a:active {color:#333;}
+.sc_pr_lay .list_product li .pr_type {float:left; width:165px !important; padding-left:5px; color:#8bbd19;} /* 2012-04-25 */
+.sc_pr_lay .more {position:relative; height:22px; font:normal 12px malgun, "Malgun Gothic";}
+.sc_pr_lay .more .t_left {color:#666; cursor:pointer}
+.sc_pr_lay .more .t_right {position:absolute; right:12px; top:11px; cursor:pointer}
+
+/* 스마트 쇼핑팁 */
+.uxSmartTipWrap {position:absolute; top:-515px; left:0; width:100%; height:574px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_Smart_Tip2.png') repeat-x 0 100%; z-index:70;}
+/*.uxSmartTipWrap .uxSmartTip {position:absolute; top:0; left:50%; min-width:1333px; margin-left:-739px;}*/
+.uxSmartTipWrap .uxSmartTip {top:0; min-width:1103px; margin:0;}
+.uxSmartTipWrap .uxSmartTip .cont_smarttip {position:relative; width:1103px; margin:0 auto; text-align:left;}
+.uxSmartTipWrap .uxSmartTip a.btn_tip {display:block; position:absolute; top:514px; left:390px; width:170px; height:59px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_smart_tip3.png') no-repeat 0 0;}
+.uxSmartTipWrap .uxSmartTip a.btn_tip.on {background-position:0 -89px;}
+.uxSmartTipWrap .uxSmartTip a.btn_tip span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+
+/* GNB */
+.UxGnb {position:relative; height:36px; z-index:55;}
+.UxGnb a {height:38px;}
+.UxGnb a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.UxGnb #menu1 {float:left;}
+.UxGnb #menu1 a.category_view {display:block; width:190px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_gnb_category.png') repeat-x 0 0;}
+.UxGnb #menu1 a.view {background-position:0 -39px;}
+.UxGnb #menu2 {float:left; letter-spacing:-1px;}
+.UxGnb #menu2 a {display:block; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_gnb_middle2.png') no-repeat 0 0;}
+.UxGnb #menu2 li {float:left;}
+.UxGnb #menu2 li ul.depth2 {display:none; position:absolute; width:185px; padding:13px 0; border:2px solid #b11116; background:#fff; z-index:6;}
+.UxGnb #menu2 li ul.depth2.on {display:block;}
+.UxGnb #menu2 li ul.depth2 li {position:relative; height:29px; float:none; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/dot_sub_menu.png') repeat-x 0 0; *display:inline; *zoom:1;}
+.UxGnb #menu2 li ul.depth2 li:first-child {background:none;}
+.UxGnb #menu2 li ul.depth2 li a {width:161px !important; height:14px !important; padding:8px 16px 8px 8px; background:none; color:#777;}
+.UxGnb #menu2 li ul.depth2 li a:hover,
+.UxGnb #menu2 li ul.depth2 li a.on {background:#ee1c24 url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arrow_sub_menu.png') no-repeat 161px 10px; color:#fff; text-decoration:none;}
+
+.UxGnb #menu2 li.menu2_1 ul.depth2 {margin:0;}
+.UxGnb #menu2 li.menu2_2 ul.depth2 {margin:0 0 0 2px;}
+.UxGnb #menu2 li.menu2_3 ul.depth2 {margin:0 0 0 2px;}
+.UxGnb #menu2 li.menu2_4 ul.depth2 {margin:0 0 0 2px;}
+.UxGnb #menu2 li.menu2_4 ul.depth2 li:first-child a:hover,
+.UxGnb #menu2 li.menu2_4 ul.depth2 li:first-child a.on {background-image:none;}
+.UxGnb #menu2 li.menu2_4 ul.depth2 li ul.depth3 li a:hover,
+.UxGnb #menu2 li.menu2_4 ul.depth2 li ul.depth3 li a.on {background-image:none;}
+
+.UxGnb #menu2 li .depth2 li .depth3 {display:none; position:absolute; top:-15px; left:169px; width:185px; padding:13px 0; border:2px solid #dc5800; background:#fff; z-index:7;}
+.UxGnb #menu2 li .depth2 li .depth3.on {display:block;}
+.UxGnb #menu2 li .depth2 li .depth3 li {position:relative; float:none; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/dot_sub_menu.png') repeat-x 0 0; *display:inline; *zoom:1;}
+.UxGnb #menu2 li .depth2 li .depth3 li:first-child {background:none;}
+.UxGnb #menu2 li .depth2 li .depth3 li.hot_sale {margin:0 0 0 8px;}
+.UxGnb #menu2 li .depth2 li .depth3 li.hot_sale a {padding:8px 0 8px 14px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/icon_star.png') no-repeat 0 8px; color:#414040; font-weight:bold;}
+.UxGnb #menu2 li .depth2 li .depth3 li.hot_sale a span {position:relative; top:0; left:0; width:100%; height:100%; color:#ef010a; font-size:12px; line-height:100%;}
+.UxGnb #menu2 li .depth2 li .depth3 li.hot_sale a:hover {background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/icon_star.png') no-repeat 0 8px; color:#414040; text-decoration:none;}
+.UxGnb #menu2 li .depth2 li .depth3 li a {width:161px !important; height:14px !important; padding:8px 16px 8px 8px; background:none; color:#777;}
+.UxGnb #menu2 li .depth2 li .depth3 li a:hover,
+.UxGnb #menu2 li .depth2 li .depth3 li a.on {background:#fd6d0d url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arrow_sub_menu.png') no-repeat 161px 10px; color:#fff; text-decoration:none;}
+.UxGnb #menu2 li .depth2 li .depth3 li.non_depth4 a:hover,
+.UxGnb #menu2 li .depth2 li .depth3 li.non_depth4 a.on {background-image:none;}
+
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4 {display:none; position:absolute; top:-15px; left:169px; width:185px; padding:13px 0; border:2px solid #747474; background:#fff; z-index:8;}
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4.on {display:block;}
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4 li {position:relative; float:none; background:#fff url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/dot_sub_menu.png') repeat-x 0 0;}
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4 li:first-child {background:none;}
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4 li a {width:161px !important; height:14px !important; padding:8px 16px 8px 8px; background:none; color:#777;}
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4 li a:hover,
+.UxGnb #menu2 li .depth2 li .depth3 li .depth4 li a.on {background:#939393; color:#fff; text-decoration:none;}
+
+.UxGnb #menu2 li.menu2_1 a {width:87px; background-position:0 0;}
+.UxGnb #menu2 li.menu2_2 a {width:87px; background-position:-87px 0;}
+.UxGnb #menu2 li.menu2_3 a {width:52px; background-position:-174px 0;}
+.UxGnb #menu2 li.menu2_4 a {width:110px; background-position:-226px 0;}
+.UxGnb #menu2 li.menu2_5 a {width:67px; background-position:-336px 0;}
+.UxGnb #menu2 li.menu2_6 a {width:76px; background-position:-403px 0;}
+.UxGnb #menu2 li.menu2_7 a {width:69px; background-position:-479px 0;}
+
+.UxGnb #menu2 li.menu2_1 a:hover,
+.UxGnb #menu2 li.menu2_1 a.on {background-position:0 -39px;}
+.UxGnb #menu2 li.menu2_2 a:hover,
+.UxGnb #menu2 li.menu2_2 a.on {background-position:-87px -39px;}
+.UxGnb #menu2 li.menu2_3 a:hover,
+.UxGnb #menu2 li.menu2_3 a.on {background-position:-174px -39px;}
+.UxGnb #menu2 li.menu2_4 a:hover,
+.UxGnb #menu2 li.menu2_4 a.on {background-position:-226px -39px;}
+.UxGnb #menu2 li.menu2_5 a:hover {background-position:-336px -39px;}
+.UxGnb #menu2 li.menu2_6 a:hover {background-position:-403px -39px;}
+.UxGnb #menu2 li.menu2_7 a:hover {background-position:-479px -39px;}
+
+.UxGnb #menu3 {float:left;}
+.UxGnb #menu3 a {display:block; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_gnb_right.png') repeat-x 0 0}
+.UxGnb #menu3 li {float:left;}
+.UxGnb #menu3 li.menu3_1 a {width:82px; background-position:0 0;}
+.UxGnb #menu3 li.menu3_2 a {width:130px; background-position:-82px 0;}
+
+.UxGnb #menu4 {position:absolute; top:0; right:-154px;}
+
+.category_all_wrap {position:absolute; top:36px; left:0; height:0; z-index:10; overflow:hidden}
+.category_all {border-left:2px solid #000; border-bottom:2px solid #000; border-right:2px solid #000; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_category_all.png') repeat 0 0;}
+.category_all ul {float:left;}
+.category_all li {}
+.category_all a {display:block; width:237px; height:40px; *height:38px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_category_all2.png') no-repeat 0 0;}
+.category_all a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.category_all li.menu_all_1 a {background-position:0 0;}
+.category_all li.menu_all_2 a {background-position:0 -40px;}
+.category_all li.menu_all_3 a {background-position:0 -80px;}
+.category_all li.menu_all_4 a {background-position:0 -120px;}
+.category_all li.menu_all_5 a {background-position:0 -160px;}
+
+.category_all li.menu_all_6 a {background-position:-237px 0;}
+.category_all li.menu_all_7 a {background-position:-237px -40px;}
+.category_all li.menu_all_8 a {background-position:-237px -80px;}
+.category_all li.menu_all_9 a {background-position:-237px -120px;}
+.category_all li.menu_all_10 a {background-position:-237px -160px;}
+
+.category_all li.menu_all_11 a {background-position:-474px 0;}
+.category_all li.menu_all_12 a {background-position:-474px -40px;}
+.category_all li.menu_all_13 a {background-position:-474px -80px;}
+.category_all li.menu_all_14 a {background-position:-474px -120px;}
+.category_all li.menu_all_15 a {background-position:-474px -160px;}
+.category_all li.menu_all_16 a {background-position:-474px -200px;}
+.category_all li.menu_all_17 a {background-position:-474px -240px;}
+
+.category_all li.menu_all_19 a {width:235px; background-position:-711px 0;}
+.category_all li.menu_all_20 a {width:235px; background-position:-711px -40px;}
+.category_all li.menu_all_21 a {width:235px; background-position:-711px -80px;}
+.category_all li.menu_all_22 a {width:235px; background-position:-711px -120px;}
+.category_all li.menu_all_23 a {width:235px; background-position:-711px -160px;}
+.category_all li.menu_all_24 a {width:235px; background-position:-711px -200px;}
+.category_all li.menu_all_18 a {width:235px; background-position:-476px -280px;}
+
+.category_all li.menu_all_1 a.on {background-position:0 -320px;}
+.category_all li.menu_all_2 a.on {background-position:0 -360px;}
+.category_all li.menu_all_3 a.on {background-position:0 -400px;}
+.category_all li.menu_all_4 a.on {background-position:0 -440px;}
+.category_all li.menu_all_5 a.on {background-position:0 -480px;}
+
+.category_all li.menu_all_6 a.on {background-position:-237px -320px;}
+.category_all li.menu_all_7 a.on {background-position:-237px -360px;}
+.category_all li.menu_all_8 a.on {background-position:-237px -400px;}
+.category_all li.menu_all_9 a.on {background-position:-237px -440px;}
+.category_all li.menu_all_10 a.on {background-position:-237px -480px;}
+
+.category_all li.menu_all_11 a.on {background-position:-474px -320px;}
+.category_all li.menu_all_12 a.on {background-position:-474px -360px;}
+.category_all li.menu_all_13 a.on {background-position:-474px -400px;}
+.category_all li.menu_all_14 a.on {background-position:-474px -440px;}
+.category_all li.menu_all_15 a.on {background-position:-474px -480px;}
+.category_all li.menu_all_16 a.on {background-position:-474px -520px;}
+.category_all li.menu_all_17 a.on {background-position:-474px -560px;}
+
+.category_all li.menu_all_19 a.on {width:235px; background-position:-711px -320px;}
+.category_all li.menu_all_20 a.on {width:235px; background-position:-711px -360px;}
+.category_all li.menu_all_21 a.on {width:235px; background-position:-711px -400px;}
+.category_all li.menu_all_22 a.on {width:235px; background-position:-711px -440px;}
+.category_all li.menu_all_23 a.on {width:235px; background-position:-711px -480px;}
+.category_all li.menu_all_24 a.on {width:235px; background-position:-711px -520px;}
+.category_all li.menu_all_18 a.on {width:235px; background-position:-476px -600px;}
+
+.category_all .category_bottom_banner {}
+.category_all_wrap .category_close {position:absolute; bottom:0; right:-2px; width:39px;}
+.category_all_wrap .category_close a {width:39px; background:none;}
+
+
+/* 본문 */
+#UxContainer {	position:relative;
+	width:950px;
+	margin:10px 0 0;}
+
+#UxContainer .uxContentWarp {}
+
+/* 상단 메인 롤링 */
+.uxPlanRolling {position:relative; float:left; width:633px; height:450px; overflow:hidden;}  /* 2013.07.09 jslee modify */
+
+.uxPlanRolling #arrow_plan {}
+.uxPlanRolling #arrow_plan a {display:block; position:absolute; width:41px; height:41px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arr_big.png') repeat-x 0 0;}
+.uxPlanRolling #arrow_plan a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxPlanRolling #arrow_plan .next {top:245px; left:10px; background-position:0 0; z-index:3;}
+.uxPlanRolling #arrow_plan a.next:hover {background-position:0 -50px;}
+.uxPlanRolling #arrow_plan .prev {top:245px; right:10px; background-position:-55px 0; z-index:3;}
+.uxPlanRolling #arrow_plan a.prev:hover {background-position:-55px -50px;}
+
+/*
+.uxPlanRolling #planImg {position:relative; width:633px; height:449px;}
+.uxPlanRolling #planImg ul {position:relative; height:423px; }
+.uxPlanRolling #planImg li {position:absolute;}
+*/
+
+.uxPlanRolling #planTab {position:absolute; bottom:0; z-index:2;}
+.uxPlanRolling #planTab li {float:left;}
+.uxPlanRolling #planTab li div.btn,
+.uxPlanRolling #planTab li.tab9,
+.uxPlanRolling #planTab li.tab10 {position:relative; z-index:2;}
+.uxPlanRolling #planTab li a {display:block; height:33px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/tab_plan_rolling2.png') repeat-x 0 0;}
+.uxPlanRolling #planTab li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxPlanRolling #planTab li.tab1 a {width:65px; background-position:0 0;}
+.uxPlanRolling #planTab li.tab2 a {width:44px; background-position:-65px 0;}
+.uxPlanRolling #planTab li.tab3 a {width:55px; background-position:-109px 0;}
+.uxPlanRolling #planTab li.tab4 a {width:55px; background-position:-164px 0;}
+.uxPlanRolling #planTab li.tab5 a {width:55px; background-position:-219px 0;}
+.uxPlanRolling #planTab li.tab6 a {width:55px; background-position:-274px 0;}
+.uxPlanRolling #planTab li.tab7 a {width:54px; background-position:-329px 0;}
+.uxPlanRolling #planTab li.tab8 a {width:66px; background-position:-383px 0;}
+.uxPlanRolling #planTab li.tab9 a {width:102px; background-position:-449px 0;}
+.uxPlanRolling #planTab li.tab10 a {width:82px; background-position:-551px 0;}
+
+.uxPlanRolling #planTab li.tab1 a.on {width:65px; background-position:0 -33px;}
+.uxPlanRolling #planTab li.tab2 a.on {width:44px; background-position:-65px -33px;}
+.uxPlanRolling #planTab li.tab3 a.on {width:55px; background-position:-109px -33px;}
+.uxPlanRolling #planTab li.tab4 a.on {width:55px; background-position:-164px -33px;}
+.uxPlanRolling #planTab li.tab5 a.on {width:55px; background-position:-219px -33px;}
+.uxPlanRolling #planTab li.tab6 a.on {width:55px; background-position:-274px -33px;}
+.uxPlanRolling #planTab li.tab7 a.on {width:54px; background-position:-329px -33px;}
+.uxPlanRolling #planTab li.tab8 a.on {width:66px; background-position:-383px -33px;}
+.uxPlanRolling #planTab li.tab9 a:hover {width:102px; background-position:-449px -33px;}
+.uxPlanRolling #planTab li.tab10 a:hover {width:82px; background-position:-551px -33px;}
+
+
+.uxPlanRolling #planTab .planImg {position:absolute; top:-417px; left:0; width:633px; height:449px; }
+
+.uxTopRight {float:left;}
+
+/* 상단 돈워리 */
+.uxTopRight .uxDontWorry {position:relative;}
+.uxTopRight .uxDontWorry h3 {position:relative; z-index:2;}
+.uxTopRight .uxDontWorry .rolling_btn {position:absolute; top:60px; right:10px; overflow:hidden; z-index:3;}
+.uxTopRight .uxDontWorry .rolling_btn li {float:left; margin:0 0 0 5px; list-style:none; cursor:pointer;}
+.uxTopRight .uxDontWorry .rolling_btn li a {display:block; width:8px; height:8px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_rolling2.png') no-repeat 0 0;} /* 2013.08.24 RaiN add */
+.uxTopRight .uxDontWorry .rolling_btn li a.on {background-position:-9px 0;} /* 2013.08.24 RaiN add */
+.uxTopRight .uxDontWorry .rolling_btn li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;} /* 2013.08.24 RaiN add */
+
+.uxTopRight .uxDontWorry .arrow {}
+.uxTopRight .uxDontWorry .arrow a {display:block; position:absolute; width:27px; height:27px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arr_small.png') no-repeat 0 0;}
+.uxTopRight .uxDontWorry .arrow a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxTopRight .uxDontWorry .arrow .next {top:165px; left:10px; background-position:0 0; z-index:2;}
+.uxTopRight .uxDontWorry .arrow a.next:hover {background-position:0 -37px;}
+.uxTopRight .uxDontWorry .arrow .prev {top:165px; right:10px; background-position:-37px 0; z-index:2;}
+.uxTopRight .uxDontWorry .arrow a.prev:hover {background-position:-37px -37px;}
+
+.uxTopRight .uxDontWorry .rolling_pic {position:relative; width:317px; height:175px; overflow:hidden;}
+.uxTopRight .uxDontWorry .rolling_pic ul {position:relative; height:175px;} /* 2013.07.09 jslee add */
+.uxTopRight .uxDontWorry .rolling_pic li {position:absolute;} /* 2013.07.09 jslee add */
+
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_img {}
+.uxTopRight .uxDontWorry .rolling_pic .price {position:absolute; top:70px; left:28px;}
+.uxTopRight .uxDontWorry .rolling_pic .price .hidden {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxTopRight .uxDontWorry .rolling_pic .price .lotte_price em {color:#9b9a9a; font:bold 12px/22px Dotum, "돋움", Gulim, "굴림", sans-serif; text-decoration: line-through;}
+.uxTopRight .uxDontWorry .rolling_pic .price .sale_price {margin:-9px 0 0 0; overflow:hidden;}
+.uxTopRight .uxDontWorry .rolling_pic .price .sale_price em {float:left; color:#f0131c; font:bold 16px/36px Dotum, "돋움", Gulim, "굴림", sans-serif; letter-spacing:0;}
+.uxTopRight .uxDontWorry .rolling_pic .price em.txt_won {display:block; float:left; width:13px; height:14px; margin:11px 0 0 2px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/dontWorry_price_txt1.png') no-repeat 0 0;}
+
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer {position:absolute; bottom:10px; left:50%; width:207px; height:18px; margin:0 0 0 -103px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_dontWorry_timmer.png') repeat-x 0 0;}
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer span {position:absolute; color:#fff; font-size:11px; line-height:18px; text-align:center;}
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer span.hidden {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer .day {top:0; left:55px; width:18px; height:18px;}
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer .hour {top:0; left:92px; height:18px; letter-spacing:12px;}
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer .min {top:0; left:134px; height:18px; letter-spacing:12px;}
+.uxTopRight .uxDontWorry .rolling_pic .dont_worry_timer .sec {top:0; left:177px; height:18px; letter-spacing:12px;}
+
+/* 상단 요리왕 장보고 */
+.uxTopRight .uxRecipe {position:relative;}
+.uxTopRight .uxRecipe h3 {position:relative; z-index:2;}
+.uxTopRight .uxRecipe .rolling_btn {position:absolute; top:60px; right:10px; overflow:hidden; z-index:3;}
+.uxTopRight .uxRecipe .rolling_btn li {float:left; margin:0 0 0 5px; list-style:none; cursor:pointer;} /* 2013.07.09 jslee add */
+.uxTopRight .uxRecipe .rolling_btn li a {display:block; width:8px; height:8px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_rolling2.png') no-repeat 0 0;} /* 2013.08.24 RaiN add */
+.uxTopRight .uxRecipe .rolling_btn li a.on {background-position:-9px 0;} /* 2013.08.24 RaiN add */
+.uxTopRight .uxRecipe .rolling_btn li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;} /* 2013.08.24 RaiN add */
+
+.uxTopRight .uxRecipe .arrow {}
+.uxTopRight .uxRecipe .arrow a {display:block; position:absolute; width:27px; height:27px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arr_small.png') repeat-x 0 0;}
+.uxTopRight .uxRecipe .arrow a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxTopRight .uxRecipe .arrow .next {top:125px; left:10px; background-position:0 0; z-index:2;}
+.uxTopRight .uxRecipe .arrow a.next:hover {background-position:0 -37px;}
+.uxTopRight .uxRecipe .arrow .prev {top:125px; right:10px; background-position:-37px 0; z-index:2;}
+.uxTopRight .uxRecipe .arrow a.prev:hover {background-position:-37px -37px;}
+.uxTopRight .uxRecipe .recipe_pic {margin:0; width:317px; height:175px; overflow:hidden;}
+.uxTopRight .uxRecipe .recipe_pic ul {position:relative; height:175px;}
+.uxTopRight .uxRecipe .recipe_pic li {position:absolute;}
+
+/* 상단 배너 */
+.uxTopBanner {margin:10px 0;}
+
+/* 인기상품 즐겨찾기 */
+.uxPopularity {position:relative; float:left; width:687px; height:257px; margin:20px 0 0 0; padding:0 13px 11px; /*border:1px solid #e6ded1; background:#f4f0e7;*/ background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_popularity.png') no-repeat 0 0;}
+.uxPopularity h3 {margin:-19px 0 2px -13px;}
+.uxPopularity .tab_popularity {position:absolute; top:1px; right:11px; width:472px;}
+.uxPopularity .tab_popularity li {float:left;}
+.uxPopularity .tab_popularity li a {display:block; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/tab_popularity.png') repeat-x 0 0;}
+.uxPopularity .tab_popularity li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxPopularity .tab_popularity li.tab_popula1 a {width:62px; height:29px; background-position:0 0;}
+.uxPopularity .tab_popularity li.tab_popula2 a {width:42px; height:29px; background-position:-62px 0;}
+.uxPopularity .tab_popularity li.tab_popula3 a {width:41px; height:29px; background-position:-104px 0;}
+.uxPopularity .tab_popularity li.tab_popula4 a {width:67px; height:29px; background-position:-145px 0;}
+.uxPopularity .tab_popularity li.tab_popula5 a {width:41px; height:29px; background-position:-212px 0;}
+.uxPopularity .tab_popularity li.tab_popula6 a {width:42px; height:29px; background-position:-253px 0;}
+.uxPopularity .tab_popularity li.tab_popula7 a {width:66px; height:29px; background-position:-295px 0;}
+.uxPopularity .tab_popularity li.tab_popula8 a {width:63px; height:29px; background-position:-361px 0;}
+.uxPopularity .tab_popularity li.tab_popula9 a {width:48px; height:29px; background-position:-424px 0;}
+
+.uxPopularity .tab_popularity li.tab_popula1 a.on {background-position:0 -29px;}
+.uxPopularity .tab_popularity li.tab_popula2 a.on {background-position:-62px -29px;}
+.uxPopularity .tab_popularity li.tab_popula3 a.on {background-position:-104px -29px;}
+.uxPopularity .tab_popularity li.tab_popula4 a.on {background-position:-145px -29px;}
+.uxPopularity .tab_popularity li.tab_popula5 a.on {background-position:-212px -29px;}
+.uxPopularity .tab_popularity li.tab_popula6 a.on {background-position:-253px -29px;}
+.uxPopularity .tab_popularity li.tab_popula7 a.on {background-position:-295px -29px;}
+.uxPopularity .tab_popularity li.tab_popula8 a.on {background-position:-361px -29px;}
+.uxPopularity .tab_popularity li.tab_popula9 a.on {background-position:-424px -29px;}
+
+.uxPopularity .prod_popularity {position:absolute; width:689px; padding:15px 0 12px 0; background:#fff; overflow:hidden;} /* 2013.07.09 jslee add */
+.uxPopularity .prod_popularity li {float:left; width:137px; margin:0; padding:0; text-align:center;}
+.uxPopularity .prod_popularity li:first-child {margin:0; padding:0;}
+.uxPopularity .prod_popularity li .prod_img {position:relative; padding:0 0 20px 0; text-align:center;}
+.uxPopularity .prod_popularity li .prod_img a {height:100%;}
+.uxPopularity .prod_popularity li .prod_img .btn_cart {display:none; position:absolute; bottom:10px; right:10px;}
+/* 2013-09-02 웹접근성 추가 */
+.uxPopularity .prod_popularity li .prod_img .btn_cart a {display:inline-block; margin-left:-3px; padding:0;}
+/* 2013-09-02 웹접근성 추가 */
+.uxPopularity .prod_popularity li .prod_img .btn_cart.on {display:block;}
+.uxPopularity .prod_popularity li .prod_img .pi_wrap em {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxPopularity .prod_popularity li .txt {height:32px; padding:0 12px; color:#666; font:bold 12px/16px Dotum, 돋움, sans-serif; word-break:break-all; word-wrap:break-word; overflow:hidden;}
+.uxPopularity .prod_popularity li .price {margin:7px 0 0 0; padding:0 12px; overflow:hidden;}
+.uxPopularity .prod_popularity li .price em {display:block; height:16px; color:#777; font:12px/16px Dotum, 돋움, sans-serif; text-decoration:line-through;}
+.uxPopularity .prod_popularity li .price p {color:#ee1c24; font:bold 16px/18px Dotum, 돋움, sans-serif; letter-spacing:0;}
+.uxPopularity .prod_popularity li .price p span {color:#222; font:bold 12px/18px Dotum, 돋움, sans-serif;}
+.uxPopularity .prod_popularity li .price a {float:right;}
+
+/* PB */
+.uxPB {position:relative; float:left; margin:20px 0 0 0;}
+.uxPB h3 {position:absolute; top:-20px; left:40px; z-index:2;}
+.uxPB .rolling_btn {position:absolute; bottom:10px; left:105px; overflow:hidden; z-index:2;}
+.uxPB .rolling_btn li {float:left; margin:0 0 0 5px; list-style:none; cursor:pointer;} /* 2013.07.09 jslee add */
+.uxPB .rolling_btn li a {display:block; width:8px; height:8px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_rolling2.png') no-repeat 0 0;} /* 2013.08.24 RaiN add */
+.uxPB .rolling_btn li a.on {background-position:-9px 0;} /* 2013.08.24 RaiN add */
+.uxPB .rolling_btn li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;} /* 2013.08.24 RaiN add */
+
+.uxPB .arrow {}
+.uxPB .arrow a {display:block; position:absolute; width:27px; height:27px; background:url('/images/contentimg/main/uxindex/201307/arr_small.png') repeat-x 0 0;}
+.uxPB .arrow a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxPB .arrow .next {top:110px; left:10px; background-position:0 0; z-index:2;}
+.uxPB .arrow a.next:hover {background-position:0 -37px;}
+.uxPB .arrow .prev {top:110px; right:10px; background-position:-37px 0; z-index:2;}
+.uxPB .arrow a.prev:hover {background-position:-37px -37px;}
+
+.uxPB .pb_pic {position:relative; width:237px; height:268px; overflow:hidden;}
+.uxPB .pb_pic ul {position:relative; height:268px; } /* 2013.07.09 jslee add */
+.uxPB .pb_pic li {position:absolute;} /* 2013.07.09 jslee add */
+
+/* 중간 배너 */
+.uxMiddleBanner {position:relative; margin:10px 0 30px;}
+.uxMiddleBanner .rolling_btn {position:absolute; top:30px; right:10px; overflow:hidden; z-index:2;}
+.uxMiddleBanner .rolling_btn li {float:left; margin:0 0 0 5px; list-style:none; cursor:pointer;} /* 2013.07.09 jslee add */
+.uxMiddleBanner .rolling_btn li a {display:block; width:8px; height:8px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_rolling2.png') no-repeat 0 0;} /* 2013.08.24 RaiN add */
+.uxMiddleBanner .rolling_btn li a.on {background-position:-9px 0;} /* 2013.08.24 RaiN add */
+.uxMiddleBanner .rolling_btn li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;} /* 2013.08.24 RaiN add */
+
+.uxMiddleBanner .mBannerList {position:relative; width:950px; height:147px; overflow:hidden;}
+.uxMiddleBanner .mBannerList ul {position:relative; height:147px; }
+.uxMiddleBanner .mBannerList li {position:absolute;}
+
+/* 신선 */
+.uxFresh {margin:0;}
+
+/* 가공 */
+.uxProcess {margin:19px 0 0 0;}
+
+/* 생활/리빙 */
+.uxLife {margin:19px 0 0 0;}
+
+/* 패션/잡화/유아 */
+.uxBaby {margin:19px 0;}
+
+/* Special Zone */
+.uxSpecialZone {position:relative; margin:0 0 30px 0; overflow:hidden;}
+.uxSpecialZone .special_lnb {position:relative; width:203px; height:378px; padding:0; overflow:hidden; z-index:2;}
+.uxSpecialZone .special_lnb li {*display:inline; *zoom:1;}
+.uxSpecialZone .special_lnb a {display:block; width:203px; height:47px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/btn_special2.png') no-repeat 0 0;}
+.uxSpecialZone .special_lnb a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxSpecialZone .special_lnb li.s_lnb1 a {height:48px; background-position:0 0;}
+.uxSpecialZone .special_lnb li.s_lnb2 a {background-position:0 -48px;}
+.uxSpecialZone .special_lnb li.s_lnb3 a {background-position:0 -95px;}
+.uxSpecialZone .special_lnb li.s_lnb4 a {background-position:0 -142px;}
+.uxSpecialZone .special_lnb li.s_lnb5 a {background-position:0 -189px;}
+.uxSpecialZone .special_lnb li.s_lnb6 a {background-position:0 -236px;}
+.uxSpecialZone .special_lnb li.s_lnb7 a {background-position:0 -283px;}
+.uxSpecialZone .special_lnb li.s_lnb8 a {height:48px; background-position:0 -330px;}
+.uxSpecialZone .special_lnb li.s_lnb1 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb1 a.on {height:48px; background-position:-204px 0;}
+.uxSpecialZone .special_lnb li.s_lnb2 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb2 a.on {background-position:-204px -48px;}
+.uxSpecialZone .special_lnb li.s_lnb3 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb3 a.on {background-position:-204px -95px;}
+.uxSpecialZone .special_lnb li.s_lnb4 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb4 a.on {background-position:-204px -142px;}
+.uxSpecialZone .special_lnb li.s_lnb5 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb5 a.on {background-position:-204px -189px;}
+.uxSpecialZone .special_lnb li.s_lnb6 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb6 a.on {background-position:-204px -236px;}
+.uxSpecialZone .special_lnb li.s_lnb7 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb7 a.on {background-position:-204px -283px;}
+.uxSpecialZone .special_lnb li.s_lnb8 a:hover,
+.uxSpecialZone .special_lnb li.s_lnb8 a.on {height:48px; background-position:-204px -330px;}
+
+.uxSpecialZone .special_prod {position:absolute; left:190px; top:0; width:760px; height:379px; margin:0; overflow:hidden;}
+.uxSpecialZone .special_prod li {}
+
+/* 공지사항 */
+.uxLatest {width:950px; padding:12px 0 9px 0; border-top:2px solid #58595b; border-bottom:1px solid #cbcbcc; overflow:hidden;}
+.uxLatest .notice {float:left; width:410px; padding:0 50px 0 15px; overflow:hidden;}
+.uxLatest .notice h4,
+.uxLatest .notice a,
+.uxLatest .notice p,
+.uxLatest .notice span {display:inline;}
+.uxLatest .notice h4 {}
+.uxLatest .notice a img {margin:1px 0 0 5px;}
+.uxLatest .notice p {display:inline-block; width:250px; margin:0 10px 0 10px; padding:1px 0 0 0; color:#555; font:12px/14px Gulim, "굴림", sans-serif; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; *zoom:1; *display:inline;}
+.uxLatest .notice span {display:inline-block; padding:3px 0 0 0; color:#666; font:11px Gulim, "굴림", sans-serif; vertical-align:top;}
+
+.uxLatest .winner {float:left; width:410px; padding:0 50px 0 15px; overflow:hidden;}
+.uxLatest .winner h4,
+.uxLatest .winner a,
+.uxLatest .winner p,
+.uxLatest .winner span {display:inline;}
+.uxLatest .winner h4 {}
+.uxLatest .winner a img {margin:1px 0 0 5px;}
+.uxLatest .winner p {display:inline-block; width:250px; margin:0 10px 0 10px; padding:1px 0 0 0; color:#555; font:12px/14px Gulim, "굴림", sans-serif; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; *zoom:1; *display:inline;}
+.uxLatest .winner span {display:inline-block; padding:3px 0 0 0; color:#666; font:11px Gulim, "굴림", sans-serif; vertical-align:top;}
+
+/* 브랜드몰, 제휴몰 */
+ul.uxBannerList {width:950px; margin:-1px 0 0; border-top:1px solid #cccccc; border-bottom:2px solid #58595b; background:#fff;}
+ul.uxBannerList > li > ul {border-left:1px solid #dadada;}
+ul.uxBannerList > li > ul > li {width:860px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_dotted_v2.gif') repeat-x 0 0;}
+ul.uxBannerList li {border-bottom:1px solid #cccccc; font-size:0; line-height:0; overflow:hidden; zoom:1;}
+ul.uxBannerList li.partner {border:none;}
+ul.uxBannerList li.first {background:none;}
+ul.uxBannerList li h2 {float:left;	width:88px;	margin:0 !important; text-align:center;}
+ul.uxBannerList li ul {float:left;}
+ul.uxBannerList li ul li {border:0;}
+ul.uxBannerList li ul li ul {overflow:hidden; zoom:1; float:none;}
+ul.uxBannerList li ul li ul li {float:left; padding:12px 20px; border:0; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_stk_v5.gif') no-repeat 0 50%;}
+
+
+/* 브랜드몰, 제휴몰 배너
+.uxBannerList {width:950px;}
+.uxBannerList .brand {position:relative; height:53px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/dot_banner.png') repeat-x 0 100%; overflow:hidden;}
+.uxBannerList .brand h4 {margin:17px 65px;}
+.uxBannerList .brand h4,
+.uxBannerList .brand .listWrap {float:left;}
+.uxBannerList .brand .listWrap {position:relative;width:720px; height:53px; overflow:hidden;}
+.uxBannerList .brand .listWrap ul {position:absolute;width:1610px;left:0;}
+.uxBannerList .brand .listWrap ul li {float:left; padding:12px 20px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bar_banner.png') no-repeat 0 50%;}
+.uxBannerList .brand .listWrap ul li:first-child {background:none;}
+.uxBannerList .brand #arrow_brand {}
+.uxBannerList .brand #arrow_brand a {display:block; position:absolute; width:14px; height:17px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arrow_orange.png') no-repeat 0 0;}
+.uxBannerList .brand #arrow_brand a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxBannerList .brand #arrow_brand .next {top:17px; left:170px; background-position:0 0; z-index:2;}
+.uxBannerList .brand #arrow_brand .prev {top:17px; right:20px; background-position:-14px 0; z-index:2;}
+
+.uxBannerList .partner {position:relative; height:53px; border-bottom:2px solid #58595b; overflow:hidden;}
+.uxBannerList .partner h4 {margin:17px 65px;}
+.uxBannerList .partner h4,
+.uxBannerList .partner .listWrap {float:left;}
+.uxBannerList .partner .listWrap {position:relative;width:720px; height:53px; overflow:hidden;}
+.uxBannerList .partner .listWrap ul {position:absolute;;width:810px;left:0;}
+.uxBannerList .partner .listWrap ul li {float:left; padding:12px 19px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bar_banner.png') no-repeat 0 50%;}
+.uxBannerList .partner .listWrap ul li:first-child {background:none;}
+.uxBannerList .partner #arrow_partner {}
+.uxBannerList .partner #arrow_partner a {display:block; position:absolute; width:14px; height:17px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/arrow_yellow.png') no-repeat 0 0;}
+.uxBannerList .partner #arrow_partner a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.uxBannerList .partner #arrow_partner .next {top:17px; left:170px; background-position:0 0; z-index:2;}
+.uxBannerList .partner #arrow_partner .prev {top:17px; right:20px; background-position:-14px 0; z-index:2;}
+*/
+
+
+
+/* 하단 배너 1 */
+.uxBottomBanner {margin:30px 0 0 0;}
+
+
+
+
+/* 추석 2013 S */
+#chuseokWrap {}
+
+/* GNB */
+#chuseokWrap #chuseokGnbWrap {position:relative; z-index:2;}
+#chuseokGnbWrap .chuseokGnb {}
+#chuseokGnbWrap .chuseokGnb a.btntOpen {display:block; visibility:visible; position:absolute; bottom:-18px; left:50%; width:134px; height:18px; margin:0 0 0 -68px; background:url('/images/contentimg/main/2013chuseok/btn_view_all.png') no-repeat 0 0; z-index:3;}
+#chuseokGnbWrap .chuseokGnb a.btntOpen span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu {overflow:hidden;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu li {float:left;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu li a {display:block; height:65px; background:url('/images/contentimg/main/2013chuseok/btn_gnb.png') no-repeat 0 0;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu li a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu1 {width:227px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu1 a {width:227px; background-position:0 0;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu.tClose .menu1 a {background-position:0 -65px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu2 {width:284px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu2 a {width:284px; background-position:-227px 0;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu.tClose .menu2 a {background-position:-227px -65px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu3 {width:203px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu3 a {width:203px; background-position:-511px 0;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu.tClose .menu3 a {background-position:-511px -65px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu4 {width:236px;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu .menu4 a {width:236px; background-position:-714px 0;}
+#chuseokGnbWrap .chuseokGnb .gnbMenu.tClose .menu4 a {background-position:-714px -65px;}
+#chuseokGnbWrap .viewAllWrap {position:absolute; top:65px; left:0; height:0; z-index:3; overflow:hidden;}
+#chuseokGnbWrap .viewAllWrap.open {}
+/*.viewAllWrap .viewAll {border:1px solid #c4c4c4; background:#fff url('/images/contentimg/main/2013chuseok/dot_gnb.png') repeat-y 0 0; overflow:hidden;}
+.viewAllWrap .viewAll a {display:block; color:#666; font:12px/23px Gulim, "굴림", sans-serif; text-decoration:none;}
+.viewAllWrap .viewAll a:hover {background:#85736f; color:#fff;}
+.viewAllWrap .viewAll .list1 {float:left; width:205px; padding:15px 0 0 20px;}
+.viewAllWrap .viewAll .list1 a span {font-size:14px; font-weight:bold;}
+.viewAllWrap .viewAll .list2 {float:left; width:284px;}
+.viewAllWrap .viewAll .list2 ul {float:left; padding:15px 0 0 10px;}
+.viewAllWrap .viewAll .list3 {float:left; width:183px; padding:15px 0 0 20px;}
+.viewAllWrap .viewAll .banner {float:left; width:236px;}
+*/
+
+.viewAllWrap .viewAll {border:1px solid #c4c4c4; background:#fff url('/images/contentimg/main/2013chuseok/dot_gnb.png') repeat-y 0 0; overflow:hidden;}
+.viewAllWrap .viewAll .list1 a,
+.viewAllWrap .viewAll .list2 a,
+.viewAllWrap .viewAll .list3 a {display:block; height:25px; background:url('/images/contentimg/main/2013chuseok/btn_lnb.png') no-repeat 0 0;}
+.viewAllWrap .viewAll .list1 a {width:225px;}
+.viewAllWrap .viewAll .list2 a {width:142px;}
+.viewAllWrap .viewAll .list3 a {width:201px;}
+.viewAllWrap .viewAll .list1 a span,
+.viewAllWrap .viewAll .list2 a span,
+.viewAllWrap .viewAll .list3 a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+
+.viewAllWrap .viewAll .list1 .cMenu01 a {background-position:0 0;}
+.viewAllWrap .viewAll .list1 .cMenu02 a {background-position:0 -28px;}
+.viewAllWrap .viewAll .list1 .cMenu03 a {background-position:0 -56px;}
+.viewAllWrap .viewAll .list1 .cMenu04 a {background-position:0 -84px;}
+.viewAllWrap .viewAll .list1 .cMenu05 a {background-position:0 -112px;}
+.viewAllWrap .viewAll .list1 .cMenu06 a {background-position:0 -140px;}
+
+.viewAllWrap .viewAll .list2 .cMenu07 a {background-position:-226px 0;}
+.viewAllWrap .viewAll .list2 .cMenu08 a {background-position:-226px -28px;}
+.viewAllWrap .viewAll .list2 .cMenu09 a {background-position:-226px -56px;}
+.viewAllWrap .viewAll .list2 .cMenu10 a {background-position:-226px -84px;}
+.viewAllWrap .viewAll .list2 .cMenu11 a {background-position:-226px -112px;}
+.viewAllWrap .viewAll .list2 .cMenu12 a {background-position:-226px -140px;}
+.viewAllWrap .viewAll .list2 .cMenu13 a {background-position:-226px -168px;}
+.viewAllWrap .viewAll .list2 .cMenu14 a {background-position:-226px -196px;}
+
+.viewAllWrap .viewAll .list2 .cMenu15 a {background-position:-369px 0;}
+.viewAllWrap .viewAll .list2 .cMenu16 a {background-position:-369px -28px;}
+.viewAllWrap .viewAll .list2 .cMenu17 a {background-position:-369px -56px;}
+.viewAllWrap .viewAll .list2 .cMenu18 a {background-position:-369px -84px;}
+.viewAllWrap .viewAll .list2 .cMenu19 a {background-position:-369px -112px;}
+.viewAllWrap .viewAll .list2 .cMenu20 a {background-position:-369px -140px;}
+.viewAllWrap .viewAll .list2 .cMenu21 a {background-position:-369px -168px;}
+.viewAllWrap .viewAll .list2 .cMenu22 a {background-position:-369px -196px;}
+
+.viewAllWrap .viewAll .list3 .cMenu23 a {background-position:-510px 0;}
+.viewAllWrap .viewAll .list3 .cMenu24 a {background-position:-510px -28px;}
+.viewAllWrap .viewAll .list3 .cMenu25 a {background-position:-510px -56px;}
+.viewAllWrap .viewAll .list3 .cMenu26 a {background-position:-510px -84px;}
+.viewAllWrap .viewAll .list3 .cMenu27 a {background-position:-510px -112px;}
+.viewAllWrap .viewAll .list3 .cMenu28 a {background-position:-510px -140px;}
+.viewAllWrap .viewAll .list3 .cMenu29 a {background-position:-510px -168px;}
+.viewAllWrap .viewAll .list3 .cMenu30 a {background-position:-510px -196px;}
+
+.viewAllWrap .viewAll .list1 .cMenu01 a:hover {background-position:0 -221px;}
+.viewAllWrap .viewAll .list1 .cMenu02 a:hover {background-position:0 -249px;}
+.viewAllWrap .viewAll .list1 .cMenu03 a:hover {background-position:0 -277px;}
+.viewAllWrap .viewAll .list1 .cMenu04 a:hover {background-position:0 -305px;}
+.viewAllWrap .viewAll .list1 .cMenu05 a:hover {background-position:0 -333px;}
+.viewAllWrap .viewAll .list1 .cMenu06 a:hover {background-position:0 -361px;}
+
+.viewAllWrap .viewAll .list2 .cMenu07 a:hover {background-position:-226px -221px;}
+.viewAllWrap .viewAll .list2 .cMenu08 a:hover {background-position:-226px -249px;}
+.viewAllWrap .viewAll .list2 .cMenu09 a:hover {background-position:-226px -277px;}
+.viewAllWrap .viewAll .list2 .cMenu10 a:hover {background-position:-226px -305px;}
+.viewAllWrap .viewAll .list2 .cMenu11 a:hover {background-position:-226px -333px;}
+.viewAllWrap .viewAll .list2 .cMenu12 a:hover {background-position:-226px -361px;}
+.viewAllWrap .viewAll .list2 .cMenu13 a:hover {background-position:-226px -389px;}
+.viewAllWrap .viewAll .list2 .cMenu14 a:hover {background-position:-226px -417px;}
+
+.viewAllWrap .viewAll .list2 .cMenu15 a:hover {background-position:-369px -221px;}
+.viewAllWrap .viewAll .list2 .cMenu16 a:hover {background-position:-369px -249px;}
+.viewAllWrap .viewAll .list2 .cMenu17 a:hover {background-position:-369px -277px;}
+.viewAllWrap .viewAll .list2 .cMenu18 a:hover {background-position:-369px -305px;}
+.viewAllWrap .viewAll .list2 .cMenu19 a:hover {background-position:-369px -333px;}
+.viewAllWrap .viewAll .list2 .cMenu20 a:hover {background-position:-369px -361px;}
+.viewAllWrap .viewAll .list2 .cMenu21 a:hover {background-position:-369px -389px;}
+.viewAllWrap .viewAll .list2 .cMenu22 a:hover {background-position:-369px -417px;}
+
+.viewAllWrap .viewAll .list3 .cMenu23 a:hover {background-position:-510px -221px;}
+.viewAllWrap .viewAll .list3 .cMenu24 a:hover {background-position:-510px -249px;}
+.viewAllWrap .viewAll .list3 .cMenu25 a:hover {background-position:-510px -277px;}
+.viewAllWrap .viewAll .list3 .cMenu26 a:hover {background-position:-510px -305px;}
+.viewAllWrap .viewAll .list3 .cMenu27 a:hover {background-position:-510px -333px;}
+.viewAllWrap .viewAll .list3 .cMenu28 a:hover {background-position:-510px -361px;}
+.viewAllWrap .viewAll .list3 .cMenu29 a:hover {background-position:-510px -389px;}
+.viewAllWrap .viewAll .list3 .cMenu30 a:hover {background-position:-510px -417px;}
+
+.viewAllWrap .viewAll .list1 {float:left; width:226px; padding:15px 0 0 0;}
+.viewAllWrap .viewAll .list2 {float:left; width:285px;}
+.viewAllWrap .viewAll .list2 ul {float:left; padding:15px 0 0 0;}
+.viewAllWrap .viewAll .list3 {float:left; width:201px; padding:15px 0 0 0;}
+.viewAllWrap .viewAll .banner {float:left; width:236px;}
+
+.viewAllWrap a.vClose {display:block; position:absolute; bottom:0; right:0; width:41px; height:41px; background:url('/images/contentimg/main/2013chuseok/btn_close.png') no-repeat 0 0;}
+.viewAllWrap a.vClose span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.viewAllWrap a.btntClose {display:block; visibility:visible; position:absolute; bottom:24px; left:50%; width:134px; height:23px; margin:0 0 0 -68px; background:url('/images/contentimg/main/2013chuseok/btn_view_all.png') no-repeat 0 -18px; z-index:3;}
+.viewAllWrap a.btntClose span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+
+/* 상단 메인롤링 */
+#chuseokWrap #mainRolling {position:relative; width:950px; height:358px; overflow:hidden;}
+/* s:웹접근성 : 메인롤링 배너의 선형화 작업으로 인한 구조변경으로 수정 */
+#mainRolling #planNav div.btn {clear:both; float:right; position:relative; z-index:1; width:249px; height:51px; background:url('/images/contentimg/main/2013chuseok/btn_plan_nav.png') no-repeat 0 0;}
+#mainRolling #planNav div.btn a {display:block; width:100%; height:100%;}
+#mainRolling #planNav div.btn a span {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+
+#mainRolling #planNav .tab1 div.btn {background-position:4px 0;}
+#mainRolling #planNav .tab2 div.btn {background-position:4px -51px;}
+#mainRolling #planNav .tab3 div.btn {background-position:4px -102px;}
+#mainRolling #planNav .tab4 div.btn {background-position:4px -153px;}
+#mainRolling #planNav .tab5 div.btn {background-position:4px -204px;}
+#mainRolling #planNav .tab6 div.btn {height:52px; background-position:4px -255px;}
+
+#mainRolling #planNav .tab1 div.btn.on {height:102px; background-position:-248px 0;}
+#mainRolling #planNav .tab2 div.btn.on {height:102px; background-position:-248px -102px;}
+#mainRolling #planNav .tab3 div.btn.on {height:102px; background-position:-248px -204px;}
+#mainRolling #planNav .tab4 div.btn.on {height:102px; background-position:-248px -306px;}
+#mainRolling #planNav .tab5 div.btn.on {height:102px; background-position:-248px -408px;}
+#mainRolling #planNav .tab6 div.btn.on {height:103px; background-position:-248px -510px;}
+
+#mainRolling #planNav div.pic {position:absolute; top:0; left:0;}
+/* e:웹접근성 : 메인롤링 배너의 선형화 작업으로 인한 구조변경으로 수정 */
+
+/* 상단 할인 띠배너 */
+#chuseokWrap .discountBanner {margin:10px 0 30px 0;}
+/* 웹접근성 : anchor 포커스 bound 수정 */
+#chuseokWrap .discountBanner a {display:block;}
+
+/* 상단 이벤트 배너 */
+#chuseokWrap .eventBanner {margin:0;}
+#chuseokWrap .eventBanner {margin:0; overflow:hidden;}
+.eventBanner .eventBannerLeft {float:left;}
+.eventBanner .eventBannerright {float:left;}
+
+/* 선물셋트1 */
+#chuseokWrap .giftSets {margin:30px 0 0 0; overflow:hidden;}
+.giftSets .giftSetsLeft {position:relative; float:left; height:362px; padding:0 0 10px 0; background:url('/images/contentimg/main/2013chuseok/bg_giftSets.gif') no-repeat 0 100%;}
+.giftSets .giftSetsLeft .giftMore {position:absolute; top:26px; right:10px; padding:30px 0 30px 30px;}
+.giftSets .giftSetsLeft .giftSetsList {padding:0 20px; border-left:1px solid #e2d6d0; overflow:hidden;}
+.giftSets .giftSetsLeft .giftSetsList li {float:left; width:195px; margin:0; padding:20px 0 0 40px; text-align:center;}
+.giftSets .giftSetsLeft .giftSetsList li:first-child {margin:0; padding:20px 0 0 0;}
+.giftSets .giftSetsLeft .giftSetsList li .giftSetsImg {position:relative; padding:0 0 10px 0; text-align:center;}
+.giftSets .giftSetsLeft .giftSetsList li .giftSetsImg a {height:100%;}
+.giftSets .giftSetsLeft .giftSetsList li .giftSetsImg .btn_cart {display:none; position:absolute; bottom:10px; right:10px;}
+.giftSets .giftSetsLeft .giftSetsList li .giftSetsImg .pi_wrap em {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.giftSets .giftSetsLeft .giftSetsList li .txt {height:32px; padding:0 3px; color:#666; font:bold 12px/16px Dotum, 돋움, sans-serif; word-break:break-all; word-wrap:break-word; overflow:hidden; text-align:left;}
+.giftSets .giftSetsLeft .giftSetsList li .price {margin:5px 0 0 0; padding:0 3px; text-align:left; overflow:hidden;}
+.giftSets .giftSetsLeft .giftSetsList li .price em {display:inline; margin:0 5px 0 0; color:#999; font:12px/20px Dotum, 돋움, sans-serif; text-decoration:line-through; vertical-align:top; *vertical-align:middle;}
+.giftSets .giftSetsLeft .giftSetsList li .price p {display:inline; color:#ee1c24; font:bold 18px/20px Dotum, 돋움, sans-serif; letter-spacing:0;}
+.giftSets .giftSetsLeft .giftSetsList li .price p span {margin:0 0 0 2px; color:#ee1c24; font:bold 12px/20px Dotum, 돋움, sans-serif; vertical-align:top; *vertical-align:middle;}
+
+.giftSets .giftSetsRight {float:right;}
+
+/* MD 추천 */
+#chuseokWrap .assign1 {margin:30px 0 0 0; overflow:hidden;}
+#chuseokWrap .assign1 .assign1_Left {float:left;}
+#chuseokWrap .assign1 .assign1_Right {float:right;}
+
+/* 하나 더 */
+#chuseokWrap .assign2 {margin:4px 0 0 0; overflow:hidden;}
+#chuseokWrap .assign2 .assign2_Left {float:left;}
+#chuseokWrap .assign2 .assign2_Right {float:right;}
+
+/* 통큰손큰 */
+#chuseokWrap .assign3 {margin:0; overflow:hidden;}
+#chuseokWrap .assign3 .assign3_Left {float:left;}
+#chuseokWrap .assign3 .assign3_Right {float:right;}
+
+/* 신용카드 할인 */
+#chuseokWrap .assign4 {margin:0; overflow:hidden;}
+#chuseokWrap .assign4 .assign4_Left {float:left;}
+#chuseokWrap .assign4 .assign4_Right {float:right;}
+
+.assignList {height:240px; padding:0; border-right:1px solid #e1e1e1; overflow:hidden;}
+.assignList li {float:left; width:196px; height:231px; margin:0; padding:5px 20px 0 20px; border-top:1px solid #e1e1e1; border-bottom:1px solid #e1e1e1; border-left:1px solid #e1e1e1; text-align:center;}
+.assignList li:first-child {margin:0; padding:5px 20px 0 20px;}
+.assignList li .assignImg {position:relative; padding:0 0 10px 0; text-align:center;}
+.assignList li .assignImg a {height:100%;}
+.assignList li .assignImg .btn_cart {display:none; position:absolute; bottom:10px; right:10px;}
+.assignList li .assignImg .pi_wrap em {position:absolute; top:-5000px; left:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden;}
+.assignList li .txt {height:32px; padding:0 20px; color:#666; font:bold 12px/16px Dotum, 돋움, sans-serif; word-break:break-all; word-wrap:break-word; overflow:hidden; text-align:left;}
+.assignList li .price {margin:5px 0 0 0; padding:0 20px; text-align:left; overflow:hidden;}
+.assignList li .price em {display:inline; margin:0 5px 0 0; color:#999; font:12px/20px Dotum, 돋움, sans-serif; text-decoration:line-through; vertical-align:top; *vertical-align:middle;}
+.assignList li .price p {display:inline; color:#ee1c24; font:bold 18px/20px Dotum, 돋움, sans-serif; letter-spacing:0;}
+.assignList li .price p span {margin:0 0 0 2px; color:#ee1c24; font:bold 12px/20px Dotum, 돋움, sans-serif; vertical-align:top; *vertical-align:middle;}
+
+/* 가격대별 인기 상품 */
+#chuseokWrap .popularPrice {margin:18px 0 0 0;}
+
+/* 프리미엄 선물셋트 배너 */
+#chuseokWrap .premiumGift {margin:10px 0 0 0;}
+
+/* 카테고리 인기상품 */
+#chuseokWrap .popularCategory {margin:0;}
+
+/* 추천 선물셋트 */
+#chuseokWrap .giftRecommend {margin:30px 0 0 0;}
+
+/* 하단 고객센터 */
+#chuseokWrap .customorCenter {margin:8px 0 0 0;}
+
+/* 명절몰 쿠폰 */
+div.chuseok2013Cupon {width:950px; padding:0 0 11px; background:url('//simage.lottemart.com/images/contentimg/main/2013chuseok/bg_2013chu_cupon_btm.gif') no-repeat 0 100%;}
+div.chuseok2013Cupon div.roundMid {background:url('//simage.lottemart.com/images/contentimg/main/2013chuseok/bg_2013chu_cupon.jpg') repeat-y 0 0;}
+div.chuseok2013Cupon ul {overflow:hidden; zoom:1; width:940px; padding:0 0 0 10px;}
+div.chuseok2013Cupon ul li {_display:inline;overflow:hidden; zoom:1; float:left; width:435px; height:131px;	margin:0 0 0 29px;}
+div.chuseok2013Cupon ul li.row1 {margin:20px 0 0 29px;}
+div.chuseok2013Cupon ul li .coup {float:left;}
+div.chuseok2013Cupon ul li div {float:right; width:217px;}
+div.chuseok2013Cupon ul li div p {color:#fff4ba; font-size:18px; font-weight:bold; line-height:28px;}
+div.chuseok2013Cupon ul li div.chuseok2013Cupon_v2 p {line-height:25px !important;}
+div.chuseok2013Cupon ul li div p span {display:inline-block; font-size:25px; line-height:28px; vertical-align:-3px; *vertical-align:2px;}
+div.chuseok2013Cupon ul li div.chuseok2013Cupon_v2 p span {font-size:23px !important; line-height:25px !important;}
+div.chuseok2013Cupon ul li div dl {overflow:hidden; zoom:1; padding:8px 0 0;}
+div.chuseok2013Cupon ul li div.chuseok2013Cupon_v2 dl {padding:4px 0 0 !important;}
+div.chuseok2013Cupon ul li div dl dt,
+div.chuseok2013Cupon ul li div dl dd {float:left; color:#fff; font-size:12px; line-height:16px; letter-spacing:0;}
+div.chuseok2013Cupon ul li div dl dt {width:56px; margin:0 3px 0 0;}
+div.chuseok2013Cupon ul li div dl dd {width:140px;}
+div.chuseok2013Cupon ul li div .btn {display:inline-block; width:77px; height:23px; margin:11px 0 0; }
+div.chuseok2013Cupon ul li div.seol2013Btm_v2 .btn {margin:3px 0 0 !important;}
+
+/* 추석 2013 E */
+
+/* 사이드 메뉴 */
+div#floatdiv {position:absolute; top:0; left:970px;	width:134px; padding:13px 0 0; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_quick_top.png') no-repeat 0 0;}
+div#quick div.order-info {width:100%;}
+div#quick div.order-info p.tit {padding:0 0 10px 11px; overflow:hidden; *zoom:1;}
+div#quick div.order-info p.tit img {float:left;}
+div#quick div.order-info p.tit a {_display:inline; float:right;	margin:0 13px 0 0; text-decoration:none;}
+div#quick div.order-info p.period1,
+div#quick div.order-info p.period2 {padding-left:11px; color:#848388; font-size:11px; line-height:15px;}
+div#quick div.order-info p.period1 {padding-top:6px;}
+div#quick div.order-info p.period2 {padding-top:2px;}
+div#quick div.order-info p em {display:inline-block; color:#ee1c24; vertical-align:top;}
+
+/* 도움말 */
+div#quick div.order-info p.tit a span {
+	z-index:10; /* 2012-10-12추가 */
+	display:block;
+	color:#666;
+	font-size:11px;
+	line-height:14px;
+	vertical-align:top;
+}
+div#quick div.order-info p.tit a span.help-btm {
+	display:none;
+	position:absolute;
+	top:29px; left:-5px;
+	width:189px;
+	padding:0 0 10px;
+	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/bg_help_btm.gif') no-repeat 0 100%;
+
+}
+div#quick div.order-info p.tit a:hover span.help-btm {display:block;}
+div#quick div.order-info p.tit a span.help-top {
+	width:189px;
+	padding:12px 0 0;
+	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/bg_help_top.gif') no-repeat 0 0;
+}
+div#quick div.order-info p.tit a span.in {
+	width:174px;
+	padding:0 8px 0 7px;
+}
+div#quick div.order-info p.tit a span.in strong {color:#333;}
+div#quick div.order-info p.tit a span.in span.v1 {margin:4px 0 0;}
+div#quick div.order-info p.tit a span.in span.v2 {margin:4px 0 0;}
+div#quick div.order-info p.tit a span.in span.v3 {color:#999;}
+
+div#quick div.order-info ul {
+	overflow:hidden; zoom:1;
+	width:121px;
+	margin:0 auto;
+	padding:6px 0 0;
+}
+div#quick div.order-info ul li {
+	float:left;
+	font-size:0;
+	line-height:0;
+}
+div#quick div.order-info ul li a {
+	display:block;
+	height:17px;
+	padding:1px 0 0;
+	border:1px solid #d3d8db;
+	background:#fff;
+	text-align:center;
+	font-size:11px;
+	line-height:15px;
+	vertical-align:top;
+}
+div#quick div.order-info ul li.v1 a {width:62px;}
+div#quick div.order-info ul li.v2 a {width:53px; margin:0 0 0 2px;}
+div#quick div.order-info ul li.v3 a {width:62px; margin:2px 0 0;}
+div#quick div.order-info ul li.v4 a {width:53px; margin:2px 0 0 2px;}
+/* 2012-10-31 추후 삭제 시작 */
+div#quick div.order-info ul li.time a {
+	width:119px;
+	margin:0 0 2px;
+	font-weight:normal;
+}
+div#quick div.order-info ul li.admin a {width:53px; margin:0 2px 0 0;}
+div#quick div.order-info ul li.eval a {width:62px;}
+/* 2012-10-31 추후 삭제 끝 */
+div#quick div.order-info ul li a:hover {text-decoration:none;}
+div.goods-view-list {width:134px; padding:10px 0 0;}
+div.goods-view-list ul {width:134px;}
+div.goods-view-list ul li {
+	font-size:0;
+	line-height:0;
+}
+div.goods-view-list ul li strong.title {display:block; width:123px; height:23px; padding:7px 0 0 11px; color:#424242; font-weight:normal; font-size:12px; line-height:15px; cursor:pointer; vertical-align:top; letter-spacing:-1px;}
+div.goods-view-list ul li strong.title .bul {display:inline-block; position:absolute; right:6px; padding-top:5px; height:6px; overflow:hidden;}
+div.goods-view-list ul li strong.title .on {margin-top:-43px;}
+div.goods-view-list ul li strong.title em {display:inline-block; font-weight:normal;}
+div.goods-view-list ul li strong.title.highWay {padding:3px 0 0 44px; color:#777; font-size:11px; background:url('//simage.lottemart.com/images/contentimg/main/uxindex/201307/bg_majang.png') no-repeat 3px 0;}
+div.goods-view-list ul li strong.title.highWay em {margin:0 0 0 2px; padding:0 4px; color:#fff; font-size:10px; background:#767676; line-height:13px;}
+div.goods-view-list ul li strong.title.highWay.on {color:#0191ec; cursor:default;}
+div.goods-view-list ul li strong.title.highWay.on em {padding:0 6px; background:#0191ec;}
+
+div.goods-view-list ul li strong.title.version-1 {background:#c7c7c7;}
+div.goods-view-list ul li strong.title.version-2 {background:#d8d8d8;}
+div.goods-view-list ul li strong.title.version-3 {background:#c7c7c7;;}
+div.goods-view-list ul li strong.title.version-4 {height:24px; background:#d8d8d8;;}
+div.goods-view-list ul li.section {position:relative; overflow:hidden; width:134px; height:31px;}
+div.goods-view-list ul li.majang {position:relative; width:134px; height:31px; overflow:hidden;}
+div.goods-view-list ul li div.content {width:134px;}
+div.goods-view-list ul li div.content.last {background:url('//simage.lottemart.com/images/contentimg/main/uxindex/bg_quick_btm.gif') no-repeat 0 100%;}
+div.goods-view-list ul li div.content.last a,
+div.goods-view-list ul li div.content.last p,
+div.goods-view-list ul li div.content.last em,
+div.goods-view-list ul li div.content.last span,
+div.goods-view-list ul li div.content.last strong,
+div.goods-view-list ul li div.content.last ul li {font-size:11px; line-height:14px;}
+div.goods-view-list ul li div.content ul.diss-list1 {
+	overflow:hidden; zoom:1;
+	width:127px;
+	padding:9px 0 0 7px;
+	height:262px;
+}
+div.goods-view-list ul li div.content ul.diss-list1 li {
+	overflow:hidden; zoom:1;
+	padding:0 0 2px;
+	font-size:0;
+	line-height:0;
+	vertical-align:top;
+}
+div.goods-view-list ul li div.content ul.diss-list1 li div.goods {
+	position:relative;
+	float:left;
+	width:47px;
+	height:47px;
+	margin:0 5px 0 0;
+	border:1px solid #dcdcd9;
+	cursor: pointer;
+}
+div.goods-view-list ul li div.content ul.diss-list1 li div.goods .btn {
+	display:inline-block;
+	z-index:3;
+	position:absolute;
+	top:-1px; left:-1px;
+	vertical-align:top;
+}
+div.goods-view-list ul li div.content ul.diss-list1 li div.price {float:left; width:70px;}
+div.goods-view-list ul li div.content ul.diss-list1 li div.price p,
+div.goods-view-list ul li div.content ul.diss-list1 li div.price em {
+	font-size:12px;
+	line-height:14px;
+	letter-spacing:0;
+}
+div.goods-view-list ul li div.content ul.diss-list1 li div.price p {
+	overflow:hidden; zoom:1;
+	height:29px;
+	margin:1px 0 0;
+	color:#999999;
+	font-size:11px;
+	line-height:14px;
+}
+div.goods-view-list ul li div.content ul.diss-list1 li div.price em {
+	display:block;
+	padding:5px 5px 0 0;
+	color:#666666;
+	text-align:right;
+	font-weight:bold;
+	font-size:12px;
+	line-height:15px;
+	vertical-align:top;
+	white-space:nowrap;
+	letter-spacing:-2px;
+}
+:root div.goods-view-list ul li div.content ul.diss-list1 li div.price em {letter-spacing:-1px;}
+div.goods-view-list ul li div.content ul.diss-list2 {overflow:hidden; zoom:1; padding:1px 0 0 14px;height:170px; /* 2012-10-12 */}
+div.goods-view-list ul li div.content ul.diss-list2 li {
+	position:relative;
+	float:left;
+	width:47px;
+	height:47px;
+	margin:6px 6px 0 0;
+	border:1px solid #dcdcd9;
+	background:#fff;
+	font-size:0;
+	line-height:0;
+}
+div.goods-view-list ul li div.content ul.diss-list2 li a {display:block; vertical-align:top;}
+div.goods-view-list ul li div.content div.input-text {
+	overflow:hidden; zoom:1;
+	width:118px;
+	height:26px;
+	margin:7px auto 0;
+	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/bg_input_box_v1.gif') no-repeat 0 0;
+}
+div.goods-view-list ul li div.content div.input-text input.text {
+	width:108px;
+	margin:7px 0 0 5px;
+	*margin:5px 0 0 5px;
+	color:#999999;
+	font-size:11px;
+	line-height:14px;
+}
+div.goods-view-list ul li div.content ul.diss-list3 {
+	overflow-y:scroll;
+	width:120px;
+	height:47px;
+	margin:4px 0 4px 0;
+	padding:4px 0 0 13px;
+}
+div.goods-view-list ul li div.content ul.diss-list3 li {
+	height:15px;
+	padding-left:7px;
+	font-size:0;
+	line-height:0;
+}
+div.goods-view-list ul li div.content ul.diss-list3 li a {
+	display:inline-block;
+	color:#666666;
+	font-size:11px;
+	line-height:14px;
+	vertical-align:top;
+}
+div.goods-view-list ul li div.content ul.diss-list3 li img { /*2012-10-12수정*/
+	display:inline-block;
+	margin:4px 0 0;
+	*margin:2px 0 0;
+	padding:2px;
+	vertical-align:top;
+}
+/*div.goods-view-list ul li div.content ul.diss-list3 li a img {vertical-align:top;}2012-10-12 삭제*/
+div.goods-view-list ul li div.content ul.diss-list4 {
+	width:120px;
+	height:53px;
+	margin:0;
+	padding:4px 0 0 13px;
+}
+div.goods-view-list ul li div.content ul.diss-list4 li {
+	float:none;
+	padding:0;
+	margin:0 0 0 9px;
+	padding:4px 0 0 0;
+	color:#8f8f8f;
+	text-indent:-11px;
+	font-size:11px;
+	line-height:14px;
+}
+div.goods-view-list ul li div.content div.diss-box1 {
+	position:relative;
+	width:103px;
+	margin:7px auto;
+	padding:6px 7px 15px 7px;
+	border:1px solid #d5d5d5;
+	background:#fff;
+	font-size:11px;
+	line-height:14px;
+}
+div.goods-view-list ul li div.content div.diss-box1 em {
+	display:block;
+	color:#313131;
+	font-weight:bold;
+	vertical-align:top;
+}
+div.goods-view-list ul li div.content div.diss-box1 p {
+	padding:14px 0 0;
+	color:#999999;
+	line-height:16px;
+}
+div.goods-view-list ul li div.content div.diss-box1 .btnClose {
+	position:absolute;
+	top:9px; right:7px;
+}
+div.goods-view-list ul li div.content div.diss-box1 div.input-text2 {
+	overflow:hidden; zoom:1;
+	width:103px;
+	height:26px;
+	margin:7px auto 0;
+	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/bg_input_box_v2.gif') no-repeat 0 0;
+}
+div.goods-view-list ul li div.content div.diss-box1 div.input-text2 input {
+	width:93px;
+	margin:7px 0 0 5px;
+	*margin:5px 0 0 5px;
+	color:#999999;
+	font-size:11px;
+	line-height:14px;
+}
+div.goods-view-list ul li div.content div.diss-box1 div.btn {margin:7px 0 0; text-align:center;}
+div.goods-view-list ul li div.content div.diss-box1 ul {
+	overflow-y:scroll;
+	width:106px;
+	height:70px;
+	margin:5px 0 0;
+	padding:0;
+}
+div.goods-view-list ul li div.content div.diss-box1 ul li {
+	padding:3px 0 0;
+	color:#999999;
+	font-size:11px;
+	line-height:14px;
+}
+div.good-pageing {
+	overflow:hidden; zoom:1;
+	height:30px;
+	padding:10px 0 0;
+	text-align:center;
+	font-size:12px;
+	line-height:15px;
+}
+div.good-pageing a,
+div.good-pageing span,
+div.good-pageing span strong {display:inline; /*display:inline-block; vertical-align:top;*/}
+div.good-pageing a {margin:0 8px; *margin:2px 8px 0;}
+div.good-pageing div.initialized {margin:5px 8px 0 0; text-align:right;}
+div.good-pageing.diss-vs1 {height:auto; padding:4px 0 0;}
+div.good-pageing.diss-vs2 {height:auto; padding:0 0 8px;}
+div.other-areas {
+	overflow:hidden; zoom:1;
+	width:124px;
+	height:34px;
+	margin:5px 0 0;
+	padding:10px 6px 0 4px;
+	background:url('//simage.lottemart.com/images/contentimg/main/uxindex/blt_dotted_v1.gif') repeat-x 0 0;
+}
+div.other-areas dl {
+	float:left;
+	width:68px;
+	margin:-2px 0 0;
+}
+div.other-areas dl dt {font-size:11px; line-height:14px;}
+div.other-areas dl dd {
+	width:70px;
+	text-align:right;
+	font-weight:bold;
+	font-size:12px;
+	line-height:15px;
+	white-space:nowrap;
+}
+div.other-areas dl dd em {
+	display:inline-block;
+	margin:-1px 0 0;
+	font-weight:normal;
+	vertical-align:top;
+}
+div.other-areas div.btn {float:right;}
+div#quick div.banner {
+	width:134px;
+	padding:6px 0 0;
+	background:#fff;
+}
+div#quick div.banner a {
+	display:block;
+	padding:6px 0 0;
+	vertical-align:top;
+}
+div#quick div.banner a img {vertical-align:top;}
+div#quick div.banner ul {
+	overflow:hidden; zoom:1;
+	width:134px;
+	margin:5px 0 0;
+	padding:1px 0 0 1px;
+}
+div#quick div.banner ul li {
+	float:left;
+	margin:-1px 0 0 -1px;
+	border:1px solid #dedede;
+	font-size:0;
+	line-height:0;
+}
+div#quick div.banner ul li a {
+	padding:0;
+}
+
+/* 푸터 */
+div#UxWrapper div#footer {
+	width:950px;
+	padding:30px 0 15px;
+	margin:0;
+}
+div#UxWrapper div#footer .f_menu {
+	position:relative;
+	width:100%;
+	height:50px;
+	border-top:2px solid #e6e6e6;
+	background-color:#f6f6f6;
+}
+div#UxWrapper div#footer .f_menu ul {
+	width:756px;
+	overflow:hidden;
+	margin:19px 0 0 12px;
+}
+div#UxWrapper div#footer .f_menu li {
+	float:left;
+	padding:0 6px 0 7px;
+	font:normal 11px Dotum;
+	color:#666;
+}
+div#UxWrapper div#footer .f_menu li a {color:#666;}
+div#UxWrapper div#footer .f_menu li a.private_rule {font-weight:bold;}
+
+div.ux-footer div.fr-1,
+div.ux-footer div.fr-2,
+div.ux-footer div.fr-3 {height:112px !important;}
+
+div.ux-footer div.fr-2 ul li.Pmg span.sec {display:inle-block;padding-left:15px;}
+div.ux-footer-award {width:950px;height:45px;background:#ffffff;overflow:hidden;}
+div.ux-footer-award div.award-fr-1 {float:left;width:633px;overflow:hidden;}
+div.ux-footer-award div.award-fr-1 a {float:left;display:block;width:7px;height:13px;margin:16px 0 0 0;}
+div.ux-footer-award div.award-fr-1 a.prev {background:url('//simage.lottemart.com/images/contentimg/main/uxindex/footer_award_arrow01.gif') 0 0 no-repeat;}
+div.ux-footer-award div.award-fr-1 a.prev:hover {background-position:0 -13px;}
+div.ux-footer-award div.award-fr-1 a.next {background:url('//simage.lottemart.com/images/contentimg/main/uxindex/footer_award_arrow02.gif') 0 0 no-repeat;}
+div.ux-footer-award div.award-fr-1 a.next:hover {background-position:0 -13px;}
+div.ux-footer-award div.award-fr-1 a span{display:block;position:absolute;top:-5000px;line-height:0;}
+div.ux-footer-award div.award-fr-1 div {float:left;width:593px;height:25px;margin:10px 12px 0 12px;overflow:hidden;}
+
+div.ux-footer-award div.award-fr-2 {float:left;width:317px}
+div.ux-footer-award div.award-fr-2 img {margin:10px 0 0 15px;}
+
+/* 패밀리사이트 */
+div#UxWrapper div#footer .relation {
+	position:absolute;
+	right:10px; bottom:10px;
+	color:#999;
+	font:normal 11px Dotum;
+}
+div#UxWrapper div#footer .jq_off {
+	width:172px;
+	height:21px;
+	padding:9px 0 0 10px;
+	background:url('//simage.lottemart.com/images/front/common/f-bg-sel-off.gif') no-repeat 0 0;
+	cursor:pointer;
+}
+div#UxWrapper div#footer .jq_on {
+	width:172px;
+	height:21px;
+	padding:9px 0 0 10px;
+	background:url('//simage.lottemart.com/images/front/common/f-bg-sel-on.gif') no-repeat 0 0;
+	cursor:pointer;
+}
+div#UxWrapper div#footer .jq_layer {
+	display:none;
+	overflow-y:auto;
+	overflow:-moz-scrollbars-vertical;
+	position:absolute;
+	top:-299px; left:0;
+	width:180px;
+	height:298px;
+	border:1px solid #e6e6e6;
+	background-color:#FFF;
+	z-index:2;
+}
+
+div#UxWrapper div#footer .jq_layer .r_list {
+	overflow-y:auto;
+	overflow:-moz-scrollbars-vertical;
+	width:170px;
+	height:280px;
+	margin:9px 5px;
+}
+div#UxWrapper div#footer .jq_layer ul {width:150px; margin:0;}
+div#UxWrapper div#footer .jq_layer li {
+	float:none;
+	padding:2px 0 1px 4px;
+	color:#999;
+	text-align:left;
+}
+div#UxWrapper div#footer .jq_layer li a {color:#999;}
+
+
+div.ux-footer {
+	overflow:hidden; zoom:1;
+	width:950px;
+	background:#fff;
+	color:#b3b3b3;
+	font-size:11px;
+	line-height:14px;
+	word-spacing:-1px;
+}
+div.ux-footer div.fr-1,
+div.ux-footer div.fr-2,
+div.ux-footer div.fr-3 {
+	float:left;
+	height:162px;
+	border-left:1px solid #eeeeee;
+}
+div.ux-footer div.fr-2 ul li,
+div.ux-footer div.fr-3 ul li {font-size:0; line-height:0;}
+div.ux-footer div.fr-2 ul li span,
+div.ux-footer div.fr-3 ul li span {
+	display:inline-block;
+	padding:4px 0 0;
+	font-size:11px;
+	line-height:14px;
+	vertical-align:top;
+}
+div.ux-footer div.fr-2 ul li img,
+div.ux-footer div.fr-3 ul li img {margin:0 0 0 6px;}
+div.ux-footer div.fr-1 {
+	position:relative;
+	width:281px;
+	padding:0 0 0 20px;
+	border-left:0;
+}
+div.ux-footer div.fr-1 h2 {padding:14px 0 0;}
+div.ux-footer div.fr-1 div.btn-s {
+	position:absolute;
+	top:15px; left:187px;
+}
+div.ux-footer div.fr-1 p {padding:7px 0 0;}
+div.ux-footer div.fr-1 address {font-style:normal;}
+div.ux-footer div.fr-1 div.img {margin:20px 0 0;}
+div.ux-footer div.fr-2 {width:311px; padding:0 0 0 20px;}
+div.ux-footer div.fr-2 ul {padding:13px 0 0;}
+div.ux-footer div.fr-2 ul li.Pmg {padding:7px 0 0;}
+div.ux-footer div.fr-3 {width:300px; padding:0 0 0 16px;}
+div.ux-footer div.fr-3 ul {padding:11px 0 0;}
+div.ux-footer div.fr-3 ul li {padding:2px 0 0; color:#999999;}
+div.ux-footer div.fr-3 p {padding:3px 0 0; line-height:16px;}
+div.ux-footer div.fr-3 div.img {margin:20px 0 0;}
+
+div.ux-footer-award div.award-fr-1 div {height:35px !important}
+
+/* 공통 아이콘 */
+div#UxWrapper .goods:hover .IconPreview-v1,
+div#UxWrapper .goods:hover .IconPreview-v2 {
+	display:block;
+	position:absolute;
+	width:31px;
+	height:30px;
+	cursor:pointer;
+}
+/* 미리보기 31*30 size 아이콘 */
+div#UxWrapper .goods:hover .IconPreview-v1 {
+	bottom:0; right:0;
+	background:url('//simage.lottemart.com/images/front/home/btn-m-view.gif') no-repeat 0 0;
+}
+/* 장바구니 31*30 size 아이콘 */
+div#UxWrapper .goods:hover .IconPreview-v2 {
+	bottom:0; right:31px;
+	background:url('//simage.lottemart.com/images/front/home/btn-m-cart.gif') no-repeat 0 0;
+}
+/* 미리보기 24*23 size 아이콘 */
+div#UxWrapper .goods:hover .IconPreview-v3,
+div#UxWrapper .goods:hover .IconPreview-v6,
+div#UxWrapper .prr:hover .IconPreview-v3,
+div#UxWrapper .prr:hover .IconPreview-v6 {
+	display:block;
+	position:absolute;
+	bottom:0; right:0;
+	width:24px;
+	height:23px;
+	cursor:pointer;
+}
+div#UxWrapper .goods:hover .IconPreview-v3,
+div#UxWrapper .prr:hover .IconPreview-v3 {
+	background:url('//simage.lottemart.com/images/front/home/btn-m-view-s.gif') no-repeat 0 0;
+}
+div#UxWrapper .goods:hover .IconPreview-v6,
+div#UxWrapper .prr:hover .IconPreview-v6 {
+	right:24px;
+	background:url('//simage.lottemart.com/images/front/home/btn-m-cart_24_23.gif') no-repeat 0 0;
+}
+/* 증정 42*42 size 아이콘 */
+div#UxWrapper .IconPreview-v4,
+div#UxWrapper .IconPreview-v5 {
+	display:block;
+	position:absolute;
+	top:5px; left:5px;
+	width:42px;
+	height:42px;
+	border:0;
+	cursor:pointer;
+	/* background:url('//simage.lottemart.com/images/front/common/flag-freebie_42_42.png') no-repeat 0 0;2012-10-16 삭제 */
+}
+div#UxWrapper .IconPreview-v5 {left:47px;}
+div#UxWrapper a .IconPreview-v1 em,
+div#UxWrapper a .IconPreview-v2 em,
+div#UxWrapper a .IconPreview-v3 em,
+div#UxWrapper a .IconPreview-v4 em,
+div#UxWrapper a .IconPreview-v5 em,
+div#UxWrapper a .IconPreview-v6 em {
+	display:block;
+	visibility:hidden;
+	width:0;
+	height:0;
+	font-size:0;
+	line-height:0;
+}
+div#UxWrapper div.goods-view-list ul li div.content ul.diss-list2 li:hover .IconPreview-v3 {
+	display:block;
+	position:absolute;
+	bottom:0; right:0;
+	width:24px;
+	height:23px;
+	background:url('//simage.lottemart.com/images/front/home/btn-m-view-s.gif') no-repeat 0 0;
+	cursor:pointer;
+}
+
+/* 타임세일_layer */
+.time_layer	{position:absolute; top:206px; left:542px; z-index:500;}
+.time_layer	.time_sale	{position:absolute; left:0; top:0; width:142px; height:162px; z-index:100;}
+.time_layer	.bg_ts	{position:absolute; left:0; top:0; width:142px; height:162px; z-index:-1; background:url('/images/front/common/bg-timesale.png') no-repeat left top; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/front/common/bg-timesale.png',sizingMethod='crop')}
+.time_layer	.time_sale	.img_sale	{position:absolute; left:9px; top:12px;}
+.time_layer	.time_sale	.img_sale	a	{text-decoration:none}
+.time_layer	.time_sale	.img_sale	img	{vertical-align:middle}
+.time_layer	.time_sale	.img_sale	.hotkey	{display:block; padding:5px 5px 0 0; font:11px/11px Dotum; color:#fff; text-align:center;}
+.time_layer	.time_sale	.btn_close	{position:absolute; z-index:100; bottom:0; left:7px;}
+
+/* b2e */
+.head_b2e	h1	{position:absolute; top:30px !important;}
+.head_b2e	h1	a	img	{margin-right:3px;}
+.head_b2e	#h_search	{position:absolute; left:395px !important;}
+
+#b2e_planBody	{background:url("//simage.lottemart.com/images/front/common/bg-gnb-b2e.gif") repeat-x scroll 0 0 #FFFFFF !important;}
+#b2e_planBody	#head	{height:108px;}
+#b2e_planBody	#head	#mymenu	.mym	{position:absolute; right:0; top:2px;}
+#b2e_planBody	#UxWrapper	{width:960px; background-image:none;}
+#b2e_planBody	#UxControl	{width:950px;}
+#b2e_planBody	#footer	{width:960px; margin:50px 0 0 0;}
+
+/* b2e 기획몰 login */
+#b2e_planBody	.login_wrap	{position:absolute; top:35px; right:0; overflow:hidden; width:397px; height:46px; background:url('/images/front/shop/b2e-box-mypoint-r.gif') no-repeat right 0; padding-right:3px;}
+#b2e_planBody	.login_wrap2	{position:absolute; top:35px; right:0; overflow:hidden; width:200px; height:46px; background:url('/images/front/shop/b2e-box-mypoint-r.gif') no-repeat right 0; padding-right:3px;}
+#b2e_planBody	.login_state	{height:29px; background:url('/images/front/shop/b2e-box-mypoint-l.gif') no-repeat 0 0; padding:17px 19px 0 22px;}
+#b2e_planBody	.login_state	.login_txt	{float:left; margin-right:20px; font:11px/13px Dotum; color:#999; word-wrap:break-word; word-break:break-all;}
+#b2e_planBody	.login_state	.login_txt	strong	{font:bold 12px Dotum; color:#62b8e5;}
+#b2e_planBody	.login_state	.q_mypoint	{float:right; width:131px; letter-spacing:0; font:bold 11px/13px Dotum;}
+#b2e_planBody	.login_state	.q_mypoint	.point	{float:left; background:url('/images/front/shop/ico-point.gif') no-repeat 0 1px; padding-left:20px;}
+#b2e_planBody	.login_state	.q_mypoint	.coupon	{float:left; background:url('/images/front/shop/ico-mileage.gif') no-repeat 0 1px; padding-left:40px;}
+
+/* b2e 기업로고처리 */
+div#UxHeader div.b2elogo {
+	z-index:2;
+	position:absolute;
+	top:60px; right:0;
+	font-size:0;
+	line-height:0;
+}

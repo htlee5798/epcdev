@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="NEDMPRO0300">
+	<typeAlias alias="nEDMPRO0300VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0300VO" />		<!-- 행사정보 등록내역 현황 조회 VO -->
+
+	<!-- 행사정보 등록내역 조회 Map -->	
+	<resultMap id="selectProEventAppMap"		class="nEDMPRO0300VO">
+		<result column="REQ_OFRCD"				property="reqOfrcd" 			/>	<!-- 파트너사행사번호 -->
+		<result column="LIFNR"					property="lifnr" 				/>	<!-- 파트너사코드 -->
+		<result column="LIFNR_TXT"				property="lifnrTxt" 			/>	<!-- 파트너사코드 -->
+		<result column="VKORG"					property="vkorg" 				/>	<!-- 계열사 -->
+		<result column="VKORG_TXT"				property="vkorgTxt" 			/>	<!-- 계열사명 -->
+		<result column="REQ_PUR_TXT"			property="reqPurTxt" 			/>  <!-- 행사목적 -->
+		<result column="REQ_OFR_TXT"			property="reqOfrTxt" 			/>  <!-- 행사명 -->
+		<result column="ZDEAL"					property="zdeal" 				/>  <!-- 거래형태 -->
+		<result column="ZDEAL_TXT"				property="zdealTxt" 			/>  <!-- 거래형태명 -->
+		<result column="REQ_TYPE"				property="reqType" 				/>  <!-- 행사유형 -->
+		<result column="REQ_TYPE_TXT"			property="reqTypeTxt" 			/>  <!-- 행사유형명 -->
+		<result column="REQ_DISC"				property="reqDisc" 				/>  <!-- 할인유형 -->
+		<result column="REQ_DISC_TXT"			property="reqDiscTxt" 			/>  <!-- 할인유형명 -->
+		<result column="COST_TYPE"				property="costType" 			/>  <!-- 비용적용방식 -->
+		<result column="COST_TYPE_TXT"			property="costTypeTxt" 			/>  <!-- 비용적용방식명 -->
+		<result column="REQ_CONTYP"				property="reqContyp" 			/>  <!-- 판촉요청합의서 -->
+		<result column="REQ_CONTYP_TXT"			property="reqContypTxt" 		/>  <!-- 판촉요청합의서명 -->
+		<result column="HD_VEN_RATE"			property="hdVenRate" 			/>  <!-- 파트너사분담율 -->
+		<result column="OFR_COST"				property="ofrCost" 				/>  <!-- 예상판촉비용 -->
+		<result column="OFSDT"					property="ofsdt" 				/>  <!-- 행사시작일 -->
+		<result column="OFEDT"					property="ofedt" 				/>  <!-- 행사종료일 -->
+		<result column="PRSDT"					property="prsdt" 				/>  <!-- 발주시작일 -->
+		<result column="PREDT"					property="predt" 				/>  <!-- 발주종료일 -->
+		<result column="WERKS_TYPE"				property="werksType" 			/>  <!-- 대상점포 -->
+		<result column="WERKS_TYPE_TXT"			property="werksTypeTxt" 		/>  <!-- 대상점포명 -->
+		<result column="WERKS_ETC_TXT"			property="werksEtcTxt" 			/>  <!-- 기타점포명 -->
+		<result column="REQ_OFR_DESC"			property="reqOfrDesc" 			/>  <!-- 행사세부요청사항 -->
+		<result column="DOC_NO1"				property="docNo1" 				/>  <!-- 전자계약번호 -->
+		<result column="DOC_NO2"				property="docNo2" 				/>  <!-- 전자계약번호 -->
+		<result column="DOC_NO3"				property="docNo3" 				/>  <!-- 전자계약번호 -->
+		<result column="WAERS"					property="waers" 				/>  <!-- 통화 -->
+		<result column="APPR_STATUS"			property="apprStatus" 			/>  <!-- 승인여부 -->
+		<result column="DOC_TYPE"				property="docType" 				/>  <!-- 서식유형 -->
+		<result column="DEL_YN"					property="delYn" 				/>  <!-- 삭제여부 -->
+		<result column="REG_DATE"				property="regDate" 				/>  <!-- 등록일시 -->
+		<result column="REG_ID"					property="regId" 				/>  <!-- 등록자 -->
+		<result column="ITME_PROD_CNT"			property="itmeProdCnt" 			/>  <!-- 상품수 -->
+		<result column="ITME_APPR_PROD_CNT"		property="itmeApprProdCnt" 		/>  <!-- 승인 상품수 -->
+	</resultMap>
+
+    <!-- 행사정보 등록내역 카운터 조회 -->
+    <select id="selectProEventAppListCount" parameterClass="nEDMPRO0300VO" resultClass="Integer" >
+    /* NEDMPRO0300.selectProEventAppListCount */
+	    
+	    SELECT COUNT(*)
+	    FROM(
+	    	SELECT 
+				REQ_OFRCD
+				FROM TPC_PROD_EVNT
+				WHERE 1=1
+				<isEqual property="vkorg" compareValue="KR02">
+				/* 마트 */
+				</isEqual>
+				<isEqual property="vkorg" compareValue="KR04">
+				/* 슈퍼 */
+				</isEqual>
+	    )a
+    </select>
+    
+    <!-- 행사정보 등록내역 조회 -->
+    <select id="selectProEventAppList" parameterClass="nEDMPRO0300VO" resultMap="selectProEventAppMap" >
+    /* NEDMPRO0300.selectProEventAppList */
+	    
+	    SELECT                                     
+			  A.REQ_OFRCD				 /* 파트너사행사번호 	*/ 
+			, A.LIFNR                    /* 파트너사코드 	*/  
+			, A.LIFNR_TXT                /* 파트너사명	   	*/
+			, A.VKORG                    /* 계열사      	*/
+			, A.VKORG_TXT                /* 계열사명     	*/
+			, A.REQ_PUR_TXT              /* 행사목적     	*/
+			, A.REQ_OFR_TXT              /* 행사요청명    	*/
+			, A.ZDEAL                    /* 거래형태     	*/
+			, A.ZDEAL_TXT                /* 거래형태명    	*/
+			, A.REQ_TYPE                 /* 행사유형     	*/
+			, A.REQ_TYPE_TXT             /* 행사유형명    	*/
+			, A.REQ_DISC                 /* 할인유형     	*/
+			, A.REQ_DISC_TXT             /* 할인유형명    	*/
+			, A.COST_TYPE                /* 비용적용방식   	*/
+			, A.COST_TYPE_TXT            /* 비용적용방식명  	*/
+			, A.REQ_CONTYP               /* 판촉요청합의서  	*/
+			, A.REQ_CONTYP_TXT           /* 판촉요청합의서명 	*/
+			, A.HD_VEN_RATE              /* 파트너사분담율  	*/
+			, A.OFR_COST                 /* 예상판촉비용   	*/
+			, TO_CHAR(CAST(A.OFSDT AS TIMESTAMP), 'YYYY-MM-DD') AS OFSDT	/* 행사시작일  */
+			, TO_CHAR(CAST(A.OFEDT AS TIMESTAMP), 'YYYY-MM-DD') AS OFEDT	/* 행사종료일  */
+			, TO_CHAR(CAST(A.PRSDT AS TIMESTAMP), 'YYYY-MM-DD') AS PRSDT	/* 발주시작일  */
+			, TO_CHAR(CAST(A.PREDT AS TIMESTAMP), 'YYYY-MM-DD') AS PREDT	/* 발주종료일  */
+			, A.WERKS_TYPE               /* 대상점포     	*/
+			, A.WERKS_TYPE_TXT           /* 대상점포명    	*/
+			, A.WERKS_ETC_TXT            /* 기타점포명    	*/
+			, A.REQ_OFR_DESC             /* 행사세부요청사항 	*/
+			, A.DOC_NO1                  /* 전자계약번호   	*/
+			, A.DOC_NO2                  /* 전자계약번호   	*/
+			, A.DOC_NO3                  /* 전자계약번호   	*/
+			, A.WAERS                    /* 통화       	*/
+			, A.DOC_TYPE                 /* 서식유형     	*/
+			, A.DEL_YN				   	 /* 삭제여부		*/
+			, CASE WHEN A.APPR_STATUS = '01' THEN '요청대기'
+				   WHEN A.APPR_STATUS = '02' THEN '요청완료'
+				   WHEN A.APPR_STATUS = '03' THEN 'MD승인'
+				   WHEN A.APPR_STATUS = '04' THEN '요청반려'
+				   WHEN A.APPR_STATUS = '05' THEN '전자결재진행'
+				   WHEN A.APPR_STATUS = '06' THEN '행사반려'
+				   WHEN A.APPR_STATUS = '07' THEN '행사확정'
+				   ELSE '' END AS APPR_STATUS   /* 진행상태	*/
+			, (SELECT COUNT(*) FROM TPC_PROD_EVNT_ITEM B WHERE A.REQ_OFRCD = B.REQ_OFRCD ) AS ITME_PROD_CNT
+			, (SELECT COUNT(*) FROM TPC_PROD_EVNT_ITEM B WHERE A.REQ_OFRCD = B.REQ_OFRCD AND APPR_STATUS = 'Y' ) AS ITME_APPR_PROD_CNT
+			, TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS  REG_DATE	/* 등록일시*/
+			, A.REG_ID                   /* 등록자		*/
+			FROM TPC_PROD_EVNT A
+			--LEFT JOIN IF_RETURN B ON A.CONT_CODE AND B.CONT_CODE
+			WHERE A.DEL_YN = 'N'
+			<isNotEqual property="vkorg" compareValue="ALL">
+			AND A.VKORG = #vkorg#
+			</isNotEqual>
+			<isNotEqual property="reqType" compareValue="ALL">
+			AND A.REQ_TYPE = #reqType#
+			</isNotEqual>
+			<isNotEqual property="reqDisc" compareValue="ALL">
+			AND A.REQ_DISC = #reqDisc#
+			</isNotEqual>
+			<isNotEqual property="apprStatus" compareValue="ALL">
+			AND A.APPR_STATUS = #apprStatus#
+			</isNotEqual>
+			<isNotEqual property="reqOfrTxt" compareValue="">
+			AND A.REQ_OFR_TXT LIKE '%'|| #reqOfrTxt# ||'%'
+			</isNotEqual>
+			<isNotEqual property="lifnr" compareValue="">
+			AND A.LIFNR LIKE '%'|| #lifnr# ||'%'
+			</isNotEqual>
+			<isNotEqual property="lifnrTxt" compareValue="">
+			AND A.LIFNR_TXT LIKE '%'|| #lifnrTxt# ||'%'
+			</isNotEqual>
+			<!-- <isNotEqual property="ofsdt" compareValue="">
+			AND TO_CHAR(CAST(OFSDT as timestamp), 'YYYY-MM-DD') <![CDATA[>=]]> #ofsdt#
+			</isNotEqual> -->
+			<!-- <isNotEqual property="ofedt" compareValue="">
+			AND TO_CHAR(CAST(OFEDT as timestamp), 'YYYY-MM-DD') <![CDATA[<=]]> #ofedt#
+			</isNotEqual> -->
+			<isNotEqual property="ofedt" compareValue="">
+			AND TO_CHAR(CAST(A.OFEDT AS TIMESTAMP), 'YYYY-MM-DD') BETWEEN #ofsdt# AND #ofedt#
+			</isNotEqual>
+			<isNotEqual property="srchFromDt" compareValue="">
+			AND TO_CHAR(A.REG_DATE,'YYYY-MM-DD') BETWEEN #srchFromDt# AND #srchEndDt#
+			</isNotEqual>
+			ORDER BY A.REG_DATE DESC, A.REQ_OFRCD
+    </select>
+
+
+</sqlMap>	

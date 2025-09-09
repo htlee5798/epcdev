@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<licenseNumber>9503-0101-160009</licenseNumber>
+	<domainKey>a85c31472d384ce0d36d846d414e1c26be2d7792179fd7276cbc98f0e72d063a994dd2f7c56da157cd338449b11b32a8113986b327ccc0f3bacdd45374547d96e49fb63a8d3fa0db74d13ef76520f3a0c7afcf64e8e8257bb670d1cbd75a2d4cbf6ae541ac4887f25b3bfb983240d82d3c2a483c797cd8c80fe3aee4f23032fcfbf2a5a4a5ada4e6269b14e8fb89767811a36020700c3b0d7d43909aaa9a6ddc48223ff7802a6ec3b719215bbd2f39a2127771be306fb446be7e26b1c97b1f9155433a6430b524b9a64a13306b8a786db69fa1b7c37bf5db4e3c21748ae127fff1f33e517ea4a723fe1037f257210fbc189957914b99bb6b96845722f2bf0d765eb8cd3bcbc89ba4883da1fec7bae03c8af2cd082f6b8a649b8ba1f3531d923761112cd6b397a17216fafb314a2da449</domainKey>
+	<maxImageNum>20</maxImageNum>
+	<maxImageWidth>1600</maxImageWidth>
+	<maxImageHeight>1600</maxImageHeight>
+	<maxImageBytes>10485760</maxImageBytes>
+	<checkImageTitle>off</checkImageTitle>
+	<locale>kor</locale>
+	<services>
+		<service>
+			<name>Editor</name>
+			<iconURL></iconURL>
+			<url>com/namo/Editor.swf</url>
+		</service>
+		<service>
+			<name>Slideshow</name>
+			<iconURL>assets/images/slideshow/slideshow_icon.png</iconURL>
+			<url>com/namo/Slideshow.swf</url>
+		</service>
+	</services>
+</config>

@@ -1,0 +1,434 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: mymart.css
+ * description	: 
+ * date			: 2011.09.27
+************************************************************************/
+
+@import url(layout.css);
+
+/* lnb */
+#container_v2	.conLeft	h2	{width:130px; height:30px; background:url('/images/front/mymart/bg-lnb-mymart.gif') no-repeat 0 0; padding:15px 0 0 20px;}
+#container_v2	.conLeft	ul	{width:148px; border-right:1px solid #cce8f6; border-left:1px solid #cce8f6;}
+#container_v2	.conLeft	ul	li	.depth1	{padding:14px 0 13px 19px; .padding:14px 0 7px 19px; border-bottom:1px solid #cce8f6; font-size:0; line-height:0;}
+#container_v2	.conLeft	ul	li	ul	{background:#fafdfe; padding:9px 0; border:0; border-bottom:1px solid #cce8f6;}
+#container_v2	.conLeft	ul	li	ul	li	{padding:3px 0 4px 19px; border:0; color:#808080; line-height:18px;}
+#container_v2	.conLeft	ul	li	ul	li	a	{color:#808080;}
+#container_v2	.conLeft	ul	li	ul	li	a:hover	{text-decoration:none; color:#48a5d5;}
+#container_v2	.conLeft	ul	li	ul	li.on	{color:#48a5d5;}
+#container_v2	.conLeft	ul	li	ul	li.on	a	{color:#48a5d5;}
+#container_v2	.conLeft	ul	li	ul	li.on	a:hover	{text-decoration:none; color:#48a5d5;}
+#container_v2	.conLeft	.bar	{margin:0 5px 0 6px;}
+
+/* 배송 진행상황 */
+.step_wrap	{margin-top:19px; _margin-top:17px;}
+
+/* 나의 쇼핑 메모 */
+.tb_shopping_memo	{margin-top:7px;}
+.tb_shopping_memo	.list_memo_wrap	{width:730px; padding:0 20px 20px; background:url("/images/front/mymart/bg-shopping-memo.gif") no-repeat 0 bottom;}
+/*.tb_shopping_memo	.list_memo	{}
+.tb_shopping_memo	.list_memo	td	{padding:12px 0 16px; _padding:15px 0 14px; border-bottom:1px solid #c8e5f5; text-align:left;}
+.tb_shopping_memo	.list_memo	td.td_date	p	{padding-left:10px;}
+.tb_shopping_memo	.list_memo	td.td_date	p	{padding-left:20px;}
+.tb_shopping_memo	.list_memo	td.td_btn	{padding:9px 0 9px; _padding:8px 0 8px; text-align:right;}
+.tb_shopping_memo	.list_memo	.on	td	{background:#fafdfe url("/images/front/mymart/bg-dot-sky.gif") repeat-x 0 top;}*/
+
+/* 상품 갯수 안내 문구 */
+.summary_wrap	{z-index:10; height:32px;}
+.summary_wrap	p	{font-size:18px; color:#333; *line-height:16px;}
+.summary_wrap	p	strong	{color:#ee1c24;}
+
+/* 탭-마이마트 */
+.tab_mymart	{width:100%; height:44px; margin-top:40px; background:url("/images/front/common/bg-tab-mymart.gif") repeat-x 0 bottom;}
+.tab_mymart	li	{float:left; width:193px; height:100%; background:url("/images/front/common/bg-tab-mmb-off.gif") no-repeat right 0; color:#666; font-size:14px; line-height:14px; font-weight:bold; text-align:center;}
+.tab_mymart	li	p.tit_li	{background:url("/images/front/common/bg-tab-mmc-off.gif") no-repeat left 0;}
+.tab_mymart	li	p.tit_li	a	{display:block; height:30px; _height:29px; padding-top:14px; _padding-top:15px; color:#666;}
+.tab_mymart	li	p.tit_li	a:hover,	.tab_mymart	li	p.tit_li	a:active	{color:#666; text-decoration:none;}
+.tab_mymart	li	p.tit_li	a	span	{font-weight:normal;}
+.tab_mymart	li.on	{background:url("/images/front/common/bg-tab-mmb-on.gif") no-repeat right 0;}
+.tab_mymart	li.on	p.tit_li	{background:url("/images/front/common/bg-tab-mmc-on.gif") no-repeat left 0;}
+.tab_mymart	li.on	p.tit_li	a	{color:#2484c6;}
+.tab_mymart	li.on	p.tit_li	a:hover,	.tab_mymart	li.on	p.tit_li	a:active	{color:#2484c6;}
+
+/* 기간별 조회 */
+.check_date	{position:relative; height:90px; border-top:2px solid #c7c7c7; border-bottom:1px solid #e6e6e6;}
+.check_date	.chk_tit	{position:relative; width:93px; height:90px; border-right:1px solid #e6e6e6; background:#f5f5f5; font-weight:bold; text-align:center;}
+.check_date	.chk_tit	p	{padding-top:37px; _padding-top:39px;}
+.check_date	.chk_cont	{}
+.check_date	.list_d	{position:absolute; top:13px; left:114px; height:24px;}
+.check_date	.list_d	li	{float:left; width:53px; height:24px; margin-right:5px; overflow:hidden; cursor:pointer;}
+.check_date	.list_d	li.on	img	{margin-top:-24px;}
+.check_date	.bx_date	{position:absolute; top:50px; left:114px; width:656px; height:30px;}
+.check_date	.bx_date	.t_ymd	{margin-right:10px;}
+.check_date	.bx_date	img	{vertical-align:middle; *vertical-align:-9px}
+
+
+
+
+/* BOX Style */
+/* 주의사항 */
+
+/* w:780 box */
+.box_w_770 .box_gray_lb	{padding:21px 10px 21px 21px;}
+.box_w_770 .box_blue_lb	{padding:8px 10px 9px;}
+
+.required_list	{position:relative; margin-bottom:-8px;}
+.required_list	.h_tit	{padding:0 0 14px 23px; background:url('/images/front/common/bul-required.gif') no-repeat 0 1px; font-weight:bold; color:#333;}
+.required_list	li	{padding:0 0 8px 23px; background:url('/images/front/common/bul-circle4.gif') no-repeat 8px 6px; line-height:18px;}
+.required_list	.bt_detail	{margin:-10px 10px 7px 0; font-size:0; line-height:0; text-align:right;}
+.tb_product_n	.ico_btn	{display:inline-block; margin-left:10px; vertical-align:middle;}
+
+.bx_mobile	{margin-top:19px; padding:12px 0 12px 0; _padding:14px 0 9px 0; background-color:#fafafa; border-top:1px solid #dedede; }
+.bx_mobile	h3	{float:left; width:146px; padding:0 0 0 20px; color:#2484c6; font-size:16px; letter-spacing:-1px; line-height:18px;}
+.bx_mobile	.bx_m_cont	{float:left;}
+.bx_mobile	.bx_m_cont	p	{line-height:18px;}
+.bx_mobile	.bx_m_cont	p.btn	{margin-top:12px; _margin-top:10px;}
+
+.bx_mileage	{position:relative; width:100%; margin-top:19px; border-bottom:2px solid #2484c6; background:url("/images/front/mymart/bg-bx-mileage.gif") repeat-y 0 0;}
+.bx_mileage	.cap {background:url("/images/front/mymart/bg-bx-mileage-cap.gif") no-repeat 0 0;}
+.bx_mileage	.cap	.bg_img	{position:absolute; top:0; left:18px; width:150px; height:98px;}
+.bx_mileage	.cap	.type_01	{background:url("/images/front/mymart/bg-mile-01.gif") no-repeat 0 0;} /* 마일리지 */
+.bx_mileage	.cap	.type_02	{background:url("/images/front/mymart/bg-mile-02.gif") no-repeat 0 0;} /* 예치금 */
+.bx_mileage	.cap	.type_03	{background:url("/images/front/mymart/bg-mile-03.gif") no-repeat 0 0;} /* 상품권 전환금 */
+.bx_mileage	.cap	.type_04	{background:url("/images/front/mymart/bg-mile-04.gif") no-repeat 0 0;} /* 롯데멤버스 포인트 */
+.bx_mileage	.cap	.type_05	{background:url("/images/front/mymart/bg-mile-05.gif") no-repeat 0 0;} /* 간편결제 */
+.bx_mileage	.show_num	{height:76px; padding:22px 0 0 200px;}
+.bx_mileage	.show_num	li	{float:left; width:205px;}
+.bx_mileage	.show_num	p	{line-height:16px;}
+.bx_mileage	.show_num	p.num	{margin-top:4px; color:#ee1c24;}
+.bx_mileage	.show_num	.t_roman	{font-size:32px; line-height:32px;}
+.bx_mileage	.show_txt	{height:82px; padding:16px 0 0 200px;}
+.bx_mileage	.btn_mile	{position:absolute; bottom:10px; right:10px;}
+.bx_mileage	.btn_mile	p	{margin-top:3px;}
+
+
+/* box_blue */
+.box_blue_lt	{width:768px; background:url('/images/front/common/box-blue-lt.gif') no-repeat 0 0 #ebf8ff;}
+.box_blue_rb	{background:url('/images/front/common/box-blue-rb.gif') no-repeat right bottom;}
+.box_blue_rt	{background:url('/images/front/common/box-blue-rt.gif') no-repeat right 0;}
+.box_blue_lb	{background:url('/images/front/common/box-blue-lb.gif') no-repeat 0 bottom; letter-spacing:-1px;}
+
+/* 기본 배송지 */
+.dinfo_list	{float:left;}
+.dinfo_list	li	{float:left; padding:1px 0 5px 22px; line-height:16px;}
+.dinfo_list	li.dest		{margin-right:5px; background:url('/images/front/mymart/ico-company.gif') no-repeat 0 0;}
+.dinfo_list	li.name		{margin-right:5px; background:url('/images/front/mymart/ico-name.gif') no-repeat 0 0;}
+.dinfo_list	li.d_addr	{width:345px; _width:325px; background:url('/images/front/mymart/ico-delivery-address.gif') no-repeat 0 0;}
+
+.destination	{position:relative;}
+.destination	p.tit	{float:left; padding:5px 10px 0 5px;}
+.destination	.dinfo_list	{margin-top:3px;}
+.destination	.btn_white	{position:absolute; top:1px; right:0;}
+.destination	.country_code	{background:url('/images/front/common/line-mymenu.gif') no-repeat right center;margin-right:5px;padding-right:7px;}
+.destination	.en	li.d_addr	{width:445px; _width:425px;}
+
+.tf_info	{margin-left:4px; color:#999; font-size:11px; font-family:dotum; letter-spacing:-1px;}
+
+/*memo*/
+.list_memo	{width:100%;}
+.list_memo	ul	{}
+.list_memo	li	{width:100%; padding-bottom:1px; background:url('/images/front/mymart/line-mymart-question.gif') repeat-x 0 bottom;}
+.list_memo	li	.list_t_wrap	{position:relative; width:730px; font-weight:normal; color:#666; line-height:18px;}
+.list_memo	li	.list_t_wrap	.date	{position:absolute; left:12px; top:15px; width:85px;}
+.list_memo	li	.list_t_wrap	.question	{display:block; width:477px; padding:15px 0 11px 132px; cursor:pointer}
+.list_memo	li	.list_t_wrap	.btn_wrap	{position:absolute; right:0; top:9px; width:90px; text-align:center;}
+.list_memo	li.on	.list_t_wrap	.question	{font-weight:bold; color:#666;}
+.list_memo	li.nodata	{padding:13px 0 11px 0; font-weight:normal; color:#666; line-height:18px; text-align:center;}/* 데이터가 없을경우 */
+.list_memo	li	.view	{display:none; position:relative; width:486px; padding:14px 109px 11px 135px; background:url('/images/front/mymart/line-memo-view.gif') repeat-x 0 0 #fafdfe;  line-height:18px;}
+.list_memo	li.on	.view	{display:block}
+
+/* my혜택 - 쿠폰 */
+.bt_go_dif	{float:right; margin-top:-19px;}
+.coupon_regist	{position:relative; width:770px; height:72px; margin-top:21px; background:url('/images/front/mymart/bg-coupon-number.gif') no-repeat 0 0;}
+.coupon_regist	input	{position:absolute; top:27px; left:186px; width:407px; letter-spacing:-1px;}
+.coupon_regist	span.btn_gray	{position:absolute; top:20px; right:106px;}
+.summary_wrap	{position:relative; height:35px; margin-top:33px;}
+.summary_wrap	p	{font-size:18px; color:#333; line-height:20px;}
+.summary_wrap	p	strong	{font-weight:normal; color:#ee1c24;}
+.summary_wrap	p	em	{font-family:"CoHead"; font-size:20px; color:#ee1c24;}
+.bt_detail_coupon	{margin:0 10px 0 0; font-size:0; line-height:0; text-align:right;}
+.sel_box_right	{position:absolute; top:-5px; right:0;}
+
+/* my혜택 - 이벤트 */
+.list_event	{width:100%; border-top:1px solid #c7c7c7; overflow:hidden;}
+.list_event	ul	{width:100%; overflow:hidden; zoom:1;}
+.list_event	li	{position:relative; float:left; width:770px; padding:20px 0 18px; border-bottom:1px solid #e6e6e6;}
+.list_event	li	.img	{float:left;padding-left:15px;}
+.list_event	li	.img	img	{border:1px solid #e6e6e6;}
+.list_event	li	.ev_wrap	{float:left; width:435px; margin-top:-3px; padding-left:30px;}
+.list_event	li	.ev_wrap	p	{float:left; width:100%; height:19px;}
+.list_event	li	.ev_wrap	.tit	{height:50px; font:bold 15px malgun, "Malgun Gothic"; color:#333;}
+.list_event	li	.ev_wrap	.tit	a,	.list_event	li	.ev_wrap	.tit	a:hover,	.list_event	li	.ev_wrap	.tit	a:active	{color:#333;}
+.list_event	li	.ev_wrap	.txt	{height:32px; padding-bottom:10px; color:#666;}
+.list_event	li	.ev_wrap	.period	{font:13px/13px malgun, "Malgun Gothic"; color:#666; letter-spacing:0;}
+.list_event	li	.ev_wrap	.announce	{font:13px/13px malgun, "Malgun Gothic"; color:#666; letter-spacing:0;}
+.list_event	li	.ev_wrap	.join	{font:13px/13px malgun, "Malgun Gothic"; color:#666; letter-spacing:0;}
+.list_event	li	.ev_wrap	.th	{margin-right:10px;}
+.list_event	li	.ev_wrap	.th	img	{vertical-align:middle}
+.list_event	li	.btn_txt_gray	{position:absolute; right:15px; bottom:18px; font:11px/11px 돋움; color:#999;} /* 바로가기 버튼 */
+.list_event	li.nodata	{width:100%; height:24px; padding:59px 0 55px; color:#999; text-align:center;}
+.list_event	li.nodata2	{width:100%; padding:34px 0 37px; text-align:center;}
+.list_event	li.nodata2	p	{line-height:18px;}
+.list_event	li.nodata2	.ts	{margin-bottom:2px; color:#333; font-size:15px;}
+.list_event	li.nodata2	.btn	{margin-top:8px;}
+
+/* my혜택 - 이벤트 상세 */
+.btns_lr	{position:relative; width:100%;}
+.btns_lr	.right	{position:absolute; top:0; right:0;}
+.event_sticker	{width:770px;}
+/*
+.event_sticker	{padding:20px 0 20px 29px; width:741px; border-top:2px solid #2484c6; border-bottom:1px solid #2484c6; background:#fafdfe; overflow:hidden;}
+.event_sticker	.cont	{float:left; width:431px;}
+.event_sticker	.cont	strong	{display:block; margin-bottom:24px; *margin-bottom:21px; font:bold 35px/38px malgun, "Malgun Gothic"; color:#2484c6;}
+.event_sticker	.thum	{float:right;}
+.event_sticker	.point_txt	{margin-bottom:15px; color:#999; line-height:16px;}
+.event_sticker	.point_txt	span	{color:#404040}
+.event_sticker	dl	{width:431px; overflow:hidden; zoom:1;}
+.event_sticker	dt	{float:left; width:100px; padding-bottom:2px; font-size:0; line-height:0;}
+.event_sticker	dd	{float:right; width:330px; padding-bottom:2px; line-height:15px; letter-spacing:0;}
+.event_sticker	.t_block	{margin-top:-2px; letter-spacing:-1px; line-height:18px;}
+.event_sticker	.jui	{ margin-top:15px;}
+.event_sticker	li	{color:#999; font-size:11px; font-family:dotum; line-height:15px;}
+*/
+.free_gift_apply	{width:770px; padding-top:2px; background:url('/images/front/mymart/bg-sticker-top-line.gif') no-repeat 0 0;}
+.free_gift_apply	.top	{padding-bottom:5px; overflow:hidden; background:url('/images/front/mymart/bg-sticker-btm-line.gif') no-repeat 0 bottom;}
+.free_gift_apply	.cont	{margin-top:-1px; background:url('/images/front/mymart/bg-sticker-basic.gif') repeat-y 0 0; text-align:center;}
+.free_gift_apply	.cont div	{position:relative; float:left; width:154px; height:157px;}
+.free_gift_apply	.num	{position:absolute; top:12px; left:9px; font-family:"CoHead"; font-size:15px;}
+.free_gift_apply	.evt	.num	{ color:#2484c6;}
+.free_gift_apply	.sticker_on	{display:block; width:153px; height:106px; margin-top:23px; background:url('/images/front/mymart/sticker_on.png') no-repeat 0 0; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/front/mymart/sticker_on.png',sizingMethod='crop'); text-indent:-9999px;}
+.free_gift_apply	.evt	.sticker_on	{background:url('/images/front/mymart/sticker_evt_on.png') no-repeat 0 0; _background:none; _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/front/mymart/sticker_evt_on.png',sizingMethod='crop'); text-indent:0; text-align:center;}
+.free_gift_apply	.evt	.sticker_on	span	{display:inline-block; width:67px; padding-top:36px; line-height:17px; color:#fff; font-weight:bold; text-align:center;}	
+/* my혜택 - 이벤트 카피 */
+.event_copy	{margin:41px 0 16px; padding-left:8px; background:url('/images/front/common/bul-txt11-star.gif') no-repeat 0 4px; color:#333;}
+
+
+/* my_활동 - 상담문의 */
+.list_table	.thead	{width:100%; overflow:hidden; border-top:2px solid #c7c7c7; border-bottom:1px solid #c7c7c7; background-color: #F4F4F4;}
+.list_table	.thead	li	{float:left; margin-left:-1px; padding: 10px 0 13px; background:url("/images/front/common/line-th-basket.gif") no-repeat 0 0; font-size: 13px; font-weight: bold; line-height: 16px; text-align:center;}    
+.list_counsel	.thead	.num	{width:81px;}
+.list_counsel	.tbody	.num	{width:81px;}
+.list_counsel	.thead	.counsel	{width:111px;}
+.list_counsel	.tbody	.counsel	{width:111px;}
+.list_counsel	.thead	.subject	{width:377px;}
+.list_counsel	.tbody	.question	{width:362px; padding-left:15px;}
+.list_counsel	.thead	.reg_date	{width:101px;}
+.list_counsel	.tbody	.reg_date	{width:101px;}
+.list_counsel	.thead	.answer_yn	{width:100px;}
+.list_counsel	.tbody	.answer_yn	{width:100px;}
+.list_table	.list_t_wrap	{width:100%; overflow:hidden; line-height:15px;}
+.list_table	.list_t_wrap	span	{display:block; float:left; margin-left:-1px; text-align:center;}
+.list_counsel	.tbody	.list_t_wrap	span	span	{display:inline; float:none;}
+.list_table	.tbody	li	{border-bottom:1px solid #e6e6e6; padding:15px 0 14px; height:1%; text-align:center;}/*height:1% ie6,7 버그*/
+.list_table	.tbody	li.on	{padding-bottom:0;}
+.list_table	.tbody	li.on	.question	{font-weight:bold;}
+.list_counsel	.tbody	.list_t_wrap	.question	{text-align:left;}
+.list_table	.tbody	.view	{display:none; margin-top:13px; padding:0 30px; background:#fafdfe url("/images/front/common/bg-btm-dot.gif") repeat-x 0 top; text-align:left;}
+.list_table	.tbody	li.on	.view	{display:block;}
+.list_table	.tbody	.view	dt	{float:left; width:93px; line-height:20px; color:#333;}
+.list_table	.tbody	.view	dd	{float:left; padding-right:10px; width:522px; line-height:20px;}
+.list_table	.view_info	{ padding:11px 0 12px 0;}
+.list_table	.view_info	dl	{padding-left:82px;}
+.list_table	.view_question	{padding:11px 0 12px; background:url("/images/front/common/bg-btm-dot.gif") repeat-x 0 top;}
+.list_table	.view_question	dl	{ padding-left:82px; }
+.list_table	.tbody	.view_question	dt	{color:#f2362f;}
+.list_table	.tbody	.view_question	dd	{padding-right:10px; width:522px;}
+.list_table	.tbody	.date	{display:block; color:#999;}
+.list_table	.tbody	.nodata	{padding:17px 0  20px; text-align:center;}
+.list_table	.tbody	.nodata	p	{line-height:18px;}
+.list_table	.tbody	.nodata	.ts	{margin-bottom:2px; color:#333; font-size:15px;}
+.list_table	.tbody	.nodata	.btn	{margin-top:8px;}
+
+
+.list_event	.tbody	li.nodata	{color:#999; text-align:center;}
+
+
+/* my_활동 - 상품평 */
+.list_active_counsel	.thead	.num	{width:81px;}
+.list_active_counsel	.tbody	.num	{width:81px;}
+.list_active_counsel	.thead	.prod_name	{width:241px;}
+.list_active_counsel	.tbody	.prod_name	{width:231px; padding-left:10px;}
+.list_active_counsel	.thead	.subject	{width:267px;}
+.list_active_counsel	.tbody	.question	{width:252px; padding-left:15px;}
+.list_active_counsel	.thead	.reg_date	{width:91px;}
+.list_active_counsel	.tbody	.reg_date	{width:91px;}
+.list_active_counsel	.thead	.star	{width:90px;}
+.list_active_counsel	.tbody	.star	{width:90px;}
+.list_active_counsel	.tbody	.list_t_wrap	.question	{text-align:left;}
+.list_active_counsel	.tbody	.list_t_wrap	.prod_name	{text-align:left;}
+.list_active_counsel	.tbody	.prod_name	img	{ border:1px solid #e6e6e6;}
+.list_active_counsel	.prod_name	{width:100%; overflow:hidden;}
+.list_active_counsel	.prod_name	.thum	{float:left; display:block;}
+.list_active_counsel	.prod_name	.cont	{float:left; display:block; width:137px; padding-left:15px; text-align:left;}
+.list_active_counsel	.tbody	.view	dt	{float:left; width:93px; line-height:20px; color:#333;}
+.list_active_counsel	.view_info	dl	{padding-left:30px;}
+.list_active_counsel	.view_question	dl	{padding:11px 0 12px 0;}
+.list_active_counsel	.view_question	span	{color:#f2362f; font-weight:bold;}
+.list_active_counsel	.star_mark	{margin:17px 0 20px;}
+.list_active_counsel	.star_mark	span	{margin-right:15px; padding-right:15px; background:url("/images/front/product/bg-star-bar.gif") no-repeat right 2px;}
+.list_active_counsel	.star_mark	span.end	{margin-right:0; padding-right:0; background-image:none;}
+.list_active_counsel	.view_info	.cont	{line-height:20px;}
+.list_active_counsel	.view_question	.cont	{margin-top:4px; line-height:20px;}
+
+/* 마이마트 메인 */
+.bx_cinfo	{margin-top:8px;}
+.bx_cinfo	.customer	{position:relative; width:770px; height:170px; background:url("/images/front/mymart/bx-myinfo.gif") no-repeat 0 0;}
+.bx_cinfo	.customer	.level	{position:relative; float:left; width:210px; height:147px; padding:23px 0 0 0;}
+.bx_cinfo	.customer	.level	.logo_mem	{margin:-9px 0 19px 3px; padding-left:23px; border-bottom:1px solid #cce8f6; height:58px;}
+.bx_cinfo	.customer	.level	.txt1	{height:75px;}
+/* 등급별고객 */
+.bx_cinfo	.customer	.level	.mark0	{background:url("/images/front/mymart/ico-mark0.gif") no-repeat 20px 0;} /* 롯데멤버스가 아닌 고객 */
+.bx_cinfo	.customer	.level	.mark1	{background:url("/images/front/mymart/ico-mark1.gif") no-repeat 20px 0;} /* 일반 */
+.bx_cinfo	.customer	.level	.mark2	{background:url("/images/front/mymart/ico-mark2.gif") no-repeat 20px 0;} /* 우수 */
+.bx_cinfo	.customer	.level	.mark3	{background:url("/images/front/mymart/ico-mark3.gif") no-repeat 20px 0;} /* 최우수 */
+.bx_cinfo	.customer	.level	.mark4	{background:url("/images/front/mymart/ico-mark4.gif") no-repeat 20px 0;} /* 우수 */
+
+.bx_cinfo	.customer	.level	.txt1	p	{min-height:55px; padding-left:90px; font-size:16px; line-height:25px;word-wrap:break-word; word-break:break-all;}
+.bx_cinfo	.customer	.level	.txt1	strong	{color:#2484c6; font-size:18px; line-height:18px;}
+.bx_cinfo	.customer	.level	.txt2	{width:175px; margin-left:18px; padding-top:13px; background:url("/images/front/mymart/bg-dot-dsky.gif") repeat-x 0 0;}
+.bx_cinfo	.customer	.level	.txt2	p	{font-size:13px; color:#333; line-height:18px; letter-spacing:-1px;}
+.bx_cinfo	.customer	.level	.txt2	strong	{color:#62b8e5; font-size:14px;}
+.bx_cinfo	.customer	.level	.txt3	{margin-top:7px; padding-right:18px; text-align:right;}
+.bx_cinfo	.customer	.level	.sty1	.txt1	{height:70px;}
+.bx_cinfo	.customer	.benefit	{float:left; width:256px; height:148px; padding:22px 0 0 20px;}
+.bx_cinfo	.customer	.benefit	.tit	{position:relative;}
+.bx_cinfo	.customer	.benefit	.tit	h4	{font-size:14px; font-weight:bold; color:#333; line-height:14px;}
+.bx_cinfo	.customer	.benefit	.tit	.btn	{position:absolute; top:1px; right:20px;}
+.bx_cinfo	.customer	.benefit	dl	{margin-top:12px;}
+.bx_cinfo	.customer	.benefit	dt	{clear:both; float:left; width:120px; line-height:16px;}
+.bx_cinfo	.customer	.benefit	dd	{float:left; width:114px; margin-bottom:5px; color:#2484c6; line-height:16px; text-align:center;}
+.bx_cinfo	.customer	.benefit	dd	span	{float:left; display:inline-block; margin-right:2px; _margin-right:-3px; width:96px; text-align:right; font-size:15px; font-family:CoHead;}
+.bx_cinfo	.customer	.order	{float:left; width:264px; height:148px; padding:22px 0 0 20px;}
+.bx_cinfo	.customer	.order	.tit	{position:relative; margin-bottom:12px; }
+.bx_cinfo	.customer	.order	.tit	h4	{font-size:14px; font-weight:bold; color:#333; line-height:14px;}
+.bx_cinfo	.customer	.order	.tit	p	{margin-top:10px; color:#999; font:normal 11px dotum; line-height:16px;}
+.bx_cinfo	.customer	.order	dl	{float:left;}
+.bx_cinfo	.customer	.order	dt	{clear:both; float:left; line-height:16px;}
+.bx_cinfo	.customer	.order	dd	{float:left; margin-bottom:10px; color:#2484c6; line-height:16px; text-align:right;}
+.bx_cinfo	.customer	.order	dd	span	{font-size:15px; font-family:CoHead;}
+.bx_cinfo	.customer	.order	dl.list_1	{width:119px;background:url("/images/front/mymart/bg-order-bar.gif") no-repeat right 3px;}
+.bx_cinfo	.customer	.order	dl.list_1	dt	{width:60px;}
+.bx_cinfo	.customer	.order	dl.list_1	dd	{width:38px; padding-right:21px;}
+.bx_cinfo	.customer	.order	dl.list_2	{width:86px; margin-left:20px;}
+.bx_cinfo	.customer	.order	dl.list_2	dt	{width:30px;}
+.bx_cinfo	.customer	.order	dl.list_2	dd	{width:56px;}
+
+.bx_cinfo	.delivery	.d_info	{position:relative; width:750px; height:85px; padding-left:20px; background:url('/images/front/mymart/bx2-main-top.gif') no-repeat 0 0; overflow:hidden;}
+.bx_cinfo	.delivery	.d_info	.tit	{padding:27px 0 7px 0;}
+.bx_cinfo	.delivery	.d_info	.deliv_change	{position:absolute; bottom:12px; right:12px;}
+.bx_cinfo	.delivery	.d_info	.dest	{margin-right:11px; padding:1px 0 5px 25px; background:url('/images/front/mymart/ico-company.gif') no-repeat 0 0;}
+.bx_cinfo	.delivery	.d_info	.name	{margin-right:11px; padding:1px 0 5px 25px; background:url('/images/front/mymart/ico-name.gif') no-repeat 0 0;}
+.bx_cinfo	.delivery	.d_info	.d_addr	{width:380px; padding:1px 0 5px 25px; background:url('/images/front/mymart/ico-delivery-address.gif') no-repeat 0 0;}
+.bx_cinfo	.delivery	.d_info2	{position:relative; width:750px; height:69px; padding-left:20px; background:url('/images/front/mymart/bx2-main-btm.gif') no-repeat 0 0; overflow:hidden;}
+.bx_cinfo	.delivery	.place	{position:relative; float:left; width:366px; height:69px;}
+.bx_cinfo	.delivery	.d_info2	.tit	{margin:15px 0 8px; font-size:14px; font-weight:bold; color:#333; line-height:14px;}
+.bx_cinfo	.delivery	.place	.cont	{width:260px;}
+.bx_cinfo	.delivery	.time	{float:left; width:364px; padding-left:20px;}
+.bx_cinfo	.delivery	.company_info,
+.bx_cinfo	.delivery	.deliv_time	{position:absolute; bottom:12px; right:11px;}
+
+.tb_basket	td.td_photo	.photo_wrap	.photo	{border:1px solid #e6e6e6;}
+
+
+/* 20120518 추가 */
+.td_btn	 img	{vertical-align:middle; *vertical-align:-9px}
+
+
+/* 2012-12-07 추가 : 마이마트 인덱스 "나의 단계 보기" BTN 추가 */
+.mycart_index_v1 .customer .benefit dd a {color:#2484C6;}
+.mycart_index_v1 .customer .level .txt2 div.search_mylevel{position:absolute; right:11px; bottom:9px;}
+.mycart_index_v1 .customer .level .txt2 {padding-top: 6px;}
+.mycart_index_v1 .customer .level .txt1 {height: 65px;}
+.mycart_index_v1 .customer .level {padding: 20px 0 0 0;}
+
+/* 2013-01-14 My Mart */
+div.CounselBtmbx {width:770px; margin:40px 0 0; padding:0 0 15px; background:url('//simage.lottemart.com/images/front/mycustomer/bg_counsel_box_btm02.gif') no-repeat 0 100%;}
+div.CounselTopbx {width:770px; padding:17px 0 0; background:url('//simage.lottemart.com/images/front/mycustomer/bg_counsel_box_top02.gif') no-repeat 0 0;}
+
+div.CounselTopbx div.diss-v5 {overflow:hidden; zoom:1; width:100%;}
+div.CounselTopbx div.diss-v5 p {float:left; padding:3px 10px 0 20px; color:#373737; font-size:13px; line-height:18px; letter-spacing:0;}
+div.CounselTopbx div.diss-v5 p a.point {color:#f1574b;}
+div.CounselTopbx div.diss-v5 .btn {float:left;}
+div.CounselTopbx div.diss-v5 .btn .btn_gray a {margin:0;}
+
+
+/* 2013-05-29 My Mart (다둥이 아이콘 추가) */
+div.customer div.level ul li.txt2 a.baby-icon {display:block; float:right; margin-top:-36px;}
+
+/* 2013-06-07 다둥이 페이지 추가 */
+div.citation-btn {margin-top:34px;}
+div.citation-btn a {display:block; width:301px; margin:0 auto;}
+div.kids-cate a {display:block; padding-top:3px;}
+div.kids-cate {margin-top:59px;}
+div.grand-brand {margin-top:16px;}
+
+/* 2013-06-13 찜바구니 */
+div.View-Basket-Btn {
+	position:absolute;
+	top:-18px; right:0;
+}
+div.View-Basket-Btn span, div.View-Basket-Btn a {
+	display:inline-block;
+	vertical-align:top;
+}
+div.View-Basket-Btn span {
+	background:url('//simage.lottemart.com/images/front/mymart/btn_le_box.gif') no-repeat 0 0;
+	font-size:0;
+	line-height:0;
+}
+div.View-Basket-Btn span a {
+	height:18px;
+	padding:2px 5px 0;
+	background:url('//simage.lottemart.com/images/front/mymart/btn_ri_box.gif') no-repeat 100% 0;
+	color:#989898;
+	font-size:12px;
+	text-decoration:none;
+	line-height:16px;
+}
+div.Em-Help {
+	position:relative;
+	position:absolute;
+	top:7px; right:0;
+}
+div.Em-Help p {
+	padding:0 0 0 15px;
+	background:url('//simage.lottemart.com/images/front/mymart/icon_point.gif') no-repeat 0 3px;
+	color:#7b7b7b;
+	font-size:13px;
+	line-height:16px;
+}
+div.Em-Help div.help {
+	display:inline-block;
+	position:relative;
+	position:absolute;
+	top:0; left:-17px;
+	width:15px;
+	height:15px;
+	cursor:pointer;
+}
+div.Em-Help div.help div.help-btm {
+	display:none;
+	overflow:hidden;
+	position:absolute;
+	top:15px; left:-155px;
+	width:215px;
+	padding-bottom:10px;
+	background:#fff url('//simage.lottemart.com/images/front/mymart/layer_box_btm.gif') no-repeat 0 100%;
+}
+div.Em-Help div.help:hover div.help-btm {display:block;}
+div.Em-Help div.help div.help-btm div.help-top {
+	width:185px;
+	padding:20px 15px 0;
+	background:url('//simage.lottemart.com/images/front/mymart/layer_box_top.gif') no-repeat 0 0;
+}
+div.Em-Help div.help div.help-btm div.help-top ul {}
+div.Em-Help div.help div.help-btm div.help-top ul li {
+	margin:5px 0 0 3px;
+	color:#535353;
+	font-size:12px;
+	text-indent:-7px;
+	line-height:15px;
+}
+
+/* 2013-07-04 다둥이클럽 인증 페이지 */
+div.kids-theme {margin-top:34px;}

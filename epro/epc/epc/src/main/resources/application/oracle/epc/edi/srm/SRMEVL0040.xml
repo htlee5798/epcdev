@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMEVL0040">
+
+	<typeAlias alias="srmEvl0040Vo" type="com.lottemart.epc.edi.srm.model.SRMEVL0040VO" />
+
+	<resultMap id="srmEvl0040VoMap" class="srmEvl0040Vo">
+		<result column="ROW_SPAN"					property="rowSpan" 				/>	<!--  row span -->
+		
+		<result column="HOUSE_CODE"					property="houseCode" 			/>	<!--  - (House Code) -->
+		<result column="EV_TPL_NO"					property="evTplNo" 				/>	<!--  - [Evaluation Template No] -->
+		<result column="ADD_DATE"					property="addDate" 				/>	<!--  - (Registration Date) -->
+		<result column="ADD_USER_ID"				property="addUserId" 			/>	<!-- ID - (Registerer ID) -->
+		<result column="CHANGE_DATE"				property="changeDate" 			/>	<!--  - (Update  Date) -->
+		<result column="CHANGE_USER_ID"				property="changeUserId" 		/>	<!-- ID - (Updater  ID) -->
+		<result column="DEL_FLAG"					property="delFlag" 				/>	<!--  - (Check whether it is deleted or not) -->
+		<result column="EV_TPL_TYPE_CODE"			property="evTplTypeCode" 		/>	<!--  - [Evaluation Template Type Code] SIRA : SI/RA, SCRE : Screening, SITE : Site, EXEC : Execution -->
+		<result column="EV_TPL_SUBJECT"				property="evTplSubject" 		/>	<!--  - [Template Name] -->
+		<result column="FAIL_SCORE_010"				property="failScore010" 		/>	<!-- 과락(상품) - 입점 -->
+		<result column="FAIL_SCORE_020"				property="failScore020" 		/>	<!-- 과락(기) - 입점 -->
+		<result column="FAIL_SCORE_TOTAL"			property="failScoreTotal" 		/>	<!-- 통과점 -->
+		
+		<result column="EV_ITEM_NO"					property="evItemNo" 			/>	<!--  - [Evaluation Item No] -->
+		<result column="WEIGHT"						property="weight" 				/>	<!--  - [Weight] -->
+		<result column="EV_TPL_SCORE"				property="evTplScore" 			/>	<!-- 쉬트별점 -->
+		
+		<result column="EV_ITEM_DIV_CODE"			property="evItemDivCode" 		/>	<!--  - [Evaluation Item Type Code] SIRA : SI/RA, SCRE : Screening, SITE : Site, EXEC : Execution -->
+		<result column="SI_RA_TYPE"					property="siRaType" 			/>	<!-- SI/RA  - [SI/RA Type] -->
+		<result column="AXIS_CODE"					property="axisCode" 			/>	<!-- X/Y  - [Axis X/Y] -->
+		<result column="EV_ITEM_TYPE3_CODE"			property="evItemType3Code" 		/>	<!--  - (Evaluation Type Code) -->
+		<result column="EV_ITEM_TYPE3_CODE_NAME"	property="evItemType3CodeName" 	/>	<!--  - (Evaluation Type Code Name) -->
+		<result column="EV_ITEM_SUBJECT"			property="evItemSubject" 		/>	<!--  - [Evaluation Item Subject] -->
+		<result column="EV_ITEM_CONTENTS"			property="evItemContents" 		/>	<!--   - [Evaluation Item Content] -->
+		<result column="EV_ITEM_KIND_CODE"			property="evItemKindCode" 		/>	<!--  - [Evaluation Kind Code] -->
+		<result column="EV_ITEM_METHOD_CODE"		property="evItemMethodCode" 	/>	<!-- </> - [Evaluation Method <Qualitative/Quantitative>] -->
+		<result column="SCALE_TYPE_CODE"			property="scaleTypeCode" 		/>	<!-- Scale Type -->
+		<result column="INPUT_TYPE_CODE"			property="inputTypeCode" 		/>	<!-- INPUT TYPE(SRM026) -->
+		<result column="KPI_KIND_CODE"				property="kpiKindCode" 			/>	<!-- 지표종류(SRM025) -->
+		<result column="EV_ITEM_TYPE1_CODE"			property="evItemType1Code" 		/>	<!-- 평가관점 -->
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가관점 Name -->
+		<result column="EV_ITEM_TYPE2_CODE"			property="evItemType2Code" 		/>	<!-- 평가영역 -->
+		<result column="EV_ITEM_TYPE2_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가영역 Name -->
+		<result column="EV_CRITICAL_PASS_YN"		property="evCriticalPassYn" 	/>	<!-- 필수통과여 -->
+		<result column="MONITORING_FLAG"			property="monitoringFlag" 		/>	<!-- 모니터링여부 -->
+		
+		<result column="EV_ID_SEQ"					property="evIdSeq" 				/>	<!--  - [Indicators Seq Automatically] -->
+		<result column="EV_ID_ORDER"				property="evIdOrder" 			/>	<!--  - [Indicators Order Manually] -->
+		<result column="EV_ID_CONTENTS"				property="evIdContents" 		/>	<!--  - [Indicators Content] -->
+		<result column="EV_ID_SCORE"				property="evIdScore" 			/>	<!--  - [Score] -->
+		<result column="PASS_FAIL_CODE"				property="passFailCode" 		/>	<!-- /  - [Pass/Fail Code] -->
+		<result column="EV_ID_METHOD"				property="evIdMethod" 			/>	<!-- / - [Qualitative/Quantitative] -->
+		<result column="FROM_VALUE"					property="fromValue" 			/>	<!-- From Value -->
+		<result column="FROM_CONDITION_CODE"		property="fromConditionCode" 	/>	<!-- From Condition Code -->
+		<result column="TO_VALUE"					property="toValue" 				/>	<!-- To Value -->
+		<result column="TO_CONDITION_CODE"			property="toConditionCode" 		/>	<!-- To Condition Code -->
+	</resultMap>
+	
+	<!-- Item List Map -->
+	<resultMap id="itemListMap" class="srmEvl0040Vo">
+		<result column="ROW_SPAN"					property="rowSpan" 				/>	<!--  row span -->
+		<result column="SUB_ROW_SPAN"				property="subRowSpan" 				/>	<!--  row span -->
+
+		<result column="HOUSE_CODE"					property="houseCode" 			/>	<!--  - (House Code) -->
+		<result column="EV_TPL_NO"					property="evTplNo" 				/>	<!--  - [Evaluation Template No] -->
+		<result column="EV_TPL_SUBJECT"				property="evTplSubject" 		/>	<!--  - [Template Name] -->
+		
+		<result column="EV_ITEM_NO"					property="evItemNo" 			/>	<!--  - [Evaluation Item No] -->
+		<result column="EV_ITEM_TYPE1_CODE"			property="evItemType1Code" 		/>	<!-- 평가관점 -->
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가관점 Name -->
+		<result column="EV_ITEM_TYPE2_CODE"			property="evItemType2Code" 		/>	<!-- 평가영역 -->
+		<result column="EV_ITEM_TYPE2_CODE_NAME"	property="evItemType2CodeName" 	/>	<!-- 평가영역 Name -->
+		<result column="EV_ITEM_TYPE3_CODE"			property="evItemType3Code" 		/>	<!--  - (Evaluation Type Code) -->
+		<result column="EV_ITEM_TYPE3_CODE_NAME"	property="evItemType3CodeName" 	/>	<!--  - (Evaluation Type Code Name) -->
+		<result column="EV_ITEM_SUBJECT"			property="evItemSubject" 		/>	<!--  - [Evaluation Item Subject] -->
+		<result column="EV_ITEM_CONTENTS"			property="evItemContents" 		/>	<!--   - [Evaluation Item Content] -->
+		<result column="EV_ID_SEQ"					property="evIdSeq" 				/>	<!--  - [Indicators Seq Automatically] -->
+		<result column="EV_ID_CONTENTS"				property="evIdContents" 		/>	<!--  - [Indicators Content] -->
+		<result column="EV_ID_SCORE"				property="evIdScore" 			/>	<!--  - [Score] -->
+		<result column="EV_ID_SCORE_VAL"			property="evIdScoreVal" 		/>	<!--  평가점 -->
+	</resultMap>
+	
+	<!-- Tab List Map -->
+	<resultMap id="tabListMap" class="srmEvl0040Vo">
+		<result column="HOUSE_CODE"					property="houseCode" 			/>	<!--  - (House Code) -->
+		<result column="EV_TPL_NO"					property="evTplNo" 				/>	<!--  - [Evaluation Template No] -->
+		<result column="EV_TPL_SUBJECT"				property="evTplSubject" 		/>	<!--  - [Template Name] -->
+		<result column="EV_ITEM_TYPE1_CODE"			property="evItemType1Code" 		/>	<!-- 평가관점 -->
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가관점 Name -->
+	</resultMap>
+	
+	<!-- 품질경영평가 Tab List  -->
+	<select id="selectEvlTabList" parameterClass="srmEvl0040Vo" resultMap="tabListMap">
+		/* SRMEVL0040.selectEvlTabList */
+		SELECT	HOUSE_CODE
+			,	EV_TPL_NO
+			,	EV_TPL_SUBJECT
+			,	EV_ITEM_TYPE1_CODE
+			,	EV_ITEM_TYPE1_CODE_NAME
+		FROM
+		(
+			SELECT	VTM.HOUSE_CODE
+				,	VTM.EV_TPL_NO
+				,	VTM.EV_TPL_SUBJECT
+				,	VIM.EV_ITEM_TYPE1_CODE
+				,	GETCODETEXT1(
+						CASE VIM.EV_ITEM_KIND_CODE
+							WHEN 'STA' THEN 'SRM010'
+							WHEN 'RET' THEN 'SRM011'
+							WHEN 'QBE' THEN 'SRM027'
+							ELSE ''
+						END, VIM.EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+					) AS EV_ITEM_TYPE1_CODE_NAME
+			FROM	SEVTM	VTM
+				,	SEVTD	VTD
+				,	SEVIM	VIM
+				,	SEVID	VID
+			WHERE	1 = 1
+				AND VTM.HOUSE_CODE 	= VTD.HOUSE_CODE
+				AND VTM.EV_TPL_NO 	= VTD.EV_TPL_NO
+				AND VTD.HOUSE_CODE	= VIM.HOUSE_CODE
+				AND VTD.EV_ITEM_NO 	= VIM.EV_ITEM_NO
+				AND VIM.HOUSE_CODE	= VID.HOUSE_CODE
+				AND VIM.EV_ITEM_NO 	= VID.EV_ITEM_NO
+				AND VTM.DEL_FLAG	= '0'				/* 삭제대상이 아닌 건 */
+				AND VTD.DEL_FLAG	= '0'				/* 삭제대상이 아닌 건 */
+				AND VIM.DEL_FLAG	= '0'				/* 삭제대상이 아닌 건 */
+				AND VID.DEL_FLAG 	= '0'				/* 삭제대상이 아닌 건 */
+				AND VTM.EV_TPL_NO	= #evTplNo#			/* 평가 템플릿 */
+		)
+		GROUP BY	HOUSE_CODE
+				,	EV_TPL_NO
+				,	EV_TPL_SUBJECT
+				,	EV_ITEM_TYPE1_CODE
+				,	EV_ITEM_TYPE1_CODE_NAME
+		ORDER BY	EV_ITEM_TYPE1_CODE
+	</select>
+
+	<!-- 품질경영평가 Item  -->
+	<select id="selectEvlItem" parameterClass="srmEvl0040Vo" resultMap="itemListMap">
+		/* SRMEVL0040.selectEvlItem */
+		SELECT	COUNT(1) OVER(PARTITION BY VIM.EV_ITEM_TYPE2_CODE) AS ROW_SPAN
+			,	COUNT(1) OVER(PARTITION BY VTD.EV_ITEM_NO) AS SUB_ROW_SPAN
+			,	VTM.HOUSE_CODE
+			,	VTM.EV_TPL_NO
+			,	VTM.EV_TPL_SUBJECT
+			,	VTD.EV_ITEM_NO
+			,	VIM.EV_ITEM_TYPE1_CODE
+			,	GETCODETEXT1(
+					CASE VIM.EV_ITEM_KIND_CODE
+						WHEN 'STA' THEN 'SRM010'
+						WHEN 'RET' THEN 'SRM011'
+						WHEN 'QBE' THEN 'SRM027'
+						ELSE ''
+					END, VIM.EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+				) AS EV_ITEM_TYPE1_CODE_NAME
+			,	VIM.EV_ITEM_TYPE2_CODE
+			,	GETCODETEXT1(
+					CASE VIM.EV_ITEM_KIND_CODE
+						WHEN 'STA' THEN 'SRM010_1'
+						WHEN 'RET' THEN 'SRM011_1'
+						WHEN 'QBE' THEN 'SRM027_1'
+						ELSE ''
+					END, VIM.EV_ITEM_TYPE2_CODE, UPPER(#locale#)
+				) AS EV_ITEM_TYPE2_CODE_NAME
+			,	VIM.EV_ITEM_TYPE3_CODE
+			,	GETCODETEXT1(
+					CASE VIM.EV_ITEM_KIND_CODE
+						WHEN 'STA' THEN 'SRM010_2'
+						WHEN 'RET' THEN ''
+						WHEN 'QBE' THEN ''
+						ELSE ''
+					END, VIM.EV_ITEM_TYPE3_CODE, UPPER(#locale#)
+				) AS EV_ITEM_TYPE3_CODE_NAME
+			,	VIM.EV_ITEM_SUBJECT
+			,	VIM.EV_ITEM_CONTENTS
+			,	VID.EV_ID_SEQ
+			,	VID.EV_ID_CONTENTS
+			,	VID.EV_ID_SCORE
+			, 	VEE.EV_ID_SCORE AS EV_ID_SCORE_VAL
+		FROM	SEVTM	VTM
+			,	SEVTD	VTD
+			,	SEVIM	VIM
+			,	SEVID	VID
+			, 	(SELECT * FROM SEVEE WHERE EV_NO = #evNo#) 	VEE
+		WHERE	1 = 1
+			AND VTM.HOUSE_CODE 			= VTD.HOUSE_CODE
+			AND VTM.EV_TPL_NO 			= VTD.EV_TPL_NO
+			AND VTD.HOUSE_CODE			= VIM.HOUSE_CODE
+			AND VTD.EV_ITEM_NO 			= VIM.EV_ITEM_NO
+			AND VIM.HOUSE_CODE			= VID.HOUSE_CODE
+			AND VIM.EV_ITEM_NO 			= VID.EV_ITEM_NO
+			AND VTD.HOUSE_CODE 			= VEE.HOUSE_CODE(+)
+			AND VTD.EV_TPL_NO 			= VEE.EV_TPL_NO(+)
+			AND VTD.EV_ITEM_NO 			= VEE.EV_ITEM_NO(+)
+			AND VID.EV_ID_SEQ 			= VEE.EV_ID_SEQ(+)
+			AND VTM.DEL_FLAG			= '0'				/* 삭제대상이 아닌 건 */
+			AND VTD.DEL_FLAG			= '0'				/* 삭제대상이 아닌 건 */
+			AND VIM.DEL_FLAG			= '0'				/* 삭제대상이 아닌 건 */
+			AND VID.DEL_FLAG 			= '0'				/* 삭제대상이 아닌 건 */
+			AND VTM.EV_TPL_NO			= #evTplNo#		/* 평가 템플릿 */
+			AND VIM.EV_ITEM_TYPE1_CODE 	= #evItemType1Code#
+		ORDER BY 	VTM.EV_TPL_NO, VTD.EV_ITEM_NO, VID.EV_ID_SEQ
+	</select>
+
+
+	<!--품질경영평가 결과 체크-->
+	<select id="selectQualityEvaluationCheck" parameterClass="srmEvl0040Vo" resultClass="Integer">
+		/*SRMEVL0040.selectQualityEvaluationCheck*/
+		SELECT
+				COUNT(*)
+		FROM 	SEVEE
+		WHERE
+				HOUSE_CODE 	= #houseCode#
+			AND SG_NO 		= #sgNo#
+			AND EV_NO 		= #evNo#
+			AND VENDOR_CODE = #vendorCode#
+			<!--AND EV_USER_ID 	= #evUserId#-->
+			AND EV_TPL_NO 	= #evTplNo#
+			AND EV_ITEM_NO 	= #evItemNo#
+	</select>
+
+	<!--품질경영평가 결과 등록-->
+	<insert id="insertQualityEvaluation" parameterClass="srmEvl0040Vo">
+		/*SRMEVL0040.insertQualityEvaluation*/
+		INSERT INTO SEVEE
+				(HOUSE_CODE
+				, SG_NO
+				, EV_NO
+				, VENDOR_CODE
+				, EV_USER_ID
+				, EV_TPL_NO
+				, EV_ITEM_NO
+				, ADD_DATE
+				, ADD_USER_ID
+				, EV_ID_SEQ
+				, EV_ID_SCORE)
+		VALUES
+				(#houseCode#
+				, #sgNo#
+				, #evNo#
+				, #vendorCode#
+				, #evUserId#
+				, #evTplNo#
+				, #evItemNo#
+				, CURRENT_TIMESTAMP(0)
+				, #evUserId#
+				, #evIdSeq#
+				, #evIdScoreVal# )
+	</insert>
+
+	<!--품질경영평가 결과 수정-->
+	<update id="updateQualityEvaluation" parameterClass="srmEvl0040Vo">
+		/*SRMEVL0040.updateQualityEvaluation*/
+		UPDATE 	SEVEE
+		SET
+				EV_ID_SCORE 		= #evIdScoreVal#
+				,EV_ID_SEQ 			= #evIdSeq#
+				,CHANGE_DATE 		= CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID 	= #evUserId#
+		WHERE
+				HOUSE_CODE 	= #houseCode#
+			AND SG_NO 		= #sgNo#
+			AND EV_NO 		= #evNo#
+			AND VENDOR_CODE = #vendorCode#
+			<!--AND EV_USER_ID 	= #evUserId#-->
+			AND EV_TPL_NO 	= #evTplNo#
+			AND EV_ITEM_NO 	= #evItemNo#
+	</update>
+
+	<!--평가시작일 check-->
+	<select id="selectQualityEvaluationEvalStartDateCheck" parameterClass="srmEvl0040Vo" resultClass="String">
+		/*SRMEVL0030.selectQualityEvaluationEvalStartDateCheck*/
+		SELECT
+				START_DATE
+		FROM
+				SEVEM
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+	</select>
+
+	<!--평가시작일 UPDATE-->
+	<update id="updateQualityEvaluationEvalStartDate" parameterClass="srmEvl0040Vo">
+		/*SRMEVL0030.updateQualityEvaluationEvalStartDate*/
+		UPDATE 	SEVEM
+		SET 	START_DATE 			= CURRENT_TIMESTAMP(0)
+				,CHANGE_DATE 		= CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID 	= #evUserId#
+		WHERE
+				HOUSE_CODE 	= #houseCode#
+			AND EV_NO 		= #evNo#
+	</update>
+
+	<!--품질평가 모두 입력 여부 Check-->
+	<select id="selectQualityEvaluationEvalCheck" parameterClass="srmEvl0040Vo" resultClass="Integer">
+		/*SRMEVL0040.selectQualityEvaluationEvalCheck*/
+		SELECT	COUNT(*)
+		FROM	SEVTM A
+			,	SEVTD B
+			,	SEVIM C
+			,	(
+					SELECT	HOUSE_CODE
+						,	EV_TPL_NO
+						,	EV_ITEM_NO
+						,	EV_ID_SCORE
+					FROM	SEVEE
+					WHERE	EV_NO = #evNo#
+				) D
+			,	SEVID E
+		WHERE	A.HOUSE_CODE 	= B.HOUSE_CODE
+			AND A.EV_TPL_NO 	= B.EV_TPL_NO
+			AND B.HOUSE_CODE 	= C.HOUSE_CODE
+			AND B.EV_ITEM_NO 	= C.EV_ITEM_NO
+			AND A.HOUSE_CODE 	= D.HOUSE_CODE(+)
+			AND A.EV_TPL_NO 	= D.EV_TPL_NO(+)
+			AND B.EV_ITEM_NO 	= D.EV_ITEM_NO(+)
+			AND C.HOUSE_CODE 	= E.HOUSE_CODE
+			AND C.EV_ITEM_NO 	= E.EV_ITEM_NO
+			AND A.DEL_FLAG 		= '0'
+			AND B.DEL_FLAG 		= '0'
+			AND C.DEL_FLAG 		= '0'
+			AND C.DEL_FLAG 		= '0'
+			AND A.EV_TPL_NO 	= #evTplNo#
+			AND D.EV_ID_SCORE IS NULL
+	</select>
+
+
+
+	<!--총점 UPDATE-->
+	<update id="updateQualityEvaluationEvScore" parameterClass="srmEvl0040Vo">
+		/*SRMEVL0030.updateQualityEvaluationEvScore*/
+		UPDATE 	SEVEU
+		SET 	EV_SCORE = (
+							SELECT
+									SUM(EV_ID_SCORE)
+							FROM
+									SEVEE EVEE, SEVIM EVIM
+							WHERE
+								EVEE.HOUSE_CODE 	= #houseCode#
+								AND EVEE.SG_NO 		= #sgNo#
+								AND EVEE.EV_NO 		= #evNo#
+								AND EVEE.VENDOR_CODE = #vendorCode#
+								<!--AND EV_USER_ID 	= #evUserId#-->
+								AND EVEE.EV_TPL_NO 	= #evTplNo#
+								AND EVEE.EV_NO 		= #evNo#
+								AND EVEE.EV_ITEM_NO=EVIM.EV_ITEM_NO
+                                AND EVIM.KPI_KIND_CODE != 'DES'
+								)
+				,CHANGE_DATE 		= CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID 	= #evUserId#
+		WHERE
+		HOUSE_CODE = #houseCode#
+		AND EV_NO = #evNo#
+	</update>
+</sqlMap>

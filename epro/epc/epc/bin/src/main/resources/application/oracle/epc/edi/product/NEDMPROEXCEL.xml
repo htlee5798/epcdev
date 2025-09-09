@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+ <sqlMap namespace="NEDMPROEXCEL">
+ 	<typeAlias alias="excelTempUploadVO" type="com.lottemart.epc.edi.product.model.ExcelTempUploadVO" />
+ 
+ 	<resultMap id="tempExcelMap" class="java.util.HashMap">
+		<result property="seqNo" 	column="SEQ_NO" />
+		<result property="entpCd" 	column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="regId" 	column="REG_ID" />
+	</resultMap>	
+	
+ 
+ 	<resultMap id="tempExcelCustomMap" class="java.util.HashMap">
+		<result property="seqNo" 	column="SEQ_NO" />
+		<result property="entpCd" 	column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="prodPatFg" column="PROD_PAT_FG" />
+		<result property="prStat" 	column="PR_STAT" />
+		<result property="regId" 	column="REG_ID" />
+	</resultMap>	
+	
+	
+	
+	 <insert id="insertExcelTemp" parameterClass="hashmap">
+	 	/* NEDMPROEXCEL.insertExcelTemp */
+			INSERT INTO TPC_EXCEL_TEMP
+			(
+				SEQ_NO
+				, ENTP_CD
+				, EXCEL_SYS_KND
+				,DATA1																
+				,DATA2																
+				,DATA3                                                              
+				,DATA4                                                              
+				,DATA5                                                              
+				,DATA6                                                              
+				,DATA7                                                              
+				,DATA8                                                              
+				,DATA9                                                              
+				,DATA10																
+				,DATA11																
+				,DATA12																
+				,DATA13
+				,DATA14
+				,DATA15
+				,DATA16
+				,DATA17
+				,DATA18
+				,DATA19
+				,DATA20
+				,DATA21
+				,DATA22
+				,DATA23
+				,DATA24
+				,DATA25
+				,DATA26
+				,DATA27
+				,DATA28
+				,DATA29
+				,DATA30
+				,REG_DT
+				,REG_ID
+			)
+			VALUES
+			( 
+				(SELECT COALESCE(MAX(SEQ_NO),0) + 1 
+				 FROM TPC_EXCEL_TEMP 
+				 WHERE EXCEL_SYS_KND = #excelSysKnd# 
+				 		AND REG_ID = #regId# 
+				 		AND ENTP_CD = #entpCd# ) 
+				,#entpCd# 									
+				,#excelSysKnd# 									
+				,#data1#                                        
+				,#data2#                                        
+				,#data3#                                        
+				,#data4#                                        
+				,#data5#						                
+				,#data6#                                        
+				,#data7#                                        
+				,#data8#                                        
+				,#data9#                                        
+				,#data10#                                       
+				,#data11#										
+				,#data12#										
+				,#data13#										
+				,#data14#
+				,#data15#
+				,#data16#
+				,#data17#
+				,#data18#
+				,#data19#
+				,#data20#
+				,#data21#
+				,#data22#
+				,#data23#
+				,#data24#
+				,#data25#
+				,#data26#
+				,#data27#
+				,#data28#
+				,#data29#
+				,#data30#
+				,NOW()
+				,#regId#
+				)
+ 	</insert>
+ 	
+ 	<delete id="deleteExcelTemp" parameterClass="hashmap">
+ 	/* NEDMPROEXCEL.deleteExcelTemp */
+	 		DELETE FROM TPC_EXCEL_TEMP
+			WHERE 1=1 
+			AND REG_ID = #regId#
+			AND ENTP_CD = #entpCd#
+ 			AND EXCEL_SYS_KND = #excelSysKnd#
+ 	</delete>
+ 	
+ 	<select id="selectExcelTempUploadList" parameterClass="hashmap" resultMap="tempExcelMap">
+ 	/* NEDMPROEXCEL.selectExcelTempUploadList */
+ 		SELECT	SEQ_NO
+ 				,ENTP_CD
+				,EXCEL_SYS_KND
+				,DATA1																
+				,DATA2																
+				,DATA3                                                              
+				,DATA4                                                              
+				,DATA5                                                              
+				,DATA6                                                              
+				,DATA7                                                              
+				,DATA8                                                              
+				,DATA9                                                              
+				,DATA10																
+				,DATA11																
+				,DATA12																
+				,DATA13
+				,DATA14
+				,DATA15
+				,DATA16
+				,DATA17
+				,DATA18
+				,DATA19
+				,DATA20
+				,DATA21
+				,DATA22
+				,DATA23
+				,DATA24
+				,DATA25
+				,DATA26
+				,DATA27
+				,DATA28
+				,DATA29
+				,DATA30
+				,REG_ID
+ 		FROM TPC_EXCEL_TEMP
+ 		WHERE 1=1
+		AND REG_ID = #regId#
+		AND ENTP_CD = #entpCd#
+ 		<isNotEmpty property="excelSysKnd">
+ 				AND EXCEL_SYS_KND = #excelSysKnd#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="excelWorkKnd">
+ 				AND EXCEL_WORK_KND = #excelWorkKnd#
+ 		</isNotEmpty>
+ 	</select>
+ 	
+ 	
+ 	<select id="selectExcelTempUploadProdChgPrcList" parameterClass="hashmap" resultMap="tempExcelCustomMap">
+ 		/* NEDMPROEXCEL.selectExcelTempUploadProdChgPrcList */
+ 		SELECT	A.SEQ_NO
+ 				,A.ENTP_CD
+				,A.EXCEL_SYS_KND
+				,DATA1																
+				,DATA2																
+				,DATA3                                                              
+				,DATA4                                                              
+				,DATA5                                                              
+				,DATA6                                                              
+				,DATA7                                                              
+				,DATA8                                                              
+				,DATA9                                                              
+				,DATA10																
+				,DATA11																
+				,DATA12																
+				,DATA13
+				,DATA14
+				,DATA15
+				,DATA16
+				,DATA17
+				,DATA18
+				,DATA19
+				,DATA20
+				,DATA21
+				,DATA22
+				,DATA23
+				,DATA24
+				,DATA25
+				,DATA26
+				,DATA27
+				,DATA28
+				,DATA29
+				,DATA30
+				,B.PROD_PAT_FG	
+				,REG_ID
+				,(
+					SELECT
+						 S.PR_STAT 	/* 진행상태코드 */
+					FROM TPC_PROD_CHG_COST_ITEM S
+					WHERE S.SRCMK_CD = A.DATA4
+					AND S.PROD_CD = A.DATA5
+					AND S.PUR_DEPT = A.DATA1
+					ORDER BY REQ_NO DESC, SEQ DESC
+					LIMIT 1
+				)	AS PR_STAT
+ 		FROM TPC_EXCEL_TEMP	A
+ 		INNER JOIN PRODUCT B ON	A.DATA5 = B.PROD_CD 
+ 		WHERE 1=1
+		AND A.REG_ID = #regId#
+		AND A.ENTP_CD = #entpCd#
+ 		AND A.EXCEL_SYS_KND = #excelSysKnd#
+ 	</select>
+ </sqlMap>

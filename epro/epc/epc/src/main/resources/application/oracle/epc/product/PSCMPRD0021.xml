@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmprd0021">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	
+	<!-- 대표상품코드 조회-->
+	<select id="selectRepProdCdList" resultClass="dataMap">
+ 	<![CDATA[
+ 	/* pscmprd0021.selectRepProdCdList */
+ 	SELECT A.* 
+        ,  FN_GET_PROMO_COUNT(A.PROD_CD) AS PROMO_CNT /* 프로모션 개수 */
+        , (SELECT PROD_NM ||' / '|| PROFIT_RATE
+              FROM TPR_PRODUCT              -- 2016.03.31 changed by 주환철 -- PRODUCT 
+             WHERE REP_PROD_CD_YN = 'Y'     -- 2016.03.31 changed by 주환철 -- ONLINE_FG = 'X'
+               AND DEL_STOP_DIVN_YN = '0'   -- 2016.03.31 changed by 주환철 -- PROD_STATUS = '01'
+               AND VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID= A.VENDOR_ID)  -- 2016.03.31 changed by 주환철 -- VEN_CD
+               AND MD_PROD_CD = A.REP_PROD_CD) AS CAT_NM  -- 2016.03.31 changed by 주환철 -- PROD_CD
+     FROM
+		   (
+ 	        SELECT  
+                   ROW_NUMBER() OVER(ORDER BY RH.APPLY_START_DY DESC) AS NUM
+                 , COUNT(1) OVER() AS CNT
+                 , PR.PROD_CD
+                 , PR.PROD_NM
+                 , TO_CHAR(TO_DATE(RH.APPLY_START_DY, 'YYYYMMDD'),'YYYY-MM-DD') AS APPLY_START_DY
+                 , TO_CHAR(TO_DATE(RH.APPLY_END_DY, 'YYYYMMDD'),'YYYY-MM-DD') AS APPLY_END_DY	
+                 , RH.REP_PROD_CD
+                 , RH.BUY_PRC	
+                 , RH.SELL_PRC	
+                 , RH.CURR_SELL_PRC	
+                 , RH.PROFIT_RATE
+                 , TO_CHAR(RH.REG_DATE,'YYYY-MM-DD') AS REG_DATE
+                 , RH.APPLY_YN
+                 , PR.VENDOR_ID
+              FROM TPR_REP_PROD_CHG_HST RH,
+                   TPR_PRODUCT PR
+             WHERE RH.PROD_CD   = PR.PROD_CD
+               AND RH.REG_DATE >= TO_DATE(#startDate#,'YYYYMMDD')
+               AND RH.REG_DATE <= TO_DATE(#endDate#,'YYYYMMDD') + 1
+               ]]>
+               <isNotEmpty property="prodCd">
+               AND PR.PROD_CD   LIKE #prodCd#||'%'
+               </isNotEmpty>
+               <isNotEmpty property="prodNm">
+               AND PR.PROD_NM   LIKE #prodNm#||'%'
+               </isNotEmpty>
+               AND (0,  PR.VENDOR_ID) 
+		        <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+		            (0,#vendorId[]#)
+		        </iterate>
+		        <![CDATA[
+           ) A
+     WHERE NUM BETWEEN #startRow# AND #endRow#
+ 	]]>
+	</select>
+
+</sqlMap>

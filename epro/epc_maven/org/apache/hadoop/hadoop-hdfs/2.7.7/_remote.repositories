@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 16:01:01 KST 2025
+hadoop-hdfs-2.7.7.pom>neonexus=
+hadoop-hdfs-2.7.7.jar>neonexus=
+hadoop-hdfs-2.7.7-sources.jar>neonexus=

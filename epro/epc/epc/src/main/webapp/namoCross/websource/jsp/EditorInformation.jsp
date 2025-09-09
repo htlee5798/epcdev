@@ -1,0 +1,9 @@
+<%
+	String ce_editorkey="AE8GLLKCI9RICN7SXN";
+	String ce_company="%uB86F%uB370%uB9C8%uD2B8";
+	String ce_use="Intranet";
+	String ce_serial="9503-0101-160009";
+	String ce_lkt="CDHMT";
+	ce_domain="ZXBjZGV2Lmxjbi5jby5rciwxMC4yMzEuMzIuMjAxLGJvc21pZy5sb3R0ZW1hcnQuY29tLGxpbWFkbWluLmxvdHRlbWFydC5jb20scGFydG5lci5sb3R0ZW1hcnQuY29tLGxpbWFkbWluZC5sb3R0ZW1hcnQuY29tLHBhcnRuZXJkLmxvdHRlbWFydC5jb20sMTAuNTIuMi4xMTUsMTAuNTIuMi4xMTYsMTI0LjI0My40My4xMSwxMjQuMjQzLjQzLjEyLDEyNC4yNDMuNDMuMjUsMTAuNTIuMi4xMzMsMTAuNTIuMi4yMzcsMTI0LjI0My40My4yNiwxMjQuMjQzLjQzLjQ2LHBhcnRuZXJ0LmxvdHRlbWFydC5jb20sMTAuNTIuMi4yNDcsMTI0LjI0My40My4xMCwxMjcuMC4wLjEsbG9jYWxob3N0";
+	ce_exp="MjA5OS0xMi0zMQ==";
+%>

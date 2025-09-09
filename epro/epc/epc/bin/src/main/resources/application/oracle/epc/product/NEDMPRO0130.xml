@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0130">
+	<typeAlias alias="nedmpro0130vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0130VO" />
+	<typeAlias alias="nedmpro0024vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0024VO" />		<!-- 이미... SQLINES DEMO *** -->
+
+	<resultMap id="productImageListMap" class="nedmpro0130vo">
+		<result column="PROD_CD"			property="prodCd"		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"			property="srcmkCd" 		/>	<!-- 판매... SQLINES DEMO *** -->
+		<result column="PROD_NM"			property="prodNm" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="IMG_NM"				property="imgNm" 		/>	<!-- 이미... SQLINES DEMO *** -->
+		<result column="CFM_FG"				property="cfmFg" 		/>	<!-- 확정... SQLINES DEMO *** -->
+		<result column="IMG_SEQ"			property="imgSeq" 		/> 	<!-- 이미... SQLINES DEMO *** -->
+		<result column="CFM_REASON_FG"		property="cfmReasonFg" 	/>	<!-- 화정... SQLINES DEMO *** -->
+		<result column="APPLY_DY"			property="applyDy" 		/>	<!-- 적용... SQLINES DEMO *** -->
+		<result column="WIDTH"				property="width" 		/>	<!-- 가로... SQLINES DEMO *** -->
+		<result column="LENGTH"				property="length" 		/>	<!-- 세로... SQLINES DEMO *** -->
+		<result column="HEIGHT"				property="height" 		/>	<!-- 높이... SQLINES DEMO *** -->
+		<result column="REG_WIDTH"			property="regWidth" 	/>	<!-- 가로... SQLINES DEMO *** -->
+		<result column="REG_LENGTH"			property="regLength" 	/>	<!-- 세로... SQLINES DEMO *** -->
+		<result column="REG_HEIGHT"			property="regHeight" 	/>	<!-- 높이... SQLINES DEMO *** -->
+		<result column="VEN_CD"				property="venCd" 		/>	<!-- 협력... SQLINES DEMO *** -->
+		<result column="VARIANT"			property="variant" 		/>	<!-- VA... SQLINES DEMO *** -->
+		<result column="VAR_ATT_NM"			property="varAttNm" 	/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="RNUM"				property="rnum" 		/>	<!-- 순번... SQLINES DEMO *** -->
+		<result column="CFM_REASON_TXT"		property="cfmReasonTxt"	/>	<!-- 이미... SQLINES DEMO *** -->
+		<result column="PROD_IMG_ID"		property="prodImgId"	/>	<!-- SQLINES DEMO *** -->
+		<result column="WG"		        	property="wg"		    />	<!-- 총중... SQLINES DEMO *** -->
+		<result column="PCL_WG"	        	property="pclWg"	    />	<!-- 순중... SQLINES DEMO *** -->
+		<result column="PCL_WG_UNIT"	    property="pclWgUnit"	/>	<!-- 순중... SQLINES DEMO *** -->
+	</resultMap>
+
+	<resultMap class="java.util.LinkedHashMap" id="rfcCallDataMap">
+		<result property="SRCMK_CD" 			nullValue=""	/>
+		<result property="APPLY_DY" 			nullValue=""	/>
+		<result property="WIDTH" 				nullValue=""	/>
+		<result property="LENGTH" 				nullValue=""	/>
+		<result property="HEIGHT" 				nullValue=""	/>
+		<result property="SIZE_UNIT" 			nullValue=""	/>
+		<result property="CONV_RT" 				nullValue=""	/>
+		<result property="PROD_CD" 				nullValue=""	/>
+		<result property="ORD_UNIT" 			nullValue=""	/>
+		<result property="ORD_ABLE_FG" 			nullValue=""	/>
+		<result property="CHG_FG" 				nullValue=""	/>
+		<result property="OLD_WIDTH" 			nullValue=""	/>
+		<result property="OLD_LENGTH" 			nullValue=""	/>
+		<result property="OLD_HEIGHT" 			nullValue=""	/>
+		<result property="OLD_CONV_RT" 			nullValue=""	/>
+		<result property="OLD_PROD_CD" 			nullValue=""	/>
+		<result property="OLD_ORD_UNIT" 		nullValue=""	/>
+		<result property="OLD_ORD_ABLE_FG"		nullValue="" 	/>
+		<result property="OLD_CHG_FG" 			nullValue=""	/>
+		<result property="REG_DT" 				nullValue=""	/>
+		<result property="REG_EMP_NO" 			nullValue=""	/>
+		<result property="LST_CHG_DT" 			nullValue=""	/>
+		<result property="LST_CHG_EMP_NO" 		nullValue=""	/>
+	</resultMap>
+
+
+	<resultMap id="selectProdImgInfoToRFCMap"	class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"					nullValue=""	/>			<!-- 프로... SQLINES DEMO *** -->
+		<result column="VARIANT"		property="VARIANT"					nullValue=""	/>	    	<!-- 변형... SQLINES DEMO *** -->
+		<result column="SEQ"			property="SEQ"						nullValue=""	/>	      	<!-- 순번... SQLINES DEMO *** -->
+		<result column="ZZIMAGE"		property="ZZIMAGE"					nullValue=""	/>          <!-- 이미... SQLINES DEMO *** -->
+		<result column="CFM_FG"			property="CFM_FG"					nullValue=""	/>          <!-- 수정... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"		property="SRCMK_CD"					nullValue=""	/>          <!-- 판매... SQLINES DEMO *** -->
+	</resultMap>
+
+
+	<select id="selectFashionProductImageCount"		resultClass="Integer"	parameterClass="nedmpro0130vo">
+		/* SQLINES DEMO *** ectFashionProductImageCount */
+		SELECT 	COUNT(A.PROD_CD)	AS CNT
+		FROM
+		(
+		SELECT 	 A.PROD_CD
+		, 	 A.SRCMK_CD
+		,	 A.PROD_NM
+		,	 A.WIDTH
+		,	 A.LENGTH
+		,	 A.HEIGHT
+		,	 A.VEN_CD
+		,	 A.IF_DT
+		,	 CASE WHEN PGM_ID IS NULL
+		THEN CASE (SELECT VARIANT FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD)  WHEN '' THEN  '000' ELSE (SELECT VARIANT FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD) END
+		ELSE CASE A.VARIANT  WHEN '' THEN  '000' ELSE A.VARIANT END
+		END	AS VARIANT				/* SQLINES DEMO *** TPC_SALE_IMG 테이블에 데이터가 있으면 해당 데이터의 VARIANT를 가져오고 신상품은 서브쿼리에서 추출한 VARIANT를 사용한다. */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT PGM_ID FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD)
+		ELSE (SELECT PGM_ID FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS IMG_SEQ				/* IMG_SEQ */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT IMG_NM FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD)
+		ELSE (SELECT IMG_NM FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS IMG_NM				/* 이미지명 */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT CFM_FG FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD)
+		ELSE (SELECT CFM_FG FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS CFM_FG				/* SQLINES DEMO ***  2:반려, 3:확정] */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT CFM_REASON_FG FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD)
+		ELSE (SELECT CFM_REASON_FG FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS CFM_REASON_FG		/* 이미지 반려사유 코드 */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT CFM_REASON_TXT FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD)
+		ELSE (SELECT CFM_REASON_TXT FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS CFM_REASON_TXT		/* 이미지 반려사유 수기입력 */
+		,	B.WIDTH 	AS REG_WIDTH
+		,	B.LENGTH 	AS REG_LENGTH
+		,	B.HEIGHT 	AS REG_HEIGHT
+		,	CASE   WHEN B.APPLY_DY IS NULL THEN  TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyymmdd')  WHEN B.APPLY_DY = '' THEN  TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyymmdd') ELSE B.APPLY_DY END	AS APPLY_DY
+		,	(
+		SELECT ATT_NM
+		FROM
+		(
+		SELECT 	A.SRCMK_CD
+		,	A.VARIANT
+		,   STRING_AGG(CONCAT(B.ATT_GRP_NM , ':' , '[' , B.ATT_DETAIL_NM , ']'),',' ORDER BY B.ATT_GRP_NM) AS ATT_NM
+		FROM
+		(
+		SELECT 	A.PGM_ID, A.VARIANT, A.CLASS, A.ATNAM
+		, 	MAX(A.ATWRT) AS ATWRT
+		,	MAX(A.PROD_CD)	AS PROD_CD
+		,	MAX(A.SRCMK_CD)	AS SRCMK_CD
+		,	MAX(B.L3_CD)	AS L3_CD
+		FROM  TPC_VAR_ATT_SAP A
+		, TPC_VAR_ATT     B
+		WHERE A.PGM_ID = B.PGM_ID
+		GROUP BY A.PGM_ID, A.VARIANT, A.CLASS, A.ATNAM
+		) A
+		 LEFT OUTER JOIN PROD_ATT_CD B
+		ON A.L3_CD = B.PROD_RANGE
+		AND A.ATNAM = B.ATT_GRP_CD
+		AND A.ATWRT = B.ATT_DETAIL_CD
+		AND A.CLASS = B.CLASS
+		GROUP BY A.SRCMK_CD, A.VARIANT
+		) s
+		WHERE SRCMK_CD = A.SRCMK_CD
+		AND VARIANT = A.VARIANT
+		)																				AS VAR_ATT_NM			/* 등록된 변형속성 명칭 */
+		FROM
+		(
+		SELECT  A.PROD_CD
+		,	B.SRCMK_CD
+		,	A.PROD_NM
+		,	B.WIDTH
+		,	B.LENGTH
+		,	B.HEIGHT
+		,	A.VEN_CD
+		,	A.IF_DT
+		,	(SELECT VARIANT FROM TPC_VAR_ATT_SAP WHERE SRCMK_CD = A.SRCMK_CD
+LIMIT 1)			AS VARIANT	/* SQLINES DEMO *** 품으로 등록한 상품의 속성별 변형순번 */
+		,	CASE WHEN (SELECT FIRST_VALUE(PGM_ID) OVER(ORDER BY IF_DT DESC) AS PGM_ID FROM TPC_NEW_PROD_REG_SAP WHERE SRCMK_CD =B.SRCMK_CD AND PROD_CD =B.PROD_CD
+LIMIT 1) IS NULL
+		THEN (SELECT PGM_ID FROM TPC_VAR_ATT_SAP WHERE SRCMK_CD = A.SRCMK_CD
+LIMIT 1)
+		ELSE (SELECT FIRST_VALUE(PGM_ID) OVER(ORDER BY IF_DT DESC) AS PGM_ID FROM TPC_NEW_PROD_REG_SAP WHERE SRCMK_CD =B.SRCMK_CD AND PROD_CD =B.PROD_CD
+LIMIT 1)
+		END PGM_ID																							/* SQLINES DEMO *** 고 신상품 등록을 통해 확정된 상품은 PGM_ID가 존재한다 */
+		FROM PRODUCT A
+		, SALE_MST B
+		WHERE B.ORD_ABLE_FG = 'X'
+		AND B.EAN_TYPE = '1'
+
+		<isNotEmpty property="srchSellCode" prepend="AND">
+			B.SRCMK_CD = #srchSellCode#
+		</isNotEmpty>
+		AND A.PROD_CD = B.PROD_CD
+		AND A.SRCMK_CD = B.SRCMK_CD
+
+		<isNotEmpty property="srchEntpCode" prepend="AND">
+			A.VEN_CD = #srchEntpCode#
+		</isNotEmpty>
+		AND TO_CHAR(A.IF_DT, 'YYYYMMDD') BETWEEN #srchStartDate#	AND #srchEndDate#
+		)A
+		LEFT OUTER JOIN
+		(
+		SELECT  CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SRCMK_CD  WHEN B.SRCMK_CD = '' THEN  A.SRCMK_CD ELSE B.SRCMK_CD END	AS SRCMK_CD
+		,	CASE   WHEN B.APPLY_DY IS NULL THEN  A.APPLY_DY  WHEN B.APPLY_DY = '' THEN  A.APPLY_DY ELSE B.APPLY_DY END	AS APPLY_DY
+		,	B.WIDTH
+		,	B.LENGTH
+		,	B.HEIGHT
+		FROM  TPC_SALE_MST_RSERV A
+		 LEFT OUTER JOIN TPC_SALE_MST_RSERV_SAP B
+		ON A.SRCMK_CD = B.SRCMK_CD
+		AND B.APPLY_DY = TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyymmdd')
+		) B ON A.SRCMK_CD = B.SRCMK_CD
+		WHERE 1=1
+		)A
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="srchProdStatus" prepend="AND">
+				A.CFM_FG = #srchProdStatus#		/* SQLINES DEMO *** 확정 */
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+
+	<!--
+			1. 기존상품은 PGM_ID, VARIANT가 없기 때문에 TPC_SALE_IMG 테이블의 판매코드와 조인걸어서 해당 이미지 정보를 가져오고
+			2. 신상품은 최초 등록시 POG 이미지를 상품코드와 판매코드가 없으므로 상품코드 및 판매코드로 조인을 걸수가 없어서 PGM_ID, VARIANT를  REG_SAP 테이블과 VAR_ATT_SAP 테이블에서 추출하여 TPC_SALE_IMG 테이블의 Key 컬럼과 조인해서 이미지 정보를 가져온다.
+			3. 기존상품일 경우 VARIANT는 강제로 '000'으로 준다.[기존상품의 이미지 데이터가 TPC_SALE_IMG 테이블에 들어오게 되면 VARIANT는 '000'이 아닌 랜덤하게 정해지므로 기존상품의 이미지 정보가 TPC_SALE_IMG 테이블에 있을경우에는 해당 VARIANT를 주고 없을경우 '000']
+			5. 신상품등록 후 상품이 확정 되면 '단일상품' 일 경우에는 '000' '묶음상품' 일 경우에는 VAR_ATT_SAP테이블에서의 VARIANT를 준다
+	 -->
+	<select id="selectFashionProductImageList" resultMap="productImageListMap" parameterClass="nedmpro0130vo">
+		/* SQLINES DEMO *** ectFashionProductImageList */
+		SELECT A.*
+		FROM
+		(
+		SELECT 	ROW_NUMBER() OVER(ORDER BY A.IF_DT DESC)	AS RNUM
+		,	A.PROD_CD
+		, 	A.SRCMK_CD
+		,	A.PROD_NM
+		,	A.WIDTH
+		,	A.LENGTH
+		,	A.HEIGHT
+		,	A.VEN_CD
+		,	A.IF_DT
+		,	A.VARIANT
+		,	CASE A.PROD_GBN  WHEN 'NEW' THEN  A.PGM_ID ELSE A.IMG_SEQ END	AS IMG_SEQ
+		,	A.IMG_NM
+		,	A.CFM_FG
+		,	A.CFM_REASON_FG
+		,	A.CFM_REASON_TXT
+		,	A.REG_WIDTH
+		,	A.REG_LENGTH
+		,	A.REG_HEIGHT
+		,	A.APPLY_DY
+		,	A.VAR_ATT_NM
+		,	CASE WHEN A.PROD_GBN = 'OLD' AND A.IMG_SEQ IS NULL	 	 THEN ''
+		WHEN A.PROD_GBN = 'OLD' AND A.IMG_SEQ IS NOT NULL 	 THEN CONCAT(SUBSTR(A.IMG_SEQ, 3, 6) , SUBSTR(A.IMG_SEQ, -5) , A.VARIANT)
+		WHEN A.PROD_GBN = 'NEW'						  	 THEN CONCAT(SUBSTR(A.PGM_ID, 3, 6) , SUBSTR(A.PGM_ID, -5) , A.VARIANT)
+		END AS PROD_IMG_ID
+		,   A.WG
+		,   A.PCL_WG
+		,   A.PCL_WG_UNIT
+		FROM
+		(
+		SELECT 	 A.PROD_CD
+		, 	 A.SRCMK_CD
+		,	 A.PROD_NM
+		,	 A.WIDTH
+		,	 A.LENGTH
+		,	 A.HEIGHT
+		,	 A.VEN_CD
+		,	 A.IF_DT
+		,	 CASE WHEN PGM_ID IS NULL
+		THEN CASE 
+		(SELECT VARIANT FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+  WHEN ''
+		 THEN  '000'
+		ELSE (SELECT VARIANT FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+		END
+		ELSE CASE A.VARIANT  WHEN '' THEN  '000' ELSE A.VARIANT END
+		END	AS VARIANT				/* SQLINES DEMO *** TPC_SALE_IMG 테이블에 데이터가 있으면 해당 데이터의 VARIANT를 가져오고 신상품은 서브쿼리에서 추출한 VARIANT를 사용한다. */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT PGM_ID FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+		ELSE (SELECT PGM_ID FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS IMG_SEQ				/* IMG_SEQ */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT IMG_NM FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+		ELSE (SELECT IMG_NM FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS IMG_NM				/* 이미지명 */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT CFM_FG FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+		ELSE (SELECT CFM_FG FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS CFM_FG				/* SQLINES DEMO ***  2:반려, 3:확정] */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT CFM_REASON_FG FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+		ELSE (SELECT CFM_REASON_FG FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS CFM_REASON_FG		/* 이미지 반려사유 코드 */
+		,	CASE WHEN A.PGM_ID IS NULL
+		THEN (SELECT CFM_REASON_TXT FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND REG_DATE = (SELECT MAX(REG_DATE) FROM TPC_SALE_IMG WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD))
+		ELSE (SELECT CFM_REASON_TXT FROM TPC_SALE_IMG WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT)
+		END 	AS CFM_REASON_TXT		/* 이미지 반려사유 수기입력 */
+		,	B.WIDTH 	AS REG_WIDTH
+		,	B.LENGTH 	AS REG_LENGTH
+		,	B.HEIGHT 	AS REG_HEIGHT
+		,	CASE   WHEN B.APPLY_DY IS NULL THEN  TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyymmdd')  WHEN B.APPLY_DY = '' THEN  TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyymmdd') ELSE B.APPLY_DY END	AS APPLY_DY
+		,	CASE A.PGM_ID  WHEN '' THEN  'OLD' ELSE 'NEW' END	AS PROD_GBN
+		,	A.PGM_ID
+		,	(
+		SELECT ATT_NM
+		FROM
+		(
+		SELECT 	A.SRCMK_CD
+		,	A.VARIANT
+		,	STRING_AGG(CONCAT(B.ATT_GRP_NM , ':' , '[' , B.ATT_DETAIL_NM , ']'),',' ORDER BY B.ATT_GRP_NM) AS ATT_NM
+		FROM
+		(
+		SELECT 	A.PGM_ID, A.VARIANT, A.CLASS, A.ATNAM
+		, 	MAX(A.ATWRT) AS ATWRT
+		,	MAX(A.PROD_CD)	AS PROD_CD
+		,	MAX(A.SRCMK_CD)	AS SRCMK_CD
+		,	MAX(B.L3_CD)	AS L3_CD
+		FROM  TPC_VAR_ATT_SAP A
+		, TPC_VAR_ATT     B
+		WHERE A.PGM_ID = B.PGM_ID
+		GROUP BY A.PGM_ID, A.VARIANT, A.CLASS, A.ATNAM
+		) A
+		 LEFT OUTER JOIN PROD_ATT_CD B
+		ON A.L3_CD = B.PROD_RANGE
+		AND A.ATNAM = B.ATT_GRP_CD
+		AND A.ATWRT = B.ATT_DETAIL_CD
+		AND A.CLASS = B.CLASS
+		GROUP BY A.SRCMK_CD, A.VARIANT
+		) s
+		WHERE SRCMK_CD = A.SRCMK_CD
+		AND VARIANT = A.VARIANT
+		)																				AS VAR_ATT_NM			/* 등록된 변형속성 명칭 */
+		,   A.WG
+		,   A.PCL_WG
+		,   A.PCL_WG_UNIT
+		FROM
+		(
+		SELECT  A.PROD_CD
+		,	B.SRCMK_CD
+		,	A.PROD_NM
+		,	B.WIDTH
+		,	B.LENGTH
+		,	B.HEIGHT
+		,	A.VEN_CD
+		,	A.IF_DT
+		,	CASE 
+		(SELECT VARIANT FROM TPC_VAR_ATT_SAP WHERE SRCMK_CD = A.SRCMK_CD
+LIMIT 1)  WHEN '' THEN  '000' ELSE 	(SELECT VARIANT FROM TPC_VAR_ATT_SAP WHERE SRCMK_CD = A.SRCMK_CD
+LIMIT 1) END		AS VARIANT	/* SQLINES DEMO *** 품으로 등록한 상품의 속성별 변형순번 */
+		,	CASE WHEN (SELECT FIRST_VALUE(PGM_ID) OVER(ORDER BY IF_DT DESC) AS PGM_ID FROM TPC_NEW_PROD_REG_SAP WHERE SRCMK_CD =B.SRCMK_CD AND PROD_CD =B.PROD_CD
+LIMIT 1 ) IS NULL
+		THEN (SELECT PGM_ID FROM TPC_VAR_ATT_SAP WHERE SRCMK_CD = A.SRCMK_CD
+LIMIT 1)
+		ELSE (SELECT FIRST_VALUE(PGM_ID) OVER(ORDER BY IF_DT DESC) AS PGM_ID FROM TPC_NEW_PROD_REG_SAP WHERE SRCMK_CD =B.SRCMK_CD AND PROD_CD =B.PROD_CD
+LIMIT 1)
+		END PGM_ID
+		,   B.WG
+		,   B.PCL_WG
+		,   B.PCL_WG_UNIT
+		/* SQLINES DEMO *** 고 신상품 등록을 통해 확정된 상품은 PGM_ID가 존재한다 */
+		FROM PRODUCT A
+		, SALE_MST B
+		WHERE B.ORD_ABLE_FG = 'X'
+		AND B.EAN_TYPE = '1'
+
+		<isNotEmpty property="srchSellCode" prepend="AND">
+			B.SRCMK_CD = #srchSellCode#
+		</isNotEmpty>
+		AND A.PROD_CD = B.PROD_CD
+		AND A.SRCMK_CD = B.SRCMK_CD
+
+		<isNotEmpty property="srchEntpCode" prepend="AND">
+			A.VEN_CD = #srchEntpCode#
+		</isNotEmpty>
+		AND TO_CHAR(A.IF_DT, 'YYYYMMDD') BETWEEN #srchStartDate#	AND #srchEndDate#
+		)A
+		LEFT OUTER JOIN
+		(
+		SELECT  CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SRCMK_CD  WHEN B.SRCMK_CD = '' THEN  A.SRCMK_CD ELSE B.SRCMK_CD END	AS SRCMK_CD
+		,	CASE   WHEN B.APPLY_DY IS NULL THEN  A.APPLY_DY  WHEN B.APPLY_DY = '' THEN  A.APPLY_DY ELSE B.APPLY_DY END	AS APPLY_DY
+		,	B.WIDTH
+		,	B.LENGTH
+		,	B.HEIGHT
+		FROM  TPC_SALE_MST_RSERV A
+		 LEFT OUTER JOIN TPC_SALE_MST_RSERV_SAP B
+		ON A.SRCMK_CD = B.SRCMK_CD
+		AND B.APPLY_DY = TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyymmdd')
+		) B ON A.SRCMK_CD = B.SRCMK_CD
+		
+		)A
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="srchProdStatus" prepend="AND">
+				A.CFM_FG = #srchProdStatus#		/* SQLINES DEMO *** 확정 */
+			</isNotEmpty>
+		</dynamic>
+		)A
+		<![CDATA[
+			WHERE CAST(#firstIndex# AS FLOAT) + 1 <= A.RNUM AND A.RNUM < CAST(#lastIndex# AS FLOAT) + 1
+		]]>
+	</select>
+
+
+	<!-- SQLINES DEMO *** 함 -->
+	<select id="selectStandardProductImageCount" resultClass="Integer" parameterClass="nedmpro0130vo">
+		/* SQLINES DEMO *** ectWholeStoreProductCount */
+		SELECT 	COUNT(1) AS CNT
+		FROM
+		(
+		SELECT	A.SRCMK_CD
+		,	B.PROD_NM
+		,	C.IMG_NM
+		,	CASE  C.CFM_FG  WHEN '' THEN  '0'  WHEN ' ' THEN  '0' ELSE C.CFM_FG END 	AS CFM_FG
+		,	C.PGM_ID										AS IMG_SEQ
+		,	C.CFM_REASON_FG
+		,	D.APPLY_DY
+		,	A.WIDTH
+		,	A.LENGTH
+		,	A.HEIGHT
+		,	D.WIDTH AS REG_WIDTH
+		,	D.LENGTH AS REG_LENGTH
+		,	D.HEIGHT AS REG_HEIGHT
+		,	B.VEN_CD
+		,	C.VARIANT
+		FROM SALE_MST A
+		LEFT JOIN  TPC_SALE_IMG C ON A.SRCMK_CD = C.SRCMK_CD
+		LEFT JOIN  (
+		SELECT 	CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SRCMK_CD END	AS SRCMK_CD
+		,	CASE   WHEN B.APPLY_DY IS NULL THEN  A.APPLY_DY END	AS APPLY_DY
+		,	CASE   WHEN B.WIDTH IS NULL THEN  A.WIDTH END			AS WIDTH
+		,	CASE   WHEN B.LENGTH IS NULL THEN  A.LENGTH END		AS LENGTH
+		,	CASE   WHEN B.HEIGHT IS NULL THEN  A.HEIGHT END		AS HEIGHT
+		FROM  TPC_SALE_MST_RSERV A
+		 LEFT OUTER JOIN TPC_SALE_MST_RSERV_SAP B
+		ON A.SRCMK_CD = B.SRCMK_CD
+		AND A.APPLY_DY = B.APPLY_DY
+		) D ON A.SRCMK_CD = D.SRCMK_CD AND D.APPLY_DY = TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyyMMdd')
+		,  (SELECT * FROM STR_PROD WHERE STR_CD = '301') B
+		WHERE A.PROD_CD 		= B.PROD_CD
+		AND A.EAN_TYPE 		= '1'
+		AND A.ORD_ABLE_FG 	= 'X'
+
+		<isNotEmpty property="srchEntpCode" prepend="AND">
+			B.VEN_CD = #srchEntpCode#
+		</isNotEmpty>
+
+		<isEmpty property="srchEntpCode">
+			<isNotEmpty  property="venCds"  prepend="AND">
+				<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+					#venCds[]#
+				</iterate>
+			</isNotEmpty>
+		</isEmpty>
+
+		<isNotEmpty property="srchSellCode" prepend="AND">
+			A.SRCMK_CD = #srchSellCode#
+		</isNotEmpty>
+
+		<isEqual property="srchProdStatus" compareValue="0" prepend="AND">
+			C.CFM_FG IN ('0' , '1')
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="1" prepend="AND">
+			C.CFM_FG IN ('0' , '1')
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="2" prepend="AND">
+			C.CFM_FG = #srchProdStatus#
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="3" prepend="AND">
+			C.CFM_FG = #srchProdStatus#
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="4" prepend="AND">
+			C.CFM_FG IS NULL
+		</isEqual>
+
+		<isNotEmpty property="srchStartDate" prepend="AND">
+			A.REG_DT BETWEEN TO_DATE(#srchStartDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#srchEndDate# , ' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+		</isNotEmpty>
+
+		ORDER BY A.REG_DT DESC
+		) BB
+		WHERE 	COALESCE(BB.CFM_FG,20) != '9'
+	</select>
+
+	<!-- SQLINES DEMO ***  -->
+	<select id="selectStandardProductImageList" resultMap="productImageListMap" parameterClass="nedmpro0130vo">
+		/* SQLINES DEMO *** ectStandardProductImageList */
+		SELECT 	*
+		FROM
+		(
+		SELECT	A.SRCMK_CD
+		,	A.PROD_CD
+		,	B.PROD_NM
+		,	C.IMG_NM
+		,	CASE  C.CFM_FG  WHEN '' THEN  '0'  WHEN ' ' THEN  '0' ELSE C.CFM_FG END	AS CFM_FG
+		,	C.PGM_ID										AS IMG_SEQ
+		,	C.CFM_REASON_FG
+		,	D.APPLY_DY
+		,	A.WIDTH
+		,	A.LENGTH
+		,	A.HEIGHT
+		,	D.WIDTH 	AS REG_WIDTH
+		,	D.LENGTH 	AS REG_LENGTH
+		,	D.HEIGHT 	AS REG_HEIGHT
+		,	B.VEN_CD
+		,	C.VARIANT
+		,	(
+		SELECT ATT_NM
+		FROM
+		(
+		SELECT 	A.SRCMK_CD
+		,	A.VARIANT
+		,   STRING_AGG(CONCAT(B.ATT_GRP_NM , ':' , '[' , B.ATT_DETAIL_NM , ']'),',' ORDER BY B.ATT_GRP_NM) AS ATT_NM
+		FROM
+		(
+		SELECT 	A.PGM_ID, A.VARIANT, A.CLASS, A.ATNAM
+		, 	MAX(A.ATWRT) AS ATWRT
+		,	MAX(A.PROD_CD)	AS PROD_CD
+		,	MAX(A.SRCMK_CD)	AS SRCMK_CD
+		,	MAX(B.L3_CD)	AS L3_CD
+		FROM  TPC_VAR_ATT_SAP A
+		, TPC_VAR_ATT     B
+		WHERE A.PGM_ID = B.PGM_ID
+		AND A.SRCMK_CD = B.SELL_CD
+		GROUP BY A.PGM_ID, A.VARIANT, A.CLASS, A.ATNAM
+		) A
+		 LEFT OUTER JOIN PROD_ATT_CD B
+		ON A.L3_CD = B.PROD_RANGE
+		AND A.ATNAM = B.ATT_GRP_CD
+		AND A.ATWRT = B.ATT_DETAIL_CD
+		AND A.CLASS = B.CLASS
+		GROUP BY A.SRCMK_CD, A.VARIANT
+		) s
+		WHERE SRCMK_CD = A.SRCMK_CD
+		)																				AS VAR_ATT_NM			/* 등록된 변형속성 명칭 */
+		FROM SALE_MST A
+		LEFT JOIN  TPC_SALE_IMG C ON A.SRCMK_CD = C.SRCMK_CD
+		LEFT JOIN  (
+		SELECT 	CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SRCMK_CD END	AS SRCMK_CD
+		,	CASE   WHEN B.APPLY_DY IS NULL THEN  A.APPLY_DY END	AS APPLY_DY
+		,	CASE   WHEN B.WIDTH IS NULL THEN  A.WIDTH END			AS WIDTH
+		,	CASE   WHEN B.LENGTH IS NULL THEN  A.LENGTH END		AS LENGTH
+		,	CASE   WHEN B.HEIGHT IS NULL THEN  A.HEIGHT END		AS HEIGHT
+		FROM  TPC_SALE_MST_RSERV A
+		 LEFT OUTER JOIN TPC_SALE_MST_RSERV_SAP B
+		ON A.SRCMK_CD = B.SRCMK_CD
+		AND A.APPLY_DY = B.APPLY_DY
+		) D ON A.SRCMK_CD = D.SRCMK_CD AND D.APPLY_DY = TO_CHAR(CURRENT_TIMESTAMP(0) + INTERVAL '1' DAY, 'yyyyMMdd')
+		,  (SELECT * FROM STR_PROD WHERE STR_CD = '301') B
+		WHERE A.PROD_CD 		= B.PROD_CD
+		AND A.EAN_TYPE 		= '1'
+		AND A.ORD_ABLE_FG 	= 'X'
+
+		<isNotEmpty property="srchEntpCode" prepend="AND">
+			B.VEN_CD = #srchEntpCode#
+		</isNotEmpty>
+
+		<isEmpty property="srchEntpCode">
+			<isNotEmpty  property="venCds"  prepend="AND">
+				<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+					#venCds[]#
+				</iterate>
+			</isNotEmpty>
+		</isEmpty>
+
+		<isNotEmpty property="srchSellCode" prepend="AND">
+			A.SRCMK_CD = #srchSellCode#
+		</isNotEmpty>
+
+		<isEqual property="srchProdStatus" compareValue="0" prepend="AND">
+			C.CFM_FG IN ('0' , '1')
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="1" prepend="AND">
+			C.CFM_FG IN ('0' , '1')
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="2" prepend="AND">
+			C.CFM_FG = #srchProdStatus#
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="3" prepend="AND">
+			C.CFM_FG = #srchProdStatus#
+		</isEqual>
+
+		<isEqual property="srchProdStatus" compareValue="4" prepend="AND">
+			C.CFM_FG IS NULL
+		</isEqual>
+
+		<isNotEmpty property="srchStartDate" prepend="AND">
+			A.REG_DT BETWEEN TO_DATE(#srchStartDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#srchEndDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+		</isNotEmpty>
+
+		ORDER BY A.REG_DT DESC
+		) BB
+		WHERE 	COALESCE(BB.CFM_FG, 20) != '9'
+	</select>
+
+	<!-- SQLINES DEMO *** ck -->
+	<select id="selectMDSellCodeinReserv" parameterClass="nedmpro0130vo" resultClass="Integer">
+		/* SQLINES DEMO *** ectImgSizeReservCheck */
+		SELECT  COUNT(1) AS CNT
+		FROM 	TPC_SALE_MST_RSERV
+		WHERE	SRCMK_CD = #srcmkCd#
+		  AND APPLY_DY = #applyDy#
+	</select>
+
+
+	<insert id="insertMDSizeReserv" parameterClass="nedmpro0130vo">
+		/* SQLINES DEMO *** ertMDSizeReserv */
+		INSERT INTO TPC_SALE_MST_RSERV
+		(
+			 SRCMK_CD
+		, 	WIDTH
+		, 	LENGTH
+		, 	HEIGHT
+		, 	SIZE_UNIT
+		, 	CONV_RT
+		, 	PROD_CD
+		, 	ORD_UNIT
+		, 	ORD_ABLE_FG
+		, 	CHG_FG
+		, 	OLD_WIDTH
+		, 	OLD_LENGTH
+		, 	OLD_HEIGHT
+		, 	OLD_CONV_RT
+		, 	OLD_PROD_CD
+		, 	OLD_ORD_UNIT
+		, 	OLD_ORD_ABLE_FG
+		, 	OLD_CHG_FG
+		, 	REG_DT
+		, 	REG_EMP_NO
+		, 	LST_CHG_DT
+		, 	LST_CHG_EMP_NO
+		, 	APPLY_DY
+		)
+		SELECT	SRCMK_CD
+			 , 	cast(nullif(#prodWidth#,'') as integer)
+			 , 	cast(nullif(#prodHeight#,'') as integer)
+			 , 	cast(nullif(#prodLength#,'') as integer)
+			 , 	#sizeUnit#
+			 , 	CONV_RT
+			 , 	PROD_CD
+			 , 	VIEW_UNIT
+			 , 	ORD_ABLE_FG
+			 , 	CHG_FG
+			 , 	WIDTH
+			 , 	LENGTH
+			 , 	HEIGHT
+			 , 	CONV_RT
+			 , 	PROD_CD
+			 , 	VIEW_UNIT
+			 , 	ORD_ABLE_FG
+			 , 	CHG_FG
+			 , 	CURRENT_TIMESTAMP(0)
+			 , 	'EDI_POG'
+			 , 	CURRENT_TIMESTAMP(0)
+			 , 	'EDI_POG'
+			 , 	#applyDy#
+		FROM    SALE_MST
+		WHERE	SRCMK_CD = #srcmkCd#
+		  AND EAN_TYPE = '1'
+	</insert>
+
+	<!-- SQLINES DEMO *** -->
+	<update id="updateMDSizeInReserv" parameterClass="nedmpro0130vo">
+		/* SQLINES DEMO *** ateImgSizeReserv */
+		UPDATE 	TPC_SALE_MST_RSERV
+		SET 	WIDTH 		= cast(nullif(#prodWidth#,'') as integer)
+		  , 	LENGTH 		= cast(nullif(#prodLength#,'') as integer)
+		  , 	HEIGHT 		= cast(nullif(#prodHeight#,'') as integer)
+		  , 	SIZE_UNIT 	= #sizeUnit#
+		  , 	LST_CHG_DT	= CURRENT_TIMESTAMP(0)
+		WHERE 	SRCMK_CD 	= #srcmkCd#
+		  AND APPLY_DY 	= #applyDy#
+	</update>
+
+
+	<select id="selectRfcCallData" parameterClass="nedmpro0130vo" resultMap="rfcCallDataMap">
+		/* SQLINES DEMO *** ectRfcCallData */
+		SELECT	SRCMK_CD
+			 , 	APPLY_DY
+			 , 	WIDTH
+			 , 	LENGTH
+			 , 	HEIGHT
+			 , 	SIZE_UNIT
+			 , 	CONV_RT
+			 , 	PROD_CD
+			 , 	ORD_UNIT
+			 , 	ORD_ABLE_FG
+			 , 	CHG_FG
+			 , 	OLD_WIDTH 		AS OLD_WIDTH
+			 , 	OLD_LENGTH		AS OLD_LENGTH
+			 , 	OLD_HEIGHT		AS OLD_HEIGHT
+			 , 	CONV_RT		AS OLD_CONV_RT
+			 , 	PROD_CD		AS OLD_PROD_CD
+			 , 	ORD_UNIT	AS OLD_ORD_UNIT
+			 , 	ORD_ABLE_FG	AS OLD_ORD_ABLE_FG
+			 , 	CHG_FG		AS OLD_CHG_FG
+			 , 	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')		AS REG_DT
+			 , 	'EDI_POG'	AS REG_EMP_NO
+			 , 	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')		AS LST_CHG_DT
+			 ,	'EDI_POG'	AS LST_CHG_EMP_NO
+		FROM    TPC_SALE_MST_RSERV
+		WHERE	SRCMK_CD = #srcmkCd#
+	</select>
+
+
+	<delete id="deleteProdPogImgInfo"	parameterClass="java.util.Map">
+		/* SQLINES DEMO *** eteProdPogImgInfo */
+		DELETE FROM TPC_SALE_IMG WHERE PGM_ID = #pgmId#
+		<isNotEmpty property="variant" prepend="AND">
+			VARIANT = #variant#
+		</isNotEmpty>
+	</delete>
+
+
+	<insert id="insertProdPogImgInfo"	parameterClass="nedmpro0024vo">
+		/* SQLINES DEMO *** ertProdPogImgInfo */
+		INSERT INTO TPC_SALE_IMG
+		(
+			 PGM_ID
+		,	VARIANT
+		,	IMG_NM
+		,	REG_DATE
+		,	REG_ID
+		,	CFM_FG
+		,	PROD_CD
+		,	SRCMK_CD
+		,	ENTP_CD
+		)
+		VALUES
+			(
+				 #pgmId#
+			,	#variant#
+			,	#prodImgId#
+			,	CURRENT_TIMESTAMP(0)
+			,	#entpCd#
+			,	#cfmFg#
+			,	#prodCd#
+			,	#srcmkCd#
+			,	#entpCd#
+			)
+	</insert>
+
+	<!-- SQLINES DEMO ***  -->
+	<select id="selectProdImgInfoToRFC"		parameterClass="java.util.Map"		resultMap="selectProdImgInfoToRFCMap">
+		/* SQLINES DEMO *** ectProdImgInfoToRFC */
+		SELECT 	A.PGM_ID	AS PGM_ID		/* 프로그램ID */
+			 ,	A.VARIANT	AS VARIANT		/* 변형순번 */
+			 ,	'1'			AS SEQ			/* 순번 */
+			 ,	A.IMG_NM	AS ZZIMAGE		/* 이미지 이름 */
+			 ,	'I'			AS CFM_FG		/* 수정구분자 */
+			 ,	A.SRCMK_CD	AS SRCMK_CD		/* 판매코드 */
+		FROM  TPC_SALE_IMG A
+		WHERE A.PGM_ID = #pgmId#
+		  AND A.PROD_CD = #prodCd#
+		  AND A.SRCMK_CD = #srcmkCd#
+	</select>
+
+	<select id="selectWgtSeq" resultClass="String" parameterClass="Map">
+		SELECT
+			COALESCE(MAX(seq), '0')
+		FROM
+			TPC_WGT_REQ
+		WHERE
+			PROD_CD = #prodCd#
+		  AND SRCMK_CD = #srcmkCd#
+	</select>
+
+	<select id="selectWgtNextSeq" resultClass="String" parameterClass="Map">
+		SELECT
+			COALESCE(MAX(seq), '0') + 1
+		FROM
+			TPC_WGT_REQ
+		WHERE
+			PROD_CD = #prodCd#
+		  AND SRCMK_CD = #srcmkCd#
+	</select>
+
+	<insert id="insertWgtInfo" parameterClass="Map">
+		INSERT INTO
+			TPC_WGT_REQ
+		(
+			SEQ,
+			PROD_CD,
+			SRCMK_CD,
+			OLD_G_WGT,
+			OLD_N_WGT,
+			OLD_WGT_UNIT,
+			NEW_G_WGT,
+			NEW_N_WGT,
+			NEW_WGT_UNIT,
+			REG_ID,
+			REG_DATE
+		)
+		VALUES
+			(
+				#seq#,
+				#prodCd#,
+				#srcmkCd#,
+				#oldGWgt#,
+				#oldNWgt#,
+				#oldWgtUnit#,
+				#newGWgt#,
+				#newNWgt#,
+				#newWgtUnit#,
+				#regId#,
+				CURRENT_TIMESTAMP(0)
+			)
+	</insert>
+
+	<delete id="deleteWgtIfno" parameterClass="Map">
+		DELETE FROM
+			TPC_WGT_REQ
+		WHERE
+			SEQ = #seq#
+		  AND PROD_CD = #prodCd#
+		  AND SRCMK_CD = #srcmkCd#
+	</delete>
+
+	<select id="selectWgtInfo" resultClass="java.util.HashMap" parameterClass="Map">
+		SELECT
+			SEQ,
+			PROD_CD,
+			SRCMK_CD,
+			TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS APPLY_DY,
+			OLD_G_WGT,
+			OLD_N_WGT,
+			OLD_WGT_UNIT,
+			NEW_G_WGT,
+			NEW_N_WGT,
+			NEW_WGT_UNIT
+		/* SQLINES DEMO ***        REG_DATE
+         */
+		FROM
+			TPC_WGT_REQ
+		WHERE
+			SEQ = #seq#
+		  AND PROD_CD = #prodCd#
+		  AND SRCMK_CD = #srcmkCd#
+	</select>
+
+	<select id="selectMstWgtInfo" resultClass="java.util.HashMap" parameterClass="Map">
+		SELECT
+			'0' AS SEQ,
+			PROD_CD,
+			SRCMK_CD,
+			TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS APPLY_DY,
+			'' AS OLD_G_WGT,
+			'' AS OLD_N_WGT,
+			'' AS OLD_WGT_UNIT,
+			WG AS NEW_G_WGT,
+			PCL_WG AS NEW_N_WGT,
+			PCL_WG_UNIT AS NEW_WGT_UNIT
+		FROM
+			SALE_MST
+		WHERE
+			PROD_CD = #prodCd#
+		  AND SRCMK_CD = #srcmkCd#
+	</select>
+
+	<select id="selectWgtSeqRes" resultClass="String" parameterClass="Map">
+		SELECT
+			COALESCE(MAX(SEQ), '0') AS SEQ
+		FROM
+			WGT_REQ_SAP
+		WHERE
+			PROD_CD = #prodCd#
+		  AND SRCMK_CD = #srcmkCd#
+	</select>
+
+	<select id="selectWgtResInfo" resultClass="java.util.HashMap" parameterClass="Map">
+		SELECT
+			IF_DT AS RET_DT,
+			MSGTYP AS RET_TYPE,
+			MESSAGE AS RET_MSG
+		FROM
+			WGT_REQ_SAP
+		WHERE
+			SEQ = #SEQ#
+		  AND PROD_CD = #PROD_CD#
+		  AND SRCMK_CD = #SRCMK_CD#
+	</select>
+</sqlMap>

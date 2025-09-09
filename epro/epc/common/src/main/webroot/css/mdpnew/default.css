@@ -1,0 +1,75 @@
+@font-face {
+	font-family:'MG';
+	src: url('./malgun.eot');
+	src:local(��), url('./malgun.woff')  format('woff');
+	font-weight:normal;
+	font-style: normal;
+}
+@font-face {
+	font-family:'MGB';
+	src: url('./malgunbd.eot');
+	src:local(��), url('./malgunbd.woff')  format('woff');
+	font-weight:normal;
+	font-style: normal;
+}
+html{height:100%}
+body{position:relative;height:100%}
+html,body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select{margin:0;padding:0}
+body,input,textarea,select,button,table{font-family:'MG',Dotum,AppleGothic,sans-serif;font-size:14px}
+ul,ol{list-style:none}
+em,address{font-style:normal}
+a{text-decoration:none;cursor:pointer}
+img, input, button, select, textarea, fieldset{vertical-align:middle;border:0}
+button{cursor:pointer}
+legend, caption, hr, .skip, .hide {display: none;}
+.blind {font-size: 0;left: -500000px;overflow: hidden;position: absolute;}
+
+/* ����� �������� - loading �ؽ�Ʈ ��� */
+.ui-loading, .ui-loader {display: none !important}
+
+/* �˾�- ���� ���� */
+.ui-shadow-inset{box-shadow:none}
+.ui-popup-screen{bottom:0 !important;position:fixed}
+.ui-popup-container{top:50% !important;left:50% !important;	margin:-100px 0 0 -150px;position:fixed}
+.pbox{	width:300px;min-height:168px;border:2px solid #1794e6 !important;border-radius:10px;position:relative !important;background:#fff;
+	text-align:center;font-size:0
+}
+.pbox > p{font-size:20px;font-family:MGB;color:#555;margin:30px 0 20px}
+.pbox .btn_box{margin-bottom:20px}
+.pbox .btn_box a{display:inline-block;width:130px;height:46px;line-height:44px;;color:#fff;font-family:MGB;font-size:19px;border-radius:4px;margin:0 3px}
+.pbox .btn_box a:active{opacity:0.7}
+.pbox .btn_box .typeA{background:url(../../images/mdpnew/com/pop_btn_a.png) no-repeat 0 0;background-size:100% 100%;border:1px solid #0762a0}
+.pbox .btn_box .typeB{background:url(../../images/mdpnew/com/pop_btn_b.png) no-repeat 0 0;background-size:100% 100%;border:1px solid #444}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:#999;font-family:MGB}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:#999;font-family:MGB}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:#999;font-family:MGB;}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:#999;font-family:MGB}
+
+/* �ε� Rotate 2015-09-15 �߰� */
+.loader-screen{background-color:#000;top:0;left:0;right:0;bottom:0;position:fixed;z-index: 1099;opacity:0.50;filter:Alpha(Opacity=50)}
+.loader-container{z-index:1100;display:inline-block;position:fixed;padding:0;outline:0;width:100%;top:50%;margin-top:-70px}
+.loader-container .inner{width:100%;text-align:center;color:#fff}
+.loader-container .inner img{margin:10px 0}
+.loader-container .inner .txt{color:#fff;font-size:19px;font-family:MGB;width:100%;letter-spacing:-1px;margin-top:10px}
+.loading {
+-webkit-animation: rotateLoading 2.5s infinite linear;
+-moz-animation: rotateLoading 2.5s infinite linear;
+-o-animation: rotateLoading 2.5s infinite linear;
+}
+@-webkit-keyframes rotateLoading {
+from { -webkit-transform: rotate(0deg)}
+to { -webkit-transform: rotate(360deg)}
+}
+@-moz-keyframes rotateLoading {
+from { -moz-transform: rotate(0deg)}
+to { -moz-transform: rotate(360deg)}
+}
+@-o-keyframes rotateLoading {
+from { -o-transform: rotate(0deg)}
+to { -o-transform: rotate(360deg)}
+}

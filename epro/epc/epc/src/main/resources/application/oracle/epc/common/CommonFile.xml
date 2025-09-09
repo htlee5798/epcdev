@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="file">
+    <typeAlias alias="commonFileVO" type="com.lottemart.epc.common.model.CommonFileVO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    
+	<select id="selectBoardSeq" resultClass="java.lang.String">
+		/* commonFileVO.selectBoardSeq */
+		SELECT LPAD(SQ_BOARD_SEQ_SEQ.NEXTVAL,12,0) AS BOARD_SEQ FROM DUAL
+	</select>
+
+    <select id="selectMaxDepth" resultClass="java.lang.String">
+        /* commonFileVO.selectMaxDepth */
+        SELECT MAX(DEPTH)+1 depth FROM TBO_BOARD WHERE BOARD_SEQ LIKE #boardSeq#|| '%'
+    </select>
+	
+	<select id="selectListSeq" resultClass="java.lang.String">
+		/* commonFileVO.selectListSeq */ 
+		SELECT PKG_BOARD.F_GET_ORDER_SEQ(#boardSeq#) AS listSeq FROM DUAL
+	</select>
+	
+	<select id="selectFileSeq" resultClass="java.lang.String">
+		/* commonFileVO.selectFileSeq */
+		SELECT ATCH_FILE_ID FROM TBO_BOARD where BOARD_SEQ=#boardSeq#
+	</select>
+	
+	<select id="selectSearchKeyWordSeq" resultClass="java.lang.String">
+		/* commonFileVO.selectSearchKeyWordSeq */
+		SELECT LPAD(SQ_BOARD_SEQ_SEQ.NEXTVAL,8,0) AS  SEARCH_KEYWORD_SEQ FROM DUAL
+	</select>
+	
+	<update id="updateFileId">
+		/* commonFileVO.updateFileId */
+		UPDATE	TBO_BOARD 
+		   SET 	ATCH_FILE_ID =''
+		       ,ATCH_FILE_YN = 'N'
+		 WHERE 	BOARD_SEQ = #boardSeq#
+	</update>
+</sqlMap>

@@ -1,0 +1,99 @@
+@charset "utf-8";
+
+/* body base style */
+html, body {  height: 100%;  
+	margin: 1;
+	padding: 0;
+	font-family: Dotum, "돋움";
+}
+ 
+html, body, frameset, iframe {
+
+	scrollbar-face-color:#f6f6f6;
+	scrollbar-highlight-color: #dedede;
+	scrollbar-shadow-color: #dedede;
+	scrollbar-3dlight-color: #F5F5F5;
+	scrollbar-darkshadow-color: #F5F5F5;
+	scrollbar-track-color: #f6f6f6;
+	scrollbar-arrow-color: #a5acb2;
+}
+textarea {
+	scrollbar-face-color:#f6f6f6;
+	scrollbar-highlight-color: #dedede;
+	scrollbar-shadow-color: #dedede;
+	scrollbar-3dlight-color: #F5F5F5;
+	scrollbar-darkshadow-color: #F5F5F5;
+	scrollbar-track-color: #f6f6f6;
+	scrollbar-arrow-color: #a5acb2;
+}
+
+/* form base style */
+form, dl, dt, dd, p, iframe { margin:0; padding:0; }
+ul, ol, li { margin:0; padding:0; list-style:none; }
+img { border: 0 none; }
+h1, h2, h3, h4, h5, h6 { margin:0; padding:0; }
+
+/* font base style */
+th, td {
+	color: #555555;
+	font-size:11px;
+	line-height:18px;
+	font-family: Dotum, "돋움";
+}
+p, div, select, input, textarea {
+	color: #555555;
+	font-size:12px;
+	line-height:18px;
+	font-family: Dotum, "돋움";
+}
+
+/* link base style */
+a:active {	color: #555555;	text-decoration: none;}
+a:link, a:visited {	text-decoration: none;}
+a:hover {	text-decoration: underline;}
+
+/* form style */
+select {
+	vertical-align:middle;
+	font-size:11px;
+	height:20px;
+}
+input.text {
+	font-size:11px;
+	border:1px solid #dcdad3;
+	background-color:#fff;
+	height:15px;
+	padding:3px 3px 0 3px;
+	line-height:14px;
+	vertical-align:middle;
+	margin-bottom:1px;
+}
+input.check { vertical-align:middle; margin-bottom:2px; }
+
+
+
+/* margin */
+.mt5 { margin-top:5px; }
+.mt10 { margin-top:10px; }
+.mt15 { margin-top:15px; }
+.mt20 { margin-top:20px; }
+.mt25 { margin-top:25px; }
+
+.mb10 { margin-bottom:10px; }
+
+/* padding */
+.pt5 { padding-top:5px; }
+.pt10 { padding-top:10px; }
+.pt15 { padding-top:15px; }
+.pt20 { padding-top:20px; }
+.pt25 { padding-top:25px; }
+
+.pb5 { padding-bottom:5px; }
+
+
+.left	{ text-align:left; }
+.right	{ text-align:right; }
+.hand { cursor: pointer; }
+.middle { vertical-align:middle; margin-left:0px; margin-bottom:2px; }
+.clear_aft:after	{ content:""; display:block; clear:both; }
+.clear_aft			{ *zoom:1; }

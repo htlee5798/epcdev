@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMCOM0002">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmcom0002VO" type="com.lottemart.epc.common.model.PSCMCOM0002VO" />
+
+	<select id="selectVendorList_OLD250710" parameterClass="pscmcom0002VO" resultClass="dataMap">
+		/* PSCMCOM0002.selectVendorList_OLD250710 */ 
+		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+		        SELECT 
+		               VENDOR_ID, VENDOR_NM, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM065' AND MINOR_CD = A.VENDOR_TYPE_CD) VENDOR_TYPE_CD
+		               ,DECODE(null, '', substr(CONO,1, 2) || '-' || substr(CONO,3, 3) ||  '-'  || substr(CONO,6)) AS CONO
+		               ,CONO AS PARAM_CONO
+		        FROM
+		        (
+		            SELECT
+		                ROWNUM AS NUM, VENDOR_ID, VENDOR_NM, VENDOR_TYPE_CD, CONO
+		            FROM TVE_VENDOR    
+		        WHERE 1=1
+		<isNotEmpty property="vendorId">       
+		            AND VENDOR_ID LIKE #vendorId# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="vendorNm">		            
+		            AND VENDOR_NM LIKE '%'|| #vendorNm# ||'%'
+		</isNotEmpty>
+		<isNotEmpty property="cono">		            
+		            AND CONO LIKE #cono#||'%'
+		</isNotEmpty>		            
+		        ) A
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+     ORDER BY VENDOR_NM, VENDOR_ID
+	</select>  
+	
+	<select id="selectVendorsSmallPopupList" parameterClass="pscmcom0002VO" resultClass="dataMap">
+		/* PSCMCOM0002.selectVendorsSmallPopupList */ 
+		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+		        SELECT 
+		               VENDOR_ID, VENDOR_NM
+		        FROM
+		        (
+		            SELECT
+		                ROWNUM AS NUM, VENDOR_ID, VENDOR_NM
+		              FROM TVE_VENDOR    
+		        	  WHERE CONO = #cono#
+		        	  <isNotEmpty property="vendorId">	
+		          	    AND VENDOR_ID LIKE #vendorId# || '%'
+		          	  </isNotEmpty>
+		          	  <isNotEmpty property="vendorNm">	
+		          	    AND VENDOR_NM LIKE '%'|| #vendorNm# ||'%'
+		          	  </isNotEmpty>
+		          	    AND  VALI_YN = 'Y'
+		          	  ORDER BY VENDOR_ID
+		        ) A
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+     
+	</select>  
+	
+	<select id="selectVendorListAdmin_OLD250708" parameterClass="pscmcom0002VO" resultClass="dataMap">
+		/* PSCMCOM0002.selectVendorListAdmin_OLD250708 */ 
+		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+		        SELECT 
+		               VENDOR_ID, VENDOR_NM, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM065' AND MINOR_CD = A.VENDOR_TYPE_CD) VENDOR_TYPE_CD
+		               ,DECODE(null, '', substr(CONO,1, 2) || '-' || substr(CONO,3, 3) ||  '-'  || substr(CONO,6)) AS CONO
+		               ,CONO AS PARAM_CONO
+		        FROM
+		        (
+		            SELECT
+		                ROWNUM AS NUM, VENDOR_ID, VENDOR_NM, VENDOR_TYPE_CD, CONO
+		            FROM TVE_VENDOR    
+		        WHERE 1=1
+		<isNotEmpty property="vendorId">       
+		            AND VENDOR_ID LIKE #vendorId# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="vendorNm">		            
+		            AND VENDOR_NM LIKE '%'|| #vendorNm# ||'%'
+		</isNotEmpty>
+		<isNotEmpty property="cono">		            
+		            AND CONO LIKE #cono#||'%'
+		</isNotEmpty>		   
+		
+		
+		
+		<isNotEmpty property="lcnComId">
+		 and CONO in (                       
+                          SELECT  BMAN_NO
+                          FROM   EDI_VENDOR_INFO
+                          WHERE  1=1 AND    GROUP_ID LIKE '%'|| #lcnComId# ||'%'
+                         )
+         </isNotEmpty>	                
+		
+		         
+		        ) A
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+     ORDER BY VENDOR_NM, VENDOR_ID
+	</select>  
+	
+	<select id="countAdminId" parameterClass="pscmcom0002VO" resultClass="int">
+		/* PSCMCOM0002.countAdminId */  
+		SELECT count(ADMIN_ID) cnt 
+		  FROM TAD_ADMIN
+		 WHERE LOGIN_ID = #loginId#
+		   AND PWD      = #pwd#
+		   AND ACTIVE_YN = 'Y'
+		--   AND ADMIN_TYPE_CD IN ('00', '09' , '04', '17', '10')
+	</select>  
+	
+	<!-- 비밀번호 에러 카운트 -->
+	<select id="pwdErrorCnt" parameterClass="pscmcom0002VO" resultClass="int">
+		/* PSCMCOM0002.pwdErrorCnt */  
+			SELECT PWD_ERROR_CNT AS pwdErrorCnt
+			 FROM TAD_ADMIN
+		 	WHERE LOGIN_ID = #loginId#
+	</select>	
+	
+	<!-- 비밀번호 에러 카운트 증가 (5번 오류시 비활성화) -->
+	<update id="insertPswdErrorCnt" parameterClass="pscmcom0002VO" >
+		/* PSCMCOM0002.insertPswdErrorCnt */  
+		  UPDATE TAD_ADMIN
+	      SET PWD_ERROR_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'), 
+	          PWD_ERROR_CNT = #pwdErrorCnt#,
+	        <isNotEmpty property="activeYn">		
+	          ACTIVE_YN = #activeYn#,
+	        </isNotEmpty>
+	          MOD_ID = 'pwError'||#pwdErrorCnt#,
+	          MOD_DATE = CURRENT_TIMESTAMP(0)
+	      WHERE LOGIN_ID = #loginId# 
+	</update>
+	
+	<select id="ssoCountAdminId" parameterClass="pscmcom0002VO" resultClass="int">
+		/* PSCMCOM0002.countAdminId */  
+		SELECT count(ADMIN_ID) cnt 
+		  FROM TAD_ADMIN
+		 WHERE LOGIN_ID = #loginId#
+		   AND ACTIVE_YN = 'Y'
+		--   AND ADMIN_TYPE_CD IN ('00', '09' , '04', '17', '10')
+	</select> 
+
+	<select id="selectVendorListGroupAtt" parameterClass="pscmcom0002VO" resultClass="dataMap">
+		/* PSCMCOM0002.selectVendorListGroupAtt */ 
+		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+		        SELECT 
+		               VENDOR_ID, VENDOR_NM, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM065' AND MINOR_CD = A.VENDOR_TYPE_CD) VENDOR_TYPE_CD
+		               ,DECODE(null, '', substr(CONO,1, 2) || '-' || substr(CONO,3, 3) ||  '-'  || substr(CONO,6)) AS CONO
+		               ,CONO AS PARAM_CONO
+		        FROM
+		        (
+		            SELECT
+		                ROWNUM AS NUM, VENDOR_ID, VENDOR_NM, VENDOR_TYPE_CD, CONO
+		            FROM TVE_VENDOR    
+		        WHERE 1=1 and CONO in ('2158513569','2158528500','2158513569')
+		<isNotEmpty property="vendorId">       
+		            AND VENDOR_ID LIKE #vendorId# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="vendorNm">		            
+		            AND VENDOR_NM LIKE '%'|| #vendorNm# ||'%'
+		</isNotEmpty>
+		<isNotEmpty property="cono">		            
+		            AND CONO LIKE #cono#||'%'
+		</isNotEmpty>		            
+		        ) A
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+     ORDER BY VENDOR_NM, VENDOR_ID
+	</select>  
+
+	<select id="selectVendorListAdminGroupAtt" parameterClass="pscmcom0002VO" resultClass="dataMap">
+		/* PSCMCOM0002.selectVendorListAdminGroupAtt */ 
+		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+		        SELECT 
+		               VENDOR_ID, VENDOR_NM, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM065' AND MINOR_CD = A.VENDOR_TYPE_CD) VENDOR_TYPE_CD
+		               ,DECODE(null, '', substr(CONO,1, 2) || '-' || substr(CONO,3, 3) ||  '-'  || substr(CONO,6)) AS CONO
+		               ,CONO AS PARAM_CONO
+		        FROM
+		        (
+		            SELECT
+		                ROWNUM AS NUM, VENDOR_ID, VENDOR_NM, VENDOR_TYPE_CD, CONO
+		            FROM TVE_VENDOR    
+		        WHERE 1=1 and CONO in ('2158513569','2158528500','2158513569')
+		<isNotEmpty property="vendorId">       
+		            AND VENDOR_ID LIKE #vendorId# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="vendorNm">		            
+		            AND VENDOR_NM LIKE '%'|| #vendorNm# ||'%'
+		</isNotEmpty>
+		<isNotEmpty property="cono">		            
+		            AND CONO LIKE #cono#||'%'
+		</isNotEmpty>		   
+		
+		<isNotEmpty property="lcnComId">
+		 and CONO in (                       
+                          SELECT  BMAN_NO
+                          FROM   EDI_VENDOR_INFO
+                          WHERE  1=1 AND    GROUP_ID LIKE '%'|| #lcnComId# ||'%'
+                         )
+         </isNotEmpty>	                
+		
+		         
+		        ) A
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+     ORDER BY VENDOR_NM, VENDOR_ID
+	</select>  
+	
+	
+	<!-- ////////////////////////////////////////////////////////////////////////// -->
+	<!-- [관리자] 협력사리스트 조회 resultMap -->
+	<resultMap id="adminVendorListMap" class="dataMap">
+		<result column="PAGE"			property="PAGE"				/>	<!-- 페이지 -->
+		<result column="TOTAL_COUNT"	property="TOTAL_COUNT"		/>	<!-- 전체카운트 -->
+		<result column="NUM"			property="NUM"				/>	<!-- 행번호 -->
+		<result column="VENDOR_ID"		property="VENDOR_ID"		/>	<!-- 파트너사코드 -->
+		<result column="VENDOR_NM"		property="VENDOR_NM"		/>	<!-- 파트너사명 -->
+		<result column="VENDOR_TYPE_CD"	property="VENDOR_TYPE_CD"	/>	<!-- 파트너사유형명 -->
+		<result column="PARAM_CONO"		property="PARAM_CONO"		/>	<!-- 파라미터용 사업자번호 -->
+		<result column="CONO"			property="CONO"				/>	<!-- 포맷팅된 사업자번호 -->
+	</resultMap>
+	
+	<!-- [관리자] 협력사리스트 조회 -->
+	<select id="selectVendorList" parameterClass="pscmcom0002VO" resultMap="adminVendorListMap">
+		/* PSCMCOM0002.selectVendorList */ 
+		SELECT
+			CEIL(NUM::NUMERIC / #recordCountPerPage#) AS PAGE		<!-- numeric 처리 안하면 제대로 page 계산안됨 -->
+			, COUNT(*) OVER() TOTAL_COUNT
+			, T1.NUM
+			, T1.VENDOR_ID
+			, T1.VENDOR_NM
+			, T1.VENDOR_TYPE_CD
+			, T1.PARAM_CONO
+			, T1.CONO
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.VENDOR_NM, A.VENDOR_ID) AS NUM	/* ROWNUMBER */
+				, A.VENDOR_ID	/* 파트너사코드 */ 
+				, A.VENDOR_NM	/* 파트너사명 */
+				, B.CD_NM AS VENDOR_TYPE_CD /* 파트너사유형명 */
+				, A.CONO AS PARAM_CONO	/* 사업자번호(파라미터용) */
+				, CONCAT(SUBSTR(A.CONO, 1,2), '-', SUBSTR(A.CONO, 3,3), '-', SUBSTR(A.CONO, 6)) AS CONO	/* 사업자번호(FORMAT) */
+			FROM TVE_VENDOR A
+			LEFT OUTER JOIN TET_CODE B ON B.MAJOR_CD = 'SM065' AND A.VENDOR_TYPE_CD = B.MINOR_CD
+			WHERE 1=1
+			<isNotEmpty property="vendorId">
+			AND A.VENDOR_ID LIKE CONCAT(#vendorId#, '%')
+			</isNotEmpty>
+			<isNotEmpty property="vendorNm">
+			AND A.VENDOR_NM LIKE CONCAT('%', #vendorNm#, '%') 
+			</isNotEmpty>
+			<isNotEmpty property="cono">
+			AND A.CONO LIKE CONCAT(#cono#, '%')
+			</isNotEmpty>
+		)T1
+		LIMIT #recordCountPerPage# OFFSET (#pageIndex#-1)*(#recordCountPerPage#)
+	</select>
+	
+	<!-- [관리자] 로그인이후 협력사리스트 조회 -->
+	<select id="selectVendorListAdmin" parameterClass="pscmcom0002VO" resultMap="adminVendorListMap">
+		/* PSCMCOM0002.selectVendorListAdmin */ 
+		SELECT
+			CEIL(NUM::NUMERIC / #recordCountPerPage#) AS PAGE		<!-- numeric 처리 안하면 제대로 page 계산안됨 -->
+			, COUNT(*) OVER() TOTAL_COUNT
+			, T1.NUM
+			, T1.VENDOR_ID
+			, T1.VENDOR_NM
+			, T1.VENDOR_TYPE_CD
+			, T1.PARAM_CONO
+			, T1.CONO
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.VENDOR_NM, A.VENDOR_ID) AS NUM	/* ROWNUMBER */
+				, A.VENDOR_ID	/* 파트너사코드 */ 
+				, A.VENDOR_NM	/* 파트너사명 */
+				, B.CD_NM AS VENDOR_TYPE_CD /* 파트너사유형명 */
+				, A.CONO AS PARAM_CONO	/* 사업자번호(파라미터용) */
+				, CONCAT(SUBSTR(A.CONO, 1,2), '-', SUBSTR(A.CONO, 3,3), '-', SUBSTR(A.CONO, 6)) AS CONO	/* 사업자번호(FORMAT) */
+			FROM TVE_VENDOR A
+			LEFT OUTER JOIN TET_CODE B ON B.MAJOR_CD = 'SM065' AND A.VENDOR_TYPE_CD = B.MINOR_CD
+			WHERE 1=1
+			<isNotEmpty property="vendorId">
+			AND A.VENDOR_ID LIKE CONCAT(#vendorId#, '%')
+			</isNotEmpty>
+			<isNotEmpty property="vendorNm">
+			AND A.VENDOR_NM LIKE CONCAT('%', #vendorNm#, '%') 
+			</isNotEmpty>
+			<isNotEmpty property="cono">
+			AND A.CONO LIKE CONCAT(#cono#, '%')
+			</isNotEmpty>
+		)T1
+		LIMIT #recordCountPerPage# OFFSET (#pageIndex#-1)*(#recordCountPerPage#)
+	</select>  
+</sqlMap>

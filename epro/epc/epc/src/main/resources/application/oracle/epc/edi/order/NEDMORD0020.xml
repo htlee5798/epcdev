@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMORD0020">
+
+	<!-- 전표별 쿼리 -->
+	<typeAlias alias="NEDMORD0020VO" type="com.lottemart.epc.edi.order.model.NEDMORD0020VO"/>
+	
+	<resultMap id="NEDMORD0020VOMap" class="NEDMORD0020VO">
+	 	<result property="ordSlipNo"		column="ORD_SLIP_NO"	/>	<!-- 발주전표번호 -->
+		<result property="ordDy"			column="ORD_DY"			/>	<!-- 발주일자 -->
+		<result property="strNm"			column="STR_NM"			/>	<!-- 점포명 -->
+		<result property="orgFg"			column="ORD_FG"			/>	<!-- 발주구분 -->
+		<result property="ordFgNm"			column="ORD_FG_NM"		/>	<!-- 발주구분명 -->
+		<result property="totQty"			column="TOT_QTY"		/>	<!-- 발주총수량 -->
+		<result property="totPrc"			column="TOT_PRC"		/>	<!-- 발주총금액 -->
+		<result property="ctrArrDy"			column="CTR_ARR_DY"		/>	<!-- 센터입하일자 -->
+		<!-- <result property="splyTm"			column="SPLY_TM"		/> -->	<!--  -->
+		<result property="splyDy"			column="SPLY_DY"		/>	<!-- 납품일자 -->
+		<result property="userHit"			column="USER_HIT"		/>	<!-- 사용자조회여부 -->
+		<result property="venCd"			column="VEN_CD"			/>	<!-- 협력업체코드 -->
+		<result property="strCd"			column="STR_CD"			/>	<!-- 점포코드 -->
+		<result property="prodPatFg"		column="PROD_PAT_FG"	/>	<!-- 상품패턴구분 -->
+		<!-- <result property="logiCatNm"		column="LOGI_CAT_NM"	/> -->	<!--  -->
+		<result property="routeFg"			column="ROUTE_FG"		/>	<!-- 루트구분 -->
+		<result property="supplyCd"			column="SUPPLY_CD"		/>	<!-- 통합발주납품처코드 -->
+		<result property="supllyNm"			column="SUPPLY_NM"		/>	<!-- 통합발주납품처코드명 -->
+	</resultMap>
+	
+	<select id="TSC_ORD-SELECT01" resultMap="NEDMORD0020VOMap" parameterClass="NEDMORD0020VO">
+		/* NEDMORD0020.TSC_ORD-SELECT01 */
+		SELECT	A.ORD_SLIP_NO
+			,	TO_CHAR(TO_DATE(A.ORD_DY,'yyyymmdd'),'YYYY-MM-DD') ORD_DY
+			,	B.STR_NM
+			,	A.ORD_FG
+			,	C1.CD_NM AS ORD_FG_NM
+			,	A.TOT_QTY
+			,	A.TOT_PRC
+			,	TO_CHAR(TO_DATE(A.CTR_ARR_DY,'yyyymmdd'),'YYYY-MM-DD') CTR_ARR_DY
+			,	TO_CHAR(TO_DATE(A.SPLY_DY,'yyyymmdd'),'YYYY-MM-DD') SPLY_DY
+			,	DECODE(USER_HIT_DT, NULL, 'N', 'Y') AS USER_HIT
+			,	A.VEN_CD
+			,	A.STR_CD
+			,	A.PROD_PAT_FG
+			,	A.ROUTE_FG
+			,	DECODE(ORD_FG, '4', SUPPLY_CD, CTR_CD) AS SUPPLY_CD
+			,	DECODE(ORD_FG, '4', SUPPLY_NM, B.STR_NM) AS SUPPLY_NM
+		FROM	TPC_ORD A
+				LEFT OUTER JOIN TPC_CODE C1 ON C1.MAJOR_CD = 'ORD01' AND C1.MINOR_CD = A.ORD_FG
+				INNER JOIN STORE B ON A.STR_CD = B.STR_CD
+		WHERE 	A.ORD_DY BETWEEN REPLACE(#srchStartDate#, '-', '')
+			AND REPLACE(#srchEndDate#, '-', '')
+			AND A.PDC_ORD_SLIP_NO IS NULL
+			AND A.TOT_QTY <![CDATA[>]]> 0
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+						#venCds[]# 
+					</iterate> 
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchEntpCd">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			 
+			<isNotEmpty prepend="AND" property="searchStoreAl"> 
+				<iterate prepend="B.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=","> 
+					#searchStoreAl[]# 
+				</iterate> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchOrdering" prepend="AND"> 
+				<isNotEqual property="searchOrdering" compareValue="ALL">
+					ORD_FG = #searchOrdering#
+				</isNotEqual>
+			</isNotEmpty>
+	
+		ORDER BY A.ORD_SLIP_NO
+	</select>
+
+</sqlMap>

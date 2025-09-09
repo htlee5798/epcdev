@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMORD0004">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmord0004VO" type="com.lottemart.epc.order.model.PSCMORD0004VO"/>
+
+	<select id="selectAllOnlineStore" resultClass="dataMap">
+	SELECT /* PSCMORD0004.selectAllOnlineStore */
+	       STR_CD
+	     , STR_NM
+	  FROM TST_STORE 
+	 WHERE (ONLINE_YN = 'Y' OR ONLINE_REP_STR_YN = 'Y')
+	 ORDER BY STR_NM
+	</select>
+
+	<select id="selectHodevMallStrYn" resultClass="dataMap" parameterClass="pscmord0004VO">
+	SELECT /* PSCMORD0004.selectHodevMallStrYn */ 
+	       HODEV_MALL_STR_YN
+	  FROM TST_STORE
+	 WHERE STR_CD = #strCd#
+	</select>
+
+	<select id="selectCodeList" resultClass="dataMap" parameterClass="pscmord0004VO">
+	SELECT MINOR_CD, CD_NM FROM TET_CODE WHERE MAJOR_CD = #majorCd#	
+	</select>
+
+	<select id="selectOrderItemList" resultClass="dataMap" parameterClass="dataMap">
+	/* PSCMORD0004.selectOrderItemList */ 
+	SELECT * FROM(
+
+	SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+	     , ROWNUM AS NUM
+	     , COUNT(*) OVER() TOTAL_COUNT
+	     , E.* 
+	  FROM (
+
+	        SELECT /*+ INDEX(P PK_PR_PRODUCT) */ AA.*
+	               , P.PROD_NM
+                   , CASE WHEN AA.ITEM_OPTIONS IS NOT NULL THEN AA.ITEM_OPTIONS ELSE AA.NFOML_VARIATION END ITEM_OPTION
+	        	   , CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) &lt; TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DELI_NO IS NOT NULL AND AA.DELI_STATUS_CD ='51'
+                           THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                           WHEN SUBSTR(TO_CHAR(TO_DATE(AA.ORD_DY, 'YYYY-MM-DD'),'YYYYMMDD'), 0, 8) &lt; TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DM.DELI_NO IS NULL AND SALE_STS_CD IN('11','12','13')
+                           THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                           ELSE AA.ORG_CUST_NM END AS CUST_NM 
+	      FROM (
+		        SELECT /*+ LEADING(O I) USE_NL(O) INDEX(O IX_OR_ORDER_11) INDEX(MD IX_SA_TLOGSELECT_02) NO_MERGE(MDH) PUSH_PRED(MDH) */ DISTINCT O.ORDER_ID
+		            , O.UP_ORDER_ID
+		            , I.PROD_CD
+		            , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) STR_NM
+		            , O.ORD_STS_CD
+		            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR002' AND MINOR_CD = O.ORD_STS_CD) AS ORD_STS_NM
+		            , O.SALE_STS_CD
+		            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR003' AND MINOR_CD = O.SALE_STS_CD) AS SALE_STS_NM
+		            , (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID='000') ORG_CUST_NM
+		            , I.DELI_STATUS_CD
+                    , I.DELIVERY_ID  
+		            , DECODE (I.ORD_ITEM_DIVN_CD, '11', 0, '12', 0, '13', 0, I.ORD_AMT ) AS ORDER_ITEM_AMT_SUM
+		            , TO_CHAR(TO_DATE(O.ORD_DY, 'YYYY-MM-DD'),'YYYY-MM-DD') AS ORD_DY
+		            , TO_CHAR(TO_DATE(MDH.BUSINESSDAYDATE, 'YYYY-MM-DD'),'YYYY-MM-DD') AS SALE_DY
+		            , I.BUY_PRC*(I.ORD_QTY+I.EXTRA_QTY) AS BUY_PRC
+		            , I.ORD_QTY
+		            , I.ITEM_CD
+                    , (SELECT LISTAGG(CASE WHEN PM.ATTR_VAL_ID IS NULL THEN ATTR_VAL ELSE ATTR_VAL_NM END , ' | ') WITHIN GROUP (ORDER BY CD.ATTR_ID) AS attrNm
+                         FROM TEC_ATTR_PROD_MAPPING PM
+                        INNER JOIN TEC_ATTR_CD CD ON PM.ATTR_ID = CD.ATTR_ID
+                          LEFT OUTER JOIN TEC_ATTR_VAL VAL ON PM.ATTR_ID = VAL.ATTR_ID AND PM.ATTR_VAL_ID = VAL.ATTR_VAL_ID
+                         WHERE PROD_CD = I.PROD_CD
+                           AND ITEM_CD = I.ITEM_CD
+                           AND CD.ATTR_PI_TYPE = 'I' ) AS ITEM_OPTIONS
+		            , I.NFOML_VARIATION
+		            , O.EC_ORDER_ID
+		          FROM TOR_ORDER O
+		             , TOR_ORDER_ITEM I
+		          	 , TDE_ORDER_DELIVERY DE
+		          	 , TSA_TLOGSELECT MD
+		          	 , (SELECT DISTINCT LH.ORDER_ID, LH.RETAILSTOREID, LH.RETAILNUMBER, LH.RECORDQUALIFIER, LH.WORKSTATIONID, LH.TRANSNUMBER, LH.BUSINESSDAYDATE
+                         FROM TOR_ORDER TOR
+                            , TSA_TLOGSELECT LH
+                         WHERE TOR.ORDER_ID = LH.ORDER_ID
+                          AND TOR.STR_CD = LH.RETAILSTOREID
+                          AND LH.RECORDQUALIFIER = '1'
+                          AND LH.WORKSTATIONID IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3', '4') AND USE_YN = 'Y')
+                          AND TOR.BSKET_TYPE_CD NOT IN ('24','25')
+                          AND TOR.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+                     	) MDH
+		           WHERE O.ORDER_ID = I.ORDER_ID
+			           AND O.ORDER_ID = DE.ORDER_ID
+                  	   AND I.DELIVERY_ID = DE.DELIVERY_ID
+					   AND O.ORDER_ID = MDH.ORDER_ID(+)
+                       AND MD.RECORDQUALIFIER = '1'
+                       AND O.ORDER_ID = MD.ORDER_ID
+                       AND O.STR_CD = MD.RETAILSTOREID
+                       AND MD.WORKSTATIONID IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('1', '2') AND USE_YN = 'Y')
+			           AND O.BSKET_TYPE_CD NOT IN ('24', '25')
+			   		   AND O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+					   <isNotEmpty property="vendorId">AND (0, I.STR_VENDOR_ID)
+					     <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0,#vendorId[]#) </iterate>
+                       </isNotEmpty>
+					   <isEqual property="searchOrderType" compareValue="1">AND O.UP_ORDER_ID = #orderId# </isEqual>
+					   <isEqual property="searchOrderType" compareValue="2">AND O.EC_ORDER_ID = #orderId# </isEqual>
+				       <isNotEmpty property="strCd">AND O.STR_CD LIKE #strCd# || '%' </isNotEmpty>
+					   <isNotEmpty property="ordStsCd">AND O.ORD_STS_CD LIKE #ordStsCd# || '%' </isNotEmpty>
+					   <isNotEmpty property="saleStsCd">AND O.SALE_STS_CD LIKE #saleStsCd# || '%' </isNotEmpty>
+				       <isNotEmpty property="setlTypeCd">AND EXISTS ( SELECT 1 FROM TOR_DEMAND WHERE ORDER_ID = O.ORDER_ID AND SETL_TYPE_CD = #setlTypeCd# LIMIT 1 ) </isNotEmpty>
+				       <isNotEmpty property="custNm">AND DE.CUST_NM Like #custNm#||'%' </isNotEmpty>
+				    )   AA, TPR_PRODUCT P, TDE_DELI_MST DM
+				    WHERE AA.PROD_CD = P.PROD_CD
+				    AND AA.ORDER_ID = DM.ORDER_ID(+)
+                    AND AA.DELIVERY_ID = DM.DELIVERY_ID(+)
+				    ORDER BY ORD_DY, AA.UP_ORDER_ID, AA.ORDER_ID
+  		    )   E
+		)
+		WHERE PAGE = #currentPage#
+	</select>
+
+	<select id="selectSaleItemList" resultClass="dataMap" parameterClass="dataMap">
+	/* PSCMORD0004.selectSaleItemList */ 
+	SELECT * FROM(
+	    SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+	        , ROWNUM AS NUM
+	        , COUNT(*) OVER() TOTAL_COUNT
+	        , E.* 
+	      FROM (
+	      	SELECT AA.*
+	        	   , P.PROD_NM
+	        	   <![CDATA[
+	        	   , CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DELI_NO IS NOT NULL AND AA.DELI_STATUS_CD ='51'
+                           THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                           WHEN SUBSTR(TO_CHAR(TO_DATE(AA.ORD_DY, 'YYYY-MM-DD'),'YYYYMMDD'), 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DM.DELI_NO IS NULL AND SALE_STS_CD IN('11','12','13')
+                           THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                           ELSE AA.ORG_CUST_NM END AS CUST_NM 
+                   ]]>
+	      FROM (
+		        SELECT DISTINCT O.ORDER_ID
+		            , O.UP_ORDER_ID
+		            , I.PROD_CD
+		            , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) STR_NM
+		            , O.ORD_STS_CD
+		            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR002' AND MINOR_CD = O.ORD_STS_CD) AS ORD_STS_NM
+		            , O.SALE_STS_CD
+		            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR003' AND MINOR_CD = O.SALE_STS_CD) AS SALE_STS_NM
+		          	, (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID='000') ORG_CUST_NM
+                    , I.DELI_STATUS_CD
+                    , I.DELIVERY_ID
+		            , DECODE (I.ORD_ITEM_DIVN_CD,
+		                                   '11', 0,
+		                                   '12', 0,
+		                                   '13', 0,
+		                                   I.ORD_AMT
+		                                 ) AS ORDER_ITEM_AMT_SUM
+		            , TO_CHAR(TO_DATE(O.ORD_DY, 'YYYY-MM-DD'),'YYYY-MM-DD') AS ORD_DY
+		            , TO_CHAR(TO_DATE(MD.BUSINESSDAYDATE, 'YYYY-MM-DD'),'YYYY-MM-DD') AS SALE_DY
+		            , I.BUY_PRC*(I.ORD_QTY+I.EXTRA_QTY) AS BUY_PRC
+		            , O.EC_ORDER_ID
+		          FROM TOR_ORDER O
+		             , TOR_ORDER_ITEM I
+		          	 , TDE_ORDER_DELIVERY DE
+		             , TSA_TLOGSELECT MD
+		         WHERE 1=1
+                  AND O.ORDER_ID = I.ORDER_ID
+                  AND O.ORDER_ID = DE.ORDER_ID
+                  AND I.DELIVERY_ID = DE.DELIVERY_ID
+			      AND MD.RECORDQUALIFIER = '1'    -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+                  AND O.ORDER_ID = MD.ORDER_ID
+                  AND O.STR_CD = MD.RETAILSTOREID
+               --   AND MD.ORDER_ITEM_SEQ = I.ORDER_ITEM_SEQ             -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+                  AND MD.WORKSTATIONID IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3', '4') AND USE_YN = 'Y')
+                  AND MD.BUSINESSDAYDATE BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+               --   AND EXISTS (SELECT 'X' FROM TLOGSEND SS    -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+               --                   WHERE MD.RETAILSTOREID   = SS.RETAILSTOREID 
+               --               		AND MD.BUSINESSDAYDATE = SS.BUSINESSDAYDATE
+               --               		AND MD.WORKSTATIONID   = SS.WORKSTATIONID
+               --               		AND MD.TRANSNUMBER     = SS.TRANSNUMBER
+               --               		AND SS.RESULT_STATUS = 'C')
+               --   AND NOT EXISTS  (SELECT 1 FROM TLOGERR LE 
+               --                        WHERE   MD.RETAILSTOREID   = LE.RETAILSTOREID
+               --                            AND MD.BUSINESSDAYDATE = LE.BUSINESSDAYDATE
+               --                            AND MD.WORKSTATIONID   = LE.WORKSTATIONID
+               --                            AND MD.TRANSNUMBER     = LE.TRANSNUMBER)
+				  <isNotEmpty property="vendorId">
+				  AND (0, I.STR_VENDOR_ID)
+					<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+						(0, #vendorId[]#)
+					</iterate>
+				  </isNotEmpty>   
+				  AND O.BSKET_TYPE_CD NOT IN ('24','25')
+				  <isEqual property="searchOrderType" compareValue="1">
+					AND O.UP_ORDER_ID = #orderId#
+				  </isEqual>
+				  <isEqual property="searchOrderType" compareValue="2">
+					AND O.EC_ORDER_ID = #orderId#
+				  </isEqual> 
+	    		  <isNotEmpty property="strCd">
+				  AND O.STR_CD LIKE #strCd# || '%'
+				  </isNotEmpty>
+				  <isNotEmpty property="ordStsCd">
+				  AND O.ORD_STS_CD LIKE #ordStsCd# || '%'
+				  </isNotEmpty>
+				  <isNotEmpty property="saleStsCd">
+				  AND O.SALE_STS_CD LIKE #saleStsCd# || '%'
+				  </isNotEmpty>    
+	    		  <isNotEmpty property="setlTypeCd">
+	              AND EXISTS ( SELECT 1 FROM TOR_DEMAND WHERE ORDER_ID = O.ORDER_ID AND SETL_TYPE_CD = #setlTypeCd# LIMIT 1 )
+	    		  </isNotEmpty>
+	    		  <isNotEmpty property="custNm">
+	          	  AND DE.CUST_NM Like #custNm#||'%'
+	          	  </isNotEmpty>
+		    )   AA, TPR_PRODUCT P, TDE_DELI_MST DM
+		    WHERE AA.PROD_CD = P.PROD_CD
+		    AND AA.ORDER_ID = DM.ORDER_ID(+)
+            AND AA.DELIVERY_ID = DM.DELIVERY_ID(+)
+		    ORDER BY SALE_DY, AA.UP_ORDER_ID, AA.ORDER_ID
+	    )   E
+	)
+	WHERE PAGE = #currentPage#
+	</select>
+
+	<select id="selectOrderItemListExcel" resultClass="dataMap">
+	/* PSCMORD0004.selectOrderItemListExcel */ 
+	SELECT * FROM (
+	    SELECT CEIL(ROWNUM / #rowsPerPage# ) PAGE
+	        , ROWNUM AS NUM
+	        , COUNT(*) OVER() TOTAL_COUNT
+	        , E.* 
+	      FROM (
+		      	SELECT AA.*
+		               , P.PROD_NM
+	                   , CASE WHEN AA.ITEM_OPTIONS IS NOT NULL THEN AA.ITEM_OPTIONS ELSE AA.NFOML_VARIATION END ITEM_OPTION
+		        	   , CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) &lt; TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DELI_NO IS NOT NULL AND AA.DELI_STATUS_CD ='51'
+                               THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                               WHEN SUBSTR(TO_CHAR(TO_DATE(AA.ORD_DY, 'YYYY-MM-DD'),'YYYYMMDD'), 0, 8) &lt; TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DM.DELI_NO IS NULL AND SALE_STS_CD IN('11','12','13')
+                               THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                               ELSE AA.ORG_CUST_NM END AS CUST_NM 
+			      FROM (
+				        SELECT /*+LEADING(O I MD) USE_NL(I) USE_NL(MD)*/ DISTINCT O.ORDER_ID
+				            , O.UP_ORDER_ID
+				            , I.PROD_CD
+				            , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) STR_NM
+				            , O.ORD_STS_CD
+				            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR002' AND MINOR_CD = O.ORD_STS_CD) AS ORD_STS_NM
+				            , O.SALE_STS_CD
+				            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR003' AND MINOR_CD = O.SALE_STS_CD) AS SALE_STS_NM
+				            , (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID='000') ORG_CUST_NM
+				            , I.DELI_STATUS_CD
+                            , I.DELIVERY_ID  
+				            , DECODE (I.ORD_ITEM_DIVN_CD, '11', 0, '12', 0, '13', 0, I.ORD_AMT) AS ORDER_ITEM_AMT_SUM
+				            , NVL(TO_CHAR(TO_DATE(O.ORD_DY, 'YYYY-MM-DD'),'YYYY-MM-DD'),' ') AS ORD_DY
+				            , NVL(TO_CHAR(TO_DATE(MDH.BUSINESSDAYDATE, 'YYYY-MM-DD'),'YYYY-MM-DD'),' ') AS SALE_DY
+				            , I.BUY_PRC*(I.ORD_QTY+I.EXTRA_QTY) AS BUY_PRC
+				            , I.ORD_QTY
+				            , I.ITEM_CD
+                            , (SELECT LISTAGG(CASE WHEN PM.ATTR_VAL_ID IS NULL THEN ATTR_VAL ELSE ATTR_VAL_NM END , ' | ') WITHIN GROUP (ORDER BY CD.ATTR_ID) AS attrNm
+                                 FROM TEC_ATTR_PROD_MAPPING PM
+                                INNER JOIN TEC_ATTR_CD CD ON PM.ATTR_ID = CD.ATTR_ID
+                                 LEFT OUTER JOIN TEC_ATTR_VAL VAL ON PM.ATTR_ID = VAL.ATTR_ID AND PM.ATTR_VAL_ID = VAL.ATTR_VAL_ID
+                                WHERE PROD_CD = I.PROD_CD
+                                  AND ITEM_CD = I.ITEM_CD
+                                  AND CD.ATTR_PI_TYPE = 'I' ) AS ITEM_OPTIONS
+				            , I.NFOML_VARIATION
+				            , O.EC_ORDER_ID
+				          FROM TOR_ORDER O
+				             , TOR_ORDER_ITEM I
+				          	 , TDE_ORDER_DELIVERY DE
+				          	 , TSA_TLOGSELECT MD
+				          	 , (SELECT /*+NO_MERGE PUSH_PRED */ DISTINCT LH.ORDER_ID, LH.RETAILSTOREID, LH.RETAILNUMBER, LH.RECORDQUALIFIER, LH.WORKSTATIONID, LH.TRANSNUMBER, LH.BUSINESSDAYDATE
+                                 FROM TOR_ORDER TOR,
+                                     TSA_TLOGSELECT LH
+                                 WHERE TOR.ORDER_ID = LH.ORDER_ID
+                                  AND TOR.STR_CD = LH.RETAILSTOREID
+                                  AND LH.RECORDQUALIFIER = '1'
+                                  AND LH.WORKSTATIONID IN (SELECT /*+NO_UNNEST*/ POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3', '4') AND USE_YN = 'Y')
+                                  AND TOR.BSKET_TYPE_CD NOT IN ('24','25')
+                                  AND TOR.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+                             	) MDH
+				           WHERE 1=1
+							   AND O.ORDER_ID = MDH.ORDER_ID(+)
+					           AND O.ORDER_ID = I.ORDER_ID
+					           AND O.ORDER_ID = DE.ORDER_ID
+                          	   AND I.DELIVERY_ID = DE.DELIVERY_ID
+                               AND MD.RECORDQUALIFIER = '1'  			  -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+                               AND O.ORDER_ID = MD.ORDER_ID
+                               AND O.STR_CD = MD.RETAILSTOREID
+                               AND MD.WORKSTATIONID IN (SELECT /*+NO_UNNEST*/ POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('1', '2') AND USE_YN = 'Y')
+					           AND O.BSKET_TYPE_CD NOT IN ('24','25')
+							   AND O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+							   <isNotEmpty property="vendorId">AND (0, I.STR_VENDOR_ID)
+							     <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0,#vendorId[]#) </iterate>
+							   </isNotEmpty>
+							   <isEqual property="searchOrderType" compareValue="1">AND O.UP_ORDER_ID = #orderId# </isEqual>
+							   <isEqual property="searchOrderType" compareValue="2">AND O.EC_ORDER_ID = #orderId# </isEqual>   
+						       <isNotEmpty property="strCd">AND O.STR_CD LIKE #strCd# || '%' </isNotEmpty>
+							   <isNotEmpty property="ordStsCd">AND O.ORD_STS_CD LIKE #ordStsCd# || '%' </isNotEmpty>
+							   <isNotEmpty property="saleStsCd">AND O.SALE_STS_CD LIKE #saleStsCd# || '%' </isNotEmpty>
+						       <isNotEmpty property="setlTypeCd">AND EXISTS ( SELECT 1 FROM TOR_DEMAND WHERE ORDER_ID = O.ORDER_ID AND SETL_TYPE_CD = #setlTypeCd# LIMIT 1 ) </isNotEmpty>		
+						       <isNotEmpty property="custNm">AND DE.CUST_NM Like #custNm#||'%' </isNotEmpty>
+						    )   AA, TPR_PRODUCT P, TDE_DELI_MST DM
+						    WHERE AA.PROD_CD = P.PROD_CD
+						    AND AA.ORDER_ID = DM.ORDER_ID(+)
+                            AND AA.DELIVERY_ID = DM.DELIVERY_ID(+)
+						    ORDER BY ORD_DY, AA.UP_ORDER_ID, AA.ORDER_ID
+		    ) E
+	)
+    </select>
+
+    <select id="selectCustInfoByGoods" resultClass="java.lang.String">
+	/* PSCMORD0004.selectCustInfoByGoods */ 
+	SELECT NVL(SUM(CUST_NM), 0) AS STATUS  
+ 		FROM (SELECT
+         <![CDATA[ CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -6),'YYYYMMDD') AND DELI_NO IS NOT NULL AND AA.DELI_STATUS_CD ='51'
+                               THEN '1' 
+                               WHEN SUBSTR(TO_CHAR(TO_DATE(AA.ORD_DY, 'YYYY-MM-DD'),'YYYYMMDD'), 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -6),'YYYYMMDD') AND DELI_NO IS NULL  AND SALE_STS_CD IN('11','12','13')
+                               THEN '1'
+                               ELSE '0' END AS CUST_NM
+              ]]>
+			FROM( SELECT  O.ORDER_ID
+						, I.DELIVERY_ID
+						, I.DELI_STATUS_CD
+						, O.SALE_STS_CD 
+						, O.ORD_DY
+						, (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID='000') AS ORG_CUST_NM
+		            FROM TOR_ORDER O
+		          	 , TDE_ORDER_DELIVERY DE
+		          	 , TOR_ORDER_ITEM I
+		        	 WHERE O.ORDER_ID = DE.ORDER_ID
+		         	  AND O.ORDER_ID = I.ORDER_ID
+		         	  AND DE.DELIVERY_ID = I.DELIVERY_ID
+		          	  AND O.BSKET_TYPE_CD NOT IN ('24','25')
+				  	  AND O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+					 <isNotEmpty property="vendorId">
+						AND (0,I.STR_VENDOR_ID)
+						<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0, #vendorId[]#) </iterate>
+					 </isNotEmpty>
+					<isEqual property="searchOrderType" compareValue="1">
+						AND O.UP_ORDER_ID = #orderId#
+					</isEqual>
+					<isEqual property="searchOrderType" compareValue="2">
+						AND O.EC_ORDER_ID = #orderId#
+					</isEqual>
+				    <isNotEmpty property="strCd">
+						AND O.STR_CD LIKE #strCd# || '%'
+					</isNotEmpty>
+					<isNotEmpty property="ordStsCd">
+						AND O.ORD_STS_CD LIKE #ordStsCd# || '%'
+					</isNotEmpty>
+					<isNotEmpty property="saleStsCd">
+						AND O.SALE_STS_CD LIKE #saleStsCd# || '%'
+					</isNotEmpty>
+					<isNotEmpty property="setlTypeCd">
+				           AND EXISTS ( SELECT 1 FROM TOR_DEMAND WHERE ORDER_ID = O.ORDER_ID AND SETL_TYPE_CD = #setlTypeCd# LIMIT 1 )
+				    </isNotEmpty>
+				    <isNotEmpty property="custNm">
+				           AND DE.CUST_NM Like #custNm#||'%'
+				    </isNotEmpty>
+			) AA, TDE_DELI_MST DM
+			WHERE AA.ORDER_ID = DM.ORDER_ID (+)
+			AND AA.DELIVERY_ID = DM.DELIVERY_ID (+)
+		)
+    </select>
+
+	<select id="selectSaleItemListExcel" resultClass="dataMap">
+	/* PSCMORD0004.selectSaleItemList */ 
+	SELECT * FROM(
+	    SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+	        , ROWNUM AS NUM
+	        , COUNT(*) OVER() TOTAL_COUNT
+	        , E.* 
+	      FROM (
+		      	SELECT AA.*
+		        	   , P.PROD_NM
+		        	   <![CDATA[
+		        	   , CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DELI_NO IS NOT NULL AND AA.DELI_STATUS_CD ='51'
+                               THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                               WHEN SUBSTR(TO_CHAR(TO_DATE(AA.ORD_DY, 'YYYY-MM-DD'),'YYYYMMDD'), 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD') AND DM.DELI_NO IS NULL AND SALE_STS_CD IN('11','12','13')
+                               THEN SUBSTR(AA.ORG_CUST_NM,1,1) || LPAD('*',LENGTH(AA.ORG_CUST_NM)-2,'*') || SUBSTR(AA.ORG_CUST_NM,LENGTH(AA.ORG_CUST_NM),1) 
+                               ELSE AA.ORG_CUST_NM END AS CUST_NM 
+                       ]]>
+		      FROM (
+			        SELECT DISTINCT O.ORDER_ID
+			            , O.UP_ORDER_ID
+			            , I.PROD_CD
+			            , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) STR_NM
+			            , O.ORD_STS_CD
+			            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR002' AND MINOR_CD = O.ORD_STS_CD) AS ORD_STS_NM
+			            , O.SALE_STS_CD
+			            , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR003' AND MINOR_CD = O.SALE_STS_CD) AS SALE_STS_NM
+			          	, (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID='000') ORG_CUST_NM
+                        , I.DELI_STATUS_CD
+                        , I.DELIVERY_ID
+			            , DECODE (I.ORD_ITEM_DIVN_CD,
+			                                   '11', 0,
+			                                   '12', 0,
+			                                   '13', 0,
+			                                   I.ORD_AMT
+			                                 ) AS ORDER_ITEM_AMT_SUM
+			            , TO_CHAR(TO_DATE(O.ORD_DY, 'YYYY-MM-DD'),'YYYY-MM-DD') AS ORD_DY
+			            , TO_CHAR(TO_DATE(MD.BUSINESSDAYDATE, 'YYYY-MM-DD'),'YYYY-MM-DD') AS SALE_DY
+			            , I.BUY_PRC*(I.ORD_QTY+I.EXTRA_QTY) AS BUY_PRC
+			            , O.EC_ORDER_ID
+			          FROM TOR_ORDER O
+			             , TOR_ORDER_ITEM I
+			          	 , TDE_ORDER_DELIVERY DE
+			             , TSA_TLOGSELECT MD
+			         WHERE 1=1
+                      AND O.ORDER_ID = I.ORDER_ID
+                      AND O.ORDER_ID = DE.ORDER_ID
+                      AND I.DELIVERY_ID = DE.DELIVERY_ID
+	   			      AND MD.RECORDQUALIFIER = '1'    -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+	                  AND O.ORDER_ID = MD.ORDER_ID
+	                  AND O.STR_CD = MD.RETAILSTOREID
+                   --   AND MD.ORDER_ITEM_SEQ = I.ORDER_ITEM_SEQ             -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+                      AND MD.WORKSTATIONID IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3', '4') AND USE_YN = 'Y')
+                      AND MD.BUSINESSDAYDATE BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+                   --   AND EXISTS (SELECT 'X' FROM TLOGSEND SS    -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+                   --                   WHERE MD.RETAILSTOREID   = SS.RETAILSTOREID 
+                   --               		AND MD.BUSINESSDAYDATE = SS.BUSINESSDAYDATE
+                   --               		AND MD.WORKSTATIONID   = SS.WORKSTATIONID
+                   --               		AND MD.TRANSNUMBER     = SS.TRANSNUMBER
+                   --               		AND SS.RESULT_STATUS = 'C')
+                   --   AND NOT EXISTS  (SELECT 1 FROM TLOGERR LE 
+                   --                        WHERE   MD.RETAILSTOREID   = LE.RETAILSTOREID
+                   --                            AND MD.BUSINESSDAYDATE = LE.BUSINESSDAYDATE
+                   --                            AND MD.WORKSTATIONID   = LE.WORKSTATIONID
+                   --                            AND MD.TRANSNUMBER     = LE.TRANSNUMBER)
+					  <isNotEmpty property="vendorId">
+					  AND (0, I.STR_VENDOR_ID)
+						<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+							(0, #vendorId[]#)
+						</iterate>
+					  </isNotEmpty>
+   					  AND O.BSKET_TYPE_CD NOT IN ('24','25')
+					  <isEqual property="searchOrderType" compareValue="1">
+						   AND O.UP_ORDER_ID = #orderId#
+					  </isEqual>
+					  <isEqual property="searchOrderType" compareValue="2">
+						   AND O.EC_ORDER_ID = #orderId#
+					  </isEqual> 
+		    		  <isNotEmpty property="strCd">
+						AND O.STR_CD LIKE #strCd# || '%'
+					  </isNotEmpty>
+					  <isNotEmpty property="ordStsCd">
+						AND O.ORD_STS_CD LIKE #ordStsCd# || '%'
+					  </isNotEmpty>
+					  <isNotEmpty property="saleStsCd">
+						AND O.SALE_STS_CD LIKE #saleStsCd# || '%'
+					  </isNotEmpty>    
+		    		  <isNotEmpty property="setlTypeCd">
+		              AND EXISTS ( SELECT 1 FROM TOR_DEMAND WHERE ORDER_ID = O.ORDER_ID AND SETL_TYPE_CD = #setlTypeCd# LIMIT 1 )
+		    		  </isNotEmpty>			    
+		    		  <isNotEmpty property="saleStsCd">
+		          	  AND DE.CUST_NM Like #custNm#||'%'
+		          	  </isNotEmpty>
+		    )   AA, TPR_PRODUCT P, TDE_DELI_MST DM
+	    WHERE AA.PROD_CD = P.PROD_CD
+	    AND AA.ORDER_ID = DM.ORDER_ID(+)
+        AND AA.DELIVERY_ID = DM.DELIVERY_ID(+)
+	    ORDER BY SALE_DY, AA.UP_ORDER_ID, AA.ORDER_ID
+		    )   E
+		)
+	</select>
+
+    <select id="selectCustInfoByGoodsForSale" resultClass="java.lang.String">
+	/* PSCMORD0004.selectCustInfoByGoodsForSale */ 
+	SELECT NVL(SUM(CUST_NM), 0) AS STATUS
+		FROM (SELECT  
+        	<![CDATA[ CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -6),'YYYYMMDD') AND DELI_NO IS NOT NULL AND AA.DELI_STATUS_CD ='51'
+                              THEN '1' 
+                              WHEN SUBSTR(TO_CHAR(TO_DATE(AA.ORD_DY, 'YYYY-MM-DD'),'YYYYMMDD'), 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -6),'YYYYMMDD') AND DELI_NO IS NULL  AND SALE_STS_CD IN('11','12','13')
+                              THEN '1'
+                              ELSE '0' END AS CUST_NM
+             ]]>    
+		 FROM ( SELECT  DISTINCT O.ORDER_ID
+					, I.DELIVERY_ID
+					, I.DELI_STATUS_CD
+					, O.SALE_STS_CD 
+					, O.ORD_DY
+					, (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID='000') AS ORG_CUST_NM
+			  FROM TOR_ORDER O
+			  	 , TDE_ORDER_DELIVERY DE
+			  	 , TOR_ORDER_ITEM I
+			     , TSA_TLOGSELECT MD
+			  WHERE O.ORDER_ID = I.ORDER_ID
+			   AND O.ORDER_ID = DE.ORDER_ID	
+			   AND MD.RECORDQUALIFIER = '1' -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+			   AND MD.ORDER_ID = O.ORDER_ID
+			 --  AND MD.ORDER_ITEM_SEQ = I.ORDER_ITEM_SEQ -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+			   AND O.STR_CD = MD.RETAILSTOREID
+			   AND MD.WORKSTATIONID IN (SELECT POS_NO FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3', '4') AND USE_YN = 'Y')
+			   AND O.BSKET_TYPE_CD NOT IN ('24','25')
+			   AND MD.BUSINESSDAYDATE BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			 --  AND EXISTS (SELECT 'X' FROM TLOGSEND SS   -- 4월정산을 위해 HEADER만 보도록 임시 수정 2016.05.04
+			 --                 WHERE MD.RETAILSTOREID   = SS.RETAILSTOREID
+			 --            		 AND MD.BUSINESSDAYDATE = SS.BUSINESSDAYDATE
+			 --            		 AND MD.WORKSTATIONID   = SS.WORKSTATIONID
+			 --            		 AND MD.TRANSNUMBER     = SS.TRANSNUMBER
+			 --            		 AND SS.RESULT_STATUS = 'C')
+			 --  AND NOT EXISTS  (SELECT 1 FROM TLOGERR LE 
+			 --                      WHERE   MD.RETAILSTOREID   = LE.RETAILSTOREID
+			 --                          AND MD.BUSINESSDAYDATE = LE.BUSINESSDAYDATE
+			 --                          AND MD.WORKSTATIONID   = LE.WORKSTATIONID
+			 --                          AND MD.TRANSNUMBER     = LE.TRANSNUMBER)
+			  <isNotEmpty property="vendorId">
+			   AND (0, I.STR_VENDOR_ID)
+				<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+					(0, #vendorId[]#)
+				</iterate>
+			  </isNotEmpty>
+			   AND O.BSKET_TYPE_CD NOT IN ('24','25') 
+			  <isEqual property="searchOrderType" compareValue="1">
+				AND O.UP_ORDER_ID = #orderId#
+			  </isEqual>
+			  <isEqual property="searchOrderType" compareValue="2">
+				AND O.EC_ORDER_ID = #orderId#
+			  </isEqual>    
+			  <isNotEmpty property="strCd">
+				AND O.STR_CD LIKE #strCd# || '%'
+			  </isNotEmpty>
+			  <isNotEmpty property="ordStsCd">
+				AND O.ORD_STS_CD LIKE #ordStsCd# || '%'
+			  </isNotEmpty>
+			  <isNotEmpty property="saleStsCd">
+				AND O.SALE_STS_CD LIKE #saleStsCd# || '%'
+			  </isNotEmpty>
+			   <isNotEmpty property="setlTypeCd">
+			   AND EXISTS ( SELECT 1 FROM TOR_DEMAND WHERE ORDER_ID = O.ORDER_ID AND SETL_TYPE_CD = #setlTypeCd# LIMIT 1 )
+			   </isNotEmpty>	
+			   <isNotEmpty property="custNm">
+			   AND DE.CUST_NM Like #custNm#||'%'
+			   </isNotEmpty>
+			   <![CDATA[
+			 ) AA, TDE_DELI_MST DM
+		WHERE AA.ORDER_ID = DM.ORDER_ID (+)
+		AND AA.DELIVERY_ID = DM.DELIVERY_ID (+)
+		)
+   ]]>
+    </select>
+
+</sqlMap>

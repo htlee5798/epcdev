@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMCST0009">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 발주중단 SELECT-->
+<select id="TSC_ORDER_STOP-SELECT01" parameterClass="map" resultClass="resultClass">
+/* PEDMCST0009.TSC_ORDER_STOP-SELECT01 */
+SELECT  A.PROD_CD, 
+		A.PROD_NM,
+ 		TO_CHAR(A.REG_DT,'yyyy-mm-dd') AS REG_DT,     
+ 		A.STR_CD,
+ 		B.STR_NM,
+ 		A.VEN_CD,
+ 		TO_CHAR(A.REG_DT,'YYYYMMDDHH24MISS') AS INSERT_REG_DT
+
+FROM    STR_PROD@dl_md_martnis A INNER JOIN STORE@dl_md_martnis B ON A.STR_CD = B.STR_CD
+   
+WHERE   A.ORD_STOP_FG = '0' 
+  AND   A.DEAL_STOP_FG = '0'    
+  AND   A.DEL_STOP_FG  = '0'  
+  
+  <isNotEmpty  property="venCds"  prepend="AND"> 
+      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+        #venCds[]# 
+      </iterate> 
+    </isNotEmpty>
+    
+    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+    	A.VEN_CD = #entp_cd#
+    </isNotEmpty>
+    
+    <isNotEmpty property="storeVal"  prepend="AND"> 
+      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+        #storeVal[]#
+      </iterate> 
+    </isNotEmpty>
+    
+    <isNotEmpty property="productVal"  prepend="AND"> 
+      <iterate prepend="A.PROD_CD IN " property="productVal" open="(" close=")" conjunction=","> 
+        #productVal[]# 
+      </iterate> 
+    </isNotEmpty>
+    
+   
+  AND  (A.STR_CD, A.PROD_CD ) NOT IN
+	   (SELECT STR_CD, PROD_CD
+	      FROM STR_ORD_STOP_REQ@dl_md_martnis   
+	      WHERE CFM_FG = '0' AND REG_DY >= TO_CHAR(CURRENT_TIMESTAMP(0)-7, 'YYYYMMDD') 
+	      
+	      <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+		    </isNotEmpty>
+		    
+		    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty property="productVal"  prepend="AND"> 
+		      <iterate prepend="PROD_CD IN " property="productVal" open="(" close=")" conjunction=","> 
+		        #productVal[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		 ) 
+
+ORDER BY A.PROD_CD , A.STR_CD    
+</select>
+    			
+<insert id="TSC_ORDER_STOP-INSERT01" parameterClass="map">
+/* PEDMCST0009.TSC_ORDER_STOP-INSERT01" */
+
+INSERT INTO STR_ORD_STOP_REQ@dl_md_martnis (STR_CD, PROD_CD, REG_DY, ORD_STOP_FG, VEN_CD, CFM_FG, REG_DT, REG_EMP_NO )
+
+SELECT  #str#
+	   ,PROD_CD 
+	   ,TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	   ,'1'
+	   ,#ven# 
+	   ,'0'
+	   ,CURRENT_TIMESTAMP(0) 
+	   ,'EDI_STOP'
+	   
+FROM     PRODUCT@dl_md_martnis A
+ 
+WHERE    1=1
+AND VEN_CD=#ven#
+AND PROD_PRE_CD = #prod_pre# 
+AND      NOT EXISTS
+		( 
+			SELECT  '1' 
+			FROM    STR_ORD_STOP_REQ@dl_md_martnis 
+			WHERE   PROD_CD = A.PROD_CD 
+			AND     REG_DY =  TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+			AND     STR_CD =  #str#
+ 		)	
+	  
+</insert>
+
+
+</sqlMap>

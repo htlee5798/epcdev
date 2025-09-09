@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0043">
+
+
+	<typeAlias alias="SRMJON0043VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0043VO" />
+
+
+	<!-- 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectHiddenCompResultMap" class="SRMJON0043VO">
+		<result column="HOUSE_CODE"						property="houseCode" 				/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"					property="sellerCode" 				/>	<!-- 업체코드 -->
+		<result column="REQ_SEQ"						property="reqSeq" 					/>	<!-- 순번 -->
+		<result column="CHANNEL_CODE"					property="channelCode" 				/>	<!-- 채널선택{scode_type=SRM053} -->
+		<result column="CHANNEL_CODE_NM"				property="channelCodeNm"			/>	<!-- 채널SUSMT선택{scode_type=SRM053} -->
+		<result column="SHIPPER_TYPE"					property="shipperType" 				/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="SHIPPER_TYPE_NM"				property="shipperTypeNm" 			/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="CAT_LV1_CODE"					property="catLv1Code" 				/>	<!-- 대분류 -->
+		<result column="CAT_LV1_CODE_NM"				property="catLv1CodeNm" 			/>	<!-- 대분류 -->
+		<result column="IRS_NO"							property="irsNo" 					/>	<!-- 사업자등록번호 -->
+		<result column="TEMP_PW"						property="tempPw" 					/>	<!-- 임시비밀번호 -->
+		<result column="SELLER_NAME_LOC"				property="sellerNameLoc" 			/>	<!-- 업체명{한글} -->
+		<result column="SELLER_NAME_ENG"				property="sellerNameEng" 			/>	<!-- 업체명{영문} -->
+		<result column="COMPANY_TYPE"					property="companyType" 				/>	<!-- 법인구분{scode_type=M074} -->
+		<result column="COMPANY_TYPE_NM"				property="companyTypeNm" 			/>	<!-- 법인구분{scode_type=M074} -->
+		<result column="COMPANY_REG_NO"					property="companyRegNo" 			/>	<!-- 법인번호 -->
+		<result column="SELLER_CEO_NAME"				property="sellerCeoName" 			/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<result column="V_MAIN_NAME"					property="vMainName" 				/>	<!-- 업체마트 담당자(이름) -->
+		<result column="PHONE_NO"						property="phoneNo"		 			/>	<!-- 등록자 유선 전화번호 -->
+		<result column="V_PHONE1"						property="vPhone1"		 			/>	<!-- 등록자 유선 전화번호 -->
+		<result column="V_MOBILE_PHONE"					property="vMobilePhone" 			/>	<!-- 모바일(이동전화) -->
+		<result column="V_EMAIL"						property="vEmail" 					/>	<!-- BDC EMAIL CHECK 필요 -->
+		<result column="SELLER_CEO_EMAIL"				property="sellerCeoEmail" 			/>	<!-- 대표자 이메일 -->
+		<result column="FAX_FHONE"						property="faxFhone" 				/>	<!-- FAX -->
+		<result column="ZIPCODE"						property="zipcode" 					/>	<!-- 우편번호 -->
+		<result column="ADDRESS1"						property="address1" 				/>	<!-- 주소1 -->
+		<result column="ADDRESS2"						property="address2" 				/>	<!-- 주소2 -->
+		<result column="BUSINESS_TYPE"					property="businessType" 			/>	<!-- 업태 -->
+		<result column="INDUSTRY_TYPE"					property="industryType" 			/>	<!-- 업종 -->
+		<result column="SELLER_TYPE"					property="sellerType" 				/>	<!-- 파트너사 사업 유형{scode_type=M076} -->
+		<result column="SELLER_TYPE_NM"					property="sellerTypeNm" 			/>	<!-- 파트너사 사업 유형{scode_type=M076} -->
+		<result column="COUNTRY"						property="country" 					/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="COUNTRY_NM"						property="countryNm" 					/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="CITY_TEXT"						property="cityText" 				/>	<!-- 도시명 -->
+		<result column="CITY_TEXT_NM"					property="cityTextNm" 				/>	<!-- 도시명 -->
+		<result column="FOUNDATION_DATE"				property="foundationDate" 			/>	<!-- 설립일자 -->
+		<result column="BASIC_AMT"						property="basicAmt" 				/>	<!-- 자본금 -->
+		<result column="SALES_AMT"						property="salesAmt" 				/>	<!-- 연간 매출액(최근 3년) -->
+		<result column="EMP_COUNT"						property="empCount" 				/>	<!-- 종업원 수(정규직) -->
+		<result column="PLANT_OWN_TYPE"					property="plantOwnType" 			/>	<!-- 공장소유구분 -->
+		<result column="PLANT_ROLE_TYPE"				property="plantRoleType" 			/>	<!-- 공장 운영 형태{scode_type=M792} -->
+		<result column="PLANT_ROLE_TYPE_NM"				property="plantRoleTypeNm" 			/>	<!-- 공장 운영 형태{scode_type=M792} -->
+		<result column="MAIN_CUSTOMER"					property="mainCustomer" 			/>	<!-- 주요거래처 -->
+		<result column="ABOARD_CHANNEL_TEXT"			property="aboardChannelText" 		/>	<!-- 롯데마트 旣 진출 채널 -->
+		<result column="ABOARD_CHANNEL_TEXT_NM"			property="aboardChannelTextNm" 		/>	<!-- 롯데마트 旣 진출 채널 -->
+		<result column="ABOARD_COUNTRY_TEXT"			property="aboardCountryText" 		/>	<!-- 롯데마트 旣 진출 국가 -->
+		<result column="PRODUCT_NAME"					property="productName" 				/>	<!-- 상품명 -->
+		<result column="PRODUCT_PRICE"					property="productPrice" 			/>	<!-- 납품가 -->
+		<result column="CUR"							property="cur"					 	/>	<!-- 통화 -->
+		<result column="CUR_NM"							property="curNm"					/>	<!-- 통화 -->
+		<result column="PRODUCT_IMG_PATH"				property="productImgPath" 			/>	<!-- 상품이미지 -->
+		<result column="PRODUCT_IMG_PATH_NAME"			property="productImgPathName" 		/>	<!-- 상품이미지 -->
+		<result column="PRODUCT_INTRO_ATTACH_NO"		property="productIntroAttachNo" 	/>	<!-- 제품소개서 첨부파일 -->
+		<result column="PRODUCT_INTRO_ATTACH_NO_NAME"	property="productIntroAttachNoName" />	<!-- 제품소개서 첨부파일 -->
+		<result column="COMPANY_INTRO_ATTACH_NO"		property="companyIntroAttachNo" 	/>	<!-- 회사소개서 첨부파일 -->
+		<result column="COMPANY_INTRO_ATTACH_NO_NAME"	property="companyIntroAttachNoName" />	<!-- 회사소개서 첨부파일 -->
+		<result column="MAIN_PRODUCT"					property="mainProduct" 				/>	<!-- 상품정보 -->
+		<result column="DEALING_BRAND_PRODUCT"			property="dealingBrandProduct" 		/>	<!-- 주사용 브랜드 -->
+		<result column="CREDIT_NO"						property="creditNo" 				/>	<!-- 신용평가번호 -->
+		<result column="CREDIT_COMPANY_CODE"			property="creditCompanyCode" 		/>	<!-- 신용평가사 코드{SCODE_TYPE=SRM039} -->
+		<result column="CREDIT_COMPANY_CODE_NM"			property="creditCompanyCodeNm" 		/>	<!-- 신용평가사 코드{SCODE_TYPE=SRM039} -->
+		<result column="CREDIT_RATING"					property="creditRating" 			/>	<!-- 신용평가등급 -->
+		<result column="CREDIT_BASIC_DATE"				property="creditBasicDate" 			/>	<!-- 신용평가 기준일자 -->
+		<result column="CREDIT_ATTACH_NO"				property="creditAttachNo" 			/>	<!-- 신용평가서 첨부 -->
+		<result column="CREDIT_ATTACH_NO_NAME"			property="creditAttachNoName" 		/>	<!-- 신용평가서 첨부 -->
+		<result column="STATUS"							property="status"		 			/>	<!-- 상태값[M900] -->
+		<result column="ZZQC_FG1"					property="zzqcFg1" 					/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"					property="zzqcFg2" 					/>	<!-- FSSC 22000 -->
+		<result column="ZZQC_FG3"					property="zzqcFg3" 					/>	<!-- ISO 22000 -->
+		<result column="ZZQC_FG4"					property="zzqcFg4" 					/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"					property="zzqcFg5" 					/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"					property="zzqcFg6" 					/>	<!-- 우수농산물(GAP)인증 -->
+		<result column="ZZQC_FG7"					property="zzqcFg7" 					/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"					property="zzqcFg8" 					/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"					property="zzqcFg9" 					/>	<!-- ISO 9001 -->
+		<result column="ZZQC_FG10"					property="zzqcFg10" 				/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"					property="zzqcFg11" 				/>	<!-- PAS 220 -->
+		<result column="ZZQC_FG12"					property="zzqcFg12" 				/>	<!-- 기타 품질인증 텍스트 -->
+		<result column="SC_KIND"					property="scKind" 					/>
+		<result column="ONLINE_MAIL_TARGET"			property="onlineMailTarget" 		/>	<!--온라인몰 메일발송 대상-->
+		<result column="ONLINE_MAIL_TARGET_NM"		property="onlineMailTargetNm" 		/>	<!--온라인몰 메일발송 대상-->
+		<result column="LOCAL_FOOD_YN"				property="localFoodYn" 				/>	<!--로컬푸드여부-->
+		<result column="SM_FLAG"					property="smFlag" 					/>	<!--중소기업여부-->
+		<result column="SM_ATTACH_NO"				property="smAttachNo" 				/>	<!-- 중소기업확인증 첨부파일 -->
+		<result column="SM_ATTACH_NO_NAME"			property="smAttachNoName" 			/>	<!-- 중소기업확인증첨부파일 -->
+	</resultMap>
+
+	<!-- 담당MD Email 조회 resultMap -->
+	<resultMap id="selectHiddenCompReqEMSListResultMap" class="SRMJON0043VO">
+		<result column="USER_NAME_LOC"				property="userNameLoc" 				/>	<!-- 담당MD명 -->
+		<result column="EMAIL"						property="email" 					/>	<!-- 이메일 -->
+	</resultMap>
+
+
+	<!-- 잠재업체 정보조회 -->
+	<select id="selectHiddenComp" parameterClass="SRMJON0043VO" resultMap="selectHiddenCompResultMap">
+		/*SRMJON0043.selectHiddenComp*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, B.REQ_SEQ
+				, B.CHANNEL_CODE
+				, GETCODETEXT1('SRM053',B.CHANNEL_CODE, UPPER(#locale#)) AS CHANNEL_CODE_NM
+				, B.CAT_LV1_CODE
+				, C.SG_NAME AS CAT_LV1_CODE_NM
+				, A.SHIPPER_TYPE
+				, GETCODETEXT1('M025',A.SHIPPER_TYPE, UPPER(#locale#)) AS SHIPPER_TYPE_NM
+				, A.IRS_NO
+				, A.TEMP_PW
+				, A.SELLER_NAME_LOC
+				, A.SELLER_NAME_ENG
+				, A.COMPANY_TYPE
+				, GETCODETEXT1('M074',A.COMPANY_TYPE, UPPER(#locale#)) AS COMPANY_TYPE_NM
+				, COMPANY_REG_NO
+				, A.SELLER_CEO_NAME
+				<!--, A.V_MAIN_NAME-->
+				, D.USER_NAME AS V_MAIN_NAME
+				, D.PHONE_NO
+				, A.V_PHONE1
+				<!--, A.V_MOBILE_PHONE-->
+				, D.MOBILE_NO AS V_MOBILE_PHONE
+				<!--, A.V_EMAIL-->
+				, D.EMAIL AS V_EMAIL
+				, A.SELLER_CEO_EMAIL
+				<!--, A.FAX_FHONE-->
+				, D.FAX_NO AS FAX_FHONE
+				, A.ZIPCODE
+				, A.ADDRESS1
+				, A.ADDRESS2
+				, A.BUSINESS_TYPE
+				, A.INDUSTRY_TYPE
+				, A.SELLER_TYPE
+				, GETCODETEXT1('M076',A.SELLER_TYPE, UPPER(#locale#)) AS SELLER_TYPE_NM
+				, A.COUNTRY
+				, GETCODETEXT1('M001',A.COUNTRY, UPPER(#locale#)) AS COUNTRY_NM
+				, A.CITY_TEXT
+				, GETCODETEXT1('M004',A.CITY_TEXT, UPPER(#locale#)) AS CITY_TEXT_NM
+				, A.FOUNDATION_DATE
+				, A.BASIC_AMT
+				, A.SALES_AMT
+				, A.EMP_COUNT
+				, A.PLANT_OWN_TYPE
+				, A.PLANT_ROLE_TYPE
+				, GETCODETEXT1('M729',A.PLANT_ROLE_TYPE, UPPER(#locale#)) AS PLANT_ROLE_TYPE_NM
+				, A.MAIN_CUSTOMER
+				, A.ABOARD_CHANNEL_TEXT
+				, GETCODETEXT1('SRM061',A.ABOARD_CHANNEL_TEXT, UPPER(#locale#)) AS ABOARD_CHANNEL_TEXT_NM
+				, A.ABOARD_COUNTRY_TEXT
+				<!--, A.PRODUCT_NAME-->
+				, D.SKU_NAME AS PRODUCT_NAME
+				<!--, A.PRODUCT_PRICE-->
+				<!--, A.CUR-->
+				, D.PRODUCT_PRICE
+				, D.CUR
+				, GETCODETEXT1('M002',D.CUR, UPPER(#locale#)) AS CUR_NM
+				<!--, GETCODETEXT1('M002',A.CUR, UPPER(#locale#)) AS CUR_NM-->
+				<!--, A.PRODUCT_IMG_PATH-->
+				, D.DOC_NO AS PRODUCT_IMG_PATH
+				, F1.SRC_FILE_NAME AS PRODUCT_IMG_PATH_NAME
+				<!--, A.PRODUCT_INTRO_ATTACH_NO-->
+				, D.PRODUCT_INTRO_ATTACH_NO
+				, F2.SRC_FILE_NAME AS PRODUCT_INTRO_ATTACH_NO_NAME
+				<!--, A.COMPANY_INTRO_ATTACH_NO-->
+				, D.COMPANY_INTRO_ATTACH_NO
+				, F3.SRC_FILE_NAME AS COMPANY_INTRO_ATTACH_NO_NAME
+				<!--, A.MAIN_PRODUCT-->
+				<!--, A.DEALING_BRAND_PRODUCT-->
+				, D.MAIN_PRODUCT
+				, D.DEALING_BRAND_PRODUCT
+				, A.CREDIT_NO
+				, A.CREDIT_COMPANY_CODE
+				, GETCODETEXT1('SRM039',A.CREDIT_COMPANY_CODE, UPPER(#locale#)) AS CREDIT_COMPANY_CODE_NM
+				, A.CREDIT_RATING
+				, A.CREDIT_BASIC_DATE
+				, A.CREDIT_ATTACH_NO
+				, F4.SRC_FILE_NAME AS CREDIT_ATTACH_NO_NAME
+				, B.STATUS
+				, A.ZZQC_FG1
+				, A.ZZQC_FG2
+				, A.ZZQC_FG3
+				, A.ZZQC_FG4
+				, A.ZZQC_FG5
+				, A.ZZQC_FG6
+				, A.ZZQC_FG7
+				, A.ZZQC_FG8
+				, A.ZZQC_FG9
+				, A.ZZQC_FG10
+				, A.ZZQC_FG11
+				, A.ZZQC_FG12
+				, E.SC_KIND
+				, NVL(B.ONLINE_MAIL_TARGET, 'MMD') AS ONLINE_MAIL_TARGET
+				, GETCODETEXT1('SRM086',B.ONLINE_MAIL_TARGET, UPPER(#locale#)) AS ONLINE_MAIL_TARGET_NM
+				, NVL(B.LOCAL_FOOD_YN,'N') AS LOCAL_FOOD_YN
+				, A.SM_FLAG
+				, D.SM_ATTACH_NO
+				, F5.SRC_FILE_NAME AS SM_ATTACH_NO_NAME
+		FROM
+				SSUGL A
+				, SINRQ B
+				, SSGMT C
+				, SSUPI D
+				, SFILE F1
+				, SFILE F2
+				, SFILE F3
+				, SFILE F4
+				, SFILE F5
+				, SSGMT E
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE(+)
+			AND A.SELLER_CODE = B.VENDOR_CODE(+)
+			AND B.CAT_LV1_CODE = C.SG_NO
+			AND B.HOUSE_CODE = D.HOUSE_CODE(+)
+			AND B.VENDOR_CODE = D.SELLER_CODE(+)
+			AND B.REQ_SEQ = D.SEQ(+)
+			<!--AND A.PRODUCT_IMG_PATH = F1.DOC_NO(+)-->
+			AND D.DOC_NO = F1.DOC_NO(+)
+			<!--AND A.PRODUCT_INTRO_ATTACH_NO = F2.DOC_NO(+)-->
+			<!--AND A.COMPANY_INTRO_ATTACH_NO = F3.DOC_NO(+)-->
+			AND D.PRODUCT_INTRO_ATTACH_NO = F2.DOC_NO(+)
+			AND D.COMPANY_INTRO_ATTACH_NO = F3.DOC_NO(+)
+			AND A.CREDIT_ATTACH_NO = F4.DOC_NO(+)
+			AND D.SM_ATTACH_NO = F5.DOC_NO(+)
+			AND B.CAT_LV1_CODE = E.SG_NO
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND B.REQ_SEQ = #reqSeq#
+	</select>
+
+	<!--입점상담신청-->
+	<update id="updateHiddenCompReq" parameterClass="SRMJON0043VO">
+		/*SRMJON0043.updateHiddenCompReq*/
+		UPDATE 	SINRQ
+		SET
+				STATUS 				= 'A01'
+				, REQUEST_DATE 		= CURRENT_TIMESTAMP(0)
+				, CHANGE_DATE 		= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID 	= #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND VENDOR_CODE = #sellerCode#
+			AND REQ_SEQ = #reqSeq#
+	</update>
+
+	<!--입점상담 신청 삭제-->
+	<delete id="deleteHiddenCompReq" parameterClass="SRMJON0043VO">
+		/*SRMJON0043.deleteHiddenCompReq*/
+		DELETE
+		FROM
+				SINRQ
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND VENDOR_CODE = #sellerCode#
+			AND REQ_SEQ = #reqSeq#
+	</delete>
+
+	<!--입점상담 신청 삭제-->
+	<delete id="deleteHiddenCompReqSSUPI" parameterClass="SRMJON0043VO">
+		/*SRMJON0043.deleteHiddenCompReqSSUPI*/
+		DELETE
+		FROM
+				SSUPI
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</delete>
+
+
+	<!--입점상담 신청 정보 존재여부 check-->
+	<select id="selectHiddenCompReqCheck" parameterClass="SRMJON0043VO" resultClass="INTEGER">
+		/*SRMJON0043.selectHiddenCompReqCheck*/
+		SELECT
+				COUNT(*)
+		FROM
+				SINRQ
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND VENDOR_CODE = #sellerCode#
+	</select>
+
+	<!--잠재업체 정보 삭제-->
+	<delete id="deleteHiddenComp" parameterClass="SRMJON0043VO">
+		/*SRMJON0043.deleteHiddenComp*/
+		DELETE
+		FROM
+				SSUGL
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+	</delete>
+
+	<!--담당MD Email 조회-->
+	<select id="selectHiddenCompReqEMSList" parameterClass="SRMJON0043VO" resultMap="selectHiddenCompReqEMSListResultMap">
+		/*SRMJON0043.selectHiddenCompReqEMSList*/
+		<isEqual property="localFoodYn" compareValue="Y">
+			SELECT
+					TEXT3 AS USER_NAME_LOC
+					,TEXT1 AS EMAIL
+			FROM
+					SCODE
+			WHERE
+					TYPE = 'SRM087'
+				AND USE_FLAG = 'Y'
+		</isEqual>
+		<isEqual property="localFoodYn" compareValue="N">
+			SELECT
+					USER_NAME_LOC
+					,EMAIL
+			FROM
+					SUSMT
+			WHERE
+					DEPT IN (
+							<!-- [PIY 201102] 삭제되지 않은 대분류값만 조회되도록 조건 추가
+								 SDEPT_MAPPING내에 CHG_FLAG !='D'-->
+							<!--롯데마트-->
+							<isEqual property="channelCode" compareValue="01">
+								SELECT
+										DISTINCT A.DEPT
+								FROM
+										SDEPT_MAPPING A
+										, SDEPT   B
+								WHERE
+										A.DEPT = B.DEPT
+									AND A.CAT_LV1_CODE   = #catLv1Code#  -- 대분류
+									AND A.PURCHASE_ORG  = 'KR02' -- KR02:롯데마트, KR03:VIC 마켓, ?:온라인몰, ?:테넌트
+									AND B.CTRL_DEPT_FLAG  = 'X'  -- 대표부서
+									AND A.CHG_FLAG !='D'
+							</isEqual>
+							<!--VIC마켓-->
+							<isEqual property="channelCode" compareValue="02">
+								SELECT
+										DISTINCT A.DEPT
+								FROM
+										SDEPT_MAPPING A
+										, SDEPT   B
+								WHERE
+										A.DEPT = B.DEPT
+									AND A.CAT_LV1_CODE   = #catLv1Code#  -- 대분류
+									AND A.PURCHASE_ORG  = 'KR03' -- KR02:롯데마트, KR03:VIC 마켓, ?:온라인몰, ?:테넌트
+									AND B.CTRL_DEPT_FLAG  = 'X'  -- 대표부서
+									AND A.CHG_FLAG !='D'
+							</isEqual>
+							<!--온라인-->
+							<isEqual property="channelCode" compareValue="06">
+								<!--하이퍼MD-->
+								<isEqual property="onlineMailTarget" compareValue="HMD">
+									SELECT
+											DISTINCT A.DEPT
+									FROM
+											SDEPT_MAPPING A
+											, SDEPT   B
+									WHERE
+											A.DEPT = B.DEPT
+										AND A.CAT_LV1_CODE   = #catLv1Code#  -- 대분류
+										AND A.PURCHASE_ORG  = 'KR02' -- KR02:롯데마트, KR03:VIC 마켓, ?:온라인몰, ?:테넌트
+										AND B.CTRL_DEPT_FLAG  = 'X'  -- 대표부서
+										AND A.CHG_FLAG !='D'
+								</isEqual>
+								<!--모바일MD-->
+								<isEqual property="onlineMailTarget" compareValue="MMD">
+									SELECT
+											TEXT1
+									FROM
+											SCODE
+									WHERE
+											TYPE = 'SRM076'
+										AND CODE = '06'
+										AND USE_FLAG = 'Y'
+								</isEqual>
+							</isEqual>
+							<!--테넌트-->
+							<isEqual property="channelCode" compareValue="99">
+								SELECT
+										CASE WHEN
+													(	SELECT
+																DEPT
+														FROM
+																SDEPT_MAPPING
+													WHERE
+															CAT_LV1_CODE = #catLv1Code#
+														LIMIT =1
+														AND CHG_FLAG !='D' 
+													) IS NOT NULL
+											THEN (	SELECT
+															TEXT1
+													FROM
+															SCODE
+													WHERE
+															TYPE = 'SRM076'
+														AND CODE = '09_1'
+														AND USE_FLAG = 'Y'
+												)
+											ELSE (	SELECT
+															TEXT1
+													FROM
+															SCODE
+													WHERE
+															TYPE = 'SRM076'
+														AND CODE = '09_2'
+														AND USE_FLAG = 'Y'
+												)
+											END
+								FROM DUAL
+
+							</isEqual>
+							)
+			AND STAT_CD = '10'						<!--10 : 재직-->
+		</isEqual>
+	</select>
+
+
+	<!--담당MD Email 조회-->
+	<insert id="insertHiddenCompReqEMS" parameterClass="SRMJON0043VO">
+		/*SRMJON0043.insertHiddenCompReqEMS*/
+		INSERT INTO TARGET_EDI@DL_EMS_SMS_TAG
+				(
+					SEQ_NO
+					,NAME
+					,EMAIL
+					,SEND_FG
+					,MSG_CD
+					,MSG_TITLE
+					,MSG_HEADER
+					,MSG_CONTENTS
+					,ATTACH
+					,MSG_BOTTOM
+					,EMAIL_FROM
+					,TELNFAX
+					,REG_DT
+				)
+		VALUES
+				(
+					(SELECT 'SR'||TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(NVL(MAX(SUBSTR(SEQ_NO,'9','6')),0)+1,'6','0') FROM TARGET_EDI@DL_EMS_SMS_TAG WHERE SUBSTR(SEQ_NO,0,8) = 'SR'||TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD'))
+					,#userNameLoc#
+					,#email#
+					,'0'
+					,#msgCd#
+					,#msgTitle#
+					,''
+					,#msgContents#
+					,''
+					,''
+					,''
+					,''
+					,TO_TIMESTAMP(TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MI'),'YYYY-MM-DD HH24:MI:SS.FF')
+				)
+	</insert>
+	
+	<select id="selectCatLv1CodeCheck" parameterClass="SRMJON0043VO" resultClass="Integer">
+		/*SRMJON0043.selectCatLv1CodeCheck*/
+		SELECT
+				COUNT(1)
+		FROM
+				SSGMT
+		WHERE 
+				SG_NO = #catLv1Code#
+			AND CHG_FG NOT IN('D')			
+	</select>
+</sqlMap>

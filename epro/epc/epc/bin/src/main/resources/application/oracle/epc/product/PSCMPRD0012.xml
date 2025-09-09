@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0012">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectCalendarScheduleList" resultClass="dataMap">
+	/*	PSCMPRD0012.selectCalendarScheduleList	*/
+		SELECT T.SCDL_SEQS
+		    , T.VENDOR_ID
+		    , (SELECT SUB.VENDOR_NM FROM TVE_VENDOR SUB WHERE T.VENDOR_ID = SUB.VENDOR_ID) VENDOR_NM
+		    , T.RSERV_START_DY
+		    , T.RSERV_START_TM
+		    , T.RSERV_END_DY
+		    , T.RSERV_END_TM
+		    , T.CELL_NO
+		    , T.SCDL_MEMO
+		    , T.REG_DATE
+		    , T.REG_ID
+		    , T.MOD_DATE
+		    , T.MOD_ID
+		FROM TOR_SCDL_MGR T
+		WHERE SUBSTR(T.RSERV_START_DY, 0, 6) = #currentMonth#
+		ORDER BY T.RSERV_START_DY, T.RSERV_START_TM, T.RSERV_END_TM, T.SCDL_SEQS
+	</select>
+
+</sqlMap>

@@ -1,0 +1,743 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0040">
+
+
+	<typeAlias alias="SRMJON0040VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0040VO" />
+	<typeAlias alias="OptionTagVO"	type="com.lottemart.epc.common.model.OptionTagVO" />
+	<typeAlias alias="SRMJON004001VO"	type="com.lottemart.epc.edi.srm.model.SRMJON004001VO" />
+
+	<!-- 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectHiddenCompInfoResultMap" class="SRMJON0040VO">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode" 		/>	<!-- 업체코드 -->
+		<result column="CHANNEL_CODE"		property="channelCode" 		/>	<!-- 채널선택{scode_type=SRM053} -->
+		<result column="REQ_SEQ"			property="reqSeq" 			/>	<!-- 순번 -->
+		<result column="SHIPPER_TYPE"		property="shipperType" 		/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="CAT_LV1_CODE"		property="catLv1Code" 		/>	<!-- 대분류 -->
+		<result column="CAT_LV1_CODE_NM"	property="catLv1CodeNm" 	/>	<!-- 대분류 -->
+		<result column="IRS_NO"				property="irsNo" 			/>	<!-- 사업자등록번호 -->
+		<result column="TEMP_PW"			property="tempPw" 			/>	<!-- 임시비밀번호 -->
+		<result column="SELLER_NAME_LOC"	property="sellerNameLoc" 	/>	<!-- 업체명{한글} -->
+		<result column="SELLER_NAME_ENG"	property="sellerNameEng" 	/>	<!-- 업체명{영문} -->
+		<result column="COMPANY_TYPE"		property="companyType" 		/>	<!-- 법인구분{scode_type=M074} -->
+		<result column="SELLER_CEO_NAME"	property="sellerCeoName" 	/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<result column="V_MAIN_NAME"		property="vMainName" 		/>	<!-- 업체마트 담당자(이름) -->
+		<result column="V_PHONE1"			property="vPhone1"		 	/>	<!-- 등록자 유선 전화번호 -->
+		<result column="PHONE_NO"			property="phoneNo"		 	/>	<!-- 등록자 유선 전화번호 -->
+		<result column="V_MOBILE_PHONE"		property="vMobilePhone" 	/>	<!-- 모바일(이동전화) -->
+		<result column="V_EMAIL"			property="vEmail" 			/>	<!-- BDC EMAIL CHECK 필요 -->
+		<result column="SELLER_CEO_EMAIL"	property="sellerCeoEmail" 	/>	<!-- 대표자 이메일 -->
+		<result column="FAX_FHONE"			property="faxFhone" 		/>	<!-- FAX -->
+		<result column="ZIPCODE"			property="zipcode" 			/>	<!-- 우편번호 -->
+		<result column="ADDRESS1"			property="address1" 		/>	<!-- 주소1 -->
+		<result column="ADDRESS2"			property="address2" 		/>	<!-- 주소2 -->
+		<result column="BUSINESS_TYPE"		property="businessType" 	/>	<!-- 업태 -->
+		<result column="INDUSTRY_TYPE"		property="industryType" 	/>	<!-- 업종 -->
+		<result column="SELLER_TYPE"		property="sellerType" 		/>	<!-- 파트너사 사업 유형{scode_type=M076} -->
+		<result column="COUNTRY"			property="country" 			/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="CITY_TEXT"			property="cityText" 		/>	<!-- 도시명 -->
+	</resultMap>
+
+
+	<!-- 기등록 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectHiddenCompBasicInfoResultMap" class="SRMJON0040VO">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode" 		/>	<!-- 업체코드 -->
+		<result column="CHANNEL_CODE"		property="channelCode" 		/>	<!-- 채널선택{scode_type=SRM053} -->
+		<result column="SHIPPER_TYPE"		property="shipperType" 		/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="IRS_NO"				property="irsNo" 			/>	<!-- 사업자등록번호 -->
+		<result column="TEMP_PW"			property="tempPw" 			/>	<!-- 임시비밀번호 -->
+		<result column="SELLER_NAME_LOC"	property="sellerNameLoc" 	/>	<!-- 업체명{한글} -->
+		<result column="SELLER_NAME_ENG"	property="sellerNameEng" 	/>	<!-- 업체명{영문} -->
+		<result column="COMPANY_TYPE"		property="companyType" 		/>	<!-- 법인구분{scode_type=M074} -->
+		<result column="COMPANY_REG_NO"		property="companyRegNo" 	/>	<!-- 법인번호 -->
+		<result column="SELLER_CEO_NAME"	property="sellerCeoName" 	/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<!--<result column="V_MAIN_NAME"		property="vMainName" 		/>	&lt;!&ndash; 업체마트 담당자(이름) &ndash;&gt;-->
+		<result column="V_PHONE1"			property="vPhone1"		 	/>	<!-- 등록자 유선 전화번호 -->
+		<!--<result column="V_MOBILE_PHONE"		property="vMobilePhone" 	/>	&lt;!&ndash; 모바일(이동전화) &ndash;&gt;-->
+		<!--<result column="V_EMAIL"			property="vEmail" 			/>	&lt;!&ndash; BDC EMAIL CHECK 필요 &ndash;&gt;-->
+		<result column="SELLER_CEO_EMAIL"	property="sellerCeoEmail" 	/>	<!-- 대표자 이메일 -->
+		<!--<result column="FAX_FHONE"			property="faxFhone" 		/>	&lt;!&ndash; FAX &ndash;&gt;-->
+		<result column="ZIPCODE"			property="zipcode" 			/>	<!-- 우편번호 -->
+		<result column="ADDRESS1"			property="address1" 		/>	<!-- 주소1 -->
+		<result column="ADDRESS2"			property="address2" 		/>	<!-- 주소2 -->
+		<result column="BUSINESS_TYPE"		property="businessType" 	/>	<!-- 업태 -->
+		<result column="INDUSTRY_TYPE"		property="industryType" 	/>	<!-- 업종 -->
+		<result column="SELLER_TYPE"		property="sellerType" 		/>	<!-- 파트너사 사업 유형{scode_type=M076} -->
+		<result column="COUNTRY"			property="country" 			/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="CITY_TEXT"			property="cityText" 		/>	<!-- 도시명 -->
+	</resultMap>
+
+
+
+	<!-- 파트너사 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectHiddenCompPartnerInfoResultMap" class="SRMJON0040VO">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode" 		/>	<!-- 업체코드 -->
+		<!--<result column="CHANNEL_CODE"		property="channelCode" 		/>	&lt;!&ndash; 채널선택{scode_type=SRM053} &ndash;&gt;-->
+		<!--<result column="SHIPPER_TYPE"		property="shipperType" 		/>	&lt;!&ndash; 업체소싱국가구분[M025] &ndash;&gt;-->
+		<result column="IRS_NO"				property="irsNo" 			/>	<!-- 사업자등록번호 -->
+		<!--<result column="TEMP_PW"			property="tempPw" 			/>	&lt;!&ndash; 임시비밀번호 &ndash;&gt;-->
+		<result column="SELLER_NAME_LOC"	property="sellerNameLoc" 	/>	<!-- 업체명{한글} -->
+		<!--<result column="SELLER_NAME_ENG"	property="sellerNameEng" 	/>	&lt;!&ndash; 업체명{영문} &ndash;&gt;-->
+		<result column="COMPANY_TYPE"		property="companyType" 		/>	<!-- 법인구분{scode_type=M074} -->
+		<result column="SELLER_CEO_NAME"	property="sellerCeoName" 	/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<!--<result column="V_MAIN_NAME"		property="vMainName" 		/>	&lt;!&ndash; 업체마트 담당자(이름) &ndash;&gt;-->
+		<result column="V_PHONE1"			property="vPhone1"		 	/>	<!-- 등록자 유선 전화번호 -->
+		<!--<result column="V_MOBILE_PHONE"		property="vMobilePhone" 	/>	&lt;!&ndash; 모바일(이동전화) &ndash;&gt;-->
+		<!--<result column="V_EMAIL"			property="vEmail" 			/>	&lt;!&ndash; BDC EMAIL CHECK 필요 &ndash;&gt;-->
+		<result column="SELLER_CEO_EMAIL"	property="sellerCeoEmail" 	/>	<!-- 대표자 이메일 -->
+		<result column="FAX_FHONE"			property="faxFhone" 		/>	<!-- FAX -->
+		<result column="ZIPCODE"			property="zipcode" 			/>	<!-- 우편번호 -->
+		<result column="ADDRESS1"			property="address1" 		/>	<!-- 주소1 -->
+		<result column="ADDRESS2"			property="address2" 		/>	<!-- 주소2 -->
+		<result column="BUSINESS_TYPE"		property="businessType" 	/>	<!-- 업태 -->
+		<result column="INDUSTRY_TYPE"		property="industryType" 	/>	<!-- 업종 -->
+		<result column="SELLER_TYPE"		property="sellerType" 		/>	<!-- 파트너사 사업 유형{scode_type=M076} -->
+		<result column="COUNTRY"			property="country" 			/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="CITY_TEXT"			property="cityText" 		/>	<!-- 도시명 -->
+	</resultMap>
+
+
+	<!--대분류 코드 RESULT MAP-->
+	<resultMap id="catLv1CodeResult" class="com.lottemart.epc.common.model.OptionTagVO">
+		<result property="code" column="MINOR_CD"/>
+		<result property="name" column="CD_NM"/>
+	</resultMap>
+
+	<!--주소찾기-->
+	<resultMap id="selectZipListMap" class="SRMJON004001VO">
+		<result column="ZIP_CD" 			property="zipCd" 		/>
+		<result column="CITY_NM" 			property="cityNm" 		/>
+		<result column="GU_NM" 				property="guNm" 		/>
+		<result column="STREET_NM" 			property="streetNm" 	/>
+		<result column="BIDNG_MAIN_NO" 		property="bidngMainNo" 	/>
+		<result column="BIDNG_SUB_NO" 		property="bidngSubNo" 	/>
+		<result column="FULL_BIDNG_NO" 		property="fullBidngNo" 	/>
+		<result column="JUSO" 				property="juso" 		/>
+	</resultMap>
+
+	<!-- 잠재업체 기본정보조회 -->
+	<select id="selectHiddenCompInfo" parameterClass="SRMJON0040VO" resultMap="selectHiddenCompInfoResultMap">
+		/*SRMJON0040.selectHiddenCompInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, B.CHANNEL_CODE
+				, B.REQ_SEQ
+				, B.CAT_LV1_CODE
+				, GETSGCLASS('000', UPPER(#locale#), '1', B.CAT_LV1_CODE) AS CAT_LV1_CODE_NM
+				, A.SHIPPER_TYPE
+				, A.IRS_NO
+				, A.TEMP_PW
+				, A.SELLER_NAME_LOC
+				, A.SELLER_NAME_ENG
+				, A.COMPANY_TYPE
+				, A.SELLER_CEO_NAME
+				<!--, A.V_MAIN_NAME-->
+				, C.USER_NAME AS V_MAIN_NAME
+				, A.V_PHONE1
+				, C.PHONE_NO
+				<!--, A.V_MOBILE_PHONE-->
+				, C.MOBILE_NO AS V_MOBILE_PHONE
+				<!--, A.V_EMAIL-->
+				, C.EMAIL AS V_EMAIL
+				, A.SELLER_CEO_EMAIL
+				<!--, A.FAX_FHONE-->
+				, C.FAX_NO AS FAX_FHONE
+				, A.ZIPCODE
+				, A.ADDRESS1
+				, A.ADDRESS2
+				, A.BUSINESS_TYPE
+				, A.INDUSTRY_TYPE
+				, A.SELLER_TYPE
+				, A.COUNTRY
+				, A.CITY_TEXT
+		FROM
+				SSUGL A
+				, SINRQ B
+				, SSUPI C
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE(+)
+			AND A.SELLER_CODE = B.VENDOR_CODE(+)
+			AND B.HOUSE_CODE = C.HOUSE_CODE(+)
+			AND B.VENDOR_CODE = C.SELLER_CODE(+)
+			AND B.REQ_SEQ= C.SEQ(+)
+			AND	A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND B.REQ_SEQ = #reqSeq#
+			AND A.COUNTRY = #country#
+	</select>
+
+
+	<!-- 기등록 잠재업체 기본정보조회 -->
+	<select id="selectHiddenCompBasicInfo" parameterClass="SRMJON0040VO" resultMap="selectHiddenCompBasicInfoResultMap">
+		/*SRMJON0040.selectHiddenCompInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, A.CHANNEL_CODE
+				, A.SHIPPER_TYPE
+				, A.IRS_NO
+				, A.TEMP_PW
+				, A.SELLER_NAME_LOC
+				, A.SELLER_NAME_Eng
+				, A.COMPANY_TYPE
+				, A.COMPANY_REG_NO
+				, A.SELLER_CEO_NAME
+				<!--, A.V_MAIN_NAME-->
+				, A.V_PHONE1
+				<!--, A.V_MOBILE_PHONE-->
+				<!--, A.V_EMAIL-->
+				, A.SELLER_CEO_EMAIL
+				<!--, A.FAX_FHONE-->
+				, A.ZIPCODE
+				, A.ADDRESS1
+				, A.ADDRESS2
+				, A.BUSINESS_TYPE
+				, A.INDUSTRY_TYPE
+				, A.SELLER_TYPE
+				, A.COUNTRY
+				, A.CITY_TEXT
+		FROM
+				SSUGL A
+		WHERE
+				A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND A.COUNTRY = #country#
+	</select>
+
+
+	<!-- 기등록 잠재업체 기본정보조회 -->
+	<select id="selectHiddenCompPartnerInfo" parameterClass="SRMJON0040VO" resultMap="selectHiddenCompPartnerInfoResultMap">
+		/*SRMJON0040.selectHiddenCompPartnerInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, A.IRS_NO
+				, A.SELLER_NAME_LOC
+				, A.COMPANY_TYPE
+				, A.SELLER_CEO_NAME
+				, A.REP_TEL_NO AS V_PHONE1
+				, A.INTAD AS SELLER_CEO_EMAIL
+				, A.FAX_NO AS FAX_FHONE
+				, A.ZIPCODE
+				, A.ADDRESS1
+				, A.ADDRESS2
+				, A.BUSINESS_TYPE
+				, A.INDUSTRY_TYPE
+				, A.SELLER_TYPE
+				, A.COUNTRY
+				, A.REGIO AS CITY_TEXT
+		FROM
+				SSUGL_PARTNER A
+		WHERE
+				A.HOUSE_CODE = #houseCode#
+			AND A.IRS_NO = #sellerCode#
+			AND A.COUNTRY = #country#
+			LIMIT 1
+	</select>
+
+	<!--잠재업체 중복검사-->
+	<select id="selectHiddenCompCheck" parameterClass="SRMJON0040VO" resultClass="INTEGER">
+		/*SRMJON0040.selectHiddenCompCheck*/
+		SELECT
+				COUNT(*)
+		FROM
+				SSUGL
+		WHERE 	HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND COUNTRY = #country#
+			<!-- AND SELLER_NAME_LOC = #sellerNameLoc# -->
+		<!--<isEqual property="gbn" compareValue="">-->
+		<!--AND SELLER_NAME_LOC = #sellerNameLoc#-->
+		<!--</isEqual>-->
+		<!--<isEqual property="gbn" compareValue="">-->
+		<!--AND	SELLER_NAME_ENG = #sellerNameLoc#-->
+		<!--</isEqual>-->
+	</select>
+
+	<!--잠재업체 기본정보 등록-->
+	<insert id="insertHiddenCompInfo" parameterClass="SRMJON0040VO">
+		/*SRMJON0040.insertHiddenCompInfo*/
+		INSERT INTO SSUGL
+				( HOUSE_CODE
+				, SELLER_CODE
+				, PLANT_CODE
+				, CHANNEL_CODE
+				, SHIPPER_TYPE
+				, IRS_NO
+				, TEMP_PW
+				, SELLER_NAME_LOC
+				, SELLER_NAME_ENG
+				, COMPANY_TYPE
+				, COMPANY_REG_NO
+				, SELLER_CEO_NAME
+				, V_MAIN_NAME
+				, V_PHONE1
+				, V_MOBILE_PHONE
+				, V_EMAIL
+				, SELLER_CEO_EMAIL
+				, FAX_FHONE
+				, ZIPCODE
+				, ADDRESS1
+				, ADDRESS2
+				, BUSINESS_TYPE
+				, INDUSTRY_TYPE
+				, SELLER_TYPE
+				, COUNTRY
+				, CITY_TEXT
+				, ADD_DATE
+				, ADD_USER_ID
+				, CHANGE_DATE
+				, CHANGE_USER_ID)
+		VALUES
+				( #houseCode#
+				, #sellerCode#
+				, '*'
+				, #channelCode#
+				, #shipperType#
+				, #irsNo#
+				, #tempPw#
+				, #sellerNameLoc#
+				, #sellerNameEng#
+				, #companyType#
+				, #companyRegNo#
+				, #sellerCeoName#
+				, #vMainName#
+				, #vPhone1#
+				, #vMobilePhone#
+				, #vEmail#
+				, #sellerCeoEmail#
+				, #faxFhone#
+				, #zipcode#
+				, #address1#
+				, #address2#
+				, #businessType#
+				, #industryType#
+				, #sellerType#
+				, #country#
+				, #cityText#
+				, CURRENT_TIMESTAMP(0)
+				, #irsNo#
+				, CURRENT_TIMESTAMP(0)
+				, #irsNo#)
+	</insert>
+
+	<!--잠재업체 기본정보 수정-->
+	<update id="updateHiddenCompInfo" parameterClass="SRMJON0040VO">
+		/*SRMJON0040.updateHiddenCompInfo*/
+		UPDATE 	SSUGL
+		SET 	CHANNEL_CODE 			= #channelCode#
+				, SHIPPER_TYPE 			= #shipperType#
+				, IRS_NO 				= #irsNo#
+				<isNotEmpty property="tempPw">
+					, TEMP_PW 				= #tempPw#
+				</isNotEmpty>
+				, SELLER_NAME_LOC 		= #sellerNameLoc#
+				, SELLER_NAME_ENG 		= #sellerNameEng#
+				, COMPANY_TYPE 			= #companyType#
+				, COMPANY_REG_NO 		= #companyRegNo#
+				, SELLER_CEO_NAME 		= #sellerCeoName#
+				, V_MAIN_NAME 			= #vMainName#
+				, V_PHONE1 				= #vPhone1#
+				, V_MOBILE_PHONE 		= #vMobilePhone#
+				, V_EMAIL 				= #vEmail#
+				, SELLER_CEO_EMAIL 		= #sellerCeoEmail#
+				, FAX_FHONE 			= #faxFhone#
+				, ZIPCODE 				= #zipcode#
+				, ADDRESS1 				= #address1#
+				, ADDRESS2 				= #address2#
+				, BUSINESS_TYPE 		= #businessType#
+				, INDUSTRY_TYPE 		= #industryType#
+				, SELLER_TYPE 			= #sellerType#
+				, COUNTRY 				= #country#
+				, CITY_TEXT 			= #cityText#
+				, CHANGE_DATE			= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID		= #irsNo#
+		WHERE
+				HOUSE_CODE = '000'
+			AND SELLER_CODE = #sellerCode#
+	</update>
+
+	<!--잠재업체 기본정보 등록-->
+	<insert id="insertHiddenCompInfoSSUPI" parameterClass="SRMJON0040VO">
+		/*SRMJON0040.insertHiddenCompInfoSSUPI*/
+		INSERT INTO SSUPI
+			( HOUSE_CODE
+			, SELLER_CODE
+			, SEQ
+			, ADD_DATE
+			, ADD_TIME
+			, ADD_USER_ID
+			, CHANGE_DATE
+			, CHANGE_TIME
+			, CHANGE_USER_ID
+			, PHONE_NO
+			, USER_NAME
+			, FAX_NO
+			, MOBILE_NO
+			, EMAIL
+			, DEL_FLAG
+			)
+		VALUES
+			( #houseCode#
+			, #sellerCode#
+			, #reqSeq#
+			, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+			, TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+			, #irsNo#
+			, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+			, TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+			, #irsNo#
+			, #phoneNo#
+			, #vMainName#
+			, #faxFhone#
+			, #vMobilePhone#
+			, #vEmail#
+			,'0')
+	</insert>
+
+	<!--잠재업체 기본정보 수정-->
+	<update id="updateHiddenCompInfoSSUPI" parameterClass="SRMJON0040VO">
+		/*SRMJON0040.updateHiddenCompInfoSSUPI*/
+		UPDATE 	SSUPI
+		SET 	USER_NAME 				= #vMainName#
+				, PHONE_NO 				= #phoneNo#
+				, MOBILE_NO 			= #vMobilePhone#
+				, EMAIL 				= #vEmail#
+				, FAX_NO 				= #faxFhone#
+				, CHANGE_DATE			= TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				, CHANGE_TIME			= TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+				, CHANGE_USER_ID		= #irsNo#
+		WHERE
+				HOUSE_CODE = '000'
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</update>
+
+
+	<!-- 대분류 코드 조회-->
+	<select id="selectConsultReqSeq" resultClass="String">
+		/*SRMJON0040.selectConsultReqSeq*/
+		SELECT
+				NVL(MAX(TO_NUMBER(REQ_SEQ)),0)+1
+		FROM
+				SINRQ
+		WHERE
+				VENDOR_CODE = #irsNo#
+	</select>
+
+	<!-- 입점상담 신청 등록-->
+	<insert id="insertConsultReq" parameterClass="SRMJON0040VO">
+		/*SRMJON0040.insertConsultReq*/
+			INSERT INTO SINRQ
+					( HOUSE_CODE
+					, VENDOR_CODE
+					, REQ_SEQ
+					, CHANNEL_CODE
+					, PUR_TYPE_CODE
+					, CAT_LV1_CODE
+					, CREDIT_GRADE_INPUT
+					, STATUS
+					, DEL_FLAG
+					, ADD_DATE
+					, ADD_USER_ID
+					, CHANGE_DATE
+					, CHANGE_USER_ID
+					, LOCAL_FOOD_YN
+					, ONLINE_MAIL_TARGET)
+			VALUES
+					( #houseCode#
+					, #sellerCode#
+					, #reqSeq#
+					, #channelCode#
+					, ''
+					, #catLv1Code#
+					,(CASE 	WHEN (
+									SELECT
+											CREDIT_GRADE_INPUT
+									FROM
+											SINRQ
+									WHERE
+											HOUSE_CODE = '000'
+										AND VENDOR_CODE = #sellerCode#
+										AND REQ_SEQ = (	SELECT
+																NVL(MAX(TO_NUMBER(REQ_SEQ)),0)+1
+														FROM
+																SINRQ
+														WHERE
+																HOUSE_CODE = '000'
+															AND VENDOR_CODE = #sellerCode#)
+								)IS NULL
+							THEN
+								(	SELECT
+											CREDIT_RATING
+									FROM
+											SSUGL
+									WHERE
+											HOUSE_CODE = '000'
+										AND SELLER_CODE = #sellerCode#
+								)
+							ELSE
+								(
+									SELECT
+											CREDIT_GRADE_INPUT
+									FROM
+											SINRQ
+									WHERE
+											HOUSE_CODE = '000'
+										AND VENDOR_CODE = #sellerCode#
+										AND REQ_SEQ = (	SELECT
+																NVL(MAX(TO_NUMBER(REQ_SEQ)),0)+1
+														FROM
+																SINRQ
+														WHERE
+																HOUSE_CODE = '000'
+															AND VENDOR_CODE = #sellerCode#)
+								)
+					END)
+					, ''                    <!--상태-->
+					, '0'
+					, CURRENT_TIMESTAMP(0)
+					, #irsNo#
+					, CURRENT_TIMESTAMP(0)
+					, #irsNo#
+					, #localFoodYn#
+					, #onlineMailTarget#)
+	</insert>
+
+	<!-- 입점상담 신청 등록-->
+
+	<!--입점상담 신청 수정-->
+	<update id="updateConsultReq" parameterClass="SRMJON0040VO">
+		/*SRMJON0030.updateConsultReq*/
+		UPDATE     SINRQ
+		SET     CHANNEL_CODE  		= #channelCode#
+		, CAT_LV1_CODE 		= #catLv1Code#
+		, LOCAL_FOOD_YN 	= #localFoodYn#
+		, ONLINE_MAIL_TARGET = #onlineMailTarget#
+		, CHANGE_DATE 		= CURRENT_TIMESTAMP(0)
+		, CHANGE_USER_ID 	= #irsNo#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND VENDOR_CODE = #sellerCode#
+			AND REQ_SEQ = #reqSeq#
+	</update>
+
+	<!-- 대분류 코드 조회-->
+	<select id="selectCatLv1CodeList" resultMap="catLv1CodeResult">
+		/*SRMJON0040.selectCatLv1CodeList*/
+		SELECT
+				SG_NO AS MINOR_CD
+				, SG_NAME AS CD_NM
+		FROM
+				SSGMT
+		WHERE
+				DEPTH = '1'
+			AND CHG_FG NOT IN('D')	
+		ORDER BY SG_NO
+	</select>
+
+
+
+	<!-- 입점 거절 조회-->
+	<select id="selectConsultStatusList" parameterClass="SRMJON0040VO" resultClass="String">
+		/*SRMJON0040.selectConsultStatusList*/
+		SELECT
+				PROCESS_STATUS
+		FROM
+				SSUGL_PROCESS_MAIN
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND CHANNEL_CODE = #channelCode#
+			AND CAT_LV1_CODE = #catLv1Code#
+			AND PROCESS_STATUS IS NOT NULL
+	</select>
+
+
+	<!-- 입점 승인 상태 조회-->
+	<select id="selectConsultStatus" parameterClass="SRMJON0040VO" resultClass="Integer">
+		/*SRMJON0040.selectConsultStatus*/
+		SELECT
+				COUNT(*)
+		FROM
+				SSUGL_PROCESS_MAIN
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND CHANNEL_CODE = #channelCode#
+			AND CAT_LV1_CODE = #catLv1Code#
+			AND PROCESS_STATUS IN ('Z01')
+	</select>
+
+
+
+	<!-- 입점 진행중 상태 조회-->
+	<select id="selectConsultIngStatus" parameterClass="SRMJON0040VO" resultClass="Integer">
+		/*SRMJON0040.selectConsultIngStatus*/
+		SELECT
+				COUNT(*)
+		FROM
+				SINRQ A
+				,SSUGL_PROCESS_MAIN B
+		WHERE 	A.HOUSE_CODE = B.HOUSE_CODE(+)
+			AND A.VENDOR_CODE = B.SELLER_CODE(+)
+			AND A.REQ_SEQ = B.SEQ(+)
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.VENDOR_CODE = #sellerCode#
+			AND A.CHANNEL_CODE = #channelCode#
+			AND A.CAT_LV1_CODE = #catLv1Code#
+			AND (
+					A.STATUS IS NULL
+					<isNotEmpty property="reqSeq">
+						AND A.REQ_SEQ<![CDATA[<>]]> #reqSeq#
+					</isNotEmpty>
+					OR B.PROCESS_STATUS IN(
+											SELECT CODE
+											FROM SCODE
+											WHERE CODE NOT IN ('C02', 'E01', 'D05', 'G07', 'H04', 'Z01')
+											AND TYPE = 'SRM900'
+										)
+					OR (B.PROCESS_STATUS IS NULL AND A.STATUS = 'A01')
+				)
+	</select>
+
+	<!-- 우편번호 검색(도로명) count -->
+	<select id="selectZipListCount" resultClass="Integer" parameterClass="SRMJON004001VO">
+		/* SRMJON0040.selectZipListCount */
+		SELECT 	COUNT(1)
+		FROM 	TET_ZIP_CODE
+		WHERE 	ADDR_SYST_DIVN_CD 	= '02'
+			AND USE_YN 				= 'Y'
+			AND CITY_NM 			= #cityNm#
+			AND STREET_NM 			LIKE #srchStreetNm# || '%'
+	</select>
+
+	<!-- 우편번호 검색(도로명) -->
+	<select id="selectZipList" resultMap="selectZipListMap" parameterClass="SRMJON004001VO">
+		/* SRMJON0040.selectZipList */
+		SELECT 	ZIP_CD
+			, 	CITY_NM
+			, 	GU_NM
+			, 	STREET_NM
+			, 	BIDNG_MAIN_NO
+			, 	BIDNG_SUB_NO
+			, 	FULL_BIDNG_NO
+			, 	(CITY_NM || ' ' || GU_NM || ' ' || STREET_NM || ' ' ||  FULL_BIDNG_NO) AS JUSO
+		FROM
+		(
+			SELECT 	ROW_NUMBER() OVER(ORDER BY CITY_NM, GU_NM, STREET_NM) AS RNUM
+				,	ZIP_CD
+				, 	CITY_NM
+				, 	GU_NM
+				, 	STREET_NM
+				, 	BIDNG_MAIN_NO
+				, 	BIDNG_SUB_NO
+				, 	CASE 	WHEN BIDNG_SUB_NO = '0' THEN
+								CASE 	WHEN APART_NM IS NULL THEN BIDNG_MAIN_NO || ' (' || DONG_NM || ')'
+										ELSE BIDNG_MAIN_NO || ' (' || DONG_NM || ', ' || APART_NM || ')'
+								END
+							ELSE
+								CASE 	WHEN APART_NM IS NULL THEN BIDNG_MAIN_NO || '-' || BIDNG_SUB_NO || ' (' || DONG_NM || ')'
+										ELSE BIDNG_MAIN_NO || '-' || BIDNG_SUB_NO || ' (' || DONG_NM || ', ' || APART_NM || ')'
+								END
+					END AS FULL_BIDNG_NO
+			FROM 	TET_ZIP_CODE
+			WHERE 	ADDR_SYST_DIVN_CD 	= '02'
+				AND USE_YN 				= 'Y'
+				AND CITY_NM 			= #cityNm#
+				AND STREET_NM 			LIKE #srchStreetNm# || '%'
+		)
+		WHERE RNUM BETWEEN #firstIndex# AND #lastIndex#
+	</select>
+	
+	<!-- 우편번호 검색(읍면동) count -->
+	<select id="selectZipListJiBunCount" resultClass="Integer" parameterClass="SRMJON004001VO">
+		/* SRMJON0040.selectZipListJiBunCount */
+		SELECT 	COUNT(1)
+		FROM	TET_ZIP_CODE
+		WHERE 	ADDR_SYST_DIVN_CD 	= '01'
+			AND USE_YN 				= 'Y'
+			AND DONG_NM 			LIKE #srchStreetNm#||'%'
+			AND LENGTH(ZIP_CD) <![CDATA[<=]]> 5
+	</select>
+	
+	<!-- 우편번호 검색(읍면동) -->
+	<select id="selectZipListJiBun" resultMap="selectZipListMap" parameterClass="SRMJON004001VO">
+		/* SRMJON0040.selectZipListJiBun */
+		SELECT 	ZIP_CD
+			, 	CITY_NM
+			, 	GU_NM
+			, 	STREET_NM
+			, 	BIDNG_MAIN_NO
+			, 	BIDNG_SUB_NO
+			, 	FULL_BIDNG_NO
+			, 	JUSO
+		FROM
+		(
+			SELECT	ROW_NUMBER() OVER(ORDER BY JUSO) AS RNUM
+				,	ZIP_CD
+				, 	CITY_NM
+				, 	GU_NM
+				, 	STREET_NM
+				, 	BIDNG_MAIN_NO
+				, 	BIDNG_SUB_NO
+				, 	FULL_BIDNG_NO
+				, 	JUSO
+			FROM
+			(
+				SELECT	ZIP_CD
+					,	CITY_NM
+					,	GU_NM
+					,	'' AS STREET_NM
+					,	'' AS BIDNG_MAIN_NO
+					,	'' AS BIDNG_SUB_NO
+					,	'' AS FULL_BIDNG_NO
+					,	CITY_NM||' '||GU_NM||' '||DONG_NM||DECODE(RI_NM, NULL, '', ' '||RI_NM)||DECODE(ISLND_NM, NULL, '', ' '||ISLND_NM)||DECODE(APART_NM, NULL, '', ' '||APART_NM) AS JUSO
+				FROM	TET_ZIP_CODE
+				WHERE 	ADDR_SYST_DIVN_CD 	= '01'
+					AND USE_YN 				= 'Y'
+					AND DONG_NM 			LIKE #srchStreetNm#||'%'
+			)
+			WHERE LENGTH(ZIP_CD) <![CDATA[<=]]> 5
+		)
+		WHERE RNUM BETWEEN #firstIndex# AND #lastIndex#
+	</select>
+
+	<!--SSUPI TABLE 데이터 존재 체크-->
+	<select id="selecthiddenCompSSUPICount" parameterClass="SRMJON0040VO" resultClass="Integer">
+		/* SRMJON0040.selecthiddenCompSSUPICount */
+		SELECT
+				COUNT(*)
+		FROM
+				SSUPI
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</select>
+	
+	<select id="selecthiddenCompAgreeType" parameterClass="SRMJON0040VO" resultClass="String">
+		/* SRMJON0040.selecthiddenCompAgreeType */
+		SELECT
+		    AGREE_TYPE
+		FROM
+		    SSUIF
+		WHERE
+		    (IRS_NO, SEQ) IN
+		    (
+		        SELECT 
+		            IRS_NO, MAX(SEQ)
+		        FROM 
+		            SSUIF
+		        WHERE 
+		            HOUSE_CODE = #houseCode#
+		        AND IRS_NO = #sellerCode#
+		        GROUP BY IRS_NO
+		    )
+	</select>
+</sqlMap>

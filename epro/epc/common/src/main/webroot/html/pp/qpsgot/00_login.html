@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>모바일 QPS 피킹 관리 시스템</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<link rel="shortcut icon" href="http://image.lottemart.com/images/front/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" href="http://image.lottemart.com/images/mobile/contentimg/ico/ico-a_72_72.png">
+
+	<!-- CSS 임시경로  -->
+	<link rel="stylesheet" href=".//lib_new.css">
+</head>	
+<body>
+<!-- 로그인 wrap -->
+	<div class="wrap-login">
+		<div class="login">
+			<div class="login-inner">
+				<h1 class="logo">
+					<img src="../../../images/pp/layout/m-picking-logo.png" alt="롯데마트"><br>
+					<i>모바일 QPS 피킹 관리 시스템</i>
+				</h1>
+				<div class="login-form">
+					<input type="email" onClick="fRemoveClass(1);" OnKeyPress="javascript:checkKey(1);" name="loginId" placeholder="아이디">
+					<input type="password" onClick="fRemoveClass(2);" OnKeyPress="javascript:checkKey(2);" name="password" placeholder="비밀번호">
+					<div class="check-area">
+						<label><input type="checkbox" id="user_chk" name="user_chk" value="" checked="">아이디 저장</label>
+					</div>
+					<a onClick="login();" class="btn-type1-color1">로그인</a>
+				</div>
+			</div>
+		</div>
+		<button type="button" name="app_close" class="icon-close">닫기</button>
+	</div>
+<!-- 로그인 wrap -->
+</body>
+</html>

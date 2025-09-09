@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMCOM0006">
+
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    <typeAlias alias="resultClass" type="lcn.module.common.util.HashBox" />
+    <typeAlias alias="pscmcom0006VO" type="com.lottemart.epc.common.model.PSCMCOM0006VO" />
+
+    <select id="selectPopupProductList" parameterClass="pscmcom0006VO" resultClass="dataMap">
+    /* PSCMCOM0006.selectPopupProductList */
+    SELECT T.*
+      FROM (
+    SELECT COUNT(*) OVER() TOTAL_COUNT
+         , CEIL( ROWNUM / #pageSize# ) AS PAGEINDEX
+         , ROWNUM AS SEQ
+         , B.*
+         , CASE WHEN DISP_YN = 'N' THEN '판매중지'
+                WHEN SOUT_YN = 0 THEN '판매중'
+                WHEN DISP_YN = 'Y' AND SOUT_YN = ITEM_CNT AND RSERV_STK_QTY = 0 THEN '품절'
+                ELSE ''
+           END AS SELL_FLAG
+         , (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = B.VENDOR_ID) AS VENDOR_NM
+      FROM (SELECT /*+ INDEX_DESC(PR_PRODUCT_PK) */ 
+                   A.PROD_CD
+                 , A.MD_PROD_CD
+                 , A.MD_SRCMK_CD
+                 , A.PROD_NM
+                 , A.REP_PROD_CD
+                 , A.BUY_PRC
+                 , A.SELL_PRC
+                 , A.CURR_SELL_PRC
+                 , A.DISP_YN
+                 , A.APRV_YN
+                 , A.VENDOR_ID
+                 , (SELECT SUM(RSERV_STK_QTY)
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = A.PROD_CD
+                   ) AS RSERV_STK_QTY
+                 , (SELECT SUM(DECODE(SOUT_YN,'Y',1,'N',0))
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = A.PROD_CD) AS SOUT_YN
+                 , (SELECT COUNT(1)
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = A.PROD_CD) AS ITEM_CNT
+                 , DECODE(SUBSTR(A.PROD_CD,1,1),'D',NVL2(TPPM.SPD_NO, 'Y', 'N'),NVL2(TPM.API_0001_DATE, 'Y', 'N')) AS EC_LINK_YN
+              FROM TPR_PRODUCT A
+                 , TEC_PROD_MAPPING TPM
+                 , TEC_PLAN_PROD_MAPPING TPPM
+             WHERE A.PROD_CD = TPM.PROD_CD (+)
+               AND A.PROD_CD = TPPM.PROD_CD (+)
+               AND TPM.ITEM_CD (+) = '000'
+               AND TPM.STR_CD (+) = '000'
+               <isNotEmpty property="vendorId">
+               AND A.VENDOR_ID <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> #vendorId[]# </iterate>
+               </isNotEmpty>
+               <isNotEmpty property="condition1">
+               <isEqual property="condition1" compareValue="prod_cd">AND A.PROD_CD LIKE '%' || #condition2# || '%'</isEqual>
+               <isEqual property="condition1" compareValue="prod_nm">AND A.PROD_NM LIKE '%' || #condition2# || '%'</isEqual>
+               <isEqual property="condition1" compareValue="md_prod_cd">AND A.MD_PROD_CD LIKE '%' || #condition2# || '%'</isEqual>
+               <isEqual property="condition1" compareValue="md_srcmk_cd">AND A.MD_SRCMK_CD LIKE '%' || #condition2# || '%'</isEqual>
+               <isEqual property="condition1" compareValue="rep_prod_cd">AND A.REP_PROD_CD LIKE '%' || #condition2# || '%'</isEqual>
+               </isNotEmpty>
+               <isNotEmpty property="inVal">
+               AND A.PROD_CD <iterate prepend="IN" property="inVal" open="(" close=")" conjunction=","> #inVal[]# </iterate>
+               </isNotEmpty>
+               <isNotEmpty property="notInVal">
+               AND A.PROD_CD <iterate prepend="NOT IN" property="notInVal" open="(" close=")" conjunction=","> #notInVal[]# </iterate>
+               </isNotEmpty>
+               <isNotEmpty property="onlineProdTypeCd">
+               <isNotEqual property="onlineProdTypeCd" compareValue="etc">AND A.ONLINE_PROD_TYPE_CD = #onlineProdTypeCd#</isNotEqual>
+               </isNotEmpty>
+               <isEmpty property="onlineProdTypeCd">AND A.ONLINE_PROD_TYPE_CD = '01'</isEmpty>
+               <isNotEmpty property="prodDivnCd">AND A.PROD_DIVN_CD = #prodDivnCd#</isNotEmpty>
+               <isNotEmpty property="aprvYn">AND A.APRV_YN = #aprvYn#</isNotEmpty>
+               AND A.REP_PROD_CD_YN = 'N'
+               <isNotEmpty property="ecLinkYn">
+               AND DECODE(SUBSTR(A.PROD_CD,1,1),'D',NVL2(TPPM.SPD_NO, 'Y', 'N'),NVL2(TPM.API_0001_DATE, 'Y', 'N')) = #ecLinkYn#
+               </isNotEmpty>
+               <isNotEmpty property="dealProdYn">
+               <isEqual property="dealProdYn" compareValue="N">
+               AND A.PROD_CD NOT LIKE 'D%'
+               </isEqual>
+               </isNotEmpty>
+             ORDER BY A.PROD_CD
+           ) B
+           ) T
+     WHERE T.PAGEINDEX = #pageIndex#
+    </select>
+
+    <select id="selectProduct"  parameterClass="map" resultClass="resultClass">
+    /*PSCMCOM0006.selectProduct*/
+    SELECT PROD_CD
+         , PROD_NM
+      FROM TPR_PRODUCT
+     <isEqual property="productVal" compareValue="1">
+     WHERE PROD_CD = #inputProduct# 
+     </isEqual>  
+     <isEqual property="productVal" compareValue="2">
+     WHERE PROD_NM LIKE '%' || #inputProduct# || '%'
+       <isNotEmpty property="venCds"  prepend="AND"> <iterate prepend="VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate> </isNotEmpty>
+     </isEqual>
+    </select>
+
+    <select id="selectNorProdDetailList" resultClass="dataMap">
+    /*PSCMCOM0006.selectNorProdDetailList*/
+    SELECT AID.INFO_COL_NM COL_NM
+         , AIV.COL_VAL
+         , AID.ORDER_SEQ 
+      FROM TPR_PROD_ADD_INFO_VAL AIV, TPR_PROD_ADD_INFO_DET AID
+     WHERE AIV.INFO_GRP_CD = AID.INFO_GRP_CD
+       AND AIV.INFO_COL_CD = AID.INFO_COL_CD 
+       AND (AIV.PROD_CD = #pgmId# OR AIV.NEW_PROD_CD = #pgmId#)
+       AND AIV.DISP_YN = 'Y'
+       AND AID.USE_YN = 'Y'
+     ORDER BY AID.ORDER_SEQ
+    </select>
+
+    <select id="selectKcProdDetailList" resultClass="dataMap">
+    /*PSCMCOM0006.selectKcProdDetailList*/
+    SELECT AID.INFO_COL_NM COL_NM
+         , AIV.COL_VAL
+         , AID.ORDER_SEQ 
+         , (SELECT DISTINCT INFO_GRP_NM FROM TPR_PROD_CERT_INFO_MST WHERE USE_YN = 'Y' AND INFO_GRP_CD = AIV.INFO_GRP_CD) AS INFO_GRP_NM
+      FROM TPR_PROD_CERT_INFO_VAL AIV, TPR_PROD_CERT_INFO_DET AID
+     WHERE AIV.INFO_GRP_CD = AID.INFO_GRP_CD
+       AND AIV.INFO_COL_CD = AID.INFO_COL_CD 
+       AND (AIV.PROD_CD = #pgmId# OR AIV.NEW_PROD_CD = #pgmId#)
+       AND AIV.DISP_YN = 'Y'
+       AND AID.USE_YN = 'Y'
+       AND AIV.INFO_GRP_CD &lt;&gt; 'KC001'
+     ORDER BY AID.ORDER_SEQ
+    </select>
+</sqlMap>

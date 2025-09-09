@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0014">
+	<typeAlias alias="pscmsta0014VO" type="com.lottemart.epc.statistics.model.PSCMSTA0014VO"/>
+	
+	<select id="selectRentCarPickUp"  parameterClass="pscmsta0014VO" resultClass="dataMap">
+	/* PSCMSTA0014.selectRentCarPickUp */ 
+	SELECT * 
+		FROM(
+			SELECT COUNT(*) OVER() TOTAL_COUNT
+			, B.*
+			FROM(
+				SELECT A.*
+				,ROW_NUMBER() OVER(ORDER BY DELI_HOPE_DY, DELI_HOPE_DY_ORD ) NUM
+				,COUNT(1) OVER() AS CNT
+				FROM(
+					SELECT
+						(SELECT ORD_DY FROM TOR_ORDER WHERE ORDER_ID = DM.ORDER_ID) AS ORD_DY
+						, (SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+						, (SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A WHERE  A.EXT_STR_TYPE = #extStrCd# AND A.EXT_STR_CD = OD.EXT_STR_CD  ) AS EXT_STR_NM
+						, DM.DELI_HOPE_DY
+						, DM.DELI_HOPE_DY AS DELI_HOPE_DY_ORD
+						, DM.ORDER_ID
+						, (SELECT SUM(NVL(DPST_AMT, 0) + NVL(PROC_COMM, 0)) FROM TOR_DEMAND WHERE ORDER_ID = DM.ORDER_ID ) TOT_SELL_AMT
+						, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE020' AND  MINOR_CD = DM.DELI_DIVN_CD) AS DELI_DIVN_CD 
+						, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE002' AND  MINOR_CD = DM.DELI_STATUS_CD AND MINOR_CD IN ('30','31','36','43','51')) AS DELI_STATUS_CD 
+						, TO_CHAR(TO_DATE(DM.DELI_FNSH_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS DELI_FNSH_DATE
+						, FN_MASKING_RTN(RECP_PSN_NM,'8')  AS RECP_PSN_NM
+						, FIRST_BK_NO
+						, TO_CHAR(TO_DATE(CPS.PICKUP_DY, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS PICKUP_DY 
+						, CPS.PICKUP_STATUS
+						, TO_CHAR(TO_DATE(CPS.TAKE_OVER_DATE, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS TAKE_OVER_DATE
+						, TO_CHAR(TO_DATE(CPS.HAND_OVER_DATE, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS HAND_OVER_DATE
+						, DM.DELI_SEQNC
+						, DECODE(DM.DELI_SEQNC,1,'15시~',2,'17시~',3,'19시~22시') AS PICKUP_TIME
+						, DECODE(ORD.ORD_RTN_DIVN_CD, 10, '일반', 40, '반품', 50, '교환') AS ORD_DIVN
+						, OD.DELI_RQST_SBJT_CONTENT AS CUST_REQ
+						FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS, TOR_ORDER ORD, TDE_ORDER_DELIVERY OD
+						WHERE DM.ORDER_ID = CPS.ORDER_ID(+) 
+						  AND DM.ORDER_ID = OD.ORDER_ID
+						  AND DM.DELIVERY_ID = OD.DELIVERY_ID
+						  AND DM.ORDER_ID = ORD.ORDER_ID
+						  AND DM.DELI_HOPE_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+						  AND DM.INVOICE_STATUS_CD = '10' 
+						  AND OD.EXT_STR_CD IS NOT NULL 
+						  AND OD.EXT_STR_TYPE = #extStrCd#
+						  AND DM.DELI_SEQNC IN ('1','2','3')
+					  <isNotEmpty property="superStrNo" >
+						  AND OD.EXT_STR_CD = #superStrNo#
+					  </isNotEmpty>
+					  <isNotEmpty property="ordNo" >
+						  AND DM.ORDER_ID LIKE #ordNo# || '%'
+					  </isNotEmpty>
+					  <isNotEmpty property="martStrNo" >
+						  AND DM.DELI_STR_CD = #martStrNo#
+					  </isNotEmpty>
+					  <isNotEmpty property="deliStatus" >
+						  AND DM.DELI_STATUS_CD = #deliStatus#
+					  </isNotEmpty>
+					  <isEqual property="pickupStatus" compareValue="002">
+						  AND CPS.PICKUP_STATUS = #pickupStatus#
+					  </isEqual>
+					  <isEqual property="pickupStatus" compareValue="001">
+						  AND (CPS.PICKUP_STATUS = #pickupStatus# OR CPS.PICKUP_STATUS IS NULL)
+					  </isEqual>
+					  <isNotEmpty property="ordDivn">
+					  	  AND ORD.ORD_RTN_DIVN_CD = #ordDivn#
+					  </isNotEmpty>
+					   UNION ALL
+						  SELECT
+								 (SELECT ORD_DY FROM TOR_ORDER WHERE ORDER_ID = DM.ORDER_ID) AS ORD_DY
+							   , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+							   , (SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A WHERE  A.EXT_STR_TYPE = #extStrCd# AND A.EXT_STR_CD = OD.EXT_STR_CD   ) AS EXT_STR_NM
+							   , TO_CHAR(TO_DATE(DM.DELI_HOPE_DY,'YYYYMMDD')+1,'YYYYMMDD') AS DELI_HOPE_DY
+							   , DM.DELI_HOPE_DY AS DELI_HOPE_DY_ORD
+							   , DM.ORDER_ID
+							   , (SELECT SUM(NVL(DPST_AMT, 0) + NVL(PROC_COMM, 0)) FROM TOR_DEMAND WHERE ORDER_ID = DM.ORDER_ID ) TOT_SELL_AMT
+							   , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE020' AND  MINOR_CD = DM.DELI_DIVN_CD) AS DELI_DIVN_CD 
+							   , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE002' AND  MINOR_CD = DM.DELI_STATUS_CD AND MINOR_CD IN ('30','31','36','43','51')) AS DELI_STATUS_CD 
+							   , TO_CHAR(TO_DATE(DM.DELI_FNSH_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS DELI_FNSH_DATE
+							   , FN_MASKING_RTN(RECP_PSN_NM,'8')  AS RECP_PSN_NM
+							   , FIRST_BK_NO
+							   , TO_CHAR(TO_DATE(CPS.PICKUP_DY, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS PICKUP_DY 
+							   , CPS.PICKUP_STATUS
+							   , TO_CHAR(TO_DATE(CPS.TAKE_OVER_DATE, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS TAKE_OVER_DATE
+							   , TO_CHAR(TO_DATE(CPS.HAND_OVER_DATE, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS HAND_OVER_DATE
+							   , DM.DELI_SEQNC
+							   , DECODE(DM.DELI_SEQNC, 4,'8시~') AS PICKUP_TIME
+							   , DECODE(ORD.ORD_RTN_DIVN_CD, 10, '일반', 40, '반품', 50, '교환') AS ORD_DIVN
+							   , OD.DELI_RQST_SBJT_CONTENT AS CUST_REQ
+						   FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS, TOR_ORDER ORD, TDE_ORDER_DELIVERY OD
+						  WHERE DM.ORDER_ID = CPS.ORDER_ID(+) 
+							AND DM.ORDER_ID = OD.ORDER_ID
+							AND DM.DELIVERY_ID = OD.DELIVERY_ID
+							AND DM.ORDER_ID = ORD.ORDER_ID
+							AND DM.DELI_HOPE_DY BETWEEN TO_CHAR(TO_DATE(REPLACE(#startDate#, '-', ''),'YYYYMMDD')-1, 'YYYYMMDD') AND TO_CHAR(TO_DATE(REPLACE(#endDate#, '-', ''),'YYYYMMDD')-1, 'YYYYMMDD')
+							AND DM.INVOICE_STATUS_CD = '10' 
+							AND OD.EXT_STR_CD IS NOT NULL 
+							AND OD.EXT_STR_TYPE = #extStrCd#
+							AND DM.DELI_SEQNC = '4'
+						  <isNotEmpty property="superStrNo" >
+							AND OD.EXT_STR_CD = #superStrNo#
+						  </isNotEmpty>
+						  <isNotEmpty property="ordNo">
+							AND DM.ORDER_ID LIKE #ordNo# || '%'
+						  </isNotEmpty>
+						  <isNotEmpty property="martStrNo" >
+							AND DM.DELI_STR_CD = #martStrNo#
+						  </isNotEmpty>
+						  <isNotEmpty property="deliStatus" >
+							AND DM.DELI_STATUS_CD = #deliStatus#
+						  </isNotEmpty>
+						  <isEqual property="pickupStatus" compareValue="002">
+							AND CPS.PICKUP_STATUS = #pickupStatus#
+						  </isEqual>
+						  <isEqual property="pickupStatus" compareValue="001">
+							AND (CPS.PICKUP_STATUS = #pickupStatus# OR CPS.PICKUP_STATUS IS NULL)
+						  </isEqual>
+						  <isNotEmpty property="ordDivn">
+						  	AND ORD.ORD_RTN_DIVN_CD = #ordDivn#
+						  </isNotEmpty>
+				  )A 
+				   	 <isNotEmpty property="pickUpTime">
+					  	  WHERE DELI_SEQNC = #pickUpTime#
+					 </isNotEmpty>
+			 )B 
+		WHERE B.NUM BETWEEN #firstIndex# AND  #lastIndex#
+		)
+	</select>
+	
+	<select id="selectSuperStrList"  resultClass="dataMap">
+		/* PSCMSTA0014.selectSuperStrList */
+		  SELECT  EXT_STR_NM, EXT_STR_CD
+	      FROM TST_STORE_MAPPING
+	      WHERE EXT_STR_TYPE = #extStrCd#
+	      ORDER BY EXT_STR_NM
+	</select>
+	
+	<select id="selectMartStrList" resultClass="dataMap">
+		/* PSCMSTA0014.selectMartStrList */
+		 SELECT  STR_CD, STR_NM
+	     FROM TST_STORE 
+	     WHERE (ONLINE_YN = 'Y' OR ONLINE_REP_STR_YN = 'Y')
+	     ORDER BY STR_NM    
+    </select>
+    
+    <select id="selectPickupStsList" resultClass="dataMap">
+    /* PSCMSTA0014.selectPickupStsList */
+    SELECT CD_NM, MINOR_CD, DECODE(MINOR_CD,'002','픽업완료','001','픽업미완료') PICK_UP_STATE 
+    FROM TET_CODE
+    WHERE MAJOR_CD = 'SM174'
+    </select>
+
+    <select id="selectDeliStatusList" resultClass="dataMap">
+    /* PSCMSTA0014.selectDeliStatusList */
+    SELECT MINOR_CD, CD_NM
+	FROM TET_CODE
+	WHERE MAJOR_CD = 'DE002'
+	AND USE_YN = 'Y'
+	AND MINOR_CD IN ('30','31','36','43','51')
+    </select>
+    
+    <select id="selectOrdDivnList" resultClass="dataMap">
+    /* PSCMSTA0014.selectOrdDivnList */
+    SELECT MINOR_CD, SUBSTR(CD_NM,0,2) CD_NM
+	FROM TET_CODE
+	WHERE MAJOR_CD = 'OR001'
+	AND USE_YN = 'Y'
+	AND MINOR_CD IN ('10','40','50')
+    </select>
+    
+    <insert id='insertPickupStatus' >
+    /* PSCMSTA0014.insertPickupStatus */
+    MERGE INTO TED_CROSS_PICKUP_STATUS A
+      USING (
+            SELECT #orderId# AS ORDER_ID
+            FROM DUAL
+      )B ON(
+         A.ORDER_ID = B.ORDER_ID
+      )
+      WHEN MATCHED THEN
+      UPDATE SET 
+      PICKUP_STATUS = #pickupStatus#
+      , MOD_ID = #adminId#
+      , MOD_DATE = CURRENT_TIMESTAMP(0)
+      , HAND_OVER_DATE = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MISS')
+      WHEN NOT MATCHED THEN
+      INSERT(
+      ORDER_ID
+      ,PICKUP_STATUS
+      ,PICKUP_DY
+      ,REG_DATE
+      ,REG_ID
+      ,MOD_ID
+      ,MOD_DATE
+      ,TAKE_OVER_DATE
+      <isEqual property="pickupStatus" compareValue="002">
+	  ,HAND_OVER_DATE
+      </isEqual>
+      )
+      VALUES(
+      #orderId#
+      ,#pickupStatus#
+      ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MISS')
+      ,CURRENT_TIMESTAMP(0)
+      ,#adminId#
+      ,#adminId#
+      ,CURRENT_TIMESTAMP(0)
+      ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MISS')
+      <isEqual property="pickupStatus" compareValue="002">
+      ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MISS')
+      </isEqual>
+      )
+    </insert>
+    
+   <select id="pickUpListExcel" resultClass="dataMap">
+		/*PSCMSTA0014.pickUpListExcel*/
+		  SELECT /*+LEADING(DM , CPS) */
+				 ROW_NUMBER() OVER(ORDER BY DM.DELI_HOPE_DY ) NUM
+			   , DECODE(DM.DELI_SEQNC,'4', TO_CHAR(TO_DATE(DM.DELI_HOPE_DY,'YYYYMMDD')+1,'YYYYMMDD'), DM.DELI_HOPE_DY) AS DELI_HOPE_DY
+			   , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+			   , (SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A, TDE_ORDER_DELIVERY B WHERE B.ORDER_ID = DM.ORDER_ID AND A.EXT_STR_TYPE = '004' AND A.EXT_STR_CD = B.EXT_STR_CD  AND B.DELIVERY_ID = DM.DELIVERY_ID  ) AS EXT_STR_NM
+			   , TO_CHAR(TO_DATE(CPS.PICKUP_DY, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS PICKUP_DY  
+			   , DECODE(DM.DELI_SEQNC,1,'15시~',2,'17시~',3,'19시~22시',4,'8시~') AS PICKUP_TIME
+			   , DM.FIRST_BK_NO
+			   , DM.ORDER_ID
+			   , FN_MASKING_RTN(DM.RECP_PSN_NM,'8')  AS RECP_PSN_NM 
+			   --,SUBSTR(DM.RECP_PSN_CELL_NO,0,3)|| '-' || SUBSTR(RPAD(SUBSTR(DM.RECP_PSN_CELL_NO,0,3), LENGTH(REPLACE(DM.RECP_PSN_CELL_NO, ' ' ,''))-4, '*'),4)|| '-' || SUBSTR(DM.RECP_PSN_CELL_NO,-4) AS RECP_PSN_CELL_NO
+			   , SUBSTR(DM.RECP_PSN_CELL_NO,0,3)|| '-' || '****-' || SUBSTR(DM.RECP_PSN_CELL_NO,-4) AS RECP_PSN_CELL_NO  
+			FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS
+		   WHERE DM.ORDER_ID = CPS.ORDER_ID(+) 
+			 AND DM.INVOICE_STATUS_CD = '10' 
+			<iterate prepend="AND DM.ORDER_ID IN" property="chkBoxArr" conjunction="," open="(" close=")">
+				  #chkBoxArr[]#
+			</iterate>
+			AND EXISTS (
+						SELECT 1 
+						  FROM TDE_ORDER_DELIVERY 
+						 WHERE ORDER_ID = DM.ORDER_ID 
+						   AND DELIVERY_ID = DM.DELIVERY_ID 
+						   AND EXT_STR_TYPE = #extStrCd# 
+						   AND EXT_STR_CD IS NOT NULL
+						  )
+	</select>
+    
+    <select id="selectgasStationPickUp" parameterClass="pscmsta0014VO" resultClass="dataMap">
+    /* PSCMSTA0014.selectgasStationPickUp */ 
+	SELECT * 
+		FROM(
+			SELECT COUNT(*) OVER() TOTAL_COUNT
+			, B.*
+			FROM(
+				SELECT A.*
+				,ROW_NUMBER() OVER(ORDER BY DELI_HOPE_DY, DELI_HOPE_DY_ORD ) NUM
+				,COUNT(1) OVER() AS CNT
+				FROM(
+					SELECT
+					    (SELECT ORD_DY FROM TOR_ORDER WHERE ORDER_ID = DM.ORDER_ID) AS ORD_DY
+					    ,(SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+					    ,(SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A WHERE  A.EXT_STR_TYPE = '007' AND A.EXT_STR_CD = OD.EXT_STR_CD  ) AS EXT_STR_NM
+					    ,DM.DELI_HOPE_DY
+					    ,DM.DELI_HOPE_DY AS DELI_HOPE_DY_ORD
+					    ,DM.ORDER_ID
+					    ,(SELECT SUM(NVL(DPST_AMT, 0) + NVL(PROC_COMM, 0)) FROM TOR_DEMAND WHERE ORDER_ID = DM.ORDER_ID ) TOT_SELL_AMT
+					    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE020' AND  MINOR_CD = DM.DELI_DIVN_CD) AS DELI_DIVN_CD 
+					    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE002' AND  MINOR_CD = DM.DELI_STATUS_CD AND MINOR_CD IN ('30','31','36','43','51')) AS DELI_STATUS_CD 
+					    ,TO_CHAR(TO_DATE(DM.DELI_FNSH_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS DELI_FNSH_DATE
+					    ,FN_MASKING_RTN(RECP_PSN_NM,'8')  AS RECP_PSN_NM
+					    ,FIRST_BK_NO
+	                    ,TO_CHAR(TO_DATE(CPS.PICKUP_DY, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS PICKUP_DY 
+	                    ,CPS.PICKUP_STATUS
+	                    ,TO_CHAR(TO_DATE(CPS.TAKE_OVER_DATE, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS TAKE_OVER_DATE
+		                ,TO_CHAR(TO_DATE(CPS.HAND_OVER_DATE, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS HAND_OVER_DATE
+	                    ,DM.DELI_SEQNC
+	                    ,(   
+						    SELECT DELI_PRAR_START_TM || '~' || DELI_PRAR_END_TM
+						    FROM TDP_RSERV_DELI_MST
+						    WHERE STR_CD = '414'
+                   			AND DELI_TYPE_CD = '03'
+                   			AND USE_YN = 'Y'
+                    		AND ORD_SEQNC > 0
+						    AND DELI_SEQNC = DM.DELI_SEQNC
+						    AND ORD_SEQNC  = DM.ORD_SEQNC
+					      ) AS PICKUP_TIME
+	                    ,DECODE(ORD.ORD_RTN_DIVN_CD, 10, '일반', 40, '반품', 50, '교환') AS ORD_DIVN
+	                    ,OD.DELI_RQST_SBJT_CONTENT AS CUST_REQ
+					    FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS, TOR_ORDER ORD, TDE_ORDER_DELIVERY OD
+					    WHERE DM.ORDER_ID = CPS.ORDER_ID(+) 
+	                      AND DM.ORDER_ID = OD.ORDER_ID
+	                      AND DM.DELIVERY_ID = OD.DELIVERY_ID
+	                      AND DM.ORDER_ID = ORD.ORDER_ID
+					      AND DM.DELI_HOPE_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+					      AND DM.INVOICE_STATUS_CD = '10' 
+	                      AND OD.EXT_STR_CD IS NOT NULL 
+	                      AND OD.EXT_STR_TYPE = '007'
+	                  <isNotEmpty property="superStrNo" >
+				          AND OD.EXT_STR_CD = #superStrNo#
+				      </isNotEmpty>
+	                  <isNotEmpty property="ordNo" >
+					      AND DM.ORDER_ID LIKE #ordNo# || '%'
+				      </isNotEmpty>
+				      <isNotEmpty property="martStrNo" >
+	        	          AND DM.DELI_STR_CD = #martStrNo#
+			          </isNotEmpty>
+			          <isNotEmpty property="deliStatus" >
+	        	          AND DM.DELI_STATUS_CD = #deliStatus#
+			          </isNotEmpty>
+			          <isEqual property="pickupStatus" compareValue="002">
+	        	          AND CPS.PICKUP_STATUS = #pickupStatus#
+			          </isEqual>
+			          <isEqual property="pickupStatus" compareValue="001">
+	        	          AND (CPS.PICKUP_STATUS = #pickupStatus# OR CPS.PICKUP_STATUS IS NULL)
+			          </isEqual>
+			          <isNotEmpty property="ordDivn">
+			          	  AND ORD.ORD_RTN_DIVN_CD = #ordDivn#
+			          </isNotEmpty>
+			          <isNotEmpty property="pickUpTime">  
+			          	  AND DM.ORD_SEQNC = #pickUpTime#
+			         </isNotEmpty>
+			 	)A
+			 )B 
+		WHERE B.NUM BETWEEN #firstIndex# AND  #lastIndex#
+		)
+    </select>
+    
+    <select id="selectPickUpTime" resultClass="dataMap">
+    /* PSCMSTA0014.selectPickUpTime */ 
+   		<![CDATA[
+	   SELECT A.DELI_PRAR_START_TM || '~' || A.DELI_PRAR_END_TM AS PICKUP_TIME
+               , DELI_SEQNC AS DELI_SEQNC
+               ,ORD_SEQNC AS ORD_SEQNC
+        FROM(
+              SELECT
+                   RDM.DELI_PRAR_START_TM 
+                  , RDM.DELI_PRAR_END_TM 
+                  , RDM.ORD_SEQNC
+                  , RDM.DELI_SEQNC
+              FROM  TDP_RSERV_DELI_MST RDM
+              WHERE 1 = 1
+              AND RDM.STR_CD = '414'
+              AND RDM.DELI_TYPE_CD = '03'
+              AND RDM.USE_YN = 'Y'
+              AND RDM.ORD_SEQNC > 0
+        ) A
+        ORDER BY A.DELI_PRAR_START_TM
+    	]]>
+    </select>
+    
+    <select id="pickUpListExcelByGas" resultClass="dataMap">
+    /*PSCMSTA0014.pickUpListExcelByGas*/
+	  SELECT /*+LEADING(DM , CPS) */
+                ROW_NUMBER() OVER(ORDER BY DM.DELI_HOPE_DY ) NUM
+                ,DECODE(DM.DELI_SEQNC,'4', TO_CHAR(TO_DATE(DM.DELI_HOPE_DY,'YYYYMMDD')+1,'YYYYMMDD'), DM.DELI_HOPE_DY) AS DELI_HOPE_DY
+                ,(SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+                ,(SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A, TDE_ORDER_DELIVERY B WHERE B.ORDER_ID = DM.ORDER_ID AND A.EXT_STR_TYPE = '007' AND A.EXT_STR_CD = B.EXT_STR_CD  AND B.DELIVERY_ID = DM.DELIVERY_ID  ) AS EXT_STR_NM
+                ,TO_CHAR(TO_DATE(CPS.PICKUP_DY, 'YYYYMMDDHH24MISS'),'YYYY-MM-DD HH24:MI:SS') AS PICKUP_DY  
+                ,(   
+			      SELECT DELI_PRAR_START_TM || '~' || DELI_PRAR_END_TM
+				    FROM TDP_RSERV_DELI_MST
+				    WHERE STR_CD = '414'
+              	    AND DELI_TYPE_CD = '03'
+              		AND USE_YN = 'Y'
+               		AND ORD_SEQNC &gt; 0
+				    AND DELI_SEQNC = DM.DELI_SEQNC
+				    AND ORD_SEQNC  = DM.ORD_SEQNC
+				 ) AS PICKUP_TIME
+                ,DM.FIRST_BK_NO
+                ,DM.ORDER_ID
+                ,FN_MASKING_RTN(DM.RECP_PSN_NM,'8')  AS RECP_PSN_NM
+                ,SUBSTR(DM.RECP_PSN_CELL_NO,0,3)|| '-' || '****-' || SUBSTR(DM.RECP_PSN_CELL_NO,-4) AS RECP_PSN_CELL_NO  
+                FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS
+                WHERE DM.ORDER_ID = CPS.ORDER_ID(+) 
+                  AND DM.INVOICE_STATUS_CD = '10' 
+                  <iterate prepend="AND DM.ORDER_ID IN" property="chkBoxArr" conjunction="," open="(" close=")">
+                      #chkBoxArr[]#
+                  </iterate>
+                  AND EXISTS (
+                                SELECT 1 
+                              FROM TDE_ORDER_DELIVERY 
+                              WHERE ORDER_ID = DM.ORDER_ID 
+                              AND DELIVERY_ID = DM.DELIVERY_ID 
+                              AND EXT_STR_TYPE = '007' 
+                              AND EXT_STR_CD IS NOT NULL
+                              )
+    </select>
+</sqlMap>

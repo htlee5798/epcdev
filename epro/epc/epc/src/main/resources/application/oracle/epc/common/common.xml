@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+    
+
+<!-- 카테고리 콤보박스 -->
+<sqlMap namespace="common">
+	<typeAlias alias="epcLoginVO" type="com.lottemart.epc.common.model.EpcLoginVO" />
+	<resultMap id="code" class="com.lottemart.epc.common.model.OptionTagVO">
+	    <result property="code" column="CAT_CD"/>
+	    <result property="name" column="CAT_NM"/>
+	</resultMap> 
+	
+	<select id="selectDaeCdList" resultMap="code">
+		/* common.selectDaeCdList */
+	    SELECT  L1_CD AS CAT_CD, 
+	            L1_NM AS CAT_NM 
+	    FROM    V_CA_MD_CATEGORY  
+	    GROUP BY L1_CD, L1_NM 
+	    ORDER BY L1_NM 
+	</select>
+	
+	<select id="selectJungCdList" resultMap="code">
+		/* common.selectJungCdList */
+	    SELECT 
+	            L2_CD AS CAT_CD
+	           ,L2_NM AS CAT_NM 
+	    FROM   V_CA_MD_CATEGORY
+	    WHERE  L1_CD = #daeCd#
+	    GROUP BY L2_CD, L2_NM  
+	    ORDER BY L2_NM
+	</select>
+	
+	<select id="selectSoCdList" resultMap="code">
+		/* common.selectSoCdList */
+	    SELECT   L3_CD AS CAT_CD
+	            ,L3_NM AS CAT_NM 
+	    FROM    V_CA_MD_CATEGORY 
+	    WHERE   L1_CD = #daeCd#
+	    AND     L2_CD = #jungCd#   
+	    GROUP BY  L3_CD, L3_NM 
+	    ORDER BY L3_NM
+	</select>
+	<!--  세 카테고리 삭제 대상 -->
+	<select id="selectSeCdList" resultMap="code">
+		/* common.selectSeCdList */
+	    SELECT   L4_CD AS CAT_CD
+	            ,L4_NM AS CAT_NM 
+	    FROM    V_CA_MD_CATEGORY 
+	    WHERE   L1_CD = #daeCd#
+	    AND     L2_CD = #jungCd#
+	    AND     L3_CD = #soCd#
+	    ORDER BY L4_NM
+	</select>
+
+	<!--  공통코드 조회 -->
+	<select id="selectTetCodeList" resultClass="dataMap">
+		/* common.selectTetCodeList */
+		SELECT CD_NM AS NM
+		      ,MINOR_CD AS CD
+		FROM   TET_CODE
+		WHERE  MAJOR_CD = #majorCd#
+	</select>
+
+	<!--  공통코드 조회(Ref 필터링) -->
+	<select id="selectTetCodeRefList" resultClass="dataMap">
+		/* common.selectTetCodeRefList */
+		SELECT 
+			  MAJOR_CD
+            , MINOR_CD
+            , CD_NM
+            , CD_DESC
+            , ORDER_SEQ
+            , LET_1_REF
+            , LET_2_REF
+            , LET_3_REF
+            , LET_4_REF
+            , CNT_1_REF
+            , CNT_2_REF
+            , CNT_3_REF
+            , CNT_4_REF
+            , REG_DIVN_CD
+            , USE_YN
+            , VALI_END_DATE
+            , VALI_START_DATE
+            , REG_DATE
+            , REG_ID
+            , MOD_DATE
+            , MOD_ID		      
+		FROM   TET_CODE
+		WHERE  MAJOR_CD = #majorCd#
+		<isEqual property="refCd" compareValue="LET_1_REF">
+		AND    LET_1_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_2_REF">
+		AND    LET_2_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_3_REF">
+		AND    LET_3_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_4_REF">
+		AND    LET_4_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_5_REF">
+		AND    LET_5_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_6_REF">
+		AND    LET_6_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_7_REF">
+		AND    LET_7_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="LET_8_REF">
+		AND    LET_8_REF = #letCd#
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_1_REF">
+		AND    CNT_1_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_2_REF">
+		AND    CNT_2_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_3_REF">
+		AND    CNT_3_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_4_REF">
+		AND    CNT_4_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_5_REF">
+		AND    CNT_5_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_6_REF">
+		AND    CNT_6_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_7_REF">
+		AND    CNT_7_REF = to_number(#letCd#)
+		</isEqual>
+		<isEqual property="refCd" compareValue="CNT_8_REF">
+		AND    CNT_8_REF = to_number(#letCd#)
+		</isEqual>
+		<isNotEmpty property="useYn">
+		AND    USE_YN = #useYn#
+		</isNotEmpty>
+
+	</select>
+	
+	<!-- openappi 업체 대표 vendorId 조회 -->
+	<select id="selectOpenappiVendor" resultClass="epcLoginVO">
+		SELECT 
+			VENDOR_ID AS repVendorId
+		FROM TVE_VENDOR
+		WHERE SALE_VENDOR_ID=VENDOR_ID 
+		AND VENDOR_ID IN 
+			(SELECT TET_CODE.LET_1_REF FROM TET_CODE WHERE MAJOR_CD='ET036')
+	</select>
+
+	<select id="selectSaleVendorId" resultClass="java.lang.String">
+		SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #vendorId#
+	</select>
+	
+	
+	<select id="selectEcRegisteredYn" resultClass="java.lang.Boolean">
+		/*commonDao.selectEcRegisteredYn 상품ec등록여부 조회*/
+        SELECT
+              COUNT(PROD_CD)
+        FROM TEC_PROD_MAPPING
+        WHERE PROD_CD= #prodCd#
+          AND ITEM_CD ='000'
+          AND STR_CD ='000'
+          AND API_0001_DATE IS NOT NULL
+    </select>
+    
+    <select id="selectEcApprovedYn" resultClass="java.lang.Boolean">
+    	/*commonDao.selectEcApprovedYn 상품ec승인여부 조회*/
+     	SELECT 
+			COUNT(PROD_CD)
+		FROM TEC_PROD_MAPPING A
+		WHERE PROD_CD= #prodCd#
+		  AND API_0001_DATE IS NOT NULL AND ITEM_CD = '000' AND STR_CD = '000'
+		  AND EXISTS (SELECT  'X'
+		                FROM TEC_PROD_MAPPING X
+		              WHERE X.PROD_CD= #prodCd#
+		                AND X.API_0026_DATE IS NOT NULL
+		                AND X.API_0003_DATE IS NOT NULL
+		                AND X.API_0004_DATE IS NOT NULL
+		                AND X.ITEM_CD >= '000' and X.STR_CD >= '000'
+		              ) 
+    </select>
+    
+     <select id="selectEcPlanRegisteredYn" resultClass="java.lang.Boolean">
+    	/*commonDao.selectEcPlanRegisteredYn D코드 상품ec승인여부 조회*/
+    	  SELECT
+              COUNT(PROD_CD)
+         FROM TEC_PLAN_PROD_MAPPING
+        WHERE PROD_CD= #prodCd#
+    </select>
+	
+</sqlMap>

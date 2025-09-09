@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="accessCommon">
+
+	<!-- API 호출 사용자 정보 Map -->
+	<resultMap id="epcApiUserInfoMap" class="java.util.HashMap">
+		<result column="USER_ID"	property="USER_ID"	/>		<!-- API 호출 사용자아이디 -->
+		<result column="USER_PWD"	property="USER_PWD"	/>		<!-- API 호출 사용자패스워드 -->
+		<result column="USER_NM"	property="USER_NM"	/>		<!-- API 호출 사용자명 -->
+	</resultMap>
+
+	<!-- API 호출 사용자 정보 조회 -->
+	<select id="selectEpcApiUserInfo" parameterClass="String" resultMap="epcApiUserInfoMap">
+		/* accessCommon.selectEpcApiUserInfo */
+		SELECT
+			A.USER_ID
+			, A.USER_PWD
+			, A.USER_NM
+		FROM TPC_API_USER A
+		WHERE A.USE_YN = 'Y'
+		AND A.USER_ID = #apiUserId#
+	</select>
+	
+	<!-- API 호출 가능 URL인지 확인 -->
+	<select id="selectEpcApiUrlChk" parameterClass="String" resultClass="Integer">
+		/* accessCommon.selectEpcApiUrlChk */
+		SELECT COUNT(1) AS CNT
+		FROM TPC_NEW_CODE A 
+		WHERE A.MAJOR_CD = 'EPCIF'
+		AND A.USE_YN = 'Y'
+		AND A.LET_2_REF = TRIM(#apiUrl#)
+	</select>
+	
+	<!-- EPC 시스템관리자 정보 Map -->
+	<resultMap id="epcSysAdminUserInfoMap" class="java.util.HashMap">
+		<result column="USER_ID"	property="USER_ID"		/>		<!-- 시스템관리자 아이디 -->
+		<result column="USER_PWD"	property="USER_PWD"		/>		<!-- 시스템관리자 패스워드 -->
+		<result column="USER_NM"	property="USER_NM"		/>		<!-- 시스템관리자 명 -->
+		<result column="USER_TYPE"	property="USER_TYPE"	/>		<!-- 시스템관리자 유형 -->
+	</resultMap>
+	
+	<!-- EPC 시스템관리자 정보 조회 -->
+	<select id="selectEpcSysAdminUserInfo" parameterClass="String" resultMap="epcSysAdminUserInfoMap">
+		/* accessCommon.selectEpcSysAdminUserInfo */
+		SELECT
+			A.USER_ID
+			, A.USER_PWD
+			, A.USER_NM
+			, A.USER_TYPE
+		FROM TPC_SYS_USER A
+		WHERE A.USER_ID = #userId#
+		AND A.USE_YN = 'Y'
+	</select>
+</sqlMap>

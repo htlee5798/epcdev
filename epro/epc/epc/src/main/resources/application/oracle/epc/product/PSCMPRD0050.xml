@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0050">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectGiftList"  resultClass="dataMap">
+	/*	PSCMPRD0050.selectComponentList	*/
+		SELECT *
+		 FROM (
+			        SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+					          , COUNT(*) OVER() TOTAL_COUNT
+					          , C.*   
+			         FROM (        
+			         			SELECT RANK()OVER(ORDER BY B.PROD_NM ASC) AS NUM
+			         			          , B.*
+			         			          , CASE WHEN B.PEST_START_DY = '' OR B.PEST_END_DY = ''
+			         			                      THEN '' 
+			         			                       ELSE TO_CHAR(TO_DATE(B.PEST_START_DY),'YYYY-MM-DD') || '~' || TO_CHAR(TO_DATE(B.PEST_END_DY),'YYYY-MM-DD')
+			         			             END AS PEST_DY
+			         			 FROM
+			         			          (
+						            		 SELECT NVL(A.PEST_DESC,'') AS PEST_DESC              
+										               , NVL(A.PEST_START_DY,'') AS PEST_START_DY  
+										               , NVL(A.PEST_END_DY,'') AS PEST_END_DY
+										               , A.PROD_CD  
+										               , A.PROD_NM
+										               , A.STR_CD
+										               , DECODE(A.PEST_TYPE, '001', '증정', '002', '1+1', '') AS PEST_TYPE_NM
+										               , A.PEST_TYPE
+										        FROM  (
+										                    SELECT AA.PROD_CD
+										                              , CC.PROD_NM
+										                              , AA.ITEM_CD
+										                              , AA.STR_CD
+										                              , BB.PEST_TYPE
+										                              , BB.PEST_DESC
+										                              , BB.PEST_START_DY
+										                              , BB.PEST_END_DY 
+										                      FROM TPR_STORE_ITEM_PRICE AA
+																LEFT OUTER JOIN TPR_PEST_GOODS BB ON AA.PROD_CD = BB.PROD_CD 
+																AND AA.STR_CD = BB.STR_CD 
+																AND AA.ITEM_CD = BB.ITEM_CD
+																,
+																TPR_PRODUCT CC
+										                    WHERE CC.PROD_CD = AA.PROD_CD
+										                       	<isNotEmpty property="prodCd">
+																  	<isEqual property="prodFlag" compareValue="1"> <!-- 인터넷상품코드 -->
+																  		AND CC.PROD_CD
+																  		<iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> 
+																		#prodCdArr[]# 
+																		</iterate> 
+																  	</isEqual>
+																  	<isEqual property="prodFlag" compareValue="2"> <!-- 상품코드 -->
+																  		AND CC.MD_PROD_CD
+																  		<iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> 
+																		#prodCdArr[]# 
+																		</iterate> 
+																  	</isEqual>
+																  	<isEqual property="prodFlag" compareValue="3"> <!-- 판매코드 -->
+																  		AND CC.MD_SRCMK_CD
+																  		<iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> 
+																		#prodCdArr[]# 
+																		</iterate> 
+																  	</isEqual>
+															  	</isNotEmpty>
+														        <isNotEmpty property="vendorId" >
+														        	AND (0, CC.VENDOR_ID)
+															   		<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+																		(0, #vendorId[]#)
+																	</iterate>
+															    </isNotEmpty>
+										                  ) A
+										) B
+							   ) C
+				  )
+		WHERE PAGE = #currentPage#
+	</select>
+
+</sqlMap>

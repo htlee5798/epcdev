@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmsys0003">
+    <typeAlias alias="pscmsys0003VO" type="com.lottemart.epc.system.model.PSCMSYS0003VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<insert id="insertPartnerPopup">
+	INSERT INTO TVE_VENDOR(VENDOR_ID
+						  ,VENDOR_NM
+						  ,CONO
+						  ,VALI_YN
+						  ,CEO_NM
+						  ,CEO_IDNO
+						  ,BIZ_BTYP
+						  ,BIZ_BIZ_ITM
+						  ,INET_VENDOR_NM
+						  ,VENDOR_TYPE_CD
+						  ,TRD_TYP_FG
+						  ,ZIP_SEQ
+					      ,ZIP_CD
+					      ,ADDR_1_NM
+					      ,ADDR_2_NM
+					      ,REG_DATE
+					      ,REG_ID
+					      ,MOD_DATE
+					      ,MOD_ID
+					      ,ISLND_DELI_AMT_YN
+					      ,SALE_VENDOR_ID 
+					      ,REP_TEL_NO 
+						  )
+		SELECT (SELECT 'T' || LPAD(NVL(SUBSTR(MAX(VENDOR_ID),2,6),0)+1,5,0) FROM TVE_VENDOR
+		        WHERE VENDOR_ID LIKE 'T%') AS VENDOR_ID
+		      ,#vendorNm# AS VENDOR_NM
+		      ,CONO
+		      ,'Y' AS VALI_YN
+		      ,CEO_NM
+		      ,CEO_IDNO
+		      ,BIZ_BTYP
+		      ,BIZ_BIZ_ITM
+		      ,INET_VENDOR_NM
+		      ,'06' AS VENDOR_TYPE_CD
+		      ,'6' AS TRD_TYP_FG						-- 2016.02.15 by kmlee TVE_VENDOR 신규 필드 추가로 변경(TRD_TYP_FG)
+		                                                -- 2016.02.19 by kmlee KMxx 원상복구
+		      ,ZIP_SEQ
+		      ,#zipCd# AS ZIP_CD
+		      ,#addr_1_nm# AS ADDR_1_NM
+		      ,#addr_2_nm# AS ADDR_2_NM
+		      ,CURRENT_TIMESTAMP(0) AS REG_DATE
+		      ,#regId# AS REG_ID
+		      ,CURRENT_TIMESTAMP(0) AS MOD_DATE
+		      ,#regId# AS MOD_ID
+		      ,#islndDeliAmtYn# AS ISLND_DELI_AMT_YN
+		      ,SALE_VENDOR_ID 
+		      ,#repTelNo# AS REP_TEL_NO 
+		  FROM TVE_VENDOR
+		 WHERE CONO = #regId#
+		   AND VENDOR_ID IN (SELECT LET_1_REF FROM TET_CODE WHERE MAJOR_CD = 'ET036' AND USE_YN = 'Y')
+		   LIMIT 1
+	</insert>
+	
+    <select id="selectPartnerTotalCnt" resultClass="java.lang.Integer">
+        /* PSCMSYS0003.selectPartnerTotalCnt */
+		SELECT
+            	COUNT(1) AS COUNT
+		  FROM  TVE_VENDOR
+         WHERE  CONO = #cono#
+         <isNotEmpty property="vendorId">
+           AND  VENDOR_ID LIKE #vendorId# || '%'
+         </isNotEmpty>
+         <isNotEmpty property="vendorNm">
+           AND  VENDOR_NM LIKE '%' ||  #vendorNm# || '%'
+         </isNotEmpty>
+           AND  VALI_YN = 'Y'
+           AND  VENDOR_ID LIKE 'T' || '%'
+    </select>
+
+    <select id="selectPartnerList" resultClass="pscmsys0003VO">
+        /* PSCMSYS0003.selectPartnerList */
+        SELECT * FROM
+        (
+            SELECT	
+            	    RANK()OVER(ORDER BY VENDOR_ID ASC) AS NUM
+            	   ,VENDOR_ID AS vendorId
+            	   ,VENDOR_NM AS vendorNm
+            	   ,NVL(ADDR_1_NM,'') AS addr_1_nm
+            	   ,NVL(ADDR_2_NM,'') AS addr_2_nm
+            	   ,ISLND_DELI_AMT_YN AS islndDeliAmtYn
+            	   ,(CASE WHEN LENGTH(REP_TEL_NO) > 2 THEN REP_TEL_NO ELSE '' END ) AS repTelNo
+            	   ,NVL(ZIP_CD,'') AS zipCd
+              FROM  TVE_VENDOR
+	         WHERE  CONO = #cono#
+	           AND  VENDOR_ID LIKE 'T' || '%'
+	         <isNotEmpty property="vendorId">
+	           AND  VENDOR_ID LIKE #vendorId# || '%'
+	         </isNotEmpty>
+	         <isNotEmpty property="vendorNm">
+	           AND  VENDOR_NM LIKE '%' ||  #vendorNm# || '%'
+	         </isNotEmpty>
+	           AND  VALI_YN = 'Y'
+	    )
+        WHERE
+            NUM BETWEEN #startRow# AND #endRow#
+    </select>
+
+    <update id="updatePartnerList">
+        /* PSCMSYS0003.updatePartnerList */
+        UPDATE TVE_VENDOR 
+        SET
+            VENDOR_NM = #vendorNm#
+           ,ADDR_1_NM = #addr_1_nm#
+           ,ADDR_2_NM = #addr_2_nm#
+           ,ISLND_DELI_AMT_YN = #islndDeliAmtYn#
+           ,REP_TEL_NO = #repTelNo#
+           ,ZIP_CD = #zipCd#
+           ,MOD_DATE = CURRENT_TIMESTAMP(0)
+           ,MOD_ID   = #cono#
+        WHERE VENDOR_ID    = #vendorId#
+          AND VENDOR_TYPE_CD = '06'
+        
+    </update>
+    
+    <update id="deletePartnerList">
+        /* PSCMSYS0003.deletePartnerList */
+        UPDATE TVE_VENDOR 
+        SET
+            VALI_YN = 'N'
+           ,MOD_DATE = CURRENT_TIMESTAMP(0)
+           ,MOD_ID   = #cono#
+        WHERE VENDOR_ID    = #vendorId#
+          AND VENDOR_TYPE_CD = '06'
+    </update>
+
+
+</sqlMap>

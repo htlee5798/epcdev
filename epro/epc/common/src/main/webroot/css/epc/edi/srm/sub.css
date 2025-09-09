@@ -1,0 +1,523 @@
+@charset "utf-8";
+
+/* 서브공통 */
+.sub_wrap {
+	padding-top:45px;
+	padding-bottom:85px;
+}
+.sub_top {
+	overflow:hidden;
+	border-bottom:1px solid #ddd;
+	padding-bottom:10px;
+	margin-bottom:50px;
+}
+.sub_top .tit_page {
+	float:left;
+}
+.page_path {
+	text-align:right;
+	padding-top:7px;
+	color:#999;
+}
+.page_path span {
+	padding-left:25px;
+	background:url("/images/epc/edi/srm/sub/path_arr.png") no-repeat 8px center;
+}
+/* title */
+.tit_page {
+	font-size:30px;
+	line-height:1.2em;
+	color:#333;
+	font-weight:600;
+	letter-spacing:-1px;
+}
+.tit_star {
+	padding-left:16px;
+	font-size:16px;
+	line-height:1.2em;
+	font-weight:600;
+	color:#333;
+	margin:20px 0 12px 0;
+	background:url("/images/epc/edi/srm/sub/star_bl.png") no-repeat 2px 0.3em;
+}
+.tit_star em {
+	font-weight:600;
+	color:#e60012;
+	border-bottom:1px solid #e60012;
+}
+.tit_star small {
+	font-weight:400;
+}
+.tit_btns {
+	overflow:hidden;
+	margin-bottom:15px;
+	margin-top:20px;
+}
+.tit_btns .tit_star {
+	float:left;
+	margin-top:5px;
+	margin-bottom:0;
+}
+.right_btns {
+	text-align:right;
+}
+
+/* notice box */
+.noti_box {
+	overflow:hidden; 
+	border-radius:25px;
+	border:2px solid #ddd;
+	padding:25px 28px;
+	letter-spacing:-0.03em;
+	line-height:34px;
+	font-size:16px;
+	color:#333;
+	margin-bottom:40px;
+}
+.noti_box a {
+	color:#333;
+}
+.noti_box .txt_l {
+	font-size:18px;
+}
+.noti_box em {
+	color:#e60012;
+	border-bottom:1px solid #e60012;
+}
+.noti_box .udl {
+	border-bottom:1px solid #333;
+}
+.noti_list li {
+	padding-left:22px;
+	background:url("/images/epc/edi/srm/sub/mark_exc.png") no-repeat left 8px;
+}
+.btn_redround {
+	display:inline-block;
+	width:120px; height:34px;
+	line-height:34px;
+	text-align:center;
+	font-size:14px;
+	color:#fff !important;
+	background:#e60012;
+	border-radius:17px;
+}
+.btn_redround img {
+	vertical-align:middle;
+	margin-left:3px;
+}
+/* sub tab */
+.sub_tab {
+	overflow:hidden;
+	padding:0 1px;
+	margin-bottom:25px;
+	border-bottom:1px solid #ddd;
+}
+.sub_tab li {
+	float:left;
+	width:20%;
+}
+.sub_tab a {
+	display:block;
+	margin-left:-1px;
+	margin-right:-1px;
+	height:54px; line-height:54px;
+	border:1px solid #ddd;
+	border-bottom:0;
+	font-size:16px;
+	background:#f8f8f8;
+	color:#787878;
+	text-align:center;
+}
+.sub_tab .on a {
+	color:#fff;
+	font-size:18px;
+	background:#e60012;
+	border-color:#e60012;
+	font-weight:600;
+	z-index:9;
+}
+.sub_tab.col4 li {
+	width:25%;
+}
+.sub_tab.free_width li {
+	width:auto;
+}
+.sub_tab.free_width a {
+	padding:0 25px;
+}
+/* table */
+.tbl_scroll {
+	width:100%;
+	padding-bottom:20px;
+	overflow-x:auto;
+}
+.tbl_st1 {
+	width:100%;
+}
+.tbl_st1 th {
+	padding:10px 0;
+	font-weight:600;
+	color:#333;
+	background:#f8f8f8;
+	text-align:center;
+	border:1px solid #ddd;
+}
+.tbl_st1 td {
+	/* position:relative; */
+	padding:10px 10px;
+	border:1px solid #ddd;
+}
+.tbl_st1 td.yellow {
+	background:#fff4cf;
+}
+.col_num {width:80px;}
+.col_df {width:150px;}
+.cell_yellow {
+	color:#333;
+	background:#fffad1;
+	font-weight:600;
+}
+/* 입점절차 */
+.process_step {
+	overflow:hidden;
+	padding:0px;
+	margin:15px 0 30px;
+	text-align:center;
+}
+.process_step.col4 {
+	padding:0 156px;
+}
+.process_step li {
+	width:140px;
+	padding-left:40px;
+	background:url("/images/epc/edi/srm/sub/process_arr.png") no-repeat 20px center;
+	display:inline-block;
+}
+.process_step li:first-child {
+	padding-left:0;
+	background:none;
+}
+.process_step .circle {
+	width:150px;
+	height:150px;
+	position:relative;
+	background:#aaa;
+	text-align:center;
+	color:#fff;
+	border-radius:75px;
+	cursor:default;
+	overflow:hidden;
+
+	transition:all 0.1s ease-out;
+	-webkit-transition:all 0.1s ease-in-out;
+	-moz-transition:all 0.1s ease-out;
+	-o-transition:all 0.1s ease-out;
+}
+.process_step .incircle {
+	position:absolute;
+	border-radius:75px;
+	padding-top:45px;
+	left:0; top:0; right:0; bottom:0;
+
+	transition:margin 0.1s ease-in-out, padding 0.1s ease-in-out;
+	-webkit-transition:margin 0.1s ease-in-out, padding 0.1s ease-in-out;
+	-moz-transition:margin 0.1s ease-in-out, padding 0.1s ease-in-out;
+	-o-transition:margin 0.1s ease-in-out, padding 0.1s ease-in-out;
+}
+.process_step .circle span {
+	display:block;
+	color:#efefef;
+	margin-bottom:5px;
+}
+.process_step .circle em {
+	display:block;
+	font-size:20px;
+	line-height:1.2em;
+	font-weight:600;
+	color:#fff;
+}
+.process_step .circle:hover {
+	background:#e60012;
+}
+.process_step .circle:hover .incircle {
+	background:#fff;
+	margin:4px;
+	padding-top:41px;
+}
+.process_step .circle:hover .incircle span, 
+.process_step .circle:hover .incircle em {
+	color:#e60012;
+}
+/* 입력폼 */
+.input_wrap {
+	background:#f4f4f4;
+	padding:45px 0;
+}
+.input_box {
+	width:535px;
+	position:relative;
+	padding-right:115px;
+	margin:0 auto;
+}
+.input_form {
+	overflow:hidden;
+}
+.input_form dt {
+	float:left;
+	width:115px;
+	clear:both;
+	font-weight:600;
+	color:#333;
+	font-size:16px;
+	line-height:40px;
+	padding:5px 0;
+}
+.input_form dd {
+	padding-left:115px;
+	font-size:16px;
+	line-height:40px;
+	padding:5px 0;
+}
+.input_form input[type="text"],
+.input_form input[type="password"] {
+	height:38px;
+	padding:0 5px;
+	border:1px solid #ddd;
+	border-radius:5px;
+	appearance:none;
+	-webkit-appearance:none;
+	-moz-appearance:none;
+}
+.input_form .field_full {
+	width:388px;
+}
+.input_form .field_num {
+	width:112px;
+}
+.input_box .btn_ok {
+	position:absolute;
+	width:115px;
+	right:0; top:5px; bottom:5px; 
+	background:#888;
+	border-radius:5px;
+	color:#fff;
+	font-size:19px;
+}
+.input_form select {
+	height:30px;
+	min-width:150px;
+	border:1px solid #ddd;
+	border-radius:0;
+}
+/* btns */
+.btn_normal {
+	width:auto; height:30px;
+	background:#888;
+	color:#fff;
+	border-radius:5px;
+	border:0;
+	padding:0;
+	margin:0;
+	cursor:pointer;
+	appearance:none;
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	padding:0 20px;
+}
+.btn_blue {
+	background:#09a1d9;
+}
+.btn_red {
+	background:#e60012;
+}
+.btn_cal {
+	width:30px; height:30px;
+	margin-left:5px;
+	outline:0;
+	box-sizing:border-box;
+}
+.btn_cal img {
+	vertical-align:middle;
+	max-width:30px;
+}
+/* form style */
+.form_style input[type="text"],
+.form_style input[type="password"] {
+	height:28px;
+	padding:0 5px;
+	border:1px solid #ddd;
+	border-radius:0;
+	appearance:none;
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	width:150px;
+}
+.form_style select {
+	height:30px;
+	min-width:150px;
+	border:1px solid #ddd;
+	border-radius:0;
+}
+.form_style label {
+	cursor:default;
+}
+.form_style .btn_normal {
+	border-radius:0;
+}
+.form_style input[type="radio"] + label,
+.form_style input[type="checkbox"] + label {
+	margin-right:10px;
+}
+.form_style input[type="file"] {
+	height:30px;
+	width:200px;
+	vertical-align:middle;
+}
+.form_style textarea {
+	width:97.5%;
+	padding:1%;
+	border:1px solid #ddd;
+	overflow:auto;
+	resize:none;
+}
+/* 진행상태 */
+.status_circle {
+	display:inline-block;
+	width:20px; height:20px;
+	border-radius:10px;
+	margin:0 auto;
+	background:#bbb;
+	/* text-indent:-99999px; */
+}
+td.status_not {
+	background:url("/images/epc/edi/srm/sub/status_not.png") no-repeat center;
+	background-size:100% 100%;
+}
+.sc_yellow {background:#ffc600;}
+.sc_green {background:#53b02c;}
+.sc_blue {background:#0081db;}
+.sc_pink {background:#f62652;}
+.sc_gray {background:#bbbbbb;}
+.sc_darkgray {background:#444444;}
+
+/* popup */
+#popup_wrap {
+	padding:20px 40px;
+	width:620px;
+	margin:0 auto;
+}
+#popup_wrap_full {
+	padding:20px 40px;
+	margin:0 auto;
+}
+.popup_logo {
+	padding-bottom:5px;
+	border-bottom:2px solid #e60012;
+}
+/* 품질평가 */
+.evl_grade li {
+	border-top:1px solid #ccc;
+	line-height:35px;
+	padding:0 10px;
+	text-align:left;
+}
+.evl_grade li:first-child {
+	border-top:0;
+}
+.cell_lgray td {
+	background:#f8f8f8;
+	font-weight:600;
+	color:#333;
+	padding:15px 0;
+	text-align:center;
+}
+.cell_gray {
+	background:#8a8a8a;
+	color:#fff;
+}
+.cell_darkest {
+	background:#3a3a3a;
+	color:#fff;
+}
+
+/* 이용약관 */
+.terms_box {
+	position:relative;	
+	margin-top:11px;
+	padding:8px 10px;
+	border:1px solid #f0f0f0;
+	scrollbar-base-color:#d9d9d9;
+	scrollbar-3dlight-color:#d9d9d9;
+	scrollbar-darkshadow-color:#d9d9d9;
+	scrollbar-face-color:#d9d9d9;
+	scrollbar-highlight-color:#d9d9d9;
+	scrollbar-shadow-color:#d9d9d9;
+	scrollbar-track-color:#f2f2f2;
+	-webkit-overflow-scrolling:touch;
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	overflow:auto;
+	height:300px;
+}
+
+/* Add this attribute to the element that needs a tooltip */
+[data-tooltip-text] {
+	position: relative;
+	z-index: 2;
+	cursor: pointer;
+}
+
+/* Hide the tooltip content by default */
+[data-tooltip-text]:before,
+[data-tooltip-text]:after {
+	visibility: hidden;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip-text]:before {
+	position: absolute;
+	bottom: 150%;
+	left: 50%;
+	margin-bottom: 5px;
+	margin-left: -80px;
+	padding: 7px;
+	min-width: 150px;
+	border-radius: 3px;
+	background-color: #000;
+	background-color: hsla(0, 0%, 20%, 0.9);
+	color: #fff;
+	content: attr(data-tooltip-text);
+	text-align: center;
+	/* font-size: 14px; */
+	line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip-text]:after {
+	position: absolute;
+	bottom: 150%;
+	left: 50%;
+	margin-left: -5px;
+	width: 0;
+	border-top: 5px solid #000;
+	border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+	border-right: 5px solid transparent;
+	border-left: 5px solid transparent;
+	content: " ";
+	font-size: 0;
+	line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip-text]:hover:before,
+[data-tooltip-text]:hover:after {
+	visibility: visible;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+	opacity: 1;
+}

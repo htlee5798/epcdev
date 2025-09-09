@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CsrDyReg">
+	
+	<typeAlias  alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias  alias="csrDyRegSerarchVO" type="com.lottemart.epc.csr.model.CsrDyRegDefaultVO"/>
+	<typeAlias  alias="csrSearchParam" type="com.lottemart.epc.csr.model.CsrSearchParam"/>
+	
+	
+	
+	
+	
+	
+	<resultMap id="csrDyReg" class="com.lottemart.epc.csr.model.CsrDyRegVO">
+		<result property="empNo" 	column="EMP_NO" 		columnIndex="1"/>
+		<result property="regDy" 	column="REG_DY" 		columnIndex="2"/>
+		<result property="seq" 		column="SEQ" 			columnIndex="3"/>
+		<result property="l1CatCd" 	column="L1_CAT_CD" 		columnIndex="4"/>
+		<result property="l2CatCd" 	column="L2_CAT_CD" 		columnIndex="5"/>
+		<result property="l3CatCd" 	column="L3_CAT_CD" 		columnIndex="6"/>
+		<result property="l1Cd" 	column="L1_CD" 			columnIndex="7"/>
+		<result property="l2Cd" 	column="L2_CD" 			columnIndex="8"/>
+		<result property="hh" 		column="HH" 			columnIndex="9"/>
+		<result property="mm" 		column="MM" 			columnIndex="10"/>
+		<result property="regDt" 	column="REG_DT" 		columnIndex="11"/>
+		<result property="modDt" 	column="MOD_DT" 		columnIndex="12"/>
+	</resultMap>
+	
+	<insert id="csrDyRegDAO.insertCsrDyReg_S">
+		<![CDATA[
+			
+			
+			INSERT INTO CSR_DY_REG 
+				( EMP_NO
+				  , REG_DY
+				  , SEQ
+				  , L1_CAT_CD
+				  , L2_CAT_CD
+				  , L3_CAT_CD
+				  , HH                  
+				  , L1_CD
+				  , L2_CD
+				  , MM
+				  , REG_DT
+				  , MOD_DT 
+                 
+				 )
+			VALUES ( #empNo#
+				  , #regDy#
+				  , #seq#
+				  , #l1CatCd#
+				   ,#l2CatCd# 
+				  , #l3CatCd#
+				  , #hh#				  
+				  , #l1Cd#
+				  , #l2Cd#
+				  , '0'
+				  , CURRENT_TIMESTAMP(0)
+				  , CURRENT_TIMESTAMP(0)
+				  		  				  
+				  )
+		]]>
+	</insert>
+	
+	<update id="csrDyRegDAO.updateCsrDyReg_S">
+		<![CDATA[
+			UPDATE CSR_DY_REG
+			SET EMP_NO=#empNo#
+				, REG_DY=#regDy#
+				, SEQ=#seq#
+				, L3_CAT_CD=#l3CatCd#
+				, L1_CAT_CD=#l1CatCd#
+				, L2_CAT_CD=#l2CatCd#
+				, L1_CD=#l1Cd#
+				, L2_CD=#l2Cd#
+				, HH=#hh#
+				, MM=#mm#
+				, REG_DT=#regDt#
+				, MOD_DT=#modDt#
+				
+			]]>
+	</update>
+	
+	<delete id="csrDyRegDAO.deleteCsrDyReg_S">
+		<![CDATA[
+			DELETE FROM CSR_DY_REG 
+			]]>
+	</delete>
+	
+	<select id="csrDyRegDAO.selectCsrDyReg_S" resultMap="csrDyReg">
+		<![CDATA[
+			SELECT
+				EMP_NO
+				, REG_DY
+				, SEQ
+				, L3_CAT_CD
+				, L1_CAT_CD
+				, L2_CAT_CD
+				, L1_CD
+				, L2_CD
+				, HH
+				, MM
+				, REG_DT
+				, MOD_DT
+			FROM CSR_DY_REG
+			]]>
+	</select>
+	
+	<select id="csrDyRegDAO.selectCsrRegEmpDayList" resultMap="csrDyReg"   parameterClass="csrSearchParam">
+		<![CDATA[
+			select 
+					EMP_NO, 
+					REG_DY, 
+					SEQ,
+					L1_CAT_CD ,
+					L2_CAT_CD,
+					L3_CAT_CD, 
+					L1_CD, 
+					L2_CD,  
+					HH, 
+					MM, 
+					REG_DT, 
+					MOD_DT			
+			 from  CSR_DY_REG 
+			where  1=1
+			and EMP_NO=#sEmpNo# 
+			and REG_DY=#sDyReg# 
+		    order by REG_DY,SEQ
+			]]>
+	</select>
+	
+	
+	
+	
+	<select id="csrDyRegDAO.selectCsrDyRegList_D" parameterClass="csrDyRegSerarchVO" resultClass="dataMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								EMP_NO
+								, REG_DY
+								, SEQ
+								, L3_CAT_CD
+								, L1_CAT_CD
+								, L2_CAT_CD
+								, L1_CD
+								, L2_CD
+								, HH
+								, MM
+								, REG_DT
+								, MOD_DT
+						FROM CSR_DY_REG
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					EMP_NO = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					REG_DY LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+	
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="csrDyRegDAO.selectCsrDyRegListTotCnt_S" parameterClass="csrDyRegSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM CSR_DY_REG
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				EMP_NO = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				REG_DY LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>

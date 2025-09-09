@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMSAL0010">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="nedmsal0010" type="com.lottemart.epc.edi.sale.model.NEDMSAL0010VO" />
+
+	<resultMap id="nedmsal0010DayMap" class="nedmsal0010">
+		<result property="stkDy"  	   column="STK_DY" />
+		<result property="saleQty" 	   column="SALE_QTY" />
+		<result property="saleAmt" 	   column="SALE_AMT" />
+	</resultMap>
+	
+	<!-- 일자별카운트 -->
+	<select id="TSC_DAY-SELECT01CNTSUM" parameterClass="nedmsal0010" resultClass="Integer">
+		/* NEDMSAL0010.TSC_DAY-SELECT01CNTSUM */
+		SELECT	count(*) as cntSum
+		FROM  TPC_DY_STK
+		WHERE STK_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+		<isEmpty property="searchEntpCd">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		</isEmpty>		       			   
+		 <isNotEmpty  property="searchEntpCd"  prepend="AND"> 
+			    	VEN_CD = #searchEntpCd#
+		</isNotEmpty>
+	</select>
+	
+	 
+	<!-- 일자별 -->
+	<select id="TSC_DAY-SELECT01" parameterClass="nedmsal0010" resultMap="nedmsal0010DayMap">
+		/* NEDMSAL0010.TSC_DAY-SELECT01 */
+		SELECT	
+		
+				<isNotEmpty  property="searchStoreAl" >
+					<isNotEmpty  property="searchProductVal" > 
+						 /*+  index(TPC_DY_STK_NEW01 IX_PC_DY_STK_NEW01_05) */			 
+					</isNotEmpty>		 
+				</isNotEmpty> 
+				 
+		       <isNotEmpty  property="searchProductVal" >		 
+				   	<isEmpty  property="searchStoreAl" >
+					 	/*+  index(TPC_DY_STK_NEW01 IX_PC_DY_STK_NEW01_05) */ 
+		       		</isEmpty>			 
+		       </isNotEmpty>		 
+			   <isNotEmpty  property="searchStoreAl" >
+	  		   		<isEmpty  property="searchProductVal" >
+				 		/*+  index(TPC_DY_STK_NEW01 IX_PC_DY_STK_NEW01_06) */ 
+			   		</isEmpty>
+	         	</isNotEmpty>
+	         	
+				TO_CHAR(TO_DATE(STK_DY,'yyyymmdd'),'YYYY-MM-DD') STK_DY
+	    	   ,NVL(SUM(SALE_QTY), 0) AS SALE_QTY
+	    	   ,NVL(SUM(SALE_SALE_AMT), 0) AS SALE_AMT
+
+		FROM  TPC_DY_STK_NEW01
+		
+		WHERE STK_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+		<isEmpty property="searchEntpCd">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		</isEmpty>
+		       			   
+			   <isNotEmpty  property="searchEntpCd"  prepend="AND"> 
+			    	VEN_CD = #searchEntpCd#
+			   </isNotEmpty>
+			    
+		
+		          <isNotEmpty property="searchStoreAl"  prepend="AND"> 
+			     <iterate prepend="STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=","> 
+			       #searchStoreAl[]# 
+			     </iterate> 
+			   </isNotEmpty>
+			    
+			   <isNotEmpty  property="searchProductVal"  prepend="AND"> 
+			    	PROD_CD = #searchProductVal#
+			   </isNotEmpty>	
+		  GROUP BY STK_DY
+		  ORDER BY STK_DY
+	</select>
+
+</sqlMap>

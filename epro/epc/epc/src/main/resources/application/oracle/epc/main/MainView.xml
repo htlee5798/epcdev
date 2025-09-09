@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mainView">
+
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectBoardList" resultClass="dataMap">
+    /* SQLINES DEMO *** BoardList */
+    SELECT ROW_NUMBER() OVER () AS NUM
+         , BOARD_SEQ
+         , SUBSTR( TITLE, 0, 20 ) AS TITLE
+         , TO_CHAR(REG_DATE,'YYYY-MM-DD') as REG_DATE
+      FROM ( SELECT BOARD_SEQ
+                  , CONCAT(CASE DEPTH WHEN 2 THEN '(RE)' WHEN 3 THEN '(RE)(RE)' WHEN 4 THEN '(RE)(RE)(RE)' WHEN 5 THEN '(RE)(RE)(RE)(RE)' ELSE '' END , TITLE) AS TITLE
+                  , REG_DATE
+               FROM TBO_BOARD
+              WHERE BOARD_SEQ IN ( SELECT /*+ index(A IX_BO_BOARD_08) */
+                                          BOARD_SEQ
+                                     FROM TBO_BOARD A
+                                    WHERE BOARD_DIVN_CD = '101'
+                                      AND DEL_YN = 'N'
+                                      AND PBL_YN = 'Y' )
+                AND BOARD_SEQ != '000001583729'
+              ORDER BY BOARD_SEQ DESC
+           ) s
+     WHERE ROWNUM &lt;= 5
+	</select>
+
+	<select id="selectPopupBoardList" resultClass="dataMap">
+    /* SQLINES DEMO *** PopupBoardList */
+    SELECT BOARD_SEQ
+      FROM TBO_BOARD
+     WHERE BOARD_SEQ IN ( SELECT BOARD_SEQ FROM TBO_BOARD A
+                           WHERE BOARD_DIVN_CD = '101'
+                             AND DEL_YN = 'N' AND PBL_YN = 'Y' AND LET_1_REF = 'Y'
+                             AND TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24') BETWEEN NTCE_START_DY AND NTCE_END_DY )
+    ORDER BY BOARD_SEQ ASC
+	</select>
+
+	<insert id="insertPrdDescription">
+    /* SQLINES DEMO *** PrdDescription */
+    INSERT INTO TPR_PRODUCT_ADD_DESCR
+    ( PROD_CD
+    , SEQ
+    , TITLE
+    , ADD_DESC
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID )
+    VALUES
+    ( #prodCd#
+    , COALESCE((SELECT LPAD(COALESCE(MAX(SEQ)+1,'001'),3,'0')
+             FROM TPR_PRODUCT_ADD_DESCR
+            WHERE PROD_CD = #prodCd#), '001')
+    , #title#
+    , #addDesc#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , CURRENT_TIMESTAMP(0)
+    , #regId# )
+	</insert>
+
+	<update id="updatePrdDescription">
+    /* SQLINES DEMO *** PrdDescription */
+    UPDATE TPR_PRODUCT_ADD_DESCR
+       SET ADD_DESC = #addDesc#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #regId#
+     WHERE PROD_CD = #prodCd#
+       AND SEQ = '001'
+	</update>
+
+	<!-- SQLINES DEMO ***  삼진아웃제차수 카운트 조회 [불량상품건수, 입고거부상품건수는 RFC로 되어 있음] -->
+	<select id="selectIntroCountList" resultClass="dataMap">
+    /* SQLINES DEMO *** IntroCountList */
+	SELECT COUNT(*) CNT /* 이미지 반려건수 */
+	  FROM TPC_SALE_IMG
+	 WHERE CFM_FG = '2'
+		<isNotEmpty property="cono">
+	   AND ENTP_CD IN (SELECT VENDOR_ID FROM TVE_VENDOR WHERE CONO = #cono#)
+		</isNotEmpty>
+	 UNION ALL
+	SELECT 0 CNT /* 삼진아웃제 차수 건수 */
+	 </select>
+
+	<select id="selectTotalQnaChkCnt" resultClass="java.lang.Integer">
+	/* SQLINES DEMO *** TotalQnaChkCnt */
+	SELECT COUNT(1) CNT
+	  FROM TBO_PROD_QNA TPQ, TPR_PRODUCT TP
+	 WHERE TPQ.PROD_CD = TP.PROD_CD
+	   AND TPQ.PROC_YN = 'N'
+	   AND TPQ.REG_DATE BETWEEN TRUNC(CURRENT_TIMESTAMP(0),'MM') AND CURRENT_TIMESTAMP(0)
+	   AND TP.VENDOR_ID = #repVendorId#
+	</select>
+
+	<!-- 무료... SQLINES DEMO *** -->
+	<select id="selectEdiNochDeliYn" resultClass="java.lang.String">
+	/* SQLINES DEMO *** EdiNochDeliYn */
+	SELECT CASE WHEN R1.CNT &lt; 2 AND TV.VENDOR_KIND_CD = 'KM05'
+	            THEN 'N'
+	            ELSE 'Y'
+	       END AS GBN
+	  FROM (SELECT COUNT(R.DELI_DIVN_CD) AS CNT
+	          FROM ( SELECT DELI_DIVN_CD
+	                   FROM TVE_VENDOR_DELI_BASE
+	                  WHERE VENDOR_ID = #repVendorId#
+	                    AND TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY
+	         GROUP BY DELI_DIVN_CD ) R
+	       ) R1
+	     , TVE_VENDOR TV
+	 WHERE TV.VENDOR_ID = #repVendorId#
+	</select>
+
+	<!-- 업체... SQLINES DEMO *** -->
+	<select id="selectVendorList" resultClass="dataMap">
+	/* SQLINES DEMO *** VendorList */
+	SELECT VENDOR_ID,VENDOR_NM
+	  FROM TVE_VENDOR
+	 WHERE 
+	 <isNotEmpty property="cono"> <iterate prepend="CONO IN" property="cono" open="(" close=")" conjunction=","> #cono[]# </iterate> </isNotEmpty>
+	</select>
+
+	<!-- 업체... SQLINES DEMO *** -->
+	<select id="vendorUserTelList" resultClass="dataMap">
+	/* SQLINES DEMO *** UserTelList */
+	SELECT UTAK_NM AS userNm
+	     , FN_MASKING_RTN(UTAK_CELL_NO, '6') AS userTel
+	     , UTAK_CELL_NO AS smsTel
+	     , VENDOR_SEQ AS vendorSeq
+	     , COALESCE( (SELECT USER_INFO_APPLY_YN
+	               FROM TVE_VENDOR_USER_INFO_APLY AP
+	              WHERE AP.VENDOR_ID = VU.VENDOR_ID
+	                AND AP.VENDOR_SEQ = VU.VENDOR_SEQ
+	                AND AP.UTAK_CELL_NO = VU.UTAK_CELL_NO), 'N') AS userInfoApplyYn
+	  FROM TVE_VENDOR_USER VU
+	 WHERE VENDOR_ID = #vendorId#
+	   AND SMS_RECV_YN = 'Y'
+		<isNotEmpty property="vendorSeq">
+	   AND VENDOR_SEQ = #vendorSeq#
+		</isNotEmpty>
+		<isNotEmpty property="searchCellNo">
+	   AND UTAK_CELL_NO LIKE CONCAT(#searchCellNo# , '%')
+		</isNotEmpty>
+	</select>
+
+	<!-- SM... SQLINES DEMO *** -->
+	<insert id="smsAuthCodeInsert">
+	/* SQLINES DEMO *** hCodeInsert */
+	INSERT INTO LEC_MGR.KMP_MSG@DL_EMS_SMS_TOBE
+	( CMID
+	, DEST_PHONE
+	, SEND_PHONE
+	, REQUEST_TIME
+	, SEND_TIME
+	, MSG_BODY
+	, MSG_TYPE
+	, USER1
+	, USER2
+	, USER3 )
+	VALUES
+	( LEC_MGR.KMP_MSG_PR.NEXTVAL@DL_EMS_SMS_TOBE
+	, REPLACE(#userTel#, '-')
+	, '15772500'
+	, CURRENT_TIMESTAMP(0)
+	, CURRENT_TIMESTAMP(0)
+	, Concat('[롯데마트몰] 인증번호 [' , #smsAuthCode# , ']를 입력해 주세요.')
+	, 0
+	, #vendorSeq#
+	, #vendorId#
+	, 'Y' )
+	</insert>
+
+	<!-- SM... SQLINES DEMO *** -->
+	<select id="smsCodeCheckSelect" resultClass="dataMap">
+	/* SQLINES DEMO *** eCheckSelect */
+	SELECT SMS_CODE AS SMSCODE
+	     , UTAK_NM AS USERNM
+	     , SUBSTR(UTAK_CELL_NO, -4) AS USERTEL
+	  FROM TVE_VENDOR_USER
+	 WHERE VENDOR_ID = #vendorId#
+	   AND VENDOR_SEQ = #vendorSeq#
+	</select>
+
+	<!-- 인증... SQLINES DEMO *** -->
+	<update id="smsCodeUpdate">
+	/* SQLINES DEMO *** eUpdate */
+	UPDATE TVE_VENDOR_USER
+	   SET SMS_CODE = #smsAuthCode#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE VENDOR_ID = #vendorId#
+	   AND VENDOR_SEQ = #vendorSeq#
+	</update>
+
+	<!-- SQLINES DEMO ***  -->
+	<insert id="insertUserInfoApply">
+	MERGE INTO TVE_VENDOR_USER_INFO_APLY A
+	USING (SELECT VENDOR_ID, VENDOR_SEQ, UTAK_CELL_NO
+	         FROM TVE_VENDOR_USER
+	        WHERE VENDOR_ID = #vendorId#
+	          AND VENDOR_SEQ = #vendorSeq# ) B
+	ON (    A.VENDOR_ID = B.VENDOR_ID
+	    AND A.VENDOR_SEQ = B.VENDOR_SEQ
+	    AND A.UTAK_CELL_NO = B.UTAK_CELL_NO )
+	WHEN NOT MATCHED THEN
+	INSERT
+	( VENDOR_ID
+	, VENDOR_SEQ
+	, UTAK_CELL_NO
+	, USER_INFO_APPLY_YN
+	, REG_DATE
+	, REG_ID )
+	VALUES
+	( #vendorId#
+	, #vendorSeq#
+	, (SELECT UTAK_CELL_NO
+	     FROM TVE_VENDOR_USER
+	    WHERE VENDOR_ID = #vendorId#
+	      AND VENDOR_SEQ = #vendorSeq#)
+	, #personalInfoUseApply#
+	, CURRENT_TIMESTAMP(0)
+	, #vendorId# )
+	</insert>
+
+	<select id="getSystimestampMs" resultClass="String">
+	/* SQLINES DEMO *** timestampMs */
+	SELECT TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS.FF3') DATE_STR 
+	</select>
+
+</sqlMap>

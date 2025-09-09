@@ -1,0 +1,193 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: main.css
+ * description	: main, CSS import
+ * date			: 2011.08.06
+************************************************************************/
+
+@import url(layout.css);
+
+body	{background:url('/images/front/common/bg-gnb-main.gif') repeat-x 0 0 #FFF;}
+
+#wrap	#contents	{width:960px; padding:0 0 0 0;}
+#wrap	#footer	{width:960px; margin:25px 0 0 0;}
+
+
+/*library*/
+.library_wrap	{position:relative; z-index:100; width:950px; height:65px;margin-top:-8px;}
+.library_wrap:after {content:""; display:block; clear:both; height:0; visibility:hidden;}
+.library_wrap	.fl_lib	{float:left;}
+.library_wrap	.fl_lib	ul	{float:left; height:61px;}
+.library_wrap	.fl_lib	li	{float:left; width:105px; height:61px; background:url('/images/front/common/line-fl-lib.gif') no-repeat right bottom; text-align:center; word-break:keep-all; white-space:nowrap}
+.library_wrap	.fl_lib	li	a	{display:block; width:105px; height:51px; padding-top:10px;}
+.library_wrap	.fl_lib	li	a	span.lib_txt	{display:block; margin-top:3px; font:normal 12px malgun, "Malgun Gothic"; color:#999; text-align:center; line-height:14px;}
+.library_wrap	.fl_lib	li	a:hover	{color:#ee1c24; text-decoration:none}
+.library_wrap	.fl_lib	li	a:hover	span.lib_txt	{color:#ee1c24;}
+.library_wrap	.fl_lib	.lib_made {float:left; width:530px; padding:3px 0 0 22px; background:url('/images/front/common/flag-lib-made.gif') no-repeat 0 0;}
+.library_wrap	.fl_lib	.lib_made	.tip_lm	{position:absolute; top:0; left:0; width:20px; height:42px; font-size:0;}
+.library_wrap	.fl_lib	.lib_recommend {float:left; width:212px; padding:3px 0 0 56px; background:url('/images/front/common/flag-lib-recommend.gif') no-repeat 34px 0;}
+.fl_history	{padding-top:20px;}
+.fl_history	.click_btn_dsc	{top:52px;}
+
+.leaflet	{position:relative; z-index:1; width:1000px; height:1px; margin:0 -11px 0 -20px;}
+.leaflet	.lft_menu	{position:absolute; z-index:5; left:0; top:9px; height:38px; overflow:hidden;}
+.leaflet	.lft_menu	p	{float:left;}
+.leaflet	.lft_menu	p.prev	{width:36px; height:38px;}
+.leaflet	.lft_menu	p.next	{width:38px; height:38px;}
+/*.leaflet	.lft_menu	p	a	img	{margin-top:0;}
+.leaflet	.lft_menu	p	a:hover	img	{margin-top:-38px;}*/
+
+.leaflet	.lft_menu	p	img	{margin-top:0;}
+.leaflet	.lft_menu	p:hover	img	{margin-top:-38px;}
+
+.leaflet	.lft_menu	ul	{float:left; height:38px;}
+.leaflet	.lft_menu	li	{float:left;}
+/*.leaflet	.lft_menu	li	a	img	{margin-top:0;font-size:0;}
+.leaflet	.lft_menu	li	a:hover	img	{margin-top:-38px;}
+.leaflet	.lft_menu	li.on	a	img	{margin-top:-38px;}
+.leaflet	.lft_menu	li.on	a:hover	img	{margin-top:-38px;}*/
+
+.leaflet	.lft_menu	li	img	{margin-top:0;font-size:0;}
+.leaflet	.lft_menu	li:hover	img	{margin-top:-38px;}
+.leaflet	.lft_menu	li.on	img	{margin-top:-38px;}
+
+.leaflet	{position:relative; z-index:0; width:1000px; height:1317px; margin-left:-20px; overflow:hidden;}
+.leaflet	h2	{position:absolute; left:388px; top:15px; width:204px; text-align:center; background-color:#ffffff; height:22px;}
+.leaflet	.lft_date	{position:absolute; left:780px; top:23px; width:180px; font:normal 12px malgun, "Malgun Gothic"; color:#999; text-align:right; letter-spacing:0;}
+.leaflet	.btn_cart	{display:none; position:absolute; z-index:100; width:62px;}
+.leaflet1	{position:absolute; left:0; top:0; z-index:1; width:1000px; height:1317px; background:url('/images/front/home/bg-leaflet.gif') no-repeat 0 0;}
+.leaflet2	{position:absolute; left:0; top:0; z-index:1; width:1000px; height:1317px; background:url('/images/front/home/bg-leaflet2.gif') no-repeat 0 0;}
+.leaflet3	{position:absolute; left:0; top:0; z-index:1; width:1000px; height:1317px; background:url('/images/front/home/bg-leaflet3.gif') no-repeat 0 0;}
+.leaflet4	{position:absolute; left:0; top:0; z-index:1; width:1000px; height:1317px; background:url('/images/front/home/bg-leaflet4.gif') no-repeat 0 0;}
+
+.lft_lst	{width:100%; overflow:hidden; zoom:1;}
+.lft_lst	li	{float:left; margin-left:1px; line-height:0;}
+.lft_lst	li.first	{margin-left:0;}
+
+
+/* 금주전단 */
+.leaflet1	.box_leaflet	{width:1000px; background:url('/images/front/home/box-start.gif') repeat-y 20px 0;}
+.leaflet1	.box_leaflet_t	{background:url('/images/front/home/box-start-top.gif') no-repeat 20px 0;}
+.leaflet1	.box_leaflet_b	{height:871px; background:url('/images/front/home/box-start-bottom.gif') no-repeat 20px bottom;}
+.leaflet1	.lft_plan	{position:absolute; left:35px; top:62px; width:628px; height:341px;}
+.leaflet1	.lft_plan2	{position:absolute; left:503px; top:404px; width:467px; height:447px;}
+.leaflet1	.lft_plan3	{position:absolute; left:35px; top:852px; width:306px; height:223px;}
+.leaflet1	.lft_event	{position:absolute; left:664px; top:62px; width:306px; height:170px;}
+.leaflet1	.lft_event	.lft_num	{left:16px; bottom:15px;}
+.leaflet1	.lft_todays_hot	{position:absolute; left:664px; top:233px; width:306px; height:170px; background:url('/images/front/home/txt-today-price.gif') no-repeat 19px 22px;}
+.leaflet1	.lft_theme	{position:absolute; left:342px; top:286px; width:628px; height:394px;}
+.leaflet1	.lft_goods	{position:absolute; left:20px; top:404px; width:482px;}
+.leaflet1	.lft_goods	 li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet1	.lft_goods2	{position:absolute; left:342px; top:852px; width:628px;}
+.leaflet1	.lft_goods2	 li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet1	.lft_goods3	{position:absolute; left:20px; top:1076px; width:950px;}
+.leaflet1	.lft_goods3	 li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+
+/* 신선식품 */
+.leaflet2	.lft_plan	{position:absolute; left:342px; top:62px; width:628px; height:223px;}
+.leaflet2	.lft_plan	.lft_num	{left:25px; bottom:20px;}
+.leaflet2	.lft_event	{position:absolute; left:35px; top:286px; width:306px; height:394px;}
+.leaflet2	.lft_event	li	{line-height:0;}
+.leaflet2	.lft_todays_hot	{position:absolute; left:20px; top:681px; width:950px; height:170px;}
+.leaflet2	.lft_todays_hot	li	{width:291px; height:170px; padding:0 15px;}
+.leaflet2	.lft_theme	{position:absolute; left:342px; top:286px; width:628px; height:394px;}
+.leaflet2	.lft_goods	{position:absolute; left:20px; top:62px; width:326px;}
+.leaflet2	.lft_goods	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet2	.lft_goods2	{position:absolute; left:20px; top:852px; width:950px;}
+.leaflet2	.lft_goods2	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+
+/* 가공 */
+.leaflet3	.lft_plan	{position:absolute; left:35px; top:852px; width:628px; height:223px;}
+.leaflet3	.lft_event	{position:absolute; left:664px; top:62px; width:306px; height:394px;}
+.leaflet3	.lft_todays_hot	{position:absolute; left:20px; top:457px; width:950px; height:170px;}
+.leaflet3	.lft_todays_hot	li	{width:291px; height:170px; padding:0 15px;}
+.leaflet3	.lft_theme	{position:absolute; left:35px; top:62px; width:628px; height:394px;}
+.leaflet3	.lft_theme	.lft_num	{right:10px; bottom:13px;} /* 추가 2012-02-15 */
+.leaflet3	.lft_goods	{position:absolute; left:20px; top:628px; width:950px;}
+.leaflet3	.lft_goods	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet3	.lft_goods2	{position:absolute; left:664px; top:852px; width:306px;}
+.leaflet3	.lft_goods2	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet3	.lft_goods3	{position:absolute; left:20px; top:1076px; width:950px;}
+.leaflet3	.lft_goods3	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+
+/* 유아 아동 */
+.leaflet4	.lft_plan	{position:absolute; left:342px; top:1076px; width:628px; height:223px;}
+.leaflet4	.lft_event{position:absolute; left:35px; top:457px; width:306px; height:396px;}
+.leaflet4	.lft_todays_hot	{position:absolute; left:35px; top:62px; width:305px;}
+.leaflet4	.lft_todays_hot	li	{width:291px; height:170px; padding:0 15px;}
+.leaflet4	.lft_todays_hot2	{position:absolute; left:342px; top:681px; width:628px;}
+.leaflet4	.lft_todays_hot2	li	{width:291px; height:170px; padding:0 15px;}
+.leaflet4	.lft_theme	{position:absolute; left:342px; top:62px; width:628px; height:394px;}
+.leaflet4	.lft_theme	.lft_num	{left:22px; bottom:14px;} /* 추가 2012-02-15 */
+.leaflet4	.lft_goods1	{position:absolute; left:20px; top:233px; width:321px;}
+.leaflet4	.lft_goods1	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet4	.lft_goods2	{position:absolute; left:342px; top:457px; width:628px;}
+.leaflet4	.lft_goods2	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet4	.lft_goods3	{position:absolute; left:20px; top:852px; width:950px;}
+.leaflet4	.lft_goods3	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+.leaflet4	.lft_goods4	{position:absolute; left:20px; top:1076px; width:321px;}
+.leaflet4	.lft_goods4	li	{width:130px; height:223px; margin-bottom:1px; padding:0 15px 0; overflow:hidden;}
+
+
+.lft_banner	{width:100%; height:100%; overflow:hidden;}
+.lft_num	{position:absolute; overflow:hidden;}
+.lft_num	li	{float:left; margin:0 6px; cursor:pointer;}
+
+.main_common	{width:100%; height:248px; overflow:hidden; margin-top:10px; border-top:1px solid #dedede; border-bottom:1px solid #dedede;}
+.main_common	.only_lotte	{position:relative; float:left; width:321px; height:248px; border-right:1px solid #dedede;}
+.main_common	.only_lotte	.lft_num	{right:15px; top:25px; font-size:0; line-height:0;}
+.main_common	.m_theme	{position:relative; float:left; width:321px; height:248px; border-right:1px solid #dedede;}
+.main_common	.m_theme	.lft_num	{right:15px; top:25px; font-size:0; line-height:0;}
+.main_common	.m_issue	{float:left; width:316px; height:154px; border-bottom:1px solid #dedede;}
+.main_common	.m_notice	{float:left; width:316px; height:32px; padding-top:14px; border-bottom:1px solid #dedede;}
+.main_common	.m_winners	{float:left; width:316px; height:32px; padding-top:14px;}
+.m_notice	h3.m_tit	{float:left; width:66px; padding-top:3px; text-align:right;}
+.m_notice	.jq_marquee	{float:left; width:172px; height:18px; overflow:hidden; padding-left:15px;}
+.m_notice	.jq_marquee	p	{width:100%; font:normal 12px malgun, "Malgun Gothic"; line-height:18px;}
+.m_notice	.btn	{float:left; width:56px;}
+.m_winners	h3.m_tit	{float:left; width:66px; padding-top:3px; text-align:right;}
+.m_winners	.jq_marquee	{float:left; width:172px; height:18px; overflow:hidden; padding-left:15px;}
+.m_winners	.jq_marquee	p	{width:100%; font:normal 12px malgun, "Malgun Gothic"; line-height:18px;}
+.m_winners	.btn	{float:left; width:56px;}
+
+.list_affiliate {*height:1%; *zoom:1;}
+.list_affiliate:after {content:""; display:block; clear:both; height:0; visibility:hidden;}
+.list_affiliate	{width:100%; margin-top:28px;}
+.list_affiliate	dt	{float:left; padding:4px 25px 0 20px; font:15px malgun, "Malgun Gothic"; color:#333; font-weight:bold;}
+.list_affiliate	dd	{float:left; padding:0 25px 0 26px; background:url('/images/front/shop/line-partner-banner.gif') no-repeat 0 0;}
+.list_affiliate	dd.first	{background:none;}
+
+/* 상품목록 기본형[이미지:상, 텍스트:하] */
+.mType_01	{width:130px; padding:10px 0 0;}
+.mType_01	.photo_wrap	{position:relative; font-size:0;}
+.mType_01	.photo_wrap	.btn_cart	{left:66px; top:98px;}
+.mType_01	.prodInfo	{width:127px; padding:0 0 0 3px;}
+.mType_01	.prodInfo	.fixed	{height:14px; padding-top:2px; _height:11px; _padding-top:3px; color:#999; font-family:malgun; font-size:13px; line-height:100%; letter-spacing:0; text-decoration:line-through;}
+.mType_01	.prodInfo	.price	{height:23px; color:#666; font-size:12px; line-height:100%; letter-spacing:-2px;}
+.mType_01	.prodInfo	.price	em	{color:#333; font-family:CoHead; font-size:20px; line-height:100%; letter-spacing:0; vertical-align:-2px;}
+.mType_01	.prodInfo	.pName	{height:33px; padding-top:4px; _height:32px; _padding-top:7px; color:#333; font-size:13px; line-height:16px; letter-spacing:-1px; overflow:hidden; word-wrap:break-word; word-break:break-all;}
+.mType_01	.prodInfo	.pName	a	{color:#333;}
+
+/* 상품목록 [이미지:좌, 텍스트:우] */
+.mType_02	{position:relative;}
+.mType_02	.photo_wrap	{position:absolute; top:8px; left:0; font-size:0;}
+.mType_02	.photo_wrap	.btn_cart	{left:90px; top:122px;}
+.mType_02	.prodInfo	{position:absolute; left:164px; width:127px;}
+.mType_02	.prodInfo	.pName	{height:55px; padding-top:25px; _height:54px; _padding-bottom:1px; color:#333; font-weight:bold; font-size:18px; line-height:25px; letter-spacing:-1px; overflow:hidden; word-wrap:break-word; word-break:break-all;}
+.mType_02	.prodInfo	.pName	a	{color:#333;}
+.mType_02	.prodInfo	.fixed	{height:14px; padding-top:20px; _height:11px; _padding-top:21px; color:#999; font-family:malgun; font-size:13px; line-height:100%; letter-spacing:0; text-decoration:line-through;}
+.mType_02	.prodInfo	.price	{height:23px; color:#666; font-size:12px; line-height:100%; letter-spacing:-2px;}
+.mType_02	.prodInfo	.price	em	{color:#ee1c24; font-family:CoHead; font-size:23px; line-height:100%; letter-spacing:0px; _letter-spacing:-1px; vertical-align:-2px;}
+
+/* 상품목록 [이미지:우, 텍스트:좌] */
+.mType_03	{position:relative;}
+.mType_03	.photo_wrap	{position:absolute; top:8px; right:0; font-size:0;}
+.mType_03	.photo_wrap	.btn_cart	{left:90px; top:122px;}
+.mType_03	.prodInfo	{width:127px; padding:0 0 0 18px;}
+.mType_03	.prodInfo	.pName	{height:55px; padding-top:36px; _height:54px; _padding-bottom:1px; color:#333; font-weight:bold; font-size:18px; line-height:25px; letter-spacing:-1px; overflow:hidden; word-wrap:break-word; word-break:break-all;}
+.mType_03	.prodInfo	.pName	a	{color:#333;}
+.mType_03	.prodInfo	.fixed	{height:14px; padding-top:15px; _height:11px; _padding-top:16px; color:#999; font-family:malgun; font-size:13px; line-height:100%; letter-spacing:0; text-decoration:line-through;}
+.mType_03	.prodInfo	.price	{height:23px; color:#666; font-size:12px; line-height:100%; letter-spacing:-2px;}
+.mType_03	.prodInfo	.price	em	{color:#ee1c24; font-family:CoHead; font-size:23px; line-height:100%; letter-spacing:0px; _letter-spacing:-1px; vertical-align:-2px;}
+
+.lft_lst	li.end	{padding-right:0;}

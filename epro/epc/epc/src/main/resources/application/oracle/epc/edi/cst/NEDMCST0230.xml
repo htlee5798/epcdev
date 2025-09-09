@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMCST0230">
+
+	
+	<typeAlias alias="nEDMCST0230VO" type="com.lottemart.epc.edi.consult.model.NEDMCST0230VO" />
+	
+	<!-- AS 조회 -->
+	<resultMap id="TSC_AS-SELECT-MAP" class="nEDMCST0230VO">
+		<result property="rnum"		  	  column="RNUM" />	
+		<result property="snum"		  	  column="SNUM" />	
+		<result property="slipNo"		  column="SLIP_NO" />	
+		<result property="werks"          column="WERKS" />	
+		<result property="regDy"          column="REG_DY" />	
+		<result property="custNm"         column="CUST_NM" />	
+		<result property="hpNo"           column="HP_NO" />	
+		<result property="zip"            column="ZIP" />	
+		<result property="newAddrFg"      column="NEW_ADDR_FG" />	
+		<result property="addr1"          column="ADDR1" />	
+		<result property="addr2"          column="ADDR2" />	
+		<result property="addr3"          column="ADDR3" />	
+		<result property="newAddr1"       column="NEW_ADDR1" />	
+		<result property="newAddr2"       column="NEW_ADDR2" />	
+		<result property="newAddr3"       column="NEW_ADDR3" />	
+		<result property="newAddr4"       column="NEW_ADDR4" />	
+		<result property="ean11"          column="EAN11" />	
+		<result property="prodCd"         column="PROD_CD" />	
+		<result property="prodNm"         column="PROD_NM" />	
+		<result property="lifnr"          column="LIFNR" />	
+		<result property="reqCmt"         column="REQ_CMT" />	
+		<result property="procStat"       column="PROC_STAT" />	
+		<result property="procStatNm"     column="PROC_STAT_NM" />	
+		<result property="ifDt"           column="IF_DT" />	
+		<result property="repairScheDt"   column="REPAIR_SCHE_DT" />	
+		<result property="repairCompDt"   column="REPAIR_COMP_DT" />	
+		<result property="transCompDt"    column="TRANS_COMP_DT" />	                 
+	</resultMap>
+	
+		
+	<select id="TSC_AS-SELECT" parameterClass="nEDMCST0230VO" resultMap="TSC_AS-SELECT-MAP">
+		/* NEDMCST0230.TSC_AS-SELECT */
+		
+	  	SELECT	* 
+		FROM
+		(
+			SELECT 	A.*
+				,	COUNT(1) OVER () - RNUM + 1 AS SNUM
+			FROM
+			(
+				SELECT	
+				        ROWNUM AS COUNT
+				      ,	SLIP_NO
+					  , WERKS
+					  ,	TO_CHAR(TO_DATE(REG_DY,'YYYY-MM-DD'),'YYYY-MM-DD') AS REG_DY
+					  , CUST_NM
+					  , REPLACE(HP_NO, ' ') HP_NO
+					  , ZIP
+					  , NEW_ADDR_FG
+					  , ADDR1
+					  , ADDR2
+					  , ADDR3
+					  , NEW_ADDR1
+					  , NEW_ADDR2
+					  , NEW_ADDR3
+					  , NEW_ADDR4
+					  , EAN11
+					  , SUBSTR(PROD_CD, 9) AS PROD_CD
+					  , (
+					  	 SELECT PROD_NM
+		       			   FROM PRODUCT
+		      			  WHERE PROD_CD =  SUBSTR(RECEIPT.PROD_CD, 9)
+					     ) AS PROD_NM			  
+		        	  , SUBSTR(LIFNR, 5) AS LIFNR
+					  , REQ_CMT
+					  , PROC_STAT
+					  , (
+					  	 SELECT CD_NM
+						   FROM TPC_CODE
+						  WHERE MAJOR_CD = 'AS001'
+							AND USE_YN = 'Y'
+						 	AND MINOR_CD = RECEIPT.PROC_STAT 
+						 ) AS PROC_STAT_NM
+						 
+					  ,	TO_CHAR(IF_DT,'YYYY-MM-DD') AS IF_DT			  
+					  ,	TO_CHAR(TO_DATE(REPAIR_SCHE_DT,'YYYY-MM-DD'),'YYYY-MM-DD') AS REPAIR_SCHE_DT
+					  ,	TO_CHAR(TO_DATE(REPAIR_COMP_DT,'YYYY-MM-DD'),'YYYY-MM-DD') AS REPAIR_COMP_DT
+					  ,	TO_CHAR(TO_DATE(TRANS_COMP_DT,'YYYY-MM-DD'),'YYYY-MM-DD') AS TRANS_COMP_DT
+					  ,	ROW_NUMBER() OVER(ORDER BY REG_DY DESC) AS RNUM
+					  
+				FROM	TPC_AS_RECEIPT_SAP RECEIPT
+				WHERE	REG_DY BETWEEN REPLACE(#srchStartDate#,'-','') and REPLACE(#srchEndDate#,'-','')
+				
+					<isNotEmpty  property="venCds"  prepend="AND">
+						<iterate prepend="SUBSTR(LIFNR, 5) IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchEntpCd"  prepend="AND">
+						SUBSTR(LIFNR, 5) = #srchEntpCd#
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchProcStat"  prepend="AND">
+						PROC_STAT = #srchProcStat#
+					</isNotEmpty>
+				
+			) A
+		)
+		<![CDATA[ WHERE TO_NUMBER(#firstIndex#) + 1 <= RNUM AND RNUM < TO_NUMBER(#lastIndex#) + 1]]>
+		
+		
+	</select>
+	
+	<select id="TSC_AS-SELECT-COUNT" parameterClass="nEDMCST0230VO" resultClass="Integer">
+		/* NEDMCST0230.TSC_AS-SELECT-COUNT */
+	  SELECT	COUNT(1) AS CNT 
+		FROM
+		(
+			SELECT 	A.*
+				,	COUNT(1) OVER () - RNUM + 1 AS SNUM
+			FROM
+			(
+				SELECT	
+				        ROWNUM AS COUNT
+				      ,	SLIP_NO
+					  , WERKS
+					  ,	TO_CHAR(TO_DATE(REG_DY,'YYYY-MM-DD'),'YYYY-MM-DD') AS REG_DY
+					  , CUST_NM
+					  , REPLACE(HP_NO, ' ') HP_NO
+					  , ZIP
+					  , NEW_ADDR_FG
+					  , ADDR1
+					  , ADDR2
+					  , ADDR3
+					  , NEW_ADDR1
+					  , NEW_ADDR2
+					  , NEW_ADDR3
+					  , NEW_ADDR4
+					  , EAN11
+					  , SUBSTR(PROD_CD, 9) AS PROD_CD
+					  , (
+					  	 SELECT PROD_NM
+		       			   FROM PRODUCT
+		      			  WHERE PROD_CD =  SUBSTR(RECEIPT.PROD_CD, 9)
+					     ) AS PROD_NM			  
+		        	  , SUBSTR(LIFNR, 5) AS LIFNR
+					  , REQ_CMT
+					  , PROC_STAT
+					  , (
+					  	 SELECT CD_NM
+						   FROM TPC_CODE
+						  WHERE MAJOR_CD = 'AS001'
+							AND USE_YN = 'Y'
+						 	AND MINOR_CD = RECEIPT.PROC_STAT 
+						 ) AS PROC_STAT_NM
+						 
+					  ,	TO_CHAR(IF_DT,'YYYY-MM-DD') AS IF_DT			  
+					  ,	TO_CHAR(TO_DATE(REPAIR_SCHE_DT,'YYYY-MM-DD'),'YYYY-MM-DD') AS REPAIR_SCHE_DT
+					  ,	TO_CHAR(TO_DATE(REPAIR_COMP_DT,'YYYY-MM-DD'),'YYYY-MM-DD') AS REPAIR_COMP_DT
+					  ,	TO_CHAR(TO_DATE(TRANS_COMP_DT,'YYYY-MM-DD'),'YYYY-MM-DD') AS TRANS_COMP_DT
+					  ,	ROW_NUMBER() OVER(ORDER BY REG_DY DESC) as RNUM
+					  
+				FROM	TPC_AS_RECEIPT_SAP RECEIPT
+				WHERE	REG_DY BETWEEN REPLACE(#srchStartDate#,'-','') and REPLACE(#srchEndDate#,'-','')
+				
+					<isNotEmpty  property="venCds"  prepend="AND">
+						<iterate prepend="SUBSTR(LIFNR, 5) IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchEntpCd"  prepend="AND">
+						SUBSTR(LIFNR, 5) = #srchEntpCd#
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchProcStat"  prepend="AND">
+						PROC_STAT = #srchProcStat#
+					</isNotEmpty>
+				
+			) A
+		)
+		
+	</select>
+
+	<update id="TSC_AS-UPDATE" parameterClass="nEDMCST0230VO" >
+		/* NEDMCST0230.TSC_AS-UPDATE */
+		UPDATE TPC_AS_RECEIPT_SAP
+		   SET PROC_STAT = #procStat#
+		   <isNotEmpty  property="repairScheDt"  >
+		   	 , REPAIR_SCHE_DT = #repairScheDt#
+		   </isNotEmpty>
+		   <isNotEmpty  property="repairCompDt"  >
+		   	 , REPAIR_COMP_DT = #repairCompDt#
+		   </isNotEmpty>
+		   <isNotEmpty  property="transCompDt"  >
+		   	 , TRANS_COMP_DT = #transCompDt#
+		   </isNotEmpty>
+		 WHERE 1 = 1
+		   AND SLIP_NO = #slipNo#
+		 	
+	</update>
+	
+
+</sqlMap>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMVEN0040">
+
+	<typeAlias alias="srmven0040Vo"	type="com.lottemart.epc.edi.srm.model.SRMVEN0040VO" />
+	<typeAlias alias="srmven004001Vo"	type="com.lottemart.epc.edi.srm.model.SRMVEN004001VO" />
+
+	<!-- 품질경영평가조치리스트 조회 Map -->
+	<resultMap id="selectEvalInfoListMap" 	class="srmven0040Vo">
+		<result column="RNUM"					property="rnum"				/>	<!-- 순번 -->
+		<result column="REQ_DATE"				property="reqDate"			/>	<!-- 요청일자 -->
+		<result column="EVAL_DATE"				property="evalDate"			/>	<!-- 평가일자 -->
+		<result column="EVAL_SELLER_NAME_LOC"	property="evalSellerNameLoc"/>	<!-- 평가기관이름 -->
+		<result column="USER_NAME_LOC"			property="userNameLoc"		/>	<!-- 담당자 -->
+		<result column="OFFICE_TEL_NO"			property="officeTelNo"		/>	<!-- 담당자 연락처 -->
+		<result column="STATUS"					property="status" 			/>	<!-- 상태 -->
+		<result column="STATUS_NM"				property="statusNm" 		/>	<!-- 상태이름 -->
+		<result column="PROGRESS_CODE"			property="progressCode" 	/>	<!-- 진행상태 -->
+		<result column="IMP_CNT"				property="impCnt" 			/>	<!-- 시정조치 완료 수 -->
+		<result column="TOT_IMP_CNT"			property="totImpCnt" 		/>	<!-- 시정조치 전체 수 -->
+		<result column="EVAL_NO_RESULT"			property="evalNoResult" 	/>	<!-- 평가결과번호 -->
+		<result column="VISIT_SEQ"				property="visitSeq" 		/>	<!-- 평가요청 순번 -->
+	</resultMap>
+	
+	<!--품질경영평가조치내역 조회 Map-->
+	<resultMap id="selectCorrectiveActionListMap" class="srmven004001Vo">
+		<result column="HOUSE_CODE"					property="houseCode" 			/>	<!-- 하우스코드 -->
+		<result column="EV_NO"						property="evNo"	 				/>	<!-- 평가번호 -->
+		<result column="SEQ"						property="seq" 					/>	<!-- 평가요청번호 -->
+		<result column="EV_ITEM_TYPE1_CODE"			property="evItemType1Code" 		/>	<!-- 평가관점 -->
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가관점 -->
+		<result column="IMP_SEQ"					property="impSeq" 				/>	<!-- 시정조치순번 -->
+		<result column="IMP_REQ_REMARK"				property="impReqRemark" 		/>	<!-- 시정조치요청내용 -->
+		<result column="IMP_STATUS"					property="impStatus" 			/>	<!-- 시정조치 상태값 -->
+	</resultMap>
+	
+	<!--품질경영평가조치내역 상세조회 Map-->
+	<resultMap id="selectCorrectiveActionDetailMap" class="srmven004001Vo">
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="EV_NO"					property="evNo"	 			/>	<!-- 평가번호 -->
+		<result column="SEQ"					property="seq" 				/>	<!-- 평가요청번호 -->
+		<result column="IMP_SEQ"				property="impSeq" 			/>	<!-- 시정조치순번 -->
+		<result column="IMP_STATUS"				property="impStatus" 		/>	<!-- 시정조치 상태값 -->
+		<result column="IMP_RES_REMARK"			property="impResRemark" 	/>	<!-- 시정조치 조치내용 -->
+		<result column="IMP_ATTACH_FILE_NO"		property="impAttachFileNo" 	/>	<!-- 시정조치 첨부파일ID -->
+		<result column="IMP_RES_DATE"			property="impResDate" 		/>	<!-- 시정조치 조치일 -->
+	</resultMap>
+	
+	<!-- 품질경영평가조치리스트 카운트 -->
+	<select id="selectEvalInfoListCount" parameterClass="srmven0040Vo" resultClass="Integer">
+		/* SRMVEN0040.selectEvalInfoListCount */
+		SELECT  COUNT(*)
+		FROM	SSUGL_PROCESS_SITEVISIT A
+			,	SEVUS B
+			,	SUSMT C
+		WHERE	A.HOUSE_CODE = B.HOUSE_CODE
+		  AND	A.EVAL_NO_RESULT = B.EV_NO
+		  AND	A.HOUSE_CODE = C.HOUSE_CODE
+		  AND	A.ADD_USER_ID = C.USER_ID
+		  AND	A.HOUSE_CODE = #houseCode#
+		  AND	A.EVAL_FLAG = '1'
+		  
+		<isNotEmpty property="venCds" prepend="AND" >
+			<iterate prepend="SELLER_CODE IN " property="venCds" open="(" close=")" conjunction=",">
+				#venCds[]#
+			</iterate>
+		</isNotEmpty>
+		
+	</select>
+	
+	<!-- 품질경영평가조치리스트 조회 -->
+	<select id="selectEvalInfoList" parameterClass="srmven0040Vo" resultMap="selectEvalInfoListMap">
+		/* SRMVEN0040.selectEvalInfoList */
+		SELECT	COUNT(1) OVER() AS ROW_SPAN
+			,	AA.*
+		FROM
+		(
+			SELECT	*
+			FROM
+			(
+				SELECT  ROW_NUMBER() OVER(ORDER BY A.ADD_DATE DESC) AS RNUM
+					,	TO_CHAR(A.REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
+					,   TO_CHAR(A.EVAL_DATE, 'YYYY-MM-DD') AS EVAL_DATE
+					,   (SELECT SELLER_NAME_LOC FROM SSUGL WHERE SELLER_CODE = A.EVAL_SELLER_CODE AND INOUT_KIND = '02') AS EVAL_SELLER_NAME_LOC
+					,   A.STATUS
+					,	GETCODETEXT1('SRM900', A.STATUS, UPPER('ko')) AS STATUS_NM
+					,   B.PROGRESS_CODE
+					,   (SELECT COUNT(IMP_SEQ) FROM SSUGL_PROCESS_SITEVISIT_COVER3 WHERE HOUSE_CODE = A.HOUSE_CODE AND EV_NO = A.EVAL_NO_RESULT AND VISIT_SEQ = A.VISIT_SEQ AND IMP_STATUS='3') IMP_CNT
+					,   (SELECT COUNT(IMP_SEQ) FROM SSUGL_PROCESS_SITEVISIT_COVER3 WHERE HOUSE_CODE = A.HOUSE_CODE AND EV_NO = A.EVAL_NO_RESULT AND VISIT_SEQ = A.VISIT_SEQ) TOT_IMP_CNT
+					,	A.EVAL_NO_RESULT
+					,	A.VISIT_SEQ
+					,	C.USER_NAME_LOC
+					,	C.OFFICE_TEL_NO
+				FROM	SSUGL_PROCESS_SITEVISIT A
+					,	SEVUS B
+					,	SUSMT C
+				WHERE	A.HOUSE_CODE = B.HOUSE_CODE
+				  AND	A.EVAL_NO_RESULT = B.EV_NO
+				  AND	A.HOUSE_CODE = C.HOUSE_CODE
+				  AND	A.ADD_USER_ID = C.USER_ID
+				  AND	A.HOUSE_CODE = #houseCode#
+				  AND	A.STATUS IN ('G05', 'G07', 'G09')
+				  AND	A.EVAL_FLAG = '1'
+					<!-- <isEmpty property="srchVenCd">  -->
+						<isNotEmpty property="venCds" prepend="AND" >
+							<iterate prepend="SELLER_CODE IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					<!-- </isEmpty> -->
+					
+					<!-- <isNotEmpty property="srchVenCd" prepend="AND">
+						SELLER_CODE = #srchVenCd#
+					</isNotEmpty> -->
+			)
+			WHERE RNUM BETWEEN #firstIndex#+1 AND #lastIndex#
+		) AA
+		ORDER BY RNUM
+
+	</select>
+	
+	<!--품질경영평가조치내역 조회-->
+	<select id="selectCorrectiveActionList" parameterClass="srmven004001Vo" resultMap="selectCorrectiveActionListMap">
+		/*SRMVEN0040.selectCorrectiveActionList*/
+		SELECT	HOUSE_CODE
+			,	EV_NO
+			,	VISIT_SEQ AS SEQ
+			,	EV_ITEM_TYPE1_CODE
+			,	IMP_SEQ
+			,	GETCODETEXT1(CASE (	SELECT	EV_ITEM_KIND_CODE
+									FROM	SEVTD A
+										,	SEVIM B
+									WHERE	A.HOUSE_CODE = B.HOUSE_CODE
+									  AND	A.EV_ITEM_NO = B.EV_ITEM_NO
+									  AND	EV_TPL_NO IN (SELECT	EV_TPL_NO
+									  					  FROM	SEVEE
+									  					  WHERE 	EV_NO = #evNo#
+									  					  GROUP BY EV_TPL_NO
+														  )
+									  AND	EV_ITEM_TYPE1_CODE = A.EV_ITEM_TYPE1_CODE
+									  GROUP BY EV_ITEM_KIND_CODE
+									)
+				WHEN 'STA' THEN 'SRM010'
+				WHEN 'RET' THEN 'SRM011'
+				WHEN 'QBE' THEN 'SRM027'
+				ELSE ''
+				END, EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+				) AS EV_ITEM_TYPE1_CODE_NAME
+				,IMP_REQ_REMARK
+				,IMP_STATUS
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER3 A
+		WHERE
+				HOUSE_CODE = #houseCode#
+		  AND	EV_NO = #evNo#
+		  AND	VISIT_SEQ = #seq#
+		ORDER BY IMP_SEQ
+	</select>
+	
+	<!--품질경영평가조치 상세정보 조회-->
+	<select id="selectCorrectiveActionDetail" parameterClass="srmven004001Vo" resultMap="selectCorrectiveActionDetailMap">
+		/*SRMVEN0040.selectCorrectiveActionDetail*/
+		SELECT	HOUSE_CODE
+			,	EV_NO
+			,	VISIT_SEQ AS SEQ
+			,	IMP_SEQ
+			,	IMP_STATUS
+			,	IMP_RES_REMARK
+			,	IMP_ATTACH_FILE_NO
+			,	IMP_RES_DATE
+		FROM	SSUGL_PROCESS_SITEVISIT_COVER3
+		WHERE	HOUSE_CODE = #houseCode#
+		  AND	EV_NO = #evNo#
+		  AND	VISIT_SEQ = #seq#
+		  AND	IMP_SEQ = #impSeq#
+	</select>
+	
+	<!--품질경영평가조치 정보 수정-->
+	<update id="updateCorrectiveActionDetail" parameterClass="srmven004001Vo">
+		/*SRMVEN0040.updateCorrectiveActionDetail*/
+		UPDATE	SSUGL_PROCESS_SITEVISIT_COVER3
+		   SET	IMP_STATUS = #impStatus#
+		   	,	IMP_RES_REMARK = #impResRemark#
+		   	,	IMP_ATTACH_FILE_NO = #impAttachFileNo#
+		   	,	IMP_RES_DATE = #impResDate#
+		   	,	CHANGE_DATE = CURRENT_TIMESTAMP(0)
+		   	,	CHANGE_USER_ID = #sellerCode#
+		WHERE	HOUSE_CODE = #houseCode#
+		  AND	EV_NO = #evNo#
+		  AND	VISIT_SEQ = #seq#
+		  AND	IMP_SEQ = #impSeq#
+	</update>
+
+
+
+	<!--품질경영평가조치 정보 삭제-->
+	<update id="updateCorrectiveActionDetaildel" parameterClass="srmven004001Vo">
+		/*SRMVEN0040.updateCorrectiveActionDetaildel*/
+		UPDATE	SSUGL_PROCESS_SITEVISIT_COVER3
+		   SET	IMP_RES_REMARK = ''
+		   	,	IMP_ATTACH_FILE_NO = ''
+		   	,	IMP_RES_DATE = ''
+		   	,	IMP_STATUS = '1'
+		   	,	CHANGE_DATE = CURRENT_TIMESTAMP(0)
+		   	,	CHANGE_USER_ID = #sellerCode#
+		WHERE	HOUSE_CODE = #houseCode#
+		  AND	EV_NO = #evNo#
+		  AND	VISIT_SEQ = #seq#
+		  AND	IMP_SEQ = #impSeq#
+	</update>
+	
+</sqlMap>
+

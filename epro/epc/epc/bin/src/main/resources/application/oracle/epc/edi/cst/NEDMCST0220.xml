@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMCST0220">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="estimation" type="com.lottemart.epc.edi.consult.model.Estimation" />
+	
+	<typeAlias alias="stringClass"	type="String" />
+	
+	<!-- 견적서조회 -->
+	<resultMap id="TSC_ESTIMATION-SELECT01" class="estimation">
+		<result property="pid"			column="PID" />
+		<result property="venCd"		column="VEN_CD" />
+		<result property="docNm"		column="DOC_NM" />
+		<result property="fileSeq"		column="FILE_SEQ" />
+		<result property="fileNm"		column="FILE_NM" />
+		<result property="regDate"		column="REG_DATE" />
+	</resultMap>
+	
+	<select id="TSC_ESTIMATION-SELECT01" parameterClass="estimation" resultMap="TSC_ESTIMATION-SELECT01">
+		/* NEDMCST0220.TSC_ESTIMATION-SELECT01 */
+		SELECT	PID
+			,	VEN_CD
+			,	DOC_NM
+			,	FILE_SEQ
+			,	FILE_NM
+			,	TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+		FROM	TPC_ESTIMATION
+		WHERE	TO_CHAR(REG_DATE,'YYYYMMDD') BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+		
+			<isNotEmpty  property="venCds"  prepend="AND">
+				<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+					#venCds[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+		ORDER BY REG_DATE DESC
+	</select>
+	
+	<delete id="TSC_ESTIMATION-DELETE01" parameterClass="String">
+		/* NEDMCST0220.TSC_ESTIMATION-DELETE01 */
+		DELETE FROM TPC_ESTIMATION WHERE PID = #pid#
+	</delete>
+	
+	<delete id="TSC_ESTIMATION_SHEET-DELETE01" parameterClass="estimation">
+		/* NEDMCST0220.TSC_ESTIMATION_SHEET-DELETE01 */
+		DELETE FROM TPC_ESTIMATION_SHEET WHERE PID = #pid#
+	</delete>
+	
+	<delete id="TSC_ESTIMATION_SHEET-DELETE02" parameterClass="String">
+		/* NEDMCST0220.TSC_ESTIMATION_SHEET-DELETE02 */
+		DELETE FROM TPC_ESTIMATION_SHEET WHERE PID = #pid#
+	</delete>
+	
+	<!-- 견적서 세부 조회 상단 -->
+	<resultMap id="TSC_ESTIMATION_TOP-SELECT01" class="estimation">
+		<result property="pid"			column="PID" />
+		<result property="venCd"		column="VEN_CD" />
+		<result property="docNm"		column="DOC_NM" />
+		<result property="fileSeq"		column="FILE_SEQ" />
+		<result property="fileNm"		column="FILE_NM" />
+		<result property="regDate"		column="REG_DATE" />
+	</resultMap>
+	
+	<select id="TSC_ESTIMATION_TOP-SELECT01" parameterClass="String"  resultMap="TSC_ESTIMATION_TOP-SELECT01">
+		/* NEDMCST0220.TSC_ESTIMATION_TOP-SELECT01 */
+		SELECT	PID
+			,	VEN_CD
+			,	DOC_NM
+			,	FILE_NM
+			,	FILE_SEQ
+			,	REG_DATE
+		FROM	TPC_ESTIMATION
+		WHERE	PID = #pid#
+	</select>
+	
+	<!-- 견적서 세부 조회 하단 -->
+	<typeAlias alias="estimationSheet" type="com.lottemart.epc.edi.consult.model.EstimationSheet" />
+	<resultMap id="TSC_ESTIMATION_BOTTOM-SELECT01" class="estimationSheet">
+		<result property="pid"				column="PID" />
+		<result property="esPc"				column="ES_PC" />
+		<result property="esStandard"		column="ES_STANDARD" />
+		<result property="esProdCd"			column="ES_PROD_CD" />
+		<result property="esProdNm"			column="ES_PROD_NM" />
+		<result property="esPackType"		column="ES_PACK_TYPE" />
+		<result property="esGrade"			column="ES_GRADE" />
+		<result property="esPrice"			column="ES_PRICE" />
+		<result property="esOrgin"			column="ES_ORGIN" />
+		<result property="esDetail"			column="ES_DETAIL" />
+		<result property="regDate"			column="REG_DATE" />
+	</resultMap>
+	
+	<select id="TSC_ESTIMATION_BOTTOM-SELECT01" parameterClass="String"  resultMap="TSC_ESTIMATION_BOTTOM-SELECT01">
+		/* NEDMCST0220.TSC_ESTIMATION_BOTTOM-SELECT01 */
+		SELECT	PID
+			,	ES_PC
+			,	ES_STANDARD
+			,	ES_PROD_CD
+			,	ES_PROD_NM
+			,	ES_PACK_TYPE
+			,	ES_GRADE
+			,	ES_PRICE
+			,	ES_ORGIN
+			,	ES_DETAIL
+			,	TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+		FROM	TPC_ESTIMATION_SHEET
+		WHERE	PID = #pid#
+		ORDER BY REG_DATE DESC
+	</select>
+	
+	<update id="TSC_ESTIMATION-UPDATE01" parameterClass="estimation" >
+		/* NEDMCST0220.TSC_ESTIMATION-UPDATE01 */
+		UPDATE TPC_ESTIMATION
+		SET 	VEN_CD 		= #venCd#
+			,	DOC_NM 		= #docNm#
+			,	FILE_SEQ 	= #fileSeq#
+			,	FILE_NM 	= #fileNm#
+			,	REG_DATE 	= CURRENT_TIMESTAMP(0)
+		WHERE 	PID = #pid#
+	</update>
+
+</sqlMap>

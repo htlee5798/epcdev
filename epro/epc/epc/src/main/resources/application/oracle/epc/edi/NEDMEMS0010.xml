@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMEMS0010">
+
+	<typeAlias alias="nedmems0010Map" type="com.lottemart.epc.edi.ems.model.NEDMEMS0010VO"/>
+
+	<resultMap id="resultMap" class="nedmems0010Map">
+		<result column="ORD_DY"					property="ordDy" 			/>	<!-- 발주일 -->
+		<result column="VEN_CD"					property="venCd" 			/>	<!-- EXE_협력업체코드 -->
+		<result column="ORD_SLIP_CNT"			property="ordSlipCnt" 		/>	<!-- 발주전표수량 -->
+		<result column="ORD_SKU"				property="ordSku" 			/>	<!-- 발주SKU -->
+		<result column="ORD_QTY"				property="ordQty" 			/>	<!-- 발주수량 -->
+		<result column="ORD_AMT"				property="ordAmt" 			/>	<!-- 발주금액 -->
+		<result column="BUY_QTY"				property="buyQty" 			/>	<!-- 매입수량 -->
+		<result column="STK_BUY_AMT"			property="stkBuyAmt" 		/>	<!-- (재고)매입금액 -->
+		<result column="SALE_QTY"				property="saleQty" 			/>	<!-- 매출량 -->
+		<result column="SALE_AMT"				property="saleAmt" 			/>	<!-- 매가금액 -->
+		<result column="SUM_SALE_QTY"			property="sumSaleQty" 		/>	<!-- 누계매출수량 -->
+		<result column="SUM_SALE_AMT"			property="sumSaleAmt" 		/>	<!-- 누계매출집계 -->
+		<result column="STK_QTY"				property="stkQty" 			/>	<!-- 재고량 -->
+		<result column="STK_AMT"				property="stkAmt" 			/>	<!-- 재고금액 -->
+		<result column="BUY_SLIP_CNT"			property="buySlipCnt" 		/>	<!-- 매입전표수량 -->
+		<result column="BUY_AMT"				property="buyAmt" 			/>	<!-- 매입금액 -->
+		<result column="BUY_RTN_SLIP_CNT"		property="buyRtnSlipCnt" 	/>	<!-- 매입반품전표수량 -->
+		<result column="BUY_RTN_AMT"			property="buyRtnAmt" 		/>	<!-- 매입반품금액 -->
+		<result column="BUY_CHG_SLIP_CNT"		property="buyChgSlipCnt" 	/>	<!-- 매입정정전표수량 -->
+		<result column="BUY_CHG_AMT"			property="buyChgAmt" 		/>	<!-- 매입정정금액 -->
+		<result column="USPLY_SLIP_CNT"			property="usplySlipCnt" 	/>	<!-- 미납전표수량 -->
+		<result column="USPLY_SKU"				property="usplySku" 		/>	<!-- 미납SKU -->
+		<result column="USPLY_QTY"				property="usplyQty" 		/>	<!-- 미납수량 -->
+		<result column="USPLY_AMT"				property="usplyAmt" 		/>	<!-- 미납금액 -->
+		<result column="COM_NM"					property="comNm" 			/>	<!-- 상호명 -->
+	</resultMap>
+	
+	<select id="TSC_EMS_DATA-SELECT01"	parameterClass="java.util.HashMap" resultMap="resultMap">
+		/* NEDMEMS0010.TSC_EMS_DATA-SELECT01 */
+		SELECT	TO_CHAR(TO_DATE(A.ORD_DY,'yyyymmdd'),'YYYY-MM-DD') ORD_DY
+			,	A.VEN_CD
+			, 	A.ORD_SLIP_CNT
+			, 	A.ORD_SKU
+			, 	A.ORD_QTY
+			, 	A.ORD_AMT
+			,	B.BUY_QTY
+			, 	B.BUY_AMT	AS STK_BUY_AMT
+			, 	B.SALE_QTY
+			, 	B.SALE_AMT
+			, 	B.SUM_SALE_QTY
+			, 	B.SUM_SALE_AMT
+			, 	B.STK_QTY
+			, 	B.STK_AMT
+			,	C.BUY_SLIP_CNT
+			, 	C.BUY_AMT
+			, 	C.BUY_RTN_SLIP_CNT
+			, 	C.BUY_RTN_AMT
+			, 	C.BUY_CHG_SLIP_CNT
+			, 	C.BUY_CHG_AMT
+			,	D.USPLY_SLIP_CNT
+			, 	D.USPLY_SKU
+			, 	D.USPLY_QTY
+			, 	D.USPLY_AMT
+			, 	E.COM_NM
+		FROM  	TPC_ORD_TOTAL    A
+			,	TPC_STK_TOTAL    B
+			,	TPC_BUY_TOTAL    C
+			,	TPC_USPLY_TOTAL  D
+			,	(
+					SELECT	TO_CHAR(TO_DATE(BB.SEND_DY,'YYYYMMDD')-1,'YYYYMMDD') SEND_DY
+						,	AA.VENDOR_ID AS VEN_CD
+						,	CC.VENDOR_NM AS COM_NM
+						,	BB.SEQ
+					FROM  	TPC_SUB_SERVICE_USER   AA
+						,	TPC_EMS_MSG            BB
+						,	TVE_VENDOR             CC
+					WHERE 	AA.ANX_INFO_CD = BB.ANX_INFO_CD
+						AND AA.BMAN_NO     = BB.BMAN_NO
+						AND AA.SVC_SEQ     = BB.SVC_SEQ
+						AND AA.VENDOR_ID   = CC.VENDOR_ID
+						AND AA.VENDOR_ID   = #ven#
+						AND AA.BMAN_NO     = #bman#
+						AND BB.SEQ         = #seq#
+				) E
+		WHERE	A.ORD_DY = B.STK_DY
+			AND A.VEN_CD = B.VEN_CD
+			AND A.ORD_DY = C.BUY_DY
+			AND A.VEN_CD = C.VEN_CD
+			AND A.ORD_DY = D.SPLY_DY
+			AND A.VEN_CD = D.VEN_CD
+			AND A.ORD_DY = E.SEND_DY
+			AND A.VEN_CD = E.VEN_CD
+		ORDER BY A.VEN_CD
+	</select>
+	
+</sqlMap>

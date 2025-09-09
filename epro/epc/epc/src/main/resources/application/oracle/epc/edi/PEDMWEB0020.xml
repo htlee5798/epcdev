@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMWEB0020">
+
+<typeAlias alias="resultClass"		type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"		type="lcn.module.common.util.HashBox" />
+<typeAlias alias="searchWebOrder"	type="com.lottemart.epc.edi.weborder.model.SearchWebOrder"/>
+<typeAlias alias="ediEmpPool"  		type="com.lottemart.epc.edi.weborder.model.EdiPoEmpPoolVO" />
+
+  
+ 
+  	<!-- MDer 사원정보 조회 EDI_EMP_POOL_LIST_01 -->
+	<resultMap id="ediEmpPoolListMap"	class="ediEmpPool">
+    	<result property="empNo"			column="EMP_NO"			/>	<!-- 사원번호    	 -->
+		<result property="empNm"      		column="EMP_NM"         />	<!-- 사원명        -->
+		<result property="orgCd"      		column="ORG_CD"         />	<!-- MD부서코드    -->
+		<result property="orgNm"      		column="ORG_NM"         />	<!-- MD부서명      -->
+		<result property="mail"       		column="MAIL"           />	<!-- 메일          -->
+		<result property="jobCd"      		column="JOB_CD"         />	<!-- 직무코드      -->
+		<result property="jobNm"      		column="JOB_NM"         />	<!-- 직무명        -->
+		<result property="phoneNo"    		column="PHONE_NO"       />	<!-- 사무실번호    -->
+		<result property="hpNo"       		column="HP_NO"          />	<!-- 핸드폰번호    -->
+		<result property="regDt"      		column="REG_DT"         />	<!-- 등록일        -->
+		<result property="lstChgDt"   		column="LST_CHG_DT"     />	<!-- 수정일        -->
+		<result property="chgFg"      		column="CHG_FG"         />	<!-- 수정구분      -->
+  	</resultMap>
+  	
+	<!-- MDer 사원별 VENDOR 매핑 조회 EDI_EMP_POOL_LIST_02 -->
+	<resultMap id="ediEmpVenListMap"	class="ediEmpPool">
+    	<result property="empNo"			column="EMP_NO"			/>	<!-- 사원번호    	 -->
+		<result property="empNm"      		column="EMP_NM"         />	<!-- 사원명        -->
+		<result property="jobNm"      		column="JOB_NM"         />	<!-- 직무명        -->
+		<result property="venCd"      		column="VEN_CD"         />	<!-- 협력업체코드  -->
+		<result property="venNm"      		column="VEN_NM"         />	<!-- 협력업체명    -->
+		<result property="regDt"      		column="REG_DT"         />	<!-- 등록일        -->
+	</resultMap>
+
+
+	<!-- MDer 사원정보 조회 -->
+	<select id="EDI_EMP_POOL_LIST_01" parameterClass="searchWebOrder" resultMap="ediEmpPoolListMap">
+		/*PEDMWEB0020.EDI_EMP_POOL_LIST_01*/     
+		SELECT	 M1.EMP_NO			
+				,M1.EMP_NM			
+				,M1.ORG_CD			
+				,M1.ORG_NM			
+				,M1.MAIL				
+				,M1.JOB_CD			
+				,M1.JOB_NM			
+				,M1.PHONE_NO		
+				,M1.HP_NO			
+				,TO_CHAR(M1.REG_DT,'YYYY-MM-DD HH24:MI')	 as REG_DT			
+				,TO_CHAR(M1.LST_CHG_DT,'YYYY-MM-DD HH24:MI') as LST_CHG_DT	
+				,M1.CHG_FG			
+	      FROM TED_PO_EMP_POOL M1
+	     <dynamic prepend="WHERE">
+	  	   	<isNotEmpty  property="empNo"  prepend="AND"> 
+	        	M1.EMP_NO LIKE  #empNo#||'%'
+	    	</isNotEmpty>
+	    	 <isNotEmpty  property="empNm"  prepend="AND"> 
+	        	M1.EMP_NM LIKE  #empNm#||'%'
+	    	</isNotEmpty>
+	    </dynamic>	 
+	</select>
+	
+	<!-- MDer 사원별 협력사 매핑 조회 -->
+	<select id="EDI_EMP_POOL_LIST_02" parameterClass="searchWebOrder" resultMap="ediEmpVenListMap">
+		/*PEDMWEB0020.EDI_EMP_POOL_LIST_02*/
+	    SELECT  M1.EMP_NO
+               ,M1.EMP_NM
+               ,M1.JOB_NM
+               ,M2.VEN_CD
+               ,M2.VEN_NM
+               ,TO_CHAR(M2.REG_DT,'YYYY-MM-DD HH24:MI')     REG_DT
+          FROM TED_PO_EMP_POOL M1
+               INNER JOIN TED_PO_EMP_VENDOR M2 ON M1.EMP_NO = M2.EMP_NO
+        WHERE M1.EMP_NO = #empNo#
+    </select>  
+    
+	
+	<!-- MDer 사원별 협력사 매핑 정보 삭제 -->
+	<delete id="EDI_EMP_POOL_DEL_01" parameterClass="searchWebOrder">
+		/*PEDMWEB0020.EDI_EMP_POOL_DEL_01*/
+	    DELETE TED_PO_EMP_VENDOR 
+		 WHERE EMP_NO = #empNo#
+		   AND VEN_CD 
+		 <iterate prepend="IN" property="venCds" open="(" close=")" conjunction="," >
+		 	#venCds[]#
+		 </iterate>
+	</delete>
+	
+	<!-- 사원별 협력사 매핑 기 등록 COUNT -->
+	<select id="EDI_EMP_POOL_COUNT_01" parameterClass="searchWebOrder" resultClass="int">
+		/*PEDMWEB0020.EDI_EMP_POOL_COUNT_01*/
+		SELECT COUNT(*) CNT
+	      FROM TED_PO_EMP_VENDOR
+	     WHERE TED_PO_EMP_VENDOR.EMP_NO = #empNo#
+	       AND TED_PO_EMP_VENDOR.VEN_CD = #venCd#
+   </select> 
+    
+	
+	<!-- MDer 사원별 협력사 매핑 정보 등록 -->
+	<update id="EDI_EMP_POOL_SAVE_01" parameterClass="searchWebOrder">
+	   /*PEDMWEB0020.EDI_EMP_POOL_SAVE_01*/
+	    INSERT INTO TED_PO_EMP_VENDOR
+	        (EMP_NO          
+	        ,VEN_CD          
+	        ,VEN_NM          
+	        ,EMP_NM          
+	        ,HP_NO            
+	        ,SMS_RECV_YN      
+	        ,ORG_CHG_YN      
+	        ,ORG_CD          
+	        ,REG_DT          
+	        ,REG_EMP_NO      
+	        ,LST_CHG_DT      
+	        ,LST_CHG_EMP_NO)
+   	     SELECT EMP_NO          
+		        ,VEN_CD          
+		        ,VEN_NM          
+		        ,EMP_NM          
+		        ,HP_NO            
+		        ,SMS_RECV_YN      
+		        ,ORG_CHG_YN      
+		        ,ORG_CD          
+		        ,CURRENT_TIMESTAMP(0)   	 AS REG_DT       
+		        ,#workUser#  AS REG_EMP_NO    
+		        ,CURRENT_TIMESTAMP(0)     AS LST_CHG_DT   
+		        ,#workUser#  AS LST_CHG_EMP_NO
+		   FROM 
+		    ( SELECT  EMP_NO  
+		             ,EMP_NM
+		             ,ORG_CD
+		             ,HP_NO
+		             ,CHG_FG
+		             ,'Y' SMS_RECV_YN
+		             ,'N' ORG_CHG_YN 
+		      FROM TED_PO_EMP_POOL
+		     WHERE EMP_NO = #empNo# ) M1   
+		   ,( SELECT VEN_CD
+		            ,MAX(VEN_NM) VEN_NM
+		      FROM TED_VENDOR M1
+		     WHERE VEN_CD = #venCd# 
+		     GROUP BY VEN_CD) M2
+	</update>
+	
+	
+
+	
+	<!-- MDer 사원 복사 -->
+	<update id="EDI_EMP_POOL_SAVE_02" parameterClass="ediEmpPool">
+	     /*PEDMWEB0020.EDI_EMP_POOL_SAVE_02*/
+         INSERT INTO TED_PO_EMP_VENDOR
+	        (EMP_NO          
+	        ,VEN_CD          
+	        ,VEN_NM          
+	        ,EMP_NM          
+	        ,HP_NO            
+	        ,SMS_RECV_YN      
+	        ,ORG_CHG_YN      
+	        ,ORG_CD          
+	        ,REG_DT          
+	        ,REG_EMP_NO      
+	        ,LST_CHG_DT      
+	        ,LST_CHG_EMP_NO)
+       SELECT  M2.EMP_NO
+              ,M1.VEN_CD
+              ,M1.VEN_NM
+              ,M2.EMP_NM
+              ,M2.HP_NO
+              ,M1.SMS_RECV_YN
+              ,M2.CHG_FG
+              ,M2.ORG_CD
+              ,CURRENT_TIMESTAMP(0)         REG_DT
+              ,#workUser#      REG_EMP_NO 
+              ,CURRENT_TIMESTAMP(0)         LST_CHG_DT 
+              ,#workUser#      LST_CHG_EMP_NO
+         FROM  TED_PO_EMP_VENDOR M1
+              ,(SELECT * FROM TED_PO_EMP_POOL WHERE EMP_NO = #toEmpNo#) M2
+         WHERE NOT EXISTS(SELECT S1.VEN_CD FROM TED_PO_EMP_VENDOR S1
+         			       WHERE S1.EMP_NO =  #toEmpNo#
+         			         AND M1.VEN_CD = S1.VEN_CD  
+         			      )
+        AND M1.EMP_NO =  #frEmpNo#
+    </update>
+    
+	<!-- MDer 사원  -->
+	<update id="EDI_EMP_POOL_DEL_02" parameterClass="ediEmpPool">
+	    DELETE TED_PO_EMP_VENDOR WHERE EMP_NO =  #frEmpNo#
+	</update>
+</sqlMap>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout charSet="UTF-8" pattern="%d{yyyy-MM-dd HH:mm:ss} %r [%p] %n %C{10} : %M %n %m %n" />
+		</Console>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout charSet="UTF-8" pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
+		</Console>
+	</Appenders>
+
+
+	<Loggers>
+
+		<Logger name="com.lottemart" additivity="false" level="debug">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="org.apache" additivity="false" level="error">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="org.springframework" additivity="false" level="error">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="lcn.m.pkg" additivity="false" level="error">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="lcn.m.fmw" additivity="false" level="error">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="java.sql.Connection" additivity="false" level="error">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="java.sql.Statement" additivity="false" level="debug">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Logger name="java.sql.PreparedStatement" additivity="false" level="debug">
+			<AppenderRef ref="console" />
+		</Logger>
+	
+		<Logger name="java.sql.ResultSet" additivity="false" level="debug">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<!--  SQL 로그 -->
+		<Logger name="jdbc.sqlonly" additivity="false" level="off">
+			<AppenderRef ref="console"/>
+		</Logger>
+
+		<Logger name="jdbc.sqltiming" additivity="false" level="off">
+			<AppenderRef ref="console"/>
+		</Logger>
+
+		<Logger name="jdbc.audit" additivity="false" level="off">
+			<AppenderRef ref="console"/>
+		</Logger>
+
+		<Logger name="jdbc.resultset" additivity="false" level="off">
+			<AppenderRef ref="console"/>
+		</Logger>
+
+		<Logger name="jdbc.resultsettable" additivity="false" level="off">
+			<AppenderRef ref="console"/>
+		</Logger>
+
+
+		<Root level="debug">
+			<AppenderRef ref="console" />
+		</Root>
+
+	</Loggers>
+
+</Configuration>

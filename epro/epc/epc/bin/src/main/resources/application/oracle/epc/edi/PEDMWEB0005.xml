@@ -1,0 +1,1379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMWEB0005">
+
+	<typeAlias alias="resultClass" type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass" type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="searchWebOrder"
+		type="com.lottemart.epc.edi.weborder.model.SearchWebOrder" />
+	<typeAlias alias="ediRtnProd"
+		type="com.lottemart.epc.edi.weborder.model.EdiRtnProdVO" />
+	<typeAlias alias="ediRtnPack"
+		type="com.lottemart.epc.edi.weborder.model.EdiRtnPackVO" />
+
+
+
+
+	<!-- 반품 합계정보 조회 EDI_RETURN_PROD_SELECT_01 -->
+	<resultMap id="ediRtnProdSumMap" class="ediRtnProd">
+		<result property="strCdCnt" column="STR_CD_CNT" />	<!-- 등록점수 -->
+		<result property="rrlTotProdQtySum" column="RRL_TOT_PROD_QTY_SUM" />  <!-- 전체상품수 -->
+		<result property="rrlTotQtySum" column="RRL_TOT_QTY_SUM" />	<!-- 반품전체전수량 -->
+		<result property="rrlTotPrcSum" column="RRL_TOT_PRC_SUM" />  <!-- 반품전체금액 -->
+	</resultMap>
+
+	<!--반품 임시저장 목록 조회 EDI_RETURN_PROD_SELECT_02 -->
+	<resultMap id="ediRtnProdListMap" class="ediRtnProd">
+		<result property="rrlReqNo" column="RRL_REQ_NO" />	<!-- 반품등록번호 -->
+		<result property="rrlDy" column="rrl_DY" />	<!-- 반품일자 -->
+		<result property="prodCd" column="PROD_CD" />	<!-- 상품코드 -->
+		<result property="srcmkCd" column="SRCMK_CD" />	<!-- 판매코드 -->
+		<result property="venCd" column="VEN_CD" />	<!-- 업체코드 -->
+		<result property="prodNm" column="PROD_NM" />	<!-- 상품명 -->
+		<result property="strCd" column="STR_CD" />	<!-- 점포코드 -->
+		<result property="strNm" column="STR_NM" />	<!-- 점포명 -->
+		<result property="ordIpsu" column="ORD_IPSU" />	<!-- 반품입수 -->
+		<result property="ordUnit" column="ORD_UNIT" />	<!-- 단위 -->
+		<result property="stdSalePrc" column="STD_SALE_PRC" />	<!-- 매가-EDI -->
+		<result property="stdBuyPrc" column="STD_BUY_PRC" />	<!-- 원가-EID -->
+		<result property="rrlQty" column="RRL_QTY" />	<!-- 반품수량 -->
+		<result property="stdProdPrc" column="STD_PROD_PRC" />	<!-- 반품환산금액(수량*매가) -->
+		<result property="regStsCd" column="REG_STS_CD" />	<!-- 일괄등록상태코드 -->
+		<result property="regStsCdNm" column="REG_STS_CD_NM" />	<!-- 일괄등록상태명칭 -->
+		<result property="regStsCdDetail" column="REG_STS_CD_DETAIL" />	<!-- 일괄등록상태상세내용 -->
+		<result property="rrlStkQty" column="RRL_STK_QTY" />	<!-- 재고수량 -->
+	</resultMap>
+
+	<!--반품 임시저장 목록 조회 EDI_RETURN_PROD_SELECT_02_01 -->
+	<resultMap id="ediRtnProdListMap2" class="ediRtnProd">
+		<result property="rrlReqNo" column="RRL_REQ_NO" />	<!-- 반품등록번호 -->
+		<result property="rrlDy" column="rrl_DY" />	<!-- 반품일자 -->
+		<result property="prodCd" column="PROD_CD" />	<!-- 상품코드 -->
+		<result property="srcmkCd" column="SRCMK_CD" />	<!-- 판매코드 -->
+		<result property="venCd" column="VEN_CD" />	<!-- 업체코드 -->
+		<result property="prodNm" column="PROD_NM" />	<!-- 상품명 -->
+		<result property="strCd" column="STR_CD" />	<!-- 점포코드 -->
+		<result property="strNm" column="STR_NM" />	<!-- 점포명 -->
+		<result property="ordIpsu" column="ORD_IPSU" />	<!-- 반품입수 -->
+		<result property="ordUnit" column="ORD_UNIT" />	<!-- 단위 -->
+		<result property="stdSalePrc" column="STD_SALE_PRC" />	<!-- 매가-EDI -->
+		<result property="stdBuyPrc" column="STD_BUY_PRC" />	<!-- 원가-EID -->
+		<result property="rrlQty" column="RRL_QTY" />	<!-- 반품수량 -->
+		<result property="stdProdPrc" column="STD_PROD_PRC" />	<!-- 반품환산금액(수량*매가) -->
+		<result property="regStsCd" column="REG_STS_CD" />	<!-- 일괄등록상태코드 -->
+		<result property="regStsCdNm" column="REG_STS_CD_NM" />	<!-- 일괄등록상태명칭 -->
+		<result property="regStsCdDetail" column="REG_STS_CD_DETAIL" />	<!-- 일괄등록상태상세내용 -->
+		<result property="rrlStkQty" column="RRL_STK_QTY" />	<!-- 재고수량 -->
+		<result property="rrlStkQty2" column="RRL_STK_QTY2" />	<!-- 재고수량 -->
+	</resultMap>
+
+	<!--반품 임시저장 목록 조회(합계포함) EDI_RETURN_PROD_SELECT_03 -->
+	<resultMap id="ediRtnProdListSumMap" class="ediRtnProd">
+		<result property="strCdCnt" column="STR_CD_CNT" />	<!-- 등록점수 -->
+		<result property="rrlTotProdQtySum" column="RRL_TOT_PROD_QTY_SUM" />  <!-- 전체상품수 -->
+		<result property="rrlTotQtySum" column="RRL_TOT_QTY_SUM" />	<!-- 반품전체전수량 -->
+		<result property="rrlTotPrcSum" column="RRL_TOT_PRC_SUM" />  <!-- 반품전체금액 -->
+
+		<result property="rrlReqNo" column="RRL_REQ_NO" />	<!-- 반품등록번호 -->
+		<result property="prodCd" column="PROD_CD" />	<!-- 상품코드 -->
+		<result property="srcmkCd" column="SRCMK_CD" />	<!-- 판매코드 -->
+		<result property="prodNm" column="PROD_NM" />	<!-- 상품명 -->
+		<result property="strNm" column="STR_NM" />	<!-- 점포명 -->
+		<result property="ordIpsu" column="ORD_IPSU" />	<!-- 반품입수 -->
+		<result property="ordUnit" column="ORD_UNIT" />	<!-- 단위 -->
+		<result property="stdSalePrc" column="STD_SALE_PRC" />	<!-- 매가-EDI -->
+		<result property="stdBuyPrc" column="STD_BUY_PRC" />	<!-- 원가-EID -->
+		<result property="rrlQty" column="RRL_QTY" />	<!-- 반품수량 -->
+		<result property="stdProdPrc" column="STD_PROD_PRC" />	<!-- 반품환산금액(수량*매가) -->
+		<result property="regStsCd" column="REG_STS_CD" />	<!-- 일괄등록상태코드 -->
+		<result property="regStsCdNm" column="REG_STS_CD_NM" />	<!-- 일괄등록상태명칭 -->
+	</resultMap>
+
+
+
+
+
+	<!-- 반품 등록 가능 상품 확인 -->
+	<select id="EDI_RETURN_PROD_DATA_02_01" parameterClass="ediRtnProd"
+		resultClass="int">
+		/*PEDMWEB0005.EDI_RETURN_PROD_DATA_02_01*/
+		SELECT COUNT(*) CNT
+		FROM TED_VENDOR M1
+		,EDI_RTN_PROD_V1@DL_MD_MARTNIS M2
+		WHERE M1.VEN_CD = #venCd#
+		<isNotEmpty property="strCd" prepend="AND">
+			M1.STR_CD = #strCd#
+		</isNotEmpty>
+		AND M2.PROD_CD = #prodCd#
+		AND M1.VEN_CD = M2.VEN_CD
+		AND M1.STR_CD = M2.STR_CD
+	</select>
+
+	<!-- 반품 기등록 여부 확인 -->
+	<select id="EDI_RETURN_PROD_DATA_02_02" parameterClass="ediRtnProd"
+		resultClass="int">
+		/*PEDMWEB0005.EDI_RETURN_PROD_DATA_02_02*/
+		SELECT COUNT(*) CNT
+		FROM TED_PO_RRL_PROD M1
+		,TED_VENDOR M2
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.PROD_CD = #prodCd#
+		<isNotEmpty property="strCd" prepend="AND">
+			M2.STR_CD = #strCd#
+		</isNotEmpty>
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		AND M1.VEN_CD = M2.VEN_CD
+		AND M1.STR_CD = M2.STR_CD
+
+	</select>
+
+	<!-- 반품등록 MST 생성 -->
+	<update id="EDI_RETURN_PROD_DATA_03" parameterClass="ediRtnProd">
+		/*PEDMWEB0005.EDI_RETURN_PROD_DATA_03*/
+		INSERT INTO TED_PO_RRL_MST(
+		RRL_REQ_NO
+		,VEN_CD
+		,VEN_NM
+		,STR_CD
+		,RRL_DY
+		,RRL_VSEQ
+		,RRL_TOT_QTY
+		,RRL_TOT_PROD_QTY
+		,RRL_TOT_PRC
+		,RRL_PRGS_CD
+		,REG_ID
+		,REG_DT)
+		SELECT
+		TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_RRL_MST_SEQ.NEXTVAL,6,'0') AS RRL_REQ_NO
+		,T1.VEN_CD
+		,T1.VEN_NM
+		,T1.STR_CD
+		,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS RRL_DY
+		,'1' AS RRL_VSEQ
+		,NULL AS RRL_TOT_QTY
+		,NULL AS RRL_TOT_PROD_QTY
+		,NULL AS RRL_TOT_PRC
+		,'01' AS RRL_PRGS_CD
+		,#workUser# AS REG_ID
+		,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS REG_DT
+		FROM
+		(SELECT
+		M2.VEN_CD
+		,M2.VEN_NM
+		,M2.STR_CD
+		FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS M1
+		INNER JOIN TED_VENDOR M2 ON M1.VEN_CD = M2.VEN_CD
+		AND M1.STR_CD = M2.STR_CD
+		<isNotEmpty property="strCd">
+			AND M2.STR_CD = #strCd#
+		</isNotEmpty>
+
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.PROD_CD = #prodCd#
+		<isNotEmpty property="strCd">
+			AND M2.STR_CD = #strCd#
+		</isNotEmpty>
+		AND NOT EXISTS (
+		SELECT STR_CD, VEN_CD
+		FROM TED_PO_RRL_MST
+		WHERE M1.VEN_CD = #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		AND M1.STR_CD = TED_PO_RRL_MST.STR_CD
+		AND M1.VEN_CD = TED_PO_RRL_MST.VEN_CD
+		)
+		GROUP BY M2.VEN_CD,M2.VEN_NM,M2.STR_CD
+		) T1
+	</update>
+
+
+	<!-- 반품등록 PROD 생성 -->
+	<update id="EDI_RETURN_PROD_DATA_04" parameterClass="ediRtnProd">
+		/*PEDMWEB0005.EDI_RETURN_PROD_DATA_04*/
+		INSERT INTO TED_PO_RRL_PROD(
+		RRL_REQ_NO
+		,PROD_CD
+		,RRL_DY
+		,STR_CD
+		,VEN_CD
+		,SRCMK_CD
+		,PROD_NM
+		,SHORT_NM
+		,PROD_STD
+		,ORD_IPSU
+		,ORD_UNIT
+		,STD_SALE_PRC
+		,STD_BUY_PRC
+		,RRL_QTY
+		,RRL_CFM_QTY
+		,REG_STS_CD
+		,REG_ID
+		,REG_DT
+		,L1_CD
+		,L4_CD
+		 )
+		SELECT
+		M3.RRL_REQ_NO AS RRL_REQ_NO
+		,M1.PROD_CD AS PROD_CD
+		,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS RRL_DY
+		,M1.STR_CD AS STR_CD
+		,M1.VEN_CD AS VEN_CD
+		,M1.SRCMK_CD AS SRCMK_CD
+		,M1.PROD_NM AS PROD_NM
+		,NULL AS SHORT_NM
+		,M1.PROD_STD AS PROD_STD
+		,M1.ORD_IPSU AS ORD_IPSU
+		,NULL AS ORD_UNIT
+		,M1.SALE_PRC AS STD_SALE_PRC
+		,M1.BUY_PRC AS STD_BUY_PRC
+		,#rrlQty# AS RRL_QTY
+		,#rrlQty# AS RRL_CFM_QTY
+		,'0' AS REG_STS_CD
+		,#workUser# AS REG_ID
+		,CURRENT_TIMESTAMP(0) AS REG_DT
+		,M4.L1_CD
+		,M1.L4_CD
+		FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS M1
+		INNER JOIN TED_VENDOR M2
+		ON M1.VEN_CD = M2.VEN_CD
+		AND M1.STR_CD = M2.STR_CD
+		<isNotEmpty property="strCd">
+			AND M1.STR_CD = #strCd#
+		</isNotEmpty>
+		INNER JOIN TED_PO_RRL_MST M3
+		ON M1.VEN_CD = M3.VEN_CD
+		AND M1.STR_CD = M3.STR_CD
+		AND M3.VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND M3.STR_CD = #strCd#
+		</isNotEmpty>
+		INNER JOIN CATEGORY M4 
+        ON M4.CAT_CD = M1.L4_CD 		
+		AND M3.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.PROD_CD = #prodCd#
+		<isNotEmpty property="strCd">
+			AND M2.STR_CD = #strCd#
+		</isNotEmpty>
+	</update>
+
+	<!-- 반품등록 MST 합계 일괄 UPDATE -->
+	<update id="EDI_RETURN_PROD_DATA_05" parameterClass="ediRtnProd">
+	    /*PEDMWEB0005.EDI_RETURN_PROD_DATA_05*/
+	      UPDATE TED_PO_RRL_MST M1
+		    SET ( RRL_TOT_QTY
+		    	, RRL_TOT_PROD_QTY
+		    	, RRL_TOT_PRC
+		    	, SMS_FG) = 
+		        (SELECT SUM(M2.RRL_QTY) 				AS RRL_TOT_QTY
+		        	   ,COUNT(PROD_CD) 					AS RRL_TOT_PROD_QTY
+		               ,SUM(M2.RRL_QTY*M2.STD_SALE_PRC)	AS RRL_TOT_PRC
+		               ,'N'
+		           FROM TED_PO_RRL_PROD M2 
+		          WHERE M1.RRL_REQ_NO = M2.RRL_REQ_NO
+		            AND M2.VEN_CD     = #venCd#
+		            AND M2.RRL_DY     = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')  )
+		    WHERE M1.VEN_CD     = #venCd# 
+		      AND M1.RRL_DY     = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</update>
+
+
+
+	<!--반품 합계정보 조회 상품테이블 기준 -->
+	<select id="EDI_RETURN_PROD_SELECT_01_01" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdSumMap">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_01_01*/
+		SELECT STR_CD_CNT
+		,RRL_TOT_PROD_QTY_SUM
+		,RRL_TOT_QTY_SUM
+		,RRL_TOT_PRC_SUM
+		FROM ( SELECT COUNT(MAX(RRL_REQ_NO)) STR_CD_CNT
+		FROM TED_PO_RRL_PROD M1
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		GROUP BY M1.RRL_REQ_NO
+		) T0
+		,(SELECT COUNT(MAX(PROD_CD)) PROD_CD_SUM
+		FROM TED_PO_RRL_PROD M1
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		GROUP BY M1.PROD_CD
+		) T1
+		,( SELECT
+		SUM(RRL_QTY) RRL_TOT_QTY_SUM
+		,SUM(STD_SALE_PRC*RRL_QTY) RRL_TOT_PRC_SUM
+		FROM TED_PO_RRL_PROD M1
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		) T2
+	</select>
+
+	<!--반품 합계정보 조회 마스터 테이블 기준 -->
+	<select id="EDI_RETURN_PROD_SELECT_01_02" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdSumMap">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_01_02*/
+		SELECT COUNT(STR_CD) AS STR_CD_CNT
+		,NVL(MAX(M2.PROD_CD_SUM),0) AS RRL_TOT_PROD_QTY_SUM
+		,NVL(SUM(RRL_TOT_QTY),0) AS RRL_TOT_QTY_SUM
+		,NVL(SUM(RRL_TOT_PRC),0) AS RRL_TOT_PRC_SUM
+		FROM TED_PO_RRL_MST M1
+		,( SELECT COUNT(MAX(PROD_CD)) PROD_CD_SUM
+		FROM TED_PO_RRL_PROD
+		WHERE VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND STR_CD = #strCd#
+		</isNotEmpty>
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		GROUP BY PROD_CD) M2
+		WHERE M1.VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND M1.STR_CD = #strCd#
+		</isNotEmpty>
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</select>
+	
+	<!--반품 합계정보 조회 마스터 테이블 기준 -->
+	<select id="EDI_RETURN_PROD_SELECT_01_03" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdSumMap">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_01_03*/
+		SELECT COUNT(M1.STR_CD) AS STR_CD_CNT
+		<!-- ,NVL(MAX(M2.PROD_CD_SUM),0) AS RRL_TOT_PROD_QTY_SUM -->
+		,'1' AS RRL_TOT_PROD_QTY_SUM 
+		,NVL(SUM(M3.RRL_QTY),0) AS RRL_TOT_QTY_SUM
+		,NVL(SUM(M1.SALE_PRC * RRL_QTY),0) AS RRL_TOT_PRC_SUM
+		FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS M1
+            LEFT OUTER JOIN TED_PO_RRL_PROD M3
+            ON M1.PROD_CD = M3.PROD_CD
+            AND M1.VEN_CD = M3.VEN_CD
+            AND M1.STR_CD = M3.STR_CD
+            AND ( M3.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') )
+            <!-- ,( SELECT COUNT(MAX(P2.PROD_CD)) PROD_CD_SUM
+            FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS P2 
+            LEFT OUTER JOIN TED_PO_RRL_PROD P1
+                ON P2.PROD_CD = P1.PROD_CD
+                AND P2.VEN_CD = P1.VEN_CD
+                AND P2.STR_CD = P1.STR_CD
+                AND P1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+            WHERE P2.VEN_CD = #venCd#
+            AND P2.PROD_CD = #prodCd#
+            <![CDATA[
+            AND  CURRENT_JEGO_QTY_FNC@DL_MD_MARTNIS('0', P2.STR_CD, P2.PROD_CD, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')) <> '0'
+            ]]>
+            GROUP BY P2.PROD_CD) M2  -->
+		WHERE M1.VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND M1.STR_CD = #strCd#
+		</isNotEmpty>
+        AND M1.PROD_CD = #prodCd#
+        <![CDATA[
+		AND CURRENT_JEGO_QTY_FNC@DL_MD_MARTNIS('0', M1.STR_CD, M1.PROD_CD, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')) <> '0'
+		]]>
+	</select>
+
+	<!--반품 임시저장 목록 조회 -->
+	<select id="EDI_RETURN_PROD_SELECT_02" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdListMap2">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_02*/
+		SELECT M1.RRL_REQ_NO
+		,M1.RRL_DY
+		,M1.PROD_CD
+		,M1.SRCMK_CD
+		,M1.PROD_NM
+		,M1.VEN_CD
+		,M1.STR_CD
+		,S1.STR_NM
+		,M1.ORD_IPSU
+		,M1.ORD_UNIT
+		,M1.STD_SALE_PRC
+		,M1.STD_BUY_PRC
+		,M1.RRL_QTY
+		,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+		,M1.REG_STS_CD
+		,S2.CD_NM REG_STS_CD_NM
+		,S2.CD_DESC REG_STS_CD_DETAIL
+		,NVL(M1.RRL_STK_QTY, 0) AS RRL_STK_QTY
+		,CURRENT_JEGO_QTY_FNC@DL_MD_MARTNIS('0', M1.STR_CD, M1.PROD_CD, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')) AS RRL_STK_QTY2
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		LEFT OUTER JOIN TED_CODE S2
+		ON S2.MAJOR_CD = 'WPO09'
+		AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE M1.VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isEqual property="regStsfg" compareValue="4">
+			AND M1.REG_STS_CD IN('0','9')
+		</isEqual>
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		ORDER BY S1.STR_NM, M1.PROD_CD
+	</select>
+
+	<!--반품 임시저장 목록 조회 -->
+	<select id="EDI_RETURN_PROD_SELECT_02_02" parameterClass="searchWebOrder" 
+		resultMap="ediRtnProdListMap2">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_02_02*/
+		SELECT M1.RRL_REQ_NO
+		,M1.RRL_DY
+		,M2.PROD_CD
+		,M2.SRCMK_CD
+		,M2.PROD_NM
+		,M2.VEN_CD
+		,M2.STR_CD
+		,S1.STR_NM
+		,M2.ORD_IPSU
+		,M1.ORD_UNIT
+		,M2.SALE_PRC AS STD_SALE_PRC
+		,M2.BUY_PRC AS STD_BUY_PRC
+		,NVL(M1.RRL_QTY, 0) AS RRL_QTY
+		,NVL((M2.SALE_PRC * RRL_QTY), 0) AS STD_PROD_PRC
+		,M1.REG_STS_CD
+		,NVL(S2.CD_NM, '반품가능') AS REG_STS_CD_NM
+		,S2.CD_DESC REG_STS_CD_DETAIL
+		,NVL(M1.RRL_STK_QTY, 0) AS RRL_STK_QTY
+		,CURRENT_JEGO_QTY_FNC@DL_MD_MARTNIS('0', M2.STR_CD, M2.PROD_CD, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')) AS RRL_STK_QTY2
+		FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS M2
+		LEFT OUTER JOIN TED_PO_RRL_PROD M1
+		ON M2.PROD_CD = M1.PROD_CD
+		AND M2.VEN_CD = M1.VEN_CD
+		AND M2.STR_CD = M1.STR_CD
+		<![CDATA[
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		]]>
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M2.STR_CD = S1.STR_CD
+		LEFT OUTER JOIN TED_CODE S2
+		ON S2.MAJOR_CD = 'WPO09'
+		AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE M2.VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND M2.STR_CD = #strCd#
+		</isNotEmpty>
+		AND M2.PROD_CD = #prodCd#
+		<isEqual property="regStsfg" compareValue="4">
+			AND M1.REG_STS_CD IN('0','9')
+		</isEqual>
+		<!-- AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') -->
+		<![CDATA[
+		AND  CURRENT_JEGO_QTY_FNC@DL_MD_MARTNIS('0', M2.STR_CD, M2.PROD_CD, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')) <> '0'
+		]]>
+		ORDER BY S1.STR_CD
+	</select>
+
+	<!--반품 임시저장 목록 조회 -->
+	<select id="EDI_RETURN_PROD_SELECT_02_SEND" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdListMap">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_02_SEND*/
+		SELECT M1.RRL_REQ_NO
+		,M1.RRL_DY
+		,M1.PROD_CD
+		,M1.SRCMK_CD
+		,M1.PROD_NM
+		,M1.VEN_CD
+		,M1.STR_CD
+		,S1.STR_NM
+		,M1.ORD_IPSU
+		,M1.ORD_UNIT
+		,M1.STD_SALE_PRC
+		,M1.STD_BUY_PRC
+		,M1.RRL_QTY
+		,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+		,M1.REG_STS_CD
+		,S2.CD_NM REG_STS_CD_NM
+		,S2.CD_DESC REG_STS_CD_DETAIL
+		,CURRENT_JEGO_QTY_FNC@DL_MD_MARTNIS('0', M1.STR_CD, M1.PROD_CD, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')) AS RRL_STK_QTY
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		LEFT OUTER JOIN TED_CODE S2
+		ON S2.MAJOR_CD = 'WPO09'
+		AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE M1.VEN_CD = #venCd#
+		<isNotEmpty property="strCd">
+			AND M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isEqual property="regStsfg" compareValue="4">
+			AND M1.REG_STS_CD IN('0','9')
+		</isEqual>
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		ORDER BY S1.STR_NM, M1.PROD_CD
+	</select>
+
+	<!--반품 임시저장 목록 조회(합계포함 -->
+	<select id="EDI_RETURN_PROD_SELECT_03" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdListSumMap">
+		/*PEDMWEB0005.EDI_RETURN_PROD_SELECT_03*/
+		SELECT COUNT(STR_CD) AS STR_CD_CNT
+		,NVL(SUM(RRL_TOT_PROD_QTY),0) AS RRL_TOT_PROD_QTY_SUM
+		,NVL(SUM(RRL_TOT_QTY),0) AS RRL_TOT_QTY_SUM
+		,NVL(SUM(RRL_TOT_PRC),0) AS RRL_TOT_PRC_SUM
+		,NULL AS RRL_REQ_NO
+		,NULL AS PROD_CD
+		,NULL AS SRCMK_CD
+		,NULL AS PROD_NM
+		,NULL AS STR_NM
+		,NULL AS ORD_IPSU
+		,NULL AS ORD_UNIT
+		,NULL AS STD_SALE_PRC
+		,NULL AS STD_BUY_PRC
+		,NULL AS RRL_QTY
+		,NULL AS STD_PROD_PRC
+		,NULL AS REG_STS_CD
+		,NULL AS REG_STS_CD_NM
+		FROM TED_PO_RRL_MST M1
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		UNION ALL
+		SELECT
+		NULL AS STR_CD_CNT
+		,NULL AS RRL_TOT_PROD_QTY_SUM
+		,NULL AS RRL_TOT_QTY_SUM
+		,NULL AS RRL_TOT_PRC_SUM
+		,M1.RRL_REQ_NO
+		,M1.PROD_CD
+		,M1.SRCMK_CD
+		,M1.PROD_NM
+		,S1.STR_NM
+		,M1.ORD_IPSU
+		,M1.ORD_UNIT
+		,M1.STD_SALE_PRC
+		,M1.STD_BUY_PRC
+		,M1.RRL_QTY
+		,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+		,M1.REG_STS_CD
+		,S2.CD_NM REG_STS_CD_NM
+		FROM TED_PO_RRL_PROD M1
+
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		LEFT OUTER JOIN TED_CODE S2
+		ON S2.MAJOR_CD = 'WPO02'
+		AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		ORDER BY STR_CD_CNT, STR_NM, PROD_CD
+	</select>
+
+
+	<!--반품 임시저장 삭제 -->
+	<delete id="EDI_RETURN_PROD_DELETE_01" parameterClass="ediRtnProd">
+		/*PEDMWEB0005.EDI_RETURN_PROD_DELETE_01*/
+		DELETE TED_PO_RRL_PROD
+		WHERE RRL_REQ_NO = #rrlReqNo#
+		AND PROD_CD = #prodCd#
+	</delete>
+
+	<!--반품목록을 이용한 마스터 전체 삭제 -->
+	<delete id="EDI_RETURN_PROD_DELETE_02" parameterClass="ediRtnProd">
+		/*PEDMWEB0005.EDI_RETURN_PROD_DELETE_02*/
+		DELETE TED_PO_RRL_MST
+		WHERE NOT EXISTS (
+		SELECT RRL_REQ_NO
+		FROM TED_PO_RRL_PROD
+		WHERE TED_PO_RRL_MST.RRL_REQ_NO = TED_PO_RRL_PROD.RRL_REQ_NO
+		AND TED_PO_RRL_PROD.RRL_REQ_NO
+		<iterate prepend="IN" property="rrlReqNos" open="(" close=")"
+			conjunction=",">
+			#rrlReqNos[]#
+		</iterate>
+		)
+		AND TED_PO_RRL_MST.RRL_REQ_NO
+		<iterate prepend="IN" property="rrlReqNos" open="(" close=")"
+			conjunction=",">
+			#rrlReqNos[]#
+		</iterate>
+	</delete>
+
+
+	<!-- 반품 MARTNIS 전송 SP MAP -->
+	<parameterMap id="procedureParametersReturnProdSend"
+		class="ediRtnProd">
+		<parameter property="rrlDy" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="strCd" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="prodCd" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="venCd" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="IN" />
+		<parameter property="rrlQtyNum" javaType="java.lang.Integer"
+			jdbcType="NUMBER" mode="IN" />
+
+		<parameter property="o_ret" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="OUT" />
+		<parameter property="o_proc_cmt" javaType="java.lang.String"
+			jdbcType="VARCHAR" mode="OUT" />
+	</parameterMap>
+
+	<!-- 반품 MARTNIS 전송 SP CALL -->
+	<procedure id="EID_RETURN_PROCEDURE_01" parameterMap="procedureParametersReturnProdSend">
+		{ CALL O_SPEC1_VEN_RTN_REG@DL_MD_MARTNIS(?,?,?,?,?, ?,?) }
+	</procedure>
+
+	<!-- 반품 MARTNIS 전송 결과 UPDATE -->
+	<update id="EDI_RETURN_PROD_UPDATE_01" parameterClass="ediRtnProd">
+		/*PEDMWEB0005.EDI_RETURN_PROD_UPDATE_01*/
+		UPDATE TED_PO_RRL_PROD SET
+		REG_STS_CD = #o_ret#
+		,RRL_STK_QTY = #rrlStkQty#
+		,MOD_ID = #workUser#
+		,MOD_DT = CURRENT_TIMESTAMP(0)
+		WHERE RRL_REQ_NO = #rrlReqNo#
+		AND PROD_CD = #prodCd#
+	</update>
+
+
+
+	<!-- 반품 MARTNIS 전송 결과 MASTER UPDATE -->
+	<update id="EDI_RETURN_PROD_UPDATE_02" parameterClass="searchWebOrder">
+		/*PEDMWEB0005.EDI_RETURN_PROD_UPDATE_02*/
+		UPDATE TED_PO_RRL_MST M1
+		SET RRL_PRGS_CD='10'
+		,MOD_ID =#venCd#
+		,MOD_DT = CURRENT_TIMESTAMP(0)
+		WHERE EXISTS (
+		SELECT 1
+		FROM TED_PO_RRL_PROD P1
+		WHERE P1.VEN_CD = #venCd#
+		AND P1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		AND P1.RRL_REQ_NO = M1.RRL_REQ_NO
+		)
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!--반품등록 전체 현황 -->
+
+	<!--반품 목록 조회 EDI_RETURN_SELECT_01 -->
+	<resultMap id="ediRtnListMap" class="ediRtnProd">
+		<result property="rrlReqNo" column="RRL_REQ_NO" />	<!-- 반품등록번호 -->
+		<result property="prodCd" column="PROD_CD" />	<!-- 상품코드 -->
+		<result property="srcmkCd" column="SRCMK_CD" />	<!-- 판매코드 -->
+		<result property="prodNm" column="PROD_NM" />	<!-- 상품명 -->
+		<result property="strCd" column="STR_CD" />	<!-- 점포코드 -->
+		<result property="strNm" column="STR_NM" />	<!-- 점포명 -->
+		<result property="prodStd" column="PROD_STD" />	<!-- 상품규격 -->
+		<result property="ordIpsu" column="ORD_IPSU" />	<!-- 반품입수 -->
+		<result property="ordUnit" column="ORD_UNIT" />	<!-- 단위 -->
+		<result property="stdSalePrc" column="STD_SALE_PRC" />	<!-- 매가-EDI -->
+		<result property="stdBuyPrc" column="STD_BUY_PRC" />	<!-- 원가-EID -->
+		<result property="rrlQty" column="RRL_QTY" />	<!-- 반품수량 -->
+		<result property="rrlStkQty" column="RRL_STK_QTY" />	<!-- 재고수량 -->
+		<result property="stdProdPrc" column="STD_PROD_PRC" />	<!-- 반품환산금액(수량*매가) -->
+		<result property="regStsCd" column="REG_STS_CD" />	<!-- 일괄등록상태코드 -->
+		<result property="regStsCdNm" column="REG_STS_CD_NM" />	<!-- 일괄등록상태명칭 -->
+		<result property="regStsCdDetail" column="REG_STS_CD_DETAIL" />	<!-- 일괄등록상태상세내용 -->
+	</resultMap>
+
+
+
+
+
+	<!--반품등록 전체 현황 -->
+
+	<!--반품 목록 조회 -->
+	<select id="EDI_RETURN_SELECT_01" parameterClass="searchWebOrder"
+		resultMap="ediRtnListMap">
+		/*PEDMWEB0005.EDI_RETURN_SELECT_01*/
+		SELECT *
+		FROM ( SELECT ROWNUM RNUM , A.* FROM (
+		SELECT M1.RRL_REQ_NO
+		,M1.PROD_CD
+		,M1.SRCMK_CD
+		,M1.PROD_NM
+		,M1.STR_CD
+		,S1.STR_NM
+		,M1.PROD_STD
+		,M1.ORD_IPSU
+		,M1.ORD_UNIT
+		,M1.STD_SALE_PRC
+		,M1.STD_BUY_PRC
+		,M1.RRL_QTY
+		,NVL(M1.RRL_STK_QTY, 0 ) AS RRL_STK_QTY
+		,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+		,M1.REG_STS_CD
+		,S2.CD_NM REG_STS_CD_NM
+		,S2.CD_DESC REG_STS_CD_DETAIL
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		LEFT OUTER JOIN TED_CODE S2
+		ON S2.MAJOR_CD = 'WPO09'
+		AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE M1.RRL_DY = #rrlDy#
+		AND M1.REG_STS_CD <![CDATA[<>]]>
+		'0'
+		<isNotEmpty property="venCd" prepend="AND">
+			M1.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="areaCd" prepend="AND">
+			S1.AREA_FG = #areaCd#
+		</isNotEmpty>
+		<isNotEmpty property="strCd" prepend="AND">
+			M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isNotEmpty property="prodCd" prepend="AND">
+			M1.PROD_CD = #prodCd#
+		</isNotEmpty>
+		<isEqual property="regStsfg" prepend="AND" compareValue="2">
+			M1.REG_STS_CD = '1'
+		</isEqual>
+		<isEqual property="regStsfg" prepend="AND" compareValue="3">
+			M1.REG_STS_CD <![CDATA[<>]]>
+			'1'
+		</isEqual>
+		ORDER BY S1.STR_NM, M1.PROD_CD) A) A
+		WHERE RNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+
+
+
+
+
+	<!--반품 합계정보 조회 -->
+	<select id="EDI_RETURN_SELECT_02" parameterClass="searchWebOrder"
+		resultMap="ediRtnProdSumMap">
+		/*PEDMWEB0005.EDI_RETURN_SELECT_02*/
+		SELECT STR_CD_CNT
+		,RRL_TOT_PROD_QTY_SUM
+		,NVL(RRL_TOT_QTY_SUM,'0') RRL_TOT_QTY_SUM
+		,NVL(RRL_TOT_PRC_SUM,'0') RRL_TOT_PRC_SUM
+		FROM ( SELECT COUNT(MAX(RRL_REQ_NO)) STR_CD_CNT
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE S1
+		ON M1.STR_CD = S1.STR_CD
+		WHERE M1.RRL_DY = #rrlDy#
+		AND M1.REG_STS_CD <![CDATA[<>]]>
+		'0'
+		<isNotEmpty property="venCd" prepend="AND">
+			M1.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="areaCd" prepend="AND">
+			S1.AREA_FG = #areaCd#
+		</isNotEmpty>
+		<isNotEmpty property="strCd" prepend="AND">
+			M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isNotEmpty property="prodCd" prepend="AND">
+			M1.PROD_CD =#prodCd#
+		</isNotEmpty>
+
+		<isEqual property="regStsfg" prepend="AND" compareValue="2">
+			M1.REG_STS_CD = '1'
+		</isEqual>
+		<isEqual property="regStsfg" prepend="AND" compareValue="3">
+			M1.REG_STS_CD <![CDATA[<>]]>
+			'1'
+		</isEqual>
+		GROUP BY M1.RRL_REQ_NO ) T1
+		,(SELECT COUNT(MAX(PROD_CD)) RRL_TOT_PROD_QTY_SUM
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		WHERE M1.RRL_DY = #rrlDy#
+		AND M1.REG_STS_CD <![CDATA[<>]]>
+		'0'
+		<isNotEmpty property="venCd" prepend="AND">
+			M1.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="areaCd" prepend="AND">
+			S1.AREA_FG = #areaCd#
+		</isNotEmpty>
+		<isNotEmpty property="strCd" prepend="AND">
+			M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isNotEmpty property="prodCd" prepend="AND">
+			M1.PROD_CD =#prodCd#
+		</isNotEmpty>
+
+		<isEqual property="regStsfg" prepend="AND" compareValue="2">
+			M1.REG_STS_CD = '1'
+		</isEqual>
+		<isEqual property="regStsfg" prepend="AND" compareValue="3">
+			M1.REG_STS_CD <![CDATA[<>]]>
+			'1'
+		</isEqual>
+		GROUP BY M1.PROD_CD ) T2
+		,(
+		SELECT SUM(RRL_QTY) RRL_TOT_QTY_SUM
+		,SUM(STD_SALE_PRC*RRL_QTY) RRL_TOT_PRC_SUM
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		WHERE M1.RRL_DY = #rrlDy#
+		AND M1.REG_STS_CD <![CDATA[<>]]>
+		'0'
+		<isNotEmpty property="venCd" prepend="AND">
+			M1.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="areaCd" prepend="AND">
+			S1.AREA_FG = #areaCd#
+		</isNotEmpty>
+		<isNotEmpty property="strCd" prepend="AND">
+			M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isNotEmpty property="prodCd" prepend="AND">
+			M1.PROD_CD =#prodCd#
+		</isNotEmpty>
+		<isEqual property="regStsfg" prepend="AND" compareValue="2">
+			M1.REG_STS_CD = '1'
+		</isEqual>
+		<isEqual property="regStsfg" prepend="AND" compareValue="3">
+			M1.REG_STS_CD <![CDATA[<>]]>
+			'1'
+		</isEqual>
+		) T3
+
+	</select>
+
+
+
+	<!--반품 합계정보 조회 -->
+	<!-- <select id="EDI_RETURN_SELECT_02" parameterClass="searchWebOrder" resultMap="ediRtnSumMap"> 
+		/*PEDMWEB0005.EDI_RETURN_SELECT_02*/ SELECT COUNT(STR_CD) AS STR_CD_CNT ,NVL(SUM(RRL_TOT_PROD_QTY),'0') 
+		AS RRL_TOT_PROD_QTY_SUM ,NVL(SUM(RRL_TOT_QTY),'0') AS RRL_TOT_QTY_SUM ,NVL(SUM(RRL_TOT_PRC),'0') 
+		AS RRL_TOT_PRC_SUM FROM TED_PO_RRL_MST M1 WHERE M1.RRL_DY = #rrlDy# <isNotEmpty 
+		property="strCd" prepend="AND" > M1.STR_CD = #strCd# </isNotEmpty> <isEqual 
+		property="regStsfg" prepend="AND" compareValue="1"> M1.REG_STS_CD IS NOT 
+		NULL </isEqual> <isEqual property="regStsfg" prepend="AND" compareValue="2"> 
+		M1.REG_STS_CD = '1' </isEqual> <isEqual property="regStsfg" prepend="AND" 
+		compareValue="3"> M1.REG_STS_CD <![CDATA[<>]]> '1' </isEqual> </select> -->
+
+
+
+
+	<!--반품 목록 조회 -->
+	<select id="EDI_RETURN_SELECT_03" parameterClass="searchWebOrder"
+		resultClass="int">
+		/*PEDMWEB0005.EDI_RETURN_SELECT_03*/
+		SELECT COUNT(*) FROM (
+		SELECT M1.RRL_REQ_NO
+		,M1.PROD_CD
+		,M1.SRCMK_CD
+		,M1.PROD_NM
+		,S1.STR_NM
+		,M1.ORD_IPSU
+		,M1.ORD_UNIT
+		,M1.STD_SALE_PRC
+		,M1.STD_BUY_PRC
+		,M1.RRL_QTY
+		,(M1.STD_SALE_PRC * RRL_QTY) AS STD_PROD_PRC
+		,M1.REG_STS_CD
+		,S2.CD_NM REG_STS_CD_NM
+		FROM TED_PO_RRL_PROD M1
+		LEFT OUTER JOIN STORE@dl_md_martnis S1
+		ON M1.STR_CD = S1.STR_CD
+		LEFT OUTER JOIN TED_CODE S2
+		ON S2.MAJOR_CD = 'WPO09'
+		AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE M1.RRL_DY = #rrlDy#
+		AND M1.REG_STS_CD <![CDATA[<>]]>
+		'0'
+		<isNotEmpty property="venCd" prepend="AND">
+			M1.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="areaCd" prepend="AND">
+			S1.AREA_FG = #areaCd#
+		</isNotEmpty>
+		<isNotEmpty property="strCd" prepend="AND">
+			M1.STR_CD = #strCd#
+		</isNotEmpty>
+		<isNotEmpty property="prodCd" prepend="AND">
+			M1.PROD_CD =#prodCd#
+		</isNotEmpty>
+		<isEqual property="regStsfg" prepend="AND" compareValue="2">
+			M1.REG_STS_CD = '1'
+		</isEqual>
+		<isEqual property="regStsfg" prepend="AND" compareValue="3">
+			M1.REG_STS_CD <![CDATA[<>]]>
+			'1'
+		</isEqual>
+		ORDER BY S1.STR_NM, M1.PROD_CD )
+	</select>
+
+
+
+
+
+
+	<select id="selectRtnPackListTotCnt" parameterClass="searchWebOrder"
+		resultClass="int">
+		/* PEDMWEB0005.selectRtnPackListTotCnt */
+		SELECT COUNT(*) FROM (
+		SELECT M1.*
+		, (SELECT AREA_FG FROM STORE@DL_MD_MARTNIS M2 WHERE M1.STR_CD = M2.STR_CD ) AS
+		AREA_FG
+		FROM TED_PO_RRL_PACK M1
+		WHERE M1.VEN_CD= #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		) T
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="areaCd" prepend="AND">
+				T.AREA_FG = #areaCd#
+			</isNotEmpty>
+			<isNotEmpty property="strCd" prepend="AND">
+				T.STR_CD = #strCd#
+			</isNotEmpty>
+			<isNotEmpty property="prodCd" prepend="AND">
+				T.PROD_CD like #prodCd#||'%'
+			</isNotEmpty>
+			<isNotEmpty property="packDivnCd" prepend="AND">
+				T.PACK_DIVN_CD = #packDivnCd#
+			</isNotEmpty>
+			<isEqual property="uploadGb" prepend="AND" compareValue="2">
+				T.REG_STS_CD = '00'
+			</isEqual>
+			<isEqual property="uploadGb" prepend="AND" compareValue="3">
+				(T.REG_STS_CD <![CDATA[<>]]>
+				'00' OR T.REG_STS_CD IS NULL)
+			</isEqual>
+		</dynamic>
+	</select>
+
+	<resultMap id="tedRtnPackListMap" class="ediRtnPack">
+		<result property="packDivnCd" column="PACK_DIVN_CD" /><!--파일구분코드 -->
+		<result property="prodCd" column="VEN_CD" /><!--상품코드 -->
+		<result property="rrlDy" column="RRL_DY" /><!--반품일자 -->
+		<result property="strCd" column="STR_CD" /><!--첨포코드 -->
+		<result property="strNm" column="STR_NM" /><!--점포명 -->
+		<result property="prodCd" column="PROD_CD" /><!--상품코드 -->
+		<result property="rrlReqNo" column="RRL_REQ_NO" /><!--반품등록번호 -->
+		<result property="packFileNm" column="PACK_FILE_NM" /><!--일괄파일등록명 -->
+		<result property="srcmkCd" column="SRCMK_CD" /><!--판매코드 -->
+		<result property="prodNm" column="PROD_NM" /><!--상품명 -->
+		<result property="prodStd" column="PROD_STD" /><!--상품규격 -->
+		<result property="ordIpsu" column="ORD_IPSU" /><!--반품입수 -->
+		<result property="ordUnit" column="ORD_UNIT" /><!--반품단위 -->
+		<result property="rrlQty" column="RRL_QTY" /><!--반품수량 -->
+		<result property="stdBuyPrc" column="STD_BUY_PRC" /><!--반품원가 -->
+		<result property="ordTotQtySum" column="ORD_TOT_QTY_SUM" /><!--반품총수량 -->
+		<result property="ordTotPrcSum" column="ORD_TOT_PRC_SUM" /><!--반품금액 -->
+		<result property="regStsCd" column="REG_STS_CD" /><!--등록상태코드 -->
+		<result property="fileGrpCd" column="FILE_GRP_CD" /><!--파일그룹코드 -->
+	</resultMap>
+
+	<select id="selectRtnPackList" parameterClass="searchWebOrder"
+		resultMap="tedRtnPackListMap">
+		/* PEDMWEB0005.selectRtnPackList */
+		SELECT *
+		FROM ( SELECT ROWNUM RNUM,A.* FROM (
+		SELECT M1.PACK_DIVN_CD AS PACK_DIVN_CD
+		, M1.VEN_CD AS VEN_CD
+		, M1.RRL_DY AS RRL_DY
+		, M1.STR_CD AS STR_CD
+		, (SELECT STR_NM FROM STORE@DL_MD_MARTNIS M2 WHERE M1.STR_CD = M2.STR_CD ) AS STR_NM
+		, M1.PROD_CD AS PROD_CD
+		, M1.RRL_REQ_NO AS RRL_REQ_NO
+		, M1.PACK_FILE_NM AS PACK_FILE_NM
+		, M1.SRCMK_CD AS SRCMK_CD
+		, M1.PROD_NM AS PROD_NM
+		, M1.PROD_STD AS PROD_STD
+		, M1.ORD_IPSU AS ORD_IPSU
+		, M1.ORD_UNIT AS ORD_UNIT
+		, M1.RRL_QTY AS RRL_QTY
+		, M1.STD_BUY_PRC AS STD_BUY_PRC
+		, M1.RRL_QTY AS ORD_TOT_QTY_SUM
+		,(M1.RRL_QTY*STD_BUY_PRC) AS ORD_TOT_PRC_SUM
+		, M1.REG_STS_CD AS REG_STS_CD
+		, LPAD(M1.FILE_GRP_CD, 2, '0') AS FILE_GRP_CD
+		, (SELECT AREA_FG FROM STORE@DL_MD_MARTNIS M3 WHERE M1.STR_CD = M3.STR_CD ) AS
+		AREA_FG
+		FROM TED_PO_RRL_PACK M1
+		LEFT OUTER JOIN TED_CODE C1 ON C1.MAJOR_CD='WPO03' AND M1.REG_STS_CD =
+		C1.MINOR_CD
+		WHERE M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		ORDER BY M1.PACK_DIVN_CD DESC, M1.STR_CD, M1.PROD_CD
+		) A
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="areaCd" prepend="AND">
+				A.AREA_FG = #areaCd#
+			</isNotEmpty>
+			<isNotEmpty property="strCd" prepend="AND">
+				A.STR_CD = #strCd#
+			</isNotEmpty>
+			<isNotEmpty property="prodCd" prepend="AND">
+				A.PROD_CD like #prodCd#||'%'
+			</isNotEmpty>
+			<isNotEmpty property="packDivnCd" prepend="AND">
+				A.PACK_DIVN_CD = #packDivnCd#
+			</isNotEmpty>
+			<isEqual property="uploadGb" prepend="AND" compareValue="2">
+				A.REG_STS_CD = '00'
+			</isEqual>
+			<isEqual property="uploadGb" prepend="AND" compareValue="3">
+				(A.REG_STS_CD <![CDATA[<>]]>
+				'00' OR A.REG_STS_CD IS NULL)
+			</isEqual>
+		</dynamic>
+		)A
+		WHERE RNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+
+	<resultMap id="tedRtnPackSumMap" class="ediRtnPack">
+		<result property="strCnt" column="STR_CNT" /><!--반품총수량합계 -->
+		<result property="prodCnt" column="PROD_CNT" /><!--반품총수량합계 -->
+		<result property="ordTotQtySum" column="ORD_TOT_QTY_SUM" /><!--반품총수량합계 -->
+		<result property="ordTotPrcSum" column="ORD_TOT_PRC_SUM" /><!--반품총금액합계 -->
+		<result property="ordTotAllQtySum" column="ORD_TOT_ALL_QTY_SUM" /><!--충수량EA합계 -->
+	</resultMap>
+
+	<select id="selectRtnPackCntSum" parameterClass="searchWebOrder"
+		resultMap="tedRtnPackSumMap">
+		/* PEDMWEB0005.selectRtnPackCntSum */
+		SELECT COUNT(DISTINCT(M1.STR_CD)) AS STR_CNT
+		,COUNT(DISTINCT(M1.PROD_CD)) AS PROD_CNT
+		,SUM(M1.RRL_QTY) AS ORD_TOT_QTY_SUM
+		,SUM(M1.RRL_QTY) AS ORD_TOT_ALL_QTY_SUM
+		,SUM(M1.RRL_QTY*STD_BUY_PRC) AS ORD_TOT_PRC_SUM
+		FROM TED_PO_RRL_PACK M1
+		WHERE M1.VEN_CD= #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	</select>
+
+	<select id="selectNewRtnPackDivnCd" resultClass="java.lang.String">
+		/*
+		PEDMWEB0005.selectNewRtnPackDivnCd */
+		SELECT
+		TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_RTN_PACK_SEQ.NEXTVAL,6,'0') FROM
+		DUAL
+	</select>
+
+	<select id="selectNewRtnFileGrpCd" resultClass="java.lang.String">
+		/*
+		PEDMWEB0005.selectNewRtnFileGrpCd */
+		SELECT NVL(MAX(TO_NUMBER(FILE_GRP_CD)),0) + 1 AS FILE_GRP_CD
+		FROM TED_PO_RRL_PACK
+		WHERE VEN_CD= #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	</select>
+
+	<insert id="insertRtnPackInfo" parameterClass="ediRtnPack">
+		/*
+		PEDMWEB0005.insertRtnPackInfo */
+		INSERT INTO TED_PO_RRL_PACK
+		(
+		PACK_DIVN_CD
+		, VEN_CD
+		, RRL_DY
+		, STR_CD
+		, PROD_CD
+		, PACK_FILE_NM
+		, RRL_QTY
+		, FILE_GRP_CD
+		, REG_ID
+		, REG_DT
+		, MOD_ID
+		, MOD_DT
+		) VALUES (
+		#packDivnCd#
+		, #venCd#
+		, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		, #strCd#
+		, #prodCd#
+		, #packFileNm#
+		, #rrlQty#
+		, #fileGrpCd#
+		, #regId#
+		, CURRENT_TIMESTAMP(0)
+		, #modId#
+		, CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+
+	<update id="updateRtnPackInfo" parameterClass="ediRtnPack">
+		/* PEDMWEB0005.updateRtnPackInfo */
+		UPDATE TED_PO_RRL_PACK M1
+		SET ( SRCMK_CD
+		, PROD_NM
+		, SHORT_NM
+		, PROD_STD
+		, ORD_IPSU
+		, ORD_UNIT
+		, STD_SALE_PRC
+		, STD_BUY_PRC
+		, REG_STS_CD ) =
+		( SELECT M2.SRCMK_CD AS SRCMK_CD
+		,M2.PROD_NM AS PROD_NM
+		,NULL AS SHORT_NM
+		,M2.PROD_STD AS PROD_STD
+		,M2.ORD_IPSU AS ORD_IPSU
+		,NULL AS ORD_UNIT
+		,M2.SALE_PRC AS STD_SALE_PRC
+		,M2.BUY_PRC AS STD_BUY_PRC
+		,'00' AS REG_STS_CD
+		FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS M2
+		WHERE M1.VEN_CD = M2.VEN_CD
+		AND M1.PROD_CD = M2.PROD_CD
+		AND M1.STR_CD = M2.STR_CD
+		)
+		WHERE M1.PACK_DIVN_CD = #packDivnCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</update>
+
+	<update id="updateRtnPackState" parameterClass="java.lang.String">
+		/* PEDMWEB0005.updateRtnPackState */
+		UPDATE TED_PO_RRL_PACK
+		SET REG_STS_CD = '01'
+		WHERE PACK_DIVN_CD = #packDivnCd#
+		AND REG_STS_CD IS NULL
+	</update>
+
+	<delete id="deleteExcelRtnInfo" parameterClass="ediRtnPack">
+		/* PEDMWEB0005.deleteExcelRtnInfo */
+		DELETE FROM TED_PO_RRL_PACK
+		WHERE PACK_DIVN_CD = #packDivnCd#
+	</delete>
+
+	<select id="selectNewRtnReqNo" resultClass="java.lang.String">
+		/*
+		PEDMWEB0005.selectNewRtnReqNo */
+		SELECT
+		TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_RRL_MST_SEQ.NEXTVAL,6,'0') FROM
+		DUAL
+	</select>
+
+	<select id="selectRtnReqNo" parameterClass="EdiRtnProd"
+		resultClass="java.lang.String">
+		/* PEDMWEB0005.selectRtnReqNo */
+		SELECT RRL_REQ_NO
+		FROM TED_PO_RRL_MST
+		WHERE VEN_CD = #venCd#
+		AND STR_CD = #strCd#
+		AND RRL_DY = #rrlDy#
+	</select>
+
+
+
+
+	<select id="selectRtnExcelErrorCnt" resultClass="integer"
+		parameterClass="ediRtnPack">
+		/* PEDMWEB0005.selectRtnExcelErrorCnt */
+		SELECT COUNT(*)
+		FROM TED_PO_RRL_PACK
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		AND REG_STS_CD <![CDATA[<>]]>
+		'00'
+	</select>
+
+	<select id="selectRtnExcelDuplCnt" resultClass="integer"
+		parameterClass="ediRtnPack">
+		/* PEDMWEB0005.selectRtnExcelDuplCnt */
+		SELECT COUNT(*) FROM (
+		SELECT VEN_CD, RRL_DY, STR_CD,PROD_CD
+		FROM TED_PO_RRL_PACK
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		GROUP BY VEN_CD, RRL_DY, STR_CD,PROD_CD
+		HAVING COUNT(*) > 1
+		)
+	</select>
+
+	<select id="selectRtnDuplCnt" resultClass="integer"
+		parameterClass="ediRtnPack">
+		/* PEDMWEB0005.selectRtnDuplCnt */
+		SELECT COUNT(*)
+		FROM TED_PO_RRL_PROD M1
+		WHERE NOT EXISTS ( SELECT *
+		FROM TED_PO_RRL_PACK M2
+		WHERE M2.VEN_CD = #venCd#
+		AND M2.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		)
+		AND M1.VEN_CD = #venCd#
+		AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	</select>
+
+	<resultMap id="rrlPackStrListMap" class="ediRtnPack">
+		<result property="strCd" column="STR_CD" /><!--점포 코드 -->
+		<result property="rrlDy" column="RRL_DY" /><!--반품일자 -->
+		<result property="venCd" column="VEN_CD" /><!--협력업체코드 -->
+	</resultMap>
+
+
+	<select id="selectRtnPackStrInfo" parameterClass="ediRtnPack"
+		resultMap="rrlPackStrListMap">
+		/* PEDMWEB0005.selectRtnPackStrInfo */
+		SELECT STR_CD, RRL_DY, VEN_CD
+		FROM TED_PO_RRL_PACK
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		GROUP BY STR_CD, RRL_DY, VEN_CD
+	</select>
+
+	<resultMap id="rrlPackListMap" class="ediRtnPack">
+		<result property="packDivnCd" column="PACK_DIVN_CD" /><!--파일구분코드 -->
+		<result property="venCd" column="VEN_CD" /><!--상품코드 -->
+		<result property="rrlDy" column="RRL_DY" /><!--반품일자 -->
+		<result property="strCd" column="STR_CD" /><!--첨포코드 -->
+		<result property="prodCd" column="PROD_CD" /><!--상품코드 -->
+		<result property="rrlReqNo" column="RRL_REQ_NO" /><!--반품등록번호 -->
+		<result property="packFileNm" column="PACK_FILE_NM" /><!--일괄파일등록명 -->
+		<result property="srcmkCd" column="SRCMK_CD" /><!--판매코드 -->
+		<result property="prodNm" column="PROD_NM" /><!--상품명 -->
+		<result property="prodStd" column="PROD_STD" /><!--상품규격 -->
+		<result property="ordIpsu" column="ORD_IPSU" /><!--반품입수 -->
+		<result property="ordUnit" column="ORD_UNIT" /><!--반품단위 -->
+		<result property="stdBuyPrc" column="STD_BUY_PRC" /><!--반품원가 -->
+		<result property="rrlQty" column="RRL_QTY" /><!--반품수량 -->
+		<result property="regStsCd" column="REG_STS_CD" /><!--등록상태코드 -->
+		<result property="fileGrpCd" column="FILE_GRP_CD" /><!--파일그룹코드 -->
+	</resultMap>
+
+	<select id="selectRtnPackInfoList" parameterClass="ediRtnPack"
+		resultMap="rrlPackListMap">
+		/* PEDMWEB0005.selectRtnPackInfoList */
+		SELECT PACK_DIVN_CD
+		,VEN_CD
+		,RRL_DY
+		,STR_CD
+		,PROD_CD
+		,RRL_REQ_NO
+		,PACK_FILE_NM
+		,SRCMK_CD
+		,PROD_NM
+		,PROD_STD
+		,ORD_IPSU
+		,ORD_UNIT
+		,STD_BUY_PRC
+		,RRL_QTY
+		,REG_STS_CD
+		,FILE_GRP_CD
+		FROM TED_PO_RRL_PACK
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	</select>
+
+	<insert id="insertRtnExcelProdInfo" parameterClass="ediRtnPack">
+		/* PEDMWEB0005.insertRtnExcelProdInfo */
+		INSERT INTO TED_PO_RRL_PROD
+		(
+		RRL_REQ_NO
+		,PROD_CD, RRL_DY, STR_CD, VEN_CD
+		,SRCMK_CD, PROD_NM, SHORT_NM, L4_CD, PROD_STD
+		,ORD_IPSU, ORD_UNIT, STD_SALE_PRC, STD_BUY_PRC
+		,RRL_QTY, RRL_CFM_QTY, RRL_STK_QTY, REG_STS_CD, MD_MOD_CD
+		,REG_ID, REG_DT, MOD_ID, MOD_DT
+		)
+		SELECT NVL(M2.RRL_REQ_NO,
+		TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_RTN_PACK_SEQ.NEXTVAL,6,'0')) AS
+		RRL_REQ_NO
+		,M1.PROD_CD, M1.RRL_DY, M1.STR_CD, M1.VEN_CD
+		,M1.SRCMK_CD, M1.PROD_NM, M1.SHORT_NM, '', M1.PROD_STD
+		,M1.ORD_IPSU, M1.ORD_UNIT, M1.STD_SALE_PRC, M1.STD_BUY_PRC
+		,#rrlQty#, #rrlQty#, '0', '0', '00'
+		,#venCd#, CURRENT_TIMESTAMP(0), #venCd#, CURRENT_TIMESTAMP(0)
+		FROM TED_PO_RRL_PACK M1
+		LEFT OUTER JOIN ( SELECT RRL_REQ_NO, VEN_CD, RRL_DY, STR_CD
+		FROM TED_PO_RRL_PROD
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = #rrlDy#
+		AND STR_CD = #strCd#
+		GROUP BY RRL_REQ_NO, VEN_CD, RRL_DY, STR_CD
+		) M2
+		ON M1.STR_CD = M2.STR_CD
+		AND M1.RRL_DY = M2.RRL_DY
+		AND M1.VEN_CD = M2.VEN_CD
+		WHERE M1.STR_CD = #strCd#
+		AND M1.VEN_CD = #venCd#
+		AND M1.PROD_CD = #prodCd#
+		AND M1.RRL_DY = #rrlDy#
+	</insert>
+
+	<insert id="insertRtnExcelMstInfo" parameterClass="ediRtnProd">
+		/* PEDMWEB0005.insertRtnExcelMstInfo */
+		INSERT INTO TED_PO_RRL_MST (
+		RRL_REQ_NO
+		,VEN_CD
+		,VEN_NM
+		,STR_CD
+		,RRL_DY
+		,RRL_VSEQ
+		,RRL_TOT_QTY
+		,RRL_TOT_PRC
+		,RRL_TOT_STK_QTY
+		,RRL_PRGS_CD
+		,PROC_EMP_NO
+		,REG_ID
+		,REG_DT
+		,MOD_ID
+		,MOD_DT
+		)
+		SELECT M1.RRL_REQ_NO
+		,M1.VEN_CD
+		,(SELECT VEN_NM
+		FROM TED_VENDOR
+		WHERE VEN_CD = #venCd#
+		AND STR_CD = M1.STR_CD) AS VEN_NM
+		,M1.STR_CD
+		,M1.RRL_DY
+		,'1' RRL_VSEQ
+		,NULL RRL_TOT_QTY
+		,NULL RRL_TOT_PRC
+		,NULL RRL_TOT_STK_QTY
+		,'02' RRL_PRGS_CD
+		,NULL PROC_EMP_NO
+		,#venCd# REG_ID
+		,CURRENT_TIMESTAMP(0) REG_DT
+		,#venCd# MOD_ID
+		,CURRENT_TIMESTAMP(0) MOD_DT
+		FROM TED_PO_RRL_PROD M1
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = #rrlDy#
+		AND NOT EXISTS ( SELECT RRL_REQ_NO
+		FROM TED_PO_RRL_MST M2
+		WHERE M1.RRL_REQ_NO = M2.RRL_REQ_NO
+		)
+		GROUP BY RRL_REQ_NO, VEN_CD, RRL_DY, STR_CD
+	</insert>
+
+	<update id="updateExcelRtnMstSum" parameterClass="ediRtnProd">
+		/*
+		PEDMWEB0005.updateExcelRtnMstSum */
+		UPDATE  TED_PO_RRL_MST M2
+		 	  SET ( 				 
+		            RRL_TOT_QTY				    
+		           ,RRL_TOT_PRC
+		           ,SMS_FG
+		           ,MOD_ID
+		           ,MOD_DT	)	=		
+	           	  (SELECT  SUM(M1.RRL_QTY)                AS RRL_TOT_QTY           
+	                      ,SUM(M1.RRL_QTY * M1.STD_BUY_PRC) RRL_TOT_PRC
+	                      ,'N'
+	                      ,#venCd#
+	                      ,CURRENT_TIMESTAMP(0)
+	                 FROM TED_PO_RRL_PROD M1
+	                WHERE M1.RRL_REQ_NO = M2.RRL_REQ_NO
+	                  AND M1.RRL_DY = #rrlDy#
+	                  AND M1.VEN_CD = #venCd#)
+	            WHERE RRL_DY = #rrlDy#
+	              AND VEN_CD = #venCd#
+	</update>
+
+	<delete id="deleteRtnPackInfo" parameterClass="ediRtnPack">
+		/* PEDMWEB0005.deleteRtnPackInfo */
+		DELETE FROM TED_PO_RRL_PACK
+		WHERE VEN_CD = #venCd#
+		AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</delete>
+</sqlMap>

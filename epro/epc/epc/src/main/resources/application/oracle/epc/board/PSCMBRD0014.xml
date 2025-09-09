@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmbrd0014">
+
+	<typeAlias alias="pscmbrd0014VO" type="com.lottemart.epc.board.model.PSCMBRD0014VO" />
+	<typeAlias alias="pscmbrd0014TemVO" type="com.lottemart.epc.board.model.PSCMBRD0014TemVO" />
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+
+<!-- 컬럼 카운트 -->
+	<select id="selectQnaTotalCnt" resultClass="java.lang.Integer">
+	/* pscmbrd0014.selectQnaTotalCnt */
+	SELECT COUNT(1) AS  COUNT 
+	  FROM TBO_PROD_QNA TPQ,
+	       TPR_PRODUCT TP,
+	       (SELECT MINOR_CD,CD_NM FROM TET_CODE WHERE MAJOR_CD= 'QA030') TC
+	 WHERE TPQ.PROD_CD = TP.PROD_CD
+	   AND TC.MINOR_CD = TPQ.QST_TYPE_CD
+	   AND TO_CHAR(TPQ.REG_DATE,'YYYYMMDD') BETWEEN #startDate# AND #endDate#  /* 등록일 검색*/
+	   AND ( 0 ,  TP.VENDOR_ID ) IN 
+	<iterate property="vendorId" open="(" close=")" conjunction=",">
+		/* 협력사 검색*/
+		( '0' , #vendorId[]# ) -- 협력업체코드
+	</iterate>
+	<isNotEmpty property="prodSrchNm">
+		/* 상품명, 코드 검색*/
+		<isEqual property="prodSrch" compareValue="1">
+	   AND TP.PROD_NM LIKE '%'||#prodSrchNm#||'%'
+		</isEqual>
+		<isEqual property="prodSrch" compareValue="2">
+	   AND TPQ.PROD_CD LIKE '%'||#prodSrchNm#||'%'
+		</isEqual>
+	    <isEqual property="prodSrch" compareValue="3">
+	   AND TPQ.EC_MEMBER_ID = #prodSrchNm#
+	    </isEqual>
+	</isNotEmpty>
+	<isNotEmpty property="procSrchYn">
+		AND TPQ.PROC_YN = #procSrchYn#
+	</isNotEmpty>
+	<isNotEmpty property="qstTypeSrch" >
+		AND TPQ.QST_TYPE_CD = #qstTypeSrch#
+	</isNotEmpty>
+	</select>
+
+<!-- Q&A 검색 -->
+	<select id="selectQnaSearch" resultClass="pscmbrd0014VO">
+	<![CDATA[
+	/* pscmbrd0014.selectQnaSearch */
+	SELECT *
+	 FROM ( SELECT RANK()OVER(ORDER BY PROD_QNA_SEQ DESC) AS  num		/* 순번 */
+	             , TPQ.PROD_QNA_SEQ AS ProdQnaSeq 						/* 상품순번 */
+	             , TPQ.PROD_CD AS  prodCd 								/* 상품코드  */
+	             , TP.PROD_NM	AS prodNm								/* 상품명 */
+	             , TC.CD_NM AS  qstTypeNm								/* 문의유형 */
+	             , TPQ.QST_TYPE_CD AS qstTypeCd
+	             , SUBSTR(TPQ.TITLE, 1 ,20) AS title 					/* 제목 */
+	             , SUBSTR(TPQ.QST_CONTENT, 1, 20 )  AS qstContent 
+	             , DECODE(TPQ.PROC_YN,'Y','처리','N','미처리' ) AS  procYn  /* 처리여부 */
+	             , FN_MASKING_RTN(TPQ.REG_ID,'1') AS regId 				/* 작성자 */
+	             , CASE WHEN INSTR(TPQ.EC_MEMBER_ID, '@') > 0
+                             THEN FN_MASKING_RTN(TPQ.EC_MEMBER_ID, '3')
+                             ELSE FN_MASKING_RTN(TPQ.EC_MEMBER_ID, '1')
+                   END AS ecMemberId /* 회원ID */
+	             , FN_MASKING_RTN(TPQ.EC_MEMBER_NM, '8') AS ecMemberNm /* 회원명 */
+	             , TPQ.REG_DATE AS regDate 								/* 문의일시 */
+	             , TPQ.ANS_DATE AS ansDate
+	             , TPQ.ITEM_CD AS itemCd
+	             , DECODE(TPQ.NPBL_YN,'Y','공개','N','미공개' ) AS npblYn
+	             , TP.MALL_DIVN_CD AS mallDivnCd
+	             , '답변' AS button
+	          FROM TBO_PROD_QNA TPQ
+	             , TPR_PRODUCT TP
+	             , (SELECT MINOR_CD,CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA030') TC
+	         WHERE TPQ.PROD_CD = TP.PROD_CD
+	           AND TC.MINOR_CD = TPQ.QST_TYPE_CD
+	           AND TO_CHAR(TPQ.REG_DATE,'YYYYMMDD') BETWEEN #startDate# AND #endDate# /* 등록일 검색*/
+	           AND ( 0 , TP.VENDOR_ID ) IN 
+				 ]]>
+			<iterate property="vendorId" open="(" close=")" conjunction=",">
+				/* 협력사 검색*/
+				( '0' , #vendorId[]# ) -- 협력업체코드
+			</iterate>
+			<isNotEmpty property="prodSrchNm">
+				/* 상품명, 코드 검색*/
+				<isEqual property="prodSrch" compareValue="1">
+	           AND TP.PROD_NM LIKE '%'||#prodSrchNm#||'%'
+				</isEqual>
+				<isEqual property="prodSrch" compareValue="2">
+	           AND TPQ.PROD_CD LIKE '%'||#prodSrchNm#||'%'
+				</isEqual>
+				<isEqual property="prodSrch" compareValue="3">
+	           AND TPQ.EC_MEMBER_ID = #prodSrchNm#
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="procSrchYn">
+	           AND TPQ.PROC_YN = #procSrchYn#
+			</isNotEmpty>
+			<isNotEmpty property="qstTypeSrch">
+	           AND TPQ.QST_TYPE_CD = #qstTypeSrch#
+			</isNotEmpty>
+		)
+		WHERE num BETWEEN #startRow# AND #endRow#
+	</select>
+
+	<!-- 팝업 상세 -->
+	<select id="selectQnaView"  resultClass="pscmbrd0014VO">
+	/* pscmbrd0014.selectQnaView */
+	SELECT TPQ.PROD_QNA_SEQ AS ProdQnaSeq 	/* 상품순번 */
+	     , TPQ.PROD_CD AS  prodCd 			/* 상품코드  */
+	     , TP.PROD_NM	AS prodNm			/*  상품명 */
+	     , TPQ.QST_TYPE_CD AS  qstTypeCd	/*  문의유형 */
+	     , TPQ.TITLE  AS title 				/* 제목 */	
+	     , TPQ.QST_CONTENT   AS qstContent 	/* 문의내용 */
+	     , TPQ.PROC_YN as  procYn 			/* 처리여부 */
+	     , TPQ.REG_ID AS regId 				/* 작성자 */
+	     , TPQ.REG_DATE AS regDate 			/* 문의일시 */
+	     , TPQ.ANS_CONTENT AS ansContent 
+	     , TPQ.ANS_DATE AS ansDate 
+	     , TC.CD_NM AS  qstTypeNm			/* 처리일시 */	
+	     , NVL(TPQ.LATEST_ORDER_ID, '미주문') AS order_id 
+	     , TPQ.EC_MEMBER_ID AS ecMemberId /* 회원ID */
+	     , TPQ.EC_MEMBER_NM AS ecMemberNm /* 회원명 */
+	  FROM TBO_PROD_QNA TPQ
+	     , TPR_PRODUCT TP
+	     , (SELECT MINOR_CD,CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA030') TC
+	 WHERE TPQ.PROD_CD = TP.PROD_CD
+	   AND TC.MINOR_CD = TPQ.QST_TYPE_CD
+	   AND TPQ.PROD_QNA_SEQ = #recommSeq#
+	</select>
+
+	<!-- 엑셀 다운 -->
+	<select id="selectPscmbrd0014Export" parameterClass="java.util.Map" resultClass="pscmbrd0014VO">
+	<![CDATA[
+	/* pscmbrd0014.selectPscmbrd0014Export */
+	SELECT RANK()OVER(ORDER BY PROD_QNA_SEQ DESC) AS  num	/* 순번 */
+	     , TPQ.PROD_QNA_SEQ AS ProdQnaSeq 					/* 상품순번 */
+	     , TPQ.PROD_CD AS  prodCd 							/* 상품코드  */
+	     , TP.PROD_NM AS prodNm								/*  상품명 */
+	     , TC.CD_NM AS  qstTypeNm								/*  문의유형 */
+	     , TPQ.QST_TYPE_CD AS qstTypeCd
+	     , SUBSTR(TPQ.TITLE, 1 ,20) AS title 					/* 제목 */	
+	     , SUBSTR(TPQ.QST_CONTENT, 1, 20 )  AS qstContent 
+	     , DECODE(TPQ.PROC_YN,'Y','처리','N','미처리' ) AS  procYn   /* 처리여부 */
+	     , TPQ.REG_ID AS regId 									/* 작성자 */
+	     , CASE WHEN INSTR(TPQ.EC_MEMBER_ID, '@') > 0
+                     THEN FN_MASKING_RTN(TPQ.EC_MEMBER_ID, '3')
+                     ELSE FN_MASKING_RTN(TPQ.EC_MEMBER_ID, '1')
+           END AS ecMemberId /* 회원ID */
+	     , FN_MASKING_RTN(TPQ.EC_MEMBER_NM, '8') AS ecMemberNm /* 회원명 */
+	     , TPQ.REG_DATE AS regDate 							/* 문의일시 */
+	     , TPQ.ANS_DATE AS ansDate
+	     , TPQ.ITEM_CD AS itemCd
+	     , DECODE(TPQ.NPBL_YN,'Y','공개','N','미공개' )	AS npblYn /* 처리일시 */
+	  FROM TBO_PROD_QNA TPQ
+	     , TPR_PRODUCT TP
+	     , (SELECT MINOR_CD,CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA030') TC
+	 WHERE TPQ.PROD_CD = TP.PROD_CD
+	   AND TC.MINOR_CD = TPQ.QST_TYPE_CD
+	   AND TO_CHAR(TPQ.REG_DATE,'YYYYMMDD') BETWEEN #startDate# AND #endDate# /* 등록일 검색*/
+	   AND ( 0 , TP.VENDOR_ID ) IN 
+	]]>
+	<iterate property="vendorId" open="(" close=")" conjunction=",">
+		/* 협력사 검색*/
+		( 0 , #vendorId[]# ) -- 협력업체코드
+	</iterate>
+	<isNotEmpty property="prodSrchNm">
+		/* 상품명, 코드 검색*/
+		<isEqual property="prodSrch" compareValue="1">
+	   AND TP.PROD_NM LIKE '%'||#prodSrchNm#||'%'
+		</isEqual>
+		<isEqual property="prodSrch" compareValue="2">
+	   AND TPQ.PROD_CD LIKE '%'||#prodSrchNm#||'%'
+		</isEqual>
+        <isEqual property="prodSrch" compareValue="3">
+	   AND TPQ.EC_MEMBER_ID = #prodSrchNm#
+        </isEqual>
+	</isNotEmpty>
+	<isNotEmpty property="procSrchYn">
+	   AND TPQ.PROC_YN = #procSrchYn#
+	</isNotEmpty>
+	<isNotEmpty property="qstTypeSrch" >
+	   AND TPQ.QST_TYPE_CD = #qstTypeSrch#
+	</isNotEmpty>
+	</select>
+
+	<!-- 답변 달기 -->
+	<update id="qnaAnsUpdate">
+	/* pscmbrd0014.qnaAnsUpdate  */
+	UPDATE TBO_PROD_QNA
+	   SET ANS_CONTENT = #ansContent#
+	     , ANS_DATE = CURRENT_TIMESTAMP(0)
+	     , PROC_YN = 'Y'
+	 WHERE PROD_QNA_SEQ=#prodQnaSeq# 
+	</update>
+
+<!-- 템플릿 저장 -->
+	<insert id="temAdd" >
+	/* pscmbrd0014.temAdd */
+	INSERT INTO TBO_PROD_QNA_TEMPLATE
+	( TEMPLATE_SEQ
+	, TEMPLATE_TITLE
+	, TEMPLATE_CONTENT
+	, REG_DATE
+	, REG_ID )
+	VALUES
+	( (SELECT NVL(MAX(TO_NUMBER(TEMPLATE_SEQ)),0)+1 FROM TBO_PROD_QNA_TEMPLATE)
+	, #templateTitle#
+	, #templateContent#
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+	</insert>
+
+	<!-- 템플릿 삭제 -->
+	<delete id="temDelete">
+	/* pscmbrd0014.temDelete */
+	 DELETE   FROM TBO_PROD_QNA_TEMPLATE 
+	 WHERE TEMPLATE_SEQ = #templateSeq#
+	</delete>
+
+	<!-- 콤보박스 목록 -->
+	<select id="temComList"  resultClass="pscmbrd0014TemVO">
+	/* pscmbrd0014.temComList */
+	SELECT TEMPLATE_SEQ AS templateSeq
+		,SUBSTR(TEMPLATE_TITLE,1,20)  AS templateTitle
+		,TEMPLATE_CONTENT AS templateContent
+	 FROM TBO_PROD_QNA_TEMPLATE
+	</select>
+
+	<!-- 콤보박스 목록 -->
+	<select id="selectComBox"  resultClass="PSCMBRD0014TemVO" >
+	/* pscmbrd0014.selectComBox */
+	SELECT TEMPLATE_SEQ AS templateSeq
+		,SUBSTR(TEMPLATE_TITLE,1,10)  AS templateTitle
+		,TEMPLATE_CONTENT AS templateContent
+	 FROM TBO_PROD_QNA_TEMPLATE
+	 WHERE TEMPLATE_SEQ = #temList#
+	</select>
+
+</sqlMap>

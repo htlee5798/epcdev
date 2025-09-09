@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0040">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	<!-- 세금계산서 정보 -->
+	<typeAlias alias="NEDMPAY0040VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0040VO" />
+	<resultMap id="NEDMPAY0040VOMap" class="NEDMPAY0040VO">
+		<result property="strNm" 			column="STR_NM" />
+		<result property="taxFg" 			column="TAX_FG" />
+		<result property="buyAmt" 			column="BUY_AMT" />
+		<result property="vat" 			column="VAT" />
+		<result property="total" 			column="TOTAL" />
+	</resultMap>
+	
+	<select id="TSC_CRED_AGG-SELECT01" resultMap="NEDMPAY0040VOMap" parameterClass="NEDMPAY0040VO">
+		/* NEDMPAY0040.TSC_CRED_AGG-SELECT01 */
+		<![CDATA[
+		SELECT 	B.STR_NM
+			,	DECODE(TAX_FG,'1','과세','2','영세','0','면세') AS TAX_FG
+			,	SUM(BUY_AMT) AS BUY_AMT
+			,	SUM(VAT) AS VAT
+			,	SUM(BUY_AMT + VAT) AS TOTAL
+		FROM  	TPC_CRED_BUY_AGG A INNER JOIN STORE B ON A.STR_CD = B.STR_CD
+		WHERE 	A.BUY_DY BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')
+			AND BUY_AMT <> 0
+			]]>
+			
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+						
+			<isNotEmpty prepend="AND" property="searchEntpCd">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchStoreAl">
+				<iterate prepend="B.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchTax" prepend="AND">				
+				TAX_FG = #searchTax#				
+			</isNotEmpty>
+			
+		<![CDATA[
+		GROUP BY B.STR_NM, TAX_FG
+		ORDER BY STR_NM, TAX_FG
+		]]>
+	</select>
+
+</sqlMap>

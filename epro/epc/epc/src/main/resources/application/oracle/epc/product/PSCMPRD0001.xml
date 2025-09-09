@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmprd0001">
+
+    <typeAlias alias="pscmprd0001VO" type="com.lottemart.epc.product.model.PSCMPRD0001VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectProdDivNCdList" resultClass="dataMap">
+    /* pscmprd0001.selectProdDivNCdList */
+    SELECT MINOR_CD AS CODE_CD
+         , CD_NM AS CODE_NM
+      FROM TET_CODE
+     WHERE MAJOR_CD ='PRD30'  -- 상품구분코드 (01:온오프겸용, 02:온라인전용, 03:소셜)
+       AND USE_YN = 'Y'
+     ORDER BY ORDER_SEQ
+    </select>
+
+    <!-- 2015.10.30 by kmlee 카테고리 체계 변경으로  L4->L3로 변경 -->
+    <select id="selectPrdTotalCnt" resultClass="java.lang.Integer">
+    /* pscmprd0001.selectPrdTotalCnt */
+    SELECT COUNT(1) count
+      FROM TPR_PRODUCT PR 
+         LEFT OUTER JOIN V_CA_MD_CATEGORY MC ON PR.CAT_CD = L3_CD
+       WHERE 1=1
+       AND PR.REP_PROD_CD_YN = 'N' /* 온라인대표상품 코드 제외 2016-03-02 */
+       AND (0,  PR.VENDOR_ID) <iterate prepend="IN" property="asVendorId" open="(" close=")" conjunction=","> (0, #asVendorId[]#) </iterate>
+       <isNotEmpty property="prodInVal">
+       AND PR.PROD_CD <iterate prepend="IN" property="prodInVal" open="(" close=")" conjunction=","> #prodInVal[]# </iterate>
+       </isNotEmpty>
+       <isEmpty property="prodInVal">
+       <isNotEmpty property="asCmbnMallSellPsbtYn">
+       AND PR.CMBN_MALL_SELL_PSBT_YN = #asCmbnMallSellPsbtYn# </isNotEmpty>
+       <isNotEmpty property="asAprvYn">
+       AND PR.APRV_YN = #asAprvYn# </isNotEmpty>
+       <isNotEmpty property="asDispYn">
+       AND PR.DISP_YN = #asDispYn# </isNotEmpty>
+       <isNotEmpty property="asProdDivnCd">
+       AND PR.PROD_DIVN_CD = #asProdDivnCd# </isNotEmpty>
+       <isNotEmpty property="asCategoryId">
+       AND PR.CATEGORY_ID = #asCategoryId# </isNotEmpty>
+       <isNotEmpty property="asDescYn">
+       <isEqual property="asDescYn" compareValue="1">
+       AND EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD ) </isEqual>
+       <isEqual property="asDescYn" compareValue="0">
+       AND NOT EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD ) </isEqual>
+       </isNotEmpty>
+       <isNotEmpty property="asImgYn">
+       <isEqual property="asImgYn" compareValue="1">
+       AND EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 ) </isEqual>
+       <isEqual property="asImgYn" compareValue="0">
+       AND NOT EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 ) </isEqual>
+       </isNotEmpty>
+       <isNotEmpty property="asKeywordValue">
+       <isEqual property="asKeywordSelect" compareValue="01">
+       AND PR.PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+       </isEqual>
+       <isEqual property="asKeywordSelect" compareValue="02">
+       AND PR.MD_PROD_CD  LIKE #asKeywordValue#||'%' </isEqual>
+       <isEqual property="asKeywordSelect" compareValue="03">
+       AND PR.MD_SRCMK_CD LIKE #asKeywordValue#||'%' </isEqual>
+       <isEqual property="asKeywordSelect" compareValue="04">
+       AND PR.PROD_NM LIKE '%'||#asKeywordValue#||'%' </isEqual>
+       </isNotEmpty>
+       <isEqual property="chkVal" compareValue="Y">
+       <isEqual property="asDateSelect" compareValue="01">
+       AND PR.REG_DATE BETWEEN TO_DATE(#startDt#,'YYYYMMDD') AND TO_DATE(#endDt#,'YYYYMMDD')+0.99999 </isEqual>
+       <isEqual property="asDateSelect" compareValue="02">
+       AND PR.APRV_DATE BETWEEN TO_DATE(#startDt#,'YYYYMMDD') AND TO_DATE(#endDt#,'YYYYMMDD')+0.99999 </isEqual>
+       <isEqual property="asDateSelect" compareValue="03">
+       AND PR.MD_REG_DATE BETWEEN TO_DATE(#startDt#,'YYYYMMDD') AND TO_DATE(#endDt#,'YYYYMMDD')+0.99999 </isEqual>
+       </isEqual>
+       </isEmpty>
+    </select>
+
+    <!-- 2015.10.30 by kmlee 카테고리 체계 변경으로  L4->L3로 변경 -->
+    <select id="selectPrdList" resultClass="pscmprd0001VO">
+    /* pscmprd0001.selectPrdList */
+    SELECT num
+         , prodCd
+         , mdProdCd
+         , mdSrcmkCd
+         , prodNm
+         , catNm
+         , aprvYn
+         , aprvDate
+         , regDate
+         , prodDivnCd
+         , mdRecentSellDy
+         , absenceYn
+         , dispYn
+         , currSellPrc
+         , approvalChk
+         , haveImg
+         , buyPrc
+         , prodCommerce  -- 전상법
+         , prodCommerceApprove  -- 전상법
+         , profitRate  -- 이익율
+         , mallDivnCd
+         , onlineProdTypeNm
+         , onlineProdTypeCd
+         , ecLinkYn
+      FROM (SELECT ROW_NUMBER()OVER(ORDER BY REG_DATE DESC) AS num
+                 , PR.PROD_CD AS prodCd
+                 , PR.MD_PROD_CD AS mdProdCd
+                 , PR.MD_SRCMK_CD AS mdSrcmkCd
+                 , PR.PROD_NM AS prodNm
+                 , MC.L1_NM||'/'||MC.L2_NM||'/'|| MC.L3_NM AS catNm
+                 , PR.APRV_YN AS aprvYn
+                 , CASE WHEN PR.APRV_DATE IS NULL THEN '-' ELSE TO_CHAR(PR.APRV_DATE, 'YYYY-MM-DD') END aprvDate
+                 , TO_CHAR(PR.REG_DATE, 'YYYY-MM-DD') AS regDate
+                 , ( SELECT DECODE(PR.PROD_DIVN_CD, '02', '02', '03', '03', '01', DECODE(B.STR_CD, '981', '02', '01')) AS CHK_PROD_DIVN_CD
+                       FROM TPR_STORE_ITEM_PRICE B
+                       WHERE PR.PROD_CD = B.PROD_CD
+                       LIMIT 1
+                   ) AS prodDivnCd
+                 , ( SELECT MAX(MD_RECENT_SELL_DY) FROM TPR_STORE_ITEM_PRICE C WHERE  PR.PROD_CD = C.PROD_CD ) AS mdRecentSellDy
+                 , ( SELECT /*+ ORDERED */
+                            MIN(ONLINE_SOUT_YN)
+                       FROM TPR_STORE_ITEM_PRICE A
+                          , TST_STORE B
+                      WHERE PR.PROD_CD = A.PROD_CD
+                        AND A.STR_CD   = B.STR_CD
+                        AND (    B.FEDAY_MALL_REP_STR_YN = 'Y'
+                              OR B.ONLINE_YN = 'Y'
+                              OR B.CMBN_MALL_REP_STR_YN = 'Y' )
+                   ) AS absenceYn
+                 , PR.DISP_YN AS dispYn
+                 , DECODE(PR.APRV_YN,'Y','1',DECODE(FEDAY_MALL_SELL_PSBT_YN,'Y','0','0')) AS approvalChk
+                 , CASE WHEN ( SELECT 'Y' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 LIMIT 1 ) = 'Y' 
+                             THEN 'Y' 
+                             ELSE 'N' 
+                   END haveImg
+                 , CASE WHEN REGEXP_LIKE(PR.CAT_CD, '^(034001|034004|034005|034006)') AND NOT REGEXP_LIKE(PR.CAT_CD, '^(034001005|034006005)')
+                             THEN PR.BUY_PRC
+                             ELSE NVL((SELECT BUY_PRC FROM TPR_STORE_ITEM_PRICE
+                                        WHERE PROD_CD = PR.PROD_CD
+                                          AND STR_CD = (SELECT STR_CD FROM TPR_STORE_ITEM_PRICE
+                                                         WHERE PROD_CD = PR.PROD_CD
+                                                           AND STR_CD IN ('307', '981', '985') LIMIT 1)
+                                          AND ITEM_CD = '001'), 0)
+                   END AS buyPrc  /* 원가 */
+                 , CASE WHEN REGEXP_LIKE(PR.CAT_CD, '^(034001|034004|034005|034006)') AND NOT REGEXP_LIKE(PR.CAT_CD, '^(034001005|034006005)')
+                             THEN PR.CURR_SELL_PRC
+                             ELSE NVL((SELECT CURR_SELL_PRC FROM TPR_STORE_ITEM_PRICE
+                                        WHERE PROD_CD = PR.PROD_CD
+                                          AND STR_CD = (SELECT STR_CD FROM TPR_STORE_ITEM_PRICE
+                                                         WHERE PROD_CD = PR.PROD_CD
+                                                           AND STR_CD IN ('307', '981', '985') LIMIT 1)
+                                          AND ITEM_CD = '001'), 0)
+                   END AS currSellPrc /* 판매가 */
+                 --전상법추가
+                 , (CASE WHEN ( SELECT COUNT(A.INFO_GRP_CD) CNT
+                                  FROM TPR_PROD_ADD_INFO_VAL A  -- 전상법 상품테이블
+                                     , V_PR_ADD_INFO B  -- V_PR_ADD_INFO[VIEW]
+                                 WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+                                   AND A.INFO_COL_CD = B.INFO_COL_CD
+                                   AND A.PROD_CD = PR.PROD_CD
+                                   AND B.L3_CD = PR.CAT_CD ) = 0 THEN 'N'
+                         WHEN ( SELECT COUNT(A.INFO_GRP_CD) CNT
+                                  FROM TPR_PROD_ADD_INFO_VAL A
+                                     , V_PR_ADD_INFO B 
+                                 WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+                                   AND A.INFO_COL_CD = B.INFO_COL_CD
+                                   AND A.PROD_CD = PR.PROD_CD
+                                   AND B.L3_CD = PR.CAT_CD
+                              ) = (
+                                SELECT COUNT(A.INFO_GRP_CD) CNT
+                                  FROM V_PR_ADD_INFO A
+                                 WHERE A.INFO_GRP_CD IN ( SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE PROD_CD = PR.PROD_CD )
+                                   AND A.L3_CD = PR.CAT_CD ) THEN 'Y'
+                              ELSE 'N'
+                    END ) AS prodCommerce
+                 , CASE WHEN ( SELECT 'Y'
+                                 FROM TPR_PROD_ADD_INFO_CNFM A
+                                WHERE PR.PROD_CD = A.PROD_CD
+                                  LIMIT 1 ) = 'Y' THEN 'Y'
+                             ELSE 'N'
+                   END prodCommerceApprove
+                 , PR.PROFIT_RATE AS profitRate -- 이익률
+                 , (SELECT TMC.MALL_DIVN_CD FROM TCA_MD_CATEGORY TMC WHERE TMC.CAT_CD =PR.CAT_CD) AS mallDivnCd
+                 , ( SELECT CD_NM AS NM
+                       FROM TET_CODE
+                      WHERE MAJOR_CD = 'SM335'
+                        AND MINOR_CD = PR.ONLINE_PROD_TYPE_CD ) AS onlineProdTypeNm
+                 , PR.ONLINE_PROD_TYPE_CD AS onlineProdTypeCd
+                 , NVL2(TPM.API_0001_DATE, 'Y', 'N') AS ecLinkYn
+              FROM TPR_PRODUCT PR
+                 , V_CA_MD_CATEGORY MC
+                 , TEC_PROD_MAPPING TPM
+             WHERE PR.CAT_CD = L3_CD(+)
+               AND PR.PROD_CD = TPM.PROD_CD(+)
+               AND TPM.ITEM_CD(+) = '000'
+               AND TPM.STR_CD(+) = '000'
+               AND PR.REP_PROD_CD_YN = 'N' /* 온라인대표상품 코드 제외  2016-03-02 */
+               AND (0, PR.VENDOR_ID)
+               <iterate prepend="IN" property="asVendorId" open="(" close=")" conjunction=","> (0, #asVendorId[]#) </iterate>
+               <isNotEmpty property="prodInVal">
+               AND PR.PROD_CD <iterate prepend="IN" property="prodInVal" open="(" close=")" conjunction=","> #prodInVal[]# </iterate>
+           )
+               </isNotEmpty>
+               <isEmpty property="prodInVal">
+               <isNotEmpty property="asCmbnMallSellPsbtYn">
+               AND PR.CMBN_MALL_SELL_PSBT_YN = #asCmbnMallSellPsbtYn# </isNotEmpty>
+               <isNotEmpty property="asAprvYn">
+               AND PR.APRV_YN = #asAprvYn# </isNotEmpty>
+               <isNotEmpty property="asDispYn">
+               AND PR.DISP_YN = #asDispYn# </isNotEmpty>
+               <isNotEmpty property="asProdDivnCd">
+               AND PR.PROD_DIVN_CD = #asProdDivnCd# </isNotEmpty>
+               <isNotEmpty property="asCategoryId">
+               AND PR.CATEGORY_ID = #asCategoryId# </isNotEmpty>
+               <isNotEmpty property="asDescYn">
+               <isEqual property="asDescYn" compareValue="1">
+               AND EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD )  -- 추가설명 여부 </isEqual>
+               <isEqual property="asDescYn" compareValue="0">
+               AND NOT EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD )  -- 추가설명 여부 </isEqual>
+               </isNotEmpty>
+               <isNotEmpty property="asImgYn">
+               <isEqual property="asImgYn" compareValue="1">
+               AND EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 )  -- 이미지 등록 여부
+               </isEqual>
+               <isEqual property="asImgYn" compareValue="0">
+               AND NOT EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 )  -- 이미지 등록 여부
+               </isEqual>
+               </isNotEmpty>
+               <isNotEmpty property="asKeywordValue">
+               <isEqual property="asKeywordSelect" compareValue="01">
+               AND PR.PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate> </isEqual>
+               <isEqual property="asKeywordSelect" compareValue="02">
+               AND PR.MD_PROD_CD  LIKE #asKeywordValue#||'%' </isEqual>
+               <isEqual property="asKeywordSelect" compareValue="03">
+               AND PR.MD_SRCMK_CD LIKE #asKeywordValue#||'%' </isEqual>
+               <isEqual property="asKeywordSelect" compareValue="04">
+               AND PR.PROD_NM LIKE '%'||#asKeywordValue#||'%' </isEqual>
+               </isNotEmpty>
+               <isEqual property="chkVal" compareValue="Y">
+               <isEqual property="asDateSelect" compareValue="01">
+               AND PR.REG_DATE BETWEEN TO_DATE(REPLACE(#startDt#, '-', ''),'YYYYMMDD') AND TO_DATE(REPLACE(#endDt#, '-', ''),'YYYYMMDD')+0.99999 </isEqual>
+               <isEqual property="asDateSelect" compareValue="02">
+               AND PR.APRV_DATE BETWEEN TO_DATE(REPLACE(#startDt#, '-', ''),'YYYYMMDD') AND TO_DATE(REPLACE(#endDt#, '-', ''),'YYYYMMDD')+0.99999 </isEqual>
+               <isEqual property="asDateSelect" compareValue="03">
+               AND PR.MD_REG_DATE BETWEEN TO_DATE(REPLACE(#startDt#, '-', ''),'YYYYMMDD') AND TO_DATE(REPLACE(#endDt#, '-', ''),'YYYYMMDD')+0.99999 </isEqual>
+               </isEqual>
+            )
+        <isEqual property="mode" compareValue="search">
+        WHERE num BETWEEN #startRow# AND #endRow# </isEqual>
+        </isEmpty>
+    </select>
+
+    <select id="selectPrdListForBatchImageUpload" resultClass="dataMap">
+    /* pscmprd0001.selectPrdListForBatchImageUpload */
+    SELECT PROD_CD
+         , PROD_NM
+         , IMG_SEQ
+         , '' AS IMG_NM
+      FROM (SELECT PR.PROD_CD
+                 , PR.PROD_NM
+                 <isEqual property="imgType" compareValue="1">
+                 , ROW_NUMBER() OVER(PARTITION BY PR.PROD_CD, PI.ITEM_CD ORDER BY PR.PROD_CD, PI.ITEM_CD, CN.NUM) AS IMG_SEQ
+                 </isEqual>
+                 <isEqual property="imgType" compareValue="2">
+                 , 1 AS IMG_SEQ
+                 </isEqual>
+              FROM TPR_PRODUCT PR
+                 , TPR_ITEM PI
+                 <isEqual property="imgType" compareValue="1">
+                 , TET_COPY_NO CN
+                 , TET_CODE SM068
+                 </isEqual>
+             WHERE PR.PROD_CD = PI.PROD_CD
+               AND PR.REP_PROD_CD_YN = 'N' /* 온라인대표상품 코드 제외  2016-03-02 */
+               AND PI.ITEM_CD = '001'
+               <isEqual property="imgType" compareValue="1"><!-- 대표이미지 -->
+               AND CN.NUM &lt;= PI.IMG_QTY
+               AND CN.NUM &lt;= 5
+               AND SM068.MINOR_CD (+) = LPAD(NUM, '2', '0')
+               AND SM068.MAJOR_CD (+) = 'SM068'
+               </isEqual>
+               AND (0, PR.VENDOR_ID) <iterate prepend="IN" property="asVendorId" open="(" close=")" conjunction=","> (0, #asVendorId[]#) </iterate>
+               <isNotEmpty property="prodInVal">
+               AND PR.PROD_CD <iterate prepend="IN" property="prodInVal" open="(" close=")" conjunction=","> #prodInVal[]# </iterate>
+               </isNotEmpty>
+               <isEmpty property="prodInVal">
+               <isNotEmpty property="asCmbnMallSellPsbtYn">
+               AND PR.CMBN_MALL_SELL_PSBT_YN = #asCmbnMallSellPsbtYn# </isNotEmpty>
+               <isNotEmpty property="asAprvYn">
+               AND PR.APRV_YN = #asAprvYn# </isNotEmpty>
+               <isNotEmpty property="asDispYn">
+               AND PR.DISP_YN = #asDispYn# </isNotEmpty>
+               <isNotEmpty property="asProdDivnCd">
+               AND PR.PROD_DIVN_CD = #asProdDivnCd# </isNotEmpty>
+               <isNotEmpty property="asCategoryId">
+               AND PR.CATEGORY_ID = #asCategoryId# </isNotEmpty>
+               <isNotEmpty property="asDescYn">
+               <isEqual property="asDescYn" compareValue="1">
+               AND EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD )  -- 추가설명 여부 </isEqual>
+               <isEqual property="asDescYn" compareValue="0">
+               AND NOT EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD )  -- 추가설명 여부 </isEqual>
+               </isNotEmpty>
+               <isNotEmpty property="asImgYn">
+               <isEqual property="asImgYn" compareValue="1">
+               AND EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 )  -- 이미지 등록 여부
+               </isEqual>
+               <isEqual property="asImgYn" compareValue="0">
+               AND NOT EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 )  -- 이미지 등록 여부
+               </isEqual>
+               </isNotEmpty>
+               <isNotEmpty property="asKeywordValue">
+               <isEqual property="asKeywordSelect" compareValue="01">
+               AND PR.PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate> </isEqual>
+               <isEqual property="asKeywordSelect" compareValue="02">
+               AND PR.MD_PROD_CD  LIKE #asKeywordValue#||'%' </isEqual>
+               <isEqual property="asKeywordSelect" compareValue="03">
+               AND PR.MD_SRCMK_CD LIKE #asKeywordValue#||'%' </isEqual>
+               <isEqual property="asKeywordSelect" compareValue="04">
+               AND PR.PROD_NM LIKE '%'||#asKeywordValue#||'%' </isEqual>
+               </isNotEmpty>
+               <isEqual property="chkVal" compareValue="Y">
+               <isEqual property="asDateSelect" compareValue="01">
+               AND PR.REG_DATE BETWEEN TO_DATE(REPLACE(#startDt#, '-', ''),'YYYYMMDD') AND TO_DATE(REPLACE(#endDt#, '-', ''),'YYYYMMDD')+0.99999 </isEqual>
+               <isEqual property="asDateSelect" compareValue="02">
+               AND PR.APRV_DATE BETWEEN TO_DATE(REPLACE(#startDt#, '-', ''),'YYYYMMDD') AND TO_DATE(REPLACE(#endDt#, '-', ''),'YYYYMMDD')+0.99999 </isEqual>
+               <isEqual property="asDateSelect" compareValue="03">
+               AND PR.MD_REG_DATE BETWEEN TO_DATE(REPLACE(#startDt#, '-', ''),'YYYYMMDD') AND TO_DATE(REPLACE(#endDt#, '-', ''),'YYYYMMDD')+0.99999 </isEqual>
+               </isEqual>
+        </isEmpty>
+            )
+        ORDER BY PROD_CD
+    </select>
+
+    <select id="selectProdCdInfo" resultClass="pscmprd0001VO">
+    /* pscmprd0001.selectPrdCdList */
+    SELECT LISTAGG(PROD_CD, ',') WITHIN GROUP(ORDER BY PROD_CD) AS prodCd
+    FROM ( SELECT DISTINCT PROD_CD
+             FROM TCA_MKDP_DTL_ASSIGN 
+            WHERE MKDP_SEQ = #asKeywordValue#
+              AND STR_CD = '981'
+            ORDER BY PROD_CD )
+    </select>
+
+    <select id="selectProdCdInfoList" resultClass="string">
+    /* pscmprd0001.selectProdCdInfoList */
+    SELECT DISTINCT PROD_CD
+      FROM TCA_MKDP_DTL_ASSIGN
+     WHERE MKDP_SEQ = #asKeywordValue#
+       AND STR_CD = '981'
+    ORDER BY PROD_CD
+    </select>
+
+    <!-- 2015.10.30 by kmlee 카테고리 체계 변경으로  L4->L3로 변경 -->
+    <select id="selectProductExcel" resultClass="pscmprd0001VO">
+    /* pscmprd0001.selectProductExcel */
+    SELECT num
+         , prodCd
+         , mdProdCd
+         , mdSrcmkCd
+         , prodNm
+         , catNm
+         , aprvYn
+         , aprvDate
+         , regDate
+         , prodDivnCd
+         , mdRecentSellDy
+         , absenceYn
+         , dispYn
+         , currSellPrc
+         , approvalChk
+         , haveImg
+         , buyPrc
+         , prodCommerce  -- 전상법
+         , prodCommerceApprove  -- 전상법
+         , profitRate  -- 이익율
+         , mallDivnCd
+      FROM ( SELECT ROW_NUMBER()OVER(ORDER BY REG_DATE DESC) AS num
+                  , PR.PROD_CD AS prodCd
+                  , PR.MD_PROD_CD AS mdProdCd
+                  , PR.MD_SRCMK_CD AS mdSrcmkCd
+                  , PR.PROD_NM AS prodNm
+                  , MC.L1_NM||'/'||MC.L2_NM||'/'|| MC.L3_NM AS catNm
+                  , PR.APRV_YN AS aprvYn
+                  , CASE WHEN PR.APRV_DATE IS NULL THEN '-' ELSE TO_CHAR(PR.APRV_DATE, 'YYYY-MM-DD') END aprvDate
+                  , TO_CHAR(PR.REG_DATE, 'YYYY-MM-DD') AS regDate
+                  , (   SELECT DECODE(PR.PROD_DIVN_CD, '02', '02', '03', '03', '01', DECODE(B.STR_CD, '981', '02', '01')) AS CHK_PROD_DIVN_CD
+                        FROM TPR_STORE_ITEM_PRICE B
+                        WHERE PR.PROD_CD = B.PROD_CD
+                        LIMIT 1
+                    ) AS prodDivnCd
+                  , ( SELECT MAX(MD_RECENT_SELL_DY) FROM TPR_STORE_ITEM_PRICE C WHERE  PR.PROD_CD = C.PROD_CD ) AS mdRecentSellDy
+                  , (   SELECT  /*+ ORDERED */ 
+                            MIN(ONLINE_SOUT_YN)
+                        FROM TPR_STORE_ITEM_PRICE A
+                          , TST_STORE B
+                        WHERE PR.PROD_CD = A.PROD_CD
+                        AND A.STR_CD   = B.STR_CD
+                        AND (   B.FEDAY_MALL_REP_STR_YN = 'Y'
+                            OR B.ONLINE_YN = 'Y' 
+                            OR B.CMBN_MALL_REP_STR_YN  = 'Y' )
+                    ) AS absenceYn
+                  , PR.DISP_YN AS dispYn
+                  , CURR_SELL_PRC AS currSellPrc
+                  , DECODE(PR.APRV_YN,'Y','1',DECODE(FEDAY_MALL_SELL_PSBT_YN,'Y','0','0')) AS approvalChk
+                  , CASE WHEN ( SELECT 'Y' FROM TPR_ITEM PT 
+                                WHERE PR.PROD_CD = PT.PROD_CD
+                                AND PT.IMG_QTY &gt; 0 
+                                LIMIT 1 ) = 'Y' 
+                            THEN 'Y' 
+                         ELSE 'N' 
+                    END haveImg
+                  , PR.BUY_PRC as buyPrc
+                  --전상법추가
+          ,( CASE WHEN ( SELECT COUNT(A.INFO_GRP_CD) CNT
+                           FROM TPR_PROD_ADD_INFO_VAL A  -- 전상법 상품테이블
+                              , V_PR_ADD_INFO B  -- V_PR_ADD_INFO[VIEW]
+            			WHERE   A.INFO_GRP_CD = B.INFO_GRP_CD
+                		AND A.INFO_COL_CD = B.INFO_COL_CD
+                		AND A.PROD_CD = PR.PROD_CD
+                		AND B.L3_CD = PR.CAT_CD
+            		  ) = 0 THEN 'N'
+ 		         WHEN ( SELECT  COUNT(A.INFO_GRP_CD) CNT
+                        FROM    TPR_PROD_ADD_INFO_VAL A, 
+                                V_PR_ADD_INFO B 
+                        WHERE   A.INFO_GRP_CD = B.INFO_GRP_CD
+                        AND     A.INFO_COL_CD = B.INFO_COL_CD
+                        AND     A.PROD_CD = PR.PROD_CD
+                        AND     B.L3_CD = PR.CAT_CD
+        	          )= ( SELECT  COUNT(A.INFO_GRP_CD) CNT
+            				FROM    V_PR_ADD_INFO A
+            				WHERE   A.INFO_GRP_CD IN ( SELECT  INFO_GRP_CD
+                									   FROM    TPR_PROD_ADD_INFO_VAL
+                									   WHERE   PROD_CD = PR.PROD_CD )
+                			AND     A.L3_CD = PR.CAT_CD
+                             ) THEN 'Y'
+                    ELSE 'N'
+              END
+            ) AS prodCommerce
+            ,CASE WHEN ( SELECT  'Y'
+                         FROM    TPR_PROD_ADD_INFO_CNFM A
+                         WHERE   PR.PROD_CD = A.PROD_CD
+                         AND     LIMIT 1
+                        )= 'Y' THEN 'Y'
+                  ELSE 'N'
+             END prodCommerceApprove
+		        , PR.PROFIT_RATE AS profitRate  -- 이익률
+				,(SELECT TMC.MALL_DIVN_CD FROM TCA_MD_CATEGORY TMC WHERE TMC.CAT_CD = PR.CAT_CD) AS mallDivnCd
+            FROM ( SELECT PROD_CD
+                  , VENDOR_ID 
+                FROM TPR_STORE_ITEM_PRICE PI 
+                WHERE (0, PI.VENDOR_ID)
+    <iterate prepend="IN" property="asVendorId" open="(" close=")" conjunction=","> (0, #asVendorId[]#) </iterate>
+                GROUP BY
+                    PROD_CD
+                  , VENDOR_ID 
+            )   VID
+              , TPR_PRODUCT PR
+              , V_CA_MD_CATEGORY MC
+            WHERE VID.PROD_CD   = PR.PROD_CD
+            AND VID.VENDOR_ID = PR.VENDOR_ID
+            AND PR.CAT_CD     = L3_CD
+            /* 2016.03.02 by kmlee 온라인대표상품 코드를 제외 하도록 */
+            AND PR.REP_PROD_CD_YN = 'N'
+    <isNotEmpty property="asCmbnMallSellPsbtYn">
+        AND PR.CMBN_MALL_SELL_PSBT_YN = #asCmbnMallSellPsbtYn#
+    </isNotEmpty>
+    <isNotEmpty property="asAprvYn">
+        AND PR.APRV_YN = #asAprvYn#
+    </isNotEmpty>
+    <isNotEmpty property="asDispYn">
+        AND PR.DISP_YN = #asDispYn#
+    </isNotEmpty>
+    <isNotEmpty property="asProdDivnCd">
+        AND PR.PROD_DIVN_CD = #asProdDivnCd#
+    </isNotEmpty>
+    <isNotEmpty property="asCategoryId">
+        AND PR.CATEGORY_ID = #asCategoryId#
+    </isNotEmpty>
+    <isNotEmpty property="asDescYn">
+        <isEqual property="asDescYn" compareValue="1">
+            AND EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD )		-- 추가설명 여부
+        </isEqual>
+        <isEqual property="asDescYn" compareValue="0">
+            AND NOT EXISTS ( SELECT '1' FROM TPR_PRODUCT_ADD_DESCR DE WHERE PR.PROD_CD = DE.PROD_CD )  -- 추가설명 여부
+        </isEqual>
+    </isNotEmpty>
+    <isNotEmpty property="asImgYn">
+        <isEqual property="asImgYn" compareValue="1">
+            AND EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 )  -- 이미지 등록 여부
+        </isEqual>
+        <isEqual property="asImgYn" compareValue="0">
+            AND NOT EXISTS ( SELECT '1' FROM TPR_ITEM PT WHERE PR.PROD_CD = PT.PROD_CD AND PT.IMG_QTY &gt; 0 )  -- 이미지 등록 여부
+        </isEqual>
+    </isNotEmpty>
+    <isNotEmpty property="asKeywordValue">
+        <isEqual property="asKeywordSelect" compareValue="01">
+            AND PR.PROD_CD
+	        <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> 
+	            #prodCdArr[]#
+	        </iterate>
+        </isEqual>
+	    <isEqual property="asKeywordSelect" compareValue="02">
+	        AND PR.MD_PROD_CD  LIKE #asKeywordValue#||'%'
+	    </isEqual>
+	    <isEqual property="asKeywordSelect" compareValue="03">
+	        AND PR.MD_SRCMK_CD LIKE #asKeywordValue#||'%'
+	    </isEqual>
+	    <isEqual property="asKeywordSelect" compareValue="04">
+	        AND PR.PROD_NM LIKE '%'||#asKeywordValue#||'%'
+	    </isEqual>
+    </isNotEmpty>
+    <isEqual property="chkVal" compareValue="Y">
+        <isEqual property="asDateSelect" compareValue="01">
+            AND PR.REG_DATE BETWEEN TO_DATE(#startDt#,'YYYYMMDD') AND TO_DATE(#endDt#,'YYYYMMDD')+0.99999
+        </isEqual>
+        <isEqual property="asDateSelect" compareValue="02">
+            AND PR.APRV_DATE BETWEEN TO_DATE(#startDt#,'YYYYMMDD') AND TO_DATE(#endDt#,'YYYYMMDD')+0.99999
+        </isEqual>
+        <isEqual property="asDateSelect" compareValue="03">
+            AND PR.MD_REG_DATE BETWEEN TO_DATE(#startDt#,'YYYYMMDD') AND TO_DATE(#endDt#,'YYYYMMDD')+0.99999
+        </isEqual>
+    </isEqual>
+        )
+    </select>
+
+</sqlMap>

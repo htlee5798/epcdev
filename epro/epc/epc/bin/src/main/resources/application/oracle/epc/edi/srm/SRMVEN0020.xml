@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMVEN0020">
+	
+	<typeAlias alias="srmven0020Vo"		type="com.lottemart.epc.edi.srm.model.SRMVEN0020VO" 	/>
+	<typeAlias alias="srmven002001Vo"	type="com.lottemart.epc.edi.srm.model.SRMVEN002001VO" 	/>
+	<typeAlias alias="CommonFileVO"		type="com.lottemart.epc.common.model.CommonFileVO" 		/>
+
+	<!-- 인증정보 내역 Map -->
+	<resultMap id="srmVen0020VoMap1" 	class="srmven0020Vo">
+		<result column="CERTI_TYPE"			property="certiType" 		/>	<!-- 구분 -->
+		<result column="CERTI_TYPE_NAME"	property="certiTypeNm" 		/>	<!-- 구분이름 -->
+		<result column="CERTI_NO"			property="certiNo" 			/>	<!-- 인증번호 -->
+		<result column="CERTI_NAME"			property="certiName" 		/>	<!-- 인증명 -->
+		<result column="CERTI_DATE"			property="certiDate" 		/>	<!-- 고시일 -->
+		<result column="CERTI_ANN_NO"		property="certiAnnNo" 		/>	<!-- 고시번호 -->
+		<result column="REMARK"				property="remark" 			/>	<!-- 비고 -->
+		<result column="ADD_DATE"			property="addDate" 			/>	<!-- 생성일자 -->
+		<result column="CERTI_TARGET"		property="certiTarget" 		/>	<!-- 인증대상 -->
+		<result column="CERTI_TARGET_NAME"	property="certiTargetNm" 	/>	<!-- 인증대상이름 -->
+	</resultMap>
+	
+	<!-- 인증등록 정보 내역 Map -->
+	<resultMap id="srmven0020VoMap2" 	class="srmven0020Vo">
+		<result column="RNUM"				property="rnum" 			/>	<!-- 순번 -->
+		<result column="VENDOR_CODE"		property="vendorCode" 		/>	<!-- 사업자번호 -->
+		<result column="VEN_CD"				property="venCd" 			/>	<!-- 협력업체코드 -->
+		<result column="CERTI_TARGET"		property="certiTarget" 		/>	<!-- 인증대상 -->
+		<result column="CERTI_TARGET_NAME"	property="certiTargetNm"	/>	<!-- 인증대상이름 -->
+		<result column="CERTI_TYPE"			property="certiType" 		/>	<!-- 인증구분 -->
+		<result column="CERTI_TYPE_NAME"	property="certiTypeNm" 		/>	<!-- 인증구분 이름 -->
+		<result column="SEQ"				property="seq" 				/>	<!-- 순번 -->
+		<result column="CERTI_NO"			property="certiNo" 			/>	<!-- 인증서번호 -->
+		<result column="CERTI_ORGAN"		property="certiOrgan" 		/>	<!-- 인증기관명 -->
+		<result column="CERTI_STD_DATE"		property="certiStdDate" 	/>	<!-- 인증기준일자 -->
+		<result column="CERTI_END_DATE"		property="certiEndDate" 	/>	<!-- 인증종료일자 -->
+		<result column="PROD_CD"			property="prodCd" 			/>	<!-- 상품코드 -->
+		<result column="PROD_CD_NAME"		property="prodCdName" 		/>	<!-- 상품명 -->
+		<result column="CERTI_ATTACH_NO"	property="certiAttachNo"	/>	<!-- 첨부파일 이름 -->
+		<result column="SRC_FILE_NAME"		property="srcFileName"		/>	<!-- 원본파일 이름 -->
+		<result column="ADD_DATE"			property="addDate" 			/>	<!-- 생성일자 -->
+		<result column="ADD_USER_ID"		property="addUserId" 		/>	<!-- 생성자 -->
+		<result column="CHANGE_DATE"		property="changeDate" 		/>	<!-- 변경일자 -->
+		<result column="CHANGE_USER_ID"		property="changeUserId" 	/>	<!-- 변경자 -->
+		<result column="CERTI_NAME"			property="certiName" 		/>	<!-- 인증명 -->
+	</resultMap>
+	
+	<!-- 상품검색 정보 Map -->
+	<resultMap id="srmven002001VoMap" 	class="srmven002001Vo">
+		<result column="RNUM"				property="rnum" 			/>	<!-- 순번 -->
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 서비스코드 -->
+		<result column="MATERIAL_NUMBER"	property="materialNumber" 	/>	<!-- 품목코드	 -->
+		<result column="DESCRIPTION_LOC"	property="descriptionLoc" 	/>	<!-- 자재명 -->
+		<result column="VEN_CD"				property="venCd" 			/>	<!-- 협력업체코드 -->
+	</resultMap>
+	
+	<!-- 파일정보조회 resultMap -->
+	<resultMap id="selectFileInfoMap" class="CommonFileVO">
+		<result column="DOC_NO"				property="fileId" 			/>	<!-- 파일ID -->
+		<result column="DOC_SEQ"			property="fileSeq" 			/>	<!-- 순번 -->
+		<result column="DES_FILE_NAME"		property="tempFileName" 	/>	<!-- 서버저장파일명 -->
+		<result column="SRC_FILE_NAME"		property="fileNmae" 		/>	<!-- 원본파일명 -->
+	</resultMap>
+	
+	<!-- 인증등록 정보 내역 count -->
+	<select id="selectCertiInfoAddListCount" parameterClass="srmven0020Vo" resultClass="Integer">
+		/* SRMVEN0020.selectCertiInfoAddListCount */
+		SELECT  COUNT(*)
+		FROM 	SMTGD S
+			,	SFILE F
+			,	SMTGM M
+		WHERE 	
+				S.CERTI_ATTACH_NO = F.DOC_NO(+)
+		  AND	S.CERTI_NO = M.CERTI_NO(+)
+		  AND	S.HOUSE_CODE = #houseCode#
+		  
+		<isEmpty property="srchVenCd" prepend="AND">
+			S.VENDOR_CODE = #vendorCode#
+		</isEmpty>
+			
+		<isNotEmpty property="srchVenCd" prepend="AND">
+			VEN_CD = #srchVenCd#
+		</isNotEmpty>
+		
+		<isNotEmpty property="srchCertiTarget" prepend="AND">
+			S.CERTI_TARGET = #srchCertiTarget#
+		</isNotEmpty>
+		
+		<isNotEmpty property="srchCertiName" prepend="AND">
+			M.CERTI_NAME LIKE '%'||#srchCertiName#||'%'
+		</isNotEmpty>
+	</select>
+	
+	<!-- 인증등록 정보 내역 -->
+	<select id="selectCertiInfoAddList" parameterClass="srmven0020Vo" resultMap="srmven0020VoMap2">
+		/* SRMVEN0020.selectCertiInfoAddList */
+		SELECT	A.*
+		FROM	(
+					SELECT	ROW_NUMBER () OVER (ORDER BY S.ADD_DATE DESC) AS RNUM
+						,	S.VENDOR_CODE
+					    ,	S.VEN_CD
+					    ,	S.CERTI_TARGET
+					    ,	GETCODETEXT1('SRM034',S.CERTI_TARGET,UPPER(#locale#)) AS CERTI_TARGET_NAME
+					    ,	S.CERTI_TYPE
+					    ,	GETCODETEXT1('SRM033',S.CERTI_TYPE,UPPER(#locale#)) AS CERTI_TYPE_NAME
+					    ,	S.SEQ
+					    ,	S.CERTI_NO
+					    ,	S.CERTI_ORGAN
+					    ,	TO_CHAR(TO_DATE(S.CERTI_STD_DATE), 'YYYY-MM-DD') AS CERTI_STD_DATE
+              			,	TO_CHAR(TO_DATE(S.CERTI_END_DATE), 'YYYY-MM-DD') AS CERTI_END_DATE
+					    ,	S.PROD_CD
+					    ,	(SELECT DESCRIPTION_LOC FROM SMTGL WHERE MATERIAL_NUMBER = S.PROD_CD) AS PROD_CD_NAME
+					    ,	S.CERTI_ATTACH_NO
+					    ,	F.SRC_FILE_NAME
+					    ,	TO_CHAR(S.ADD_DATE, 'YYYY-MM-DD') AS ADD_DATE
+					    ,	S.ADD_USER_ID
+					    ,	TO_CHAR(S.CHANGE_DATE, 'YYYY-MM-DD') AS CHANGE_DATE
+					    ,	S.CHANGE_USER_ID
+					    ,	M.CERTI_NAME
+					FROM 	SMTGD S
+						,	SFILE F
+						,	SMTGM M
+					WHERE 	
+							S.CERTI_ATTACH_NO = F.DOC_NO(+)
+					  AND	S.CERTI_NO = M.CERTI_NO(+)
+					  AND	S.HOUSE_CODE = #houseCode#
+					<isEmpty property="srchVenCd" prepend="AND">
+						S.VENDOR_CODE = #vendorCode#
+					</isEmpty>
+						
+					<isNotEmpty property="srchVenCd" prepend="AND">
+						VEN_CD = #srchVenCd#
+					</isNotEmpty>
+					
+					<isNotEmpty property="srchCertiTarget" prepend="AND">
+						S.CERTI_TARGET = #srchCertiTarget#
+					</isNotEmpty>
+					
+					<isNotEmpty property="srchCertiName" prepend="AND">
+						M.CERTI_NAME LIKE '%'||#srchCertiName#||'%'
+					</isNotEmpty>
+				)	A
+			WHERE RNUM BETWEEN #firstIndex#+1 AND #lastIndex#
+	</select>
+	
+	<!-- 인증정보 내역 -->
+	<select id="selectCertiInfoList" parameterClass="srmven0020Vo" resultMap="srmVen0020VoMap1">
+		/* SRMVEN0020.selectCertiInfoList */
+		SELECT 	CERTI_TYPE
+			,	GETCODETEXT1('SRM033',CERTI_TYPE,UPPER(#locale#)) AS CERTI_TYPE_NAME
+		    ,	CERTI_NO
+		    ,	CERTI_NAME
+		    ,	CERTI_DATE
+		    ,	CERTI_ANN_NO
+		    ,	REMARK
+		    ,	TO_CHAR(ADD_DATE, 'RRRR-MM-DD') AS ADD_DATE
+		    ,	CERTI_TARGET
+		    ,	GETCODETEXT1('SRM034',CERTI_TARGET,UPPER(#locale#)) AS CERTI_TARGET_NAME
+		FROM 	SMTGM
+		WHERE 
+				HOUSE_CODE = #houseCode#
+		ORDER BY CERTI_NO ASC
+	</select>
+	
+	<!-- 상품검색 카운트 -->
+	<select id="selectProdInfoCount" parameterClass="srmven002001Vo" resultClass="Integer">
+		/* SRMVEN0020.selectProdInfoCount */
+        SELECT COUNT(*)
+        FROM 	SMTGL
+        WHERE 	
+        		HOUSE_CODE = #houseCode#
+        
+        <iterate prepend="AND VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+			#venCds[]#
+		</iterate>
+
+        <!-- 상품검색 타입(1:상품코드, 2:상품명) -->
+		<isEqual property="searchType" compareValue="1">
+			 AND MATERIAL_NUMBER = #prodCd#
+		</isEqual>
+		
+		<isEqual property="searchType" compareValue="2">
+			 AND  DESCRIPTION_LOC LIKE '%'||#prodCd#||'%'
+		</isEqual>
+	</select>
+	
+	<!-- 상품검색 -->
+	<select id="selectProdInfo" parameterClass="srmven002001Vo" resultMap="srmven002001VoMap">
+		/* SRMVEN0020.selectProdInfo */
+		SELECT B.* FROM (
+		    SELECT ROWNUM AS RNUM, A.* FROM (
+		        SELECT	HOUSE_CODE
+		             ,	MATERIAL_NUMBER
+		             ,	DESCRIPTION_LOC
+		             ,  VEN_CD
+		        FROM	SMTGL
+		        WHERE 	
+		        		HOUSE_CODE = #houseCode#
+		            
+				<iterate prepend="AND VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+					#venCds[]#
+				</iterate>
+
+	            <!-- 상품검색 타입(1:상품코드, 2:상품명) -->
+				<isEqual property="searchType" compareValue="1">
+					 AND MATERIAL_NUMBER = #prodCd#
+				</isEqual>
+				
+				<isEqual property="searchType" compareValue="2">
+					 AND  DESCRIPTION_LOC LIKE '%'||#prodCd#||'%'
+				</isEqual>
+		    )A
+		)B
+		WHERE RNUM BETWEEN #firstIndex#+1 AND #lastIndex#
+	</select>
+	
+	<!--첨부파일 정보 조회(CERTI_ATTACH_NO)-->
+	<select id="selectCertiAttachFileId" parameterClass="srmven0020Vo" resultClass="String">
+		/* SRMVEN0020.selectCertiAttachFileId */
+		SELECT	CERTI_ATTACH_NO
+		FROM	SMTGD
+		WHERE	
+				HOUSE_CODE = #houseCode#
+		  AND	VENDOR_CODE = #vendorCode#
+		  AND	VEN_CD = #venCd#
+		  AND	CERTI_TARGET = #certiTarget#
+		  AND	CERTI_TYPE = #certiType#
+		  AND	SEQ = #seq#
+	</select>
+	
+	<!-- 파트너사 인증정보 수정 -->
+	<update id="updateProdInfo" parameterClass="srmven0020Vo">
+		/* SRMVEN0020.updateProdInfo */
+		UPDATE	SMTGD
+		SET		CERTI_NO		= #certiNo#
+			,	CERTI_ORGAN		= #certiOrgan#
+			,	CERTI_STD_DATE	= #certiStdDate#
+			,	CERTI_END_DATE	= #certiEndDate#
+			
+			<isEqual property="certiTarget" compareValue="1">
+			,	PROD_CD			= #prodCd#
+			</isEqual>
+			
+			,	CERTI_ATTACH_NO	= #certiAttachNo#
+			,	CHANGE_DATE		= CURRENT_TIMESTAMP(0)
+			,	CHANGE_USER_ID	= #changeUserId#
+		WHERE	
+				HOUSE_CODE = #houseCode#
+		  AND	VENDOR_CODE = #vendorCode#
+		  AND	VEN_CD = #venCd#
+		  AND	CERTI_TARGET = #certiTarget#
+		  AND	CERTI_TYPE = #certiType#
+		  AND	SEQ = #seq#
+	</update>
+	
+	<!-- 파트너사 인증정보 등록 -->
+	<insert id="insertProdInfo" parameterClass="srmven0020Vo">
+		/* SRMVEN0020.insertProdInfo */
+		INSERT	INTO SMTGD (
+				HOUSE_CODE
+			,	VENDOR_CODE
+			,	VEN_CD
+			,	CERTI_TARGET
+			,	CERTI_TYPE
+			,	SEQ
+			,	CERTI_NO
+			,	CERTI_ORGAN
+			,	CERTI_STD_DATE
+			,	CERTI_END_DATE
+			<isEqual property="certiTarget" compareValue="1">
+			,	PROD_CD
+			</isEqual>
+			,	CERTI_ATTACH_NO
+			,	ADD_DATE
+			,	ADD_USER_ID
+				)
+		VALUES (#houseCode#
+			,	#vendorCode#
+			,	#venCd#
+			,	#certiTarget#
+			,	#certiType#
+			,	(SELECT NVL(MAX(SEQ),0)+1 FROM SMTGD WHERE HOUSE_CODE = #houseCode# AND VENDOR_CODE = #vendorCode# AND VEN_CD = #venCd# AND CERTI_TARGET = #certiTarget# AND CERTI_TYPE = #certiType#)
+			,	#certiNo#
+			,	#certiOrgan#
+			,	#certiStdDate#
+			,	#certiEndDate#
+			<isEqual property="certiTarget" compareValue="1">
+			,	#prodCd#
+			</isEqual>
+			,	#certiAttachNo#
+			,	CURRENT_TIMESTAMP(0)
+			,	#changeUserId#
+				)
+	</insert>
+	
+	<!-- 파트너사 인증정보삭제 -->
+	<delete id="deleteCertiInfo" parameterClass="srmven0020Vo">
+		/* SRMVEN0020.deleteCertiInfo */
+		DELETE	
+		FROM	SMTGD
+		WHERE	
+				HOUSE_CODE = #houseCode#
+		  AND	VENDOR_CODE = #vendorCode#
+		  AND	VEN_CD = #venCd#
+		  AND	CERTI_TARGET = #certiTarget#
+		  AND	CERTI_TYPE = #certiType#
+		  AND	SEQ = #seq#
+	</delete>
+	
+	<!-- 파일 정보조회 -->
+	<select id="selectFileInfo" parameterClass="CommonFileVO" resultMap="selectFileInfoMap">
+		/* SRMVEN0020.selectFileInfo */
+		SELECT	DOC_NO
+			,	DOC_SEQ
+			,	DES_FILE_NAME
+			,	SRC_FILE_NAME
+		FROM	SFILE
+		WHERE
+				DOC_NO = #fileId#
+			AND DOC_SEQ = LPAD(#fileSeq#,8,'0')
+	</select>
+	
+	<!-- 파일 삭제 -->
+	<delete id="deleteFile" parameterClass="CommonFileVO">
+		/* SRMVEN0020.deleteFile */
+		DELETE
+		FROM	SFILE
+		WHERE
+				DOC_NO = #fileId#
+			AND DOC_SEQ = LPAD(#fileSeq#,8,'0')
+	</delete>
+	
+	<!--인증정보 정보 중복체크 -->
+	<select id="selectCertiInfoCheck" parameterClass="srmven0020Vo" resultClass="Integer">
+		/* SRMVEN0020.selectCertiInfoCheck */
+		SELECT	COUNT(1)
+		FROM	SMTGD
+		WHERE
+				HOUSE_CODE = #houseCode#
+		  AND	VENDOR_CODE = #vendorCode#
+		  AND	CERTI_TYPE = #certiType#
+		  AND 	CERTI_NO = #certiNo#
+		  AND	CERTI_TARGET = #certiTarget#
+		  
+		  <isEqual property="certiTarget" compareValue="1">
+		  AND	PROD_CD = #prodCd#
+		  AND	VEN_CD = #venCd#
+		  </isEqual>
+	</select>
+	
+</sqlMap>

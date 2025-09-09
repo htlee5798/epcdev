@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>lcnjf.pom.lottemart</groupId>
+		<artifactId>lcnjf-pom-lottemart</artifactId>
+		<version>1.2.1</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.lottemart</groupId>
+	<artifactId>common</artifactId>
+	<name>lottemart-common</name>
+	<packaging>jar</packaging>
+	<version>1.0.0</version>
+
+	<repositories>
+
+		<repository>
+			<id>lcnjf-thirdparty</id>
+			<url>http://lcn.eknow.co.kr/nexus/content/repositories/thirdparty/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>lcnjf-etax</id>
+			<url>http://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-etax</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>lcnjf-lottemart</id>
+			<url>http://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-lottemart</url>
+		</repository>
+
+ 		<repository>
+ 			<id>onlinemall</id>
+ 			<url>http://10.52.2.150:8080/nexus/content/repositories/onlinemall</url>
+ 			<releases>
+ 				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+	</repositories>
+
+<!--
+	<distributionManagement>
+		<repository>
+			<id>lcnjf-etax</id>
+			<url>http://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-lottemart</url>
+		</repository>
+	</distributionManagement>
+-->
+	<distributionManagement>
+		<repository>
+			<id>lcnjf-lottemart</id>
+			<url>http://10.52.2.150:8080/nexus/content/repositories/lcnjf-lottemart</url>
+		</repository>
+	</distributionManagement>
+
+	<properties>
+		<org.aspectj-version>1.6.10</org.aspectj-version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<encoding>UTF-8</encoding>
+		<java-version>1.6</java-version>
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+		  <groupId>lcn.fmw.lottemart</groupId>
+		  <artifactId>lcnjf-fmw-lottemart</artifactId>
+		  <version>5.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.lottemart.commlib</groupId>
+			<artifactId>lcnjf-common-lottemart</artifactId>
+			<version>6.13</version>
+		</dependency>
+
+		<dependency>
+			<groupId>lcn.fmw.lcnjf</groupId>
+			<artifactId>lcnframe-core</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- 		2014.03.28 jaeyulim -->
+		<dependency>
+			<groupId>custom.cu.custinfomng</groupId>
+			<artifactId>Zipit</artifactId>
+			<version>1.0.19</version>
+		</dependency>
+
+		<!-- 		2014.03.28 jaeyulim -->
+		<dependency>
+		   <groupId>org.apache.poi</groupId>
+		   <artifactId>poi</artifactId>
+		   <version>3.8</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.apache.geronimo.specs</groupId>
+		  <artifactId>geronimo-servlet_3.0_spec</artifactId>
+		  <version>1.0</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>dreamsecurity</groupId>
+		  <artifactId>dreamsecurity</artifactId>
+		  <version>1.0</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>nsso-agent</groupId>
+		  <artifactId>nsso-agent</artifactId>
+		  <version>1.0</version>
+		</dependency>
+
+		<!--<dependency>
+      	  <groupId>lcn.fmw.3rd.xecuredb</groupId>
+      	  <artifactId>xdsp_jni</artifactId>
+    	  <version>1.1</version>
+    	</dependency>-->
+
+		<!-- 20160219. 주환철 추가. 시작-->
+		<dependency>
+		  <groupId>com.dreammirae</groupId>
+		  <artifactId>GptwrCommon</artifactId>
+		  <version>1.0</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>com.dreammirae</groupId>
+		  <artifactId>GptwrAuthService</artifactId>
+		  <version>1.0</version>
+		</dependency>
+		<!-- 20160219. 주환철 추가. 종료-->
+
+		<!-- 20151229. 이재혁추가. 시작 -->
+		<dependency>
+		  <groupId>org.xhtmlrenderer</groupId>
+		  <artifactId>flying-saucer-core</artifactId>
+		  <version>9.0.2</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.xhtmlrenderer</groupId>
+		  <artifactId>flying-saucer-pdf</artifactId>
+		  <version>9.0.2</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.dom4j</groupId>
+		  <artifactId>dom4j</artifactId>
+		  <version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>com.ibleaders</groupId>
+		  <artifactId>ibsheet7</artifactId>
+		  <version>1.1.69</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>com.itextpdf</groupId>
+		  <artifactId>itextpdf</artifactId>
+		  <version>2.1.7</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.json.simple</groupId>
+		  <artifactId>json-simple</artifactId>
+		  <version>1.1.1</version>
+		</dependency>
+		<!-- 20151229. 이재혁추가. 종료 -->
+
+		<dependency> <!-- DRM 해제 관련 -->
+			<groupId>com.markany.sunjdk</groupId>
+			<artifactId>MarkanyMaSaferJava</artifactId>
+			<version>1.5</version>
+		</dependency>
+
+		<!-- KAKAO 알림톡 -->
+		<dependency>
+		   <groupId>com.lottemart</groupId>
+		   <artifactId>notifier</artifactId>
+		   <version>1.0.3-RELEASE</version>
+		</dependency>
+		
+		<!-- 2020.10.28 Fasoo-jni-3.0.15u-->
+		<dependency>
+		   <groupId>com.fasoo.fcwpkg.packager</groupId>
+		   <artifactId>fasoo-jni</artifactId>
+		   <version>3.0.15u</version>
+		</dependency>
+		
+		<!-- 2020.10.28 FCW_FIPS_JCRYPTO-v2.1.2.1-->
+		<dependency>
+		   <groupId>com.fasoo.fcwpkg.packager</groupId>
+		   <artifactId>FCW_FIPS_JCRYPTO</artifactId>
+		   <version>v2.1.2.1</version>
+		</dependency>
+		
+		<!-- 2020.10.28 fcwpkg_jni-1.0.13-->
+		<dependency>
+		   <groupId>com.fasoo.fcwpkg.packager</groupId>
+		   <artifactId>fcwpkg_jni</artifactId>
+		   <version>1.0.13</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+		     <plugin>
+		        <artifactId>maven-resources-plugin</artifactId>
+		        <version>2.5</version>
+		        <executions>
+		          <execution>
+		            <id>copy-resources</id>
+		            <phase>validate</phase>
+		            <goals>
+		              <goal>copy-resources</goal>
+		            </goals>
+		            <configuration>
+		              <outputDirectory>${project.build.outputDirectory}/spring</outputDirectory>
+		              <resources>
+		                <resource>
+		                  <directory>${project.basedir}/src/onserver/spring</directory>
+		                  <filtering>true</filtering>
+		                </resource>
+		              </resources>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<finalName>lottemart-common</finalName>
+					<verify>true</verify>
+					<excludes>
+	                	<exclude>**/spring/context-lcnjf-dao*</exclude>
+	                	<exclude>**/spring/context-lcnjf-prop.xml</exclude>
+	                	<exclude>**/spring/context-lcnjf-transaction.xml</exclude>
+	              	</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO0003">
+
+	<typeAlias alias="newProduct"  type="com.lottemart.epc.edi.product.model.NewProduct" />
+	<typeAlias alias="colorSize"   type="com.lottemart.epc.edi.product.model.ColorSize" />
+	<typeAlias alias="ecProductAttribute" type="com.lottemart.epc.edi.product.model.EcProductAttribute" />
+	<typeAlias alias="ecomAddInfo"   type="com.lottemart.epc.edi.product.model.EcomAddInfo" />
+	<typeAlias alias="searchProduct" type="com.lottemart.epc.edi.product.model.SearchProduct" />
+	<typeAlias alias="pedmPro0005VO" type="com.lottemart.epc.edi.product.model.PEDMPRO0005VO" />
+	<typeAlias alias="resultClass"   type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"    type="lcn.module.common.util.HashBox" />
+
+	<resultMap class="colorSize" id="itemList" groupBy="itemCode">
+		<result property="newProductCode" column="newProductCode" />
+		<result property="itemCode" column="itemCode" />
+		<result property="sellCode" column="sellCode" />
+		<result property="optnDesc" column="optnDesc" />
+		<result property="stkMgrYn" column="stkMgrYn" />
+		<result property="rservStkQty" column="rservStkQty" />
+		<result property="optnAmt" column="optnAmt" />
+		<result property="ecProductAttrList" resultMap="PEDMPRO0003.ecProductAttrMap" />
+	</resultMap>
+
+	<resultMap class="ecProductAttribute" id="ecProductAttrMap">
+		<result property="pgmId" column="newProductCode" />
+		<result property="itemCd" column="itemCode" />
+		<result property="stdCatCd" column="stdCatCd" />
+		<result property="attrPiType" column="attrPiType" />
+		<result property="attrId" column="attrId" />
+		<result property="attrValId" column="attrValId" />
+		<result property="attrValNm" column="attrValNm" />
+		<result property="attrVal" column="attrVal" />
+		<result property="attrCodeUseYn" column="attrCodeUseYn" />
+	</resultMap>
+
+    <resultMap id="tmpProductInfoMap" class="newProduct">
+      <result property="newProductCode" 		column="NEW_PROD_CD" />
+      <result property="productName" 			column="PROD_NM" />
+      <result property="productShortName" 		column="PROD_SHORT_NM" />
+      <result property="onOffDivnCode" 			column="ONOFF_DIVN_CD" />
+      <result property="entpCode" 				column="ENTP_CD"  />
+      <result property="sellCode" 				column="SELL_CD"    />
+      <result property="productDivnCode"    	column="PROD_DIVN_CD"  />
+      <result property="productStandardName"  	column="PROD_STANDARD_NM"  />
+      <result property="displayTotalQuantity"   column="DP_TOT_QTY"  />
+      <result property="displayBaseQuantity"    column="DP_BASE_QTY"  />
+      <result property="normalProductCost" 		column="NOR_PROD_PCOST"  />
+      <result property="normalProductSalePrice" column="NOR_PROD_SALE_PRC"  />
+      <result property="displayUnitCode" 		column="DP_UNIT_CD"  />
+      <result property="eventSellPrice" 		column="EVT_PROD_SELL_PRC"  />
+      <result property="sellPrice"    			column="SELL_PRC"  />
+      <result property="taxatDivCode" 			column="TAXAT_DIVN_CD"  />
+      <result property="productTypeDivnCode" 	column="PROD_TYPE_DIVN_CD"  />
+      <result property="officialOrder.centerDivnCode" 	column="CTR_TYPE_DIVN_CD"  />
+      <result property="priceIssueDivnCode" 		column="PRC_ISSUE_DIVN_CD"  />
+      <result property="productHorizontalLength" 	column="PROD_HRZN_LENG"  />
+      <result property="productVerticalLength" 	column="PROD_VTCL_LENG"  />
+      <result property="productHeight" 			column="PROD_HIGT" />
+      <result property="productDescription" 	column="PROD_DESC" 	 />
+      <result property="officialOrder.teamCode" 	column="TEAM_CD"  />
+      <result property="officialOrder.lGroupCode" 	column="LGRP_CD"  />
+      <result property="officialOrder.subGroupCode" column="SUBGRP_CD"  />
+      <result property="onlineProductName"    		column="ONLINE_PROD_NM" />
+      <result property="productCountryCode"  	column="HOME_CD"  />
+      <result property="onlineProductCode"    column="ONLINE_REP_PROD_CD"   />
+      <result property="profitRate" 			column="PRFT_RATE" />
+      <result property="officialOrder.ispDetailDescription" 		column="ISP_DTL_DESC" 	/>
+      <result property="officialOrder.publishIncrementQuantity"    	column="PUR_INRCNT_QTY"  />
+      <result property="officialOrder.publishedUnitCode" 		column="PUR_UNIT_CD"    />
+      <result property="officialOrder.flowDateManageCode" 				column="FLOW_DD_MGR_CD"  />
+      <result property="officialOrder.noPublishedBuyPossibleDivnCode" 	column="NPUR_BUY_PSBT_DIVN_CD"  />
+      <result property="officialOrder.maxKeepDayCount"    				column="MAX_KEEP_DD_CNT"  />
+      <result property="officialOrder.newProductFirstPublishedDivnCode"	column="NEW_PROD_FIRST_PUR_DIVN_CD"  />
+      <result property="officialOrder.mixYn" 					column="MIX_YN" />
+      <result property="officialOrder.totalInspectYn" 		column="TOT_INSP_YN"  />
+      <result property="officialOrder.protectTagDivnCode" 	column="PROTECT_TAG_DIVN_CD" />
+      <result property="officialOrder.protectTagTypeCode" 	column="PROTECT_TAG_TYPE_CD"    />
+      <result property="officialOrder.temperatureDivnCode" 	column="TMPRT_DIVN_CD"  />
+      <result property="officialOrder.quantityWeightDivnCode" column="QTY_WEGT_DIVN_CD"  />
+      <result property="officialOrder.seasonDivnCode" 		column="SESN_DIVN_CD" />
+      <result property="officialOrder.minimumOrderQuantity" 	column="MIN_ORD_PSBT_QTY"    />
+      <result property="officialOrder.maximumOrderQuantity" 	column="MAX_ORD_PSBT_QTY"  />
+      <result property="officialOrder.brandCode" 			column="BRAND_CD"  />
+      <result property="officialOrder.brandName"			column="BRAND_NM"  />
+      <result property="officialOrder.makerCode" 			column="MAKER_CD"    />
+      <result property="officialOrder.makerName" 			column="MAKER_NM"  />
+      <result property="tradeTypeCode" 					column="TRD_TYPE_DIVN_CD"  />
+      <result property="regDate" 							column="REG_DATE"  />
+      <result property="productImageId" 					column="PROD_IMG_ID"  />
+      <result property="productDay" 						column="PRODUCT_DY"  />
+      <result property="onlineDisplayCategoryCode" 		column="CATEGORY_ID"  />
+      <result property="onlineDisplayCategoryName" 		column="CATEGORY_NM"  />
+      <result property="socialProductDeliveryCode" 		column="SOCIAL_PROD_DELI_CD"  />
+      <result property="officialOrder.newProductGeneratedDivnCode" 		column="NEW_PROD_GEN_DIVN_CD"  />
+      <result property="storeWarehouseDay" 		column="STGE_PSBT_DD"  />
+      <result property="pickupWarehouseDay" 		column="PICK_PSBT_DD"  />
+      <result property="nfomlVariationDesc" 		column="NFOML_VARIATION_DESC"  />
+      <result property="imgNcnt" 		column="IMG_NCNT"  />
+      <result property="infoGrpCd" 		column="INFO_GRP_CD" />
+      <result property="infoGrpCd2" 		column="INFO_GRP_CD2" />
+      <result property="vicprofitRate" 				column="WPRFT_RATE" />
+      <result property="vicnormalProductCost" 		column="WNOR_PROD_PCOST" />
+      <result property="vicnormalProductSalePrice" 	column="WNOR_PROD_SALE_PRC" />
+      <result property="matCd" 	column="MAT_CD"  />
+      <result property="md_vali_sellCode" 	column="MD_VALI_SELL_CD" />
+      <result property="officialOrder.newProdPromoFg"	column="NEW_PROD_PROMO_FG" />
+      <result property="newProdStDy"					column="NEW_PROD_ST_DY"  />
+      <result property="officialOrder.overPromoFg"	column="OVER_PROMO_FG" />
+      <result property="officialOrder.modelName"		column="MODEL_NM" />
+      <result property="officialOrder.ecoYn" 			column="ECO_YN" />
+      <result property="officialOrder.ecoNm"    		column="ECO_NM"  />
+      <result property="officialOrder.dlvgaYn" 		column="DLV_GA" />
+      <result property="officialOrder.dlvDt" 			column="DLV_DT" />
+      <result property="officialOrder.inscoYn" 		column="INS_CO" />
+    </resultMap>
+
+  <resultMap id="tmpProductInfoMapOld" class="newProduct">
+    <result property="newProductCode" 			column="NEW_PROD_CD" />
+    <result property="productName" 				column="PROD_NM" 	 />
+    <result property="productShortName" 		column="PROD_SHORT_NM" />
+    <result property="onOffDivnCode" 			column="ONOFF_DIVN_CD" />
+    <result property="entpCode" 				column="ENTP_CD" />
+    <result property="sellCode" 				column="SELL_CD" />
+    <result property="productDivnCode"    		column="PROD_DIVN_CD"  />
+    <result property="productStandardName"  	column="PROD_STANDARD_NM"  />
+    <result property="displayTotalQuantity"    	column="DP_TOT_QTY"  />
+    <result property="displayBaseQuantity"    	column="DP_BASE_QTY"  />
+    <result property="normalProductCost" 		column="NOR_PROD_PCOST"  />
+    <result property="normalProductSalePrice" 	column="NOR_PROD_SALE_PRC"  />
+    <result property="displayUnitCode" 			column="DP_UNIT_CD"  />
+    <result property="eventSellPrice" 			column="EVT_PROD_SELL_PRC"  />
+    <result property="sellPrice"    			column="SELL_PRC"  />
+    <result property="taxatDivCode" 			column="TAXAT_DIVN_CD"  />
+    <result property="productTypeDivnCode" 		column="PROD_TYPE_DIVN_CD"  />
+    <result property="officialOrder.centerDivnCode" 		column="CTR_TYPE_DIVN_CD"  />
+    <result property="priceIssueDivnCode" 		column="PRC_ISSUE_DIVN_CD"  />
+    <result property="productHorizontalLength" 	column="PROD_HRZN_LENG"  />
+    <result property="productVerticalLength" 	column="PROD_VTCL_LENG"  />
+    <result property="productHeight" 			column="PROD_HIGT" />
+    <result property="productDescription" 		column="PROD_DESC" 	 />
+    <result property="officialOrder.teamCode" 			column="TEAM_CD" />
+    <result property="officialOrder.lGroupCode" 		column="LGRP_CD" />
+    <result property="officialOrder.subGroupCode" 		column="SUBGRP_CD" />
+    <result property="onlineProductName"    		column="ONLINE_PROD_NM" />
+    <result property="productCountryCode"  	column="HOME_CD"  />
+    <result property="onlineProductCode"    column="ONLINE_REP_PROD_CD" />
+    <result property="profitRate" 			column="PRFT_RATE" />
+    <result property="officialOrder.ispDetailDescription" 		column="ISP_DTL_DESC" />
+    <result property="officialOrder.publishIncrementQuantity"    	column="PUR_INRCNT_QTY" />
+    <result property="officialOrder.publishedUnitCode" 		column="PUR_UNIT_CD" />
+    <result property="officialOrder.flowDateManageCode" 				column="FLOW_DD_MGR_CD"  />
+    <result property="officialOrder.noPublishedBuyPossibleDivnCode" 	column="NPUR_BUY_PSBT_DIVN_CD" />
+    <result property="officialOrder.maxKeepDayCount"    				column="MAX_KEEP_DD_CNT" />
+    <result property="officialOrder.newProductFirstPublishedDivnCode"	column="NEW_PROD_FIRST_PUR_DIVN_CD" />
+    <result property="officialOrder.mixYn" 					column="MIX_YN" />
+    <result property="officialOrder.totalInspectYn" 		column="TOT_INSP_YN" />
+    <result property="officialOrder.protectTagDivnCode" 	column="PROTECT_TAG_DIVN_CD" />
+    <result property="officialOrder.protectTagTypeCode" 	column="PROTECT_TAG_TYPE_CD" />
+    <result property="officialOrder.temperatureDivnCode" 	column="TMPRT_DIVN_CD"  />
+
+    <result property="officialOrder.quantityWeightDivnCode" column="QTY_WEGT_DIVN_CD" />
+    <result property="officialOrder.seasonDivnCode" 		column="SESN_DIVN_CD" />
+    <result property="officialOrder.minimumOrderQuantity" 	column="MIN_ORD_PSBT_QTY" />
+    <result property="officialOrder.maximumOrderQuantity" 	column="MAX_ORD_PSBT_QTY" />
+     <result property="officialOrder.brandCode" 			column="BRAND_CD"  />
+    <result property="officialOrder.brandName"			column="BRAND_NM"  />
+    <result property="officialOrder.makerCode" 			column="MAKER_CD"    />
+    <result property="officialOrder.makerName" 			column="MAKER_NM"  />
+    <result property="tradeTypeCode" 					column="TRD_TYPE_DIVN_CD"  />
+    <result property="regDate" 							column="REG_DATE"  />
+    <result property="productImageId" 					column="PROD_IMG_ID"  />
+    <result property="productDay" 						column="PRODUCT_DY"  />
+    <result property="onlineDisplayCategoryCode" 		column="CATEGORY_ID"  />
+    <result property="onlineDisplayCategoryName" 		column="CATEGORY_NM"  />
+    <result property="socialProductDeliveryCode" 		column="SOCIAL_PROD_DELI_CD"  />
+    <result property="officialOrder.newProductGeneratedDivnCode" 		column="NEW_PROD_GEN_DIVN_CD"  />
+    <result property="storeWarehouseDay" 		column="STGE_PSBT_DD"  />
+    <result property="pickupWarehouseDay" 		column="PICK_PSBT_DD"  />
+    <result property="nfomlVariationDesc" 		column="NFOML_VARIATION_DESC"  />
+    <result property="imgNcnt" 		column="IMG_NCNT"  />
+    <result property="infoGrpCd" 		column="INFO_GRP_CD"  />
+    <result property="infoGrpCd2" 		column="INFO_GRP_CD2"  />
+    <result property="vicprofitRate" 				column="WPRFT_RATE"  />
+    <result property="vicnormalProductCost" 		column="WNOR_PROD_PCOST"  />
+    <result property="vicnormalProductSalePrice" 	column="WNOR_PROD_SALE_PRC"  />
+    <result property="matCd" 	column="MAT_CD"  />
+    <result property="md_vali_sellCode" 	column="MD_VALI_SELL_CD"  />
+    <result property="officialOrder.newProdPromoFg"	column="NEW_PROD_PROMO_FG" />
+	<result property="newProdStDy"					column="NEW_PROD_ST_DY"  />
+	<result property="officialOrder.overPromoFg"	column="OVER_PROMO_FG"  />
+	<result property="officialOrder.modelName"		column="MODEL_NM"  />
+	<result property="officialOrder.ecoYn" 			column="ECO_YN" />
+    <result property="officialOrder.ecoNm"    		column="ECO_NM"  />
+	<result property="officialOrder.dlvgaYn" 		column="DLV_GA" />
+	<result property="officialOrder.dlvDt" 			column="DLV_DT" />
+	<result property="officialOrder.inscoYn" 		column="INS_CO" />
+	</resultMap>
+
+	<select id="selectNewProductInfoInTemp" resultMap="tmpProductInfoMap" parameterClass="String">
+	SELECT  /* SQLINES DEMO *** ectNewProductInfoInTemp */
+		 NEW_PROD_CD,  		  PROD_NM, 	     	   PROD_SHORT_NM, 	   	   ONOFF_DIVN_CD,
+		 ENTP_CD,			  SELL_CD, 		 	   PROD_DIVN_CD, 	   	   PROD_STANDARD_NM,
+		 DP_TOT_QTY, 	  	  DP_BASE_QTY,		   NOR_PROD_PCOST, 	   	   NOR_PROD_SALE_PRC,
+		 DP_UNIT_CD,    	  EVT_PROD_SELL_PRC,   SELL_PRC,		   	   TAXAT_DIVN_CD,
+		 PROD_TYPE_DIVN_CD,   CTR_TYPE_DIVN_CD,    PRC_ISSUE_DIVN_CD,  	   PROD_HRZN_LENG,
+		 PROD_VTCL_LENG, 	  PROD_HIGT, 	 	   PROD_DESC,     	   	   ISP_DTL_DESC,
+		 TEAM_CD,			  LGRP_CD,			   SUBGRP_CD,		   	   ONLINE_PROD_NM,
+		 HOME_CD,			  ONLINE_REP_PROD_CD,  PUR_INRCNT_QTY,	   	   PUR_UNIT_CD,
+		 PRFT_RATE,		      FLOW_DD_MGR_CD, 	   NPUR_BUY_PSBT_DIVN_CD,  MAX_KEEP_DD_CNT,
+		 NEW_PROD_FIRST_PUR_DIVN_CD,   MIX_YN, 	   TOT_INSP_YN,     	   PROTECT_TAG_DIVN_CD,
+		 PROTECT_TAG_TYPE_CD,	TMPRT_DIVN_CD,     QTY_WEGT_DIVN_CD,	   SESN_DIVN_CD,
+		 MIN_ORD_PSBT_QTY, 		MAX_ORD_PSBT_QTY,	BRAND_CD,				BRAND_NM,
+	 	 MAKER_CD, 				MAKER_NM,			TRD_TYPE_DIVN_CD,		T.REG_DATE,
+	 	 PROD_IMG_ID,			PRODUCT_DY,			A.CATEGORY_ID , 		A.CATEGORY_NM,
+	 	 SOCIAL_PROD_DELI_CD,	STGE_PSBT_DD,		PICK_PSBT_DD,			NEW_PROD_GEN_DIVN_CD,
+	 	 NFOML_VARIATION_DESC,	IMG_NCNT,           MAT_CD,            WNOR_PROD_PCOST,
+	 	 WNOR_PROD_SALE_PRC,    WPRFT_RATE,          
+	 	 (select INFO_GRP_CD from TPR_PROD_ADD_INFO_VAL I where T.NEW_PROD_CD=I.NEW_PROD_CD) as INFO_GRP_CD
+	 	 , (select INFO_GRP_CD from TPR_PROD_CERT_INFO_VAL I where T.NEW_PROD_CD=I.NEW_PROD_CD) as INFO_GRP_CD2
+	 	 ,MD_VALI_SELL_CD ,		NEW_PROD_PROMO_FG,	NEW_PROD_ST_DY,		OVER_PROMO_FG, 
+	 	 MODEL_NM,
+	 	 BRAND_CD,		      BRAND_NM,
+		 MAKER_CD,			  MAKER_NM,
+		 ECO_YN,			  ECO_NM,
+		 DLV_GA,				DLV_DT,
+		 INS_CO
+	 FROM  TED_NEW_PROD_REG  T
+	 LEFT OUTER JOIN  TCA_CATEGORY A 
+      ON T.CATEGORY_ID = A.CATEGORY_ID 
+     -- SQLINES DEMO *** PE_CD in ('01','11')
+	 WHERE T.NEW_PROD_CD      = #newProductCode# 
+	  
+	</select>
+
+	<select id="selectNewProductInfoInTempOld" resultMap="tmpProductInfoMapOld" parameterClass="String">
+	SELECT  /* SQLINES DEMO *** ectNewProductInfoInTempOld */
+		 NEW_PROD_CD,  		  PROD_NM, 	     	   PROD_SHORT_NM, 	   	   ONOFF_DIVN_CD,
+		 ENTP_CD,			  SELL_CD, 		 	   PROD_DIVN_CD, 	   	   PROD_STANDARD_NM,
+		 DP_TOT_QTY, 	  	  DP_BASE_QTY,		   NOR_PROD_PCOST, 	   	   NOR_PROD_SALE_PRC,
+		 DP_UNIT_CD,    	  EVT_PROD_SELL_PRC,   SELL_PRC,		   	   TAXAT_DIVN_CD,
+		 PROD_TYPE_DIVN_CD,   CTR_TYPE_DIVN_CD,    PRC_ISSUE_DIVN_CD,  	   PROD_HRZN_LENG,
+		 PROD_VTCL_LENG, 	  PROD_HIGT, 	 	   PROD_DESC,     	   	   ISP_DTL_DESC,
+		 TEAM_CD,			  LGRP_CD,			   SUBGRP_CD,		   	   ONLINE_PROD_NM,
+		 HOME_CD,			  ONLINE_REP_PROD_CD,  PUR_INRCNT_QTY,	   	   PUR_UNIT_CD,
+		 PRFT_RATE,		      FLOW_DD_MGR_CD, 	   NPUR_BUY_PSBT_DIVN_CD,  MAX_KEEP_DD_CNT,
+		 NEW_PROD_FIRST_PUR_DIVN_CD,   MIX_YN, 	   TOT_INSP_YN,     	   PROTECT_TAG_DIVN_CD,
+		 PROTECT_TAG_TYPE_CD,	TMPRT_DIVN_CD,     QTY_WEGT_DIVN_CD,	   SESN_DIVN_CD,
+		 MIN_ORD_PSBT_QTY, 		MAX_ORD_PSBT_QTY,	BRAND_CD,				BRAND_NM,
+		 MAKER_CD, 				MAKER_NM,			TRD_TYPE_DIVN_CD,		T.REG_DATE,
+		 PROD_IMG_ID,			PRODUCT_DY,			A.CATEGORY_ID , 		A.CATEGORY_NM,
+		 SOCIAL_PROD_DELI_CD,	STGE_PSBT_DD,		PICK_PSBT_DD,			NEW_PROD_GEN_DIVN_CD,
+		 NFOML_VARIATION_DESC,	IMG_NCNT,           MAT_CD,            WNOR_PROD_PCOST,
+		 WNOR_PROD_SALE_PRC,    WPRFT_RATE,
+		 (select INFO_GRP_CD from TPR_PROD_ADD_INFO_VAL I where T.NEW_PROD_CD=I.NEW_PROD_CD) as INFO_GRP_CD
+		 , (select INFO_GRP_CD from TPR_PROD_CERT_INFO_VAL I where T.NEW_PROD_CD=I.NEW_PROD_CD) as INFO_GRP_CD2
+		 ,MD_VALI_SELL_CD ,		NEW_PROD_PROMO_FG,	NEW_PROD_ST_DY,		OVER_PROMO_FG,
+		 MODEL_NM,
+		 BRAND_CD,		      BRAND_NM,
+		 MAKER_CD,			  MAKER_NM,
+		 ECO_YN,			  ECO_NM,
+		 DLV_GA,				DLV_DT,
+		 INS_CO
+	 FROM  TED_NEW_PROD_REG  T
+	 LEFT OUTER JOIN  TCA_CATEGORY A 
+	   ON T.CATEGORY_ID = A.CATEGORY_ID 
+	     -- SQLINES DEMO *** PE_CD in ('01','11')
+	 WHERE T.NEW_PROD_CD      = #newProductCode# 
+	</select>
+ 
+	<select id="selectProductColorListInTemp" resultClass="colorSize" parameterClass="String">
+	/* SQLINES DEMO *** ectProductColorListInTemp */
+	SELECT ITEM_CD as itemCode, COLOR_CD as colorCode, SZ_CAT_CD as sizeCategoryCode, 
+			SZ_CD   as sizeCode, SELL_CD  as sellCode,  PROD_IMG_ID as productImageId 
+	FROM TED_COLOR_SIZE
+	WHERE NEW_PROD_CD = #newProductCode#
+	</select>
+
+	<select id="selectProductItemListInTemp" resultMap="itemList" parameterClass="String">
+	/* SQLINES DEMO *** ectProductItemListInTemp 2016.01.04 테이블 변경으로 인한 쿼리 변경 by SONG MIN KYO */
+	SELECT TVA.PGM_ID  AS newProductCode
+	     , COALESCE(TVA.ITEM_CD, '')  AS itemCode
+	     , TVA.SELL_CD  AS sellCode
+	     , TVA.OPTN_DESC  AS optnDesc
+	     , TVA.STK_MGR_YN  AS stkMgrYn
+	     , COALESCE(TVA.RSERV_STK_QTY, 0)  AS rservStkQty
+	     , COALESCE(TVA.OPTN_AMT, 0)  AS optnAmt
+	     , TAPM.STD_CAT_CD  AS stdCatCd
+	     , TAC.ATTR_PI_TYPE  AS attrPiType
+	     , TAPM.ATTR_ID  AS attrId
+	     , COALESCE(TAPM.ATTR_VAL_ID,'etc')  AS attrValId
+	     , TAPM.ATTR_VAL  AS attrVal
+	     , TAV.ATTR_VAL_NM  AS attrValNm
+	     , TAPM.ATTR_CODE_USE_YN  AS attrCodeUseYn
+	  FROM TPC_VAR_ATT TVA
+ LEFT OUTER JOIN TEC_ATTR_PROD_MAPPING TAPM ON TVA.PGM_ID = TAPM.PGM_ID
+   	AND TVA.ITEM_CD= TAPM.ITEM_CD
+ LEFT OUTER JOIN TEC_ATTR_VAL TAV ON TAPM.ATTR_ID = TAV.ATTR_ID
+   	AND TAPM.ATTR_VAL_ID = TAV.ATTR_VAL_ID
+ LEFT OUTER JOIN TEC_ATTR_CD TAC ON TAPM.ATTR_ID = TAC.ATTR_ID
+	 WHERE TVA.PGM_ID = #newProductCode#
+	 UNION
+    SELECT * FROM (
+	SELECT TAPM.PROD_CD  AS newProductCode
+	     , COALESCE(TAPM.ITEM_CD, '')  AS itemCode
+	     , TVA.SELL_CD  AS sellCode
+	     , TVA.OPTN_DESC  AS optnDesc
+	     , TVA.STK_MGR_YN  AS stkMgrYn
+	     , COALESCE(TVA.RSERV_STK_QTY, 0)  AS rservStkQty
+	     , COALESCE(TVA.OPTN_AMT, 0)  AS optnAmt
+	     , TAPM.STD_CAT_CD  AS stdCatCd
+	     , TAC.ATTR_PI_TYPE  AS attrPiType
+	     , TAPM.ATTR_ID  AS attrId
+	     , COALESCE(TAPM.ATTR_VAL_ID,'etc')  AS attrValId
+	     , TAPM.ATTR_VAL  AS attrVal
+	     , TAV.ATTR_VAL_NM   AS attrValNm
+	     , TAPM.ATTR_CODE_USE_YN  AS attrCodeUseYn
+	  FROM TEC_ATTR_PROD_MAPPING TAPM
+ LEFT OUTER JOIN TPC_VAR_ATT TVA ON TAPM.PROD_CD = TVA.PGM_ID
+   	AND TAPM.ITEM_CD = TVA.ITEM_CD
+ LEFT OUTER JOIN TEC_ATTR_VAL TAV ON TAPM.ATTR_ID = TAV.ATTR_ID
+   	AND TAPM.ATTR_VAL_ID = TAV.ATTR_VAL_ID
+ LEFT OUTER JOIN TEC_ATTR_CD TAC ON TAPM.ATTR_ID = TAC.ATTR_ID
+	 WHERE TAPM.PROD_CD = #newProductCode#
+     ORDER BY TAPM.ITEM_CD, TAPM.ATTR_ID
+    )
+	</select>
+
+	<select id="selectProductItemListInTempOld" resultClass="colorSize" parameterClass="String">
+	/* SQLINES DEMO *** ectProductItemListInTempOld */
+	SELECT ITEM_CD as itemCode, SELL_CD  as sellCode
+			,OPTN_DESC as optnDesc,  STK_MGR_YN as stkMgrYn, RSERV_STK_QTY as rservStkQty
+	FROM TED_COLOR_SIZE
+	WHERE NEW_PROD_CD = #newProductCode#
+	</select>
+	
+	<select id="selectProductEcomAddInfoListInTemp" resultClass="ecomAddInfo" parameterClass="String">
+	/* SQLINES DEMO *** ectProductEcomAddInfoListInTemp */
+	SELECT NEW_PROD_CD,PROD_CD,INFO_GRP_CD,INFO_COL_CD,COL_VAL FROM TPR_PROD_ADD_INFO_VAL
+	WHERE NEW_PROD_CD=#newProductCode#
+	</select>
+
+    <select id="selectColoSizeView" resultClass="colorSize" parameterClass="map" >
+	/* SQLINES DEMO *** ellCodeView */
+	SELECT  A.NEW_PROD_CD as newProductCode
+           ,A.ITEM_CD     as itemCode   
+           ,A.SELL_CD     as sellCode
+           ,A.ITEM_CD     as itemCode 
+           ,B.COLOR_NM    as colorName
+           ,C.SZ_NM       as szName
+      FROM TED_COLOR_SIZE A
+           INNER JOIN TPR_COLOR B
+                  ON  A.COLOR_CD  = B.COLOR_CD
+           INNER JOIN TPR_SIZE C
+                  ON A.SZ_CAT_CD = C.SZ_CAT_CD
+                  AND A.SZ_CD    = C.SZ_CD       
+     WHERE NEW_PROD_CD = #newProductCode#
+      ORDER BY A.ITEM_CD, A.SELL_CD, A.ITEM_CD
+    </select>
+
+  <resultMap id="tmpProductMap" class="newProduct">
+    <result property="regDate"  			column="REG_DATE" />
+    <result property="sellCode" 			column="SELL_CD"    />
+    <result property="productName" 			column="PROD_NM" 	 />
+    <result property="productTypeDivnCode"  column="PROD_DIVN_CD"  />
+    <result property="officialOrder.publishIncrementQuantity" 	column="PUR_INRCNT_QTY"  />
+    <result property="productStandardName" 			column="PROD_STANDARD_NM" 	 />
+    <result property="onlineProductName" 			column="ONLINE_PROD_NM" 	 />
+    <result property="normalProductCost" 			column="NOR_PROD_PCOST"  />
+    <result property="normalProductSalePrice" 		column="NOR_PROD_SALE_PRC"  />
+    <result property="profitRate" 					column="PRFT_RATE"  />
+    <result property="officialOrder.barcodeVerfiyDocTypeFlag"	column="PGM_ID"  />
+    <result property="newProductCode" 			column="NEW_PROD_CD"    />
+    <result property="onOffDivnCode" 			column="ONOFF_DIVN_CD"  />
+    
+    <result property="officialOrder.brandCode" 		column="BRAND_CD"  />
+    <result property="officialOrder.brandName"		column="BRAND_NM"  />
+    <result property="officialOrder.makerCode" 		column="MAKER_CD"    />
+    <result property="officialOrder.makerName" 		column="MAKER_NM"  />
+    <result property="productImageId" 				column="PROD_IMG_ID"  />
+    <result property="colorSizeState" 				column="COLOR_SIZE_STATE"  />
+    
+    <result property="venCd" 					column="ENTP_CD"  />
+    <result property="imgNcnt" 					column="IMG_NCNT"  />
+    <result property="imgNcntYn" 				column="IMG_NCNTYN"  />
+    <result property="lGrpCd" 					column="LGRP_CD"  />
+    <result property="subgrpCd" 				column="SUBGRP_CD"  />
+    <result property="prodcommerce" 			column="PRODCOMMERCE"  />
+  </resultMap>
+
+	<select id="selectProductListInTemp" resultMap="tmpProductMap" parameterClass="searchProduct">
+	/* SQLINES DEMO *** ectProductListInTemp */
+	<![CDATA[
+	SELECT T.ENTP_CD,
+		T.REG_DATE, 		T.SELL_CD, 			T.PROD_NM,
+		T.PROD_DIVN_CD,		T.PUR_INRCNT_QTY,   T.PROD_STANDARD_NM,
+		T.ONLINE_PROD_NM,	T.NOR_PROD_PCOST,	T.NOR_PROD_SALE_PRC,
+		T.PRFT_RATE,		M.PGM_ID,			T.NEW_PROD_CD,
+		T.ONOFF_DIVN_CD,	T.BRAND_CD,			T.BRAND_NM,
+		T.MAKER_CD, 		T.MAKER_NM,         T.PROD_IMG_ID,
+		T.PROD_DIVN_CD,
+		CASE WHEN T.PROD_DIVN_CD ='5' THEN
+            CASE WHEN CO.ITEM_CD IS NULL THEN 'F' ELSE 'T' END
+         ELSE 'T' 
+         END AS   COLOR_SIZE_STATE
+         ,T.IMG_NCNT
+         ,CASE WHEN T.DEAL_REP_PROD_YN <> 'Y' AND T.CTPD_YN <> 'Y' AND T.IMG_NCNT > 2 THEN 'Y' 
+                  WHEN T.DEAL_REP_PROD_YN <> 'Y' AND T.CTPD_YN <> 'Y' AND T.IMG_NCNT < 3 THEN 'N'
+                  WHEN T.IMG_NCNT > 0 THEN 'Y' 
+                  ELSE 'N' 
+           END AS IMG_NCNTYN
+         ,T.LGRP_CD
+         ,T.SUBGRP_CD
+			,CASE   --전상법추가
+	           WHEN t.ONOFF_DIVN_CD='0' THEN
+	                    CASE WHEN (  
+	                             SELECT COUNT(A.INFO_GRP_CD) CNT
+	                             FROM TPR_PROD_ADD_INFO_VAL A, 
+	                                  V_PR_ADD_INFO B 
+	                             WHERE 1=1
+	                                 AND A.INFO_GRP_CD = B.INFO_GRP_CD
+	                                 AND A.INFO_COL_CD = B.INFO_COL_CD
+	                                 AND A.NEW_PROD_CD = T.NEW_PROD_CD
+	                                AND B.L1_CD = T.LGRP_CD
+	                             )=0 THEN 'N'
+	                         WHEN (
+	                             SELECT COUNT(A.INFO_GRP_CD) CNT
+	                             FROM TPR_PROD_ADD_INFO_VAL A, 
+	                                  V_PR_ADD_INFO B 
+	                             WHERE 1=1
+	                                 AND A.INFO_GRP_CD = B.INFO_GRP_CD
+	                                 AND A.INFO_COL_CD = B.INFO_COL_CD
+	                                 AND A.NEW_PROD_CD = T.NEW_PROD_CD
+	                                AND B.L1_CD = T.LGRP_CD
+	                             )=
+	                             (
+	                             SELECT COUNT(A.INFO_GRP_CD) CNT
+	                             FROM V_PR_ADD_INFO A
+	                             WHERE 1=1
+	                                 AND A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = T.NEW_PROD_CD)
+	                               AND A.L1_CD = T.LGRP_CD
+	                             )THEN 'Y'
+	                             ELSE 'N' END 
+						ELSE 
+	                    CASE WHEN (  
+	                             SELECT COUNT(A.INFO_GRP_CD) CNT
+	                             FROM TPR_PROD_ADD_INFO_VAL A, 
+	                                  V_PR_ADD_INFO B 
+	                             WHERE 1=1
+	                                 AND A.INFO_GRP_CD = B.INFO_GRP_CD
+	                                 AND A.INFO_COL_CD = B.INFO_COL_CD
+	                                 AND A.NEW_PROD_CD = T.NEW_PROD_CD
+	                                 AND B.L4_CD = T.SUBGRP_CD
+	                             )=0 THEN 'N'
+	                         WHEN (
+	                             SELECT COUNT(A.INFO_GRP_CD) CNT
+	                             FROM TPR_PROD_ADD_INFO_VAL A, 
+	                                  V_PR_ADD_INFO B 
+	                             WHERE 1=1
+	                                 AND A.INFO_GRP_CD = B.INFO_GRP_CD
+	                                 AND A.INFO_COL_CD = B.INFO_COL_CD
+	                                 AND A.NEW_PROD_CD = T.NEW_PROD_CD
+	                                 AND B.L4_CD = T.SUBGRP_CD
+	                             )=
+	                             (
+	                             SELECT COUNT(A.INFO_GRP_CD) CNT
+	                             FROM V_PR_ADD_INFO A
+	                             WHERE 1=1
+	                                 AND A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = T.NEW_PROD_CD)
+	                                 AND A.L4_CD = T.SUBGRP_CD
+	                             )THEN 'Y'
+	                             ELSE 'N' END 
+							END   as PRODCOMMERCE            
+      FROM  TED_NEW_PROD_REG T LEFT OUTER JOIN NEW_SALE_LOGI_EDI@DL_MD_MARTNIS M
+		  				ON T.NEW_PROD_CD = M.PGM_ID AND M.SEQ='001'
+		  				
+		  	  LEFT OUTER JOIN (SELECT NEW_PROD_CD, MAX(ITEM_CD) ITEM_CD FROM TED_COLOR_SIZE GROUP BY  NEW_PROD_CD ) CO
+                ON T.NEW_PROD_CD = CO.NEW_PROD_CD		
+	 WHERE T.PROD_DIVN_CD = #productDivnCode#
+	  and  T.MD_SEND_DIVN_CD IS NULL
+	  ]]>
+	  <isNotEmpty property="entpCode" prepend="AND">
+	  T.ENTP_CD      = #entpCode# 
+	  </isNotEmpty>
+	  <isNotEmpty property="onOffDivnCode" prepend="AND">
+	  T.ONOFF_DIVN_CD      = #onOffDivnCode# 
+	  </isNotEmpty>
+	  <isEmpty property="entpCode">
+		  <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="T.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		   </isNotEmpty>
+	  </isEmpty>
+	  <isNotEmpty property="startDate" prepend="AND">
+	    T.REG_DATE BETWEEN TO_DATE(#startDate#, 'yyyy-MM-dd') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS') 
+	  </isNotEmpty>
+	  ORDER BY T.REG_DATE DESC
+	</select>
+
+	<update id="updateOnoffNewProductInfoInTemp" parameterClass="newProduct">
+	/* SQLINES DEMO *** ateOnoffNewProductInfoInTemp */
+	UPDATE TED_NEW_PROD_REG
+	   SET PROD_NM		   = #productName#, 					   PROD_SHORT_NM = #productShortName#
+	     , ONOFF_DIVN_CD	   = #onOffDivnCode#,					   ENTP_CD		  = #entpCode#
+	     , SELL_CD		   = #sellCode:VARCHAR:NULL#, 		 	   PROD_DIVN_CD  = #productDivnCode#
+	     , PROD_STANDARD_NM  = #productStandardName# , 			   DP_TOT_QTY	  = #displayTotalQuantity:NUMERIC:0#
+	     , DP_BASE_QTY	   = #displayBaseQuantity:NUMERIC:0#,	   NOR_PROD_PCOST= #normalProductCost#
+	     , NOR_PROD_SALE_PRC = #normalProductSalePrice#, 			   DP_UNIT_CD	  = #displayUnitCode:VARCHAR:NULL#
+	     , EVT_PROD_SELL_PRC = #eventSellPrice:NUMERIC:0#
+	     , TAXAT_DIVN_CD	   = #taxatDivCode# ,					   PROD_TYPE_DIVN_CD = #productTypeDivnCode#
+	     , CTR_TYPE_DIVN_CD  = #officialOrder.centerDivnCode# ,      PROD_HRZN_LENG = #productHorizontalLength#
+	     , PROD_VTCL_LENG	   = #productVerticalLength#, 	    	   PROD_HIGT	   = #productHeight#
+	     , PROD_DESC		   = #productDescription#,		    	   ISP_DTL_DESC   = #officialOrder.ispDetailDescription#
+	     , TEAM_CD		   = #officialOrder.teamCode#,	    	   LGRP_CD		   = #officialOrder.lGroupCode#
+	     , SUBGRP_CD		   = #officialOrder.subGroupCode#,		   HOME_CD		   = #productCountryCode#
+
+	     , PUR_INRCNT_QTY    			= #officialOrder.publishIncrementQuantity:NUMERIC:0#
+	     , PUR_UNIT_CD	  			= #officialOrder.publishedUnitCode:VARCHAR:NULL#
+	     , NPUR_BUY_PSBT_DIVN_CD 		= #officialOrder.noPublishedBuyPossibleDivnCode:VARCHAR:NULL#
+	     , MAX_KEEP_DD_CNT	   	    = #officialOrder.maxKeepDayCount:NUMERIC:0#
+
+	     , PRFT_RATE		     = #profitRate:NUMERIC:0#,			   		   FLOW_DD_MGR_CD = #officialOrder.flowDateManageCode:VARCHAR:NULL#
+	     , NEW_PROD_FIRST_PUR_DIVN_CD = #officialOrder.newProductFirstPublishedDivnCode:VARCHAR:NULL#, MIX_YN=#officialOrder.mixYn#
+	     , TOT_INSP_YN 		 = #officialOrder.totalInspectYn:CHAR:0#,      PROTECT_TAG_DIVN_CD = #officialOrder.protectTagDivnCode#
+	     , PROTECT_TAG_TYPE_CD = #officialOrder.protectTagTypeCode#,	       TMPRT_DIVN_CD       = #officialOrder.temperatureDivnCode#
+	     , SESN_DIVN_CD        = #officialOrder.seasonDivnCode#,			   MOD_DATE            =  CURRENT_TIMESTAMP(0)
+	     , MOD_ID   	         = #entpCode#,								   TRD_TYPE_DIVN_CD    = #tradeTypeCode#
+	     , PRODUCT_DY  		 = #productDay:VARCHAR:NULL#,				   STGE_PSBT_DD 	   = #storeWarehouseDay:VARCHAR:NULL#
+	     , PICK_PSBT_DD		 = #pickupWarehouseDay:VARCHAR:NULL#,		   WPRFT_RATE		   = #vicprofitRate:NUMERIC:0#
+	     , WNOR_PROD_PCOST	 = #vicnormalProductCost#,					   WNOR_PROD_SALE_PRC	 = #vicnormalProductSalePrice#
+	     , MAT_CD		         = #matCd#
+	     , NEW_PROD_PROMO_FG	= #officialOrder.newProdPromoFg#
+	     , NEW_PROD_ST_DY		= #newProdStDy#
+	     , OVER_PROMO_FG		= #officialOrder.overPromoFg#
+	     , MODEL_NM			= #officialOrder.modelName#
+	     , BRAND_CD			= #officialOrder.brandCode:VARCHAR:NULL#,		BRAND_NM = #officialOrder.brandName:VARCHAR:NULL#
+	     , MAKER_CD			= #officialOrder.makerCode:VARCHAR:NULL#,		MAKER_NM = #officialOrder.makerName:VARCHAR:NULL#
+	     , ECO_YN				= #officialOrder.ecoYn#,			  			ECO_NM = #officialOrder.ecoNm#
+	     , DLV_GA				= #officialOrder.dlvgaYn#,			  			DLV_DT = #officialOrder.dlvDt#
+	     , INS_CO				= #officialOrder.inscoYn#
+	     <isNotEmpty property="themaYn">, THEMA_YN = #themaYn#</isNotEmpty>
+	     <isNotEmpty property="dealViewCd">, DEAL_VIEW_CD = #dealViewCd#</isNotEmpty>
+	     <isNotEmpty property="videoUrl">, VIDEO_URL = #videoUrl#</isNotEmpty>
+	 WHERE NEW_PROD_CD= #newProductCode#
+	</update>
+
+	<!-- SQLINES DEMO *** -->
+	<update id="updateOnlineSocialNewProductInfoInTemp" parameterClass="newProduct">
+	/* SQLINES DEMO *** ateOnlineSocialNewProductInfoInTemp */
+	UPDATE TPC_NEW_PROD_REG 
+	   SET PROD_NM        = #productName#
+	     , PROD_SHORT_NM  = #productShortName#
+	     , ONOFF_DIVN_CD  = #onOffDivnCode#
+	     , ENTP_CD                  = #entpCode#
+	     , SELL_CD		   		= #sellCode#
+	     , PROD_DIVN_CD  		= #productDivnCode#
+	     , PROD_STANDARD_NM  	= #productStandardName# 
+	     , DP_TOT_QTY	 		= #displayTotalQuantity:NUMERIC:0#
+	     , DP_BASE_QTY	   		= #displayBaseQuantity:NUMERIC:0#
+	     , NOR_PROD_PCOST		= #normalProductCost#
+	     , NOR_PROD_SALE_PRC 	= #normalProductSalePrice#
+	     , DP_UNIT_CD	 		= #displayUnitCode#
+	     , EVT_PROD_SELL_PRC 	= #eventSellPrice#
+	     , SELL_PRC	  		= #sellPrice#
+	     , TAXAT_DIVN_CD	   	= #taxatDivCode# 
+	     , PROD_TYPE_DIVN_CD 	= #productTypeDivnCode# 
+	     , L3_CD			  	= #l3Cd#
+	     , ONLINE_PROD_NM    	= #onlineProductName:VARCHAR:NULL# 
+	     , MAX_KEEP_DD_CNT	  	= #officialOrder.maxKeepDayCount:NUMERIC:0#
+	     , NEW_PROD_FIRST_PUR_DIVN_CD = #officialOrder.newProductFirstPublishedDivnCode:VARCHAR:NULL#
+	     , MIX_YN				= #officialOrder.mixYn#
+	     , PRC_ISSUE_DIVN_CD 	= #priceIssueDivnCode#
+	     , PROD_HRZN_LENG 		= #productHorizontalLength:NUMERIC:0# 
+	     , PROD_VTCL_LENG	  	= #productVerticalLength:NUMERIC:0#
+	     , PROD_HIGT	   		= #productHeight:NUMERIC:0#
+	     , HOME_CD		  		= #productCountryCode#
+	     , ONLINE_REP_PROD_CD 	= #onlineProductCode:VARCHAR:NULL#
+	     , PRFT_RATE		   	= #profitRate:NUMERIC:0#
+	     , FLOW_DD_MGR_CD 		= #officialOrder.flowDateManageCode:VARCHAR:NULL#
+	     , QTY_WEGT_DIVN_CD  	= #officialOrder.quantityWeightDivnCode#
+	     , SESN_YEAR_CD          = #sesnYearCd#
+	     , SESN_DIVN_CD      = #sesnDivnCd#
+	     , MIN_ORD_PSBT_QTY  = #officialOrder.minimumOrderQuantity:NUMERIC:0#
+	     , MAX_ORD_PSBT_QTY  = #officialOrder.maximumOrderQuantity:NUMERIC:0#
+	     , BRAND_CD          = #officialOrder.brandCode:VARCHAR:NULL#
+	     , BRAND_NM          = #officialOrder.brandName:VARCHAR:NULL#
+	     , MAKER_CD          = #officialOrder.makerCode:VARCHAR:NULL#
+	     , MAKER_NM          = #officialOrder.makerName:VARCHAR:NULL#
+	     , MOD_DATE          =  current_timestamp(0)
+	     , MOD_ID            = #entpCode#
+	     , TRD_TYPE_DIVN_CD  = #tradeTypeCode#
+	     , PRODUCT_DY        = #productDay:VARCHAR:NULL#
+	     , CATEGORY_ID       = #onlineDisplayCategoryCode#
+	     , SOCIAL_PROD_DELI_CD  = #socialProductDeliveryCode:VARCHAR:NULL#
+	     , NFOML_VARIATION_DESC = #nfomlVariationDesc#
+	     , MD_VALI_SELL_CD      = #md_vali_sellCode#
+	     , MODEL_NM = #officialOrder.modelName#
+	     , ECO_YN   = #officialOrder.ecoYn#
+	     , ECO_NM   = #officialOrder.ecoNm#
+	     , DLV_GA   = #officialOrder.dlvgaYn#
+	     , DLV_DT   = #officialOrder.dlvDt#
+	     , INS_CO   = #officialOrder.inscoYn#
+	     , TEAM_CD  = #teamCd#
+	     , L1_CD    = #l1Cd#
+	     , L2_CD    = #l2Cd#
+	     , ENTP_IN_PROD_CD     = #entpInProdCd#
+	     , RSERV_ORD_PSBT_START_DY = #psbtStartDy#
+	     , RSERV_ORD_PSBT_END_DY   = #psbtEndDy#
+	     , RSERV_PROD_PICK_IDCT_DY = #pickIdctDy#
+	     , ONLINE_PROD_TYPE_CD  = #onlineProdTypeCd#
+	     , HOPE_DELI_PSBT_DD = #hopeDeliPsbtDd#
+	     , OPTN_LOAD_SET_QTY    = #setQty#
+	     , OPTN_LOAD_CONTENT    = #optnLoadContent#
+	     , STAFF_MALL_SELL_PSBT_YN = #staffSellYn#
+	     , STAFF_DC_AMT         = #staffDcAmt#
+	     , OPTN_PROD_PRC_MGR_YN = #prodPrcMgrYn#
+	     , NOR_PROD_SALE_CURR   = #norProdSaleCurr#
+	     , SIZE_UNIT   		 = #sizeUnit#
+	     , SELL_START_DY   = #sellStartDy#
+	     , SELL_END_DY   = #sellEndDy#
+	     , DEAL_PROD_DIVN_CD = #dealProdDivnCode#
+	     , PROD_OPTION_DESC = #prodOptionDesc#
+	     <isNotEmpty property="productDescription">, DEAL_PROD_DESC_SHOW_YN = 'Y'</isNotEmpty>
+	     <isEmpty property="productDescription">, DEAL_PROD_DESC_SHOW_YN = 'N'</isEmpty>
+	     , EXPR_PROD_YN = #exprProdYn:CHAR#
+	     , SELLER_RECOMM = #sellerRecomm:VARCHAR#
+	     <isNotEmpty property="adlYn">, ADL_YN = #adlYn#</isNotEmpty>
+	     <isNotEmpty property="themaYn">, THEMA_YN = #themaYn#</isNotEmpty>
+	     <isNotEmpty property="dealViewCd">, DEAL_VIEW_CD = #dealViewCd#</isNotEmpty>
+	     <isNotEmpty property="videoUrl">, VIDEO_URL = #videoUrl#</isNotEmpty>
+	     <isNotEmpty property="scDpYn">, DEAL_SC_DP_YN = #scDpYn#</isNotEmpty>
+	 WHERE PGM_ID = #newProductCode#
+	</update>
+
+	<update id="updateProductDescription" parameterClass="newProduct">
+	/* SQLINES DEMO *** ateProductDescription */
+	UPDATE TPC_NEW_PROD_DESCR 
+		SET
+		 TITLE = #productName:VARCHAR:NULL#,
+		 ADD_DESC = #productDescription#,
+		 MOD_DATE = current_timestamp(0),
+		 MOD_ID = #entpCode#
+	 WHERE PGM_ID =  #newProductCode# 
+	 AND   SEQ = '1'
+	</update>
+
+	<insert id="fixedNewProductinTemp" parameterClass="newProduct">
+	/* SQLINES DEMO *** edNewProductinTemp */
+	INSERT INTO NEW_PROD_EDI@DL_MD_MARTNIS
+	(
+	 PGM_ID,  		  	  TEAM_CD,			   L1_CD,			   PROD_NM, 
+	 SHORT_NM,	   	  	  L4_CD,			   SRCMK_CD, 	  	   PROD_PAT_FG,
+	 PROD_TYP_FG,	      STYLE_CD, 		   SEASON_FG,		   TAX_FG,
+	 PROTECT_TAG_FG, 	  SCARD_ISU_FG,
+	 PROD_STD,    		  DISP_TOT_QTY, 	   DISP_BASE,      	   DISP_UNIT,  
+	 TAG_TYP_FG, 		  PRC_ISU_FG,   	   CTR_TYP_FG,   	   HOME_CD,	
+	 MAX_KEEP_DY_CNT,	  REP_CD, 			   MIN_ORD_QTY,   	   MAX_ORD_QTY, 
+	 SAFE_STK_QTY,		  VEN_CD,			   TRD_TYP_FG,		   BUY_PRC,
+	 SALE_PRC,			  PROFIT_RT,		   NORD_BUY_ABLE_FG,   PROMO_AMT_FG,
+	 DELI_FG,			  LOGI_RT,			   NEW_PROD_ORD_FG,    ORD_STOP_FG,
+	 CFM_FG,			  ORD_IPSU,			   ORD_UNIT,		   STR_APPLY_FG,
+	 ADJ_FG,			  REG_DT,			   REG_EMP_NO,		   LST_CHG_DT,
+	 LST_CHG_EMP_NO,	  BCD_FG,			   WIDTH,	   		   LENGTH, 	  
+	 HEIGHT, 		 	  mix_prod_fg,		   EXPIRA_ABLE_FG,	   ARR_LIFE_DAYS,
+	 FWD_LIFE_DAYS,		  TEMP_FG,			   TOT_CNT_FG,		   PROD_DETAIL,
+	 MK_YY,				  MAT_CD,			   W_BUY_PRC,		   W_SALE_PRC,
+	 W_PROFIT_RT,		  NEW_PROD_PROMO_FG,   NEW_PROD_ST_DY,	   OVER_PROMO_FG
+	 )
+	VALUES 
+	(
+	 #newProductCode#,      			#officialOrder.teamCode#,	 		#officialOrder.lGroupCode#,  REPLACE(#productName#,'	',' ') ,
+	 REPLACE(#productShortName#,'	',' '),    			#officialOrder.subGroupCode#,		#sellCode#,			 	 	 #productDivnCode#,
+	 #productTypeDivnCode#, 			#officialOrder.seasonDivnCode#, 	'2', 						 #taxatDivCode#,
+	 #officialOrder.protectTagDivnCode#,'0',
+	 #productStandardName#, 			coalesce(#displayTotalQuantity#,0),    	coalesce(#displayBaseQuantity#,0),		#displayUnitCode#,
+	 #officialOrder.protectTagTypeCode#,#priceIssueDivnCode#, 				#officialOrder.centerDivnCode#,   	#productCountryCode#,
+	 0, 	  '0000000000', 0, 0,
+	 '1',		 #entpCode#, 					#tradeTypeCode#,		   #normalProductCost#,
+	 #normalProductSalePrice#,    #profitRate#,     #officialOrder.noPublishedBuyPossibleDivnCode#,    #promoAmtStr#,
+	'0', 					 '0',     #officialOrder.newProductFirstPublishedDivnCode#,		'0',
+	'0',  #officialOrder.publishIncrementQuantity#, #officialOrder.publishedUnitCode#,		'0',
+	'0',  					 current_timestamp(0), 					'999999999', 			current_timestamp(0), 
+	'999999999', 			 '0',			#productHorizontalLength#,			#productVerticalLength#,
+	#productHeight#, 		 #officialOrder.mixYn#,			'0',				1,
+	1,						 '0',#officialOrder.totalInspectYn#,				#officialOrder.ispDetailDescription#,
+	#productDay#,		     #matCd#,			#vicnormalProductCost#	,#vicnormalProductSalePrice#,
+	#vicprofitRate#,		#officialOrder.newProdPromoFg#, 	#newProdStDy#, 			#officialOrder.overPromoFg#
+	)
+	</insert>
+
+	<insert id="fixedNewProductinTempA" parameterClass="newProduct">
+	/* SQLINES DEMO *** edNewProductinTempA */
+	INSERT INTO NEW_PROD_EDI@DL_MD_MARTNIS
+	(
+	 PGM_ID,  		  	  TEAM_CD,			   L1_CD,			   PROD_NM,
+	 SHORT_NM,	   	  	  L4_CD,			   SRCMK_CD, 	  	   PROD_PAT_FG,
+	 PROD_TYP_FG,	      STYLE_CD, 		   SEASON_FG,		   TAX_FG,
+	 PROTECT_TAG_FG, 	  SCARD_ISU_FG,
+	 PROD_STD,    		  DISP_TOT_QTY, 	   DISP_BASE,      	   DISP_UNIT,  
+	 TAG_TYP_FG, 		  PRC_ISU_FG,   	   CTR_TYP_FG,   	   HOME_CD,	
+	 MAX_KEEP_DY_CNT,	  REP_CD, 			   MIN_ORD_QTY,   	   MAX_ORD_QTY, 
+	 SAFE_STK_QTY,		  VEN_CD,			   TRD_TYP_FG,		   BUY_PRC,
+	 SALE_PRC,			  PROFIT_RT,		   NORD_BUY_ABLE_FG,   PROMO_AMT_FG,
+	 DELI_FG,			  LOGI_RT,			   NEW_PROD_ORD_FG,    ORD_STOP_FG,
+	 CFM_FG,			  ORD_IPSU,			   ORD_UNIT,		   STR_APPLY_FG,
+	 ADJ_FG,			  REG_DT,			   REG_EMP_NO,		   LST_CHG_DT,
+	 LST_CHG_EMP_NO,	  BCD_FG,			   WIDTH,	   		   LENGTH, 	  
+	 HEIGHT, 		 	  mix_prod_fg,		   EXPIRA_ABLE_FG,	   ARR_LIFE_DAYS,
+	 FWD_LIFE_DAYS,		  TEMP_FG,			   TOT_CNT_FG,		   PROD_DETAIL,
+	 MK_YY,				  MAT_CD,			   W_BUY_PRC,		   W_SALE_PRC,
+	 W_PROFIT_RT,		  NEW_PROD_PROMO_FG,   NEW_PROD_ST_DY,	   OVER_PROMO_FG
+	)
+	VALUES 
+	(
+	 #newProductCode#,      			#officialOrder.teamCode#,	 		#officialOrder.lGroupCode#,  REPLACE(#productName#,'	',' ') ,
+	 REPLACE(#productShortName#,'	',' '),    			#officialOrder.subGroupCode#,		#sellCode#,			 	 	 #productDivnCode#,
+	 #productTypeDivnCode#, 			#officialOrder.seasonDivnCode#, 	'2', 						 #taxatDivCode#,
+	 #officialOrder.protectTagDivnCode#,'0',
+	 #productStandardName#, 			coalesce(#displayTotalQuantity#,0),    	coalesce(#displayBaseQuantity#,0),		#displayUnitCode#,
+	 #officialOrder.protectTagTypeCode#,#priceIssueDivnCode#, 				#officialOrder.centerDivnCode#,   	#productCountryCode#,
+	 0, 	  '0000000000', 0, 0,
+	 '1',		 #entpCode#, 					#tradeTypeCode#,		   #normalProductCost#, 
+	 #normalProductSalePrice#,    #profitRate#,     #officialOrder.noPublishedBuyPossibleDivnCode#,    #promoAmtStr#,
+	 '0', 					 '0',     #officialOrder.newProductFirstPublishedDivnCode#,		'0',
+	 'A',  #officialOrder.publishIncrementQuantity#, #officialOrder.publishedUnitCode#,		'0',
+	 '0',  					 current_timestamp(0), 					'999999999', 			current_timestamp(0),
+	 '999999999', 			 '0',			#productHorizontalLength#,			#productVerticalLength#,
+	 #productHeight#, 		 #officialOrder.mixYn#,			'0',				1,
+	 1,						 '0',#officialOrder.totalInspectYn#,				#officialOrder.ispDetailDescription#,
+	 #productDay#,		     #matCd#,			#vicnormalProductCost#	,#vicnormalProductSalePrice#,
+	 #vicprofitRate#,		#officialOrder.newProdPromoFg#, 	#newProdStDy#, 			#officialOrder.overPromoFg#
+	)
+	</insert>
+
+    <insert id="fixedNewFashionProductColorSize" parameterClass="colorSize">
+	/* SQLINES DEMO *** edNewFashionProductColorSize */
+	INSERT INTO FASH_COLOR_SZ_EDI@DL_MD_MARTNIS
+	(
+	 PGM_ID, COLOR_CD, SZ_CAT_CD, SZ_CD, 
+	 VEN_CD, SRCMK_CD, PROD_NM,   CHG_FG
+	 )
+	VALUES 
+	(
+	 #newProductCode#, #colorCode#, #sizeCategoryCode#, #sizeCode#,
+	 #enterpriseCode#, #sellCode#,  #productName#,      '0'
+	)
+	</insert>
+
+	<insert id="fixedNewFashionProductImage" parameterClass="newProduct">
+	/* SQLINES DEMO *** edNewFashionProductImage */
+	INSERT INTO SALE_MST_IMG@DL_MD_MARTNIS
+	(
+	 IMG_SEQ,  		  	  SRCMK_CD,			   IMG_NM,			   CFM_FG, 
+	 REG_DT,	   	  	  REG_EMP_NO,		   VEN_CD,
+	 COLOR_CD,	          SZ_CAT_CD,		   SZ_CD
+	 )
+	VALUES 
+	(
+	 #newProductCode#,      #sellCode#,	 			coalesce(#productImageId#,null),  coalesce(#imageConfirmFlag#,null),
+	 current_timestamp(0),   		   '999999999',				#entpCode#,
+	 coalesce(#colorCodeCd#,'00'),			
+	 coalesce(#sizeCategoryCodeCd#,'99'),
+	 coalesce(#sizeCodeCd#,'01')
+	)
+	</insert>
+
+	<delete id="deleteFixedNewProductinTemp" parameterClass="newProduct">
+	/* SQLINES DEMO *** eteFixedNewProductinTemp */
+	DELETE FROM NEW_PROD_EDI@DL_MD_MARTNIS
+	 WHERE  PGM_ID = #newProductCode#
+	</delete>
+	
+	<delete id="deleteFixedNewFashionProductColorSize" parameterClass="newProduct">
+	/* SQLINES DEMO *** eteFixedNewFashionProductColorSize */
+	DELETE FROM FASH_COLOR_SZ_EDI@DL_MD_MARTNIS
+		WHERE PGM_ID =  #newProductCode#
+	</delete>
+	
+	<delete id="deleteFixedNewFashionProductImage" parameterClass="newProduct">
+	/* SQLINES DEMO *** eteLegacyfixedNewFashionProductImage */
+	DELETE FROM SALE_MST_IMG@DL_MD_MARTNIS
+		WHERE  IMG_SEQ = #newProductCode#
+	</delete>
+
+	<update id="updateNewProductMDSendStatus" parameterClass="string">
+	/* SQLINES DEMO *** ateNewProductMDSendStatus */
+	UPDATE TED_NEW_PROD_REG 
+	   SET MD_SEND_DIVN_CD = 'S'
+	 WHERE NEW_PROD_CD =  #productCode#
+	</update>
+
+	<update id="updateNewProductMDSendStatusA" parameterClass="string">
+	/* SQLINES DEMO *** ateNewProductMDSendStatusA */
+	UPDATE TED_NEW_PROD_REG 
+	   SET MD_SEND_DIVN_CD = 'A'
+	 WHERE NEW_PROD_CD =  #productCode# 
+	</update>
+
+	<select id="selectPromoAmtRtStatus" parameterClass="string"  resultClass="resultClass">
+	SELECT TRD_TYP_FG 
+            ,(CASE WHEN (PROMO_AMT_RT)::text = '0' THEN '0' ELSE '1' END)  PROMO_AMT_RT
+       FROM (
+          SELECT TRD_TYP_FG , PROMO_AMT_RT
+           FROM VENDOR
+           WHERE VEN_CD = #venCd#
+           ORDER BY LST_CHG_DT DESC
+           ) s
+	LIMIT 1
+   </select>
+
+    <select id="SELECT_POG_LIST" parameterClass="string"  resultClass="resultClass">
+	SELECT A.USER_ID, A.COM_NM, A.PASSWD
+	 FROM TED_EDI_ID A
+    </select>
+
+    <update id="UPDATE_POG_LIST" parameterClass="paramClass">
+    UPDATE TED_EDI_ID SET GEN_DIVN_CD = #GBN#
+    WHERE USER_ID = #USER_ID#
+    </update>
+
+	<!-- SQLINES DEMO *** 명 정보 상품 TITLE 수정 -->
+	<update id="updateTitleProductDescription" parameterClass="newProduct">
+	/* SQLINES DEMO *** ateTitleProductDescription */
+	UPDATE TPC_NEW_PROD_DESCR 
+		SET 
+		TITLE = #productName:VARCHAR:NULL#,
+		 MOD_DATE = current_timestamp(0),
+		 MOD_ID = #entpCode#
+	 WHERE PGM_ID =  #newProductCode# 
+	 AND   SEQ = '1'
+	</update>
+
+	<select id="selectMdSendDivnCdCheck" parameterClass="string"  resultClass="Integer">
+	/* SQLINES DEMO *** ectMdSendDivnCdCheck */
+	SELECT CASE MD_SEND_DIVN_CD WHEN 'S' THEN 1 ELSE 0 END AS CNT 
+	 FROM TPC_NEW_PROD_REG
+	 WHERE PGM_ID=#pgmId#
+	</select>
+
+</sqlMap>

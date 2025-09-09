@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0090">
+	<typeAlias alias="nedmpro0090vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0090VO" />
+
+	<resultMap id="selectGrpAttMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 	property="ATT_ID"	nullValue="" /> 
+		<result column="ATT_NM" 	property="ATT_NM"	nullValue="" />
+		<result column="ATT_VAL_ID"	property="ATT_VAL_ID"		nullValue="" /> 
+		<result column="ATT_VAL_NM"	property="ATT_VAL_NM"	nullValue="" /> 
+		<result column="SEL_ATT_VAL_ID"		property="SEL_ATT_VAL_ID"	nullValue="" /> 
+	</resultMap>
+	
+    <!-- 소분... SQLINES DEMO *** -->
+    <select id="selectGrpAtt" parameterClass="String"  resultMap="selectGrpAttMap">
+        /* SQLINES DEMO *** ectGrpAtt */
+        SELECT 
+            ATT_ID
+          , ATT_NM
+          , '' AS ATT_VAL_ID
+          , '' AS ATT_VAL_NM
+          , '' AS SEL_ATT_VAL_ID
+        FROM 
+            GRP_L3_GRPCST_PUR_ATT
+        WHERE 
+            L3_CD = #l3Cd#
+        AND COALESCE(LOEKZ, ' ') != 'D' 
+        AND ATT_ID IS NOT NULL  
+        GROUP BY 
+            ATT_ID
+          , ATT_NM
+        ORDER BY ATT_ID
+    </select>
+
+	<resultMap id="selectGrpAttOptMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 	property="ATT_ID"	nullValue="" /> 
+		<result column="ATT_NM" 	property="ATT_NM"	nullValue="" />
+		<result column="ATT_VAL_ID"	property="ATT_VAL_ID"		nullValue="" /> 
+		<result column="ATT_VAL_NM"	property="ATT_VAL_NM"	nullValue="" /> 
+	</resultMap>
+	   	
+    <!-- SQLINES DEMO *** ption 조회 -->
+    <select id="selectGrpAttOpt" parameterClass="String" resultMap="selectGrpAttOptMap">
+        /* SQLINES DEMO *** ectGrpAttOpt */
+        SELECT 
+            ATT_ID
+          , '' AS ATT_NM
+          , ATT_VAL_ID
+          , ATT_VAL_NM
+        FROM 
+            GRP_CST_PUR_ATT A
+        WHERE 
+            ATT_ID IN (
+                SELECT 
+                    ATT_ID
+                FROM 
+                    GRP_L3_GRPCST_PUR_ATT
+                WHERE 
+                    L3_CD = #l3Cd#
+                AND COALESCE(LOEKZ, ' ') != 'D'
+                AND ATT_ID IS NOT NULL
+                GROUP BY 
+                    ATT_ID
+                  , ATT_NM
+            )
+        ORDER BY ATT_ID, ATT_VAL_ID, ATT_VAL_NM
+    </select>
+
+    <!-- 분석... SQLINES DEMO *** -->
+    <delete id="deleteGrpAttOptSaved">
+        /* SQLINES DEMO *** eteGrpAttOptSaved */
+        DELETE 
+        FROM 
+            TPC_GRP_ATT_TMP
+        WHERE 
+            PROD_CD = #prodCd#
+    </delete>
+    
+    <!-- 분석... SQLINES DEMO *** -->
+    <update id="mergeGrpAttOptTmp" parameterClass="java.util.Map">
+        /* SQLINES DEMO *** geGrpAttOptTmp */
+        MERGE INTO
+            TPC_GRP_ATT_TMP TGAT
+            USING (
+                SELECT 
+                    #prodCd#   AS PROD_CD
+                  , #attId#    AS ATT_ID
+                  , #attValId# AS ATT_VAL_ID
+                  , #entpCd#   AS ENTP_CD
+            ) GRP_ATT
+            ON (TGAT.PROD_CD = GRP_ATT.PROD_CD AND TGAT.ATT_ID = GRP_ATT.ATT_ID)
+        WHEN MATCHED
+        THEN 
+            UPDATE
+            SET
+                ATT_VAL_ID = GRP_ATT.ATT_VAL_ID
+              , MOD_ID     = GRP_ATT.ENTP_CD
+              , MOD_DATE     = CURRENT_TIMESTAMP(0)
+        WHEN NOT MATCHED
+        THEN
+            INSERT 
+            (
+                PROD_CD
+              , ATT_ID
+              , ATT_VAL_ID
+              , REG_DATE
+              , REG_ID
+              , CHG_FG
+            )
+            VALUES
+            (
+                GRP_ATT.PROD_CD
+              , GRP_ATT.ATT_ID
+              , GRP_ATT.ATT_VAL_ID
+              , CURRENT_TIMESTAMP(0)
+              , GRP_ATT.ENTP_CD
+              , 'M'
+            )
+    </update>
+    
+    <!-- 순번... SQLINES DEMO *** -->
+    <select id="getMaxSeqAttr" parameterClass="String" resultClass="String">
+       /* getMaxSeqAttr */
+       SELECT 
+           MAX(SEQ)
+       FROM 
+           TPC_GRP_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+    </select>
+    
+    <!-- SQLINES DEMO *** 분석속성 응답 -->
+    <select id="getCntNotResponseAttr" parameterClass="nedmpro0090vo" resultClass="Integer">
+        /* SQLINES DEMO *** CntNotResponseAttr */
+        SELECT 
+		    COUNT(*) AS CNT
+		FROM
+		    TPC_GRP_ATT_REQ TGAR
+		    LEFT JOIN
+		    GRP_ATT_REQ_SAP GARS
+		        ON TGAR.PROD_CD = SUBSTR(GARS.PROD_CD, -10)
+		       AND LPAD(TGAR.SEQ, 3, '0') = SUBSTR(GARS.SEQ, -3) 
+		       AND TGAR.ATT_ID = GARS.ATT_ID
+		WHERE
+		    TGAR.PROD_CD = #prodCd#
+		AND TGAR.SEQ = #seq#
+        AND GARS.SEQ IS NULL
+    </select>
+
+
+	<resultMap id="selectGrpAttrSelectedOptInfoMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 	property="ATT_ID"	nullValue="" /> 
+		<result column="ATT_VAL_ID" 	property="ATT_VAL_ID"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	
+    <!-- 분석... SQLINES DEMO *** -->
+    <select id="selectGrpAttrSelectedOptInfo" parameterClass="String" resultMap="selectGrpAttrSelectedOptInfoMap">
+        /* SQLINES DEMO *** ectGrpAttrSelectedOptInfo */
+        SELECT 
+            ATT_ID
+          , ATT_VAL_ID
+          , CHG_FG
+        FROM
+            TPC_GRP_ATT_TMP
+        WHERE
+            PROD_CD = #prodCd#
+    </select>
+ 
+ 
+	<resultMap id="selectGrpAttrEcoSavedOptInfoMap"	class="java.util.HashMap">
+		<result column="ATT_ID"	 	property="ATT_ID"	nullValue="" /> 
+		<result column="ATT_VAL_ID" 	property="ATT_VAL_ID"	nullValue="" />
+		<result column="CHG_FG"	property="CHG_FG"		nullValue="" /> 
+	</resultMap>
+	
+	   
+    <!-- SQLINES DEMO *** 값 불러오기 -->
+     <select id="selectGrpAttrEcoSavedOptInfo" parameterClass="String"  resultMap="selectGrpAttrEcoSavedOptInfoMap">
+        /* SQLINES DEMO *** ectGrpAttrEcoSavedOptInfo */
+        SELECT 
+            ATT_ID
+          , ATT_VAL_ID
+          , 'M' AS CHG_FG
+        FROM
+            GRP_ATT_PROD_SAP
+        WHERE
+            PROD_CD = #prodCd#
+        AND COALESCE(LOEKZ, ' ') != 'D'
+    </select> 
+    
+    <!-- SQLINES DEMO *** -->
+    <update id="updateModifyStatusAttr" parameterClass="nedmpro0090vo" >
+        /* SQLINES DEMO *** ateModifyStatusAttr */
+        UPDATE 
+            TPC_GRP_ATT_TMP
+        SET
+            CHG_FG   = #chgFg#
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+          , MOD_ID   = #entpCd#
+        WHERE
+            PROD_CD = #prodCd#   
+    </update>
+    
+    <!-- SQLINES DEMO ***  -->
+     <select id="selectCntGrpReq" parameterClass="nedmpro0090vo" resultClass="Integer">
+     /* SQLINES DEMO *** ectCntGrpReq */
+        SELECT 
+            COUNT(*)
+        FROM
+            TPC_GRP_ATT_REQ
+        WHERE
+            PROD_CD = #prodCd#
+        AND SEQ = #seq#
+    </select> 
+    
+    <!-- 요청... SQLINES DEMO *** -->
+    <insert id="insertGrpAttOptReq" parameterClass="java.util.Map">
+        /* SQLINES DEMO *** ertGrpAttOptReq */
+        INSERT INTO 
+            TPC_GRP_ATT_REQ
+            (
+                SEQ
+              , PROD_CD
+              , ATT_VAL_iD
+              , ATT_ID
+              , APRV_FG
+              , REG_DT
+              , REG_TM
+              , REG_ID
+            )
+            VALUES
+            (
+                #SEQ#
+              , #PROD_CD#
+              , #ATT_VAL_ID#
+              , #ATT_ID#
+              , #APRV_FG#
+              , #REG_DT#
+              , #REG_TM#
+              , #REG_ID#
+            )
+    </insert>
+    
+    <!-- 요청... SQLINES DEMO *** -->
+    <delete id="deleteGrpAttOptReq" parameterClass="nedmpro0090vo">
+        /* SQLINES DEMO *** eteGrpAttOptReq */
+       DELETE 
+       FROM 
+           TPC_GRP_ATT_REQ
+       WHERE
+           PROD_CD = #prodCd#
+       AND SEQ     = #seq#::varchar
+    </delete>
+</sqlMap>

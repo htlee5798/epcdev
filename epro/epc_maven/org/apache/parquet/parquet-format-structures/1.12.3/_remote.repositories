@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 15:59:35 KST 2025
+parquet-format-structures-1.12.3.jar>neonexus=
+parquet-format-structures-1.12.3-sources.jar>neonexus=
+parquet-format-structures-1.12.3.pom>neonexus=

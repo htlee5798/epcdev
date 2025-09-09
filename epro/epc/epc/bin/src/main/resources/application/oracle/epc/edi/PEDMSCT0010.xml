@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMCST0010">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 발주중단  결과SELECT-->
+<select id="TSC_ORDER_STOP_RESULT-SELECT01" parameterClass="map" resultClass="resultClass">
+
+SELECT  REG_DY,
+ 		STR_CD,
+ 		PROD_CD,
+ 		PROD_NM,
+ 		CFM_FG,
+		STOP_FG,
+		ORD_END_DY,
+		STR_NM
+FROM 
+
+(SELECT A.REG_DY,
+  		B.STR_CD,
+ 		B.PROD_CD ,
+ 		B.PROD_NM ,
+ 		A.CFM_FG  ,
+		B.ORD_STOP_FG AS STOP_FG ,
+		B.ORD_END_DY,
+		C.STR_NM      
+
+  FROM  STR_ORD_STOP_REQ@dl_md_martnis A, STR_PROD@dl_md_martnis B, STORE@dl_md_martnis C             
+  WHERE A.PROD_CD(+) = B.PROD_CD              
+  	AND A.STR_CD(+) = B.STR_CD       
+    AND A.VEN_CD(+) = B.VEN_CD 
+    AND A.STR_CD = C.STR_CD
+    
+    <isNotEmpty  property="venCds"  prepend="AND"> 
+      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+        #venCds[]# 
+      </iterate> 
+    </isNotEmpty>
+    
+    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+    	A.VEN_CD = #entp_cd#
+    </isNotEmpty>
+    
+    <isNotEmpty property="storeVal"  prepend="AND"> 
+      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+        #storeVal[]# 
+      </iterate> 
+    </isNotEmpty>
+    
+    <isNotEmpty property="productVal"  prepend="AND"> 
+      <iterate prepend="A.PROD_CD IN " property="productVal" open="(" close=")" conjunction=","> 
+        #productVal[]# 
+      </iterate> 
+    </isNotEmpty>
+	 	       
+)
+
+ORDER BY REG_DY , STR_CD
+</select>
+
+
+</sqlMap>

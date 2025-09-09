@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>모바일 QPS 피킹 관리 시스템</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<link rel="shortcut icon" href="http://image.lottemart.com/images/front/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" href="http://image.lottemart.com/images/mobile/contentimg/ico/ico-a_72_72.png">
+
+	<!-- CSS 임시경로  -->
+	<link rel="stylesheet" href=".//lib_new.css">
+</head>	
+<body>
+<!-- 화면 전체 구성 -->
+
+	<!-- 03. 비밀번호 변경 full Layer popup -->
+	<div id="password_popup"></div>
+	<!-- //03. 비밀번호 변경 full Layer popup -->
+
+	<!-- 05. CONTAINER START -->
+	<div class="m-container-scroll">
+	</div>
+	<!-- 05. CONTAINER START -->
+
+	<!-- 06. layer popup -->
+	<div id="dialog_popup" style="display: block;">
+		<!-- layout - full Layer Popup -->
+		<div class="wrap-popup-page">
+			<!-- a. header -->
+			<div class="header">
+				<div class="user_info">
+					<h2 class="page_tit">상품상세정보</h2>
+				</div>
+				<div class="user_action">
+					<button type="button" class="icon-close">닫기</button>
+				</div>
+			</div>
+			<!-- //a. header -->
+			<!-- b. container -->
+			<div class="product_detail">
+				<!-- 상품정보 -->
+				<div class="prod_info">
+					<div class="prod_img"><img id="prod_img" src="https://simage.lottemart.com/lim/static_root/images/prodimg/88011/8801155972813_1_320.jpg"></div>
+					<div class="prod_tbl">
+						<table>
+							<caption>상품상세정보</caption>
+							<colgroup>
+								<col style="width:28%;">
+								<col>
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>판매코드</th>
+									<td>8801155972813</td>
+								</tr>
+								<tr>
+									<th>상품명</th>
+									<td><span class="name">Only Price 대패삼겸사(냉동) 800G Only Price 대패삼겸사(냉동) 800G </span></td>
+								</tr>
+								<tr>
+									<th>판매가</th>
+									<td>유제품</td>
+								</tr>
+								<tr>
+									<th>현재가</th>
+									<td>요구르트</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- //상품정보 -->
+				<!-- 피킹수량 -->
+				<div class="prod_tbl02">
+					<table>
+						<caption>피킹수량</caption>
+						<colgroup>
+								<col style="width:28%;">
+								<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>피킹수량</th>
+								<td>
+									<div class="quantityBox">
+										<button class="noPlus">-</button>
+										<input type="tel" value="1" class="no">
+										<button class="noPlus">+</button>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="wrap-btn">
+						<button type="button" class="btn-common-color1">적용</button>
+						<button type="button" class="btn-common-color2">대체 결품</button>
+					</div>
+				</div>
+				<!-- //피킹수량 -->
+				
+			</div>
+			<!-- //b. container -->
+		</div>
+		<!-- //layout - full Layer Popup -->
+	</div>
+	<div id="detail_popup"></div>
+	<!-- //06. layer popup -->
+
+<!-- //화면 전체 구성 -->
+
+</body>
+</html>

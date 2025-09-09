@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="NEDMPRO0320">
+	<typeAlias alias="nEDMPRO0320VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0320VO" />		<!-- 반품 제안 현황 조회 VO -->
+
+	<!-- 반품 제안 조회 Map -->	
+	<resultMap id="selectProdRtnItemMap"		class="nEDMPRO0320VO">
+		<result column="PROD_RTN_NO"		property="prodRtnNo" 	/>	<!-- 반품요청번호 -->
+		<result column="BUKRS"				property="bukrs" 		/>	<!-- 회사코드 -->
+		<!-- <result colUMN="SEQ"				property="seq" 			/> -->	<!-- 순번 -->
+		<result column="VEN_CD"				property="venCd" 		/>	<!-- 파트너사코드 -->
+		<result column="TEAM_CD"			property="teamCd" 		/>	<!-- 상품팀코드 -->
+		<result column="TEAM_NM"			property="teamNm" 		/>	<!-- 팀명 -->
+		<result column="SRCMK_CD"			property="srcmkCd" 		/>	<!-- 판매코드 -->
+		<result column="PROD_CD"			property="prodCd" 		/>	<!-- 상품코드 -->
+		<result column="PROD_NM"			property="prodNm" 		/>	<!-- 상품명 -->
+		<result column="PROD_TYP_FG"		property="prodTypFg"	/>	<!-- PB유형구분 -->
+		<result column="PROD_TYP_FG_NM"		property="prodTypFgNm"	/>	<!-- PB유형구분명 -->
+		<result column="RTN_REG_DY"			property="rtnRegDy" 	/>	<!-- 반품등록일 -->
+		<result column="RTN_CLS_DY"			property="rtnClsDy" 	/>	<!-- 반품마감일 -->
+		<result column="REQ_MD_DY"			property="reqMdDy" 		/>	<!-- MD협의요청일 -->
+		<result column="PROD_QTY"			property="prodQty" 		/>	<!-- 수량 -->
+		<result column="RTN_RESN"			property="rtnResn" 		/>	<!-- 반품사유 -->
+		<result column="RTN_RESN_DTL"		property="rtnResnDtl" 	/>	<!-- 반품상세사유 -->
+		<result column="RTN_RESN_PLCE"		property="rtnResnPlce" 	/>	<!-- 반품장소 -->
+		<result column="PRDT_STATUS"		property="prdtStatus" 	/>	<!-- 진행상태 -->
+		<result column="PRDT_STATUS_NM"		property="prdtStatusNm"	/>	<!-- 진행상태명 -->
+		<result column="STR_CD"				property="strCd" 		/>	<!-- 점포코드 -->
+		<result column="IF_REQ_DT"			property="ifReqDt" 		/>	<!-- ERP 인터페이스 송신 일시 -->
+		<result column="IF_RCV_DT"			property="ifRcvDt" 		/>	<!-- ERP 인터페이스 수신 일시 -->
+		<result column="DC_NUM"				property="dcNum" 		/>	<!-- 계약번호(공문번호) -->
+		<result column="DC_STAT"			property="dcStat" 		/>	<!-- 계약(공문)진행상태 -->
+		<result column="MOD_DATE"			property="modDate" 		/>	<!-- 등록아이디 -->
+		<result column="MOD_ID"				property="modId" 		/>	<!-- 등록일시 -->
+		<result column="REG_DATE"			property="regDate" 		/>	<!-- 수정아이디 -->
+		<result column="REG_ID"				property="regId" 		/>	<!-- 수정일시 -->
+	</resultMap>
+
+	<resultMap class="java.util.LinkedHashMap" id="rfcItemCallDataMap">
+    	<result property="PROD_RTN_NO"		nullValue=""		/>	<!-- 반품요청번호 -->
+    	<result property="BUKRS"			nullValue=""		/>	<!-- 회사코드 -->
+    	<result property="VEN_CD"			nullValue=""		/>	<!-- 파트너사코드 -->
+    	<result property="TEAM_CD"			nullValue=""		/>	<!-- 팀코드 -->
+		<result property="PROD_CD"			nullValue=""        />	<!-- 상품코드 -->
+		<result property="PROD_TYP_FG"		nullValue=""        />	<!-- PB유형구분 -->
+		<result property="PROD_TYP_FG_NM"	nullValue=""        />	<!-- PB유형구분명 -->
+		<result property="RTN_RESN"			nullValue=""        />	<!-- 반품사유 -->
+		<result property="RTN_RESN_NM"		nullValue=""        />	<!-- 반품사유명 -->
+		<result property="RTN_RESN_DTL"		nullValue=""        />	<!-- 반품상세사유 -->
+		<result property="RTN_RESN_DTL_NM"	nullValue=""        />	<!-- 반품상세사유명 -->
+		<result property="RTN_RESN_PLCE"	nullValue=""        />	<!-- 반품장소 -->
+		<result property="RTN_RESN_PLCE_NM"	nullValue=""        />	<!-- 반품장소명 -->
+		<result property="REQ_MD_DY"		nullValue=""        />	<!-- MD협의 요청일 -->
+		<result property="REQ_MD_TIM"		nullValue=""        />	<!-- MD협의 요청시간 -->
+		<result property="REQ_MD_NM"		nullValue=""        />	<!-- MD협의 요청인 -->
+		<result property="RTN_CLS_DY"		nullValue=""        />	<!-- 반품마감일 -->
+		<result property="REG_DATE"			nullValue=""        />	<!-- 반품등록일 -->
+		<result property="REG_DTM"			nullValue=""        />	<!-- 반품등록시간 -->
+		<result property="REG_USER"			nullValue=""        />	<!-- 등록인 -->
+	</resultMap>
+	
+	<!-- 반품 - 상품 중복 체크 Map -->	
+	<resultMap id="selectRtnItemProdCdChkMap"		class="nEDMPRO0320VO">
+		<result column="RTN_CLS_DY"		property="rtnClsDy" 	/>	<!-- 반품마감일 -->
+	</resultMap>
+	
+    <!-- 반품 제안 등록 카운터 조회 -->
+    <select id="selectProdRtnItemListCount" parameterClass="nEDMPRO0320VO" resultClass="Integer" >
+    /* NEDMPRO0320.selectProdRtnItemListCount */
+	    SELECT COUNT(*)
+		FROM TPC_PROD_RTN_ITEM A
+		LEFT JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		LEFT JOIN 
+		(
+			SELECT 	TEAM_CD
+				,	TEAM_NM
+			FROM TPC_L1_CD_BAK_250526
+			GROUP BY TEAM_CD, TEAM_NM
+		)C ON A.TEAM_CD = C.TEAM_CD
+		WHERE A.DEL_YN = 'N'
+		<isEqual property="srcVenCd" compareValue="">
+			<isNotEmpty prepend="AND" property="venCdArr"> 
+				<iterate prepend="A.VEN_CD IN " property="venCdArr" open="(" close=")" conjunction=","> 
+				    #venCdArr[]# 
+				</iterate> 
+			</isNotEmpty>
+		</isEqual>
+		<isNotEqual property="srcVenCd" compareValue="">
+		AND A.VEN_CD = #srcVenCd#
+		</isNotEqual>
+		<isNotEqual property="srcTeamCd" compareValue="">
+		AND A.TEAM_CD = #srcTeamCd#
+		</isNotEqual>
+		<isNotEqual property="srcStatus" compareValue="ALL">
+		AND A.PRDT_STATUS = #srcStatus#
+		</isNotEqual>
+		<isNotEqual property="srcmkCd" compareValue="">
+		AND (A.SRCMK_CD LIKE '%'|| #srcmkCd# ||'%' OR A.SRCMK_CD LIKE '%'|| #srcmkNm#)
+		</isNotEqual>
+		<isNotEqual property="srchFromDt" compareValue="">
+		AND TO_CHAR(CAST(A.RTN_REG_DY AS TIMESTAMP),'YYYYMMDD') BETWEEN #srchFromDt# AND #srchEndDt#
+		</isNotEqual>
+    </select>
+    
+    <!-- 반품 제안 등록 조회 -->
+    <select id="selectProdRtnItemList" parameterClass="nEDMPRO0320VO" resultMap="selectProdRtnItemMap" >
+    /* NEDMPRO0320.selectProdRtnItemList */
+		SELECT                                     
+			  A.PROD_RTN_NO				/* 반품요청번호	*/
+			, A.BUKRS					/* 회사코드	*/
+			/*, SEQ */                  /* 순번		*/
+			, A.VEN_CD                  /* 파트너사코드	*/
+			, A.TEAM_CD                 /* 상품팀코드	*/
+			, C.TEAM_NM                 /* 팀명		*/
+			, A.SRCMK_CD                /* 판매코드	*/
+			, A.PROD_CD                 /* 상품코드	*/
+			, B.PROD_NM					/* 상품명		*/
+			, B.PROD_TYP_FG		/* PB유형구분	*/
+			, CASE WHEN B.PROD_TYP_FG = '1' THEN 'NB'
+			  	   WHEN B.PROD_TYP_FG = '2' THEN 'PB'
+				   WHEN B.PROD_TYP_FG = '4' THEN 'NB2'
+				   WHEN B.PROD_TYP_FG = '5' THEN '기타'
+			  ELSE '없음' END AS PROD_TYP_FG_NM	/* PB유형구분명 */
+			, TO_CHAR(CAST(A.RTN_REG_DY AS TIMESTAMP), 'YYYY-MM-DD') AS RTN_REG_DY /* 반품등록일	*/
+			, TO_CHAR(CAST(A.RTN_CLS_DY AS TIMESTAMP), 'YYYY-MM-DD') AS RTN_CLS_DY /* 반품마감일	*/
+			, TO_CHAR(A.REQ_MD_DY,'YYYY-MM-DD') AS REQ_MD_DY   /* MD협의요청일	*/
+			, A.PROD_QTY                  /* 수량		*/
+			, A.RTN_RESN                  /* 반품사유	*/
+			, A.RTN_RESN_DTL              /* 반품상세사유*/
+			, A.RTN_RESN_PLCE             /* 반품장소	*/
+			, CASE WHEN A.PRDT_STATUS = '0' THEN '파트너사등록'
+				   WHEN A.PRDT_STATUS = '1' THEN 'MD 협의요청'
+				   WHEN A.PRDT_STATUS = '2' THEN 'MD 승인'
+				   WHEN A.PRDT_STATUS = '3' THEN 'MD 반려'
+				   ELSE '' END AS PRDT_STATUS_NM   /* 진행상태명	*/
+			, A.PRDT_STATUS				/* 진행상태	*/	   
+			, A.STR_CD                    /* 점포코드	*/
+			, TO_CHAR(A.IF_REQ_DT,'YYYY-MM-DD') AS IF_REQ_DT	/* ERP 인터페이스 송신 일시	*/
+			, TO_CHAR(A.IF_RCV_DT,'YYYY-MM-DD') AS IF_RCV_DT	/* ERP 인터페이스 수신 일시	*/
+			, A.DC_NUM                    /* 계약번호(공문번호)	*/
+			, A.DC_STAT                   /* 계약(공문)진행상태	*/
+			, TO_CHAR(A.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE  /* 수정일시	*/
+			, A.MOD_ID                    /* 수정자아이디	*/
+			, TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE  /* 등옥일시	*/
+			, A.REG_ID                    /* 등록자아이디	*/
+			FROM TPC_PROD_RTN_ITEM A
+			LEFT JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+			LEFT JOIN 
+			(
+				SELECT 	TEAM_CD
+					,	TEAM_NM
+				FROM TPC_L1_CD_BAK_250526
+				GROUP BY TEAM_CD, TEAM_NM
+			)C ON A.TEAM_CD = C.TEAM_CD
+			WHERE A.DEL_YN = 'N'
+			<isEqual property="srcVenCd" compareValue="">
+				<isNotEmpty prepend="AND" property="venCdArr"> 
+					<iterate prepend="A.VEN_CD IN " property="venCdArr" open="(" close=")" conjunction=","> 
+					    #venCdArr[]# 
+					</iterate> 
+				</isNotEmpty>
+			</isEqual>
+			<isNotEqual property="srcVenCd" compareValue="">
+			AND A.VEN_CD = #srcVenCd#
+			</isNotEqual>
+			<isNotEqual property="srcTeamCd" compareValue="">
+			AND A.TEAM_CD = #srcTeamCd#
+			</isNotEqual>
+			<isNotEqual property="srcStatus" compareValue="ALL">
+			AND A.PRDT_STATUS = #srcStatus#
+			</isNotEqual>
+			<isNotEqual property="srcmkCd" compareValue="">
+			AND (A.SRCMK_CD LIKE '%'|| #srcmkCd# ||'%' OR A.SRCMK_CD LIKE '%'|| #srcmkNm#)
+			</isNotEqual>
+			<isNotEqual property="srchFromDt" compareValue="">
+			AND TO_CHAR(CAST(A.RTN_REG_DY AS TIMESTAMP),'YYYYMMDD') BETWEEN #srchFromDt# AND #srchEndDt#
+			</isNotEqual>
+			ORDER BY A.RTN_REG_DY DESC, A.PROD_RTN_NO /*, SEQ */
+    </select>
+	
+	<!-- 반품 제안 등록 -->
+	<insert id="mergeProdRtnItem" parameterClass="nEDMPRO0320VO">	  
+    	/*NEDMPRO0320.mergeProdRtnItem*/
+    	
+    	MERGE INTO TPC_PROD_RTN_ITEM A
+			USING (
+				SELECT
+					  #prodRtnNo#	AS prodRtnNo	/* 반품요청번호 */
+			) B
+				ON ( A.PROD_RTN_NO = B.prodRtnNo)
+			WHEN MATCHED THEN
+				UPDATE SET
+					  BUKRS			= #bukrs#
+					, VEN_CD		= #venCd#
+					, TEAM_CD		= #teamCd#
+					, SRCMK_CD		= #srcmkCd#
+					, PROD_CD		= #prodCd#
+					, RTN_REG_DY	= #rtnRegDy#
+					, RTN_CLS_DY	= #rtnClsDy#
+					, REQ_MD_DY		= #reqMdDy#
+					, PROD_QTY		= #prodQty#
+					, RTN_RESN		= #rtnResn#
+					, RTN_RESN_DTL	= #rtnResnDtl#
+					, RTN_RESN_PLCE	= #rtnResnPlce#
+					, PRDT_STATUS	= #prdtStatus#
+					, STR_CD		= #strCd#
+					, IF_REQ_DT		= #ifReqDt#
+					, IF_RCV_DT		= #ifRcvDt#
+					, DC_NUM		= #dcNum#
+					, DC_STAT		= #dcStat#
+					, DEL_YN		= #delYn#
+					, MOD_DATE      = NOW()   
+					, MOD_ID        = #workId#
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  PROD_RTN_NO
+					, BUKRS
+					, VEN_CD
+					, TEAM_CD
+					, SRCMK_CD
+					, PROD_CD
+					, RTN_REG_DY
+					, RTN_CLS_DY
+					, REQ_MD_DY
+					, PROD_QTY
+					, RTN_RESN
+					, RTN_RESN_DTL
+					, RTN_RESN_PLCE
+					, PRDT_STATUS
+					, STR_CD
+					, IF_REQ_DT
+					, IF_RCV_DT
+					, DC_NUM
+					, DC_STAT
+					, DEL_YN
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) VALUES (
+					  #prodRtnNo#
+					, #bukrs#
+					, #venCd#
+					, #teamCd#
+					, #srcmkCd#
+					, #prodCd#
+					, #rtnRegDy#
+					, #rtnClsDy#
+					, #reqMdDy#
+					, #prodQty#
+					, #rtnResn#
+					, #rtnResnDtl#
+					, #rtnResnPlce#
+					, #prdtStatus#
+					, #strCd#
+					, #ifReqDt#
+					, #ifRcvDt#
+					, #dcNum#
+					, #dcStat#
+					, 'N'
+					, NOW()
+					, #workId#
+					, NOW()
+					, #workId#
+				);
+ 	</insert>
+	
+	<!-- 반품 - 상품 중복 체크 조회 -->
+	<select id="selectRtnItemProdCdChk" parameterClass="nEDMPRO0320VO" resultMap="selectRtnItemProdCdChkMap">
+	 /* NEDMPRO0320.selectRtnItemProdCdChk */
+	SELECT MAX(RTN_CLS_DY) AS RTN_CLS_DY
+		from TPC_PROD_RTN_ITEM
+		WHERE PROD_RTN_NO != #prodRtnNo# 
+		AND PROD_CD = #prodCd#
+		AND bukrs = #bukrs#
+		AND RTN_CLS_DY >= TO_CHAR(now(), 'YYYYMMDD')
+		AND PRDT_STATUS != '3'
+		AND DEL_YN != 'Y'
+	</select>
+	
+	<!-- 반품 요청 번호 조회 -->
+	<select id="selectProdRtnNoSeq" resultClass="String" parameterClass="nEDMPRO0320VO">
+	SELECT 
+		TO_CHAR(NOW(),'YYYYMMDD') || '-' ||LPAD(CAST( ( 
+			SELECT COALESCE(CAST(MAX(RIGHT(PROD_RTN_NO,4)) AS INTEGER)+1, 1) 
+			FROM TPC_PROD_RTN_ITEM 
+			WHERE TO_CHAR(REG_DATE, 'YYMMDD') = TO_CHAR(NOW(), 'YYMMDD') ) AS CHAR(10)), 4, '0')
+	</select>
+	
+	<select id="selectProdRtnNoSeq_20250429" resultClass="String" parameterClass="nEDMPRO0320VO">
+		SELECT 
+			'R' ||
+			TO_CHAR(NOW(),'YYYYMMDD')||LPAD(CAST( ( 
+			SELECT COALESCE(CAST(MAX(RIGHT(PROD_RTN_NO,5)) AS INTEGER)+1, 1) 
+			FROM TPC_PROD_RTN_ITEM 
+			WHERE TO_CHAR(REG_DATE, 'YYMMDD') = TO_CHAR(NOW(), 'YYMMDD') ) AS CHAR(10)), 5, '0')
+	</select>
+	
+	<!-- RFC 호출 정보 조회 -->
+	<select id="selectProdRtnItemRfcCallData" parameterClass="nEDMPRO0320VO" resultMap="rfcItemCallDataMap">
+		/* NEDMPRO0320.selectProdRtnItemRfcCallData */
+		SELECT 
+					A.PROD_RTN_NO		/* 반품요청번호 */
+				,	A.BUKRS				/* 회사코드	*/
+				,	A.VEN_CD			/* 파트너사코드	*/
+				,	A.TEAM_CD			/* 팀코드		*/
+				,	A.PROD_CD			/* 상품코드	*/
+				,	B.PROD_TYP_FG		/* PB유형구분	*/
+				,	CASE WHEN B.PROD_TYP_FG = '1' THEN 'NB'
+						 WHEN B.PROD_TYP_FG = '2' THEN 'PB'
+						 WHEN B.PROD_TYP_FG = '4' THEN 'NB2'
+						 WHEN B.PROD_TYP_FG = '5' THEN '기타'
+						 ELSE '없음' END AS PROD_TYP_FG_NM	/* PB유형구분명 */
+				,	A.RTN_RESN 			/* 반품사유	*/
+				,	(SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'RTRSN' AND MINOR_CD = A.RTN_RESN) AS RTN_RESN_NM	/* 반품사유명 */
+				,	A.RTN_RESN_DTL		/* 반품상세사유 */
+				,	(SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'RTRSD' AND MINOR_CD = A.RTN_RESN_DTL) AS RTN_RESN_DTL_NM	/* 반품상세사유명 */
+				,	A.RTN_RESN_PLCE		/* 반품장소	*/
+				,	(SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'RTPLC' AND MINOR_CD = A.RTN_RESN_PLCE) AS RTN_RESN_PLCE_NM /* 반품장소명 */
+				,	TO_CHAR(NOW(), 'YYYYMMDD') AS REQ_MD_DY	 	/* MD 협의 요청일 */
+				,	TO_CHAR(now(), 'HH24MISS') AS REQ_MD_TIM	/* MD협의 요청시간 */
+				,	A.MOD_ID AS REQ_MD_NM	/* MD협의 요청인 */
+				,	A.RTN_CLS_DY				/* 반품마감일 */
+				,	A.RTN_REG_DY AS REG_DATE	/* 반품등록일 */
+				,	TO_CHAR(A.REG_DATE, 'HH24MISS') AS REG_DTM	/* 반품등록시간 */
+				,	A.REG_ID AS REG_USER	/* 등록인 */
+		FROM TPC_PROD_RTN_ITEM A		
+		LEFT JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		WHERE PROD_RTN_NO = #prodRtnNo#
+		AND BUKRS = #bukrs#
+	</select>
+
+	<!-- 반품 아이템 상태값 update -->
+	<update id="updateProdRtnItem" parameterClass="nEDMPRO0320VO">
+		/* NEDMPRO0320.updateProdRtnItem */
+		UPDATE TPC_PROD_RTN_ITEM
+		SET
+			  MOD_DATE       = NOW()
+			, MOD_ID         = #workId#
+			, PRDT_STATUS	 = #prdtStatus#
+			, REQ_MD_DY		 = NOW()
+		 WHERE PROD_RTN_NO = #prodRtnNo#
+		 AND   BUKRS = #bukrs#
+	</update>
+	
+	
+</sqlMap>	

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Mon Jun 02 16:00:54 KST 2025
+netty-3.6.2.Final.jar>neonexus=
+netty-3.6.2.Final.pom>neonexus=
+netty-3.6.2.Final-sources.jar>neonexus=

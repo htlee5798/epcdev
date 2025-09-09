@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMRST0010">
+	
+	<typeAlias alias="srmRst0010Vo"	type="com.lottemart.epc.edi.srm.model.SRMRST0010VO" />
+	
+	<!-- 입점상담결과 로그인  Map -->
+	<resultMap id="selectPasswdCheckMap" 	class="srmRst0010Vo">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode"		/>	<!-- 업체코드 -->
+		<result column="IRS_NO"  			property="irsNo" 			/>	<!-- 사업자등록번호-->
+	 	<result column="SELLER_NAME_LOC"  	property="sellerNameLoc" 	/>	<!-- 사업자명(한글)-->
+	 	<result column="COUNTRY"  			property="country" 			/>	<!-- 국가코드 -->
+	 	<result column="SHIPPER_TYPE"  		property="shipperType" 		/>	<!-- 업체 소싱 국가 구분 -->
+	 	<result column="TEMP_PW"  			property="tempPw" 			/>	<!-- 비밀번호 -->
+	 	<result column="PASS_CHECK_CNT"  	property="passCheckCnt" 	/>	<!-- 비밀번호 오류 횟수 카운트 컬럼 -->
+	</resultMap>
+	
+	<!-- 입점상담결과 로그인  -->
+	<select id="selectPasswdCheck" parameterClass="srmRst0010Vo" resultMap="selectPasswdCheckMap">
+		/* SRMRST0010.selectPasswdCheck */
+		SELECT 	HOUSE_CODE
+			,	SELLER_CODE
+			,	IRS_NO
+			,	SELLER_NAME_LOC
+			,	NVL(COUNTRY, 'KR') AS COUNTRY
+			,	SHIPPER_TYPE
+			,	TEMP_PW
+			,	NVL(PASS_CHECK_CNT, 0) AS PASS_CHECK_CNT
+		FROM 	SSUGL
+		WHERE 	HOUSE_CODE	= #houseCode#
+			AND	SELLER_NAME_LOC	= #sellerNameLoc#
+			AND	IRS_NO	= #irsNo#
+			AND	NVL(COUNTRY, 'KR')	= #country#
+	</select>
+
+	<!-- 비밀번호 체크 -->
+	<!-- <select id="selectPasswdCheck" parameterClass="srmRst0010Vo" resultClass="String">
+		/* SRMRST0010.selectPasswdCheck */
+		SELECT	TEMP_PW
+		FROM  	SSUGL
+		WHERE 	HOUSE_CODE	= #houseCode#
+			AND	SELLER_NAME_LOC	=#sellerNameLoc#
+			AND	IRS_NO	= #irsNo#
+			AND	NVL(COUNTRY, 'KR')	= #country#
+	</select> -->
+	
+</sqlMap>

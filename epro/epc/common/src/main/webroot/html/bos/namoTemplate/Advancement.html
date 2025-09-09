@@ -1,0 +1,184 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> 마트 고도화 템플릿 </title>
+  <!--6월 28일 최종 업데이트 고도화 템플릿입니다-->
+	<meta charset="utf-8">
+	<meta name="Referrer" content="origin">
+	<meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="Keywords" content="">
+	<meta name="Description" content="">
+	<style type="text/css">
+		@charset "UTF-8";
+		html{	/
+				-webkit-text-size-adjust: none; /*Chrome, Safari, newer versions of Opera*/
+				-ms-text-size-adjust: none; /*Ie*/
+				}
+		table{border-collapse:collapse;border-spacing:0}
+		body {margin:0; padding:0; border:0; font:inherit;vertical-align:baseline;font-family:NotoSansCJKkr,Malgun,Gothic,arial,sans-serif;}
+		ul {list-style-type:none;margin:0px;padding:0px;}
+		.wrap {width:980px;margin:0 auto;}
+		.depth01 {margin-bottom:170px;}
+		.depth02 {margin-bottom:80px;}
+		.depth03 {margin-bottom:70px;}
+		.depth04 {margin-bottom:20px;}
+		.depth05 {margin-top:70px;}
+		.tit_line {height:35px;margin:25px 50px 70px 50px;padding-top:20px;}
+		.tit_line .line {display:inline-block;width:100%;height:1px;border-top:1px solid #ddd;}
+		.wrap .tit_line h1 {display:inline-block;margin-top:-35px;padding-right:15px;font-size:3.5em;font-weight:bold;color:#555;letter-spacing:-0.05em;background-color:#fff;}
+
+		.guide01 {text-align:center;}
+		.guide01 .intro {margin:80px auto 30px auto;width:880px;border-top:1px solid #757575;border-bottom:1px solid #757575;text-align:center;}
+		.guide01 .intro .sub_01 {margin:40px 0 0 0;font-size:3em;color:#333; letter-spacing:-0.036em;}
+		.guide01 .intro .sub_02 {margin:25px 0 40px 0;font-size:4.5em;font-weight:bold;color:#333; letter-spacing:-0.036em;}
+		.guide01 .sub_03 {margin:0 auto;font-size:3em;color:#333;}
+
+		.guide02 {text-align:left;}
+		.guide02 .infor_01 {margin:0 60px;}
+		.guide02 .infor_01 li {background:url('http://simage.lottemart.com/images/b2c/2021/check_box.jpg') no-repeat;background-position: 0 0.4em;padding-left:1.5em;font-size:1.75em;color:#555;line-height:2em;letter-spacing:-0.026em;}
+		.guide02 img:first-child {margin-bottom:20px;}
+
+		.guide03 {text-align:left;}
+		.guide03 h2 {margin:80px 60px 70px 60px;font-size:2.7em;font-weight:bold;color:#333;letter-spacing:-0.26px;letter-spacing:-0.026em;}
+		.guide03 .infor_02 {margin:0 60px;}
+		.guide03 .infor_02 p {font-size:2em;color:#555;letter-spacing:-0.026em;}
+
+		.guide04 h2 {margin:50px 50px 20px 50px;font-size:2.7em;font-weight:bold;color:#333;letter-spacing:-0.026em;}
+		.guide04 p {margin:0 50px 20px 50px;font-size:2em;color:#555;letter-spacing:-0.026em;word-break:keep-all;}
+
+		.guide05 h2 {margin:70px 50px 45px 50px;font-size:2.7em;font-weight:bold;color:#333;letter-spacing:-0.026em;}
+		.guide05 p {margin:0 50px;font-size:2em;color:#555;letter-spacing:-0.026em;word-break:keep-all;}
+		.guide05 img {margin:0 50px;}
+
+		.guide06 .cert {margin:0 50px;text-align:center;}
+		.guide06 .cert img {margin-top:20px;}
+		.guide06 .cert img:first-child {margin-top:0px;}
+
+		.guide07 .disp {text-align:center}
+
+		.wrap .alt_blind {position: absolute;width: 1px;height: 1px;margin: -1px;padding: 0;border: 0;clip: rect(0 0 0 0);overflow: hidden;}
+	</style>
+</head>
+
+<body>
+	<div class="wrap">
+		<!-- 인트로영역입니다. -->
+		<div class="guide01 depth01">
+			<img src="http://simage.lottemart.com/images/b2c/2021/intro.jpg" alt="intro"/>
+			<div class="intro">
+				<p class="sub_01">상품 한 줄 소개</p>
+				<p class="sub_02">상품 명</p>
+			</div>
+			<p class="sub_03">규격</p>
+		</div>
+		<!--// 인트로영역입니다 -->
+
+		<!-- 상품 소구 포인트 영역입니다 -->
+		<div class="guide02 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>상품 한눈에 보기</h1>
+			</div>
+			<ul class="infor_01">
+				<li>산지, 맛 소재, 생산유통 과정의 특장점 등</li>
+				<li>산지, 맛 소재, 생산유통 과정의 특장점 등</li>
+				<li>산지, 맛 소재, 생산유통 과정의 특장점 등</li>
+				<!--// 상품의 한눈에 보기를 추가, 삭제하고 싶다면 <li> 부터 </li>까지 선택 후 복사 또는 삭제하세요 -->
+				<li>산지, 맛 소재, 생산유통 과정의 특장점 등</li>
+			</ul>
+		</div>
+		<div class="guide02 depth03">
+			<img src="http://simage.lottemart.com/images/b2c/2021/point_01.jpg" alt="point_01"/>
+			<img src="http://simage.lottemart.com/images/b2c/2021/point_02.jpg" alt="point_02"/>
+		</div>
+		<div class="guide03 depth01">
+			<h2>상품 소구 포인트1 제목</h2>
+			<div class="infor_02 depth01">
+				<p>상품 소구 포인트를 상세하게 기술합니다.</p>
+			</div>
+			<h2>상품 소구 포인트2 제목</h2>
+			<div class="infor_02 depth01">
+				<p>상품 소구 포인트를 상세하게 기술합니다.</p>
+			</div>
+				 <!--// 포인트 3번, 4번 이미지가 들어가는 경우에만 사용하세요 (아닌경우 여기서부터 삭제)-->
+			<div class="guide02 depth05">
+				<img src="http://simage.lottemart.com/images/b2c/2021/point_01.jpg" alt="point_01"/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/point_02.jpg" alt="point_02"/>
+			</div>
+				<!--// 포인트 3번, 4번 이미지가 들어가는 경우에만 사용하세요 (아닌경우 여기까지 삭제)-->
+		</div>
+		<div class="guide03 depth01">
+
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>크기를 확인하세요</h1>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/sizecut_01.jpg" alt="size_01"/>
+		</div>
+		<!--// 상품 소구 포인트 영역입니다 -->
+
+		<!-- 브랜드 이야기 영역입니다 -->
+		<div class="guide04 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>브랜드 이야기</h1>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/brand_01.jpg" alt="brand"/>
+			<h2>브랜드 명을 입력하세요</h2>
+			<p>브랜드만의 히스토리, 특장점 등 소개말을 입력해주세요.</p>
+		</div>
+		<!--// 브랜드 이야기 영역입니다 -->
+
+		<!-- 상품이용팁 영역입니다 -->
+		<div class="guide05 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>상품이용팁</h1>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/tip_01.jpg" alt="tip"/>
+			<h2>상품 이용팁 1</h2>
+			<p>보관법, 손질법, 레시피, 관리 방법 등 상품 이용에 도움이 되는 부가정보를 입력해주세요.</p>
+			<h2>상품 이용팁 2</h2>
+			<p>보관법, 손질법, 레시피, 관리 방법 등 상품 이용에 도움이 되는 부가정보를 입력해주세요.</p>
+		</div>
+		<!--// 상품이용팁 영역입니다 -->
+
+		<!-- 인증정보 영역입니다 -->
+		<div class="guide06 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>인증정보를 확인하세요</h1>
+			</div>
+			<div class="cert">
+				<!--// 필요한 인증정보만 남기고 삭제하세요-->
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_01.jpg" alt="유기농 (농산물): 합성농약과 화학비료를 사용하지 않고 재배한 농산물 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_02.jpg" alt="유기농 (축산물): 항생제와 향균제를 첨가하지 않은 유기사료를 먹여 사육한 축산물 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_03.jpg" alt="무농약: 합성농약을 사용하지 않고 화학비료를 최소화하여 생산한 농산물 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_04.jpg" alt="GAP: 생산에서 판매 단계까지 체계적인 안전관리를 통해 생산된 농산물 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_05.jpg" alt="무항생제: 항생제, 향균제 등이 포함되지 않는 사료를 급여하여 사육한 축산물 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_06.jpg" alt="동물복지: 높은 수준의 동물복지 기준에 따라 인도적으로 동물을 사육한 농장에서 온 축산물 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_07.jpg" alt="유기가공식품: 합성농약, 화학비료를 사용하지 않고 재배한 유기농산물, 유기축산물을 제조·가공한 식품 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_08.jpg" alt="HACCP: 원재료부터 제조, 유통까지 각 단계에서 필요한 식품안전관리인증 기준을 충족한 식품 인증상품입니다."/>
+				<img src="http://simage.lottemart.com/images/b2c/2021/cert_09.jpg" alt="KC: 어린이제품, 전기용품, 생활용품의 제품과 생산시설의 안전성에 대한 국가통합인증 KC 인증을 받은 상품입니다. "/>
+			</div>
+		</div>
+		<!--// cert(인증정보) 영역입니다 -->
+
+		<!-- display(표시사항) 영역입니다 -->
+		<div class="guide07 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>표시사항을 확인하세요</h1>
+			</div>
+			<div class="disp">
+				<img src="http://simage.lottemart.com/images/b2c/2021/disp_01.jpg" alt="표시사항"/>
+			</div>
+		</div>
+		<!--// display(표시사항) 영역입니다 -->
+	</div>
+</body>
+</html>

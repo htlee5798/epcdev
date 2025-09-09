@@ -1,0 +1,278 @@
+/*
+ 기존 사용 소스
+ */
+/* base.css */
+* {margin:0; padding:0}
+img {border:0; vertical-align:top;}
+ol, ul {list-style:none;}
+table {width:100%; border-collapse:collapse; border-spacing:0;}
+th {font-weight:normal;}
+button {background:none; border:0; vertical-align:middle; cursor:pointer;}
+input {background:none;}
+select {background:none; border:0; -webkit-appearance:none; font-size:24px; color:#333;}
+textarea {background:none; border:0; -webkit-appearance:none; font-size:24px; color:#666;}
+
+html {height:100%;}
+body {min-height:100%; font-size:24px; line-height:32px; font-family:'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif; color:#4c4c4c; letter-spacing:-1px; -webkit-text-size-adjust:none;}
+h1 {position:absolute; left:-999px; top:-999px;}
+a {color:#4c4c4c; text-decoration:none;}
+input.txt {width:100%; border:0; -webkit-appearance:none; font-size:26px; color:#808080;}
+strong {font-weight:normal;}
+em {font-style:normal;}
+button,select,input{font-family:'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif;}
+
+
+/*
+ 통큰쿠폰 소스
+ */
+/* 통큰쿠폰 안내페이지 */
+.tk-swipe-wrap,
+.tk-intro-wrap {position:absolute; top:0; right:0; bottom:100px; left:0; text-align:center; background-color:#ff3435;}
+.tk-intro-wrap {background-color:#767676;}
+.tk-intro-wrap.bgtype1 {background-color:#ff3435;}
+.tk-intro-wrap.bgtype2 {background-color:#ddd1d2;}
+.tk-swipe-wrap .flex-viewport {max-height:100%; max-width:100%;}
+.tk-swipe-wrap .slides li {position:relative;}
+.tk-swipe-wrap .slides li a {-webkit-tap-highlight-color:transparent;}
+.tk-swipe-wrap .slides [class|='pointer'] {position:absolute; top:77%; bottom:7%; z-index:10; font:0/0 a; color:transparent;}
+.tk-swipe-wrap .slides .pointer-1 {left:3%; right:50%;}
+.tk-swipe-wrap .slides .pointer-2 {left:50%; right:3%;}
+.tk-swipe-wrap .slides li,
+.tk-swipe-wrap .slides li img,
+.tk-intro-wrap img {width:100%; max-height:100%;}
+@media all and (min-aspect-ratio:2/3) {
+	.tk-swipe-wrap .slides li img,
+	.tk-intro-wrap img {width:90%;}
+	.tk-intro-wrap.bgtype2 img {width:100%;}
+	.tk-intro-wrap.bgtype2 .btnLink_wrap {bottom:30px;}
+	.tk-intro-wrap.bgtype2 .btnLink_wrap img {width:70%;}
+	.tk-swipe-wrap.type2 .slides li img {width:100%;}
+	.tk-swipe-wrap.type3 .slides li img {width:100%;height:100%;}
+}
+
+.flex-control-nav {position:absolute; bottom:30px; right:0; left:0; text-align:center; z-index:10;}
+.flex-control-nav li {display:inline-block;}
+.flex-control-nav li a {display:inline-block; width:18px; height:18px; margin:0 10px; border-radius:50%; background-color:#ff7172; font:0/0 a;}
+.flex-control-nav li a.flex-active {background-color:#fff;}
+.tk-swipe-wrap .tkclose,
+.tk-intro-wrap .tkclose {position:absolute; top:0; right:0; z-index:10;}
+.tk-swipe-wrap .tkclose a,
+.tk-intro-wrap .tkclose a {display:block; padding:30px;}
+.tk-intro-wrap .tkclose.type1 a {padding:15px;background-color:#b8a2a4;}
+.tk-swipe-wrap .tkclose.type1 a {padding:15px;background-color:#b8a2a4;}
+.tk-swipe-wrap .tklinkconfirm {position:absolute; bottom:8%; left:50%; z-index:10; margin-left:-145px;}
+.tk-swipe-wrap .tklinkconfirm.type1 {bottom:5%;margin-left:-229px;}
+.tk-swipe-wrap .tktodayclose {position:absolute; top:30px; left:30px; z-index:10;}
+.tk-swipe-wrap .tktodayclose label {display:block; width:150px; height:30px; font:0/0 a; color:transparent; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') 0 -120px no-repeat;}
+.tk-swipe-wrap .tktodayclose input[type=checkbox] {-webkit-appearance:none; position:absolute; top:0; left:0; z-index:-1;}
+.tk-swipe-wrap .tktodayclose input[type=checkbox]:checked + label {background-position:0 -150px;}
+
+.tk-swipe-wrap.type2 {background-color:#404040;}
+.tk-swipe-wrap.type2 .flex-control-nav li a {background-color:#7a7a7a;}
+.tk-swipe-wrap.type2 .flex-control-nav li a.flex-active {background-color:#ec1a1a;}
+.tk-swipe-wrap.type2 .slides li,
+.tk-swipe-wrap.type2 .slides li img,
+.tk-swipe-wrap.type2 img {max-height:200%;}
+.tk-swipe-wrap.type2 .sub {position:absolute; bottom:0; right:0; z-index:10; width:100%;}
+
+.tk-swipe-wrap.type3 {background-color:#b28f52;}
+.tk-swipe-wrap.type3 .flex-control-nav li a {background-color:#7a7a7a;}
+.tk-swipe-wrap.type3 .flex-control-nav li a.flex-active {background-color:#ec1a1a;}
+.tk-swipe-wrap.type3 .slides li,
+.tk-swipe-wrap.type3 .slides li img,
+.tk-swipe-wrap.type3 img {max-height:200%;}
+.tk-swipe-wrap.type3 .sub {position:absolute; bottom:0; right:0; z-index:10; width:100%;}
+
+.btnLink_wrap {position:absolute;left:0px;bottom:50px;z-index:1;width:100%;text-align:center;}
+.btnLink_wrap img {width:65%;}
+
+
+/* base */
+#tongkeun-coupon .acenter {text-align:center !important;}
+#tongkeun-coupon [class|='tmpbtn'] {min-height:40px; padding:0 5px; border-radius:5px; color:#fff; font-size:20px; text-align:center; white-space:nowrap; font-weight:bold;}
+#tongkeun-coupon [class|='tmpbtn']:after {content:''; display:inline-block; height:100%; vertical-align:middle;}
+#tongkeun-coupon [class|='tmpbtn'][class*='type1'] {border:solid 1px #ff0f0f; background-image:-webkit-linear-gradient(bottom, #e40808, #ff2b0f); background-image:linear-gradient(to top, #e40808, #ff2b0f);}
+#tongkeun-coupon [class|='tmpbtn'].confirm {width:266px; height:50px;}
+
+#tongkeun-coupon [class|='tmpbtn'][class*='type2'] {color:#3d3d3d; border:solid 1px #afafaf; background-image:-webkit-linear-gradient(bottom, #e6e6e6, #e1e1e1); background-image:linear-gradient(to top, #e6e6e6, #e1e1e1 13%, #fefefe);}
+
+#tongkeun-coupon [class|='tmpbox'] {overflow:hidden; position:relative; margin-top:20px; border:2px solid #d2d2d2; border-radius:10px; background-color:#fff;}
+#tongkeun-coupon [class|='tmpbox']:first-child {margin-top:0;}
+/*#tongkeun-coupon [class|='tmpbox'][class*='shadow']:after {content:''; display:block; position:absolute; z-index:0; top:0; left:-100%; width:100%; height:1000px; background-color:rgba(0,0,0,.02); -webkit-transform:translateX(400px) skewX(30deg); transform:translateX(400px) skewX(30deg);}*/
+#tongkeun-coupon [class|='tmpbox'] .title-wrap {padding:18px 30px; background-color:#8c8c8c; background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#8d8d8d), color-stop(100%,#6c6c6c)); background:-webkit-linear-gradient(top, #8d8d8d 0%,#6c6c6c 100%); background:linear-gradient(to bottom, #8d8d8d 0%,#6c6c6c 100%);}
+#tongkeun-coupon [class|='tmpbox'] .title-wrap .title {font-size:34px; font-weight:bold; color:#fff;}
+#tongkeun-coupon [class|='tmpbox'] .more-btnwrap {position:absolute; top:20px; right:29px;}
+#tongkeun-coupon [class|='tmpbox'] .more-btnwrap a {display:inline-block; font-size:20px; color:#fff; font-weight:bold; height:45px; padding:0 19px; line-height:45px; letter-spacing:-2px; border-radius:5px; background-color:#373737; text-align:center;}
+#tongkeun-coupon [class|='tmpbox'] .more-btnwrap a:after {content:''; display:inline-block; width:10px; height:16px; margin:4px 0 0 10px; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') -60px -70px no-repeat; vertical-align:baseline;}
+
+#tongkeun-coupon [class|='tmpbox'] .more-btnwrap.type1 a {display:inline-block; font-size:20px; color:#fff; font-weight:bold; height:45px; padding:0 19px; line-height:45px; letter-spacing:-2px; border-radius:5px; background-color:#2eb101; text-align:center;}
+#tongkeun-coupon [class|='tmpbox'] .more-btnwrap.type1 a:after {content:''; display:inline-block; width:10px; height:16px; margin:4px 0 0 10px; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') -60px -70px no-repeat; vertical-align:baseline;}
+
+#tongkeun-coupon .container.coupon [class|='tmpbox'] {margin-right:20px; margin-left:20px;}
+#tongkeun-coupon .container.coupon [class|='tmpbox'] .title-wrap {background:#d4d4d4; text-align:center;}
+#tongkeun-coupon .container.coupon [class|='tmpbox'] .title-wrap .title {color:#2d2d2d;}
+#tongkeun-coupon .container.coupon [class|='tmpbox'] .title-wrap .title .point {color:#ff0f0f; font-size:38px;}
+#tongkeun-coupon .container.coupon [class|='tmpbox'] .title-wrap .title small {font-weight:normal;}
+
+
+/* layout */
+#tongkeun-coupon {position:absolute; top:92px; right:0; bottom:0; left:0; font-size:24px; line-height:1.5;}
+#tongkeun-coupon.type1 {top:74px;}
+#tongkeun-header {position:fixed; top:0; right:0; left:0; z-index:99; height:88px; text-align:center; background-color:#ff0f0f; border-bottom:6px solid #202020;}
+#tongkeun-header .title {position:static; width:276px; height:49px; margin:20px auto 0; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') no-repeat 0 -209px; font:0/0 a; color:transparent;}
+#tongkeun-header .title a {display:block; width:100%; height:100%;}
+#tongkeun-header .close {position:absolute; top:0; right:0; bottom:0; width:98px; font-size:24px; color:#fff; font-weight:bold}
+
+#tongkeun-coupon .container {box-sizing:border-box; min-height:100%;}
+#tongkeun-coupon .container.default {padding:20px; background-color:#ececec;}
+#tongkeun-coupon .container.coupon {}
+
+
+/* contents */
+#tongkeun-coupon .linked-wrap {margin:6px 16px; color:#202020; font-weight:bold; font-size:24px;}
+#tongkeun-coupon .linked-wrap li {position:relative; padding:25px 150px 24px 40px;}
+#tongkeun-coupon .linked-wrap li:before {content:''; display:block; position:absolute; top:33px; left:10px; width:10px; height:10px; border:4px solid #ff0f0f; border-radius:50%;}
+#tongkeun-coupon .linked-wrap li + li {border-top:2px dashed #d2d2d2;}
+#tongkeun-coupon .linked-wrap li .desc {font-size:16px; color:#565656; letter-spacing:-2px; line-height:1.3;}
+#tongkeun-coupon .linked-wrap li [class|='tmpbtn'] {position:absolute; top:22px; right:10px; width:120px; line-height:40px;}
+#tongkeun-coupon .image-only {padding:35px 10px; text-align:center;}
+#tongkeun-coupon .image-only.type1 {padding:15px 10px;}
+#tongkeun-coupon .image-only.type2 {padding:15px 10px 0px;}
+#tongkeun-coupon .image-only.type1 img, #tongkeun-coupon .image-only.type2 img {position:relative;z-index:1;}
+#tongkeun-coupon .linked-wrap li.image-only:before {display:none;}
+#tongkeun-coupon .linked-wrap .image-only {padding:30px 10px; text-align:left;}
+
+#tongkeun-coupon .membersnum-input {text-align:center; padding:40px 10px;}
+#tongkeun-coupon .membersnum-input .title {font-size:34px; color:#3d3d3d; font-weight:bold;}
+#tongkeun-coupon .membersnum-input .desc {font-size:20px; color:#8f8e8e;}
+#tongkeun-coupon .input-wrap {margin-top:26px;}
+#tongkeun-coupon .input-wrap input {-webkit-appearance:none; display:inline-block; width:20%; line-height:49px; height:49px; text-align:center; font-size:24px; font-weight:bold; color:#3d3d3d; border:2px solid #d2d2d2; border-radius:6px;}
+#tongkeun-coupon .input-wrap + .btn-wrap {margin-top:20px;}
+
+#tongkeun-coupon .coupontitle-wrap {position:relative;background-color:#202020; padding:6px 28px 8px;}
+#tongkeun-coupon .coupontitle-wrap .title {color:#fff; font-size:32px; font-weight:bold; letter-spacing:-3px;}
+#tongkeun-coupon .coupontitle-wrap .btn-wrap {position:absolute; top:50%; right:12px; margin-top:-22px;}
+#tongkeun-coupon .coupontitle-wrap .btn-wrap a {display:block; padding-right:26px; font-size:22px; color:#203806; width:220px; height:36px; line-height:38px; background-color:#70cc0e; border-radius:5px;}
+#tongkeun-coupon .coupontitle-wrap .btn-wrap a:after {position:absolute; top:50%; right:5px; width:0; height:0; margin-top:-9px; z-index:10; border:8px solid transparent; border-left:14px solid #203806;}
+#tongkeun-coupon .desc-wrap {padding:26px 30px 30px; font-size:24px; color:#282828; line-height:1.3;}
+#tongkeun-coupon .desc-wrap .point {color:#ff0f0f; font-weight:bold;}
+#tongkeun-coupon .desc-wrap ul.caution li {padding-left:20px;}
+#tongkeun-coupon .desc-wrap ul.caution li:nth-child(2) {font-weight:bold;}
+#tongkeun-coupon .desc-wrap ul.caution li:before {content:'※'; display:inline-block; width:20px; margin:0 0 0 -20px;}
+#tongkeun-coupon .desc-wrap .title {font-size:30px; color:#2d2d2d; font-weight:bold;}
+#tongkeun-coupon .desc-wrap .title2 {font-size:28px; color:#2d2d2d; font-weight:bold; letter-spacing:-2px;}
+#tongkeun-coupon .desc-wrap .title + .caution {margin-top:6px;}
+
+#tongkeun-coupon .tabcategory {overflow:hidden; width:100%;}
+#tongkeun-coupon .tabcategory a {position:relative; float:left; box-sizing:border-box; width:25%; padding:18px 0; text-align:center; vertical-align:middle; border-bottom:8px solid #d7d7d7; font-size:32px; font-weight:bold; color:#3d3d3d; letter-spacing:-4px; line-height:1;}
+#tongkeun-coupon .tabcategory a:before {position:absolute; top:50%; left:-2px; content:''; display:block; width:4px; height:20px; margin-top:-10px; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') -80px -70px no-repeat;}
+#tongkeun-coupon .tabcategory a:first-child:before {display:none;}
+#tongkeun-coupon .tabcategory a.active {color:#ff0f0f; border-bottom-color:#ff0f0f;}
+#tongkeun-coupon .tabcategory a.active:after {content:''; position:absolute; left:50%; bottom:0; border-color:transparent transparent #ff0f0f; border-style:solid; border-width:6px 8px; margin-left:-4px;}
+#tongkeun-coupon .tabcategory.type1 a {width:19%;}
+#tongkeun-coupon .tabcategory.type1 a:first-child {width:24%;}
+
+#tongkeun-coupon .tabcategory-wrap .couponimg-list ul {display:none;}
+#tongkeun-coupon .tabcategory-wrap .couponimg-list ul.active {display:block;}
+#tongkeun-coupon .couponimg-list li {border-bottom:2px dashed #aaa; text-align:center;}
+#tongkeun-coupon .tabcategory-wrap .couponimg-list #tabCategory1 .desc {border:none;background-color:#e6ffe9;}
+
+#tongkeun-coupon .member-info {padding:20px 10px 18px; text-align:center; font-size:24px; vertical-align:middle; color:#3d3d3d; font-weight:bold;}
+#tongkeun-coupon .member-info [class|='level'] {display:inline-block; width:68px; height:52px; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') -330px 0 no-repeat; font:0/0 a; color:transparent; vertical-align:middle;}
+#tongkeun-coupon .member-info [class|='level'][class*='vip'] {background-position:-330px 0;}
+#tongkeun-coupon .member-info [class|='level'][class*='great'] {background-position:-402px 0;}
+#tongkeun-coupon .member-info [class|='level'][class*='best'] {background-position:-475px 0;}
+#tongkeun-coupon .member-info em {font-style:italic;}
+#tongkeun-coupon .coupon-wrap {padding:40px 0; text-align:center;}
+#tongkeun-coupon .coupon-wrap .desc {margin-top:16px; font-size:20px; color:#3d3d3d;}
+#tongkeun-coupon .coupon-wrap .desc .point {color:#ff0f0f;}
+#tongkeun-coupon .coupon-wrap .desc.type1 {margin-top:0px;margin-bottom:30px;font-size:25px;}
+#tongkeun-coupon .coupon-list ul {margin:0 15px;}
+#tongkeun-coupon .coupon-list li {position:relative; line-height:1; padding:25px 15px; border-top:2px dashed #aaa;}
+#tongkeun-coupon .coupon-list li:first-child {border-top:0 none;}
+#tongkeun-coupon .coupon-list li .title {font-size:25px; color:#3d3d3d;}
+#tongkeun-coupon .coupon-list li time {display:block;margin-top:5px;font-size:18px;color:#717171;}
+#tongkeun-coupon .coupon-list li summary {display:block;margin-top:5px;font-size:18px;color:#717171;}
+#tongkeun-coupon .coupon-list [class|='tmpbtn'] {position:absolute; top:50%; right:20px; height:44px; margin-top:-23px; padding:0 10px;}
+#tongkeun-coupon .couponlayer-popup {position:fixed; top:50%; left:0; margin-top:-200px; display:none; z-index:500; width:100%; background-color:#fff; text-align:center; padding:40px 0 25px;}
+#tongkeun-coupon .couponlayer-popup .title {font-weight:bold; font-size:26px; color:#3d3d3d; margin-bottom:30px;}
+#tongkeun-coupon .couponlayer-popup .title .point {color:#ff0f0f;}
+#tongkeun-coupon .couponlayer-popup [class|='tmpbtn'] {width:280px; height:50px; margin-top:30px;}
+
+#tongkeun-coupon .couponlist-nav {overflow:hidden; display:table; width:100%; table-layout:fixed;}
+#tongkeun-coupon .couponlist-nav a {display:table-cell; padding:0 0 0 10px; color:#fff; font-size:20px; font-weight:bold;}
+#tongkeun-coupon .couponlist-nav a em {color:#ffffd9; font-size:24px}
+#tongkeun-coupon .couponlist-nav a em small {font-weight:normal;}
+#tongkeun-coupon .couponlist-nav a:first-child {display:table-cell; padding:0 10px 0 0;}
+#tongkeun-coupon .couponlist-nav a > span {position:relative; display:block; height:48px; line-height:48px; text-align:center; border-radius:10px 10px 0 0;}
+#tongkeun-coupon .couponlist-nav a > span:after {content:''; display:block; position:absolute; z-index:3; top:5px;}
+#tongkeun-coupon .couponlist-nav a:first-child > span {background-color:#c34b4b;}
+#tongkeun-coupon .couponlist-nav a:first-child > span:after {right:-39px; border-top:40px solid transparent; border-right:20px solid transparent; border-left:20px solid #c34b4b; border-bottom:40px solid #c34b4b;}
+#tongkeun-coupon .couponlist-nav a:nth-child(2) > span {background-color:#418f4c;}
+#tongkeun-coupon .couponlist-nav a:nth-child(2) > span:after {left:-39px; border-top:40px solid transparent; border-left:20px solid transparent; border-right:20px solid #418f4c; border-bottom:40px solid #418f4c;}
+#tongkeun-coupon .couponlist-nav a.active:first-child > span {background-color:#ff0f0f;}
+#tongkeun-coupon .couponlist-nav a.active:first-child > span:after {z-index:10; border-left:20px solid #ff0f0f; border-bottom:40px solid #ff0f0f;}
+#tongkeun-coupon .couponlist-nav a.active:nth-child(2) > span {background-color:#1ab630;}
+#tongkeun-coupon .couponlist-nav a.active:nth-child(2) > span:after {z-index:10; border-right:20px solid #1ab630; border-bottom:40px solid #1ab630;}
+
+#tongkeun-coupon .spc-couponimg-list {padding:0 10px;}
+#tongkeun-coupon .spc-couponimg-list + .acenter {padding:20px 0 40px;}
+#tongkeun-coupon .stylecheck {position:relative; display:none; overflow:hidden; border:6px solid #ff0f0f;}
+#tongkeun-coupon .stylecheck.select2 {border:6px solid #1ab630;}
+#tongkeun-coupon .stylecheck.active {display:block;}
+#tongkeun-coupon .stylecheck li {position:relative; float:left; width:50%; border:2px solid #fff; border-bottom:2px dashed #aaa; border-right:2px dashed #aaa; box-sizing:border-box;}
+#tongkeun-coupon .stylecheck li:nth-child(2n) {border-right:0 none;}
+#tongkeun-coupon .stylecheck li:last-child,
+#tongkeun-coupon .stylecheck li:nth-last-child(2):nth-child(odd) {border-bottom:2px solid #fff;}
+#tongkeun-coupon .stylecheck label {display:block; width:100%; height:100%;}
+#tongkeun-coupon .stylecheck input[type=checkbox] {position:absolute; z-index:10; bottom:20px; left:20px; -webkit-appearance:none; width:38px; height:38px; border-radius:5px; background-color:#fff; box-shadow:inset 3px 4px 5px rgba(0,0,0,.19); border:solid 1px #c7c7c7;}
+#tongkeun-coupon .stylecheck input[type=checkbox]:checked:after {content:''; display:block; width:42px; height:40px; margin:-3px 0 0 -2px; background:url('//simage.lottemart.com/images/mobile/front/tongkeun/layout/tongkeun-sprite.png') -90px -70px no-repeat;}
+/*#tongkeun-coupon .stylecheck input[type=checkbox]:checked + label {background-color:#fff3f3;}*/
+
+#tongkeun-coupon .stylecheck.selectItem {}
+#tongkeun-coupon .stylecheck.selectItem li {float:none;text-align:left;width:100%;border-right:0px dashed #aaa;}
+#tongkeun-coupon .stylecheck.selectItem li input {display:none;}
+#tongkeun-coupon .stylecheck.selectItem li:nth-last-child(2):nth-child(odd) {border-bottom:2px dashed #aaa;}
+#tongkeun-coupon .stylecheck.selectItem li a {display:block;}
+
+#tongkeun-coupon .goTop {margin:30px 0; padding:0 20px 30px 20px;}
+#tongkeun-coupon .goTop button.bds56w {display:block;width:100%;height:56px;border-width:7px;-webkit-border-image:url('//simage.lottemart.com/images/mobile/front/common/201212/btn-56-white.png') 7 stretch;-moz-border-image:url('/images/mobile/front/common/201212/btn-56-white.png') 7 stretch;font-size:28px;line-height:22px;}
+#tongkeun-coupon .goTop button.bds56w img {vertical-align:middle;}
+
+#tongkeun-coupon .wrap_round {width:572px;margin:0 auto;padding:35px 0;border:1px solid #d2d2d2;border-top:0px;border-radius:0px 0px 10px 10px;}
+
+/* special Day */
+#tongkeun-coupon .container.special {padding:20px 0;background-color:#ececec;}
+#tongkeun-coupon .container.special [class|='tmpbox'] {margin:20px 20px 0px;border:1px solid #d2d2d2;background-color:#fff;}
+#tongkeun-coupon .container.special [class|='tmpbox'][class*='first'] {margin-top:0;border-radius:0px 0px 10px 10px;}
+#tongkeun-coupon .container.special h2 {text-align:center;}
+
+#tongkeun-coupon .list-form {padding:20px 0;}
+#tongkeun-coupon .list-form:after {content:" ";display:block;clear:both;}
+#tongkeun-coupon .list-form li {float:left;width:50%;height:381px;margin-left:-1px;padding:15px 0;text-align:center;border-left:1px solid #e0e0e0;}
+
+#tongkeun-coupon .list-form.type1 li {height:auto;padding:10px 0;}
+
+#tongkeun-coupon .desc-wrap.type1 {text-align:center;border-top:1px dashed #b2b2b2;background-color:#f5f5f5;}
+#tongkeun-coupon .desc-wrap.type2 {text-align:center;color:#000;font-size:26px;font-weight:bold;background-color:#ccc;}
+
+#tongkeun-coupon .boxwrap {padding:20px;text-align:center;}
+#tongkeun-coupon .boxwrap.normal {margin-top:20px;padding:0;}
+
+#tongkeun-coupon .notice_text {font-size:20px;font-weight:normal;}
+#tongkeun-coupon .notice_text.upsize {font-size:24px;margin-left:10px;}
+#tongkeun-coupon .notice_text.barcode {margin-top:10px;font-size:20px;}
+
+
+/* appcoach add */
+.spicon-arrow {position:relative; display:inline-block; border:0 none; vertical-align:middle; background:url('//simage.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -70px no-repeat; font:0/0 a; color:transparent; width:20px; height:13px; margin-top:-4px; background-size:500px auto; filter:contrast(500%); -webkit-filter:contrast(500%); transform:rotate(-90deg); -webkit-transform:rotate(-90deg);}
+.appcoach-swipe-wrap {overflow:hidden; position:absolute; top:0; right:0; bottom:100px; left:0; text-align:center; background-color:rgba(0,0,0,.9);}
+.appcoach-swipe-wrap .flex-viewport {max-height:100%; max-width:100%;}
+.appcoach-swipe-wrap .slides li {overflow:hidden; position:relative; max-height:100%;}
+.appcoach-swipe-wrap .slides li img {width:100%;}
+.appcoach-swipe-wrap li .btn-wrap {position:absolute; bottom:133px; left:0; right:0; z-index:7;}
+.appcoach-swipe-wrap li .btn-wrap .tmpbtn {display:inline-block; width:280px; height:60px; line-height:60px; background-color:#ef3036; border-radius:8px; font-size:26px; color:#fff; font-weight:bold; letter-spacing:-2px;}
+.appcoach-swipe-wrap .flex-control-nav {bottom:115px;}
+.appcoach-swipe-wrap .flex-control-nav li a {background-color:#6c6c6c;}
+.appcoach-swipe-wrap .flex-control-nav li a.flex-active {background-color:#fff;}
+

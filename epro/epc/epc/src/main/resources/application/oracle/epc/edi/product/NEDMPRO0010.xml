@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0010">
+	<typeAlias alias="nEDMPRO0010VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0010VO" />		<!-- 신상... SQLINES DEMO *** -->
+
+	<!-- 신상품 현황[온오프전용] 조회 Map -->		
+	<resultMap id="selectNewProdFixListMap"		class="nEDMPRO0010VO">
+		<result column="PGM_ID"				property="pgmId" 			/>	<!-- 신규상품코드 -->
+		<result column="PROD_NM"			property="prodNm" 			/>	<!--  상품명 -->
+		<result column="PROD_STANDARD_NM"	property="prodStandardNm" 	/>	<!-- 상품 규격 -->
+		<result column="SRCMK_CD"			property="srcmkCd" 			/>	<!--  판매코드 -->
+		<result column="ENTP_CD"			property="entpCd" 			/>	<!-- 업체코드 -->
+		<result column="PUR_INRCNT_QTY"		property="purInrcntQty" 	/>	<!-- 발주입수수량 -->
+		<result column="NOR_PROD_SALE_PRC"	property="norProdSalePrc" 	/>	<!-- 정상상품매출가격 -->
+		<result column="NOR_PROD_PCOST"		property="norProdPcost" 	/>	<!-- 정상상품원가 -->
+		<result column="PRFT_RATE"			property="prftRate" 		/>	<!-- 이익율 -->
+		<result column="WNOR_PROD_PCOST"	property="wnorProdPcost"	/> <!--정상상품원가 MAXX-->
+		<result column="WNOR_PROD_SALE_PRC"	property="wnorProdSalePrc"	/> <!--정상상품매출가격 MAXX-->
+		<result column="WPRFT_RATE"			property="wprftRate"		/> <!--이익율 MAXX-->
+		<result column="SNOR_PROD_PCOST"	property="snorProdPcost"	/> <!--정상상품원가 슈퍼-->
+		<result column="SNOR_PROD_SALE_PRC"	property="snorProdSalePrc"	/> <!--정상상품매출가격 슈퍼-->
+		<result column="SPRFT_RATE"			property="sprftRate"		/> <!--이익율 슈퍼-->
+		<result column="ONOR_PROD_PCOST"	property="onorProdPcost"	/> <!--정상상품원가 오카도-->
+		<result column="ONOR_PROD_SALE_PRC"	property="onorProdSalePrc"	/> <!--정상상품매출가격 오카도-->
+		<result column="OPRFT_RATE"			property="oprftRate"		/> <!--이익율 오카도-->
+		<result column="REG_DATE"			property="regDate" 			/>	<!-- 등록 일시 -->
+		<result column="CFM_FG"				property="cfmFg" 			/>	<!-- CFM_FG -->
+		<result column="ATT_NM"				property="attNm" 			/>	<!-- 변형속성 입력 값 -->
+		<result column="ZZIMAGE_CFG_FG"		property="zzimageCfgFg" 	/>	<!-- 이미지 확정구분 -->
+		<result column="LOGI_CFM_FG"		property="logiCfmFg" 		/>	<!-- 상태값 -->
+		<result column="W_USE_FG"			property="wUseFg" 			/>	<!-- 빅마켓 취급구분 -->
+		<result column="PROD_IMG_ID"		property="prodImgId"		/>	<!-- 이미지 아이디 -->
+		<result column="VARIANT"			property="variant"			/>	<!-- 변형속성순번 -->
+		<result column="CFM_FG_TXT"			property="cfmFgTxt"			/>	<!-- 상품상태명 -->
+		<result column="ONOFF_DIVN_CD"		property="onOffDivnCd"		/>	<!-- 상품구분[0:온오프, 1:온라인] -->
+		<result column="MD_SEND_DIVN_CD"	property="mdSendDivnCd"		/>	<!-- MD전송구분 -->
+		<result column="TRD_TYPE_DIVN_CD"	property="trdTypeDivnCd"	/>	<!-- 거래형태타입[1:직매입, 2:특약1, 4:특약2] -->		
+		<result column="PROD_ATT_TYP_FG"	property="prodAttTypFg"		/>	<!-- 상품범주[00:단일, 01:묶음] -->
+		<result column="PROD_CD"			property="prodCd"			/>	<!-- REG_SAP 테이블의 상품코드값 [상품으로 결정된 상품코드]	-->
+		<result column="PROD_DIVN_CD"		property="prodDivnCd"		/>	<!-- 상퓸구분코드[1:규격, 5:패션] 	-->
+		<result column="MIX_YN"				property="mixYn"			/>	<!-- 혼재여부-->
+		<result column="L1_CD"				property="l1Cd"				/>	<!-- 대분류-->
+		<result column="CFM_FG_REASON"		property="cfmFgReason"		/>	<!-- 반려 및 거절사유 -->
+		<result column="CHAN_CD"			property="chanCd"			/>	<!-- 채널코드 -->
+	</resultMap>
+
+	<!-- SQLINES DEMO *** Map -->
+	<resultMap id="selectNewProdOnlineFixListMap"	class="nEDMPRO0010VO">
+		<result column="REG_DATE"				property="regDate" 			/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="CFM_FG"					property="cfmFg" 			/>	<!-- CF... SQLINES DEMO *** -->
+		<result column="ADJ_FG"					property="adjFg" 			/>	<!-- 조정... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"				property="srcmkCd" 			/>	<!--  판... SQLINES DEMO *** -->
+		<result column="RETN_REASON"				property="cfmFgReason" 			/>	<!--  반... SQLINES DEMO *** -->
+		<result column="ONLINE_REP_PROD_CD"		property="onlineRepProdCd" 	/>	<!-- 온라... SQLINES DEMO *** -->
+		<result column="PROD_NM"				property="prodNm" 			/>	<!--  상... SQLINES DEMO *** -->
+		<result column="PROD_STANDARD_NM"		property="prodStandardNm" 	/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="PUR_INRCNT_QTY"			property="purInrcntQty" 	/>	<!-- 발주... SQLINES DEMO *** -->
+		<result column="NOR_PROD_PCOST"			property="norProdPcost" 	/>	<!-- 정상... SQLINES DEMO *** -->
+		<result column="NOR_PROD_SALE_PRC"		property="norProdSalePrc" 	/>	<!-- 정상... SQLINES DEMO *** -->
+		<result column="PRFT_RATE"				property="prftRate" 		/>	<!-- 이익... SQLINES DEMO *** -->
+		<result column="PGM_ID"					property="pgmId" 			/>	<!-- 신규... SQLINES DEMO *** -->
+		<result column="PROD_CD"				property="prodCd" 			/>	<!--  상... SQLINES DEMO *** -->
+		<result column="ENTP_CD"				property="entpCd" 			/>	<!-- EX... SQLINES DEMO *** -->
+		<result column="PROD_IMG_ID"			property="prodImgId" 		/>	<!--  -... SQLINES DEMO *** -->
+		<result column="ZZIMAGE_CFG_FG"			property="zzimageCfgFg" 	/>	<!-- 이미... SQLINES DEMO *** -->
+		<result column="LOGI_CFM_FG"			property="logiCfmFg" 		/>	<!-- 물류... SQLINES DEMO *** -->
+		<result column="CFM_FG_TXT"				property="cfmFgTxt" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="ONOFF_DIVN_CD"			property="onOffDivnCd" 		/>	<!-- SQLINES DEMO *** ] -->
+		<result column="MD_SEND_DIVN_CD"		property="mdSendDivnCd"		/>	<!-- MD... SQLINES DEMO *** -->
+		<result column="DEAL_REP_PROD_YN"    property="dealRepProdYn"	/>	<!--딜상품... SQLINES DEMO *** -->
+	    <result column="CTPD_YN"                    property="ctpdYn"					/>	<!--구성품... SQLINES DEMO *** -->
+	</resultMap>
+
+
+	<!-- SQLINES DEMO *** ST MAP -->
+	<resultMap id="selectNewProdImgInfoToRFCMap"	class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"					nullValue=""	/>			<!-- 프로... SQLINES DEMO *** -->
+		<result column="VARIANT"		property="VARIANT"					nullValue=""	/>	    	<!-- 변형... SQLINES DEMO *** -->
+		<result column="SEQ"			property="SEQ"						nullValue=""	/>	      	<!-- 순번... SQLINES DEMO *** -->
+		<result column="ZZIMAGE"		property="ZZIMAGE"					nullValue=""	/>          <!-- 이미... SQLINES DEMO *** -->
+		<result column="CFM_FG"			property="CFM_FG"					nullValue=""	/>          <!-- 수정... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"		property="SRCMK_CD"					nullValue=""	/>          <!-- 판매... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- SQLINES DEMO ***  2016.03.17 이후 버전 -->
+	<select id="selectNewProdFixList_2"		parameterClass="java.util.Map"		resultMap="selectNewProdFixListMap">
+		/* SQLINES DEMO *** ectNewProdFixList_2 */
+		SELECT 	
+				A.PGM_ID						AS PGM_ID
+			,	A.PROD_NM						AS PROD_NM
+			,	A.VARIANT						AS VARIANT
+			,	MIN(A.PROD_STANDARD_NM)			AS PROD_STANDARD_NM
+			,	MIN(A.ENTP_CD)					AS ENTP_CD
+			,	MIN(A.PUR_INRCNT_QTY)			AS PUR_INRCNT_QTY
+			,	MIN(A.NOR_PROD_SALE_PRC)		AS NOR_PROD_SALE_PRC
+			,	MIN(A.NOR_PROD_PCOST)			AS NOR_PROD_PCOST
+			,	MIN(A.PRFT_RATE)				AS PRFT_RATE
+			,	MIN(A.WNOR_PROD_SALE_PRC)		AS WNOR_PROD_SALE_PRC
+			,	MIN(A.WNOR_PROD_PCOST)			AS WNOR_PROD_PCOST
+			,	MIN(A.WPRFT_RATE)				AS WPRFT_RATE
+			,	MIN(A.SNOR_PROD_SALE_PRC)		AS SNOR_PROD_SALE_PRC
+			,	MIN(A.SNOR_PROD_PCOST)			AS SNOR_PROD_PCOST
+			,	MIN(A.SPRFT_RATE)				AS SPRFT_RATE
+			,	MIN(A.ONOR_PROD_SALE_PRC)		AS ONOR_PROD_SALE_PRC
+			,	MIN(A.ONOR_PROD_PCOST)			AS ONOR_PROD_PCOST
+			,	MIN(A.OPRFT_RATE)				AS OPRFT_RATE
+			,	MIN(A.REG_DATE)					AS REG_DATE
+			,	MIN(A.CFM_FG)					AS CFM_FG
+			,	MIN(A.CFM_FG_TXT)				AS CFM_FG_TXT
+			,	MIN(A.CFM_FG_REASON)			AS CFM_FG_REASON
+			,	MIN(A.PROD_IMG_ID)				AS PROD_IMG_ID
+			,	MIN(A.ONOFF_DIVN_CD)			AS ONOFF_DIVN_CD
+			,	MIN(A.MD_SEND_DIVN_CD)			AS MD_SEND_DIVN_CD
+			,	MIN(A.TRD_TYPE_DIVN_CD)			AS TRD_TYPE_DIVN_CD
+			,	MIN(A.PROD_ATT_TYP_FG)			AS PROD_ATT_TYP_FG
+			,	MIN(A.PROD_DIVN_CD)				AS PROD_DIVN_CD
+			,	MIN(A.L1_CD)					AS L1_CD
+			,	MIN(A.PROD_CD)					AS PROD_CD
+			,	MIN(A.SRCMK_CD)					AS SRCMK_CD
+			,	MIN(A.MIX_YN)					AS MIX_YN
+			,	MIN(B.LOGI_CFM_FG)				AS LOGI_CFM_FG
+			,	MIN(B.W_USE_FG)					AS W_USE_FG
+			,	MIN(C.CFM_FG)					AS ZZIMAGE_CFG_FG
+			,	STRING_AGG(CONCAT(A.ATT_GRP_NM , ':' , '[' , A.ATT_DETAIL_NM , ']'),',' ORDER BY A.ATT_GRP_NM) AS ATT_NM	
+			,	MIN(A.CHAN_CD)					AS CHAN_CD
+		FROM
+		(
+			/* SQLINES DEMO *** 상품리스트만 가져온다. */
+			SELECT 	A.*
+				,	B.ATT_GRP_NM
+				,	B.ATT_DETAIL_NM
+			FROM
+			(
+				SELECT  A.PGM_ID
+					,	A.PROD_NM
+					,	A.PROD_STANDARD_NM
+					,	A.ENTP_CD
+					,	A.PUR_INRCNT_QTY
+					,	A.NOR_PROD_SALE_PRC
+					,	A.NOR_PROD_PCOST
+					,	A.PRFT_RATE
+					,	A.WNOR_PROD_SALE_PRC
+					,	A.WNOR_PROD_PCOST
+					,	A.WPRFT_RATE
+					,	A.SNOR_PROD_SALE_PRC
+					,	A.SNOR_PROD_PCOST
+					,	A.SPRFT_RATE
+					,	A.ONOR_PROD_SALE_PRC
+					,	A.ONOR_PROD_PCOST
+					,	A.OPRFT_RATE
+					,	TO_CHAR(A.REG_DATE, 'YYYY-MM-DD')														AS REG_DATE
+
+					,	CASE WHEN A.MD_SEND_DIVN_CD = 'R' -- SQLINES DEMO *** VN_CD = '1'							/* 직매입 상품이고 BOS에서 거절할 경우는 RFC 확정요청 전송이 없으므로 '90' MD거절로 준다 */
+								THEN '90'
+								ELSE CASE   WHEN B.CFM_FG IS NULL THEN  '0'  WHEN B.CFM_FG = '' THEN  '0'  WHEN B.CFM_FG = '1' THEN  '0'  WHEN B.CFM_FG = '2' THEN  '0' END
+						END	AS CFM_FG
+					,	CASE WHEN A.MD_SEND_DIVN_CD = 'R' -- SQLINES DEMO *** VN_CD = '1'							/* 직매입 상품이고 BOS에서 거절할 경우는 RFC 확정요청 전송이 없으므로 '90' MD거절로 준다 */
+								THEN (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'PRD44' AND MINOR_CD = (SELECT PRGS_STS FROM TPC_NEW_PROD_STS WHERE PGM_ID = A.PGM_ID))
+					-- SQLINES DEMO *** FM_FG, NULL, '심사중', '', '심사중', '1', '심사중', '2', '심사중', '4', '위해상품')
+								ELSE CASE   WHEN B.CFM_FG IS NULL THEN  '심사중(보스)'  WHEN B.CFM_FG = '' THEN  '심사중(보스)'  WHEN B.CFM_FG = '1' THEN  '심사중(보스)'  WHEN B.CFM_FG = '2' THEN  '심사중(보스)'  WHEN B.CFM_FG = '4' THEN  '위해상품(보스)' END
+						END	AS CFM_FG_TXT
+
+		-- SQLINES DEMO *** D_SEND_DIVN_CD = 'R'  AND A.TRD_TYPE_DIVN_CD = '1'							/* 직매입 상품이고 BOS에서 거절할 경우는 RFC 확정요청 전송이 없으므로 '90' MD거절로 준다 */
+		--			... SQLINES DEMO ***
+		-- SQLINES DEMO *** B.CFM_FG, NULL, '0', '', '0', '1', '0', '2', '0')
+		--			... SQLINES DEMO ***
+		-- SQLINES DEMO *** D_SEND_DIVN_CD = 'R'  AND A.TRD_TYPE_DIVN_CD = '1'							/* 직매입 상품이고 BOS에서 거절할 경우는 RFC 확정요청 전송이 없으므로 '90' MD거절로 준다 */
+		-- SQLINES DEMO ***  CD_NM FROM TET_CODE WHERE MAJOR_CD = 'PRD44' AND MINOR_CD = (SELECT PRGS_STS FROM TPC_NEW_PROD_STS WHERE PGM_ID = A.PGM_ID))
+		-- SQLINES DEMO *** B.CFM_FG, NULL, '심사중', '', '심사중', '1', '심사중', '2', '심사중', '4', '위해상품')
+		-- SQLINES DEMO *** TXT
+
+					,	(SELECT RETN_REASON FROM TPC_NEW_PROD_STS WHERE PGM_ID = A.PGM_ID)	AS CFM_FG_REASON
+					,	A.PROD_IMG_ID
+					,	A.ONOFF_DIVN_CD
+					,	A.MD_SEND_DIVN_CD
+					,	A.TRD_TYPE_DIVN_CD
+					,	A.PROD_ATT_TYP_FG
+					,	A.PROD_DIVN_CD
+					,	A.MIX_YN
+					,	A.L1_CD
+					,	''							AS PROD_CD		/* SQLINES DEMO *** 이블에서 상품코드를 묶음상품이면 VAR_ATT_SAP테이블에서 상품코드를 */
+					,	''							AS SRCMK_CD
+					,	CASE A.PROD_ATT_TYP_FG  WHEN '00' THEN  '000' ELSE C.VARIANT END								AS VARIANT		/* SQLINES DEMO *** 므로 '000' */
+					,	C.ATT_VALUE
+					,	C.CLASS
+					,	C.ATT_CD
+					,	A.L3_CD		
+					,	A.CHAN_CD
+				FROM TPC_NEW_PROD_REG A
+					 LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID
+					 LEFT OUTER JOIN TPC_VAR_ATT C ON A.PGM_ID = C.PGM_ID
+				WHERE 
+			 	(B.CFM_FG IS NULL OR B.CFM_FG = '')	
+				<isEmpty  property="srchEntpCd"  prepend="AND"> 
+		      		<iterate prepend="A.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=",">
+		        		#venCds[]# 
+		      		</iterate>
+		    	</isEmpty>
+
+		    	<isNotEmpty property="srchEntpCd" prepend="AND">
+			    	 A.ENTP_CD = #srchEntpCd# 												/* 협력업체코드 */
+			    </isNotEmpty>
+				<isNotEmpty property="srchProdDivnCd" prepend="AND">
+			    	 A.PROD_DIVN_CD = #srchProdDivnCd# 										/* 상품구분 */
+			    </isNotEmpty>	
+				<!-- <isNotEmpty property="srchOnOffDivnCd" prepend="AND">
+			    	 A.ONOFF_DIVN_CD = #srchOnOffDivnCd# 									/* 온오프구분[0:온오프, 1:온라인] */
+			    </isNotEmpty>		     -->
+			    AND A.ONOFF_DIVN_CD = '0'	/* 온오프 상품만조회 */
+				AND A.MD_SEND_DIVN_CD IS NOT NULL 											/* 확정요청 */
+				<![CDATA[
+                AND    A.reg_date >= TO_DATE( #srchFromDt# , 'YYYYMMDD' )								--@@ EXEM.조건절 변경 시작
+                AND    A.reg_date <  TO_DATE( #srchEndDt# , 'YYYYMMDD' ) + 1 /* 신상품 등록기간 */	--@@ EXEM.조건절 변경 종료
+                ]]>
+			) A			
+			LEFT OUTER JOIN PROD_ATT_CD B
+				ON A.CLASS = B.CLASS
+			AND A.ATT_VALUE = B.ATT_DETAIL_CD
+			AND A.ATT_CD = B.ATT_GRP_CD
+			AND A.L3_CD = B.PROD_RANGE
+			UNION ALL
+			/* SQLINES DEMO *** 스트 들은 REG_SAP테이블에서 정보를 추출한다. */
+			SELECT  A.*
+				,	B.ATT_GRP_NM
+				,	B.ATT_DETAIL_NM	
+			FROM
+			(
+				SELECT 	A.PGM_ID
+					,	B.PROD_NM
+					,	B.PROD_STD
+					,	SUBSTR(B.VEN_CD, 5, 6)	AS ENTP_CD
+					,	B.ORD_IPSU				AS PUR_INRCNT_QTY
+					,	B.SALE_PRC				AS NOR_PROD_SALE_PRC
+					,	B.BUY_PRC				AS NOR_PROD_PCOST
+					,	B.PROFIT_RT				AS PRFT_RATE
+					,	B.W_SALE_PRC			AS WNOR_PROD_SALE_PRC
+					,	B.W_BUY_PRC				AS WNOR_PROD_PCOST
+					,	B.W_PROFIT_RT			AS WPRFT_RATE
+					,	B.S_NETPR				AS SNOR_PROD_PCOST
+					,	B.S_ENDPR				AS SNOR_PROD_SALE_PRC
+					,	B.S_SPANE				AS SPRFT_RATE
+					,	B.O_NETPR				AS ONOR_PROD_PCOST
+					,	B.O_ENDPR				AS ONOR_PROD_SALE_PRC
+					,	B.O_SPANE				AS OPRFT_RATE
+					,	TO_CHAR(A.REG_DATE, 'YYYY-MM-DD')								AS REG_DATE
+					,	B.CFM_FG				AS CFM_FG
+					,	CASE B.CFM_FG  WHEN '3' THEN  '확정(승인 코스생성)'   WHEN '5' THEN  '반려(ECO 상품팀장)'  WHEN '6' THEN  '거절(ECO 거절)'  WHEN '7' THEN  '반려(ECO 기준정보팀)'  WHEN '8' THEN  '반려(ECO MD)'  WHEN 'E' THEN  'ECO 에러'  WHEN 'P' THEN  'ECO 진행중)' END			AS CFM_FG_TXT
+					-- SQLINES DEMO ***  '3', '확정',  '5', '반려', '6', '거절', '7', '반려', '8', '반려')			AS CFM_FG_TXT
+					-- SQLINES DEMO ***  '5', B.ZZRET_REASON, '6', B.ZZREJ_REASON, '7', B.ZZRET_REASON, '8', B.ZZRET_REASON, '')	AS CFM_FG_REASON	/* 5, 7, 8:반려사유, 6:거절사유 */
+					,	CASE B.CFM_FG  WHEN '5' THEN  B.ZZRET_REASON  WHEN '6' THEN  B.ZZREJ_REASON  WHEN '7' THEN  B.ZZRET_REASON  WHEN '8' THEN  B.ZZRET_REASON  WHEN 'E' THEN  B.ZZRET_REASON  WHEN 'P' THEN  B.ZZRET_REASON ELSE '' END	AS CFM_FG_REASON	/* SQLINES DEMO *** :거절사유 */
+
+					,	A.PROD_IMG_ID
+					,	A.ONOFF_DIVN_CD
+					,	A.MD_SEND_DIVN_CD
+					,	B.TRD_TYP_FG			AS TRD_TYPE_DIVN_CD
+					,	B.PROD_ATT_TYP_FG		AS PROD_ATT_TYP_FG	
+					,	B.PROD_PAT_FG			AS PROD_DIVN_CD
+					,	B.MIX_PROD_FG			AS MIX_YN
+					,	A.L1_CD					AS L1_CD
+					,	CASE A.PROD_ATT_TYP_FG  WHEN '00' THEN   B.PROD_CD ELSE C.PROD_CD END			 AS PROD_CD		/* SQLINES DEMO *** 이블에서 상품코드를 묶음상품이면 VAR_ATT_SAP테이블에서 상품코드를 */
+					,	CASE A.PROD_ATT_TYP_FG  WHEN '00' THEN  B.SRCMK_CD ELSE C.SRCMK_CD END			 AS SRCMK_CD
+					,	CASE A.PROD_ATT_TYP_FG  WHEN '00' THEN  '000' ELSE C.VARIANT END				 AS VARIANT		/* SQLINES DEMO *** 므로 '000' */	
+					,	C.ATWRT
+					,	C.CLASS
+					,	C.ATNAM
+					,	B.L3_CD
+					,	CONCAT_WS(
+					    	','
+					    	, CASE WHEN B.ZZMKT_FG_1 = 'X' THEN 'KR02' ELSE NULL END	/* 마트 */
+					    	, CASE WHEN B.ZZMKT_FG_2 = 'X' THEN 'KR03' ELSE NULL END	/* MAXX */
+					    	, CASE WHEN B.ZZMKT_FG_3 = 'X' THEN 'KR04' ELSE NULL END	/* 슈퍼 */
+					    	, CASE WHEN B.ZZMKT_FG_4 = 'X' THEN 'KR09' ELSE NULL END	/* 오카도 */
+					    ) AS CHAN_CD	/* 채널코드 */
+				FROM TPC_NEW_PROD_REG A
+					 LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID
+					 LEFT OUTER JOIN TPC_VAR_ATT_SAP C ON A.PGM_ID = C.PGM_ID
+				WHERE
+			 B.CFM_FG IN ('3','5','6', '7', '8','E','P')
+				<isEmpty  property="srchEntpCd"  prepend="AND">
+		      		<iterate prepend="A.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=",">
+		        		#venCds[]#
+		      		</iterate>
+		    	</isEmpty>
+
+		    	<isNotEmpty property="srchEntpCd" prepend="AND">
+			    	 A.ENTP_CD = #srchEntpCd# 												/* 협력업체코드 */
+			    </isNotEmpty>
+				<isNotEmpty property="srchProdDivnCd" prepend="AND">
+			    	 A.PROD_DIVN_CD = #srchProdDivnCd# 										/* 상품구분 */
+			    </isNotEmpty>	
+				<!-- <isNotEmpty property="srchOnOffDivnCd" prepend="AND">
+			    	 A.ONOFF_DIVN_CD = #srchOnOffDivnCd# 									/* 온오프구분[0:온오프, 1:온라인] */
+			    </isNotEmpty>		     -->		    
+			    AND A.ONOFF_DIVN_CD = '0'	/* 온오프 상품만조회 */
+				AND A.MD_SEND_DIVN_CD IS NOT NULL 											/* 확정요청 */
+				<![CDATA[
+                AND    A.reg_date >= TO_DATE( #srchFromDt# , 'YYYYMMDD' )								--@@ EXEM.조건절 변경 시작
+                AND    A.reg_date <  TO_DATE( #srchEndDt# , 'YYYYMMDD' ) + 1 /* 신상품 등록기간 */	--@@ EXEM.조건절 변경 종료
+                ]]>
+			) A
+			LEFT OUTER JOIN PROD_ATT_CD B
+				ON A.CLASS = B.CLASS
+			AND A.ATWRT = B.ATT_DETAIL_CD
+			AND A.ATNAM = B.ATT_GRP_CD
+			AND A.L3_CD = B.PROD_RANGE
+
+		) A
+		LEFT OUTER JOIN
+		(
+			SELECT 	A.PGM_ID
+				,	A.VARIANT
+				,   COALESCE(NULLIF(B.LOGI_CFM_FG, ''), A.LOGI_CFM_FG) AS LOGI_CFM_FG
+				,	A.W_USE_FG
+			FROM  TPC_LOGI_BCD A
+				 LEFT OUTER JOIN TPC_LOGI_BCD_SAP B
+			ON A.PGM_ID = B.PGM_ID
+			AND A.SEQ = B.SEQ
+		  ) B	 ON A.PGM_ID = B.PGM_ID
+				AND A.VARIANT = B.VARIANT
+		 LEFT OUTER JOIN TPC_SALE_IMG C 
+		 		ON 		 A.PGM_ID = C.PGM_ID
+					AND A.VARIANT = C.VARIANT
+		GROUP BY A.PGM_ID
+			,	A.PROD_NM
+			,	A.VARIANT
+		<isNotEmpty property="srchCfmFg" prepend="HAVING">
+			<isEqual property="srchCfmFg" compareValue="5">
+				MIN(A.CFM_FG) IN ('5','7','8')												/* SQLINES DEMO *** 경우] */
+			</isEqual>
+
+			<isNotEqual property="srchCfmFg" compareValue="5">
+				MIN(A.CFM_FG) = #srchCfmFg# 												/* SQLINES DEMO *** 아닐 경우] */
+			</isNotEqual>
+	    </isNotEmpty>
+		ORDER BY A.PGM_ID DESC, PROD_NM, VARIANT
+	</select>	
+	
+	
+	<!-- SQLINES DEMO ***  2016.03.17 이전버전 -->
+	<select id="selectNewProdFixList"	parameterClass="java.util.Map"		resultMap="selectNewProdFixListMap">
+		/* SQLINES DEMO *** ectNewProdFixList */
+		SELECT  A.*
+			,	B.LOGI_CFM_FG
+			,	B.W_USE_FG								/* 빅마켓 취급구분 */
+			,	C.CFM_FG		AS ZZIMAGE_CFG_FG		/* 이미지 확정여부 */
+			,	(
+					SELECT ATT_NM
+					FROM (
+								SELECT 	A.PGM_ID
+									,	A.VARIANT
+									,	STRING_AGG(CONCAT(B.ATT_GRP_NM , ':' , '[' , B.ATT_DETAIL_NM , ']'),',' ORDER BY B.ATT_GRP_NM) AS ATT_NM					
+								FROM TPC_VAR_ATT A
+									 LEFT OUTER JOIN PROD_ATT_CD B
+								ON A.L3_CD = B.PROD_RANGE
+								AND A.ATT_CD = B.ATT_GRP_CD
+								AND A.ATT_VALUE = B.ATT_DETAIL_CD
+								AND A.CLASS = B.CLASS
+								GROUP BY A.PGM_ID, A.VARIANT
+						 ) s
+					WHERE PGM_ID = A.PGM_ID
+					AND VARIANT = A.VARIANT
+				) 				AS ATT_NM																			/* SQLINES DEMO *** 에 보여줌 EX)맛[매운맛], 봉지라면종류[NO] */	
+		FROM
+		(
+			SELECT 	/*+ ORDERED USE_NL (A B C) */
+					A.PGM_ID
+				,	A.PROD_NM
+				,	A.PROD_STANDARD_NM
+				,	A.ENTP_CD
+				,	A.PUR_INRCNT_QTY
+				,	A.NOR_PROD_SALE_PRC
+				,	A.NOR_PROD_PCOST
+				,	A.PRFT_RATE
+				,	A.REG_DATE
+				,	COALESCE(B.CFM_FG, '0')	AS CFM_FG
+				,	CASE   WHEN B.CFM_FG IS NULL THEN  '심사중'  WHEN B.CFM_FG = '' THEN  '심사중'  WHEN B.CFM_FG = '1' THEN  '심사중'  WHEN B.CFM_FG = '2' THEN  '심사중'  WHEN B.CFM_FG = '3' THEN  '확정'  WHEN B.CFM_FG = '4' THEN  '위해상품'  WHEN B.CFM_FG = '5' THEN  '반려'  WHEN B.CFM_FG = '6' THEN  '거절' END			AS CFM_FG_TXT	/* SQLINES DEMO *** 해상품, 3:확정, 0,1,2:심사중으로 */	
+				,	A.PROD_IMG_ID
+				,	A.ONOFF_DIVN_CD
+				,	A.MD_SEND_DIVN_CD
+				,	A.TRD_TYPE_DIVN_CD
+				,	A.PROD_ATT_TYP_FG
+				,	A.PROD_DIVN_CD
+				,	A.MIX_YN
+				,	A.L1_CD
+				,	CASE A.PROD_ATT_TYP_FG  WHEN '00' THEN   B.PROD_CD ELSE C.PROD_CD END							AS PROD_CD		/* SQLINES DEMO *** 이블에서 상품코드를 묶음상품이면 VAR_ATT_SAP테이블에서 상품코드를 */
+				,	CASE WHEN A.PROD_ATT_TYP_FG = '00' AND (B.PROD_CD IS NULL OR B.PROD_CD = '') 		THEN '' 						/* SQLINES DEMO *** 기 전이면 마스터 테이블의 입력한 판매코드가 있더라도 입력한 판매코드 값을 주지 않는다(이유는 상품이 확정되면 입력한 판매코드가 있더라도 판매코드가 변경될수 있기때문이다.)  */
+						 WHEN A.PROD_ATT_TYP_FG = '00' AND B.PROD_CD IS NOT NULL 	THEN B.SRCMK_CD					/* SQLINES DEMO *** 면 REG_SAP테이블의 판매코드를 */
+						 ELSE C.SELL_CD																				/* SQLINES DEMO *** 매코드 */
+					END 																			AS SRCMK_CD
+				,	CASE A.PROD_ATT_TYP_FG  WHEN '00' THEN  '000' ELSE C.VARIANT END								AS VARIANT		/* SQLINES DEMO *** 므로 '000' */
+			 FROM  TPC_NEW_PROD_REG A
+			 LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B ON A.PGM_ID = B.PGM_ID
+			 LEFT OUTER JOIN (
+									SELECT 	A.PGM_ID
+										,	A.VARIANT
+										,	MIN(CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SELL_CD  WHEN B.SRCMK_CD = '' THEN  A.SELL_CD ELSE B.SRCMK_CD END) AS SELL_CD	/* SQLINES DEMO *** 의 판매코드가 없으면 VAR_ATT테이블의 판매코드를 */
+										,	MIN(CASE COALESCE(B.PROD_CD, '')  WHEN '' THEN  '' ELSE B.PROD_CD END) 					AS PROD_CD	/* SQLINES DEMO *** 의 상품코드 */
+									FROM  TPC_VAR_ATT A
+										 LEFT OUTER JOIN TPC_VAR_ATT_SAP B
+									ON A.PGM_ID = B.PGM_ID
+									AND A.VARIANT = B.VARIANT
+									AND A.CLASS = B.CLASS
+									AND A.ATT_CD = B.ATNAM
+									GROUP BY A.PGM_ID, A.VARIANT
+							  ) C ON A.PGM_ID = C.PGM_ID
+			WHERE 1=1
+			<isEmpty  property="srchEntpCd"  prepend="AND"> 
+	      		<iterate prepend="A.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        		#venCds[]#
+	      		</iterate>
+	    	</isEmpty>
+
+	    	<isNotEmpty property="srchEntpCd" prepend="AND">
+		    	 A.ENTP_CD = #srchEntpCd# 												/* 협력업체코드 */
+		    </isNotEmpty>
+			<isNotEmpty property="srchProdDivnCd" prepend="AND">
+		    	 A.PROD_DIVN_CD = #srchProdDivnCd# 										/* 상품구분 */
+		    </isNotEmpty>	
+			<isNotEmpty property="srchOnOffDivnCd" prepend="AND">
+		    	 A.ONOFF_DIVN_CD = #srchOnOffDivnCd# 									/* SQLINES DEMO *** 온라인] */
+		    </isNotEmpty>		    
+			AND A.MD_SEND_DIVN_CD IS NOT NULL 											/* 확정요청 */
+			AND TO_CHAR(A.REG_DATE, 'YYYYMMDD') BETWEEN #srchFromDt# AND #srchEndDt#	/* 신상품 등록기간 */
+
+		)A
+		LEFT OUTER JOIN 
+		(
+			SELECT 	A.PGM_ID
+				,	A.VARIANT
+				,	CASE WHEN NULLIF(A.LOGI_BCD,'') IS NULL THEN '' ELSE CASE   WHEN NULLIF(B.LOGI_CFM_FG,'') IS NULL THEN  A.LOGI_CFM_FG ELSE B.LOGI_CFM_FG END END	AS LOGI_CFM_FG
+				,	A.W_USE_FG	
+			FROM  TPC_LOGI_BCD A
+				 LEFT OUTER JOIN TPC_LOGI_BCD_SAP B
+			ON A.PGM_ID = B.PGM_ID
+			AND A.SEQ = B.SEQ
+			-- SQLINES DEMO *** 															/* 신상품은 물류바코드가 한번만 등록되기 때문에 첫번째 SEQ만 (현재 사용안함 )  */
+		  ) B ON A.PGM_ID = B.PGM_ID AND A.VARIANT = B.VARIANT
+		 LEFT OUTER JOIN  
+		  TPC_SALE_IMG C ON A.PGM_ID = C.PGM_ID AND A.VARIANT = C.VARIANT
+		 
+		WHERE 1=1
+		<isNotEmpty property="srchCfmFg"	prepend="AND">
+			<isEqual property="srchCfmFg" compareValue="0">
+				A.CFM_FG IN ('0', '1', '2')											/* 심사중 */
+			</isEqual>				
+			<isEqual property="srchCfmFg" compareValue="5">
+				A.CFM_FG = '5'														/* 반려 */
+			</isEqual>				
+			<isEqual property="srchCfmFg" compareValue="4">
+				A.CFM_FG = '4'														/* 위해상품 */
+			</isEqual>				
+			<isEqual property="srchCfmFg" compareValue="6">
+				A.CFM_FG = '6'														/* 거절 */
+			</isEqual>				
+			<isEqual property="srchCfmFg" compareValue="3">
+				A.CFM_FG = '3'														/* 확정 */
+			</isEqual>
+		</isNotEmpty>
+		ORDER BY A.REG_DATE DESC, A.CFM_FG, A.SRCMK_CD
+	</select>
+
+    <!-- SQLINES DEMO ***  -->
+    <select id="selectNewProdOnlineFixList" parameterClass="java.util.Map" resultMap="selectNewProdOnlineFixListMap">
+    /* SQLINES DEMO *** ectNewProdOnlineFixList */
+    SELECT TO_CHAR(N.REG_DATE, 'YYYY-MM-DD')  AS REG_DATE
+         , S.PRGS_STS  AS CFM_FG
+         , SUBSTR(S.PRGS_STS,2,1)  AS ADJ_FG
+         , N.SELL_CD  AS SRCMK_CD
+         , N.ONLINE_REP_PROD_CD  AS ONLINE_REP_PROD_CD
+         , S.RETN_REASON  AS RETN_REASON
+         , N.PROD_NM  AS PROD_NM
+         , N.PROD_STANDARD_NM  AS PROD_STANDARD_NM
+         , N.PUR_INRCNT_QTY  AS PUR_INRCNT_QTY
+         , N.NOR_PROD_PCOST  AS NOR_PROD_PCOST
+         , N.NOR_PROD_SALE_PRC  AS NOR_PROD_SALE_PRC
+         , N.PRFT_RATE  AS PRFT_RATE
+         , N.PGM_ID  AS PGM_ID
+         , S.PROD_CD  AS PROD_CD
+         , N.ENTP_CD  AS ENTP_CD
+         , 'online'  AS PROD_IMG_ID
+         , SUBSTR(S.PRGS_STS,0,1)  AS ZZIMAGE_CFG_FG
+         , 'online'  AS LOGI_CFM_FG
+         , CASE   WHEN S.PRGS_STS IS NULL THEN  '심사의뢰'  WHEN S.PRGS_STS = '' THEN  '심사의뢰' ELSE (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD='PRD32' AND MINOR_CD = S.PRGS_STS) END  AS CFM_FG_TXT
+         , N.ONOFF_DIVN_CD  AS ONOFF_DIVN_CD
+         , N.MD_SEND_DIVN_CD  AS MD_SEND_DIVN_CD
+         , N.DEAL_REP_PROD_YN  AS DEAL_REP_PROD_YN
+         , N.CTPD_YN  AS CTPD_YN
+      FROM TPC_NEW_PROD_REG N
+          LEFT OUTER JOIN TPC_NEW_PROD_STS S
+     ON N.PGM_ID = S.PGM_ID
+       <isNotEmpty property="srchOnOffDivnCd">
+       AND N.ONOFF_DIVN_CD = #srchOnOffDivnCd#  /* SQLINES DEMO *** 온라인] */
+       </isNotEmpty>
+       <isNotEmpty property="srchProdDivnCd">
+       AND N.PROD_DIVN_CD = #srchProdDivnCd#  /* 상품구분 */
+       </isNotEmpty>
+       <isEmpty property="srchEntpCd">
+       <iterate prepend="AND N.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate>
+       </isEmpty>
+       <isNotEmpty property="srchEntpCd">
+       AND N.ENTP_CD = #srchEntpCd#  /* 협력업체코드 */
+       </isNotEmpty>
+       <isNotEmpty property="srchCfmFg">
+       AND S.PRGS_STS = #srchCfmFg#  /* SQLINES DEMO *** ABLE MAJOR_CD = 'PRD44' 참조] */
+       </isNotEmpty>
+       AND N.MD_SEND_DIVN_CD IS NOT NULL  /* MD전송 구분 */
+       AND N.REG_DATE BETWEEN TO_DATE(CONCAT(#srchFromDt# , '000000'), 'YYYYMMDDHH24MISS') AND TO_DATE(CONCAT(#srchEndDt# , '235959'), 'YYYYMMDDHH24MISS')  /* 신상품 등록기간 */
+    </select>
+
+	<!-- RFC 전송할 이미지 정보 조회 -->
+	<select id="selectNewProdImgInfoToRFC"		parameterClass="java.util.Map"		resultMap="selectNewProdImgInfoToRFCMap">
+		/* NEDMPRO0010.selectNewProdImgInfoToRFC */
+		SELECT 	A.PGM_ID	AS PGM_ID		/* 프로그램ID */
+			,	A.VARIANT	AS VARIANT		/* 변형순번 */
+			,	'1'			AS SEQ			/* 순번 */
+			,	A.IMG_NM	AS ZZIMAGE		/* 이미지 이름 */
+			,	'I'			AS CFM_FG		/* 수정구분자 */
+			--,	(SELECT SELL_CD FROM TPC_VAR_ATT WHERE PGM_ID = A.PGM_ID AND VARIANT = A.VARIANT GROUP BY SELL_CD)	AS SRCMK_CD	/* 판매코드 */
+			,	CASE WHEN B.ONOFF_DIVN_CD = '0' AND B.PROD_ATT_TYP_FG = '01' THEN (SELECT SELL_CD FROM TPC_VAR_ATT WHERE PGM_ID = #pgmId#		AND VARIANT = #variant# 	GROUP BY SELL_CD)	/* 온오프이면서 묶음 상품이면 속성테이블에서 판매코드를 */
+					 WHEN B.ONOFF_DIVN_CD = '0' AND B.PROD_ATT_TYP_FG = '00' THEN B.SELL_CD	/* 온오프이면서 단일 상품이면 상품 MASTER 테이블에서 판매코드를 */
+				 	 ELSE B.SELL_CD	/* 온오프 상품이 아니면 마스터 테이블에서 판매코드를 */
+				END  AS SRCMK_CD 	/* 판매코드 */
+		FROM  TPC_SALE_IMG A
+			, TPC_NEW_PROD_REG B
+		WHERE A.PGM_ID = B.PGM_ID 
+		AND A.PGM_ID = #pgmId#
+		AND A.VARIANT = #variant#
+	</select>
+</sqlMap>	

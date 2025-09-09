@@ -1,0 +1,528 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: product.css
+ * description	: 제품상세 import
+ * date			: 2011.08.17
+************************************************************************/
+
+/* 상품상세 */
+.tit_prod {display:block; position:relative; width:950px; margin:0 auto; padding:0 0 10px 0; zoom:1;}
+.tit_prod:after    {content: "."; display: block; height: 0px; clear: both; visibility: hidden;}
+* html .tit_prod    {height: 1%;}
+.tit_prod	h1	{position:relative;float:left; width:800px; padding:0px 0 2px 0; color:#333; font:bold 30px/35px malgun, "Malgun Gothic"; letter-spacing:-1px;}
+.tit_prod	h1	span.sold_out	{color:#999;}
+.tit_prod	.event_icon	{display:inline-block;}
+.tit_prod	.event_icon	span	{display:inline-block; vertical-align:middle;}
+.tit_prod	.event_icon	span	em	{position:absolute; left:-5000px; top:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden}
+.tit_prod	.share_box	{position:absolute; right:0; bottom:14px;}
+.tit_prod	.share_box	li			{float:left; font-size:0; line-height:0; margin-left:5px;}
+.tit_prod	.share_box	li.bg_bar	{width:1px; height:22px; background:url("/images/front/common/bg-sharebox-bar.gif") no-repeat 0 0;}
+.tit_prod .tit_subDesc{display:block;overflow:hidden;position:relative;width:950px;font-size:14px;font-style:normal;line-height:1.2;color:#777;text-overflow:ellipsis;white-space:nowrap;}
+a[name="tapTop"] ~ .tit_prod{margin-top:-20px;}
+
+.prod_price_wrap	{width:950px; margin:0 auto; overflow:hidden;}
+.prod_price_wrap	.prod_pic	{float:left; width:402px;}
+.prod_price_wrap	.prod_big_pic	{width:402px; height:402px; background:url("/images/front/product/product-default-400-400.jpg") no-repeat 0 0;}
+.prod_price_wrap	.prod_big_pic	img	{border:1px solid #e6e6e6;}
+.prod_pic	.prod_small_pic	li	{float:left; width:77px; height:77px; margin-right:4px; background:url("/images/front/product/bg-no-img-75x75.gif") no-repeat 0 0;}
+.prod_pic	.prod_small_pic	li.end	{margin-right:0px; margin-left:1px;}
+.prod_pic	.prod_small_pic	li	a	{display:block; width:75px; height:75px; border:1px solid #e6e6e6; font-size:0; line-height:0;}
+.prod_pic	.prod_small_pic	li	a:hover	{border:1px solid #ff2f05;}
+
+.prod_price_wrap	.prod_price	{position:relative; z-index:50; float:right; width:529px; margin:0 0 15px 0; border-top:2px solid #f89f12;}
+
+.shopping_chance	{position:absolute; top:-2px; right:0; _right:-1px; width:170px; z-index:50;}
+.shopping_chance	.tip_wrap	{width:170px; padding-bottom:1px; background:url("/images/front/product/bg-shadow-chance.gif") no-repeat 0 bottom;}
+.shopping_chance	.tip_wrap	h2	{width:170px; height:24px; background:url('/images/front/product/tit-shopping-chance.gif') no-repeat 0 0; font-size:0; line-height:0; text-indent:-9999px; overflow:hidden;}
+.shopping_chance	.on	h2	{background-position:0 -24px;}
+.shopping_chance	.shopping_tip	{padding:9px 12px 0 10px;}
+.shopping_chance	.shopping_tip	p.tit	{color:#ee1c24;}
+.shopping_chance	.shopping_tip	p.t_txt	{margin-top:5px; color:#999; font:11px dotum;}
+.shopping_chance	.plus_one	{padding-bottom:10px;}
+.shopping_chance	.plus_one	p.tit	{font-size:16px;}
+.shopping_chance	.tbl_chance	{margin-top:9px; margin-bottom:10px;}
+.shopping_chance	.tbl_chance	th	{padding:3px 0 2px; background:#f4f4f4 url('/images/front/product/bg-tbl-bar.gif') no-repeat right 0; color:#666; font:11px/16px dotum;}
+.shopping_chance	.tbl_chance	th.no_bar	{background-image:none;}
+.shopping_chance	.tbl_chance	td	{padding:7px 0 6px; background: url('/images/front/product/line-tbl-chance.gif') repeat-x 0 bottom; font:11px/16px dotum; text-align:center;}
+.shopping_chance	.tbl_chance	td .t_roman	{color:#333; font:bold 14px Dotum; line-height:14px;}
+.shopping_chance	.list_rel	{padding:11px 0 10px; background:url('/images/front/product/bg-chance-bar.gif') repeat-x 0 top;}
+.shopping_chance	.list_rel.no_line	{padding-top:9px; background-image:none;}
+.shopping_chance	.list_rel	.photo_wrap	{float:left;}
+.shopping_chance	.list_rel	.photo_wrap	img	{border:1px solid #ebebeb;}
+.shopping_chance	.list_rel	.p_info_r	{float:left; margin-left:4px;}
+.shopping_chance	.list_rel	.p_info_r	p	{font:11px/13px dotum;}
+.shopping_chance	.list_rel	.p_info_r	p.pr_name	{padding-top:2px; word-wrap:break-word; word-break:break-all;}
+.shopping_chance	.list_rel	.p_info_r	p.pr_price	{padding-bottom:5px;}
+.shopping_chance	.list_rel	.p_info_r	.t_roman	{color:#333; font:bold 12px Dotum; line-height:14px;}
+.shopping_chance	.btn_chance	{margin-left:77px;}
+
+.prod_price	dt	{float:left; width:118px; padding:4px 0 4px 20px;}
+.prod_price	dd	{float:left; width:381px; padding:4px 0 4px 10px; font:normal 13px/18px malgun, "Malgun Gothic"; letter-spacing:0;}
+.prod_price	.bg_dot_orange	dt	{color:#c65307;}
+.prod_price	.bg_line_orange	{background-image:none; border-bottom:1px solid #f89f12;}
+
+.box_prod_price		{padding:10px 0 8px; background:url("/images/front/product/bg-box-prod-price.gif") repeat-x 0 bottom;}
+.prod_price	.bg_dot_orange	{background:url('/images/front/product/bg-dot-orange.gif') repeat-x 0 bottom;}
+.box_prod_price	dt	{clear:both; float:left; width:120px; padding:4px 0 4px 20px; line-height:18px;}
+.box_prod_price	dd	{float:left; width:377px; padding:4px 0 4px 10px; line-height:18px; color:#333; letter-spacing:0;}
+.box_prod_price	dd.cdc	{font-size:12px; font-weight:bold; letter-spacing:-1px;}
+.box_prod_price	dd .ag	{margin-left:6px; font:16px/13px CoHead; color:#ee1c24;}
+
+.box_prod_price	.ico_card_info	{position:relative;} /* 2012-07-05 */
+.box_prod_price	.layer_card_info	{position:absolute; z-index:10; width:205px; top:21px; left:0; background:url('/images/front/product/bg-l-cart-btm.gif') no-repeat 0 bottom; z-index:20; font-family:Dotum;}
+.box_prod_price	.layer_card_info	.ico_btn	{font-size:0; line-height:0;}
+.box_prod_price	.layer_card_info	.l_top	{width:205px; height:11px; background:url('/images/front/product/bg-l-card-top.gif') no-repeat 0 0; font-size:0; line-height:0;}
+.box_prod_price	.layer_card_info	.l_body	{padding:0 10px 10px;}
+.box_prod_price	.layer_card_info	.l_body	.tit	{color:#333; font-size:11px; padding-bottom:3px;}
+.box_prod_price	.layer_card_info	.l_body	.list_etc	li	{/*color:#999;*/ font-size:11px; line-height:14px; letter-spacing:-1px;}
+.box_prod_price	.layer_card_info	.l_body	.list_etc	.t_gray	{color:#999;}
+.box_prod_price	.layer_card_info	.l_body	.l_banner	{margin-top:5px;}
+
+.box_prod_price	#l_card_save	{left:0;}
+.box_prod_price	#l_card_discount	{left:0;} /* left:65px; */
+.box_prod_price	#l_interest-free	{left:65px;} /* left:130px; */
+
+.box_prod_price	.selling	.t_through	{font-size:14px; padding-bottom:2px;}
+.box_prod_price	.selling	.t_through,	.box_prod_price	.selling	.t_block	{color:#666;}
+.box_prod_price	.selling	.t_roman	{font-size:20px; line-height:22px;}
+.box_prod_price	.now	.t_roman	{font-size:22px; line-height:22px;}
+.box_prod_price	.sellingNow	.t_roman14red	{font:18px CoHead; color:#ee1c24;} /*2012-06-22 즉석할인 가격 폰트*/
+.box_prod_price	.members	.t_roman	{font-size:16px; line-height:17px;}
+.box_prod_price	.purchase	.t_roman	{font-size:16px; line-height:17px;}
+.box_prod_price	.ipt_size	{position:relative; width:78px;}
+.box_prod_price	.ipt_size	input	{width:42px;}
+.box_prod_price	.ipt_size	.input_txt	{_position:relative; _top:-1px;}
+.box_prod_price	.delivery_type	li	{float:left; margin-right:16px;}
+.box_prod_price	.delivery_type	.img_middle	{vertical-align:-3px}
+.box_prod_price	.delivery_type	.t_fc_1	{color:#606D45;} /* 지점배송 폰트컬러 */
+.box_prod_price	.delivery_type	.t_fc_2	{color:#778260;} /* 지점배송외 폰트컬러 */
+
+.prod_price	.total_price	{margin-top:-1px; padding:10px 0; background:none; border-bottom:1px solid #f89f12; border-top:1px solid #f89f12; background-color:#fffdf8; width:100%; overflow:hidden;}
+.prod_price	.total_price	.t_roman	{font-size:30px; color:#e71b23; line-height:30px;}
+.prod_price	.total_price	.txt	{margin-top:3px; font-size:11px; color:#666;}
+
+.prod_price	.btn_list	{ margin-top:15px; z-index:10;}
+.prod_price	.btn_list	.ico_ques	{display:block; position:relative; zoom:1; z-index:1;}
+.prod_price	.btn_list	.ico_ques	.p_desc_01	{margin-top:6px;}
+.prod_price	.btn_list	.bx_bubble	{position:absolute; top:-233px; right:4px; width:324px; padding:0 0 11px 0; background:url("/images/front/product/bg-q-bubble-v-cap.gif") no-repeat left bottom; font-size:11px; line-height:14px; z-index:10;}
+.prod_price	.btn_list	.bx_bubble	div	{ padding:8px 14px 0 14px; background:url("/images/front/product/bg-q-bubble-v-body.gif") no-repeat 0 0;}
+.prod_price	.btn_list	.bx_bubble	.img_txt	{display:block; height:15px; text-align:right;}
+.prod_price	.btn_list	.bx_bubble	div	table	{margin:4px auto 0 auto; width:296px; border-bottom:1px solid #e0e0e0;font-size:11px; text-align:center;}
+.prod_price	.btn_list	.bx_bubble	div	table	th	{padding:5px 0; background:#F4F4F4;}
+.prod_price	.btn_list	.bx_bubble	div	table	th.line	{background: url("/images/front/order/line-th-basket.gif") no-repeat scroll right -7px #F4F4F4;}
+.prod_price	.btn_list	.bx_bubble	div	table	td	{padding:5px 0;}
+.prod_price	.btn_list	.bx_bubble	div	table	.t_red	{font:14px/16px CoHead; letter-spacing:0;}
+
+#wrap	.btn_w_106	a, #UxWrapper	.btn_w_106	a	{min-width:46px; _width:46px; padding:14px 20px 0 21px; *padding:13px 19px 0 20px; } /* 흰색버튼 */
+:root	#wrap	.btn_w_106	a, :root	#UxWrapper	.btn_w_106	a	{padding:13px 24px 0;}
+@media screen and (-webkit-min-device-pixel-ratio:0){
+	#wrap	.btn_w_106	a, #UxWrapper	.btn_w_106	a {padding:13px 20px 0 !important;}
+}
+.prod_soldout	{position:relative;padding-left:150px;}
+.prod_soldout	p	{padding-bottom:8px;}
+.prod_soldout	p.first	{font-size:15px;}
+.prod_soldout	p.first	strong	{font-size:21px; line-height:22px;}
+.prod_soldout .btn_area {position:absolute;right:0px;top:-7px;}
+
+.prod_more	{width:950px; height:200px; margin:0 auto; border-top:1px solid #c4c4c4; background:url("/images/front/product/bg-line-prod-info.gif") repeat-y 0 0;}
+.prod_buy_with	{float:left; width:730px;}
+.prod_buy_with	h2	{margin:16px 0 0 0; color:#333; font-size:18px; font-weight:bold;}
+.prod_buy_with	h2	span	{color:#227cb9;}
+.prod_event	{float:right; width:219px; height:200px; font-size:0; line-height:0;}
+
+.prod_info_wrap	{width:950px; margin:0 auto; background:url("/images/front/product/bg-line-prod-info.gif") repeat-y 0 0;}
+.prod_info_wrap	.prod_info	{float:left; width:730px; margin-right:1px; overflow:hidden;}
+.prod_info_wrap	.prod_side_wrap	{float:left; width:219px;}
+
+
+.tab_prod_wrap	{position:relative; height:44px; background:url("/images/front/product/bg-top-line.gif") repeat-x 0 0;}
+.tab_prod_wrap	.btn_top	{position:absolute; top:0; right:0; width:46px; height:44px; background:url("/images/front/product/bg-top.gif") no-repeat 0 0;}
+.tab_prod_wrap	.btn_top	a	{display:block; width:46px; height:44px; font-size:0; text-indent:-99999px;}
+
+.tab_prod	{width:681px; height:44px; background:url("/images/front/product/bg-tab-prod.gif") no-repeat 0 0;}
+.tab_prod	ul	{float:left;}
+.tab_prod	li	{float:left; height:44px; background:url("/images/front/product/bg-tab-right.gif") no-repeat right 0; text-align:center;}
+.tab_prod	li.on	{background:url("/images/front/product/bg-tab-on-right.gif") no-repeat right 0;}
+.tab_prod	li	p.tab_menu	{float:left; height:44px; background:url("/images/front/product/bg-tab-left.gif") no-repeat 0 0; color:#666; font:bold 14px malgun, "Malgun Gothic";}
+.tab_prod	li.on	p.tab_menu	{background:url("/images/front/product/bg-tab-on-left.gif") no-repeat 0 0; color:#ee1c24; }
+.tab_prod	li	p.tab_menu	a	{display:block; height:33px; padding-top:11px; font:bold 14px malgun, "Malgun Gothic"; color:#666; text-align:center;}
+.tab_prod	li	p.tab_menu	a:hover,	.tab_prod	li	p.tab_menu	a:active	{color:#666; text-decoration:none;}
+.tab_prod	li.on	p.tab_menu	a	{color:#ee1c24;}
+.tab_prod	li.on	p.tab_menu	a:hover,	.tab_prod	li.on	p.tab_menu	a:active	{color:#e71b23;}
+
+.tab_li_3	li	.tab_menu	{width:227px;} /* 탭의 갯수가 3개일 때*/
+.tab_li_4	li	.tab_menu	{width:170px;} /* 탭의 갯수가 4개일 때*/
+
+.prod_detail	{margin-right:8px; padding:38px 0 50px 0;}
+.prod_detail	.tit	{font:bold 16px/30px malgun, "Malgun Gothic"; color:#333;}
+.prod_detail	.stit	{padding-left:9px; background:url('/images/front/common/bul-circle3.gif') no-repeat 0 7px; font:bold 15px/18px malgun, "Malgun Gothic"; color:#333;}
+.prod_detail	.stit2	{margin-top:7px; padding:2px 0; font-weight:bold;}
+.prod_detail	.list_etc	li	{padding-bottom:0;}
+.prod_detail	.giftcard_use	{margin-top:10px; padding-bottom:10px; border-bottom:1px solid #e6e6e6;}
+.prod_detail	.giftcard_use	ul	{margin-left:4px; overflow:hidden; zoom:1;}
+.prod_detail	.giftcard_use	li	{float:left; display:inline; margin-left:6px; padding-bottom:10px; width:106px;}
+.prod_detail	.giftcard_use	li	img	{margin-bottom:3px; *margin-bottom:0; width:104px; height:70px; border:1px solid #e7e7e7;}
+.prod_detail	.giftcard_use	li	p	{text-align:center; font-size:12px; line-height:13px;}
+.prod_detail	.list_kome	{margin:0;}
+.prod_detail	.list_kome	li	{padding-bottom:0; font-size:13px;}
+.prod_detail	.txt_guide	{padding-left:10px; font:normal 13px/18px malgun, "Malgun Gothic";}
+.prod_detail	.sel_code	{margin:7px 0 15px; *margin-bottom:13px; letter-spacing:0; font-weight:bold; color:#333;}
+.prod_detail	.sel_code.sideTitle	{margin-top:30px;}
+.prod_review	.txt_info	{position:relative; height:31px; padding-top:9px;}
+.prod_review	.txt_info	p	{font-size:16px; line-height:16px; color:#333;}
+.prod_review	.txt_info	.change_order	{position:absolute; top:0; right:10px;}
+.prod_review	.txt_info	.change_order	select	{width:150px;}
+.no_prod_review	{padding:0 0 40px 0;}
+.tbl_review	{width:720px; border-top:2px solid #c7c7c7;}
+.tbl_review	th	{padding-top:12px; padding-bottom:13px; border-bottom:1px solid #c7c7c7; text-align:center;}
+.tbl_review	td	{padding-top:16px; padding-bottom:19px; background:#FFF url("/images/front/product/bg-box-prod-price-2.gif") repeat-x 0 bottom;}
+.tbl_review	td.subject	{padding-left:27px; padding-right:10px; cursor:pointer}
+.tbl_review	td.subject	span.ml15	{color:#999;}
+.tbl_review	td.subject .btn_replyAct {display:inline-block;width:40px;height:20px;margin-left:5px;background:url("//simage.lottemart.com/images/common/button/btn_board_reply.jpg") no-repeat left top;text-indent:-9999px;overflow:hidden;white-space:nowrap;vertical-align:middle;} /*2014.01.23 추가*/
+.tbl_review	td.tb_hit	{text-align:center; letter-spacing:0;}
+.tbl_review	tr.on	td	{background:none}
+.tbl_review	tr.on	.subject	.text	{color:#333; font-weight:bold; text-decoration:none;}
+.tbl_review	tr.open	td	{padding-top:0; padding-bottom:10px; background:#fff8f8 url("/images/front/product/bg-box-prod-price-2.gif") repeat-x 0 bottom; vertical-align:top;}
+.tbl_review	tr.open	div.txt_rv	{padding-top:11px; width:720px;  background:#fff8f8 url("/images/front/product/bg-box-prod-price.gif") repeat-x 0 top;}
+.tbl_review	tr.open	div.txt_rv	.bx_cont	{float:left; width:475px; padding-left:135px;}
+.tbl_review	tr.open	div.txt_rv	.btn_recom	{float:left; padding-left:20px;}
+.tbl_review	tr.open	div.txt_md_rv	{width:720px; margin-top:25px;}
+.tbl_review	tr.open	div.txt_md_rv	.md_tit	{width:475px; height:16px; padding:4px 0 10px 138px; background:#fff8f8 url("/images/front/product/bg-md-tit.gif") no-repeat 135px 0; color:#333;}
+.tbl_review	tr.open	div.txt_md_rv	.md_conts	{width:475px; padding-left:135px;}
+.star_vote	{padding-top:15px;}
+.star_vote	li	{float:left; width:105px; margin-right:15px; background:url('/images/front/product/bg-star-bar.gif') no-repeat right 1px; color:#666; font-size:12px; line-height:11px;}
+.star_vote	li	span	{margin-left:6px; font-size:0; line-height:0;}
+.star_vote	li.end	{margin-right:0; background:none;}
+
+.prod_detail	.tit	{margin:-5px 0 7px 0;}
+.prod_detail	.tit	h3	{color:#333; font:bold 16px malgun, "Malgun Gothic"; line-height:20px;}
+
+.prod_detail	.added_prod_img	{margin-top:40px;}
+.prod_detail	.quality_prod_img	{margin-top:20px;}
+
+.tb_v_common_prod {width:100%; border-top:1px solid #c7c7c7;}
+.tb_v_common_prod table	{width:100%;}
+.tb_v_common_prod table	th {color:#333; font-weight:normal;}
+.tb_v_common_prod table	th {padding-top:17px; padding-bottom:16px; border-bottom:1px solid #e6e6e6; background-color:#f5f5f5; font-size:13px; font-weight:normal; color:#333; line-height:16px; text-align:left; }
+.tb_v_common_prod table	td {min-height:30px; _height:30px; padding-top:10px; padding-bottom:10px; border-bottom:1px solid #e6e6e6; font-size:13px; color:#666; letter-spacing:-1px; line-height:18px;}
+.tb_v_common_prod table	th p {padding-left:14px; padding-right:10px;}
+.tb_v_common_prod table th p > span {display:inline-block;vertical-align:middle;word-break:break-all;}
+.tb_v_common_prod table th p > .icon {margin-right:5px;}
+.tb_v_common_prod table th p > .text {width:130px;}
+.tb_v_common_prod table	td .td_p {padding-left:14px; padding-right:14px;}
+.tb_v_common_prod table	td .td_p_line{padding:5px 14px 0;margin-top:5px;border-top:1px solid #E6E6E6;line-height:1.5;}
+.tb_v_common_prod table	td .td_p_line:first-child{margin-top:0;border-top:none;}
+.tb_v_common_prod table	.end {border-bottom-color:#c7c7c7;}
+
+.tb_h_v_common	{width:100%; border-top:1px solid #c7c7c7;}
+.tb_h_v_common	table	{width:100%;}
+.tb_h_v_common	table	th	{color:#333; font-weight:normal;}
+.tb_h_v_common	table	thead	th	{padding:13px 0 11px; border-right:1px solid #e6e6e6; border-bottom:1px solid #c7c7c7; color:#333; text-align:center;}
+.tb_h_v_common	table	thead	th.first	{padding-left:20px; border-right:1px solid #c7c7c7; text-align:left;}
+.tb_h_v_common	table	tbody	th	{padding:12px 0 15px 20px; border-right:1px solid #c7c7c7; border-bottom:1px solid #e6e6e6; line-height:16px; text-align:left;}
+.tb_h_v_common	table	tbody	tr.end	th,	.tb_h_v_common	table	tbody	tr.end	td	{border-bottom:1px solid #c7c7c7;}
+.tb_h_v_common	table	tbody	td	{padding:12px 20px; border-right:1px solid #e6e6e6; border-bottom:1px solid #e6e6e6; line-height:18px; vertical-align:top;}
+.tb_h_v_common	table	tbody	td	.t_red	{color:#f5721b;}
+.tb_h_v_common	table	th.no_v_line,	.tb_h_v_common	table	td.no_v_line	{border-right:none;}
+
+.txt_v_info	{position:relative; margin-top:24px;}
+.txt_v_info	h3	{padding-bottom:12px; font:bold 16px/18px malgun, "Malgun Gothic"; color:#333;}
+.txt_v_info	.txt_v_cont	{width:680px; font:13px/18px malgun, "Malgun Gothic";}
+.txt_v_info	.txt_v_cont	.txt_left	{/*width:555px; */text-align:justify;}
+
+/*
+.txt_v_info	.txt_v_cont	.list_num_common	{width:555px;}
+.txt_v_info	h3	{position:relative; float:left; padding-bottom:12px; width:124px; font:bold 16px/18px malgun, "Malgun Gothic"; color:#333;}
+.txt_v_info	.txt_v_cont	{float:left; font:13px/18px malgun, "Malgun Gothic";}*/
+
+.list_num_common	{margin-left:13px; _margin-left:0;}
+.list_num_common	li	{padding-bottom:3px; text-indent:-13px; _padding-left:12px;}
+.list_num_common	li	.t_ps	{color:#999; font-size:11px; font-family:Dotum; line-height:20px;}
+.list_num_common	ul	{padding-bottom:8px;}
+.list_num_common	ul	li	{padding-left:8px; text-indent:0;}
+
+.prod_side	{padding-left:16px; border-top:1px solid #e6e6e6;}
+.prod_side	h2	{padding:14px 0 19px 3px; font-size:16px;}
+
+/* 상품구매 박스 */
+.pr_wrap	.photo_wrap	{float:left; font-size:0;}
+.pr_wrap	.pr_info	{position:relative; float:left; padding-left:10px; z-index:3;}
+.prod_recom_list	{width:100%; height: 1%;}
+.prod_recom_list:after	{content:""; display:block; clear:both; height:0; visibility:hidden;}
+.prod_recom_list	.pr_wrap	{width:242px; float:left;}
+.prod_recom_list	.photo_wrap	{width:100px;}
+.prod_recom_list	.pr_info	{width:112px;}
+.prod_recom_list	.pr_price	em.t_roman	{font-size:20px; line-height:20px;}
+.prod_recom_list	.pr_name	{height:30px; line-height:15px; word-wrap:break-word; word-break:break-all;}
+.prod_recom_list	.nodata	{padding-top:45px; text-align:center;}
+.bx_prod_cart	.photo_wrap	{width:90px;}
+.bx_prod_cart	.pr_info	{width:103px;}
+.bx_prod_cart	.pr_price	em.t_roman	{font-size:18px; line-height:18px;}
+.bx_prod_cart	.pr_name	{height:30px; font:12px dotum; word-wrap:break-word; word-break:break-all;}
+.bx_prod_cart	.nodata	{height:55px; padding-top:35px; text-align:center;}
+
+/* w:950 datail */
+.prod_w950	{width:950px;}
+.prod_w950	.prod_detail	{margin-right:0;}
+.prod_w950	.prod_more	{margin-bottom:20px; border-top:2px solid #c7c7c7; border-bottom:1px solid #c7c7c7;}
+.prod_w950	.prod_info_wrap	{background:none;}
+.prod_w950	.tab_prod_wrap	.tab_prod	{width:900px;}
+.prod_w950	.tab_li_3 li	.tab_menu	{width:300px;} /* 탭의 갯수가 3개일 때*/
+.prod_w950	.txt_info	.change_order_r	{position:absolute; top:0; right:0; width:150px;}
+.prod_w950	.tbl_review	{width:100%;}
+.prod_w950	.tbl_review	tr.open	div.txt_rv	{width:950px;}
+.prod_w950	.tbl_review	tr.open	div.txt_rv	.bx_cont	{width:696px;}
+.prod_w950	.txt_v_info	.txt_v_cont	{width:816px;}
+.prod_w950	.txt_v_info .txt_v_cont .list_num_common{width:803px;}
+.prod_w950.line_style1	{margin-top:30px; padding-top:30px; border-top:2px solid #c7c7c7;} /* 상단 line 삽입 */
+/* 버튼(좌우여백 81) */
+.prod_price	.btn_type1	{text-align:center;}
+.prod_price	.btn_type1	a	{display:inline-block; min-width:61px; height:35px; padding:15px 81px 0 81px; *height:37px; *padding:13px 81px 0 81px; line-height:20px; font-weight:bold; white-space:nowrap; text-align:center;}
+	:root	.btn_type1	a	{height:37px; padding:13px 81px 0 81px;}
+
+/* 타이머 */
+.timer	{width:274px; height:27px;}
+.timer	span	{float:left; font-family:CoHead; font-size:18px; line-height:18px;}
+.timer	span.num	{width:27px; height:23px; *height:25px; margin-right:1px; padding-top:4px; *padding-top:2px;background:url("/images/front/shop/bg-time-s.gif") no-repeat 0 0; color:#fff; text-align:center;}
+/*.timer	span.colon	{width:8px; height:27px; background:url("/images/front/shop/bg-colon-s.gif") no-repeat 0 0; font-size:0; line-height:0; overflow:hidden; text-indent:-9999px;}*/
+.timer	span.colon	{margin-left:-1px; padding-top:9px; _padding-top:8px; width:20px; height:18px; font:normal 13px malgun, "Malgun Gothic"; color:#333; text-align:center;}
+
+/*롯데상품권에서 배송 안내문구*/
+.prod_delivery	{position:relative;}
+.prod_delivery	.list_desc_01	{margin-top:5px;}
+.prod_delivery	.list_desc_01	li	{line-height:14px;}
+/*.prod_delivery	.dd_delivery	{position:absolute; left:295px; top:19px; font:normal 11px Dotum; color:#999; line-height:17px; letter-spacing:-1px;}*/
+.list_kome_2	{margin-top:13px;}
+.list_kome_2	li		{margin-top:5px; padding:2px 0 2px 12px; line-height:20px; background:url('/images/front/common/bul-kome-2.gif') no-repeat 0 7px; color:#999; font-size:12px;}
+
+
+
+
+
+
+
+/* 레시피 상세 */
+.rcp_detail	{}
+.rcp_detail	.tit_rcp	{padding-bottom:12px; font-size:16px; font-weight:bold; line-height:16px; color:#333;}
+.tit_rcp_head	{position:relative; width:100%; height:30px;padding-bottom:7px; overflow:hidden;}
+.tit_rcp_head	.subj	{float:left;font:15px/15px malgun, "Malgun Gothic";}
+.tit_rcp_head	.subj	 span	{display:inline-block; width:43px; color:#333;}
+.tit_rcp_head	.share_box	{float:right; margin-bottom:5px;}
+.tit_rcp_head	.share_box	li	{float:left; margin-left:5px;}
+.tit_rcp_head	.abs_r	{position:absolute; top:0; right:0;}
+
+.rcp_mate	{width:100%; overflow:hidden; zoom:1;}
+.rcp_mate	.con_l	{float:left; width:156px;}
+.rcp_mate	.con_l	p	{padding-top:4px; text-align:center; font:bold 14px/22px malgun, "Malgun Gothic"; color:#333;}
+.rcp_mate	.con_r	{float:right; padding-top:2px; width:543px; background:url("/images/front/product/bg-rcp-info.gif") repeat-x 0 0;}
+.rcp_mate	.con_r	dl	{margin-top:8px; overflow:hidden; zoom:1;}
+.rcp_mate	.con_r	dt	{clear:both; float:left; width:90px; padding:0 10px 0 20px; color:#333; font-size:14px; line-height:22px;}
+.rcp_mate	.con_r	dd	{float:left; width:403px; padding:0 20px 0 0; font-size:14px; line-height:22px;}
+.rcp_mate	.con_r	.t1	{height:59px;}
+.rcp_mate	.con_r	.t1	dt	{color:#f5721b;}
+.rcp_mate	.con_r	.t2	{height:65px;}
+.rcp_mate	.con_r	.t2	dt	{color:#f5721b;}
+.rcp_mate	.con_r	.t2	dd	{width:423px; padding-right:0;}
+.rcp_mate	.con_r	.t2	dd	li	{float:left; width:121px; margin-bottom:9px; padding-right:20px;}
+
+.rcp_mate	.con_r	.t3	{height:100%;}
+.rcp_mate	.con_r	.t3	dd	{padding-bottom:10px;}
+.rcp_tip	{width:100%; padding:15px 0 13px 0; border-top:1px solid #ccc; overflow:hidden; zoom:1;}
+.rcp_tip	dt	{float:left; width:92px; padding-right:10px; font-size:14px; color:#333;}
+.rcp_tip	dd	{float:left; width:588px; padding-right:20px; font-size:14px; line-height:18px;}
+
+.cook_master	{padding-top:15px; padding-bottom:15px; border-top:1px dotted #dedede; border-bottom: 1px dotted #DEDEDE; overflow:hidden; zooom:1;}
+.cook_master	.sbj	{float:left; width:92px; padding-right:10px; font-size:14px; color:#333;}
+.cook_master	.rcp_cont	{float:left; width:588px; margin-top:-8px; padding-right:20px; line-height:26px;}
+.cook_master	.prod_by	{clear:both; padding:4px 0 0px 0; text-align:right;}
+
+.how_to_cook	.rcp_cont	{padding-left:10px; padding-right:30px; font-size:14px; line-height:26px;}
+.how_to_cook	.rcp_photo	{text-align:center;}
+.how_to_cook	.type_A	{padding:21px 0 0 0;}
+.how_to_cook	.type_A	.rcp_photo	{margin-top:15px;}
+.how_to_cook	.type_B	{padding:30px 0 0 0;}
+.how_to_cook	.type_B	.rcp_cont	{margin-top:11px;}
+.how_to_cook	.type_C	{padding:30px 0 0 0; height:1%; *zoom:1;}
+.how_to_cook	.type_C:after {content:""; display:block; clear:both; height:0; visibility:hidden;}
+.how_to_cook	.type_C	.rcp_photo	{float:left; margin:0 40px 10px 0; }
+
+/*리스트*/
+.rcp_list	{width:100%; overflow:hidden; margin-bottom:14px;}
+.rcp_list	ul	{float:left; width:710px;}
+.rcp_list	li	{float:left; width:165px; height:213px; margin-top:20px; padding-left:12px;}
+.rcp_list	li	.img	{float:left; width:154px; height:154px; margin-bottom:6px;}
+.rcp_list	li	.img	img	{border:1px solid #e6e6e6;}
+.rcp_list	li	.name	{float:left; width:144px; padding-left:5px; font-size:14px; line-height:16px; text-align:center;}
+.rcp_list	li	.cb	{float:left; width:15px; height:154px; margin-left:-10px;}
+.rcp-cont	.dis	{ padding:16px 0 10px; font-size:16px; line-height:18px; color:#333; border-bottom:1px solid #c7c7c7;}
+.rcp_tit	{height:31px; padding:30px 0 0 10px; border-bottom:1px solid #f5721b;}
+.rcp_tit	p 	{background:url('/images/front/recipe/bul-dot-orange.gif') no-repeat 0 5px; padding-left:12px; font-size:16px; *line-height:16px; color:#f5721b;}
+
+
+/* 2012-06-25 NEW STYLE */
+
+div.pr_price_v1 div.pr-deta {
+	background:none;
+	border-bottom:1px solid #f9a012 !important;
+}
+div.pr_price_v1 div.bg_dot_orange dl {
+	overflow:hidden; zoom:1;
+	height:auto !important;
+}
+div.pr_price_v1 div.bg_dot_orange dl dd.f-selling span {
+	display:block;
+	text-decoration:line-through;
+	vertical-align:top;
+}
+div.pr_price_v1 div.bg_dot_orange dl dd.f-selling strong {
+	display:block;
+	font-weight:normal;
+	vertical-align:top;
+}
+div.pr_price_v1 div.bg_dot_orange dl dd.f-selling strong em {
+	font-size:20px;
+	line-height:24px;
+	vertical-align:-2px;
+	*vertical-align:2px;
+}
+div.pr_price_v1 div.bg_dot_orange dl dd em.f-quan {
+	display:inline-block;
+	color:#ef1c23;
+	font-size:15px;
+	font-weight:bold;
+	vertical-align:top;
+}
+div.pr_price_v1 div.timer {
+	overflow:hidden; zoom:1;
+	width:245px;
+	height:55px;
+	padding-left:14px;
+	background:blue url("//simage.lottemart.com/images/front/shop/@bg-remaining02.gif") no-repeat 0 0 !important;
+}
+div.pr_price_v1 div.timer span {
+	float:left;
+	font:18px/18px CoHead;
+}
+div.pr_price_v1 div.timer span.num {
+	width:27px;
+	height:23px;
+	margin:15px 1px 0 0;
+	padding-top:4px;
+	background:url("//simage.lottemart.com/images/front/shop/bg-time-s.gif") no-repeat 0 0;
+	color:#FFFFFF;
+	text-align:center;
+}
+div.pr_price_v1 div.timer span.colon {
+	width:20px;
+	height:18px;
+	margin:8px 0 0 -1px;
+	padding-top:9px;
+	*padding-top:12px;
+	color:#333333;
+	font:13px malgun,"Malgun Gothic";
+	text-align:center;
+}
+div.pr_price_v1 div.timer span.colon-hw {width:9px;}
+
+/* 2012-07-05 소셜상세 NEW STYLE */
+
+.box_prod_price #l_interest-free.ps-interest {z-index:20; left:0 !important;}
+.box_prod_price dd span.f-sort {display:inline-block;vertical-align:top;*display:inline;*margin-top:0px;*zoom:1;/*line-height:26px;*/}
+.box_prod_price dd span.f-sort #cardEls {font-size:20px;font-weight:bold;color:#e71b23;line-height:0px;*line-height:1.5;}
+.clearfloat .indx10 {*z-index:10;}
+.box_prod_price dl.clearfloat .indx9 {*z-index:10;}
+.box_prod_price .pr-clearfloat dt,
+.box_prod_price .pr-clearfloat dd {
+	min-height:25px;
+	height:auto !important;
+	height:25px;
+	padding-bottom:0 !important;
+}
+.box_prod_price .pr-clearfloat dd span.img {font-size:0; line-height:0;height:21px;line-height:21px;}
+
+/* 2013-06-21 청구할인 */
+.box_prod_price .pr-clearfloat dd.cdc {font-weight:bold;font-size:12px;letter-spacing:-1px;}
+
+/* 2012-07-19 무이자 할인정보 상품상세 */
+.box_prod_price #l_interest-free.layer-ps-interest {
+	z-index:20;
+	position:absolute;
+	top:21px;
+	left:0;
+}
+
+/*0824 상세페이지 추가*/
+dt.card_bold {color:#F5721B;}
+span.sale_bold {
+	color:#EE1C24 !important;
+	font-weight:bold;
+}
+span.col_333 {
+	color:#333;
+	font-weight:normal !important;
+}
+span.font_14 {font-size:16px;}
+
+
+/* 2012-10-24 상세페이지 강조 폰트 추가*/
+.box_prod_price .point_b15{font:bold 15px malgun;}
+
+
+/* 2012-11-21 상세페이지 배송반품교환안내 수정 */
+.detail_boxnotice{width:100%;}
+.txt_box_cont{font:13px/18px malgun, "Malgun Gothic"; padding:19px 14px; border: solid 1px #E6E6E6;}
+.txt_v_info	.txt_box_cont	.bul_style1	li	{padding:0 0 8px 10px;}
+.txt_v_info	.txt_box_cont	span.as_center	{color:#EE1C24; font: bold 14px malgun, "Malgun Gothic";}
+
+
+/* 2013-05-02 상품 상세정보 상단 */
+.mt5 {overflow:hidden;}
+
+div.prod-txt {overflow:hidden; width:382px; height:91px; margin-top:5px; padding:7px 0 0 20px; border-top:2px solid #c7c7c7; border-bottom:1px solid #c7c7c7; background:#f6f6f6;}
+div.prod-txt h3, div.prod-txt div {font-size:13px; font-weight:bold; line-height:17px; letter-spacing:-2px;}
+div.prod-txt h3 span {font-weight:normal;}
+div.prod-txt div {float:left; width:88px; height:45px; margin-top:8px; padding-top:7px; border:1px solid #e6e6e6; background:#fff; text-align:center;}
+div.prod-txt div span {display:block; padding-top:3px;}
+div.prod-txt ul {float:left; width:270px; padding-left:20px; margin-top:7px;}
+div.prod-txt ul li {line-height:19px;}
+div.prod-txt ul li span {width:65px;}
+div.prod-txt ul li span.s-txt {display:inline-block; width:180px;}
+
+div.mileage-box {margin-top:5px;}/* 상품평 없을시 뜨는 배너 (100마일리지) */
+
+div.goods-off {display:none;}
+
+/* 2013-05-02 상품 상세정보 하단 */
+div.tip-guide {overflow:hidden;}
+div.tip-guide>a {float:left;}
+div.tip-guide>div {float:left; width:490px; padding:7px 0 0 28px;}
+div.tip-guide div p.p-write {font-size:21px; line-height:26px; letter-spacing:-2px;}
+div.tip-guide div p.p-mil {padding-top:20px; color:#EE1C24;}
+div.tip-guide div ul {padding-top:9px;}
+div.tip-guide div ul li {line-height:18px;}
+div.tip-guide div p.p-goods {padding-top:10px;}
+div.tip-guide div p.p-goods a {display:inline-block; vertical-align:middle;}
+
+div.customer-rating {overflow:hidden; width:710px; height:90px; margin-top:20px; padding:10px 0 10px 10px; background:#f6f6f6;}
+div.customer-rating div {float:left;}
+div.customer-rating div.text-box {padding:10px 0 0 20px;}
+div.customer-rating div p.p-rating {font-size:21px; line-height:26px; letter-spacing:-2px; font-weight:bold;}
+div.customer-rating div p.p-result {padding-top:7px; font-size:12px; line-height:16px;}
+div.customer-rating ul {overflow:hidden; float:left; padding-left:73px;}
+div.customer-rating ul li {float:left; width:88px; height:64px; margin-left:10px; padding-top:24px; border:1px solid #e6e6e6; background:#fff; text-align:center; font-weight:bold;}
+div.customer-rating ul li span {display:block; padding-top:15px;}
+
+/* 2013-05-06 고객상품평 게시판 */
+div.tbl_review table {border-left:1px solid #c7c7c7; border-right:1px solid #c7c7c7;}
+div.tbl_review table td, div.tbl_review table th {border-right:1px solid #dedede;}
+div.tbl_review table .last {border-right:0;}
+
+/* 상세페이지 모바일 버튼 레이어 2013-05-30 */
+
+.prod_price .btn_list .bx_bubble div.mobile-app {padding:15px 15px 10px;}
+.prod_price .btn_list .bx_bubble div.mobile-app p.tit {color:#2a87cc;font-size:12px;}
+.prod_price .btn_list .bx_bubble div.mobile-app div {overflow:hidden;_zoom:1;padding:10px 0 0;;background:none;}
+.prod_price .btn_list .bx_bubble div.mobile-app div div {float:left;width:205px;padding:0;}
+.prod_price .btn_list .bx_bubble div.mobile-app div div a {display:inline-block;padding-top:22px;}
+.prod_price .btn_list .bx_bubble div.mobile-app div .qr {float:right; margin:-58px 0 0 0;}
+

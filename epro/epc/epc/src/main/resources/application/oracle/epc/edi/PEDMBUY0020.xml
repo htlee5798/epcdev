@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMBUY0020">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 센터입고거부상품   -->
+<select id="TSC_REJECT-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT  SUBSTR(A.EDI_SEND_DY, 1, 4) || '/' || SUBSTR(A.EDI_SEND_DY, 5, 2) || '/' || SUBSTR(A.EDI_SEND_DY, 7, 2) SEND_DATE,	
+	        A.PROD_CD PROD_CD,		
+	        B.PROD_NM PROD_NM,		
+	        A.REG_DY REG_DY,		
+	        A.STR_CD STR_CD,		
+	        C.STR_NM STR_NM,		
+	        D.DETAIL_NM DENY_FG,		
+	     
+	        CASE		
+	        WHEN A.EDI_SEND_FG = '1' THEN 'false'	
+	        ELSE 'true'		
+	        END SEND_FG
+			
+	       ,A.VEN_CD		
+	FROM   ARR_DENY_PROD_REG@dl_md_martnis A,
+	       PRODUCT@dl_md_martnis B,		
+	       STORE@dl_md_martnis C,		
+	       ALL_CD@dl_md_martnis D		
+	
+	WHERE  B.PROD_CD = A.PROD_CD		
+	  AND  C.STR_CD = A.STR_CD		 
+	  AND  A.DENY_FG = D.DETAIL_CD		
+	  AND  D.GRP_CD = 'ADP01'		
+	  AND  A.REG_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	
+	
+	  
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	  AND  A.EDI_SEND_FG = #measure#
+	
+	ORDER BY SEND_DATE DESC, PROD_NM
+</select>
+
+<!-- 센터입고거부상품 팝업   -->
+<select id="TSC_REJECT_POPUP-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT  SUBSTR(A.EDI_SEND_DY,1,4) || '/' || SUBSTR(A.EDI_SEND_DY,5,2) || '/' || SUBSTR(A.EDI_SEND_DY,7,2) SEND_DATE,
+		   	B.EMP_NM                 MD_EMP_NM,         
+			C.STR_NM                 MD_STR_NM,
+			SUBSTR(A.REG_DY,1,4) || '/' || SUBSTR(A.REG_DY,5,2) || '/' || SUBSTR(A.REG_DY,7,2) OCCUR_DATE,
+			F.STR_NM                 STR_NM,
+			A.PROD_CD                PROD_CD,
+			A.SRCMK_CD               SRCMK_CD,
+			D.PROD_NM                PROD_NM,
+			E.VEN_NM                 VEN_NM,
+			REPLACE(NVL(A.MD_CMT,' '),'^^',CHR(13) || CHR(10)) MD_CMT,
+			REPLACE(NVL(A.DISC_CMT,' '),'^^',CHR(13) || CHR(10)) DISC_CMT,
+			REPLACE(NVL(A.VEN_CMT,' '),'^^',CHR(13) || CHR(10)) VEN_CMT,
+			NVL(A.IMG_FILE_NM,' ')   IMG_FILE_NM,
+			
+			CASE
+			WHEN A.EDI_SEND_FG = '1' THEN 'false'
+		 	ELSE 'true'
+		 	END SEND_FG
+		 	      
+	FROM    ARR_DENY_PROD_REG@dl_md_martnis A,					
+	        EMPLOYEE@dl_md_martnis		B,							
+	        STORE@dl_md_martnis		C,							
+			PRODUCT@dl_md_martnis		D,							
+			HQ_VEN@dl_md_martnis		E,							
+			STORE@dl_md_martnis			F							
+		
+	WHERE	B.EMP_NO      = A.reg_emp_no
+		AND	C.STR_CD      = B.STR_CD
+		AND	D.PROD_CD     = A.PROD_CD
+		AND	E.VEN_CD      = A.VEN_CD
+		AND	F.STR_CD      = A.STR_CD
+		AND	A.STR_CD      = #p_str_cd#
+		AND	A.REG_DY      = #p_reg_dy#
+		AND	A.PROD_CD     = #p_prod_cd#
+		AND	A.VEN_CD      = #p_ven_cd#
+		
+	
+</select>
+
+<!-- 센터입고거부상품 팝업 업데이트   -->
+<update id="TSC_REJECT_POPUP-UPDATE01" parameterClass="map">
+	UPDATE ARR_DENY_PROD_REG@dl_md_martnis
+	
+	SET EDI_SEND_FG = '2',    						
+	    VEN_CMT     = REPLACE(#p_coment#,CHR(13) || CHR(10),'^^'),    
+	    VEN_REG_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),	
+	    EDI_RECV_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),	
+	 
+	    VEN_EMP_NM  = ''			  
+	    
+	WHERE STR_CD  = #p_str_cd#			
+	  AND REG_DY  = #p_reg_dy#		
+	  AND PROD_CD = #p_prod_cd#			
+	  AND VEN_CD  = #p_ven_cd#	
+</update>
+
+</sqlMap>

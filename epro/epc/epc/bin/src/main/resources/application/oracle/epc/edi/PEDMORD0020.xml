@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMORD0020">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 납품가능정보 -->
+<select id="TSC_ORD_ABLE-SELECT01" parameterClass="map" resultClass="resultClass">
+		SELECT     A.ORD_SLIP_NO    
+		          ,B.PROD_CD
+		          
+		          ,A.ORD_FG 
+		          ,TO_CHAR(TO_DATE(A.ORD_DY,'yyyymmdd'),'YYYY-MM-DD') ORD_DY
+		          ,D.STR_NM
+		          ,A.TOT_QTY
+		          ,A.TOT_PRC
+		          ,TO_CHAR(TO_DATE(A.CTR_ARR_DY,'yyyymmdd'),'YYYY-MM-DD') CTR_ARR_DY
+		          ,A.SPLY_TM
+		          ,TO_CHAR(TO_DATE(A.SPLY_DY,'yyyymmdd'),'YYYY-MM-DD') SPLY_DY
+		          ,DECODE(A.USER_HIT_DT,NULL,'N','Y') AS USER_HIT
+		          ,A.VEN_CD
+		          ,A.STR_CD
+		          ,A.PROD_PAT_FG
+		          ,A.LOGI_CAT_NM
+		          ,A.ROUTE_FG
+		         
+		          ,DECODE(A.ORD_FG,'4',A.SUPPLY_CD,A.CTR_CD) AS SUPPLY_CD
+		          ,DECODE(A.ORD_FG,'4',A.SUPPLY_NM,D.STR_NM) AS SUPPLY_NM
+		          
+		          ,B.SRCMK_CD
+		          ,B.PROD_NM
+		          ,B.ORD_IPSU
+		          ,B.PROD_STD
+		          ,B.ORD_QTY
+		          ,B.BUY_PRC
+		          ,C2.MINOR_CD AS ORD_UNIT
+		          ,B.SPLY_ABLE_QTY
+		          ,DECODE(B.PROTECT_TAG_FG,'9','Y','') AS PROTECT_TAG_FG
+		          ,B.HOME_NM
+		          ,DECODE(B.TAX_FG,'2',BUY_PRC,'0') AS TAX_VAT
+		          ,B.BUY_DAN
+		          ,B.EVT_CD
+		          ,B.SPLY_ABLE_QTY
+		          ,B.NEGO_BUY_PRC
+		          ,B.PRODUCER
+		          
+		          ,SUBSTR(A.SPLY_TM,1,2) AS HOUR
+		          ,SUBSTR(A.SPLY_TM,3,2) AS MIN
+		
+	    FROM TED_ORD A INNER JOIN TED_ORD_PROD B  ON B.PDC_ORD_SLIP_NO IS NULL 
+	                                             AND A.ORD_SLIP_NO = B.ORD_SLIP_NO
+	         LEFT OUTER JOIN TET_CODE C1 ON C1.MAJOR_CD = 'ORD01' AND C1.MINOR_CD = A.ORD_FG
+	         LEFT OUTER JOIN TET_CODE C2 ON C2.MAJOR_CD = 'CSA01' AND C2.MINOR_CD = B.ORD_UNIT
+	         INNER JOIN STORE D             ON A.STR_CD = D.STR_CD 
+		    
+		WHERE     A.PDC_ORD_SLIP_NO IS NULL
+			  AND A.ORD_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+	    
+	    <isNotEmpty prepend="AND" property="entp_cd"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	     
+	    <isNotEmpty prepend="AND" property="storeVal"> 
+	      <iterate prepend="B.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty prepend="AND" property="productVal"> 
+	    	B.PROD_CD = #productVal#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty property="ordering"> 
+	    	<isNotEqual property="ordering" compareValue="ALL">
+	    		AND A.ORD_FG = #ordering#
+	    	</isNotEqual>
+	    </isNotEmpty>
+	    
+	    ORDER BY A.ORD_SLIP_NO, B.PROD_CD	 
+</select>
+
+<!-- 신선매입정보변경 -->
+<select id="TSC_ORD_SPLY-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT  A.PROD_CD
+	       ,A.SRCMK_CD
+	       ,A.PROD_NM
+	       ,A.PROD_STD
+	       ,C1.MINOR_CD AS ORD_UNIT
+	       ,A.ORD_IPSU
+	       ,SUM(A.BUY_DAN) AS BUY_DAN
+	       
+	       ,B.STR_NM AS STR_NM
+	       ,SUM(A.ORD_QTY) AS ORD_QTY
+	       ,SUM(A.BUY_PRC) AS BUY_PRC
+	       ,A.NEGO_BUY_PRC
+	       ,A.HOME_NM
+	       ,A.ORD_SLIP_NO
+	       ,SUM(A.SPLY_ABLE_QTY) AS SPLY_ABLE_QTY
+	       ,A.STR_CD
+	       ,A.PRODUCER
+	       ,A.VEN_CD
+	
+	FROM TED_ORD_PROD A LEFT OUTER JOIN TET_CODE C1 ON A.ORD_UNIT = C1.MINOR_CD
+	                         INNER JOIN STORE B ON A.STR_CD = B.STR_CD
+	
+	WHERE A.ORD_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	  AND A.STR_CD NOT IN ('D03','W03')
+	  AND A.PDC_ORD_SLIP_NO IS NULL
+	  
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty prepend="AND" property="entp_cd"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty prepend="AND" property="storeVal"> 
+	      <iterate prepend="B.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty prepend="AND" property="productVal"> 
+	    	A.PROD_CD = #productVal#
+	    </isNotEmpty>
+	  
+	
+	GROUP BY  A.SRCMK_CD, A.PROD_CD, A.PROD_NM, A.PROD_STD, C1.MINOR_CD, A.ORD_IPSU, A.STR_CD, A.NEGO_BUY_PRC
+	         ,A.HOME_NM, A.PRODUCER, A.ORD_SLIP_NO, B.STR_NM, A.VEN_CD
+	
+	ORDER BY A.PROD_CD, A.STR_CD	     
+</select>
+
+<!-- 납품가능정보 시간 수정 -->
+<update id="TSC_ORD_SPLY_TIME-UPDATE01" parameterClass="map">
+ 	 UPDATE TED_ORD SET SPLY_TM = #sply_tm#, LST_CHG_DT = CURRENT_TIMESTAMP(0) WHERE ORD_SLIP_NO = #ord_slip_no#
+</update>
+
+<!-- 신선매입정보수정 -->
+<update id="TSC_ORD_SPLY-UPDATE01" parameterClass="map">
+	UPDATE TED_ORD_PROD SET 
+		   NEGO_BUY_PRC = #nego#, 
+		   HOME_NM = #origin#, 
+		   PRODUCER = #origin#, 
+		   LST_CHG_DT = CURRENT_TIMESTAMP(0)
+	
+	WHERE ORD_SLIP_NO = #ord_slip_no#
+	  AND VEN_CD = #ven#
+	  AND PROD_CD = #prod#
+</update>
+    			
+</sqlMap>

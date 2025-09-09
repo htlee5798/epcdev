@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMORD0009">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmord0009VO" type="com.lottemart.epc.order.model.PSCMORD0009VO"/>
+
+	<select id="getTetCodeList" parameterClass="pscmord0009VO" resultClass="dataMap">
+		/* PSCMORD0009.getTetCodeList */
+	   SELECT MINOR_CD , CD_NM
+	     FROM TET_CODE
+	    WHERE MAJOR_CD = #majorCd#
+	      AND MINOR_CD != '*'
+	     <isEqual property="majorCd" compareValue="OR001" >
+	      AND MINOR_CD IN ('20', '40', '50')     
+	     </isEqual>    
+	     <isEqual property="majorCd" compareValue="OR002" >
+	      AND MINOR_CD BETWEEN '20' AND '59' 
+	     </isEqual>  
+	    ORDER BY ORDER_SEQ
+	</select>	
+	
+	<select id="selectPartnerReturnList"  parameterClass="dataMap"  resultClass="dataMap">
+		/* PSCMORD0009.selectPartnerReturnList */
+		SELECT * FROM(
+			    SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE ,
+			        ROWNUM AS NUM ,
+			        COUNT(*) OVER() TOTAL_COUNT ,
+			        E.* 
+			      FROM (
+						SELECT TO_CHAR(O.REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS ORD_DY,      /*주문일자*/
+						       O.ORD_STS_CD,        										/*주문상태코드*/
+						       PG_UTIL.FN_GET_CD_NM('OR002', O.ORD_STS_CD) AS ORD_STS_NM,   /*주문상태*/
+						       OI.FIRST_ORDER_ID, 											/*원주문번호*/
+						       OI.UP_ORDER_ID, 												/*상위주문번호*/
+						       OI.ORDER_ID, 												/*주문번호*/
+						       OI.PROD_CD, 													/*상품코드*/
+						       OI.PROD_NM, 													/*상품명*/
+						       OI.ORD_QTY,                                                  /*주문수량*/
+						       CASE 
+                                   WHEN ORD_CANCEL_REASON_CD IS NOT NULL 
+                                       AND ACCEPT_QTY = 0 
+                                   THEN NVL 
+                                       ( OI.ORD_QTY -
+                                              (SELECT ORD_QTY 
+                                                FROM TOR_ORDER_ITEM C 
+                                               WHERE OI.UP_ORDER_ID = C.UP_ORDER_ID 
+                                                     AND OI.UP_ORDER_ID != C.ORDER_ID 
+                                                     AND OI.ORDER_ITEM_SEQ = C.ORDER_ITEM_SEQ 
+                                                     AND ORD_RTN_DIVN_CD = '10' 
+                                              ), OI.ORD_QTY 
+                                        ) 
+                                  ELSE OI.ACCEPT_QTY 
+                              END AS ACCEPT_QTY ,                                           /*취소/반품수량*/
+                              OI.CURR_SELL_PRC ,                                            /*판매가*/ 
+                              NVL((SELECT ORD_AMT
+                                	FROM TOR_ORDER_ITEM TOI 
+                                  WHERE OI.UP_ORDER_ID = TOI.UP_ORDER_ID 
+                                     AND OI.UP_ORDER_ID != TOI.ORDER_ID 
+                                     AND OI.ORDER_ITEM_SEQ = TOI.ORDER_ITEM_SEQ 
+                                     AND ORD_RTN_DIVN_CD = '10' 
+                                  ), 0) AS ORD_AMT ,										/*주문금액*/
+                              NVL((SELECT  NVL(TOT_SELL_AMT, 0)
+                               		 FROM TOR_ORDER_ITEM TOI 
+                             	   WHERE OI.UP_ORDER_ID = TOI.UP_ORDER_ID 
+                                     AND OI.UP_ORDER_ID != TOI.ORDER_ID 
+                                     AND OI.ORDER_ITEM_SEQ = TOI.ORDER_ITEM_SEQ 
+                                     AND ORD_RTN_DIVN_CD = '10' 
+                              	  ), 0) AS TOT_SELL_AMT ,         							/*결제금액*/
+					          OI.ORD_CANCEL_REASON_CD ,                                     /*사유코드*/
+					          DECODE(OI.ORD_RTN_DIVN_CD, '40', PG_UTIL.FN_GET_CD_NM('OR006', OI.ORD_CANCEL_REASON_CD),
+					          		 PG_UTIL.FN_GET_CD_NM('OR004', OI.ORD_CANCEL_REASON_CD)) AS ORD_CANCEL_REASON_NM , /*사유*/
+					          (SELECT OM.MEMO 
+					            FROM TOR_ORDER_ITEM_MEMO OM 
+					           WHERE OM.ORDER_ID = OI.ORDER_ID 
+					                 AND OI.ORDER_ITEM_SEQ = OM.ORDER_ITEM_SEQ 
+					                 AND OM.MEMO_DIVN_CD IN ('03', '04') 
+					          ) AS MEMO ,                                                   /*상세사유*/
+					          O.ORD_RTN_DIVN_CD ,
+					          OI.ORDER_ITEM_SEQ 
+					     FROM TOR_ORDER O, 
+					          TOR_ORDER_ITEM OI 
+					    WHERE O.ORDER_ID = OI.ORDER_ID 
+					          AND OI.DELIVERY_ID != '000'
+					          AND OI.ORD_ITEM_DIVN_CD = '00'
+					          <isNotEmpty property="vendorId">
+					          AND OI.STR_VENDOR_ID
+					            <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+					                #vendorId[]#
+					            </iterate>
+					          </isNotEmpty>
+					          AND O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+					          <isEmpty property="ordRtnDivnCd">
+					          AND O.ORD_RTN_DIVN_CD IN ('20', '40', '50')
+					         </isEmpty>                         
+					         <isNotEmpty property="ordRtnDivnCd">
+					          AND O.ORD_RTN_DIVN_CD = #ordRtnDivnCd#
+					         </isNotEmpty>
+					         <isNotEmpty property="ordStsCd">
+					          AND O.ORD_STS_CD = #ordStsCd# 
+					         </isNotEmpty>
+					         <isEqual property="searchType" compareValue="1" >
+					          AND O.FIRST_ORDER_ID = #searchContent#
+					         </isEqual>
+					         <isEqual property="searchType" compareValue="3" >
+					          AND (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') LIKE #searchContent# || '%'
+					         </isEqual>
+					         <isEqual property="searchType" compareValue="4" >
+					          AND OI.PROD_NM LIKE  '%' || #searchContent# || '%'
+					         </isEqual>	
+					          /* AND ACCEPT_QTY > 0 반품취소시 수량 입력안하는 경우가 있음*/
+					    ORDER BY  FIRST_ORDER_ID, STR_VENDOR_ID, ORD_DY
+				  ) E
+		)
+		WHERE PAGE = #currentPage#
+	</select>
+    
+</sqlMap>

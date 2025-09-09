@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMINV0020">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="pedminv0020" type="com.lottemart.epc.edi.inventory.model.PEDMINV0020VO" />
+
+
+<resultMap id="pedminv0020BadProdMap"    class="pedminv0020">
+	<result property="sendDate"  			column="SEND_DATE"  	/>                                   
+	<result property="prodCd"         column="PROD_CD"      />                            
+	<result property="prodNm"         column="PROD_NM"      />                            
+	<result property="occurDate"      column="OCCUR_DATE"/>
+	<result property="occurdy"        column="OCCUR_DY"  />                              
+	<result property="strNm"          column="STR_NM"    />                               
+	<result property="badL1Nm"        column="BAD_L1_NM" />                              
+	<result property="badCatNm"       column="BAD_CAT_NM"/>                              
+	<result property="procGb"         column="PROC_GB"   />                            
+	<result property="strCd"          column="STR_CD"    />                           	
+	<result property="occurDy"        column="OCCUR_DY"  />                             	
+	<result property="prodCd"         column="PROD_CD"   />
+	<result property="sendFg"         column="SEND_FG"   />
+</resultMap>
+<!-- 불량상품내역 -->
+<select id="TSC_BAD_PROD-SELECT01" parameterClass="map" resultMap="pedminv0020BadProdMap">
+	SELECT  SUBSTR(A.EDI_SEND_DY,1,4) || '/' || SUBSTR(A.EDI_SEND_DY,5,2) || '/' || SUBSTR(A.EDI_SEND_DY,7,2)         SEND_DATE,                                      
+	        A.PROD_CD            PROD_CD,                                        
+	        B.PROD_NM            PROD_NM,                                        
+	        SUBSTR(A.OCCUR_DY,1,4) || '/' || SUBSTR(A.OCCUR_DY,5,2) || '/' || SUBSTR(A.OCCUR_DY,7,2)           OCCUR_DATE, 
+	        A.OCCUR_DY			 OCCUR_DY,                                      
+	        C.STR_NM             STR_NM,                                         
+	        D.BAD_CAT_NM         BAD_L1_NM,                                      
+	        E.BAD_CAT_NM         BAD_CAT_NM,                                     
+	  
+	        CASE WHEN A.SEND_FG = '2' AND A.EDI_SEND_FG = '1' THEN 'false'       
+	        ELSE 'true' END    PROC_GB,                                     
+	  	    A.SEND_FG,
+	        A.STR_CD         	STR_CD,                                     	
+	        A.OCCUR_DY         	OCCUR_DY                                  	
+	    	                                                                             
+	FROM    BAD_PROD_REG@dl_md_martnis   A,                                                      
+	        PRODUCT@dl_md_martnis        B,                                                      
+	        STORE@dl_md_martnis          C,                                                      
+	        QUAL_BAD_TYP@dl_md_martnis   D,                                                      
+	        QUAL_BAD_TYP@dl_md_martnis   E     
+	
+	WHERE   B.PROD_CD     = A.PROD_CD                                             
+	  AND   C.STR_CD      = A.STR_CD                                              
+	  AND   D.BAD_L1_CD   = A.BAD_L1_CD                                           
+	  AND   E.BAD_L1_CD   = A.BAD_L1_CD                                           
+	  AND   E.BAD_CAT_CD  = A.BAD_CAT_CD                                          
+	  AND   E.LVL         = 2                                                     
+	  AND   D.LVL         = 1    
+	  AND   A.EDI_SEND_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	  
+	   <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isEqual property="measure" compareValue="1">
+	    	AND A.SEND_FG = '2'
+	    </isEqual>
+	    
+	    <isEqual property="measure" compareValue="2">
+	    	AND A.SEND_FG >= '3'
+	    </isEqual>
+	    
+	 AND  A.EDI_SEND_FG = #measure#
+
+
+	ORDER BY SEND_DATE DESC, PROD_NM	
+</select>
+
+
+
+
+<resultMap id="pedminv0020BadProdDetailMap"    class="pedminv0020">
+	<result property="sendDate"	   	  column="SEND_DATE"	 />                                                             
+	<result property="mdEmpNm"        column="MD_EMP_NM"     />                                                                                                                       
+	<result property="mdStrNm"        column="MD_STR_NM"     />                                                                                                                       
+	<result property="occurDate"      column="OCCUR_DATE"    />                                                             
+	<result property="strNm"          column="STR_NM"        />                                                                                                                        
+	<result property="prodCd"         column="PROD_CD"       />                                                                                                                        
+	<result property="srcmkCd"        column="SRCMK_CD"      />                                                                                                                        
+	<result property="prodNm"         column="PROD_NM"       />                                                                                                                        
+	<result property="venNm"          column="VEN_NM"        />                                                                                                                        
+	<result property="badL1Nm"        column="BAD_L1_NM"     />                                                                                                                       
+	<result property="badCatNm"       column="BAD_CAT_NM"    />                                                                                                                       
+	<result property="badCmt"         column="BAD_CMT"       />                                                                                                                        
+	<result property="ediCmt"         column="EDI_CMT"       />                                                                                                                        
+	<result property="venCmt"         column="VEN_CMT"       />                                                                                                                        
+	<result property="imgFileNm"      column="IMG_FILE_NM"   />                                                                                                                       
+	<result property="sendFg"         column="SEND_FG"       />    
+	<result property="venEmpNm"       column="VEN_EMP_NM"       />    
+	                                                           
+</resultMap>
+<!-- 불량상품내역 팝업-->
+<select id="TSC_BAD_PROD_POPUP-SELECT01" parameterClass="map" resultMap="pedminv0020BadProdDetailMap">
+	   /* PEDMINV0020.TSC_BAD_PROD_POPUP-SELECT01 */
+	SELECT SUBSTR(A.EDI_SEND_DY,1,4) || '/' || SUBSTR(A.EDI_SEND_DY,5,2) || '/' || SUBSTR(A.EDI_SEND_DY,7,2) SEND_DATE,	
+	        B.EMP_NM                 MD_EMP_NM,                                                                  
+	        C.STR_NM                 MD_STR_NM,                                                                  
+	        SUBSTR(A.OCCUR_DY,1,4) || '/' || SUBSTR(A.OCCUR_DY,5,2) || '/' || SUBSTR(A.OCCUR_DY,7,2) OCCUR_DATE,
+	        H.STR_NM                 STR_NM,                                                                     
+	        A.PROD_CD                PROD_CD,                                                                    
+	        A.SRCMK_CD               SRCMK_CD,                                                                   
+	        D.PROD_NM                PROD_NM,                                                                    
+	        E.VEN_NM                 VEN_NM,                                                                     
+	        F.BAD_CAT_NM             BAD_L1_NM,                                                                  
+	        G.BAD_CAT_NM             BAD_CAT_NM,                                                                 
+	        REPLACE(NVL(A.BAD_CMT,' '),'^^',CHR(13) || CHR(10))       BAD_CMT,                                                                    
+	        REPLACE(NVL(A.EDI_CMT,' '),'^^',CHR(13) || CHR(10))       EDI_CMT,                                                                    
+	        REPLACE(NVL(A.VEN_CMT,' '),'^^',CHR(13) || CHR(10))       VEN_CMT,                                                                    
+	        NVL(A.IMG_FILE_NM,' ')   IMG_FILE_NM,                                                                
+	        CASE WHEN A.SEND_FG = '2' AND EDI_SEND_FG = '1' THEN 'false'                                         
+	             ELSE 'true' END     SEND_FG   ,
+	       A.VEN_EMP_NM                                                                        
+	FROM  BAD_PROD_REG@dl_md_martnis   A,                                                                                      
+	      EMPLOYEE@dl_md_martnis       B,                                                                                      
+	      STORE@dl_md_martnis          C,                                                                                      
+	      PRODUCT@dl_md_martnis        D,                                                                                      
+	      HQ_VEN@dl_md_martnis         E,                                                                                      
+	      QUAL_BAD_TYP@dl_md_martnis   F,                                                                                      
+	      QUAL_BAD_TYP@dl_md_martnis   G,                                                                                      
+	      STORE@dl_md_martnis          H    
+	                                                                                         
+	WHERE B.EMP_NO      = A.MD_EMP_NO                                                                           
+	  AND C.STR_CD      = B.STR_CD                                                                              
+	  AND D.PROD_CD     = A.PROD_CD                                                                             
+	  AND E.VEN_CD      = A.VEN_CD                                                                              
+	  AND F.BAD_L1_CD   = A.BAD_L1_CD                                                                           
+	  AND G.BAD_L1_CD   = A.BAD_L1_CD                                                                           
+	  AND G.BAD_CAT_CD  = A.BAD_CAT_CD                                                                          
+	  AND H.STR_CD      = A.STR_CD                                                                              
+	  AND G.LVL         = 2                                                                                     
+	  AND F.LVL         = 1                                                                                     
+	  AND A.STR_CD      = #p_str_cd#                                                                      
+	  AND A.OCCUR_DY    = #p_occur_dy#                                                                    
+	  AND A.PROD_CD     = #p_prod_cd#   
+
+</select>
+
+<!-- 불량상품내역 팝업 업데이트   -->
+<update id="TSC_BAD_PROD_POPUP-UPDATE01" parameterClass="map">
+	  /*PEDMINV0020.TSC_BAD_PROD_POPUP-UPDATE01*/
+	UPDATE BAD_PROD_REG@dl_md_martnis						
+	SET SEND_FG     = '3',				
+	    EDI_SEND_FG = '2',    				
+	    VEN_CMT     = REPLACE(#p_coment#,CHR(13) || CHR(10),'^^'),		
+	    EDI_RECV_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),	
+	    SEND_DATE   = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),		    
+--	    VEN_EMP_NM  = 'TMP'		
+    	VEN_EMP_NM  = #writenamePhone#		
+	WHERE STR_CD    = #p_str_cd#			
+	  AND OCCUR_DY  = #p_occur_dy#		
+	  AND PROD_CD   = #p_prod_cd#	
+  
+</update>
+
+</sqlMap>

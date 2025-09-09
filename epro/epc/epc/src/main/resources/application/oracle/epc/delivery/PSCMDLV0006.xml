@@ -1,0 +1,1105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMDLV0006">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmdlv0006VO" type="com.lottemart.epc.delivery.model.PSCMDLV0006VO"/>
+	<typeAlias alias="LtsmsVO" type="com.lottemart.common.sms.model.LtsmsVO"/>
+
+	<select id="selectDeliveryDlayBlockYn" resultClass="String">
+	/* PSCMDLV0006.selectDeliveryDlayBlockYn */
+	 <![CDATA[
+	SELECT BLOCK_YN
+	  FROM (SELECT ROW_NUMBER() OVER(ORDER BY DY) AS CNT
+	             , CASE WHEN DY < TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')  THEN 'Y'
+	                    ELSE 'N'
+	               END AS BLOCK_YN
+	          FROM TET_CALENDAR
+	         WHERE STR_CD = '981'
+	           AND DYOFF_DIVN_CD = 0
+	           AND DW_DIVN_CD NOT IN ('1', '7')
+	           AND DY > #ordDy# )
+	 WHERE CNT = 2
+	]]>
+	</select>
+
+	<select id="selectDeliveryDlaySMSTarget" resultClass="dataMap">
+	/* PSCMDLV0006.selectDeliveryDlaySMSTarget */
+	 <![CDATA[
+	SELECT REPLACE(TRIM(DM.RECP_PSN_CELL_NO),' ','') AS CELL_NO
+	     , DECODE(SUBSTR(DM.RECP_PSN_CELL_NO,0,1),'0','Y','N') AS SMS_YN
+	     , OI.PROD_NM
+	  FROM TDE_DELI_MST DM
+	     , TOR_ORDER_ITEM OI
+	 WHERE OI.ORDER_ID = #orderId#
+	   AND OI.DELIVERY_ID = #deliveryId#
+	   AND OI.ORDER_ID = DM.ORDER_ID
+	   AND OI.DELIVERY_ID = DM.DELIVERY_ID
+	 ORDER BY OI.ORDER_ITEM_SEQ
+	]]>
+	</select>
+
+	<select id="selectAllOnlineStore" resultClass="dataMap">
+	SELECT /* PSCMDLV0006.selectAllOnlineStore */
+	       STR_CD
+	     , STR_NM
+	  FROM TST_STORE
+	 WHERE (ONLINE_YN = 'Y' OR ONLINE_REP_STR_YN = 'Y')
+	ORDER BY STR_NM
+	</select>
+
+	<select id="getTetCodeList" parameterClass="pscmdlv0006VO" resultClass="dataMap">
+	/* PSCMDLV0006.getTetCodeList */
+	SELECT MINOR_CD , CD_NM
+	  FROM TET_CODE
+	 WHERE MAJOR_CD = #majorCd#
+	   AND MINOR_CD != '*'
+	<isEqual property="majorCd" compareValue="DE014">
+	   AND LET_1_REF = 'Y'
+	</isEqual>
+	 ORDER BY ORDER_SEQ
+	</select>
+
+	<select id="selectPartnerFirmsList"  parameterClass="pscmdlv0006VO"  resultClass="dataMap">
+	/* PSCMDLV0006.selectPartnerFirmsList */ 
+	SELECT O.DELI_NO
+			, O.INVOICE_SEQ
+			, O.VEN_CD
+			, (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = O.VEN_CD) VENDOR_NM
+			, O.STR_CD
+			, O.CURS_CLRN_NUM
+			, (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) STR_NM
+			, O.ORD_DY
+			, TO_CHAR(TO_DATE(O.ORD_TM,'HH24:MI:SS'),'HH24:MI:SS')ORD_TM
+			, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR002' AND MINOR_CD = O.ORD_STS_CD) ORD_STS_NM
+			, O.ORD_STS_CD
+			, O.BSKET_TYPE_CD
+			, O.FIRST_ORDER_ID
+			, O.ORDER_ID
+			, O.PROD_CD
+			, P.MD_SRCMK_CD
+			, P.PROD_STANDARD_NM
+			, DECODE(O.CTPD_ITEM_YN,'Y','(추가구성품)','')||O.PROD_NM PROD_NM
+			, O.ORD_QTY
+			, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE014' AND MINOR_CD = NVL(O.VEN_DELI_STATUS_CD,'01')) DELI_STS_NM
+			, NVL(O.VEN_DELI_STATUS_CD,'01') VEN_DELI_STATUS_CD
+			, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE011' AND MINOR_CD = O.HODECO_CD) HODECO_NM
+			, SUBSTR(O.DELI_FNSH_DATE, 0, 8) AS DELI_FNSH_DATE
+			, DECODE(O.STATUS,'X', SUBSTR(O.RECP_PSN_NM,1,1) || LPAD('*',LENGTH(O.RECP_PSN_NM)-2,'*') || SUBSTR(O.RECP_PSN_NM,LENGTH(O.RECP_PSN_NM),1), O.RECP_PSN_NM) AS TO_PSN_NM
+			, DECODE(O.STATUS,'X', SUBSTR(O.CUST_NM,1,1) || LPAD('*',LENGTH(O.CUST_NM)-2,'*') || SUBSTR(O.CUST_NM,LENGTH(O.CUST_NM),1), O.CUST_NM) AS FROM_PSN_NM
+			, CASE WHEN O.ITEM_OPTIONS IS NOT NULL THEN O.ITEM_OPTIONS ELSE O.NFOML_VARIATION END ITEM_OPTION
+			, O.ENTP_DELI_PRAR_DY
+			, O.HODECO_INVOICE_NO
+			, O.HODECO_ADD_INVOICE_NO
+			, DECODE(O.STATUS,'X',SUBSTR(O.RECP_PSN_POST_NO,1,4) || '***', O.RECP_PSN_POST_NO) AS RECP_PSN_POST_NO
+			, DECODE(O.STATUS,'X',SUBSTR(O.ADDR,1,3) || LPAD('*',LENGTH(O.ADDR)-3,'*'),O.ADDR) AS ADDR
+			, DECODE(O.STATUS,'X', CASE WHEN INSTR(O.RECP_PSN_TEL_NO, '02') = 1 THEN SUBSTR(O.RECP_PSN_TEL_NO,1,2)|| LPAD('*',LENGTH(REPLACE(O.RECP_PSN_TEL_NO, ' ', ''))-6,'*') || SUBSTR(REPLACE(O.RECP_PSN_TEL_NO, ' ', ''),LENGTH(REPLACE(O.RECP_PSN_TEL_NO, ' ', ''))-3,4) ELSE
+			  SUBSTR(O.RECP_PSN_TEL_NO,1,3)|| LPAD('*',LENGTH(REPLACE(O.RECP_PSN_TEL_NO,' ',''))-7,'*') || SUBSTR(REPLACE(O.RECP_PSN_TEL_NO, ' ', ''),LENGTH(REPLACE(O.RECP_PSN_TEL_NO, ' ', ''))-3,4) END , O.RECP_PSN_TEL_NO) AS RECP_PSN_TEL_NO
+			, DECODE(O.STATUS,'X', CASE WHEN INSTR(O.RECP_PSN_CELL_NO, '02') = 1 THEN SUBSTR(O.RECP_PSN_CELL_NO,1,2)|| LPAD('*',LENGTH(REPLACE(O.RECP_PSN_CELL_NO,' ',''))-6,'*') || SUBSTR(REPLACE(O.RECP_PSN_CELL_NO,' ',''),LENGTH(REPLACE(O.RECP_PSN_CELL_NO,' ',''))-3,4) ELSE
+			  SUBSTR(O.RECP_PSN_CELL_NO,1,3)|| LPAD('*',LENGTH(REPLACE(O.RECP_PSN_CELL_NO,' ',''))-7,'*') || SUBSTR(REPLACE(O.RECP_PSN_CELL_NO,' ',''),LENGTH(REPLACE(O.RECP_PSN_CELL_NO, ' ',''))-3,4) END , O.RECP_PSN_CELL_NO) AS RECP_PSN_CELL_NO
+			, DECODE(O.STATUS,'X', CASE WHEN INSTR(O.CUST_CELL_NO, '02') = 1 THEN SUBSTR(O.CUST_CELL_NO,1,2)|| LPAD('*',LENGTH(REPLACE(O.CUST_CELL_NO, ' ', ''))-6,'*') || SUBSTR(REPLACE(O.CUST_CELL_NO, ' ', ''),LENGTH(REPLACE(O.CUST_CELL_NO, ' ', ''))-3,4) ELSE
+			  SUBSTR(O.CUST_CELL_NO,1,3)|| LPAD('*',LENGTH(REPLACE(O.CUST_CELL_NO,' ',''))-7,'*') || SUBSTR(REPLACE(O.CUST_CELL_NO, ' ', ''),LENGTH(REPLACE(REPLACE(O.CUST_CELL_NO, ' ', ''), ' ', ''))-3,4) END , O.CUST_CELL_NO) AS CUST_CELL_NO		 
+			, DECODE(O.STATUS,'X',SUBSTR(O.CUST_NM,1,1) || LPAD('*',LENGTH(O.CUST_NM)-2,'*') || SUBSTR(O.CUST_NM,LENGTH(O.CUST_NM),1),O.CUST_NM) AS CUST_NM
+			, O.ORDER_ITEM_SEQ
+			, O.DELIVERY_ID
+			, O.SALE_STS_CD
+			, O.HODECO_CD
+			, O.TOT_QTY
+			, O.DELI_MSG
+			, O.TOT_SELL_AMT
+			, (SELECT NVL(SUM(TOT_SELL_AMT),0) FROM TOR_ORDER_ITEM II WHERE II.ORDER_ID = O.ORDER_ID AND II.DELIVERY_ID = O.DELIVERY_ID AND II.ORD_ITEM_DIVN_CD != '00') DELIV_AMT
+			, O.DELI_STATUS_CD
+			, O.SMS_SEND_YN
+			, O.SND_PRAR_DY			  -- 20160520 추가
+			, O.DLAY_UNAVL_REASON_CD  -- 20160520 추가
+			, (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE017' AND MINOR_CD = O.DLAY_UNAVL_REASON_CD) DLAY_UNAVL_REASON_NM
+			, O.DLAY_UNAVL_DTL_REASON -- 20160520 추가
+
+			/* 2018-10-16 테스트후 삭제 */
+			, P.ONLINE_PROD_TYPE_CD
+			, ONLN_DELI_TYPE_CD AS ORG_ONLN_DELI_TYPE_CD
+
+			/* 2016-11-29 무형 상품 장바구니 반영시 삭제 */
+			, NVL(O.ONLN_DELI_TYPE_CD,
+				   CASE
+					  WHEN ( INSTR(
+						  (SELECT LISTAGG(B.ONLINE_PROD_TYPE_CD , ',') WITHIN GROUP(ORDER BY A.ORDER_ID)
+							FROM TOR_ORDER_ITEM A ,
+								( SELECT PROD_CD
+									   /*  기준 컬럼 ONLN_DELI_TYPE_CD 의 값이 '01', '02','03' 이므로 ONLINE_PROD_TYPE_CD의 값을 '01', '02','03'으로 치환후 비교한다.
+									   	 상품 속성 추가시 CASE 문 추가 미추가시 배송 상태 변경 불가능합니다. */
+								   ,CASE WHEN ONLINE_PROD_TYPE_CD IN ('03','13') THEN '02' WHEN ONLINE_PROD_TYPE_CD = '08' THEN '03' WHEN ONLINE_PROD_TYPE_CD = '10' THEN '04'  ELSE '01' END AS ONLINE_PROD_TYPE_CD
+								  FROM TPR_PRODUCT ) B
+							WHERE A.PROD_CD = B.PROD_CD AND A.ORDER_ID = O.ORDER_ID AND A.DELIVERY_ID = O.DELIVERY_ID AND A.ORD_ITEM_DIVN_CD NOT IN ('11','12','13')) , '01')) > 0  THEN '01'
+					   WHEN ( INSTR(
+						  (SELECT LISTAGG(B.ONLINE_PROD_TYPE_CD , ',') WITHIN GROUP(ORDER BY A.ORDER_ID)
+							FROM TOR_ORDER_ITEM A ,
+								( SELECT PROD_CD
+								 ,CASE WHEN ONLINE_PROD_TYPE_CD IN ('03','13') THEN '02' WHEN ONLINE_PROD_TYPE_CD = '08' THEN '03' WHEN ONLINE_PROD_TYPE_CD = '10' THEN '04'  ELSE '01' END AS ONLINE_PROD_TYPE_CD
+								  FROM TPR_PRODUCT ) B
+							WHERE A.PROD_CD = B.PROD_CD AND A.ORDER_ID = O.ORDER_ID AND A.DELIVERY_ID = O.DELIVERY_ID AND A.ORD_ITEM_DIVN_CD NOT IN ('11','12','13')) , '02')) > 0  THEN '02'
+					   WHEN ( INSTR(
+						  (SELECT LISTAGG(B.ONLINE_PROD_TYPE_CD , ',') WITHIN GROUP(ORDER BY A.ORDER_ID)
+							FROM TOR_ORDER_ITEM A ,
+								( SELECT PROD_CD
+								 ,CASE WHEN ONLINE_PROD_TYPE_CD IN ('03','13') THEN '02' WHEN ONLINE_PROD_TYPE_CD = '08' THEN '03' WHEN ONLINE_PROD_TYPE_CD = '10' THEN '04'  ELSE '01' END AS ONLINE_PROD_TYPE_CD
+								  FROM TPR_PRODUCT ) B
+							WHERE A.PROD_CD = B.PROD_CD AND A.ORDER_ID = O.ORDER_ID AND A.DELIVERY_ID = O.DELIVERY_ID AND A.ORD_ITEM_DIVN_CD NOT IN ('11','12','13')) , '04')) > 0  THEN '04'  
+					  ELSE '03'
+					  END
+			) ONLN_DELI_TYPE_CD
+			/* ---------------------------------------- */
+			, O.OX
+			, CNT AS ROWSPAN1
+			, CNT * 2 AS ROWSPAN2
+			, O.STATUS
+			, O.STATUS2
+			, O.EC_ORDER_ID
+	   FROM (
+	--------------------------------------------------------------------------------
+	SELECT * FROM 
+		(
+		SELECT <isEqual property="searchType" compareValue="7">/*+ LEADING(O) */  --20210225 조건별 힌트 수정.</isEqual>
+               <isEqual property="searchType" compareValue="8">/*+ LEADING(O) */  --20210225 조건별 힌트 수정.</isEqual>
+               <isNotEqual property="searchType" compareValue="7">
+               <isNotEqual property="searchType" compareValue="8">/*+ LEADING(T1 OI) */  --@@ EXEM. 힌트변경</isNotEqual>
+               </isNotEqual>
+			  DM.DELI_NO
+			, HI.INVOICE_SEQ
+			, O.ORD_DY
+			, O.ORD_TM
+			, OI.ORD_STS_CD
+			, O.BSKET_TYPE_CD
+			, O.FIRST_ORDER_ID
+			, O.ORDER_ID
+			, OI.PROD_NM
+			, OI.ORD_QTY+NVL(OI.EXTRA_QTY,0)  as ORD_QTY
+			, DM.VEN_DELI_STATUS_CD
+			, HI.HODECO_CD
+			, DM.DELI_FNSH_DATE
+			, DM.RECP_PSN_NM
+            , (SELECT LISTAGG(CASE WHEN PM.ATTR_VAL_ID IS NULL THEN ATTR_VAL ELSE ATTR_VAL_NM END , ' | ') WITHIN GROUP (ORDER BY CD.ATTR_ID) AS attrNm
+                 FROM TEC_ATTR_PROD_MAPPING PM
+                INNER JOIN TEC_ATTR_CD CD ON PM.ATTR_ID = CD.ATTR_ID 
+                 LEFT OUTER JOIN TEC_ATTR_VAL VAL ON PM.ATTR_ID = VAL.ATTR_ID AND PM.ATTR_VAL_ID = VAL.ATTR_VAL_ID
+                WHERE PROD_CD = OI.PROD_CD
+                  AND ITEM_CD = OI.ITEM_CD
+                  AND CD.ATTR_PI_TYPE = 'I' ) AS ITEM_OPTIONS
+			, OI.NFOML_VARIATION
+			, OI.PROD_CD
+			, OI.ITEM_CD
+			, CASE WHEN DM.DELI_TYPE_CD = '06' THEN 
+					CASE WHEN NVL(O.HOPE_DELI_DY,0) > 0 THEN SUBSTR(O.HOPE_DELI_DY,0,4) || '-' || SUBSTR(O.HOPE_DELI_DY,5,2) || '-' || SUBSTR(O.HOPE_DELI_DY,7,2)  ELSE '' END
+			  ELSE DM.ENTP_DELI_PRAR_DY
+			  END AS ENTP_DELI_PRAR_DY
+			, NVL(HI.HODECO_INVOICE_NO,'') AS HODECO_INVOICE_NO
+			, HI.HODECO_ADD_INVOICE_NO
+			, SUBSTR(DM.RECP_PSN_POST_NO, 0, 3) || '-' || SUBSTR(DM.RECP_PSN_POST_NO, 4, 3) AS RECP_PSN_POST_NO
+			, DM.RECP_PSN_ADDR_1_NM ||' '|| DM.RECP_PSN_ADDR_2_NM AS ADDR
+			, DM.RECP_PSN_TEL_NO
+			, DM.RECP_PSN_CELL_NO
+			, (SELECT CELL_NO FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') AS CUST_CELL_NO 
+			, (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') AS CUST_NM 
+			, (SELECT CURS_CLRN_NUM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID LIMIT 1 AND CURS_CLRN_NUM IS NOT NULL AND DELIVERY_ID = '000') AS CURS_CLRN_NUM
+			, OI.ORDER_ITEM_SEQ
+			, OI.DELIVERY_ID
+			, OI.SALE_STS_CD
+			, OI.ORD_QTY - NVL(OI.CASH_RTN_QTY,0) TOT_QTY
+			, OI.DELI_STATUS_CD
+			, DM.DELI_MSG
+			, OI.TOT_SELL_AMT
+			, O.STR_CD
+			, DM.VEN_CD
+			, DM.SMS_SEND_YN
+			, ( CASE WHEN LENGTH(DM.SND_PRAR_DY) = 8 THEN SUBSTR(DM.SND_PRAR_DY,0,4) || '-' || SUBSTR(DM.SND_PRAR_DY,5,2) || '-' || SUBSTR(DM.SND_PRAR_DY,7,2)  ELSE '' END ) AS SND_PRAR_DY
+			, DM.DLAY_UNAVL_REASON_CD   -- 20160520 추가
+			, DM.DLAY_UNAVL_DTL_REASON  -- 20160520 추가
+			, HI.ONLN_DELI_TYPE_CD	  -- 운영추가 
+			, CASE WHEN NVL(DM.VEN_DELI_STATUS_CD, '01') = '01' AND O.REG_DATE+1 &lt; TO_DATE(TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')||'130000', 'YYYYMMDDHH24MISS' )
+						THEN 'X' ELSE 'O' END AS OX --X일 경우 빨간색 표시
+	        ,(SELECT COUNT(ORDER_ID) AS CNT
+				FROM   TOR_ORDER_ITEM
+				WHERE  ORDER_ID = DM.ORDER_ID
+				AND DELIVERY_ID = DM.DELIVERY_ID
+				AND DELIVERY_ID != '000'
+				AND ORD_ITEM_DIVN_CD = '00'
+	            <isEqual property="searchType" compareValue="5">AND PROD_CD = #searchContent# </isEqual>
+	            <isEqual property="searchType" compareValue="6">AND PROD_CD = (SELECT PROD_CD FROM TPR_PRODUCT WHERE MD_SRCMK_CD = #searchContent#) </isEqual>
+			) AS CNT
+			,  CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) &lt; TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1), 'YYYYMMDD') AND OI.DELI_STATUS_CD ='51' THEN 'X' ELSE 'O' END STATUS
+			,  CASE WHEN SUBSTR(DM.DELI_FNSH_DATE, 0, 8) &lt; TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -3), 'YYYYMMDD') AND OI.DELI_STATUS_CD ='51' THEN 'X' ELSE 'O' END STATUS2
+				,  OI.CTPD_ITEM_YN
+				,  O.EC_ORDER_ID
+			  FROM TOR_ORDER O
+				, TOR_ORDER_ITEM OI
+				, TDE_DELI_MST DM
+				, TDE_HODECO_INFO HI
+				<isEqual property="dateGbn" compareValue="1">
+				, (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID FROM TOR_ORDER WHERE ORD_DY IN (
+										SELECT MIN(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #fromDate# AND #toDate#
+										UNION ALL
+										SELECT MAX(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #fromDate# AND #toDate#)
+				  ) T1
+				</isEqual>
+				<isEqual property="dateGbn" compareValue="2">
+				, (SELECT MIN(ORDER_ID) AS MIN_ORDER_ID,  MAX(ORDER_ID) AS MAX_ORDER_ID FROM TDE_DELI_MST WHERE DELI_FNSH_DATE BETWEEN #fromDate#||'000000' AND #toDate# ||'235959') T1
+				</isEqual>
+				<isEqual property="dateGbn" compareValue="3">
+				, (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID FROM TDE_DELI_MST WHERE DELI_HOPE_DY IN ( 
+										SELECT MIN(DELI_HOPE_DY) DELI_HOPE_DY FROM TDE_DELI_MST WHERE DELI_HOPE_DY  BETWEEN #fromDate# AND #toDate#
+										UNION ALL
+										SELECT MAX(DELI_HOPE_DY) DELI_HOPE_DY FROM TDE_DELI_MST WHERE DELI_HOPE_DY  BETWEEN #fromDate# AND #toDate#)
+				  ) T1 
+				</isEqual>
+			 WHERE DM.ORDER_ID = O.ORDER_ID  --@@ EXEM. 조인조건 추가
+			   AND O.ORDER_ID = OI.ORDER_ID
+			   AND OI.ORDER_ID = DM.ORDER_ID
+			   AND OI.DELIVERY_ID = DM.DELIVERY_ID
+			   AND DM.DELI_NO = HI.DELI_NO(+)
+			   AND OI.ORDER_ID BETWEEN T1.MIN_ORDER_ID AND T1.MAX_ORDER_ID
+			   AND (DM.DELI_METHOD_DIVN_CD = '20'
+					OR OI.PROD_CD IN ('0417731390001','0417731420005','0417731470000','0417731450002','0417731460001',
+									  '0417731440003','0417731430004','0417731480009','0417731400007','0417731410006',
+									  '0417737840005','0417737850004','0417737860003','0417737880001','0417737890000',
+									  '0417737870002'))
+			   AND DM.INVOICE_STATUS_CD = '10'
+			   AND DM.DELI_DIVN_CD = '10'
+			   AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+			   AND OI.DELIVERY_ID != '000'
+			   AND OI.ORD_ITEM_DIVN_CD = '00'
+			   AND (0, OI.STR_VENDOR_ID)
+			     <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> ( 0, #vendorId[]# ) </iterate>
+		       <isNotEqual property="saleStsCd" compareValue="%">AND OI.ORD_STS_CD = #saleStsCd# </isNotEqual>
+		       <isNotEqual property="deliTypeCd" compareValue="%">AND DM.DELI_TYPE_CD IN ( #deliTypeCd# ) </isNotEqual>
+		       <isEqual property="deliTypeCd"  compareValue="%">AND DM.DELI_TYPE_CD IN ( '04', '06') </isEqual>
+		       <isEqual property="dateGbn" compareValue="1">AND O.ORD_DY BETWEEN #fromDate# AND #toDate# </isEqual>
+		       <isEqual property="dateGbn" compareValue="2">AND DM.DELI_FNSH_DATE BETWEEN #fromDate#||'000000' AND #toDate# ||'235959' </isEqual>
+		       <isEqual property="dateGbn" compareValue="3">AND DM.DELI_HOPE_DY BETWEEN #fromDate# AND #toDate# </isEqual>
+		       <isEqual property="searchType" compareValue="1">AND O.ORDER_ID = #searchContent# </isEqual>
+		       <isEqual property="searchType" compareValue="3">AND (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') = #searchContent# </isEqual>
+		       <isEqual property="searchType" compareValue="4">AND DM.RECP_PSN_NM = #searchContent# </isEqual>
+		       <isEqual property="searchType" compareValue="7">AND O.FIRST_ORDER_ID = #searchContent# </isEqual>
+		       <isEqual property="searchType" compareValue="8">AND O.EC_ORDER_ID = #searchContent# </isEqual>
+		       <isNotEqual property="deliStatusCode" compareValue="%">AND NVL(DM.VEN_DELI_STATUS_CD, '01') = #deliStatusCode# </isNotEqual>
+	   )
+		ORDER BY ORDER_ID DESC, DELIVERY_ID, VEN_CD
+    --------------------------------------------------------------------------------
+		)O, TPR_PRODUCT P
+		WHERE O.PROD_CD = P.PROD_CD
+		  <isEqual property="searchType" compareValue="5">AND P.PROD_CD = #searchContent# </isEqual>
+		  <isEqual property="searchType" compareValue="6">AND P.MD_SRCMK_CD = #searchContent# </isEqual>
+	</select>
+
+	<select id="selectPartnerPopupList" resultClass="dataMap">
+	/* PSCMDLV0006.selectPartnerPopupList */ 
+	SELECT O.PROD_CD
+	     , DECODE(O.CTPD_ITEM_YN,'Y','(추가구성품)','')||O.PROD_NM PROD_NM
+	     , O.DELIVERY_ID
+	  FROM (
+
+	SELECT *
+      FROM ( SELECT OI.PROD_NM
+	              , DM.DELI_NO
+	              , o.order_id
+	              , OI.PROD_CD
+	              , OI.CTPD_ITEM_YN
+	              , OI.DELIVERY_ID
+	           FROM TOR_ORDER O
+	              , TOR_ORDER_ITEM OI
+	              , TDE_DELI_MST DM
+	              , TDE_HODECO_INFO HI
+	          WHERE DM.ORDER_ID = o.ORDER_ID  --@@ EXEM. 조인조건 추가
+	            AND O.ORDER_ID = OI.ORDER_ID
+	            AND OI.ORDER_ID = DM.ORDER_ID
+	            AND OI.DELIVERY_ID = DM.DELIVERY_ID
+	            AND DM.DELI_NO = HI.DELI_NO(+) 
+	            AND (DM.DELI_METHOD_DIVN_CD = '20'
+                     OR OI.PROD_CD IN ('0417731390001','0417731420005','0417731470000','0417731450002',
+                        '0417731460001','0417731440003','0417731430004','0417731480009','0417731400007'
+                        ,'0417731410006','0417737840005','0417737850004','0417737860003','0417737880001'
+                        ,'0417737890000','0417737870002') )
+	            AND DM.INVOICE_STATUS_CD = '10'
+	            AND DM.DELI_DIVN_CD = '10'
+	            AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+	            AND OI.DELIVERY_ID != '000'
+	            AND OI.ORD_ITEM_DIVN_CD = '00'
+	            AND OI.STR_VENDOR_ID = #vendorId#
+	            AND OI.ORD_STS_CD = '11'
+	            AND DM.DELI_TYPE_CD  in ( '04' )
+	            AND NVL(DM.VEN_DELI_STATUS_CD, '01') IN ('01', '03')
+	       )
+	   ORDER BY  DELIVERY_ID
+
+	       ) O, TPR_PRODUCT P
+	   WHERE O.PROD_CD = P.PROD_CD
+	     AND O.DELI_NO = #deliNo#
+	     AND O.ORDER_ID = #orderId#
+	</select>
+
+<select id="selectDeliHistList"  parameterClass="pscmdlv0006VO"  resultClass="dataMap">
+	/* PSCMDLV0006.selectDeliHistList */ 
+	SELECT TOR.ORDER_ID
+			,TOR.FIRST_ORDER_ID
+			,TOR.ORD_DY
+			,TOR.ORD_TM
+			,TOR.ORD_QTY  -- 주문수량
+		    ,TOR.DELIVERY_ID
+			,TOR.PROD_CD
+			,TOR.PROD_NM
+			,TOR.PRE_ADDR_1_NM
+			,TOR.PRE_ADDR_2_NM
+			,TOR.PRE_TEL_NO
+			,TOR.PRE_CELL_NO
+			,TOR.PRE_CUST_NM
+			,TOR.CHG_ADDR_1_NM
+			,TOR.CHG_ADDR_2_NM 
+			,TOR.CHG_TEL_NO
+			,TOR.CHG_CELL_NO
+			,TOR.CHG_CUST_NM
+			,TOR.CUST_NM
+			,TOR.REG_DATE  -- 수정일
+			,TOR.REG_TM
+			,TP.PROD_STANDARD_NM -- 규격
+			,TP.MD_SRCMK_CD -- 판매코드
+			FROM
+			(SELECT /*+ LEADING(O) INDEX(O IX_OR_ORDER_11) */
+			 O.ORDER_ID
+			,O.FIRST_ORDER_ID
+			, TO_CHAR(TO_DATE(O.ORD_DY,'yyyy-MM-dd'),'yyyy-MM-dd') ORD_DY
+			, TO_CHAR(TO_DATE(O.ORD_TM,'hh24:mi:ss'),'hh24:mi:ss') ORD_TM
+			,OI.ORD_QTY
+			,OI.PROD_CD
+			,OI.PROD_NM
+		    ,OI.DELIVERY_ID
+			,(SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') AS CUST_NM
+			,TH.PRE_ADDR_1_NM
+			,TH.PRE_ADDR_2_NM
+			,TH.PRE_TEL_NO
+			,TH.PRE_CELL_NO
+			,TH.PRE_CUST_NM
+			,TH.CHG_ADDR_1_NM
+			,TH.CHG_ADDR_2_NM
+			,TH.CHG_TEL_NO
+			,TH.CHG_CELL_NO
+			,TH.CHG_CUST_NM
+			,TO_CHAR(TO_DATE(TH.REG_DATE,'YY-MM-DD'),'YYYY-MM-DD') REG_DATE
+			,TO_CHAR(TH.REG_DATE,'HH24:MI:SS') REG_TM
+			FROM TOR_ORDER O
+			, TOR_ORDER_ITEM OI
+			, TOR_SEQNC_DELYPL_CHG_HIST TH
+			WHERE O.ORDER_ID = OI.ORDER_ID
+			  AND O.ORDER_ID = TH.ORDER_ID 
+			  AND OI.DELIVERY_ID != '000' 
+			  AND OI.ORD_ITEM_DIVN_CD = '00' -- 일반상품 00
+			  AND OI.STR_CD = '981'
+			  AND (0, OI.STR_VENDOR_ID)
+			<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> ( 0, #vendorId[]# ) </iterate>
+			<isEqual prepend="AND" property="dateGbn" compareValue="01">
+    			 O.ORD_DY BETWEEN #fromDate# AND #toDate#
+			</isEqual>
+		    <isEqual prepend="AND" property="dateGbn" compareValue="02">
+        		TH.REG_DATE BETWEEN #fromDate# AND #toDate#
+			</isEqual>
+			<isEqual prepend="AND" property="searchType" compareValue="1">
+		        O.ORDER_ID = #searchContent#
+		    </isEqual>
+		    <isEqual prepend="AND" property="searchType" compareValue="3">
+		          (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') = #searchContent#
+		    </isEqual>
+		    <isEqual prepend="AND" property="searchType" compareValue="4">
+		           TH.CHG_CUST_NM = #searchContent#  --- 수령인
+		    </isEqual>
+		    <isEqual property="searchType" compareValue="7">
+		           AND O.FIRST_ORDER_ID = #searchContent#
+		    </isEqual>
+		    <isEqual property="searchType" compareValue="8">
+		           AND O.EC_ORDER_ID = #searchContent#
+		    </isEqual>
+		    ORDER BY ORDER_ID DESC ) TOR, TPR_PRODUCT TP
+    	WHERE TOR.PROD_CD = TP.PROD_CD
+    	          AND TOR.CHG_ADDR_1_NM IS NOT NULL
+        	<isEqual property="searchType" compareValue="5">
+		           AND TP.PROD_CD = #searchContent#
+		    </isEqual>
+		    <isEqual property="searchType" compareValue="6">
+		           AND TP.MD_SRCMK_CD = #searchContent#
+		    </isEqual>
+	</select>
+
+	<select id="selectPartnerFirmsListExcel"  parameterClass="pscmdlv0006VO"  resultClass="dataMap">
+	/* PSCMDLV0006.selectPartnerFirmsListExcel */ 
+	SELECT O.ORD_DY
+		, O.PROD_CD
+		, CASE WHEN O.ITEM_OPTIONS IS NOT NULL THEN O.ITEM_OPTIONS ELSE O.NFOML_VARIATION END ITEM_OPTION
+		, O.TOT_SELL_AMT
+		, (SELECT NVL(SUM(TOT_SELL_AMT),0) FROM TOR_ORDER_ITEM II WHERE II.ORDER_ID = O.ORDER_ID AND II.DELIVERY_ID = O.DELIVERY_ID AND II.ORD_ITEM_DIVN_CD != '00') DELIV_AMT
+		, O.ORD_QTY
+		, O.ORDER_ID
+		, O.DELIVERY_ID
+		, O.VEN_CD
+		, DECODE(O.CTPD_ITEM_YN,'Y','(추가구성품)','')||P.PROD_NM PROD_NM
+		, O.RECP_PSN_NM
+		, (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') AS CUST_NM
+		, (SELECT CURS_CLRN_NUM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID LIMIT 1 AND CURS_CLRN_NUM IS NOT NULL AND DELIVERY_ID = '000') AS CURS_CLRN_NUM
+		, O.EC_ORDER_ID
+	  FROM (
+		SELECT O.ORD_DY
+			, O.ORDER_ID
+			, DM.DELIVERY_ID
+			, OI.PROD_CD
+			, OI.ITEM_CD
+            , (SELECT LISTAGG(CASE WHEN PM.ATTR_VAL_ID IS NULL THEN ATTR_VAL ELSE ATTR_VAL_NM END , ' | ') WITHIN GROUP (ORDER BY CD.ATTR_ID) AS attrNm
+                 FROM TEC_ATTR_PROD_MAPPING PM
+                INNER JOIN TEC_ATTR_CD CD ON PM.ATTR_ID = CD.ATTR_ID
+                 LEFT OUTER JOIN TEC_ATTR_VAL VAL ON PM.ATTR_ID = VAL.ATTR_ID AND PM.ATTR_VAL_ID = VAL.ATTR_VAL_ID
+                WHERE PROD_CD = OI.PROD_CD
+                  AND ITEM_CD = OI.ITEM_CD
+                  AND CD.ATTR_PI_TYPE = 'I' ) AS ITEM_OPTIONS
+			, OI.NFOML_VARIATION
+			, OI.TOT_SELL_AMT
+			, OI.ORD_QTY
+			, DM.VEN_CD
+			, DM.RECP_PSN_NM
+			, OI.CTPD_ITEM_YN
+			, O.EC_ORDER_ID
+		 FROM TOR_ORDER O
+			, TOR_ORDER_ITEM OI
+			, TDE_DELI_MST DM
+			<isEqual property="dateGbn" compareValue="1">
+			, (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID
+                 FROM TOR_ORDER
+                WHERE ORD_DY IN ( SELECT MIN(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #fromDate# AND #toDate#
+								  UNION ALL
+								  SELECT MAX(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #fromDate# AND #toDate# )
+			  ) T1
+			</isEqual>
+			<isEqual property="dateGbn" compareValue="2">
+			, (SELECT MIN(ORDER_ID) AS MIN_ORDER_ID,  MAX(ORDER_ID) AS MAX_ORDER_ID FROM TDE_DELI_MST WHERE DELI_FNSH_DATE BETWEEN #fromDate#||'000000' AND #toDate# ||'235959') T1
+			</isEqual>
+			<isEqual property="dateGbn" compareValue="3">
+			, (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID
+                 FROM TDE_DELI_MST
+                WHERE DELI_HOPE_DY IN ( SELECT MIN(DELI_HOPE_DY) DELI_HOPE_DY FROM TDE_DELI_MST WHERE DELI_HOPE_DY  BETWEEN #fromDate# AND #toDate#
+									    UNION ALL
+									    SELECT MAX(DELI_HOPE_DY) DELI_HOPE_DY FROM TDE_DELI_MST WHERE DELI_HOPE_DY  BETWEEN #fromDate# AND #toDate# )
+			  ) T1 
+			</isEqual>
+		 WHERE O.ORDER_ID = OI.ORDER_ID
+		   AND OI.ORDER_ID = DM.ORDER_ID
+		   AND OI.DELIVERY_ID = DM.DELIVERY_ID
+		   AND DM.DELI_METHOD_DIVN_CD = '20'
+		   AND DM.INVOICE_STATUS_CD = '10'
+		   AND DM.DELI_DIVN_CD = '10'
+		   AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+		   AND OI.DELIVERY_ID != '000'
+		   AND OI.ORD_ITEM_DIVN_CD = '00' 
+		   AND (0, OI.STR_VENDOR_ID)
+		     <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0, #vendorId[]# ) </iterate>
+		   AND OI.ORD_STS_CD = '11'
+		   AND OI.ORDER_ID BETWEEN T1.MIN_ORDER_ID AND T1.MAX_ORDER_ID
+		   AND NVL(DM.VEN_DELI_STATUS_CD, '01') in ('01', '03', '07')
+	       <isNotEqual property="deliTypeCd" compareValue="%">AND DM.DELI_TYPE_CD in ( #deliTypeCd# ) </isNotEqual>
+	       <isEqual property="dateGbn" compareValue="1">AND O.ORD_DY BETWEEN #fromDate# AND #toDate# </isEqual>
+	       <isEqual property="dateGbn" compareValue="2">AND DM.DELI_FNSH_DATE  BETWEEN #fromDate# AND #toDate# </isEqual> 
+	       <isEqual property="dateGbn" compareValue="3">AND DM.DELI_HOPE_DY   BETWEEN #fromDate# AND #toDate# </isEqual>
+	       <isEqual property="searchType" compareValue="1">AND O.ORDER_ID = #searchContent# </isEqual>
+	       <isEqual property="searchType" compareValue="3">AND (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') = #searchContent# </isEqual>
+	       <isEqual property="searchType" compareValue="4">AND DM.RECP_PSN_NM = #searchContent# </isEqual>
+	       <isEqual property="searchType" compareValue="7">AND O.FIRST_ORDER_ID = #searchContent# </isEqual>
+	       <isEqual property="searchType" compareValue="8">AND O.EC_ORDER_ID = #searchContent# </isEqual>
+	 ORDER  BY OI.ORDER_ID DESC, OI.DELIVERY_ID, OI.STR_VENDOR_ID
+    )O, TPR_PRODUCT P
+	WHERE O.PROD_CD = P.PROD_CD
+	  <isEqual property="searchType" compareValue="5">AND P.PROD_CD = #searchContent# </isEqual>
+	  <isEqual property="searchType" compareValue="6">AND P.MD_SRCMK_CD = #searchContent# </isEqual>
+	</select>
+
+	<update id="updatePartnerFirmsOrderItem" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.updatePartnerFirmsOrderItem */
+	UPDATE TOR_ORDER_ITEM SET
+	<isNotEqual property="venDeliStatusCd" compareValue="05">
+		VEN_DELI_STATUS_CD = #venDeliStatusCd#	
+		<isEqual property="venDeliStatusCd" compareValue="09">
+			, DELI_STATUS_CD = '45'
+		</isEqual>	
+		<isEqual property="venDeliStatusCd" compareValue="03">
+			, DELI_STATUS_CD = '31'
+		</isEqual>
+		<isEqual property="venDeliStatusCd" compareValue="02">
+			, DELI_STATUS_CD = '30'
+		</isEqual>
+		<isEqual property="venDeliStatusCd" compareValue="07">
+			, DELI_STATUS_CD = '30'
+		</isEqual>
+	</isNotEqual>
+	<isEqual property="venDeliStatusCd" compareValue="05">
+		VEN_DELI_STATUS_CD = '09'
+		, DELI_STATUS_CD = '45'
+	</isEqual>
+	    , MOD_ID = 'S_' || #modId#
+	    , MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE ORDER_ID = #orderId#
+	  AND DELIVERY_ID = #deliveryId#
+	</update>
+
+	<update id="updatePartnerFirmsDeliMst" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.updatePartnerFirmsDeliItem */
+	UPDATE TDE_DELI_MST SET
+		<isEqual property="venDeliStatusCd" compareValue="05">
+			VEN_DELI_STATUS_CD = '09'
+			, DELI_STATUS_CD = '45'
+		</isEqual>
+		<isNotEqual property="venDeliStatusCd" compareValue="05">
+			VEN_DELI_STATUS_CD = #venDeliStatusCd#
+			<isEqual property="venDeliStatusCd" compareValue="09">
+				, DELI_STATUS_CD = '45'
+			</isEqual>
+			<isEqual property="venDeliStatusCd" compareValue="03">
+				, DELI_STATUS_CD = '31'
+			</isEqual>
+			<isEqual property="venDeliStatusCd" compareValue="02">
+				, DELI_STATUS_CD = '30'
+			</isEqual>
+			<isEqual property="venDeliStatusCd" compareValue="07">
+				, DELI_STATUS_CD = '30'
+			</isEqual>
+		</isNotEqual>
+		, SND_PRAR_DY = #sndPrarDy# 
+		, DLAY_UNAVL_REASON_CD = #dlayUnavlReasonCd# 
+		, DLAY_UNAVL_DTL_REASON = #dlayUnavlDtlReason#
+	    , MOD_ID = 'S_' || #modId#
+	    , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE ORDER_ID = #orderId#
+	   AND DELIVERY_ID = #deliveryId#
+	   AND DELI_DIVN_CD = '10'
+	</update>
+
+    <select id="selectPartnerFirmsHodecoInfoCnt" resultClass="java.lang.Integer" parameterClass="pscmdlv0006VO">
+    /* PSCMDLV0006VO.selectPartnerFirmsHodecoInfoCnt */
+    SELECT COUNT(*) CNT FROM TDE_HODECO_INFO WHERE DELI_NO = #deliNo# AND INVOICE_SEQ = #invoiceSeq#
+    </select>
+
+	<update id="updatePartnerFirmsHodecoInfo" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.updatePartnerFirmsHodecoInfo */
+	UPDATE TDE_HODECO_INFO SET
+	    HODECO_INVOICE_NO = #hodecoInvoiceNo#
+	  , HODECO_ADD_INVOICE_NO = #hodecoAddInvoiceNo#
+		<isEqual property="venDeliStatusCd" compareValue="05">
+			, DELI_STATUS_CD = '45'
+			, INVOICE_ID = #modId#
+			, INVOICE_DATE = CURRENT_TIMESTAMP(0)
+			, INVOICE_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		</isEqual>
+		<isNotEqual property="venDeliStatusCd" compareValue="05">
+			<isEqual property="venDeliStatusCd" compareValue="09">
+				, DELI_STATUS_CD = '45'
+				, INVOICE_ID = #modId#
+				, INVOICE_DATE = CURRENT_TIMESTAMP(0)
+				, INVOICE_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+			</isEqual>
+			<isNotEqual property="venDeliStatusCd" compareValue="09">
+				<isEqual property="venDeliStatusCd" compareValue="03">
+					, DELI_STATUS_CD = '31'
+				</isEqual>
+				<isNotEqual property="venDeliStatusCd" compareValue="03">
+					, DELI_STATUS_CD = '30'
+				</isNotEqual>
+			</isNotEqual>
+		</isNotEqual>
+	    , HODECO_CD = #hodecoCd#
+	    , ONLN_DELI_TYPE_CD = #onlnDeliTypeCd#
+	    , ERROR_MSG = NULL
+	    , MOD_ID = 'S_' || #modId#
+	    , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE DELI_NO = #deliNo#
+	   AND INVOICE_SEQ = #invoiceSeq#
+	</update>
+
+	<insert id="insertPartnerFirmsHodecoInfo" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.insertPartnerFirmsHodecoInfo */
+	INSERT INTO TDE_HODECO_INFO
+	( DELI_NO
+	, INVOICE_SEQ
+	<isNotEqual property="hodecoInvoiceNo" compareValue="X">
+	, HODECO_INVOICE_NO
+	</isNotEqual>
+	, DELI_STATUS_CD
+	<isNotEqual property="hodecoCd" compareValue="%">
+	, HODECO_CD
+	</isNotEqual>
+	, HODECO_ADD_INVOICE_NO
+	, HODECO_SEND_YN
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE
+	, INVOICE_ID
+	, INVOICE_DATE
+	, INVOICE_DY
+	, ONLN_DELI_TYPE_CD )
+	VALUES 
+	( #deliNo#
+	, #invoiceSeq#
+	<isNotEqual property="hodecoInvoiceNo" compareValue="X">
+	, REPLACE(NVL(#hodecoInvoiceNo#,'임시SCM'), '-', '')
+	</isNotEqual>
+	<isEqual property="venDeliStatusCd" compareValue="05">
+	, '45'
+	</isEqual>
+	<isNotEqual property="venDeliStatusCd" compareValue="05">
+		<isEqual property="venDeliStatusCd" compareValue="09">
+	, '45'
+		</isEqual>
+		<isNotEqual property="venDeliStatusCd" compareValue="09">
+			<isEqual property="venDeliStatusCd" compareValue="03">
+	, '31'
+			</isEqual>
+			<isNotEqual property="venDeliStatusCd" compareValue="03">
+	, #deliStatusCd#
+			</isNotEqual>
+		</isNotEqual>
+	</isNotEqual>
+	<isNotEqual property="hodecoCd" compareValue="%">
+	, #hodecoCd#
+	</isNotEqual>
+	, #hodecoAddInvoiceNo#
+	, 'N'
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, 'S_' || #modId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+	, #onlnDeliTypeCd# )
+	</insert>
+
+	<select id="selectSendSMSInfo"  parameterClass="pscmdlv0006VO"  resultClass="dataMap">
+	/* PSCMDLV0006.selectSendSMSInfo */
+	SELECT TEL_NO
+	  FROM TAD_ADMIN 
+	 WHERE ADMIN_ID = #adminId#	
+<!--          WHERE ADMIN_ID = '000000004348' -->
+	</select>
+
+	<select id="selectPartnerFirmsSendSMSList"  parameterClass="pscmdlv0006VO"  resultClass="dataMap">
+	/* PSCMDLV0006.selectPartnerFirmsSendSMSList */ 
+	SELECT O.DELI_NO,	
+		   O.INVOICE_SEQ,
+		   O.ORDER_ID,
+		   O.ORD_DY,
+		   O.DELIVERY_DY,
+		   (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE011' AND MINOR_CD = O.HODECO_CD) HODECO_NM,
+		   O.TO_PSN_NM,
+		   O.HODECO_INVOICE_NO,
+		   O.ADDR,
+		   O.RECP_PSN_CELL_NO,
+		   O.DELIVERY_ID,
+		   O.HODECO_CD,
+		   O.VEN_CD,	
+		   O.SMS_SEND_YN,
+		   O.ORD_RTN_DIVN_CD,
+		   P.PROD_NM
+	FROM   (
+			SELECT 
+				   O.ORDER_ID,
+				   O.ORD_RTN_DIVN_CD,
+				   TO_CHAR(O.REG_DATE, 'MM')||'월'||TO_CHAR(O.REG_DATE, 'DD')||'일' AS ORD_DY,
+				   OI.DELIVERY_ID,
+				   OI.PROD_CD,
+				   HI.DELI_NO,
+				   HI.INVOICE_SEQ,
+				   HI.HODECO_CD,	
+				   HI.HODECO_INVOICE_NO,
+				   DM.RECP_PSN_NM AS TO_PSN_NM,
+				   DM.RECP_PSN_ADDR_1_NM ||' '|| DM.RECP_PSN_ADDR_2_NM AS ADDR, 
+				   DM.RECP_PSN_CELL_NO,
+				   TO_CHAR(DM.MOD_DATE, 'MM')||'월'||TO_CHAR(DM.MOD_DATE, 'DD')||'일' AS DELIVERY_DY,
+				   DM.VEN_CD,
+				   DM.SMS_SEND_YN
+			FROM   TOR_ORDER O
+				 , TDE_DELI_MST DM
+				 , TOR_ORDER_ITEM OI
+				 , TDE_HODECO_INFO HI
+				 <isEqual property="dateGbn" compareValue="1">
+				, (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID FROM TOR_ORDER WHERE ORD_DY IN (
+										SELECT MIN(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #fromDate# AND #toDate#
+										UNION ALL
+										SELECT MAX(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #fromDate# AND #toDate#)
+				  ) T1
+				</isEqual>
+				<isEqual property="dateGbn" compareValue="2">
+				, (SELECT MIN(ORDER_ID) AS MIN_ORDER_ID,  MAX(ORDER_ID) AS MAX_ORDER_ID FROM TDE_DELI_MST WHERE DELI_FNSH_DATE BETWEEN #fromDate#||'000000' AND #toDate# ||'235959') T1
+				</isEqual>
+				<isEqual property="dateGbn" compareValue="3">
+				, (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID FROM TDE_DELI_MST WHERE DELI_HOPE_DY IN ( 
+										SELECT MIN(DELI_HOPE_DY) DELI_HOPE_DY FROM TDE_DELI_MST WHERE DELI_HOPE_DY  BETWEEN #fromDate# AND #toDate#
+										UNION ALL
+										SELECT MAX(DELI_HOPE_DY) DELI_HOPE_DY FROM TDE_DELI_MST WHERE DELI_HOPE_DY  BETWEEN #fromDate# AND #toDate#)
+				  ) T1 
+				</isEqual>
+			WHERE  O.ORDER_ID		 = DM.ORDER_ID
+			AND    DM.ORDER_ID		= OI.ORDER_ID
+			AND    DM.DELIVERY_ID	 = OI.DELIVERY_ID
+			AND    DM.DELI_NO = HI.DELI_NO(+)
+			AND    OI.ORDER_ID BETWEEN T1.MIN_ORDER_ID AND T1.MAX_ORDER_ID
+			AND    DM.INVOICE_STATUS_CD = '10'
+			AND    DM.DELI_DIVN_CD = '10'
+			AND    DM.DELI_DIVN_DTL_CD = '11'
+			AND    OI.ORD_ITEM_DIVN_CD = '00'
+			AND    DM.DELIVERY_ID    != '000'
+			AND     (0, OI.STR_VENDOR_ID)
+			<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+				(0, #vendorId[]# )
+			</iterate>
+			<!--  AND    O.STR_CD = #strCd# --> 
+			<isNotEqual prepend="AND" property="deliTypeCd" compareValue="%">
+				 DM.DELI_TYPE_CD = #deliTypeCd#
+			</isNotEqual>
+			<isNotEqual prepend="AND" property="saleStsCd" compareValue="%">
+				 OI.ORD_STS_CD = #saleStsCd#
+			</isNotEqual>
+			<isEqual prepend="AND" property="dateGbn" compareValue="1">
+				O.ORD_DY BETWEEN #fromDate# AND #toDate# 
+			</isEqual>
+			<isEqual prepend="AND" property="dateGbn" compareValue="2">
+				DM.DELI_FNSH_DATE BETWEEN #fromDate#||'000000' AND #toDate# ||'235959' 
+			</isEqual>
+			<isEqual prepend="AND" property="dateGbn" compareValue="3">
+				DM.DELI_HOPE_DY BETWEEN #fromDate# AND #toDate# 
+			</isEqual>
+			<isEqual prepend="AND" property="searchType" compareValue="1">
+				O.ORDER_ID = #searchContent#
+			</isEqual>
+			<isEqual prepend="AND" property="searchType" compareValue="3">
+				(SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') = #searchContent#
+			</isEqual>
+			<isEqual prepend="AND" property="searchType" compareValue="4">
+				DM.RECP_PSN_NM = #searchContent#
+			</isEqual>
+			<isEqual property="searchType" compareValue="7">
+			   AND O.FIRST_ORDER_ID = #searchContent#
+			</isEqual>
+			<isEqual property="searchType" compareValue="8">
+			   AND O.EC_ORDER_ID = #searchContent#
+			</isEqual>
+			<isNotEqual prepend="AND" property="deliStatusCode" compareValue="%">
+				NVL(DM.VEN_DELI_STATUS_CD, '01') = #deliStatusCode#
+			</isNotEqual>
+			   ORDER  BY OI.ORDER_ID DESC, OI.DELIVERY_ID, OI.STR_VENDOR_ID
+					   ) O,
+					   TPR_PRODUCT P
+			  WHERE  O.PROD_CD = P.PROD_CD
+			<isEqual property="searchType" compareValue="5">
+				 AND P.PROD_CD = #searchContent#
+			</isEqual>
+			<isEqual property="searchType" compareValue="6">
+			 AND P.MD_SRCMK_CD = #searchContent#
+			</isEqual>
+	</select>
+
+	<insert id="insertSendSMS" parameterClass="LtsmsVO">
+	/* PSCMDLV0006.insertSendSMS */
+	<![CDATA[
+	INSERT INTO SMS_WAIT
+	(  SERIALNO
+	 , DESTCALLNO
+	 , CALLBACKNO
+	 , TYPE
+	 , DATA
+	 , JEOBSU_TIME
+	 , YEYAK_TIME
+	 , START_TIME
+	 , END_TIME
+	 , RESULT
+	 , RESERVED
+	 , SUBJECT
+	 , USER_NO
+	 , COMPANY_NO
+	 , JEOBSU_NO
+	 , JEOBSU_SUB_NO
+	 , USER_NM )
+	VALUES 
+	(  #SERIALNO#
+	 , #DESTCALLNO#
+	 , #CALLBACKNO#
+	 , #TYPE#
+	 , #DATA#
+	 , #JEOBSU_TIME#
+	 , #YEYAK_TIME#
+	 , #START_TIME#
+	 , #END_TIME#
+	 , #RESULT#
+	 , #RESERVED#
+	 , #SUBJECT#
+	 , #USER_NO#
+	 , #COMPANY_NO#
+	 , #JEOBSU_NO#
+	 , #JEOBSU_SUB_NO#
+	 , #USER_NM# )
+	]]>
+	</insert>
+
+	<parameterMap id="procedureParametersLMS" class="dataMap">
+	    <parameter property="V_TITLE" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	    <parameter property="V_MSG" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	    <parameter property="V_FROM_NUM" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	    <parameter property="V_TO_NUM" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	    <parameter property="V_CH_NM" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+    </parameterMap>
+
+    <procedure id="insertSendLMS" parameterMap="procedureParametersLMS">
+    { CALL  PKG_ETC_BATCH.SEND_LMS_CH(?,?,?,?,?) }
+    </procedure>
+
+	<update id="updateSmsSendYn" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.updateSmsSendYn */
+	UPDATE TDE_DELI_MST SET
+	    SMS_SEND_YN = #smsSendYn#
+	    , MOD_ID = 'S_' || #modId#
+	    , MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE DELI_NO = #deliNo#
+	  AND ORDER_ID = #orderId#
+	  AND DELIVERY_ID = #deliveryId#
+	</update>
+
+	<update id="updateDeliveryStatusOk" parameterClass="pscmdlv0006VO">
+    /* PSCMDLV0006.updateDeliveryStatusOk */
+    UPDATE TOR_ORDER_ITEM SET
+        VEN_DELI_STATUS_CD = #venDeliStatusCd#
+	<isEqual property="venDeliStatusCd" compareValue="09">
+		, DELI_STATUS_CD = #deliStatusCd#
+	</isEqual>
+        , SALE_CFM_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+        , SALE_CFM_TM = TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+        , SALE_STS_CD = '01'
+        , MOD_ID = 'S_' || #modId#
+        , MOD_DATE = CURRENT_TIMESTAMP(0)
+    WHERE ORDER_ID = #orderId#
+      AND DELIVERY_ID = #deliveryId#
+	</update>
+
+	<select id="selectSaleConfirmCount"  resultClass="java.lang.Integer" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.selectSaleConfirmCount */
+	SELECT COUNT(o.order_id) AS TOTAL_NUM
+	  FROM TOR_ORDER O, TDE_ORDER_DELIVERY D 
+	 WHERE O.ORDER_ID = D.ORDER_ID
+	   AND D.DELIVERY_ID != '000'
+	   AND O.ORDER_ID = #orderId#
+	</select>
+
+	<select id="selectSaleConfirmCountPartOk"  resultClass="java.lang.Integer" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.selectSaleConfirmCountPartOk */
+    SELECT COUNT(DELIVERY_ID) TOTAL_NUM 
+    FROM ( SELECT D.DELIVERY_ID
+                , MAX(I.DELI_STATUS_CD ) DELI_STATUS_CD 
+             FROM TOR_ORDER O, TDE_ORDER_DELIVERY D, TOR_ORDER_ITEM I
+            WHERE O.ORDER_ID = D.ORDER_ID  
+              AND D.DELIVERY_ID !='000' 
+              AND I.ORDER_ID = O.ORDER_ID 
+              AND I.DELIVERY_ID = D.DELIVERY_ID 
+              AND O.ORDER_ID = #orderId#  
+            GROUP BY D.DELIVERY_ID
+          )   
+    WHERE DELI_STATUS_CD ='51'
+	</select>
+
+	<select id="selectSaleConfirmCountPartFalse"  resultClass="java.lang.Integer" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.selectSaleConfirmCountPartFalse */
+    SELECT COUNT(DELIVERY_ID) TOTAL_NUM 
+      FROM ( SELECT D.DELIVERY_ID
+                  , MAX(I.DELI_STATUS_CD) DELI_STATUS_CD 
+               FROM TOR_ORDER O, TDE_ORDER_DELIVERY D, TOR_ORDER_ITEM I
+              WHERE O.ORDER_ID = D.ORDER_ID  
+                AND D.DELIVERY_ID !='000' 
+                AND I.ORDER_ID = O.ORDER_ID 
+                AND I.DELIVERY_ID = D.DELIVERY_ID 
+                AND O.ORDER_ID = #orderId#  
+              GROUP BY D.DELIVERY_ID
+           )
+     WHERE DELI_STATUS_CD IN ('52' ,'33')
+	</select>
+
+	<select id="selectOrderInfo"   parameterClass="pscmdlv0006VO"  resultClass="dataMap">
+	/* PSCMDLV0006.selectOrderInfo */
+    SELECT STR_CD, SALE_STS_CD, UP_ORDER_ID 
+      FROM TOR_ORDER 
+     WHERE ORDER_ID = #orderId#
+	</select>
+
+	<select id="selectConfirmSiteCd"   parameterClass="pscmdlv0006VO"  resultClass="java.lang.String">
+	/* PSCMDLV0006.selectConfirmSiteCd */
+    SELECT SITE_CD
+    FROM TOR_ORDER
+    WHERE ORDER_ID = #orderId#
+	</select>
+
+	<insert id="insertTsaBatchLog2" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.insertTsaBatchLog2 */
+	<![CDATA[
+	INSERT INTO TSA_BATCH_LOG_2
+	(  SEQ
+	 , ORDER_ID
+	 , ORGIN_ORDER_ID
+	 , STR_CD
+	 , STATUS_FG
+	 , ERR_FG
+	 , ERR_MSG
+	 , REG_DATE
+	 , MOD_DATE )
+	VALUES 
+	(  SQ_TR_SEQ_SEQ.NEXTVAL
+	 , #orderId#
+	 , #upOrderId#
+	 , #strCd#
+	 , #statusFg#
+	 , NULL
+	 , NULL
+	 , CURRENT_TIMESTAMP(0)
+	 , CURRENT_TIMESTAMP(0) )
+	]]>
+	</insert>
+
+	<update id="updateOrderStatus"   parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.updateOrderStatus */
+     UPDATE TOR_ORDER
+        SET LST_SALE_CFM_DATE = CURRENT_TIMESTAMP(0)
+          , SALE_STS_CD = '01'
+          , MOD_ID = 'S_' || #modId#
+          , MOD_DATE = CURRENT_TIMESTAMP(0)
+      WHERE ORDER_ID = #orderId#
+	</update>
+
+	<select id="insertDoShippingGeneralLog"   parameterClass="pscmdlv0006VO"  resultClass="java.lang.String">
+	/* PSCMDLV0006.insertDoShippingGeneralLog */
+	INSERT INTO TOR_SITE_RQ_LOG /* ONBOARD.INSERTDOSHIPPINGGENERALLOG */
+	    (SITE_RQ_SEQ, SITE_ID, ORDER_ID, ORGIN_ORDER_ID, FIRST_ORDER_ID, ORDER_NO, PAY_NO, ITEM_ID, ORDER_ITEM_SEQ, STR_CD,RETURN_TYPE,
+	    SEND_DATE, WAYBILL_NO, DELIV_TYPE, TRAN_COM_CD, TRAN_NAME, ETC_DELIV_TYPE, PROD_CD, PROD_NM, CUST_NAME,
+	    REG_DATE, REG_ID, MOD_DATE, MOD_ID)
+	SELECT 
+	      LPAD (SQ_SITE_SEQ_SEQ.NEXTVAL, 12, '0') SITE_RQ_SEQ, 
+	      O.SITE_CD, O.ORDER_ID, O.UP_ORDER_ID, O.FIRST_ORDER_ID, I.AUCT_NO ORDER_NO, O.AU_SETL_NO PAY_NO, I.AU_BID_NO ITEM_ID,
+	      I.ORDER_ITEM_SEQ, O.STR_CD, '11' RETURN_TYPE, TO_CHAR(NVL(MST.LODG_FNSH_DATE, CURRENT_TIMESTAMP(0)), 'YYYYMMDD') SEND_DATE, HO.HODECO_INVOICE_NO,
+	      DECODE(HO.HODECO_CD, '','03','01','03','04','01', '15','01',DECODE(MST.DELI_TYPE_CD, '06','01','03')) DELIV_TYPE,  HO.HODECO_CD,
+	      (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE011' AND MINOR_CD = HO.HODECO_CD) TRAN_NAME,
+	      '01' ETC_DELIV_TYPE, I.PROD_CD, I.PROD_NM, D.CUST_NM,
+	       CURRENT_TIMESTAMP(0) REG_DATE, '000000000003' REG_ID, CURRENT_TIMESTAMP(0) UPD_DATE, '000000000003' UPD_ID
+	  FROM TOR_ORDER O, TOR_ORDER_ITEM I, TDE_ORDER_DELIVERY D, TDE_DELI_MST MST, TDE_HODECO_INFO HO
+	 WHERE O.ORDER_ID = #orderId#
+	   AND O.SITE_CD  != '01'
+	   AND O.ORDER_ID = I.ORDER_ID
+	   AND O.ORDER_ID = MST.ORDER_ID
+	   AND MST.DELI_NO = HO.DELI_NO
+	   AND MST.DELI_NO = #deliNo#
+	   AND I.ORD_ITEM_DIVN_CD = '00'
+	   AND O.ORDER_ID = D.ORDER_ID
+	   AND D.DELIVERY_ID=#deliveryId#
+	</select>
+
+	<!-- 배송리스트에서 발송불가(결품), 배송지연(일시품절)일 경우 고객문의에 자동 저장 -->
+	<insert id="insertTorCounsel" parameterClass="pscmdlv0006VO">
+	/* PSCMDLV0006.insertTorCounsel*/
+    INSERT INTO TOR_COUNSEL
+    (  COUNSEL_SEQ
+      ,UP_COUNSEL_SEQ
+      ,LIST_SEQ
+      ,TITLE
+      ,CONTENT
+      ,SCRP_KIND_CD
+      ,WRTR_DIVN_CD
+      ,DEL_YN
+      ,ORDER_ID
+      ,CLM_LGRP_CD
+      ,CLM_MGRP_CD
+      ,BOARD_PRGS_STS_CD
+      ,SMS_DSP_YN
+      ,ANS_SMS_RECV_YN
+      ,WRT_DY
+      ,EMAIL_SND_YN
+      ,ANS_EMAIL_RECV_YN
+      ,ACCEPT_LOCA_CD
+      ,ACCEPT_ID
+      ,REG_DATE
+      ,REG_ID
+      ,MOD_DATE
+      ,MOD_ID
+      ,MEMBER_NO
+      ,MEMBER_NM
+      ,TEL_NO
+      ,CELL_NO
+      ,EMAIL
+      ,QSTN_OBJECT_CD_STR_CD )
+    VALUES
+       ( #counselSeq#
+        ,#counselSeq#
+        ,#counselSeq# || '~'
+        ,#title#
+        ,#content#
+        ,'Q'
+        ,'01'
+        ,'N'
+        ,#orderId#
+        ,#clmLgrpCd#
+        ,#clmMgrpCd#
+        ,'1'
+        ,'N'
+        ,'N'
+        ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+        ,'N'
+        ,'N'
+        ,'7'
+        ,'000000007402'
+        ,CURRENT_TIMESTAMP(0)
+        ,#regId#
+        ,CURRENT_TIMESTAMP(0)
+        ,'S_' || #modId#
+        ,(SELECT MEMBER_NO FROM TOR_ORDER where ORDER_ID=#orderId#)
+        ,(SELECT CUST_NM FROM TDE_ORDER_DELIVERY where ORDER_ID=#orderId# AND DELIVERY_ID='000')
+        ,(SELECT TEL_NO FROM TDE_ORDER_DELIVERY where ORDER_ID=#orderId# AND DELIVERY_ID='000')
+        ,(SELECT CELL_NO FROM TDE_ORDER_DELIVERY where ORDER_ID=#orderId# AND DELIVERY_ID='000')
+        ,(SELECT EMAIL FROM TDE_ORDER_DELIVERY where ORDER_ID=#orderId# AND DELIVERY_ID='000')
+        ,'981' )
+	</insert>
+
+    <!--  Counsel SEQ VALUE -->
+    <select id="selectCounselSeq" resultClass="String">
+    SELECT LPAD(SQ_COUNSEL_SEQ_SEQ.NEXTVAL,12,0) from dual
+    </select>
+
+    <!-- counsel content value -->
+    <select id="selectCounselContent"  resultClass="dataMap">
+    SELECT CONTENT,TITLE FROM TOR_COUNSEL WHERE COUNSEL_SEQ=#counselSeq#
+    </select>
+
+    <select id="selectHodecoNoChk" resultClass="java.lang.Integer">
+    SELECT COUNT(*) CNT FROM TDE_HODECO_INFO TH, TDE_DELI_MST TD
+    WHERE TH.HODECO_CD = #hodecoCd#
+    AND TD.VEN_DELI_STATUS_CD in ('05', '09')
+    <isNotEmpty property="addInvoiceNo" prepend="AND">
+    (TH.HODECO_INVOICE_NO in (#invoiceNo#, #addInvoiceNo#) OR TH.HODECO_ADD_INVOICE_NO in (#invoiceNo#, #addInvoiceNo#))
+    </isNotEmpty>
+    <isEmpty property="addInvoiceNo" prepend="AND">
+    (TH.HODECO_INVOICE_NO = #invoiceNo# OR TH.HODECO_ADD_INVOICE_NO = #invoiceNo#)
+    </isEmpty>
+    AND TH.DELI_NO=TD.DELI_NO
+    </select>
+
+	<select id="selectEcOrderYn" resultClass="String">
+	/* PSCMDLV0006.selectEcOrderYn */
+	SELECT DECODE(EC_ORDER_ID, NULL, 'N', 'Y') AS EC_ORDER_YN
+	FROM TDE_DELI_MST A, TOR_ORDER B
+	WHERE A.FIRST_ORDER_ID = B.ORDER_ID
+	AND A.DELI_NO = #deliNo#
+	</select>
+
+	<select id="selectDeliveryReverseCheck" resultClass="java.lang.String">
+	SELECT DELI_STATUS_CD FROM TDE_DELI_MST
+	WHERE ORDER_ID = #orderId#
+	  AND DELIVERY_ID = #deliveryId#
+	  AND DELI_DIVN_CD = '10'
+	</select>
+
+
+</sqlMap>

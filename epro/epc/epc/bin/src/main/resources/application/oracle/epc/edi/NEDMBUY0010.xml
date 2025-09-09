@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMBUY0010">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="nEDMBUY0010VO" 		type="com.lottemart.epc.edi.buy.model.NEDMBUY0010VO" />
+	
+	 <!-- 리스트 MAP -->
+	 <resultMap id="nEDMBUY0010ListMap" 	class="nEDMBUY0010VO">
+	 	<result column="BUY_DY"  			property="buyDy" 		/>		<!-- 매입일 -->
+	 	<result column="TOT_QTY"  			property="totQty" 		/>		<!-- 발주수량 -->
+	 	<result column="TOT_PRC"  			property="totPrc" 		/>		<!-- 원가 -->
+	 	<result column="BUY_BOX_QTY"  		property="buyBoxQty" 	/>		<!-- 매입박스수량 -->
+	 	<result column="BUY_QTY"  			property="buyQty" 		/>		<!-- 매입수량 -->
+	 	<result column="BUY_BUY_PRC"  		property="buyBuyPrc" 	/>		<!-- 매입원가 -->
+	 	<result column="ANS_QTY"  			property="ansQty" 		/>		<!-- 납품가능수량 -->
+	 	<result column="ANS_PRC"  			property="ansPrc" 		/>		<!-- 납품가능금액 -->
+	 </resultMap>
+	
+	<!-- 일자별 -->
+	<select id="TSC_BUY-SELECT01" parameterClass="nEDMBUY0010VO" resultMap="nEDMBUY0010ListMap">
+		/* NEDMBUY0010.TSC_BUY-SELECT01 */
+		SELECT	TO_CHAR(TO_DATE(BUY_DY,'yyyymmdd'),'YYYY-MM-DD') BUY_DY
+			,	NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+			,	NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+			,	NVL(SUM(BUY_BOX_QTY), 0) AS BUY_BOX_QTY
+			,	NVL(SUM(BUY_QTY), 0) AS BUY_QTY
+			,	NVL(SUM(BUY_BUY_AMT), 0) AS BUY_BUY_PRC
+			,	NVL(SUM(ANS_QTY), 0) AS ANS_QTY
+			,	NVL(SUM(ANS_PRC), 0) AS ANS_PRC
+		FROM
+		(
+			SELECT	          
+                    A.BUY_DY
+				,	A.BUY_RTN_FG
+				,	A.BUY_QTY
+				,	(B.ORD_QTY) AS TOT_QTY
+				,	(B.BUY_PRC) AS TOT_PRC
+				,	A.BUY_BOX_QTY
+				,	A.BUY_BUY_AMT
+				,	(B.SPLY_ABLE_QTY) AS ANS_QTY
+				,	(B.SPLY_ABLE_PRC) AS ANS_PRC
+			FROM
+			(
+
+							SELECT 
+                           				/*+ ordered use_nl(a b) index(a IX_PC_STR_BUY_03)*/
+                                   	A.ORD_SLIP_NO			AS ORD_SLIP_NO
+								,  	B.PROD_CD 				AS PROD_CD
+								, 	A.BUY_DY 				AS BUY_DY
+								,  	A.BUY_RTN_FG 			AS BUY_RTN_FG
+								,  	B.BUY_QTY 				AS BUY_QTY
+								, 	B.BUY_BOX_QTY 			AS BUY_BOX_QTY
+								, 	B.BUY_BUY_AMT 			AS BUY_BUY_AMT
+							FROM    TPC_STR_BUY A 
+							INNER JOIN TPC_STR_BUY_PROD B
+							ON A.BUY_SLIP_NO = B.BUY_SLIP_NO
+		        		    	AND A.YYYY = B.YYYY
+		        		    
+							where  	A.BUY_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+								<isEmpty property="srchEntpCode">
+									<isNotEmpty  property="venCds"  prepend="AND">
+										<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+											#venCds[]#
+										</iterate>
+									</isNotEmpty>
+								</isEmpty>
+												
+								<isNotEmpty  property="srchEntpCode"  prepend="AND">
+									A.VEN_CD = #srchEntpCode#
+								</isNotEmpty>
+								
+								<isNotEmpty property="srchStoreVal"  prepend="AND">
+									<iterate prepend="A.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=",">
+										#srchStoreVal[]#
+									</iterate>
+								</isNotEmpty>
+								 
+								<isNotEmpty  property="srchProductVal"  prepend="AND">
+									B.PROD_CD = #srchProductVal#
+								</isNotEmpty>
+								
+								<isNotEmpty  property="srchBuying"  prepend="AND">
+									A.BUY_RTN_FG = #srchBuying#
+								</isNotEmpty>		        		    
+		        		    
+                            
+								
+						        ) A LEFT OUTER JOIN TPC_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD
+								) A
+								GROUP BY BUY_DY
+								ORDER BY BUY_DY
+	</select>
+
+</sqlMap>

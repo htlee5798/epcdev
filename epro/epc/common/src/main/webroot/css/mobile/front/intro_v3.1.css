@@ -1,0 +1,88 @@
+html,body {width:100%;height:100%;padding:0;margin:0;overflow:hidden; font-family: 'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif;font:100%;}
+ul,li,ol {list-style:none;}
+img {vertical-align:top;}
+a {color:#333;text-decoration:none;font-size:26px;}
+a:focus, a:hover, a:active {text-decoration:none;}
+
+h1, div, ul, li {margin:0; padding:0;}
+
+#introWrap {position:relative;width:100%;min-width:640px;height:100%;}
+
+/* 2013-09-27 수정 */
+#header {position: relative;height:105px;background: url('//simage.lottemart.com/images/mobile/common/intro/bg_header.gif') repeat;border-bottom:4px solid #971516;}
+#header h1 {padding-top:8px;text-align: center;}
+#header h1 a {display: inline-block;}
+#header a.menu {position: absolute;top:37px;left:28px;}
+#header a.home {position: absolute;top:21px;right:18px;padding:10px;}
+/*
+#header {position: relative;height:105px;background: url('//simage.lottemart.com/lim/static_root/images/mobile/common/intro/bg_header.gif') repeat;border-bottom:4px solid #971516;}
+#header h1 {padding-top: 28px;text-align: center;}
+#header h1 a {display: inline-block;}
+#header a.menu {position: absolute;top:37px;left:28px;}
+#header a.home {position: absolute;top:21px;right:18px;padding:10px;}
+*/
+#container {background-color: #f5f5f5;}
+#fl-1 {overflow: hidden;height:62.8%}
+#fl-1 #rolling {position: relative;float: left;overflow: hidden;width:65.8%;height:100%;min-height:401px;}
+#fl-1 #rolling #prWrap {width:100% !important;margin:0 auto;}
+#fl-1 #rolling #prWrap .pr li {position: absolute;top:0;left:0;width:100% !important;background-color: #ff0;z-index:5;}
+#fl-1 #rolling #prWrap .pr li img {height: auto !important ;width: 100% !important;
+    position: relative !important;
+    padding: 0px;
+    background-color: #fcfcfc; }
+
+#fl-1 #rolling .footer-indicator {position: absolute;bottom:0;left:0;width:100%;text-align: center;z-index:7;}
+#fl-1 #rolling .footer-indicator .paging {}
+#fl-1 #rolling .footer-indicator .paging a {display: inline-block;width:15px;height:15px;margin-left:10px;background: url('//simage.lottemart.com/lim/static_root/images/mobile/common/intro/bg_dot.png') 0 0 no-repeat;text-indent:-999em;}
+#fl-1 #rolling .footer-indicator .paging a:first-child {margin-left: 0;}
+#fl-1 #rolling .footer-indicator .paging a.on {background-position: 100% 0;}
+
+#fl-1 #event {float: right;width:34.2%;height:100%;}
+#fl-1 #event a {display: block;overflow: hidden;height:100%;border-left:3px solid #c2c2c2;text-align: center;}
+
+#fl-2 {overflow: hidden;height:37.2%}
+#fl-2 #mdw {float: left;width:65.8%;height:100%;}
+#fl-2 #mobile, #fl-2 #dw {height:50%;}
+#fl-2 #mobile a {position: relative;display: block;overflow: hidden;height:100%;border-top:3px solid #c2c2c2;text-align: center;}
+#fl-2 #dw a {position: relative;display: block;overflow: hidden;height:100%;border-top:3px solid #c2c2c2;text-align: center;}
+#fl-2 #plan {float: right;width:34.2%;height:100%;}
+#fl-2 #plan a {position: relative;display: block;overflow: hidden;height:100%;border-top:3px solid #c2c2c2;border-left:3px solid #c2c2c2;text-align: center;}
+
+#mobile img,
+#dw img {width:auto;height:auto;}
+#event img,
+#plan img {width:auto;width:auto;height:auto;}
+
+
+#smartTip {height:86px;background:url('//simage.lottemart.com/images/mobile/common/intro/shopping_tip_bg.jpg') repeat;text-align: center;}
+#smartTip a {display: block;border-top: 2px solid #c2c2c2;}
+
+#footer {position: absolute;left:0;width:100%;height:167px;}
+
+#bottom ul {overflow: hidden;height:81px;}
+#bottom ul li {float: left;width:22%;height:81px;background-color: #707070;text-align: center;}
+#bottom ul li a {display: block;height:50px;padding-top: 28px;border-top: 3px solid #4e4e4e;border-left: 3px solid #4e4e4e;}
+#bottom ul li:first-child {width:21.8%;}
+#bottom ul li:first-child a {border-left: 0;}
+#bottom ul li.mymart {width:34.2%;}
+#bottom ul li.mymart a {height:78px;padding-top:0; border-top: 3px solid #971516;border-left: 3px solid #971516;background:#d81e20 url('//simage.lottemart.com/lim/static_root/images/mobile/common/m_btn_mart_open.gif') 50% 0 no-repeat;}
+#bottom ul li.mymart a.open img {visibility:hidden;}
+
+#slideMenu {position:absolute;display: none;top:0;right:-420px;width:420px;height:100%;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_gradient05.gif') repeat-y 0 0;z-index:10;}
+#slideMenu div.title {position:relative;width:100%;height:108px;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_gradient01.gif') no-repeat 0 0;border-bottom:2px solid #7c7c7c;}
+#slideMenu div.title h2 {position:absolute;top:8px;left:5%;}
+#slideMenu div.title span {display:inline-block;position:absolute;top:33px;right:5%;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_login_le.gif') no-repeat 0 0;text-align:center;}
+#slideMenu div.title span a {display:inline-block;height:35px;padding:5px 30px 0;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_login_ri.gif') no-repeat 100% 0;color:#fff;font-weight:bold;font-size:18px;text-decoration:none;line-height:22px;}
+#slideMenu h3 {width:100%;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_gradient02.gif') no-repeat 0 0;font-size:0;line-height:0;}
+#slideMenu h3 a {display:block;width:95%;height:52px;padding:20px 0 0 5%;color:#fff200;font-weight:normal;font-size:26px;text-decoration:none;line-height:30px;letter-spacing:-2px;}
+#slideMenu h3 a span {display:inline-block;padding:0 45px 5px 0;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/icon_pos.gif') no-repeat 100% 5px;}
+#slideMenu div.menu {width:100%;}
+#slideMenu div.menu ul li {font-size:0;line-height:0;}
+#slideMenu div.menu ul li a {display:block;width:95%;height:54px;padding:20px 0 0 5%;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/icon_arrow.png') no-repeat 93% 27px;color:#fff;font-size:26px;text-decoration:none;line-height:30px;letter-spacing:-2px;}
+#slideMenu div.menu ul.list1 li {background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_gradient03.gif') no-repeat 0 0;}
+#slideMenu div.menu ul.list2 {height:100%;background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_gradient05.gif') no-repeat 0 0;}
+#slideMenu div.menu ul.list2 li {background:url('//simage.lottemart.com/lim/static_root/images/mobile/common/bg_gradient04.gif') no-repeat 0 0;}
+#slideMenu div.menu ul.list2 li.last {border-bottom:3px solid #7d7d7d;}
+
+
+#header #debug {position: absolute;top:0;left:0;width:100%;height:100px;background-color: #fff;}

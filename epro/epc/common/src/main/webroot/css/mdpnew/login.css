@@ -1,0 +1,62 @@
+@charset "utf-8";
+@import "default.css";
+body{background-color:#fff !important}
+/* w: 720px , h: 1280px - 시간알림영역(50px) 포함 */
+
+.wrap{position:relative;min-height:100%;overflow:hidden;background:url(../../images/mdpnew/com/login_bg.png) repeat-x 0 0;background-size:100% 100%;}
+.content{margin:20px 15px;padding:0 15px 34px 15px;background:#fff;border:1px solid #989da1;border-radius:4px;position:relative}
+.content header{padding:36px;height:33px;}
+.content header h1{width:172px;height:33px;margin:0 auto;background:url(../../images/mdpnew/com/logo.png) no-repeat 0 0;background-size:contain;text-indent:-9999px;overflow:hidden}
+.content h2{font-size:18px;font-family:MGB;color:#555;padding-left:26px;background:url(../../images/mdpnew/com/ico1.png) no-repeat 0 25px;background-size:17px auto;
+	height:33px;padding-top:22px;line-height:1;border-top:1px solid #ccc;letter-spacing:-1px}
+.content .login_form .input_row{
+	position:relative;border:1px solid #999;border-radius:4px;-moz-border-radius:4px;padding:10px 35px 10px 15px;
+	margin:0 0 10px;background:#fff;	height:25px;box-shadow:inset 0px 2px 0px #e0e0e0; /* x , y , 흐림 */
+}
+.content .login_form .input_row .input_box{display:block;overflow:hidden}
+.content .login_form .input_row .input_box label{font-size:17px;position:absolute;top:16px;left:15px;z-index:8;color:#999;line-height:16px;}
+.content .login_form .input_row .input_box input{
+	position:relative;z-index:9;width:100%;height:18px;padding:6px 0 1px;border:0;background:#fff;font-size:17px;color:#000;line-height:16px
+}
+.content .login_form .btn_login{display:block;height:53px;line-height:46px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;
+	background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:1px 100%;text-align:center;
+}
+.content .login_form .btn_login .int_login{background:none;color:#fff;font-size:25px;text-shadow: -1px -1px #0059a2;font-family:MGB;width:100%;height:100%}
+.content .login_form .txt{position:absolute;bottom:-2px;left:-1px;width:100%;height:34px;line-height:32px;background:#54585a;z-index:10;padding:1px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;font-size:16px;text-align:center;font-family:MGB;color:#fff;letter-spacing:-1px}
+.check_info{position:relative;height:24px;padding:15px 0 25px}
+.check_info .login_check_box{display:block;float:left;height:24px;overflow:hidden;position:relative}
+.check_info .login_check_box input[type=checkbox]{width:24px;height:24px;overflow:hidden;padding:0;boder:0;margin:0;position:absolute;top:0;left:-9999em}
+.check_info .login_check_box label{padding-left:29px;height:24px;line-height:20px;display:block;background:url(../../images/mdpnew/com/chk.png) no-repeat 0 0;background-size:24px auto;cursor:pointer;overflow:hidden;font-size:16px;color:#555;font-family:MGB}
+.check_info .login_check_box label.checked{background-position:0 100%}
+.check_info .find_pw_box{dispaly:block;float:right;width:103px;height:39px;line-height:37px;border:1px solid #1e72a9;border-radius:4px;background:#ececec}
+.check_info .find_pw_box > a{display:block;width:100%;height:100%;font-size:14px;color:#1e72a9;text-align:center;font-family:MGB}
+.find{font-size:17px;line-height:1.3;height:40px;font-family:MGB;color:#fff;margin:0 15px;padding-left:20px;padding-bottom:110px;
+background:url(../../images/mdpnew/com/ico2.png) no-repeat 0 4px;background-size:16px auto;letter-spacing:-1px}
+
+/* 푸터- 하단 고정 */
+footer{background:#f5f5f5;position:absolute;bottom:0;width:100%;height:90px}
+footer > div{height:14px;background:#eaeaea;border-top:2px solid #fff;padding:15px}
+footer .lotte{float:left;display:block;width:70px;height:14px;background:url(../../images/mdpnew/com/logo.png) no-repeat 0 0;background-size:100% 100%;text-indent:-9999px;overflow:hidden}
+footer .custom{float:right;display:block;height:14px;line-height:8px;padding-left:19px;background:url(../../images/mdpnew/com/ico3.png) no-repeat 0 0;background-size:14px 14px;color:#777;font-family:MGB;font-size:16px}
+footer .custom a{color:#555;font-size:19px;position:relative;top:1px}
+footer > small{display:block;height:42px;line-height:39px;text-align:center;color:#c4c4c4;font-size:12px;background:#545859;font-family:MGB;border-top:2px solid #333}
+
+@media all and (max-device-width: 320px) {
+	.content{margin:15px 15px 10px;}
+	.content header{padding:20px;height:24px}
+	.content header h1{width:122px;height:24px}
+	.content h2{height:28px;padding-top:10px;background:url(../../images/mdpnew/com/ico1.png) no-repeat 0 12px / 17px auto}
+	.content .login_form .input_row{padding:5px 35px 5px 15px}
+	.content .login_form .input_row .input_box label{top:11px}
+	.content .login_form .btn_login{height:36px;line-height:1;}
+	.content .login_form .btn_login .int_login{height:36px;padding-bottom:3px;font-size:19px}
+	.content .login_form .txt{height:32px;line-height:30px;font-size:15px}
+	.check_info{height:20px;padding:7px 0 13px}
+	.check_info .login_check_box{height:20px}
+	.check_info .login_check_box input[type=checkbox]{width:20px;height:20px}
+	.check_info .login_check_box label{padding-left:25px;height:20px;line-height:16px;background-size:20px auto}
+	.find{font-size:15px;line-height:1.3;height:34px;background-size:13px auto;padding-bottom:0px}
+	footer{height:70px}
+	footer > div{padding:10px 15px}
+	footer > small{height:32px;line-height:29px}
+}

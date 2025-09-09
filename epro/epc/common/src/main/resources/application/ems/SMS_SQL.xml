@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SMS">
+
+	<typeAlias  alias="BaseMap" type="lcn.module.framework.ibatis.BaseMap"/>
+	<typeAlias  alias="LtsmsVO" type="com.lottemart.common.sms.model.LtsmsVO"/>
+	
+	<select id="SmsDAO.selectSmsInf" parameterClass="LtsmsVO" resultClass="LtsmsVO" >
+ 		<![CDATA[
+ 			SELECT 
+			   SERIALNO
+			 , DESTCALLNO
+			 , CALLBACKNO
+			 , TYPE
+			 , DATA
+			 , JEOBSU_TIME
+			 , YEYAK_TIME
+			 , START_TIME
+			 , END_TIME
+			 , RESULT
+			 , RESERVED
+			 , SUBJECT
+			 , USER_NO
+			 , COMPANY_NO
+			 , JEOBSU_NO
+			 , JEOBSU_SUB_NO
+			 , USER_NM
+		FROM SMS_WAIT
+		WHERE SERIALNO = #SERIALNO#
+ 		]]>
+ 	</select>
+ 	
+ 	<select id="SmsDAO.selectSmsInfs" parameterClass="LtsmsVO" resultClass="LtsmsVO" >
+ 			/** SmsDAO.selectSmsInfs - SMS 가져오기 */
+ 			SELECT * 
+ 			FROM (
+ 				SELECT ROWNUM AS NUM, SMS.*
+ 				FROM (
+ 					<![CDATA[
+			 		SELECT 
+						   SERIALNO
+						 , DESTCALLNO
+						 , CALLBACKNO
+						 , TYPE
+						 , DATA
+						 , JEOBSU_TIME
+						 , YEYAK_TIME
+						 , START_TIME
+						 , END_TIME
+						 , RESULT
+						 , RESERVED
+						 , SUBJECT
+						 , USER_NO
+						 , COMPANY_NO
+						 , JEOBSU_NO
+						 , JEOBSU_SUB_NO
+						 , USER_NM
+					FROM SMS_WAIT
+					WHERE 1=1
+					]]>
+					 <isNotEmpty property="DESTCALLNO">AND DESTCALLNO LIKE #DESTCALLNO#||'%'</isNotEmpty>
+                     <isNotEmpty property="CALLBACKNO">AND CALLBACKNO LIKE #CALLBACKNO#||'%'</isNotEmpty>
+                     <isNotEmpty property="TYPE">AND TYPE LIKE #TYPE#||'%'</isNotEmpty>
+                     <isNotEmpty property="FROM_JEOBSU_TIME">
+		                AND JEOBSU_TIME >= TO_DATE(#FROM_JEOBSU_TIME#,'YYYY/MM/DD')
+		                AND JEOBSU_TIME <![CDATA[<]]>  TO_DATE(#TO_JEOBSU_TIME#  ,'YYYY/MM/DD') + 1
+		         	</isNotEmpty>
+                     <isNotEmpty property="FROM_YEYAK_TIME">
+                            AND YEYAK_TIME >= TO_DATE(#FROM_YEYAK_TIME#,'YYYY/MM/DD')
+                            AND YEYAK_TIME <![CDATA[<]]> TO_DATE(#TO_YEYAK_TIME#  ,'YYYY/MM/DD') + 1
+                     </isNotEmpty>
+                     <isNotEmpty property="RESULT">AND RESULT LIKE #RESULT#||'%'</isNotEmpty>
+				) SMS
+			) RNUM
+			WHERE RNUM.NUM > #START# AND RNUM.NUM<![CDATA[<=]]>#END# 
+
+ 	</select>
+ 	
+ 	<select id="SmsDAO.selectSmsInfsCnt" parameterClass="LtsmsVO" resultClass="int" >
+ 		<![CDATA[
+ 		SELECT 
+			   COUNT(SERIALNO) AS cnt
+		FROM SMS_WAIT
+		WHERE 1=1
+ 		]]>
+ 		
+ 		 <isNotEmpty property="DESTCALLNO">AND DESTCALLNO LIKE #DESTCALLNO#||'%'</isNotEmpty>
+		 <isNotEmpty property="CALLBACKNO">AND CALLBACKNO LIKE #CALLBACKNO#||'%'</isNotEmpty>
+         <isNotEmpty property="TYPE">AND TYPE LIKE #TYPE#||'%'</isNotEmpty>
+         <isNotEmpty property="FROM_JEOBSU_TIME">
+                AND JEOBSU_TIME >= TO_DATE(#FROM_JEOBSU_TIME#,'YYYY/MM/DD')
+                AND JEOBSU_TIME <![CDATA[<]]>  TO_DATE(#TO_JEOBSU_TIME#  ,'YYYY/MM/DD') + 1
+       	 </isNotEmpty>
+         <isNotEmpty property="FROM_YEYAK_TIME">
+                AND YEYAK_TIME >= TO_DATE(#FROM_YEYAK_TIME#,'YYYY/MM/DD')
+                AND YEYAK_TIME <![CDATA[<]]> TO_DATE(#TO_YEYAK_TIME#  ,'YYYY/MM/DD') + 1
+         </isNotEmpty>
+         <isNotEmpty property="RESULT">AND RESULT LIKE #RESULT#||'%'</isNotEmpty>
+ 	</select>
+ 	
+ 	<insert id="SmsDAO.insertSmsInf" parameterClass="LtsmsVO">
+ 		<![CDATA[
+ 		INSERT INTO SMS_WAIT
+ 		(
+ 			   SERIALNO
+			 , DESTCALLNO
+			 , CALLBACKNO
+			 , TYPE
+			 , DATA
+			 , JEOBSU_TIME
+			 , YEYAK_TIME
+			 , START_TIME
+			 , END_TIME
+			 , RESULT
+			 , RESERVED
+			 , SUBJECT
+			 , USER_NO
+			 , COMPANY_NO
+			 , JEOBSU_NO
+			 , JEOBSU_SUB_NO
+			 , USER_NM
+		)
+		VALUES 
+		(
+			   #SERIALNO#
+			 , #DESTCALLNO#
+			 , #CALLBACKNO#
+			 , #TYPE#
+			 , #DATA#
+			 , #JEOBSU_TIME#
+			 , #YEYAK_TIME#
+			 , #START_TIME#
+			 , #END_TIME#
+			 , #RESULT#
+			 , #RESERVED#
+			 , #SUBJECT#
+			 , #USER_NO#
+			 , #COMPANY_NO#
+			 , #JEOBSU_NO#
+			 , #JEOBSU_SUB_NO#
+			 , #USER_NM#
+		)
+		]]>
+ 	</insert>
+ 	
+</sqlMap>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>모바일 QPS 피킹 관리 시스템</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<link rel="shortcut icon" href="http://image.lottemart.com/images/front/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" href="http://image.lottemart.com/images/mobile/contentimg/ico/ico-a_72_72.png">
+
+	<!-- CSS 임시경로  -->
+	<link rel="stylesheet" href=".//lib_new.css">
+</head>	
+<body>
+<!-- 화면 전체 구성 -->
+
+	<!-- 03. 비밀번호 변경 full Layer popup -->
+	<div id="password_popup"></div>
+	<!-- //03. 비밀번호 변경 full Layer popup -->
+	
+	<!-- 05. CONTAINER START -->
+	<div class="m-container-scroll">
+	</div>
+	<!-- 05. CONTAINER START -->
+
+	<!-- 06. layer popup -->
+	<div id="dialog_popup" style="display: block;">
+		<!-- layout - full Layer Popup -->
+		<div class="wrap-popup-page">
+			<!-- a. header -->
+			<div class="header">
+				<div class="user_info">
+					<h2 class="page_tit"><img src="../../../images/pp/layout/m-picking-logo.png" alt="롯데마트"></h2>
+				</div>
+				<div class="user_action">
+					<button type="button" class="icon-close">닫기</button>
+				</div>
+			</div>
+			<!-- //a. header -->
+			<!-- b. container -->
+			<div class="mypage_main">
+				<ul class="navi">
+					<li><a href="#" class="btn-common-color5">비밀번호 변경</a></li>
+					<li><a href="#" class="btn-common-color5">롯데마트 D.C 종료</a></li>
+					<li><a href="#" class="btn-common-color5">로그아웃</a></li>
+					<li class="r1"><a href="#" class="btn-common-color3">작업 가능</a></li>
+					<li class="r2"><button type="button" class="btn-common-color2">작업 불가능</button></li>
+				</ul>
+				<div class="guide_box">
+					<h6 class="tit">패킹 가이드</h6>
+					<!-- guide -->
+					<div class="bg-info">
+						<dl>
+							<dt><em class="point1">파란색 숫자</em></dt>
+							<dd>대체 수량</dd>
+						
+							<dt><em class="point3">빨간색 숫자</em></dt>
+							<dd>결품 수량</dd>
+
+							<dt><em class="point3">빨간색 글씨</em></dt>
+							<dd>사은품</dd>
+
+							<dt><em class="point2">초록색 숫자</em></dt>
+							<dd>피킹지시</dd>
+					
+							<dt class="bg_sky">파간색 배경</dt>
+							<dd>피킹, 피킹완료</dd>
+						</dl>
+					</div>
+					<!-- //guide -->
+				</div>
+			</div>
+			<!-- //b. container -->
+		</div>
+		<!-- //layout - full Layer Popup -->
+	</div>
+	<div id="detail_popup"></div>
+	<!-- //06. layer popup -->
+
+<!-- //화면 전체 구성 -->
+
+</body>
+</html>

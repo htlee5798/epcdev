@@ -1,0 +1,1144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Consult">
+
+  <typeAlias alias="vendor" 			type="com.lottemart.epc.edi.consult.model.Vendor" />
+  <typeAlias alias="industryEntryInfo" 	type="com.lottemart.epc.edi.consult.model.IndustryEntryInfo" />
+  <typeAlias alias="searchParam"  		type="com.lottemart.epc.edi.comm.model.SearchParam" />
+  <typeAlias alias="sale" 				type="com.lottemart.epc.edi.consult.model.Sale" />
+  <typeAlias alias="vendorProduct" 		type="com.lottemart.epc.edi.consult.model.VendorProduct" />
+    <typeAlias alias="aution" 		type="com.lottemart.epc.edi.consult.model.AutionItem" />
+  <typeAlias alias="resultClass"	    type="lcn.module.common.util.HashBox" />
+     
+  <resultMap id ="vendorApplyInfoMap" class="vendor">
+   <result property="bmanNo"  		 column="BMAN_NO" 	/>
+   <result property="seq"  		 column="SEQ" 	/>
+   <result property="colVal"  		 column="COL_VAL" 	/>
+   <result property="dispYn"  		 column="DISP_YN" 	/>
+  </resultMap>
+   
+     <resultMap id ="vendorAnswerInfoMap" class="vendor">
+   <result property="kindCd"  		 column="KIND_CD" 	/>
+   <result property="seq"  		 column="SEQ" 	/>
+   <result property="queryDesc"		column="QUERY_DESC" />
+   <result property="colVal"  		 column="COL_VAL" 	/>
+   
+  </resultMap>
+   
+   
+  <resultMap id="vendorBasicInfoMap" class="vendor">
+    <result property="bmanNo"  		 column="BMAN_NO" 	/>
+    <result property="hndNm" 		 column="HND_NM"    />
+    <result property="ceoNm" 	 	 column="CEO_NM" 	/>
+    <result property="businessKind"  column="BKIND_NM"  />
+    <result property="businessType"  column="BTYP_NM" 	/>
+    <result property="zipNo"  	 	 column="ZIP_NO"  	/>
+    <result property="zipNo1"  	 	 column="ZIP_NO1"  	/>
+    <result property="zipNo2"  	 	 column="ZIP_NO2"  	/>
+    <result property="supplyAddr1"   column="SPMN_ADDR_1_NM"  />
+    <result property="supplyAddr2" 	 column="SPMN_ADDR_2_NM"  />
+    <result property="utakmanNm" 	 column="UTAKMN_NM" />
+    <result property="telNo"   		 column="TEL_NO"    />
+    <result property="tel1"   		 column="TEL_NO1"    />
+    <result property="tel2"   		 column="TEL_NO2"    />
+    <result property="tel3"   		 column="TEL_NO3"    />
+    <result property="handphone" 	 column="CELL_NO"   />
+    <result property="cell1" 	 column="CELL_NO1"   />
+    <result property="cell2" 	 column="CELL_NO2"   />
+    <result property="cell3" 	 column="CELL_NO3"   />
+    <result property="email"	 	 column="EMAIL"     />
+    <result property="email1"	 	 column="EMAIL1"     />
+    <result property="email2"	 	 column="EMAIL2"     />
+    <result property="fax" 	 		 column="FAX_NO"    />
+    <result property="fax1" 	 		 column="FAX_NO1"    />
+    <result property="fax2" 	 		 column="FAX_NO2"    />
+    <result property="fax3" 	 		 column="FAX_NO3"    />
+    <result property="repTelNo"  	 column="REP_TEL_NO"    />
+    <result property="officetel1"  	 column="REP_TEL_NO1"    />
+    <result property="officetel2"  	 column="REP_TEL_NO2"    />
+    <result property="officetel3"  	 column="REP_TEL_NO3"    />
+     <result property="orgCd" 	 	 column="ORG_CD"    />
+    <result property="corpnNm" 	 	 column="CORPN_NM"  />
+    <result property="corpnRsdtNo" 	 column="CORPN_RSDT_NO"  />
+    <result property="chgStatusCd" 	 column="CHG_STATUS_CD"  />
+    <result property="passwd" 	  	 column="PWD"  />
+     <result property="bmanKindCd" 	 	 column="BMAN_KIND_CD"  />
+    <result property="corpnDivnCd" 	 	 column="CORPN_DIVN_CD"  />
+    <result property="affYn" 	  	 	 column="AFF_YN"  />
+    <result property="homePageAddress" 	 column="HMPG_ADDR"  />
+    <result property="regDivnCd" 	  	 column="REG_DIVN_CD"  />
+    
+    <result property="foundationYear" 	 column="FOU_YYYY"  />
+    <result property="capitalAmount" 	 column="CAP_AMT"  />
+    <result property="factoryType" 	  	 column="FTRY_TF"  />
+    <result property="mainProduct" 	  	 column="MANFC_PRODS_NM"  />
+    <result property="yearSaleAmount" 	 column="YY_SALE_AMT"  />
+    <result property="monthSaleAmount" 	 column="MM_SALE_AMT"  />
+    <result property="pecuSubjectContent" 	 column="PECU_SBJT_CONTENT"  />
+    <result property="attachFileCode" 	 column="ATCH_FILE_CD"  />
+    <result property="companyCharCode" 	  	 column="COM_CHAR_CD"  />
+    <result property="companyDescription" 	 column="COM_CHAR_ETC_CONTENT"  />
+    <result property="lotteAffTradeCode" 	 column="LOTTE_AFF_TRD_CD"  />
+    <result property="lotteAffTradeContent"  column="LOTTE_AFF_TRD_ETC_CONTENT"  />
+    
+    <result property="regDate" 	 column="REG_DATE"  />
+    <result property="modDate"  column="MOD_DATE"  />
+    <result property="l1Cd"  column="L1_CD"  />
+    
+    <result property="smIndustryEntpNm"  column="SM_INDUSTRY_ENTP_NM"  />
+    <result property="smIndustryEntpProdNm"  column="SM_INDUSTRY_ENTP_PROD_NM"  />
+    <result property="smIndustryEntpAmt"  column="SM_INDUSTRY_ENTP_AMT"  />    
+    <result property="teamCd"  column="TEAM_CD"  />    
+    <result property="pepeJgmRsltDivnCd" column="PAPE_JGM_RSLT_DIVN_CD"/>
+    <result property="kindCd" column="KIND_CD"/>
+     <result property="wishStore" column="WISH_STORE"/>
+     <result property="asisMystorecnt" column="ASIS_MYSTORECNT"/>
+     <result property="tSubteamCd" column="T_SUBTEAM_CD"/>
+     <result property="uploadFolder" column="UPLOAD_FOLDER"/>
+     
+     
+     
+  </resultMap>
+
+  <resultMap id="vendorBasicInfoMap2" class="vendor">
+    <result property="bmanNo"  		 column="BMAN_NO" 	/>
+    <result property="hndNm" 		 column="HND_NM"    />
+    <result property="ceoNm" 	 	 column="CEO_NM" 	/>
+    <result property="businessKind"  column="BKIND_NM"  />
+    <result property="businessType"  column="BTYP_NM" 	/>
+    <result property="zipNo"  	 	 column="ZIP_NO"  	/>
+    <result property="zipNo1"  	 	 column="ZIP_NO1"  	/>
+    <result property="zipNo2"  	 	 column="ZIP_NO2"  	/>
+    <result property="supplyAddr1"   column="SPMN_ADDR_1_NM"  />
+    <result property="supplyAddr2" 	 column="SPMN_ADDR_2_NM"  />
+    <result property="utakmanNm" 	 column="UTAKMN_NM" />
+    <result property="telNo"   		 column="TEL_NO"    />
+    <result property="tel1"   		 column="TEL_NO1"    />
+    <result property="tel2"   		 column="TEL_NO2"    />
+    <result property="tel3"   		 column="TEL_NO3"    />
+    <result property="handphone" 	 column="CELL_NO"   />
+    <result property="cell1" 	 column="CELL_NO1"   />
+    <result property="cell2" 	 column="CELL_NO2"   />
+    <result property="cell3" 	 column="CELL_NO3"   />
+    <result property="email"	 	 column="EMAIL"     />
+    <result property="email1"	 	 column="EMAIL1"     />
+    <result property="email2"	 	 column="EMAIL2"     />
+    <result property="fax" 	 		 column="FAX_NO"    />
+    <result property="fax1" 	 		 column="FAX_NO1"    />
+    <result property="fax2" 	 		 column="FAX_NO2"    />
+    <result property="fax3" 	 		 column="FAX_NO3"    />
+    <result property="repTelNo"  	 column="REP_TEL_NO"    />
+    <result property="officetel1"  	 column="REP_TEL_NO1"    />
+    <result property="officetel2"  	 column="REP_TEL_NO2"    />
+    <result property="officetel3"  	 column="REP_TEL_NO3"    />
+     <result property="orgCd" 	 	 column="ORG_CD"    />
+    <result property="corpnNm" 	 	 column="CORPN_NM"  />
+    <result property="corpnRsdtNo" 	 column="CORPN_RSDT_NO"  />
+    <result property="chgStatusCd" 	 column="CHG_STATUS_CD"  />
+    <result property="passwd" 	  	 column="PWD"  />
+     <result property="bmanKindCd" 	 	 column="BMAN_KIND_CD"  />
+    <result property="corpnDivnCd" 	 	 column="CORPN_DIVN_CD"  />
+    <result property="affYn" 	  	 	 column="AFF_YN"  />
+    <result property="homePageAddress" 	 column="HMPG_ADDR"  />
+    <result property="regDivnCd" 	  	 column="REG_DIVN_CD"  />
+    
+    <result property="foundationYear" 	 column="FOU_YYYY"  />
+    <result property="capitalAmount" 	 column="CAP_AMT"  />
+    <result property="factoryType" 	  	 column="FTRY_TF"  />
+    <result property="mainProduct" 	  	 column="MANFC_PRODS_NM"  />
+    <result property="yearSaleAmount" 	 column="YY_SALE_AMT"  />
+    <result property="monthSaleAmount" 	 column="MM_SALE_AMT"  />
+    <result property="pecuSubjectContent" 	 column="PECU_SBJT_CONTENT"  />
+    <result property="attachFileCode" 	 column="ATCH_FILE_CD"  />
+    <result property="companyCharCode" 	  	 column="COM_CHAR_CD"  />
+    <result property="companyDescription" 	 column="COM_CHAR_ETC_CONTENT"  />
+    <result property="lotteAffTradeCode" 	 column="LOTTE_AFF_TRD_CD"  />
+    <result property="lotteAffTradeContent"  column="LOTTE_AFF_TRD_ETC_CONTENT"  />
+    
+    <result property="regDate" 	 column="REG_DATE"  />
+    <result property="modDate"  column="MOD_DATE"  />
+    <result property="l1Cd"  column="L1_CD"  />
+    
+    <result property="l1Nm"  column="L1_NM"  />
+    <result property="teamNm"  column="TEAM_NM"  />
+    
+    <result property="smIndustryEntpNm"  column="SM_INDUSTRY_ENTP_NM"  />
+    <result property="smIndustryEntpProdNm"  column="SM_INDUSTRY_ENTP_PROD_NM"  />
+    <result property="smIndustryEntpAmt"  column="SM_INDUSTRY_ENTP_AMT"  />
+   <!--  <result property="pepeJgmRsltDivnCd" column="PAPE_JGM_RSLT_DIVN_CD"/> -->
+    <result property="kindCd" column="KIND_CD"/>
+  </resultMap>	
+   
+  
+  <resultMap id="vendorBasicInfoMapApply" class="vendor">
+    <result property="bmanNo"  		 column="BMAN_NO" 	/>
+    <result property="hndNm" 		 column="HND_NM"    />
+    <result property="ceoNm" 	 	 column="CEO_NM" 	/>
+    <result property="businessKind"  column="BKIND_NM"  />
+    <result property="businessType"  column="BTYP_NM" 	/>
+    <result property="zipNo"  	 	 column="ZIP_NO"  	/>
+    <result property="zipNo1"  	 	 column="ZIP_NO1"  	/>
+    <result property="zipNo2"  	 	 column="ZIP_NO2"  	/>
+    <result property="supplyAddr1"   column="SPMN_ADDR_1_NM"  />
+    <result property="supplyAddr2" 	 column="SPMN_ADDR_2_NM"  />
+    <result property="utakmanNm" 	 column="UTAKMN_NM" />
+    <result property="telNo"   		 column="TEL_NO"    />
+    <result property="tel1"   		 column="TEL_NO1"    />
+    <result property="tel2"   		 column="TEL_NO2"    />
+    <result property="tel3"   		 column="TEL_NO3"    />
+    <result property="handphone" 	 column="CELL_NO"   />
+    <result property="cell1" 	 column="CELL_NO1"   />
+    <result property="cell2" 	 column="CELL_NO2"   />
+    <result property="cell3" 	 column="CELL_NO3"   />
+    <result property="email"	 	 column="EMAIL"     />
+    <result property="email1"	 	 column="EMAIL1"     />
+    <result property="email2"	 	 column="EMAIL2"     />
+    <result property="fax" 	 		 column="FAX_NO"    />
+    <result property="fax1" 	 		 column="FAX_NO1"    />
+    <result property="fax2" 	 		 column="FAX_NO2"    />
+    <result property="fax3" 	 		 column="FAX_NO3"    />
+    <result property="repTelNo"  	 column="REP_TEL_NO"    />
+    <result property="officetel1"  	 column="REP_TEL_NO1"    />
+    <result property="officetel2"  	 column="REP_TEL_NO2"    />
+    <result property="officetel3"  	 column="REP_TEL_NO3"    />
+     <result property="orgCd" 	 	 column="ORG_CD"    />
+    <result property="corpnNm" 	 	 column="CORPN_NM"  />
+    <result property="corpnRsdtNo" 	 column="CORPN_RSDT_NO"  />
+    <result property="chgStatusCd" 	 column="CHG_STATUS_CD"  />
+    <result property="passwd" 	  	 column="PWD"  />
+     <result property="bmanKindCd" 	 	 column="BMAN_KIND_CD"  />
+    <result property="corpnDivnCd" 	 	 column="CORPN_DIVN_CD"  />
+    <result property="affYn" 	  	 	 column="AFF_YN"  />
+    <result property="homePageAddress" 	 column="HMPG_ADDR"  />
+    <result property="regDivnCd" 	  	 column="REG_DIVN_CD"  />    
+    <result property="foundationYear" 	 column="FOU_YYYY"  />
+    <result property="capitalAmount" 	 column="CAP_AMT"  />
+    <result property="factoryType" 	  	 column="FTRY_TF"  />
+    <result property="mainProduct" 	  	 column="MANFC_PRODS_NM"  />
+    <result property="yearSaleAmount" 	 column="YY_SALE_AMT"  />
+    <result property="monthSaleAmount" 	 column="MM_SALE_AMT"  />
+    <result property="pecuSubjectContent" 	 column="PECU_SBJT_CONTENT"  />
+    <result property="attachFileCode" 	 column="ATCH_FILE_CD"  />
+    <result property="companyCharCode" 	  	 column="COM_CHAR_CD"  />
+    <result property="companyDescription" 	 column="COM_CHAR_ETC_CONTENT"  />
+    <result property="lotteAffTradeCode" 	 column="LOTTE_AFF_TRD_CD"  />
+    <result property="lotteAffTradeContent"  column="LOTTE_AFF_TRD_ETC_CONTENT"  />    
+    <result property="regDate" 	 column="REG_DATE"  />
+    <result property="modDate"  column="MOD_DATE"  />
+    <result property="l1Cd"  column="L1_CD"  />      
+     <result property="l1Nm"  column="L1_NM"  />   
+    <result property="teamNm"  column="TEAM_NM"  />    
+    <result property="smIndustryEntpNm"  column="SM_INDUSTRY_ENTP_NM"  />
+    <result property="smIndustryEntpProdNm"  column="SM_INDUSTRY_ENTP_PROD_NM"  />
+    <result property="smIndustryEntpAmt"  column="SM_INDUSTRY_ENTP_AMT"  />
+    <result property="passwd"  column="PWD"  />
+    
+    <result property="kindCd"  column="KIND_CD"  />
+    <result property="wishStore"  column="WISH_STORE"  />
+    <result property="asisMystorecnt"  column="ASIS_MYSTORECNT"  />
+     <result property="tSubteamCd" column="T_SUBTEAM_CD"/>
+     <result property="uploadFolder" column="UPLOAD_FOLDER"/>    
+        
+  </resultMap>  
+
+  <select id="selectVendorInfo" resultMap="vendorBasicInfoMap" parameterClass="String">
+   	 /* Consult.selectVendorInfo */
+   	 SELECT 
+   	   			 BMAN_NO,       HND_NM, 		 CEO_NM, 		  BKIND_NM,   BTYP_NM, 	
+   		 		 ZIP_NO,   	    SPMN_ADDR_1_NM,  SPMN_ADDR_2_NM,  UTAKMN_NM,  TEL_NO, 
+   		 		 CELL_NO,     	EMAIL,     	 	 REG_DIVN_CD, 	  PWD,        CORPN_DIVN_CD, 	  
+   		 		 rpad(CORPN_RSDT_NO,13,'0') AS CORPN_RSDT_NO,FOU_YYYY,    	 CAP_AMT, 	      FTRY_TF,    MANFC_PRODS_NM, 
+   		 		 YY_SALE_AMT, 	MM_SALE_AMT,     REG_DATE,	  	  ORG_CD, 	  FAX_NO,        
+   		 		 CORPN_NM, 	    BMAN_KIND_CD,    ATCH_FILE_CD,    CNSL_RSLT_DIVN_CD, 	  
+   		 		 ENTSHP_RSLT_DIVN_CD,			 ENTSHP_PROC_CONTENT,  	      CHG_STATUS_CD,          
+   		 		 CORPN_NM,      REP_TEL_NO,      PWD,			  AFF_YN,	  HMPG_ADDR,
+   		 		 COM_CHAR_CD,   COM_CHAR_ETC_CONTENT,             LOTTE_AFF_TRD_CD,
+   		 		 LOTTE_AFF_TRD_ETC_CONTENT,      PECU_SBJT_CONTENT,
+   		 		 SUBSTR(EMAIL,0,INSTR(EMAIL,'@')-1) AS EMAIL1,
+                 SUBSTR(EMAIL,INSTR(EMAIL,'@')+1) AS EMAIL2,
+                 SUBSTR(ZIP_NO,0,3) AS ZIP_NO1, SUBSTR(ZIP_NO,3,3) AS ZIP_NO2,
+               
+                RTRIM(SUBSTR(TEL_NO,1,4)) AS TEL_NO1,
+                RTRIM(SUBSTR(TEL_NO,5,4)) AS TEL_NO2,
+                SUBSTR(TEL_NO,9)  AS TEL_NO3,
+               
+                RTRIM(SUBSTR(CELL_NO,1,4)) AS CELL_NO1,
+                RTRIM(SUBSTR(CELL_NO,5,4)) AS CELL_NO2,
+                SUBSTR(CELL_NO,9)  AS CELL_NO3,
+               
+                RTRIM(SUBSTR(FAX_NO,1,4)) AS FAX_NO1,
+                RTRIM(SUBSTR(FAX_NO,5,4)) AS FAX_NO2,
+                SUBSTR(FAX_NO,9)  AS FAX_NO3,
+               
+                RTRIM(SUBSTR(REP_TEL_NO,1,4)) AS REP_TEL_NO1,
+                RTRIM(SUBSTR(REP_TEL_NO,5,4)) AS REP_TEL_NO2,
+                SUBSTR(REP_TEL_NO,9)  AS REP_TEL_NO3,
+
+				REG_DATE, MOD_DATE,L1_CD,
+				SM_INDUSTRY_ENTP_NM, SM_INDUSTRY_ENTP_PROD_NM, SM_INDUSTRY_ENTP_AMT,
+				TEAM_CD, PAPE_JGM_RSLT_DIVN_CD  ,KIND_CD, WISH_STORE,ASIS_MYSTORECNT,T_SUBTEAM_CD,UPLOAD_FOLDER
+	 FROM TED_VENDOR_EDI
+	 WHERE BMAN_NO = #businessNo#
+  </select>
+  
+   <select id="selectVendorInfoResult" resultMap="vendorBasicInfoMap" parameterClass="String">
+   	 /* Consult.selectVendorInfoResult */
+   	 SELECT 
+   	   			 BMAN_NO,       HND_NM, 		 CEO_NM, 		  BKIND_NM,   BTYP_NM, 	
+   		 		 ZIP_NO,   	    SPMN_ADDR_1_NM,  SPMN_ADDR_2_NM,  UTAKMN_NM,  TEL_NO, 
+   		 		 CELL_NO,     	EMAIL,     	 	 REG_DIVN_CD, 	  PWD,        CORPN_DIVN_CD, 	  
+   		 		 rpad(CORPN_RSDT_NO,13,'0') AS CORPN_RSDT_NO,FOU_YYYY,    	 CAP_AMT, 	      FTRY_TF,    MANFC_PRODS_NM, 
+   		 		 YY_SALE_AMT, 	MM_SALE_AMT,     REG_DATE,	  	  ORG_CD, 	  FAX_NO,        
+   		 		 CORPN_NM, 	    BMAN_KIND_CD,    ATCH_FILE_CD,    CNSL_RSLT_DIVN_CD, 	  
+   		 		 ENTSHP_RSLT_DIVN_CD,			 ENTSHP_PROC_CONTENT,  	      CHG_STATUS_CD,          
+   		 		 CORPN_NM,      REP_TEL_NO,      PWD,			  AFF_YN,	  HMPG_ADDR,
+   		 		 COM_CHAR_CD,   COM_CHAR_ETC_CONTENT,             LOTTE_AFF_TRD_CD,
+   		 		 LOTTE_AFF_TRD_ETC_CONTENT,      PECU_SBJT_CONTENT,
+   		 		 SUBSTR(EMAIL,0,INSTR(EMAIL,'@')-1) AS EMAIL1,
+                 SUBSTR(EMAIL,INSTR(EMAIL,'@')+1) AS EMAIL2,
+                 SUBSTR(ZIP_NO,0,3) AS ZIP_NO1, SUBSTR(ZIP_NO,3,3) AS ZIP_NO2,
+                
+                RTRIM(SUBSTR(TEL_NO,1,4)) AS TEL_NO1,
+                RTRIM(SUBSTR(TEL_NO,5,4)) AS TEL_NO2,
+                SUBSTR(TEL_NO,9)  AS TEL_NO3,
+               
+                RTRIM(SUBSTR(CELL_NO,1,4)) AS CELL_NO1,
+                RTRIM(SUBSTR(CELL_NO,5,4)) AS CELL_NO2,
+                SUBSTR(CELL_NO,9)  AS CELL_NO3,
+               
+                RTRIM(SUBSTR(FAX_NO,1,4)) AS FAX_NO1,
+                RTRIM(SUBSTR(FAX_NO,5,4)) AS FAX_NO2,
+                SUBSTR(FAX_NO,9)  AS FAX_NO3,
+               
+                RTRIM(SUBSTR(REP_TEL_NO,1,4)) AS REP_TEL_NO1,
+                RTRIM(SUBSTR(REP_TEL_NO,5,4)) AS REP_TEL_NO2,
+                SUBSTR(REP_TEL_NO,9)  AS REP_TEL_NO3,
+
+				REG_DATE, MOD_DATE,L1_CD,
+				SM_INDUSTRY_ENTP_NM, SM_INDUSTRY_ENTP_PROD_NM, SM_INDUSTRY_ENTP_AMT,
+				TEAM_CD, PAPE_JGM_RSLT_DIVN_CD  ,KIND_CD, WISH_STORE,ASIS_MYSTORECNT,T_SUBTEAM_CD,UPLOAD_FOLDER
+	 FROM TED_VENDOR_EDI
+	 WHERE 1=1
+	 and BMAN_NO = #businessNo#
+	 and CHG_STATUS_CD!='0'
+  </select>  
+  <select id="selectVendorInfo2" resultMap="vendorBasicInfoMap2" parameterClass="String">
+   	 /* Consult.selectVendorInfo2 */
+   	 SELECT 
+   	   			 BMAN_NO,       HND_NM, 		 CEO_NM, 		  BKIND_NM,   BTYP_NM, 	
+   		 		 ZIP_NO,   	    SPMN_ADDR_1_NM,  SPMN_ADDR_2_NM,  UTAKMN_NM,  TEL_NO, 
+   		 		 CELL_NO,     	EMAIL,     	 	 REG_DIVN_CD, 	  PWD,        CORPN_DIVN_CD, 	  
+   		 		 rpad(CORPN_RSDT_NO,13,'0') AS CORPN_RSDT_NO,FOU_YYYY,    	 CAP_AMT, 	      FTRY_TF,    MANFC_PRODS_NM, 
+   		 		 YY_SALE_AMT, 	MM_SALE_AMT,     A.REG_DATE,	  	  ORG_CD, 	  FAX_NO,        
+   		 		 CORPN_NM, 	    BMAN_KIND_CD,    ATCH_FILE_CD,    CNSL_RSLT_DIVN_CD, 	  
+   		 		 ENTSHP_RSLT_DIVN_CD,			 ENTSHP_PROC_CONTENT,  	      CHG_STATUS_CD,          
+   		 		 CORPN_NM,      REP_TEL_NO,      PWD,			  AFF_YN,	  HMPG_ADDR,
+   		 		 COM_CHAR_CD,   COM_CHAR_ETC_CONTENT,             LOTTE_AFF_TRD_CD,
+   		 		 LOTTE_AFF_TRD_ETC_CONTENT,      PECU_SBJT_CONTENT,
+   		 		 SUBSTR(EMAIL,0,INSTR(EMAIL,'@')-1) AS EMAIL1,
+                 SUBSTR(EMAIL,INSTR(EMAIL,'@')+1) AS EMAIL2,
+                 SUBSTR(ZIP_NO,0,3) AS ZIP_NO1, SUBSTR(ZIP_NO,3,3) AS ZIP_NO2,
+               
+                RTRIM(SUBSTR(TEL_NO,1,4)) AS TEL_NO1,
+                RTRIM(SUBSTR(TEL_NO,5,4)) AS TEL_NO2,
+                SUBSTR(TEL_NO,9)  AS TEL_NO3,
+               
+                RTRIM(SUBSTR(CELL_NO,1,4)) AS CELL_NO1,
+                RTRIM(SUBSTR(CELL_NO,5,4)) AS CELL_NO2,
+                SUBSTR(CELL_NO,9)  AS CELL_NO3,
+               
+                RTRIM(SUBSTR(FAX_NO,1,4)) AS FAX_NO1,
+                RTRIM(SUBSTR(FAX_NO,5,4)) AS FAX_NO2,
+                SUBSTR(FAX_NO,9)  AS FAX_NO3,
+               
+                RTRIM(SUBSTR(REP_TEL_NO,1,4)) AS REP_TEL_NO1,
+                RTRIM(SUBSTR(REP_TEL_NO,5,4)) AS REP_TEL_NO2,
+                SUBSTR(REP_TEL_NO,9)  AS REP_TEL_NO3,
+
+				A.REG_DATE, A.MOD_DATE, A.L1_CD, B.TEAM_NM,B.TEAM_CD, B.L1_NM, B.L1_CD,
+				A.SM_INDUSTRY_ENTP_NM, A.SM_INDUSTRY_ENTP_PROD_NM, A.SM_INDUSTRY_ENTP_AMT,A.KIND_CD
+	 FROM TED_VENDOR_EDI A, TED_CONSULT_TEAM_L1CD B
+	 WHERE BMAN_NO = #businessNo#
+	 AND   A.TEAM_CD = B.TEAM_CD  
+     AND   A.L1_CD = B.L1_CD
+  </select>
+  
+   
+ 
+  <select id="selectVendorInfoApply2" resultMap="vendorApplyInfoMap" parameterClass="String">
+   	 /* Consult.selectVendorInfoApply2 */
+   	 SELECT 
+   	 		BMAN_NO,	SEQ,		COL_VAL,		DISP_YN		
+   	 
+   	 FROM TED_CONSULT_MYEST_VAL
+   	 WHERE BMAN_NO = #bmanNo#
+   	 
+  </select>
+  
+  <select id="selectVendorAnswer" resultMap="vendorAnswerInfoMap" parameterClass="String">
+   /* Consult.selectVendorAnswer */
+	SELECT BMAN_NO 
+		, B.KIND_CD AS KIND_CD
+		, SUBSTR(A.SEQ, 3, 1) AS SEQ
+		, B.QUERY_DESC
+		, COL_VAL
+	FROM TED_CONSULT_MYEST_VAL A
+		, TED_CONSULT_QUEST_LIST B
+	WHERE A.SEQ = B.SEQ
+	AND A.BMAN_NO = #bmanNo#  
+	
+  </select>
+ <insert id="insertNewVendorInfoApply">
+   /*Consult.insertNewVendorInfoApply*/
+ 	INSERT INTO TED_CONSULT_MYEST_VAL
+		(
+		 BMAN_NO,	SEQ,		QUERY_DESC,		COL_VAL, 	DISP_YN,	REG_DATE,		REG_ID,			MOD_DATE,	MOD_ID
+		 )
+	VALUES   		 
+		(
+		 #bmanNo#,	#seq#,		'',				#colVal#,	'Y',			CURRENT_TIMESTAMP(0),		'999999999',	CURRENT_TIMESTAMP(0),	'EDI'
+		)
+ </insert>
+ 
+  <insert id="insertNewVendorInfoNew2">
+ 			/* Consult.insertNewVendorInfoNew2*/
+  
+ 		INSERT INTO TED_VENDOR_EDI
+ 		 (
+ 		 	 BMAN_NO
+ 		 	,CHG_STATUS_CD
+ 		 	,KIND_CD
+ 		 	,REG_DATE
+ 		 	
+	 	 ) 
+         VALUES
+         (
+        	 #bmanNo#
+        	,#chgStatusCd#
+        	,#kindCd#
+        	, CURRENT_TIMESTAMP(0)
+          ) 
+ </insert> 
+ 
+ <update id="updateNewVendorAnswer">
+ 			/* Consult.updateNewVendorAnswer*/
+  
+ 		UPDATE TED_VENDOR_EDI
+ 		SET CHG_STATUS_CD = #chgStatusCd#,
+ 			KIND_CD = #kindCd#, 
+ 			MOD_DATE = CURRENT_TIMESTAMP(0)
+ 			
+ 		WHERE BMAN_NO = #bmanNo#	
+ 			
+</update> 
+ 
+ <update id="updateNewVendorInfoNew">
+  /*Consult.updateNewVendorInfoNew*/
+ 		UPDATE TED_CONSULT_MYEST_VAL
+ 		SET  
+ 			 BMAN_NO	  = #bmanNo#,
+ 			 SEQ		  = #seq#,
+ 			 QUERY_DESC	  =	'',
+ 			 COL_VAL 	  = #colVal#,
+ 			 DISP_YN	  = 'Y',
+ 			 REG_DATE	  =	CURRENT_TIMESTAMP(0),
+ 			 REG_ID		  =	'999999999',
+ 			 MOD_DATE	  = CURRENT_TIMESTAMP(0),
+ 			 MOD_ID       = 'EDI'
+ 		WHERE
+ 			BMAN_NO      = #bmanNo#
+ 		AND 	
+	 		SEQ			 = #seq#
+ 	
+ 		
+ </update>
+  <select id="selectVendorInfoApply" resultMap="vendorBasicInfoMapApply" parameterClass="String">
+   	 /* Consult.Consult.selectVendorInfoApply */
+   	 SELECT  	 BMAN_NO,       HND_NM, 		 CEO_NM, 		  BKIND_NM,   BTYP_NM, 	
+   		 		 ZIP_NO,   	    SPMN_ADDR_1_NM,  SPMN_ADDR_2_NM,  UTAKMN_NM,  TEL_NO, 
+   		 		 CELL_NO,     	EMAIL,     	 	 REG_DIVN_CD, 	  PWD,        CORPN_DIVN_CD, 	  
+   		 		 rpad(CORPN_RSDT_NO,13,'0') AS CORPN_RSDT_NO,FOU_YYYY,    	 CAP_AMT, 	      FTRY_TF,    MANFC_PRODS_NM, 
+   		 		 YY_SALE_AMT, 	MM_SALE_AMT,     A.REG_DATE,	  	  ORG_CD, 	  FAX_NO,        
+   		 		 CORPN_NM, 	    BMAN_KIND_CD,    ATCH_FILE_CD,    CNSL_RSLT_DIVN_CD, 	  
+   		 		 ENTSHP_RSLT_DIVN_CD,			 ENTSHP_PROC_CONTENT,  	      CHG_STATUS_CD,          
+   		 		 CORPN_NM,      REP_TEL_NO,      PWD,			  AFF_YN,	  HMPG_ADDR,
+   		 		 COM_CHAR_CD,   COM_CHAR_ETC_CONTENT,             LOTTE_AFF_TRD_CD,
+   		 		 LOTTE_AFF_TRD_ETC_CONTENT,      PECU_SBJT_CONTENT,
+   		 		 SUBSTR(EMAIL,0,INSTR(EMAIL,'@')-1) AS EMAIL1,
+                 SUBSTR(EMAIL,INSTR(EMAIL,'@')+1) AS EMAIL2,
+                 SUBSTR(ZIP_NO,0,3) AS ZIP_NO1, SUBSTR(ZIP_NO,3,3) AS ZIP_NO2,
+               
+                RTRIM(SUBSTR(TEL_NO,1,4)) AS TEL_NO1,
+                RTRIM(SUBSTR(TEL_NO,5,4)) AS TEL_NO2,
+                SUBSTR(TEL_NO,9)  AS TEL_NO3,
+               
+                RTRIM(SUBSTR(CELL_NO,1,4)) AS CELL_NO1,
+                RTRIM(SUBSTR(CELL_NO,5,4)) AS CELL_NO2,
+                SUBSTR(CELL_NO,9)  AS CELL_NO3,
+               
+                RTRIM(SUBSTR(FAX_NO,1,4)) AS FAX_NO1,
+                RTRIM(SUBSTR(FAX_NO,5,4)) AS FAX_NO2,
+                SUBSTR(FAX_NO,9)  AS FAX_NO3,
+               
+                RTRIM(SUBSTR(REP_TEL_NO,1,4)) AS REP_TEL_NO1,
+                RTRIM(SUBSTR(REP_TEL_NO,5,4)) AS REP_TEL_NO2,
+                SUBSTR(REP_TEL_NO,9)  AS REP_TEL_NO3,
+
+				A.REG_DATE, A.MOD_DATE
+				, A.L1_CD
+				,(select aa.L1_NM from TED_CONSULT_TEAM_L1CD aa where aa.L1_CD=A.L1_CD
+                    group by  aa.L1_CD,L1_NM ) as L1_NM
+                , C.TEAM_NM,C.TEAM_CD
+				--, B.L1_NM, B.L1_CD,
+				,A.SM_INDUSTRY_ENTP_NM, A.SM_INDUSTRY_ENTP_PROD_NM, A.SM_INDUSTRY_ENTP_AMT , A.PWD
+				,A.KIND_CD
+				,A.WISH_STORE
+				,A.ASIS_MYSTORECNT
+				,A.T_SUBTEAM_CD 
+				,A.UPLOAD_FOLDER
+	 FROM TED_VENDOR_EDI A  
+	 left outer join (
+                      select b.TEAM_CD,b.TEAM_NM from TED_CONSULT_TEAMCD b
+                      group by b.TEAM_CD,b.TEAM_NM                            
+                      ) c
+        on  A.TEAM_CD = c.TEAM_CD  
+	 WHERE BMAN_NO = #businessNo#
+  </select>  
+  
+   <select id="selectNewVendorInfoApply" resultMap="vendorBasicInfoMapApply" parameterClass="String">
+   	 /* Consult.selectNewVendorInfoApply */
+   	 SELECT  	 BMAN_NO,       HND_NM, 		 CEO_NM, 		  BKIND_NM,   BTYP_NM, 	
+   		 		 ZIP_NO,   	    SPMN_ADDR_1_NM,  SPMN_ADDR_2_NM,  UTAKMN_NM,  TEL_NO, 
+   		 		 CELL_NO,     	EMAIL,     	 	 REG_DIVN_CD, 	  PWD,        CORPN_DIVN_CD, 	  
+   		 		 rpad(CORPN_RSDT_NO,13,'0') AS CORPN_RSDT_NO,FOU_YYYY,    	 CAP_AMT, 	      FTRY_TF,    MANFC_PRODS_NM, 
+   		 		 YY_SALE_AMT, 	MM_SALE_AMT,     A.REG_DATE,	  	  ORG_CD, 	  FAX_NO,        
+   		 		 CORPN_NM, 	    BMAN_KIND_CD,    ATCH_FILE_CD,    CNSL_RSLT_DIVN_CD, 	  
+   		 		 ENTSHP_RSLT_DIVN_CD,			 ENTSHP_PROC_CONTENT,  	      CHG_STATUS_CD,          
+   		 		 CORPN_NM,      REP_TEL_NO,      PWD,			  AFF_YN,	  HMPG_ADDR,
+   		 		 COM_CHAR_CD,   COM_CHAR_ETC_CONTENT,             LOTTE_AFF_TRD_CD,
+   		 		 LOTTE_AFF_TRD_ETC_CONTENT,      PECU_SBJT_CONTENT,
+   		 		 SUBSTR(EMAIL,0,INSTR(EMAIL,'@')-1) AS EMAIL1,
+                 SUBSTR(EMAIL,INSTR(EMAIL,'@')+1) AS EMAIL2,
+                 SUBSTR(ZIP_NO,0,3) AS ZIP_NO1, SUBSTR(ZIP_NO,3,3) AS ZIP_NO2,
+               
+                RTRIM(SUBSTR(TEL_NO,1,4)) AS TEL_NO1,
+                RTRIM(SUBSTR(TEL_NO,5,4)) AS TEL_NO2,
+                SUBSTR(TEL_NO,9)  AS TEL_NO3,
+               
+                RTRIM(SUBSTR(CELL_NO,1,4)) AS CELL_NO1,
+                RTRIM(SUBSTR(CELL_NO,5,4)) AS CELL_NO2,
+                SUBSTR(CELL_NO,9)  AS CELL_NO3,
+               
+                RTRIM(SUBSTR(FAX_NO,1,4)) AS FAX_NO1,
+                RTRIM(SUBSTR(FAX_NO,5,4)) AS FAX_NO2,
+                SUBSTR(FAX_NO,9)  AS FAX_NO3,
+               
+                RTRIM(SUBSTR(REP_TEL_NO,1,4)) AS REP_TEL_NO1,
+                RTRIM(SUBSTR(REP_TEL_NO,5,4)) AS REP_TEL_NO2,
+                SUBSTR(REP_TEL_NO,9)  AS REP_TEL_NO3,
+
+				A.REG_DATE, A.MOD_DATE
+				, A.L1_CD
+				 ,(select aa.L1_NM from TED_CONSULT_TEAM_L1CD aa where aa.L1_CD=A.L1_CD
+                    group by  aa.L1_CD,L1_NM ) as L1_NM
+				, C.TEAM_NM,C.TEAM_CD
+				--, B.L1_NM, B.L1_CD,
+				,A.SM_INDUSTRY_ENTP_NM, A.SM_INDUSTRY_ENTP_PROD_NM, A.SM_INDUSTRY_ENTP_AMT
+				,KIND_CD,A.WISH_STORE,A.ASIS_MYSTORECNT,A.T_SUBTEAM_CD,A.UPLOAD_FOLDER
+	 FROM TED_VENDOR_EDI A  
+	 left outer join (
+                      select b.TEAM_CD,b.TEAM_NM from TED_CONSULT_TEAMCD b
+                      group by b.TEAM_CD,b.TEAM_NM                            
+                      ) c
+        on  A.TEAM_CD = c.TEAM_CD  
+	 WHERE BMAN_NO = #businessNo#
+  </select>  
+  
+  <resultMap id="vendorInfo" class="vendor">
+    <result property="bmanNo"  	column="BMAN_NO" />
+    <result property="regDivnCd" 	column="REG_DIVN_CD"    />
+    <result property="passwd" 	column="PWD" 	 />
+    <result property="chgStatusCd" column="CHG_STATUS_CD"  />
+    <result property="hndNm" 	column="HND_NM"  />
+    <result property="ceoNm" column="CEO_NM"  />
+  </resultMap>
+  
+ <select id="getVendorInfo" resultMap="vendorInfo" parameterClass="String">
+   	 SELECT 
+   	   BMAN_NO, REG_DIVN_CD, PWD, CHG_STATUS_CD, HND_NM, CEO_NM
+	 FROM TED_VENDOR_EDI
+	 WHERE BMAN_NO = #businessNo#
+  </select>
+ <select id="getVendorPassword" resultClass="integer" parameterClass="searchParam">
+   	 select count(*) cnt from TED_VENDOR_EDI
+	where bman_no = #businessNo#
+	and CEO_NM = #ceoName#
+	and EMAIL = #email#
+	and PWD is not null
+	 
+  </select>
+ 
+  <resultMap id="saleInfo" class="sale">
+    <result property="businessNo"  	    	column="BMAN_NO" />
+    <result property="otherStoreCode" 		column="SM_INDUSTRY_ENTP_CD"    />
+    <result property="enteredStoreCount" 	column="ENTSHP_STR_CNT" 	 />
+    <result property="marginRate1"    		column="NOR_MRGN_RATE"  />
+    <result property="marginRate2" 	 		column="EVT_MRGN_RATE"  />
+    <result property="otherStoreName" 		column="CD_NM"  />
+    <result property="subAmount" 			column="SUBSTN_AMT"  />
+    <result property="tradeTypeContent" 	column="TRD_TYPE_CONTENT"  />
+    <result property="pcost" 		 		column="PCOST"  />
+  </resultMap>
+ 
+ <select id="getVendorSaleInfo" resultMap="saleInfo" parameterClass="String">
+   	SELECT 
+		t.BMAN_NO, 			t.SM_INDUSTRY_ENTP_CD,   t.ENTSHP_STR_CNT , 
+		t.NOR_MRGN_RATE, 	t.EVT_MRGN_RATE, 		 t.PCOST,
+		t.SUBSTN_AMT, 		t.TRD_TYPE_CONTENT, 	 c.CD_NM
+	FROM  		TED_INDUSTRY_ENTRY_INFO t 
+	LEFT JOIN 	TET_CODE c
+		   ON   t.SM_INDUSTRY_ENTP_CD = c.MINOR_CD
+	WHERE t.BMAN_NO=#businessNo# and c.MAJOR_CD='OTH01'
+  </select>
+
+  <resultMap id="productInfo" class="vendorProduct">
+    <result property="businessNo"  	    	column="BMAN_NO" />
+    <result property="seq" 					column="SEQ"    />
+    <result property="sellCode" 			column="SELL_CD" 	 />
+    <result property="productName"    		column="PROD_NM"  />
+    <result property="productCost" 	  		column="PROD_PCOST"  />
+    <result property="productSalePrice" 	column="PROD_SALEPRC"  />
+    <result property="monthlyAverage" 		column="MM_AVG_SALE_AMT"  />
+    <result property="attachFileCode"   	column="ATCH_FILE_CD"  />
+    <result property="productDescription"   column="PROD_DESC"  />
+    <result property="atchFileFolder"       column="UPLOAD_FOLDER"  />
+  
+  </resultMap>
+  
+ <select id="getVendorProductInfo" resultMap="productInfo" parameterClass="String">
+   	  /*Consult.getVendorProductInfo*/
+   	SELECT 
+		T.BMAN_NO, 			  T.SEQ ,   		T.SELL_CD , 
+		T.PROD_NM, 			  T.PROD_PCOST,	 	T.PROD_SALEPRC,
+		T.MM_AVG_SALE_AMT, 	  T.ATCH_FILE_CD, 	T.PROD_DESC,
+		T.UPLOAD_FOLDER
+	FROM TED_NEW_COMPANY_PROD_INFO T
+	WHERE T.BMAN_NO=#businessNo# 
+	ORDER BY SEQ
+  </select>
+    
+    
+    <resultMap id="autionItem" class="aution">
+    <result property="bmanNo"  	    	column="BMAN_NO" />
+    <result property="prodSeqs" 		column="PROD_SEQS"    />
+    <result property="auDy" 			column="AU_DY" 	 />
+    <result property="l1Cd"    			column="L1_CD"  />
+    <result property="l1Nm" 	  		column="L1_NM"  />
+    <result property="prodNm" 			column="PROD_NM"  />
+    <result property="unit" 			column="UNIT"  />
+    <result property="startPrc"   		column="START_PRC"  />
+    <result property="qty"   			column="QTY"  />
+    <result property="detlContent"   	column="DETL_CONTENT"  />
+
+
+    
+  </resultMap>
+
+  
+   <select id="getVendorAutionItemInfo" resultMap="autionItem" parameterClass="aution">
+			/* Consult.getVendorAutionItemInfo*/
+			select 
+				 (SELECT BMAN_NO 
+				 FROM  TED_ENTAU_ITEM_VENDOR AA 
+				 WHERE AA.BMAN_NO=#bmanNo#
+				 AND AA.PROD_SEQS=B.PROD_SEQS
+				 ) AS BMAN_NO,		B.PROD_SEQS,   B.AU_DY,
+                       B.L1_CD,     B.L1_NM,       B.PROD_NM,
+                       B.UNIT,      B.START_PRC,   B.QTY,
+                       B.DETL_CONTENT
+                from   
+                       TED_ENTAU_ITEM B
+
+                where    B.USE_YN='Y'
+                and B.L1_CD=#l1Cd#
+                AND AU_DY BETWEEN TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD') AND TO_CHAR(CURRENT_TIMESTAMP(0)+60,'YYYYMMDD')
+                order by B.AU_DY ASC
+  </select>
+  
+  
+  
+    <select id="getVendorAutionItemInfoSum" resultMap="autionItem" parameterClass="String">
+    	  /*Consult.getVendorAutionItemInfoSum*/
+    	select A.BMAN_NO,       B.PROD_SEQS,       B.AU_DY,
+		       B.L1_CD,       B.L1_NM,       B.PROD_NM,
+		       B.UNIT,       B.START_PRC,       B.QTY,
+		       B.DETL_CONTENT
+		from   TED_ENTAU_ITEM_VENDOR A right outer join 
+		       TED_ENTAU_ITEM B
+	    on   A.PROD_SEQS=B.PROD_SEQS 
+		where    B.USE_YN='Y' 
+		and B.L1_CD in (
+						select L1_CD from TED_VENDOR_EDI
+						where BMAN_NO = #businessNo#
+		)
+		and BMAN_NO = #businessNo#
+		AND AU_DY BETWEEN TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD') AND TO_CHAR(CURRENT_TIMESTAMP(0)+60,'YYYYMMDD')
+		order by B.AU_DY ASC
+
+  </select>
+  
+  
+  
+  
+
+<update id="updateVendorPassword" parameterClass="searchParam">
+  /*Consult.updateVendorPassword*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET PWD       = #password#
+	 	 ,MOD_DATE  = CURRENT_TIMESTAMP(0)  
+   WHERE BMAN_NO = #businessNo#
+ </update>  
+ 
+ 
+  
+ <insert id="insertNewVendorInfo" parameterClass="vendor">
+   /*Consult.insertNewVendorInfo*/
+ 	INSERT INTO TED_VENDOR_EDI 
+		(
+		 CORPN_DIVN_CD,  BMAN_NO, 	     BMAN_KIND_CD, HND_NM, 	  CORPN_RSDT_NO, 
+		 CORPN_NM, 		 BKIND_NM, 	     BTYP_NM, 	   FAX_NO, 	  ZIP_NO, 		
+		 SPMN_ADDR_1_NM, SPMN_ADDR_2_NM, UTAKMN_NM,    CELL_NO,   EMAIL, 	
+		 TEL_NO, 	 	 REP_TEL_NO, 	 CEO_NM,       HMPG_ADDR, AFF_YN, 	
+		 ORG_CD, 		 REG_DIVN_CD, 	 REG_DATE,     CHG_STATUS_CD,  PWD, FOU_YYYY,
+		 PAPE_JGM_RSLT_DIVN_CD, CNSL_RSLT_DIVN_CD,     ENTSHP_RSLT_DIVN_CD,L1_CD
+		 )
+	VALUES   		 
+		(
+		 #corpnDivnCd#,  #bmanNo#, 	     #bmanKindCd#,   #hndNm#, 	  	#corpnRsdtNo#, 
+		 #corpnNm#, 	 #businessKind#, #businessType#, 
+		 rpad(#fax1#,4,' ')||rpad(#fax2#,4,' ')||rpad(#fax3#,4,' '),
+		 #zipNo#, 		
+		 #supplyAddr1#,  #supplyAddr2#,  #utakmanNm#,    
+		 rpad(#cell1#,4,' ')||rpad(#cell2#,4,' ')||rpad(#cell3#,4,' '),  
+		 #email#, 	
+		 rpad(#tel1#,4,' ')||rpad(#tel2#,4,' ')||rpad(#tel3#,4,' '), 	 	 
+		 rpad(#officetel1#,4,' ')||rpad(#officetel2#,4,' ')||rpad(#officetel3#,4,' '),
+		 #ceoNm#,        #homePageAddress#,   #affYn#, 	
+		 #orgCd#, 		 #regDivnCd#, 	 CURRENT_TIMESTAMP(0),     	 #chgStatusCd#,		  #passwd# , #foundationYear#,
+		 'M' , 'M', 'M',#l1Cd#
+		)
+ </insert>
+ 
+ 
+ 
+ <update id="updateVendorInfo" parameterClass="vendor">
+  /*Consult.updateVendorInfo*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+	 		 CORPN_DIVN_CD  = #corpnDivnCd# ,
+	 		 BMAN_KIND_CD   = #bmanKindCd#,    HND_NM   = #hndNm#, 	  
+	 		 CORPN_NM 		= #corpnNm#, 	   CORPN_RSDT_NO = 	 #corpnRsdtNo#,
+	 		 BKIND_NM       = #businessKind#,  BTYP_NM  = #businessType#, 	   
+	 		 FAX_NO         = rpad(#fax1#,4,' ')||rpad(#fax2#,4,' ')||rpad(#fax3#,4,' '),
+	 		 ZIP_NO   = '', 		
+			 SPMN_ADDR_1_NM = #supplyAddr1#,   
+			 SPMN_ADDR_2_NM = #supplyAddr2#, 
+			 UTAKMN_NM      = #utakmanNm#,     
+			 CELL_NO        = rpad(#cell1#,4,' ')||rpad(#cell2#,4,' ')||rpad(#cell3#,4,' '),   
+			 EMAIL          = #email#,		   
+			 TEL_NO         = rpad(#tel1#,4,' ')||rpad(#tel2#,4,' ')||rpad(#tel3#,4,' '), 	 	 
+			 REP_TEL_NO     = rpad(#officetel1#,4,' ')||rpad(#officetel2#,4,' ')||rpad(#officetel3#,4,' '),
+			 CEO_NM         = #ceoNm#,       
+			 HMPG_ADDR      = #homePageAddress#,  AFF_YN 	= #affYn#, 	
+			 ORG_CD         = #orgCd#, 	 	  	  MOD_DATE  = CURRENT_TIMESTAMP(0)  ,
+			 L1_CD         = #l1Cd#,              
+			 MANFC_PRODS_NM =  #mainProduct#,
+			 TEAM_CD = #teamCd#,
+			 YY_SALE_AMT 	  = #yearSaleAmount#, 
+			 WISH_STORE = #wishStore#,
+			 ASIS_MYSTORECNT=#asisMystorecnt#,
+			 T_SUBTEAM_CD=#tSubteamCd#,
+			 
+		     CHG_STATUS_CD='0'
+      
+       	--	 , PAPE_JGM_RSLT_DIVN_CD='M',
+        --	 CNSL_RSLT_DIVN_CD='M',
+        --	 ENTSHP_RSLT_DIVN_CD='M'
+        WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+ 
+ <update id="updateVendorSaleInfo" parameterClass="vendor">
+ 	 /*Consult.updateVendorSaleInfo*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+	 		 FOU_YYYY  		  = #foundationYear#,     CAP_AMT          = #capitalAmount#, 
+	 		 FTRY_TF   		  = #factoryType#,        MANFC_PRODS_NM   = #mainProduct#, 	  
+	 		 YY_SALE_AMT 	  = #yearSaleAmount#,     MM_SALE_AMT      = #monthSaleAmount#,  
+	 		 COM_CHAR_CD      = #companyCharCode#,	  COM_CHAR_ETC_CONTENT      = #companyDescription#, 	   
+	 		 LOTTE_AFF_TRD_CD = #lotteAffTradeCode#,  LOTTE_AFF_TRD_ETC_CONTENT = #lotteAffTradeContent#,
+	 		 SM_INDUSTRY_ENTP_NM = #smIndustryEntpNm#, SM_INDUSTRY_ENTP_PROD_NM = #smIndustryEntpProdNm#,
+	 		 SM_INDUSTRY_ENTP_AMT = #smIndustryEntpAmt#,
+			 MOD_DATE  		  = CURRENT_TIMESTAMP(0)  
+		 WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+ <select id="getVendorOtherStoreSaleInfoCount" resultClass="Integer" parameterClass="sale">
+   	 /*Consult.getVendorOtherStoreSaleInfoCount*/
+   	SELECT 
+		count(BMAN_NO) 
+	FROM  		TED_INDUSTRY_ENTRY_INFO  
+	WHERE BMAN_NO=#businessNo# and SM_INDUSTRY_ENTP_CD=#otherStoreCode#
+  </select>
+ 
+ 
+ <insert id="insertOtherStoreVendorSaleInfo" parameterClass="sale">
+ /*Consult.insertOtherStoreVendorSaleInfo*/
+ 	INSERT INTO  TED_INDUSTRY_ENTRY_INFO 
+ 		 ( 
+ 		 	 ENTSHP_STR_CNT,  NOR_MRGN_RATE,   EVT_MRGN_RATE,     
+ 		 	 PCOST, 	      SUBSTN_AMT,  	   TRD_TYPE_CONTENT,  
+			 BMAN_NO,		  SM_INDUSTRY_ENTP_CD,  	REG_DATE  		
+		 ) 
+		 VALUES
+		 (
+		 	  #enteredStoreCount#,  #marginRate1#,      #marginRate2#, 
+		 	  #pcost#,    			#subAmount#,  		#tradeTypeContent#,  
+		 	  #businessNo#, 		#otherStoreCode#,   CURRENT_TIMESTAMP(0)
+		 )  
+ </insert>
+ 
+ 
+ <update id="updateOtherStoreVendorSaleInfo" parameterClass="sale">
+ /*Consult.updateOtherStoreVendorSaleInfo*/
+ 	UPDATE TED_INDUSTRY_ENTRY_INFO 
+ 		 SET 
+	 		 ENTSHP_STR_CNT    = #enteredStoreCount#,  NOR_MRGN_RATE  = #marginRate1#, 
+	 		 EVT_MRGN_RATE     = #marginRate2#,    	   PCOST   		  = #pcost#, 	  
+	 		 SUBSTN_AMT 	   = #subAmount#, 		   MOD_DATE  	  =  CURRENT_TIMESTAMP(0),  		  
+			 TRD_TYPE_CONTENT  = #tradeTypeContent#
+		 WHERE BMAN_NO=#businessNo# and SM_INDUSTRY_ENTP_CD=#otherStoreCode#
+ </update>
+ 
+ 
+ <update id="updateVendorProductContent" parameterClass="vendor">
+  /*Consult.updateVendorProductContent*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 PECU_SBJT_CONTENT = #pecuSubjectContent#, 	  	 
+			 REG_DATE          = CURRENT_TIMESTAMP(0) 	
+			 <isNotEmpty property="attachFileCode" prepend=",">
+			 	ATCH_FILE_CD   = #attachFileCode#  	 
+			 </isNotEmpty>
+		 WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+  <update id="updateVendorProductContentApply" parameterClass="vendor">
+  /*Consult.updateVendorProductContentApply*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 PECU_SBJT_CONTENT = #pecuSubjectContent#, 	  	 
+			 REG_DATE          = CURRENT_TIMESTAMP(0) 	
+			 <isNotEmpty property="attachFileCode" prepend=",">
+			 	ATCH_FILE_CD   = #attachFileCode#  	 
+			 </isNotEmpty>
+			 <isNotEmpty property="uploadFolder" prepend=",">
+			 	UPLOAD_FOLDER   = #uploadFolder#  	 
+			 </isNotEmpty>
+			 
+			 
+		 WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+   <update id="updateVendorProductContentApplySupport" parameterClass="vendor">
+  /* Consult.updateVendorProductContentApplySupport*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 PECU_SBJT_CONTENT = #pecuSubjectContent#, 	  	 
+			 REG_DATE          = CURRENT_TIMESTAMP(0) 	
+		 WHERE BMAN_NO = #bmanNo#
+ </update>
+
+ 
+ 
+ 
+ 
+ <select id="getVendorProductInfoCount" resultClass="Integer" parameterClass="vendorProduct">
+   	 /*Consult.getVendorProductInfoCount*/
+   	SELECT 
+		count(BMAN_NO) 
+	FROM  		TED_NEW_COMPANY_PROD_INFO  
+	WHERE BMAN_NO = #businessNo# and SEQ = #seq#
+  </select>
+ 
+ 
+ 
+  <insert id="insertVendorProductInfo" parameterClass="vendorProduct">
+  /*Consult.insertVendorProductInfo*/
+ 		INSERT INTO TED_NEW_COMPANY_PROD_INFO  
+ 		 (
+	 		PROD_NM         , 	PROD_PCOST      ,	
+			PROD_SALEPRC    ,	PROD_DESC       ,	
+			REG_DATE        ,	MM_AVG_SALE_AMT ,
+			ATCH_FILE_CD    ,   BMAN_NO         , 
+            SEQ			    ,   SELL_CD
+          ) 
+         VALUES
+          (
+        	 #productName#,      #productCost#,	
+			 #productSalePrice#, #productDescription#,	
+			 CURRENT_TIMESTAMP(0),			 #monthlyAverage#,
+			 #attachFileCode#,   #businessNo#, 
+             #seq#,              #sellCode#
+          ) 
+ </insert>
+ 
+   <insert id="insertVendorProductInfoApply" parameterClass="vendorProduct">
+  /*Consult.insertVendorProductInfoApply*/
+ 		INSERT INTO TED_NEW_COMPANY_PROD_INFO  
+ 		 (
+	 		PROD_NM         ,
+			REG_DATE        ,	
+			ATCH_FILE_CD    ,   
+			BMAN_NO         , 
+            SEQ		        ,
+            UPLOAD_FOLDER	    
+          ) 
+         VALUES
+          (
+        	 #productName#,  
+			 CURRENT_TIMESTAMP(0),			
+			 #attachFileCode#,   
+			 #businessNo#, 
+             #seq#,    
+             #atchFileFolder#      
+          ) 
+ </insert> 
+  <update id="updateVendorProductInfo" parameterClass="vendorProduct">
+   /*Consult.updateVendorProductInfo*/
+ 	UPDATE TED_NEW_COMPANY_PROD_INFO  
+ 		 SET 
+	 		PROD_NM         = #productName#,    
+	 		PROD_PCOST      = #productCost#,	
+			PROD_SALEPRC    = #productSalePrice#,
+			PROD_DESC       = #productDescription#,	
+			MOD_DATE        = CURRENT_TIMESTAMP(0),
+			MM_AVG_SALE_AMT = #monthlyAverage#
+		 <isNotEmpty property="attachFileCode" prepend=",">
+			ATCH_FILE_CD    = #attachFileCode#
+		 </isNotEmpty>			 
+        WHERE BMAN_NO = #businessNo# and SEQ = #seq#
+ </update>
+ 
+ 
+ 
+  <update id="updateVendorProductInfoApply" parameterClass="vendorProduct">
+   /*Consult.updateVendorProductInfoApply*/
+ 	UPDATE TED_NEW_COMPANY_PROD_INFO  
+ 		 SET 
+	 		PROD_NM         = #productName#,    
+	 	
+			MOD_DATE        = CURRENT_TIMESTAMP(0)
+	
+		 <isNotEmpty property="attachFileCode" prepend=",">
+			ATCH_FILE_CD    = #attachFileCode#
+		 </isNotEmpty>
+		 	  <isNotEmpty property="atchFileFolder" prepend=",">
+			UPLOAD_FOLDER    = #atchFileFolder#
+		 </isNotEmpty>	
+		 
+        WHERE BMAN_NO = #businessNo# and SEQ = #seq#
+ </update>
+ 
+ 
+ 
+ <update id="updateVendorInfoFinalStep" parameterClass="vendor">
+ /*Consult.updateVendorInfoFinalStep*/
+  	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 CHG_STATUS_CD = 1,  	  	 
+			 REG_DATE      = CURRENT_TIMESTAMP(0)
+			, PAPE_JGM_RSLT_DIVN_CD = 'M'
+		    , PAPE_JGM_RETN_DIVN_CD = ''
+		    , PAPE_JGM_UTAKMN_TEL_NO = ''
+		    , PAPE_JGM_PROC_CONTENT = ''
+		    , PAPE_JGM_PROC_DY = ''
+    	   , CNSL_RSLT_DIVN_CD     = 'M'
+           , CNSL_RETN_DIVN_CD = ''
+           , CNSL_UTAKMN_TEL_NO = ''
+           , CNSL_PROC_CONTENT = ''
+           , CNSL_PROC_DY = ''
+    	   , ENTSHP_RSLT_DIVN_CD   = 'M'
+           , ENTSHP_RETN_DIVN_CD = ''
+           , ENTSHP_UTAKMN_TEL_NO = ''
+           , ENTSHP_PROC_CONTENT = ''
+           , ENTSHP_PROC_DY = ''           
+    	WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+ <update id="updateVendorInfoFinalStepApply" parameterClass="vendor">
+ /*Consult.updateVendorInfoFinalStepApply*/
+  	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 CHG_STATUS_CD = 1,  	  	 
+			 REG_DATE      = CURRENT_TIMESTAMP(0)
+			, PAPE_JGM_RSLT_DIVN_CD = 'M'
+		    , PAPE_JGM_RETN_DIVN_CD = ''
+		    , PAPE_JGM_UTAKMN_TEL_NO = ''
+		    , PAPE_JGM_PROC_CONTENT = ''
+		    , PAPE_JGM_PROC_DY = ''
+    	   , CNSL_RSLT_DIVN_CD     = 'M'
+           , CNSL_RETN_DIVN_CD = ''
+           , CNSL_UTAKMN_TEL_NO = ''
+           , CNSL_PROC_CONTENT = ''
+           , CNSL_PROC_DY = ''
+    	   , ENTSHP_RSLT_DIVN_CD   = 'M'
+           , ENTSHP_RETN_DIVN_CD = ''
+           , ENTSHP_UTAKMN_TEL_NO = ''
+           , ENTSHP_PROC_CONTENT = ''
+           , ENTSHP_PROC_DY = ''
+           , PWD = #passwd#          
+    	WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+ 
+ 
+ <update id="updateVendorInfoConsultResult" parameterClass="vendor">
+ /*Consult.updateVendorInfoConsultResult*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 CHG_STATUS_CD 			= 1,  	  REG_DATE   			= CURRENT_TIMESTAMP(0),
+			 PAPE_JGM_RSLT_DIVN_CD  = 'M',	  PAPE_JGM_RETN_DIVN_CD = NULL,
+			 PAPE_JGM_UTAKMN_TEL_NO = NULL,   PAPE_JGM_UTAKMN_NM    = NULL,
+			 PAPE_JGM_PROC_CONTENT  = NULL,	  PAPE_JGM_PROC_DY      = NULL,
+			 CNSL_RSLT_DIVN_CD      = 'M',   CNSL_RETN_DIVN_CD     = NULL,
+			 CNSL_UTAKMN_TEL_NO     = NULL
+			 
+		 WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+  <update id="updateVendorInfoConsultResultApply" parameterClass="vendor">
+ /*Consult.updateVendorInfoConsultResultApply*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 CHG_STATUS_CD 			= 1,  	  REG_DATE   			= CURRENT_TIMESTAMP(0),
+			 PAPE_JGM_RSLT_DIVN_CD  = 'M',	  PAPE_JGM_RETN_DIVN_CD = NULL,
+			 PAPE_JGM_UTAKMN_TEL_NO = NULL,   PAPE_JGM_UTAKMN_NM    = NULL,
+			 PAPE_JGM_PROC_CONTENT  = NULL,	  PAPE_JGM_PROC_DY      = NULL,
+			 CNSL_RSLT_DIVN_CD      = 'M',    CNSL_RETN_DIVN_CD     = NULL,
+			 CNSL_UTAKMN_TEL_NO     = NULL,   PWD = #passwd#  			 
+		 WHERE BMAN_NO = #bmanNo#
+ </update>
+ 
+ 
+ 
+ <select id="getResultInfo" resultClass="resultClass" parameterClass="String">
+   	    /* Consult.getResultInfo */
+   SELECT	BMAN_NO,HND_NM, CHG_STATUS_CD,
+	        TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE,
+		    NVL(PAPE_JGM_RSLT_DIVN_CD,'M') AS PAPE_JGM_RSLT_DIVN_CD,   
+		    PAPE_JGM_RETN_DIVN_CD,
+            PAPE_JGM_PROC_CONTENT,
+		    NVL(CNSL_RSLT_DIVN_CD, 'M') AS CNSL_RSLT_DIVN_CD,    
+		    CNSL_RETN_DIVN_CD,
+            CNSL_PROC_CONTENT,
+		    NVL(ENTSHP_RSLT_DIVN_CD, 'M') AS ENTSHP_RSLT_DIVN_CD,     
+		    ENTSHP_RETN_DIVN_CD,		
+            ENTSHP_PROC_CONTENT,	
+	        DECODE(PAPE_JGM_PROC_DY,'','',PAPE_JGM_PROC_DY) AS PAPE_JGM_PROC_DY,
+		    DECODE(CNSL_PROC_DY,'','',CNSL_PROC_DY) AS CNSL_PROC_DY,
+		    DECODE(ENTSHP_PROC_DY,'','',ENTSHP_PROC_DY) AS ENTSHP_PROC_DY
+	 FROM   TED_VENDOR_EDI
+	WHERE   BMAN_NO = #businessNo#
+	 
+  </select>
+  
+  <select id="processCk" resultClass="resultClass" parameterClass="String">
+    /*Consult.resultClass*/
+   	 SELECT   
+		     PAPE_JGM_RSLT_DIVN_CD,   
+		     CNSL_RSLT_DIVN_CD,    
+		     ENTSHP_RSLT_DIVN_CD    
+	 FROM   TED_VENDOR_EDI
+	WHERE   BMAN_NO = #businessNo#
+	 
+  </select>
+ 
+ <delete id="deleteAuctionProdItem" parameterClass="searchParam">
+  /*Consult.deleteAuctionProdItem*/
+ 	DELETE FROM TED_ENTAU_ITEM_VENDOR 
+     WHERE BMAN_NO   = #businessNo#
+
+ </delete>  
+ 
+
+ <delete id="deleteNewVendorAnswer">
+  /*Consult.deleteAuctionProdItem*/
+ 	DELETE FROM TED_CONSULT_MYEST_VAL 
+     WHERE BMAN_NO   = #bmanNo#
+
+ </delete>  
+
+
+
+ <insert id="insertAuctionProdItem" parameterClass="searchParam">
+  /*Consult.insertAuctionProdItem*/
+ 		INSERT INTO TED_ENTAU_ITEM_VENDOR
+ 		 (
+ 		 	 BMAN_NO
+ 		 	,PROD_SEQS
+ 		 	,REG_DATE
+ 		 	,MOD_DATE
+	 	 ) 
+         VALUES
+         (
+        	 #businessNo#
+        	,#prodArraySeq#
+        	,CURRENT_TIMESTAMP(0)
+        	,CURRENT_TIMESTAMP(0)
+          ) 
+ </insert> 
+ 
+ 
+  <insert id="insertNewVendorInfoNew" parameterClass="searchParam">
+ 			/* Consult.insertNewVendorInfoNew*/
+  
+ 		INSERT INTO TED_VENDOR_EDI
+ 		 (
+ 		 	 BMAN_NO
+ 		 	,PWD
+ 		 	,TEAM_CD
+ 		 	,REG_DATE
+	 	 ) 
+         VALUES
+         (
+        	 #businessNo#
+        	,#password#
+        	,#teamCode#
+        	,CURRENT_TIMESTAMP(0)
+          ) 
+ </insert> 
+ 
+  <update id="updateVendorInfoNew" parameterClass="searchParam">
+  /*Consult.updateVendorInfoNew*/
+ 	UPDATE TED_VENDOR_EDI 
+ 		 SET 
+			 BMAN_NO=#businessNo#
+ 		 	,PWD=#password# 		 	
+ 		<isNotEmpty property="teamCode" prepend=",">
+			TEAM_CD=#teamCode#
+		 </isNotEmpty>		 
+ 		 	,MOD_DATE=CURRENT_TIMESTAMP(0)
+		 WHERE BMAN_NO = #businessNo#
+ </update>
+ 
+ 
+</sqlMap>
+

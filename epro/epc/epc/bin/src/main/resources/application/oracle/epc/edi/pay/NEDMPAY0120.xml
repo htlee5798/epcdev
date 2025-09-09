@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0120">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	<!-- 점포별 거래실적 -->
+	<typeAlias alias="NEDMPAY0120VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0120VO" />
+	<resultMap id="NEDMPAY0120VOMap" class="NEDMPAY0120VO">
+		<result property="buyYm" 		column="BUY_YM" />
+		<result property="strCd" 		column="STR_CD" />
+		<result property="strNm" 		column="STR_NM" />
+		<result property="bmanNo" 		column="BMAN_NO" />
+		<result property="transBuyAmt" 		column="TRANS_BUY_AMT" />
+		<result property="transVat" 		column="TRANS_VAT" />
+		<result property="buyAmt" 		column="BUY_AMT" />
+		<result property="vat" 		column="VAT" />
+		<result property="payBuyAmt" 		column="PAY_BUY_AMT" />
+		<result property="payVat" 		column="PAY_VAT" />
+		<result property="remBuyAmt" 		column="REM_BUY_AMT" />
+		<result property="remVat" 		column="REM_VAT" />
+		<result property="remSum" 		column="REM_SUM" />
+		<result property="boru" 		column="BORU" />
+	</resultMap>
+
+	<select id="TSC_CRED_LED_STORE_DETAIL-SELECT01" resultMap="NEDMPAY0120VOMap" parameterClass="NEDMPAY0120VO">
+		/* NEDMPAY0120.TSC_CRED_LED_STORE_DETAIL-SELECT01 */
+		SELECT	A.BUY_YM
+			,	A.STR_CD
+			,	NVL(C.STR_NM,'no code') 	AS STR_NM
+			,	A.BMAN_NO
+			,	NVL(A.TRANS_BUY_AMT, 0) 	AS TRANS_BUY_AMT
+			,	NVL(A.TRANS_VAT, 0) 		AS TRANS_VAT
+			,	NVL(A.BUY_AMT, 0) 			AS BUY_AMT
+			,	NVL(A.VAT, 0) 				AS VAT
+			,	NVL(A.PAY_BUY_AMT, 0) 		AS PAY_BUY_AMT
+			,	NVL(A.PAY_VAT, 0) 			AS PAY_VAT
+			,	NVL(A.REM_BUY_AMT, 0) 		AS REM_BUY_AMT
+			,	NVL(A.REM_VAT, 0) 			AS REM_VAT
+			,	NVL((A.REM_BUY_AMT + A.REM_VAT), 0) AS REM_SUM
+			,	'' AS BORU
+		FROM
+		(
+			SELECT	SUBSTR(BUY_YM, 1, 4) || '-' || SUBSTR(BUY_YM, 5, 2)	AS BUY_YM
+				,	STR_CD
+				,	BMAN_NO
+				,	SUM(TRANS_BUY_AMT) AS TRANS_BUY_AMT
+				,	SUM(TRANS_VAT) AS TRANS_VAT
+				,	SUM(BUY_AMT) AS BUY_AMT
+				,	SUM(VAT) AS VAT
+				,	SUM(PAY_BUY_AMT) AS PAY_BUY_AMT
+				,	SUM(PAY_VAT) AS PAY_VAT
+				,	SUM(REM_BUY_AMT) AS REM_BUY_AMT
+				,	SUM(REM_VAT) AS REM_VAT
+				,	(SUM(REM_BUY_AMT) + SUM(REM_VAT)) AS REM_SUM
+			FROM 	TPC_CRED_BUY_LED
+			WHERE 	BUY_YM BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+				<isEmpty property="searchEntpCd">
+					<isNotEmpty  property="venCds"  prepend="AND">
+						<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+								
+				<isNotEmpty prepend="AND" property="searchEntpCd">
+					VEN_CD = #searchEntpCd#
+				</isNotEmpty>
+				
+				<isNotEmpty  property="searchStoreAl"  prepend="AND">
+					<iterate prepend="STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+						#searchStoreAl[]#
+					</iterate>
+				</isNotEmpty>
+			GROUP BY BUY_YM, BMAN_NO, STR_CD
+		) A 
+		LEFT OUTER JOIN
+		(
+			SELECT	AA.CRED_BUY_APPLY_MM
+				,	AA.STR_CD
+				,	REPLACE((MAX(AA.ACCT_NM_A) || MAX(AA.ACCT_NM_B) || MAX(AA.ACCT_NM_C) || MAX(AA.ACCT_NM_D) || MAX(AA.ACCT_NM_E) ||
+							MAX(AA.ACCT_NM_F) || MAX(AA.ACCT_NM_G) || MAX(AA.ACCT_NM_H) || MAX(AA.ACCT_NM_I) || MAX(AA.ACCT_NM_J)) ,' ',''  ) AS BORU
+			FROM
+			(
+				SELECT	A.CRED_BUY_APPLY_MM AS CRED_BUY_APPLY_MM
+					,	A.VEN_CD AS VEN_CD
+					,	A.STR_CD AS STR_CD
+					,	DECODE(B.ACCT_CD,'63',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_A
+					,	DECODE(B.ACCT_CD,'64',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_B
+					,	DECODE(B.ACCT_CD,'65',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_C
+					,	DECODE(B.ACCT_CD,'66',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_D
+					,	DECODE(B.ACCT_CD,'67',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_E
+					,	DECODE(B.ACCT_CD,'68',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_F
+					,	DECODE(B.ACCT_CD,'69',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_G
+					,	DECODE(B.ACCT_CD,'70',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_H
+					,	DECODE(B.ACCT_CD,'71',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_I
+					,	DECODE(B.ACCT_CD,'72',MAX(B.ACCT_NM || ' '), ' ' ) AS ACCT_NM_J
+				FROM 	TPC_SUB_AGG A INNER JOIN TPC_ACCOUNT B ON A.ACCT_CD = B.ACCT_CD AND B.ACCT_CD IN ('63','64','65','66','67','68','69','71','72','73')
+				WHERE 	A.SUB_MM BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+					<isEmpty property="searchEntpCd">
+						<isNotEmpty  property="venCds"  prepend="AND">
+							<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					</isEmpty>
+
+					<isNotEmpty prepend="AND" property="searchEntpCd">
+						VEN_CD = #searchEntpCd#
+					</isNotEmpty>
+					
+					<isNotEmpty  property="searchStoreAl"  prepend="AND">
+						<iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+							#searchStoreAl[]#
+						</iterate>
+					</isNotEmpty>
+					
+				GROUP BY A.CRED_BUY_APPLY_MM, A.VEN_CD, A.STR_CD, B.ACCT_CD
+			) AA
+			GROUP BY AA.CRED_BUY_APPLY_MM, AA.STR_CD
+		) B ON A.STR_CD = B.STR_CD AND A.BUY_YM = B.CRED_BUY_APPLY_MM 
+		INNER JOIN STORE C ON C.STR_CD = A.STR_CD
+		ORDER BY A.BUY_YM, A.STR_CD
+	</select>
+
+</sqlMap>

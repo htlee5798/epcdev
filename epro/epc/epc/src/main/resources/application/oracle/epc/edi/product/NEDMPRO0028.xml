@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0028">
+	<typeAlias alias="nEDMPRO0028VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0028VO" />		<!-- ESG 항목 등록 조회 VO -->
+	<typeAlias alias="CommonFileVO"			type="com.lottemart.epc.common.model.CommonFileVO" 		/>
+	
+	<!-- ESG 항목 조회 Map -->	
+	<resultMap id="selectNewProdEsgMap"		class="nEDMPRO0028VO">
+		<result column="PGM_ID"				property="pgmId" 		/>	<!-- 신규상품코드 -->
+		<result column="ESG_GBN"			property="esgGbn" 		/>	<!-- ESG 인증구분 코드 -->
+		<result column="ESG_AUTH"			property="esgAuth" 		/>	<!-- ESG 인증유형 코드 -->
+		<result column="ESG_AUTH_DTL"		property="esgAuthDtl" 	/>	<!-- 상세인증유형코드 -->
+		<result column="ESG_GBN_NM"			property="esgGbnNm" 	/>	<!-- ESG 인증구분명 -->
+		<result column="ESG_AUTH_NM"		property="esgAuthNm" 	/>	<!-- ESG 인증유형명 -->
+		<result column="ESG_AUTH_DTL_NM"	property="esgAuthDtlNm" />	<!-- 상세인증유형명 -->
+		<result column="ESG_FR_DT"			property="esgFrDt" 		/>	<!-- 인증시작일 -->
+		<result column="ESG_TO_DT"			property="esgToDt" 		/>	<!-- 인증종료일 -->
+		<result column="ESG_FILE_ID"		property="esgFileId" 	/>	<!-- 인증서 첨부파일 ID -->
+		<result column="IF_DT"				property="ifDt" 		/>	<!-- 인터페이스 일시 -->
+		<result column="REG_ID"				property="regId" 		/>	<!-- 등록아이디 -->
+		<result column="REG_DATE"			property="regDate" 		/>	<!-- 등록일시 -->
+		<result column="MOD_ID"				property="modId" 		/>	<!-- 수정아이디 -->
+		<result column="MOD_DATE"			property="modDate" 		/>	<!-- 수정일시 -->
+		<result column="ESG_YN"				property="esgYn" 		/>	<!-- ESG 상품여부 -->
+		<result column="ESG_EARTH"			property="esgEarth" 	/>	<!-- RE:EARTH 로고 사용유무 -->
+		<result column="SAVE_FILE_ID"		property="saveFileId" />	<!-- sever 등록된 파일명 -->
+		<result column="DEL_YN"				property="delYn" 		/>	<!-- 삭제여부 -->
+		<result column="ORG_FILE_NM"		property="orgFileNm" 	/>	<!-- 원본파일명 -->
+		<result column="SAVE_FILE_NM"		property="saveFileNm" 	/>  <!-- 저장파일명 -->
+		<result column="FILE_SIZE"			property="fileSize" 	/>  <!-- 파일사이즈 -->
+		<result column="FILE_PATH"			property="filePath" 	/>  <!-- 파일경로 -->
+		<result column="FILE_EXT"			property="fileExt" 		/>  <!-- 파일확장자명 -->
+		<result column="ESG_DT_FG"			property="esgDtFg" 		/>  <!-- ESG 인증기간 필수여부 -->
+	</resultMap>
+
+	<!-- 대분류(유형) 조회 Map -->	
+	<resultMap id="selectEsgMstlMap"		class="nEDMPRO0028VO">
+		<result column="L_LV_CD"			property="lLvCdn" 		/>	<!-- ESG 인증구분 코드 -->
+		<result column="L_LV_NM"			property="lLvNmn" 		/>	<!-- ESG 인증구분 코드명 -->
+	</resultMap>
+
+	<!-- 중분류(인증유형) 조회 Map -->	
+	<resultMap id="selectEsgMstMMap"		class="nEDMPRO0028VO">
+		<result column="L_LV_CD"			property="lLvCdn" 		/>	<!-- ESG 인증구분 코드 -->
+		<result column="M_LV_CD"			property="mLvCdn" 		/>	<!-- ESG 인증유형 코드 -->
+		<result column="M_LV_NM"			property="mLvNmn" 		/>	<!-- ESG 인증유형 코드명 -->
+	</resultMap>
+
+	<!-- 소분류(인증상세유형) 조회 Map -->	
+	<resultMap id="selectEsgMstSMap"		class="nEDMPRO0028VO">
+		<result column="L_LV_CD"			property="lLvCdn" 		/>	<!-- ESG 인증구분 코드 -->
+		<result column="M_LV_CD"			property="mLvCdn" 		/>	<!-- ESG 인증유형 코드 -->
+		<result column="S_LV_CD"			property="sLvCdn" 		/>	<!-- 상세인증유형코드 -->
+		<result column="S_LV_NM"			property="sLvNmn" 		/>	<!-- 상세인증유형코드명 -->
+		<result column="ESG_DT_FG"			property="esgDtFg" 		/>	<!-- ESG 인증기간 필수여부 -->
+	</resultMap>
+
+	<!-- 파일정보조회 resultMap -->
+	<resultMap id="selectFileInfoMap" class="CommonFileVO">
+		<result column="DOC_NO"				property="fileId" 		/>	<!-- 파일ID -->
+		<result column="DES_FILE_NAME"		property="tempFileName" />	<!-- 서버저장파일명 -->
+		<result column="SRC_FILE_NAME"		property="fileNmae" 	/>	<!-- 원본파일명 -->
+		<result column="FILE_PATH"			property="filePath" 	/>  <!-- 파일경로 -->
+	</resultMap>
+	
+    <!-- ESG 항목 카운터 조회 -->
+    <select id="selectNewProdEsgListCount" parameterClass="nEDMPRO0028VO" resultClass="Integer" >
+    	/* NEDMPRO0028.selectNewProdEsgListCount */
+	    SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_NEW_PROD_REG A
+		INNER JOIN TPC_NEW_PROD_ESG B ON A.PGM_ID = B.PGM_ID AND B.DEL_YN = 'N'
+		INNER JOIN ESG_MST C ON B.ESG_GBN = C.L_LV_CD AND B.ESG_AUTH = C.M_LV_CD AND B.ESG_AUTH_DTL = C.S_LV_CD
+		LEFT OUTER JOIN TPC_PROD_ESG_FILE D ON B.ESG_FILE_ID = D.ESG_FILE_ID
+		WHERE B.PGM_ID = #pgmId#
+		<isEqual property="editYn" compareValue="Y">	<!-- 저장 가능한 상태일 경우, 삭제되지 않은 항목만 조회가능하게 한다. -->
+		AND (C.DEL_FG IS NULL OR C.DEL_FG != 'X')	/* 삭제되지 않은 항목만 조회 */
+		</isEqual>
+    </select>
+    
+    <!-- ESG 항목 등록 조회 -->
+    <select id="selectNewProdEsgList" parameterClass="nEDMPRO0028VO" resultMap="selectNewProdEsgMap" >
+    /* NEDMPRO0028.selectNewProdEsgList */
+		SELECT                                     
+			  B.PGM_ID					/* 신규상품코드		*/
+			, B.ESG_GBN                 /* ESG 인증구분 코드*/
+			, B.ESG_AUTH                /* ESG 인증유형 코드*/
+			, B.ESG_AUTH_DTL            /* 상세인증유형코드	*/
+			, FN_GET_ESG_GBN_NM_NEW('1', B.ESG_GBN, NULL, NULL) AS ESG_GBN_NM			/* ESG 인증구분명 */
+			, FN_GET_ESG_GBN_NM_NEW('2', B.ESG_GBN, B.ESG_AUTH, NULL) AS ESG_AUTH_NM			/* ESG 인증유형명 */
+			, FN_GET_ESG_GBN_NM_NEW('3', B.ESG_GBN, B.ESG_AUTH, B.ESG_AUTH_DTL) AS ESG_AUTH_DTL_NM	/* ESG 인증상세유형명 */
+			, NULLIF(B.ESG_FR_DT, '') AS ESG_FR_DT /* 인증시작일	*/
+			, NULLIF(B.ESG_TO_DT, '') AS ESG_TO_DT /* 인증종료일	*/
+			, B.ESG_FILE_ID             /* 인증서 첨부파일 ID*/
+			, B.IF_DT                   /* 인터페이스 일시	*/
+			, A.ESG_YN                  /* ESG 상품여부	*/
+			, A.ESG_EARTH               /* RE:EARTH 로고 사용유무 */
+			, B.DEL_YN               	/* 삭제여부		*/
+			, TO_CHAR(B.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE  /* 수정일시	*/
+			, B.MOD_ID                   /* 수정자아이디	*/
+			, TO_CHAR(B.REG_DATE,'YYYY-MM-DD') AS REG_DATE  /* 등옥일시	*/
+			, B.REG_ID                   /* 등록자아이디	*/
+			, B.ESG_FILE_ID AS SAVE_FILE_ID /* 서버에 등록된 파일명	*/
+			, D.ORG_FILE_NM				/* 원본파일명		*/
+			, D.SAVE_FILE_NM            /* 저장파일명		*/
+			, D.FILE_SIZE               /* 파일사이즈		*/
+			, D.FILE_PATH               /* 파일경로		*/
+			, D.FILE_EXT                /* 파일확장자명		*/
+			, C.ESG_DT_FG				/* 인증기간 필수입력여부 */
+		FROM TPC_NEW_PROD_REG A
+		INNER JOIN TPC_NEW_PROD_ESG B ON A.PGM_ID = B.PGM_ID AND B.DEL_YN = 'N'
+		INNER JOIN ESG_MST C ON B.ESG_GBN = C.L_LV_CD AND B.ESG_AUTH = C.M_LV_CD AND B.ESG_AUTH_DTL = C.S_LV_CD
+		LEFT OUTER JOIN TPC_PROD_ESG_FILE D ON B.ESG_FILE_ID = D.ESG_FILE_ID
+		WHERE B.PGM_ID = #pgmId#
+		<isEqual property="editYn" compareValue="Y">	<!-- 저장 가능한 상태일 경우, 삭제되지 않은 항목만 조회가능하게 한다. -->
+		AND (C.DEL_FG IS NULL OR C.DEL_FG != 'X')	/* 삭제되지 않은 항목만 조회 */
+		</isEqual>
+		ORDER BY B.REG_DATE DESC
+    </select>
+	
+	<!-- 대분류(유형) 조회 -->
+	<select id="selectEsgMstlList" parameterClass="nEDMPRO0028VO" resultMap="selectEsgMstlMap" >
+	/* NEDMPRO0028.selectEsgMstLList */
+		SELECT L_LV_CD, L_LV_NM 
+		FROM ESG_MST
+		WHERE (DEL_FG != 'X' OR DEL_FG IS NULL)
+		GROUP BY L_LV_CD, L_LV_NM
+		ORDER BY L_LV_CD
+	</select>
+	
+	<!-- 중분류(인증유형) 조회 -->
+	<select id="selectEsgMstMList" parameterClass="nEDMPRO0028VO" resultMap="selectEsgMstMMap" >
+	/* NEDMPRO0028.selectEsgMstMList */
+		<!-- SELECT M_LV_CD, M_LV_NM 
+		FROM ESG_MST
+		GROUP BY M_LV_CD, M_LV_NM
+		ORDER BY M_LV_CD -->
+		SELECT L_LV_CD, M_LV_CD, M_LV_NM 
+		FROM ESG_MST
+		WHERE (DEL_FG != 'X' OR DEL_FG IS NULL)
+		<isNotEmpty property="srchEsgGbn">
+			AND L_LV_CD = #srchEsgGbn#
+		</isNotEmpty>
+		GROUP BY L_LV_CD, M_LV_CD, M_LV_NM
+		ORDER BY L_LV_CD, M_LV_CD
+	</select>
+	
+	<!-- 소분류(인증상세유형) 조회 -->
+	<select id="selectEsgMstSList" parameterClass="nEDMPRO0028VO" resultMap="selectEsgMstSMap" >
+	/* NEDMPRO0028.selectEsgMstSList */
+		<!-- SELECT S_LV_CD, S_LV_NM 
+		FROM ESG_MST
+		GROUP BY S_LV_CD, S_LV_NM
+		ORDER BY S_LV_CD -->
+		SELECT L_LV_CD, M_LV_CD, S_LV_CD, S_LV_NM, ESG_DT_FG 
+		FROM ESG_MST
+		WHERE (DEL_FG != 'X' OR DEL_FG IS NULL)
+		<isNotEmpty property="srchEsgGbn">
+			<isNotEmpty  property="srchEsgAuth">
+			AND L_LV_CD = #srchEsgGbn#
+			AND M_LV_CD = #srchEsgAuth#
+			</isNotEmpty>
+		</isNotEmpty>
+		GROUP BY L_LV_CD, M_LV_CD, S_LV_CD, S_LV_NM
+		ORDER BY L_LV_CD, M_LV_CD, S_LV_CD
+	</select>
+	
+	<!-- ESG 항목 등록 -->
+	<insert id="mergeNewProdEsg" parameterClass="nEDMPRO0028VO">	  
+    	/*NEDMPRO0028.mergeNewProdEsg*/
+    	
+    	MERGE INTO TPC_NEW_PROD_ESG A
+			USING (
+				SELECT
+						#pgmId#		AS pgmId		/* 신규상품코드 */
+					, 	#esgGbn#	AS esgGbn		/* ESG 인증구분 코드 */
+					,	#esgAuth#	AS esgAuth		/* ESG 인증유형 코드 */
+					,	#esgAuthDtl# AS esgAuthDtl	/* 상세인증유형코드 */
+			) B
+				on ( 		A.PGM_ID = B.pgmId 
+						AND A.ESG_GBN = B.esgGbn 
+						AND A.ESG_AUTH = B.esgAuth 
+						AND A.ESG_AUTH_DTL = B.esgAuthDtl
+					)
+			WHEN MATCHED THEN
+				UPDATE SET
+					  DEL_YN		= #delYn#
+					, MOD_DATE      = NOW()   
+					, MOD_ID        = #workId#
+					<isNotEqual property="esgFrDt" compareValue="">
+					, ESG_FR_DT		= #esgFrDt#
+					</isNotEqual>
+					<isNotEqual property="esgToDt" compareValue="">
+					, ESG_TO_DT		= #esgToDt#
+					</isNotEqual>
+					<isNotEqual property="esgFileId" compareValue="">
+					, ESG_FILE_ID	= #esgFileId#
+					</isNotEqual>
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  PGM_ID
+					, ESG_GBN
+					, ESG_AUTH
+					, ESG_AUTH_DTL
+					<isNotEqual property="esgFrDt" compareValue="">
+					, ESG_FR_DT
+					</isNotEqual>
+					<isNotEqual property="esgToDt" compareValue="">
+					, ESG_TO_DT
+					</isNotEqual>
+					<isNotEqual property="esgFileId" compareValue="">
+					, ESG_FILE_ID
+					</isNotEqual>
+					, DEL_YN
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) values (
+					  #pgmId#
+					, #esgGbn#
+					, #esgAuth#
+					, #esgAuthDtl#
+					<isNotEqual property="esgFrDt" compareValue="">
+					, #esgFrDt#
+					</isNotEqual>
+					<isNotEqual property="esgToDt" compareValue="">
+					, #esgToDt#
+					</isNotEqual>
+					<isNotEqual property="esgFileId" compareValue="">
+					, #esgFileId#
+					</isNotEqual>
+					, 'N'
+					, NOW()
+					, #workId#
+					, NOW()
+					, #workId#
+				);
+ 	</insert>
+ 	
+	<!-- ESG 첨부파일 등록 -->
+	<insert id="mergeProdEsgFile" parameterClass="nEDMPRO0028VO">	  
+    	/*NEDMPRO0028.mergeProdEsgFile*/
+    	MERGE INTO TPC_PROD_ESG_FILE A
+			USING (
+				SELECT
+						#esgFileId#		AS esgFileId	/* ESG 인증서 첨부파일ID */
+			) B
+				ON ( A.ESG_FILE_ID = B.esgFileId )
+			WHEN MATCHED THEN
+				UPDATE SET
+					  MOD_DATE      = NOW()   
+					, MOD_ID        = #workId#
+					, ORG_FILE_NM	= #orgFileNm#
+					, SAVE_FILE_NM	= #saveFileNm#
+					, FILE_SIZE		= CAST(#fileSize# AS INTEGER)
+					, FILE_PATH		= #filePath#
+					, FILE_EXT		= #fileExt#
+					<!-- SFTP 전송정보 초기화 -->
+					, SEND_YN		= 'N'
+					, SEND_DATE		= NULL
+					, SEND_PATH		= NULL
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  ESG_FILE_ID
+					, ORG_FILE_NM
+					, SAVE_FILE_NM
+					, FILE_SIZE
+					, FILE_PATH
+					, FILE_EXT
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) VALUES (
+					  #esgFileId#
+					, #orgFileNm#
+					, #saveFileNm#
+					, CAST(#fileSize# AS INTEGER)
+					, #filePath#
+					, #fileExt#
+					, NOW()
+					, #workId#
+					, NOW()
+					, #workId#
+				);
+ 	</insert>
+	
+	<!-- 상품 마스터 update -->
+	<update id="updateNewProdReg" parameterClass="nEDMPRO0028VO">
+	/* NEDMPRO0028.updateNewProdReg */
+	UPDATE TPC_NEW_PROD_REG 
+	SET   ESG_YN	= #esgYn#
+		, ESG_EARTH	= #esgEarth#
+		, MOD_DATE 	= NOW()
+		, MOD_ID 	= #workId#
+	WHERE PGM_ID 	= #pgmId#
+	</update>
+	
+	<!-- ESG 항목 삭제 update -->
+	<update id="updateNewProdEsg" parameterClass="nEDMPRO0028VO">
+	/* NEDMPRO0028.updateNewProdEsg */
+	UPDATE TPC_NEW_PROD_ESG 
+	SET   DEL_YN	= #delYn#
+		, MOD_DATE 	= NOW()
+		, MOD_ID 	= #workId#
+	WHERE PGM_ID 	= #pgmId#
+	</update>
+	
+	<!-- 다운로드 파일 조회 -->
+	<select id="selectProdEsgFile" parameterClass="CommonFileVO" resultMap="selectFileInfoMap" >
+	/* NEDMPRO0028.selectProdEsgFile */
+	SELECT 
+		  ESG_FILE_ID	AS DOC_NO			/* 파일ID */
+		, ORG_FILE_NM	AS SRC_FILE_NAME	/* 원본파일명 */
+		, SAVE_FILE_NM	AS DES_FILE_NAME	/* 서버저장파일명 */
+		, FILE_PATH		AS FILE_PATH		/* 파일경로 */
+		FROM  TPC_PROD_ESG_FILE
+		WHERE ESG_FILE_ID = #fileId#
+	</select>
+	
+	<!-- ESG 파일정보 -->
+	<resultMap id="esgFileMap" class="nEDMPRO0028VO">
+		<result column="ESG_FILE_ID"		property="esgFileId" /> 		<!-- 첨부파일아이디 -->
+		<result column="ORG_FILE_NM"		property="orgFileNm" /> 		<!-- 원본파일명 -->
+		<result column="SAVE_FILE_NM"		property="saveFileNm" /> 		<!-- 저장파일명 -->
+		<result column="FILE_SIZE"			property="fileSize" /> 			<!-- 파일사이즈 -->
+		<result column="FILE_PATH"			property="filePath" /> 			<!-- 파일경로 -->
+		<result column="FILE_EXT"			property="fileExt" /> 			<!-- 확장자명 -->
+	</resultMap>
+	
+	<!-- ESG 파일정보 조회 -->
+	<select id="selectEsgFileInfo" parameterClass="nEDMPRO0028VO" resultMap="esgFileMap">
+		/* NEDMPRO0028.selectEsgFileInfo */
+		SELECT
+			ESG_FILE_ID			/* 첨부파일아이디 */
+			, ORG_FILE_NM		/* 원본파일명 */
+			, SAVE_FILE_NM		/* 저장파일명 */
+			, FILE_SIZE			/* 파일사이즈 */
+			, FILE_PATH			/* 파일경로 */
+			, FILE_EXT			/* 확장자명 */
+		FROM TPC_PROD_ESG_FILE
+		WHERE ESG_FILE_ID = #esgFileId#
+	</select>
+	
+	<!-- ESG 인증기간 필수여부 확인 -->
+	<select id="selectChkEsgDtFg" parameterClass="nEDMPRO0028VO" resultClass="String">
+		/* NEDMPRO0028.selectEsgFileInfo */
+		SELECT NULLIF(A.ESG_DT_FG, '') AS ESG_DT_FG
+		FROM ESG_MST A
+		WHERE A.L_LV_CD = #esgGbn#
+		AND A.M_LV_CD = #esgAuth#
+		AND A.S_LV_CD = #esgAuthDtl#
+	</select>
+	
+	<!-- 항목삭제된 ESG정보 제거 -->
+	<update id="updateCtgDelEsgInfo" parameterClass="nEDMPRO0028VO">
+		/* NEDMPRO0028.updateCtgDelEsgInfo */
+		UPDATE TPC_NEW_PROD_ESG A
+		SET DEL_YN = 'Y' 
+			, MOD_ID = #workId#
+			, MOD_DATE = NOW()
+		FROM ESG_MST B
+		WHERE A.ESG_GBN = B.L_LV_CD 
+		AND A.ESG_AUTH = B.M_LV_CD 
+		AND A.ESG_AUTH_DTL = B.S_LV_CD 
+		AND B.DEL_FG = 'X'			/* ESG 항목 삭제된 것만 조회 */
+		AND A.DEL_YN = 'N'			/* 등록한 ESG 인증정보 중 삭제되지 않은 건 조회 */
+		AND A.PGM_ID = #pgmId#
+	</update>
+	
+</sqlMap>	

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCPPRD0013">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmprd0011VO" type="com.lottemart.epc.product.model.PSCMPRD0011VO" />
+	
+	<resultMap id="scheduleDetail" class="com.lottemart.epc.product.model.PSCMPRD0011VO">
+		<result property="scdlSeqs" column="SCDL_SEQS"/>
+		<result property="vendorId" column="VENDOR_ID"/>
+		<result property="vendorNm" column="VENDOR_NM"/>
+		<result property="rservStartDy" column="RSERV_START_DY"/>
+		<result property="rservStartTm" column="RSERV_START_TM"/>
+		<result property="rservEndDy" column="RSERV_END_DY"/>
+		<result property="rservEndTm" column="RSERV_END_TM"/>
+		<result property="cellNo" column="CELL_NO"/>
+		<result property="scdlMemo" column="SCDL_MEMO"/>
+		<result property="regDate" column="REG_DATE"/>
+		<result property="regId" column="REG_ID"/>
+		<result property="modDate" column="MOD_DATE"/>
+		<result property="modId" column="MOD_ID"/>
+	</resultMap>
+	
+	<insert id="insertSchedulePopup">
+	/*	PSCPPRD0013.insertSchedule	*/
+		INSERT INTO TOR_SCDL_MGR ( 
+			SCDL_SEQS,
+			VENDOR_ID,
+			RSERV_START_DY,
+			RSERV_START_TM,
+			RSERV_END_DY,
+			RSERV_END_TM,
+			CELL_NO,
+			SCDL_MEMO,
+			REG_DATE,
+			REG_ID,
+			MOD_DATE,
+			MOD_ID
+		) VALUES (
+			LPAD(TO_CHAR((SELECT TO_NUMBER(NVL(MAX(SCDL_SEQS),0)+1) FROM TOR_SCDL_MGR)), 9, '0'),
+			#vendorId#,
+			#rservStartDy#,
+			#rservStartTm#,
+			#rservStartDy#,
+			#rservEndTm#,
+			#cellNo#,
+			#scdlMemo#,
+			CURRENT_TIMESTAMP(0),
+			#vendorId#,
+			CURRENT_TIMESTAMP(0),
+			#vendorId#
+		)
+	</insert>
+	
+	<select id="selectSchedulePopup" resultMap="scheduleDetail">
+	/*	PSCPPRD0013.selectSchedule	*/
+	SELECT  SCDL_SEQS,
+			VENDOR_ID,
+			(SELECT SUB.VENDOR_NM FROM TVE_VENDOR SUB WHERE SUB.VENDOR_ID = S.VENDOR_ID) VENDOR_NM,
+			RSERV_START_DY,
+			RSERV_START_TM,
+			RSERV_END_DY,
+			RSERV_END_TM,
+			CELL_NO,
+			SCDL_MEMO,
+			REG_DATE,
+			REG_ID,
+			MOD_DATE,
+			MOD_ID
+	FROM 	TOR_SCDL_MGR S
+	WHERE 	SCDL_SEQS = #scdlSeqs#
+	</select>
+	
+</sqlMap>

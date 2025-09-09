@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0042">
+
+
+	<typeAlias alias="SRMJON0042VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0042VO" />
+
+
+	<!-- 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectHiddenCompCreditInfoResultMap" class="SRMJON0042VO">
+		<result column="HOUSE_CODE"					property="houseCode" 				/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"				property="sellerCode" 				/>	<!-- 업체코드 -->
+		<result column="REQ_SEQ"					property="reqSeq" 					/>	<!-- 순번 -->
+		<result column="CREDIT_NO"					property="creditNo" 				/>	<!-- 신용평가번호 -->
+		<result column="CREDIT_COMPANY_CODE"		property="creditCompanyCode" 		/>	<!-- 신용평가사 코드{SCODE_TYPE=SRM039} -->
+		<result column="CREDIT_RATING"				property="creditRating" 			/>	<!-- 신용평가등급 -->
+		<result column="CREDIT_BASIC_DATE"			property="creditBasicDate" 			/>	<!-- 신용평가 기준일자 -->
+		<result column="CREDIT_ATTACH_NO"			property="creditAttachNo" 			/>	<!-- 신용평가서 첨부 -->
+		<result column="CREDIT_ATTACH_NO_NAME"		property="creditAttachNoName" 		/>	<!-- 신용평가서 첨부 -->
+		<result column="SHIPPER_TYPE"				property="shipperType" 				/>	<!-- 업체소싱국가구분[M025] -->
+		<result column="ZZQC_FG1"					property="zzqcFg1" 					/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"					property="zzqcFg2" 					/>	<!-- FSSC 22000 -->
+		<result column="ZZQC_FG3"					property="zzqcFg3" 					/>	<!-- ISO 22000 -->
+		<result column="ZZQC_FG4"					property="zzqcFg4" 					/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"					property="zzqcFg5" 					/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"					property="zzqcFg6" 					/>	<!-- 우수농산물(GAP)인증 -->
+		<result column="ZZQC_FG7"					property="zzqcFg7" 					/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"					property="zzqcFg8" 					/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"					property="zzqcFg9" 					/>	<!-- ISO 9001 -->
+		<result column="ZZQC_FG10"					property="zzqcFg10" 				/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"					property="zzqcFg11" 				/>	<!-- PAS 220 -->
+		<result column="ZZQC_FG12"					property="zzqcFg12" 				/>	<!-- 기타 품질인증 텍스트 -->
+	</resultMap>
+	
+	<!-- 신용평가기관 정보 조회 Map -->
+	<resultMap id="selectCreditInfoMap" class="SRMJON0042VO">
+		<result column="CREDIT_RATING"				property="creditRating" 			/>	<!-- 신용평가등급 -->
+		<result column="CREDIT_BASIC_DATE"			property="creditBasicDate" 			/>	<!-- 신용평가 기준일자 -->
+		<result column="CREDIT_BASIC_END_DATE"		property="creditBasicEndDate" 			/>	<!-- 신용평가 기준일자 만료일 -->
+	</resultMap>
+	
+	<!-- 신용평가사별 정보조회Map -->
+	<resultMap id="selectCreditAllInfoMap" class="SRMJON0042VO">
+		<result column="CREDIT_RATING"				property="creditRating" 			/>	<!-- 신용평가등급 -->
+		<result column="CREDIT_BASIC_DATE"			property="creditBasicDate" 			/>	<!-- 신용평가 기준일자 -->
+		<result column="CREDIT_COMPANY_CODE"		property="creditCompanyCode" 		/>	<!-- 신용평가사 코드 -->
+		<result column="CREDIT_COMPANY_NAME"		property="creditCompanyName"		/>	<!-- 신용평가사 이름 -->
+	</resultMap>
+
+
+	<!-- 잠재업체 상세정보조회 -->
+	<select id="selectHiddenCompCreditInfo" parameterClass="SRMJON0042VO" resultMap="selectHiddenCompCreditInfoResultMap">
+		/*SRMJON0042.selectHiddenCompCreditInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, B.REQ_SEQ
+				, A.CREDIT_NO
+				, A.CREDIT_COMPANY_CODE
+				, A.CREDIT_RATING
+				, A.CREDIT_BASIC_DATE
+				, A.CREDIT_ATTACH_NO
+				, C.SRC_FILE_NAME AS CREDIT_ATTACH_NO_NAME
+				, A.SHIPPER_TYPE
+				, A.ZZQC_FG1
+				, A.ZZQC_FG2
+				, A.ZZQC_FG3
+				, A.ZZQC_FG4
+				, A.ZZQC_FG5
+				, A.ZZQC_FG6
+				, A.ZZQC_FG7
+				, A.ZZQC_FG8
+				, A.ZZQC_FG9
+				, A.ZZQC_FG10
+				, A.ZZQC_FG11
+				, A.ZZQC_FG12
+		FROM
+				SSUGL A
+				, SINRQ B
+				, SFILE C
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE(+)
+			AND A.SELLER_CODE = B.VENDOR_CODE(+)
+			AND A.CREDIT_ATTACH_NO = C.DOC_NO(+)
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND B.REQ_SEQ = #reqSeq#
+	</select>
+
+	<!--잠재업체 신용정보 수정-->
+	<update id="updateHiddenCompCreditInfo" parameterClass="SRMJON0042VO">
+		/*SRMJON0042.updateHiddenCompCreditInfo*/
+		UPDATE 	SSUGL
+		SET
+				CREDIT_NO 					= #creditNo#
+				, CREDIT_COMPANY_CODE 		= #creditCompanyCode#
+				, CREDIT_RATING 			= #creditRating#
+				, CREDIT_BASIC_DATE 		= #creditBasicDate#
+				, CREDIT_ATTACH_NO 			= #creditAttachNo#
+				, CHANGE_DATE				= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID			= #sellerCode#
+				, ZZQC_FG1 					= #zzqcFg1#
+				, ZZQC_FG2 					= #zzqcFg2#
+				, ZZQC_FG3 					= #zzqcFg3#
+				, ZZQC_FG4 					= #zzqcFg4#
+				, ZZQC_FG5 					= #zzqcFg5#
+				, ZZQC_FG6 					= #zzqcFg6#
+				, ZZQC_FG7 					= #zzqcFg7#
+				, ZZQC_FG8 					= #zzqcFg8#
+				, ZZQC_FG9 					= #zzqcFg9#
+				, ZZQC_FG10 				= #zzqcFg10#
+				, ZZQC_FG11 				= #zzqcFg11#
+				, ZZQC_FG12 				= #zzqcFg12#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+	</update>
+
+	<!--잠재업체 입점 신청 신용등급정보 수정-->
+	<update id="updateHiddenCompCreditInfoReq" parameterClass="SRMJON0042VO">
+		/*SRMJON0042.updateHiddenCompCreditInfoReq*/
+		UPDATE 	SINRQ
+		SET
+				CREDIT_GRADE_INPUT 			= #creditRating#
+				, CHANGE_DATE 				= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID 			= #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND VENDOR_CODE = #sellerCode#
+			AND REQ_SEQ = #reqSeq#
+	</update>
+
+
+	<!--파일 정보 조회(CREDIT_ATTACH_NO)-->
+	<select id="selectHiddenCompCreditAttachNoFileId" parameterClass="SRMJON0042VO" resultClass="String">
+		/*SRMJON0042.selectHiddenCompCreditAttachNoFileId*/
+		SELECT
+				CREDIT_ATTACH_NO
+		FROM
+				SSUGL
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+	</select>
+	
+	<!-- 신용평가기관 정보조회(나이스디앤비) -->
+	<select id="selectNicednbCreditInfo" parameterClass="SRMJON0042VO" resultMap="selectCreditInfoMap">
+		/* SRMJON0042.selectNicednbCreditInfo */
+		SELECT	G_DATE 		AS CREDIT_BASIC_DATE
+			,	CLIP_GRD 	AS CREDIT_RATING
+			,	TO_CHAR(ADD_MONTHS(TO_DATE(EXP_DATE,'YYYYMMDD'),-1), 'YYYYMMDD')  	AS CREDIT_BASIC_END_DATE
+		FROM	DBK_RPT01
+		WHERE
+			<!--법인-->
+			<isEqual property="companyType" compareValue="1">
+				CORP_NO = #companyRegNo#
+			</isEqual>
+			<!--개인사업자-->
+			<isEqual property="companyType" compareValue="2">
+				BIZ_NO = #sellerCode#
+			</isEqual>
+			AND G_DATE = (
+							SELECT	MAX(G_DATE)
+							FROM	DBK_RPT01
+							WHERE
+								<!--법인-->
+								<isEqual property="companyType" compareValue="1">
+									CORP_NO = #companyRegNo#
+								</isEqual>
+								<!--개인사업자-->
+								<isEqual property="companyType" compareValue="2">
+									BIZ_NO = #sellerCode#
+								</isEqual>
+								AND EXP_DATE <![CDATA[ >= ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+						)
+	</select>
+	
+	<!-- 신용평가기관 정보조회(이크레더블) -->
+	<select id="selectEcredibleCreditInfo" parameterClass="SRMJON0042VO" resultMap="selectCreditInfoMap">
+		/* SRMJON0042.selectEcredibleCreditInfo */
+		SELECT	SUVDT 		AS CREDIT_BASIC_DATE
+			,	LASTGRD2 	AS CREDIT_RATING
+			,	TO_CHAR(ADD_MONTHS(TO_DATE(EXPIRE_DATE,'YYYYMMDD'),-1), 'YYYYMMDD')  AS CREDIT_BASIC_END_DATE
+		FROM	DCC_PACKET01
+		WHERE
+			<!--법인-->
+			<isEqual property="companyType" compareValue="1">
+				PERID = #companyRegNo#
+			</isEqual>
+			<!--개인사업자-->
+			<isEqual property="companyType" compareValue="2">
+				RESNO = #sellerCode#
+			</isEqual>
+			AND SUVDT = (
+							SELECT	MAX(SUVDT)
+							FROM	DCC_PACKET01
+							WHERE
+								<!--법인-->
+								<isEqual property="companyType" compareValue="1">
+									PERID = #companyRegNo#
+								</isEqual>
+								<!--개인사업자-->
+								<isEqual property="companyType" compareValue="2">
+									RESNO = #sellerCode#
+								</isEqual>
+								AND EXPIRE_DATE <![CDATA[ >= ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+						)
+	</select>
+	
+	<!-- 신용평가기관 정보조회(한국기업데이터) -->
+	<select id="selectIntrCreditInfo" parameterClass="SRMJON0042VO" resultMap="selectCreditInfoMap">
+		/* SRMJON0042.selectIntrCreditInfo */
+		SELECT	RPT_CRE_DD 	AS CREDIT_BASIC_DATE
+			,	CR_GRD 		AS CREDIT_RATING
+			,	TO_CHAR(ADD_MONTHS(TO_DATE(GET_RPT_VLD_PRD_REAL,'YYYYMMDD'),-1), 'YYYYMMDD')  	AS CREDIT_BASIC_END_DATE
+		FROM	KED_INTR
+		WHERE
+			<!--법인-->
+			<isEqual property="companyType" compareValue="1">
+				CONO_PID = #companyRegNo#
+			</isEqual>
+			<!--개인사업자-->
+			<isEqual property="companyType" compareValue="2">
+				BZNO 		= #sellerCode#
+			</isEqual>
+			AND RPT_CRE_DD 	= 	(
+									SELECT	MAX(RPT_CRE_DD)
+									FROM	KED_INTR
+									WHERE
+										<!--법인-->
+										<isEqual property="companyType" compareValue="1">
+											CONO_PID = #companyRegNo#
+										</isEqual>
+										<!--개인사업자-->
+										<isEqual property="companyType" compareValue="2">
+											BZNO 		= #sellerCode#
+										</isEqual>
+										AND GET_RPT_VLD_PRD_REAL <![CDATA[ >= ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+								)
+			AND	RPT_NO NOT IN (                    
+		                		SELECT CR_RPT_NO
+            			        FROM SCRDL 
+                    			WHERE KED_INTR.BZNO = SCRDL.CR_BIZ_NO
+                    			AND KED_INTR.RPT_NO = SCRDL.CR_RPT_NO )
+	</select>
+	
+	<!-- 신용평가사별 정보조회 -->
+	<select id="selectCreditAllInfo" parameterClass="SRMJON0042VO" resultMap="selectCreditAllInfoMap">
+		/* SRMJON004201.selectCreditAllInfo */
+		SELECT	CREDIT_BASIC_DATE
+			,	CREDIT_RATING
+			,	CREDIT_COMPANY_CODE
+			,	CREDIT_COMPANY_NAME
+		FROM (
+				SELECT	SUVDT		AS CREDIT_BASIC_DATE
+					,	LASTGRD2	AS CREDIT_RATING
+					,	'1'			AS CREDIT_COMPANY_CODE
+					,	GETCODETEXT1('SRM039','1',UPPER(#locale#)) AS CREDIT_COMPANY_NAME
+				FROM	DCC_PACKET01
+				WHERE
+				<!--법인-->
+				<isEqual property="companyType" compareValue="1">
+					PERID = #companyRegNo#
+				</isEqual>
+				<!--개인사업자-->
+				<isEqual property="companyType" compareValue="2">
+					RESNO = #sellerCode#
+				</isEqual>
+				 AND 	SUVDT = (
+				 				 SELECT		MAX(SUVDT) 
+				 				 FROM		DCC_PACKET01
+				 				 WHERE
+									<!--법인-->
+									<isEqual property="companyType" compareValue="1">
+										PERID = #companyRegNo#
+									</isEqual>
+									<!--개인사업자-->
+									<isEqual property="companyType" compareValue="2">
+										RESNO = #sellerCode#
+									</isEqual>
+				 				 	AND EXPIRE_DATE <![CDATA[ >= ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				 				 )
+				 
+				UNION ALL   
+				
+				SELECT	RPT_CRE_DD 	AS CREDIT_BASIC_DATE
+					,	CR_GRD 		AS CREDIT_RATING
+					,	'2'			AS CREDIT_COMPANY_CODE
+					,	GETCODETEXT1('SRM039','2',UPPER(#locale#)) AS CREDIT_COMPANY_NAME
+				FROM	KED_INTR
+				WHERE
+				<!--법인-->
+				<isEqual property="companyType" compareValue="1">
+					CONO_PID = #companyRegNo#
+				</isEqual>
+				<!--개인사업자-->
+				<isEqual property="companyType" compareValue="2">
+					BZNO 		= #sellerCode#
+				</isEqual>
+				 AND 	RPT_CRE_DD = (
+				 					  SELECT	MAX(RPT_CRE_DD)
+				 					  FROM		KED_INTR
+				 					  WHERE
+										<!--법인-->
+										<isEqual property="companyType" compareValue="1">
+											CONO_PID = #companyRegNo#
+										</isEqual>
+										<!--개인사업자-->
+										<isEqual property="companyType" compareValue="2">
+											BZNO 		= #sellerCode#
+										</isEqual>
+				 					  	AND GET_RPT_VLD_PRD_REAL <![CDATA[ >= ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				 					  )
+				 AND	RPT_NO NOT IN (                    
+		                		SELECT CR_RPT_NO
+            			        FROM SCRDL 
+                    			WHERE KED_INTR.BZNO = SCRDL.CR_BIZ_NO
+                    			AND KED_INTR.RPT_NO = SCRDL.CR_RPT_NO )
+				 					  
+				 
+				UNION ALL
+				
+				SELECT	G_DATE 		AS CREDIT_BASIC_DATE
+					,	CLIP_GRD 	AS CREDIT_RATING
+					,	'3'			AS CREDIT_COMPANY_CODE
+					,	GETCODETEXT1('SRM039','3',UPPER(#locale#)) AS CREDIT_COMPANY_NAME
+				FROM DBK_RPT01
+				WHERE
+				<!--법인-->
+				<isEqual property="companyType" compareValue="1">
+					CORP_NO = #companyRegNo#
+				</isEqual>
+				<!--개인사업자-->
+				<isEqual property="companyType" compareValue="2">
+					BIZ_NO = #sellerCode#
+				</isEqual>
+				 AND 	G_DATE = (
+				 				  SELECT	MAX(G_DATE)
+				 				  FROM		DBK_RPT01
+				 				  WHERE
+									<!--법인-->
+									<isEqual property="companyType" compareValue="1">
+										CORP_NO = #companyRegNo#
+									</isEqual>
+									<!--개인사업자-->
+									<isEqual property="companyType" compareValue="2">
+										BIZ_NO = #sellerCode#
+									</isEqual>
+				 				  	AND EXP_DATE <![CDATA[ >= ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				 				  )
+			)
+	</select>
+
+</sqlMap>

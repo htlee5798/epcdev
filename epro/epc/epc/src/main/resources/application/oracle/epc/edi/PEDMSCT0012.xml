@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0012">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<typeAlias alias="stringClass"	type="String" />
+
+
+
+<select id="TSC_ALERT_PAGE-SELECT01" parameterClass="map"  resultClass="resultClass">
+	SELECT      BMAN_NO
+                ,VEN_CD
+				,VEN_NM
+				,DUTY_INF --담당자성명
+				,EMAIL --이메일
+				,HP_NO3 --사무실
+				,HP_NO1 --모바일1
+				,HP_NO2 --모바일2
+				,HP_NO4 --팩스
+				,ADDR --실소재지
+	from hq_ven@dl_md_martnis
+ 	WHERE  
+ 	
+ 	<isNotEmpty  property="bmanNoS" > 
+      <iterate prepend="BMAN_NO IN " property="bmanNoS" open="(" close=")" conjunction=","> 
+        #bmanNoS[]# 
+      </iterate> 
+    </isNotEmpty>
+    
+    <isNotEqual property="sele_bman" compareValue="all" >
+		<isNotEmpty  property="sele_bman"  prepend="AND"> 
+		    	BMAN_NO = #sele_bman#
+	    </isNotEmpty>
+   </isNotEqual>
+    
+
+    </select>
+    
+		<select id="TSC_ALERT_PAGE-SELECT02" parameterClass="map"  resultClass="resultClass">
+			SELECT      BMAN_NO
+		                ,VEN_CD
+						,VEN_NM
+						,DUTY_INF --담당자성명
+						,EMAIL --이메일
+						,HP_NO3 --사무실
+						,HP_NO1 --모바일1
+						,HP_NO2 --모바일2
+						,HP_NO4 --팩스
+						,ADDR --실소재지
+			from hq_ven@dl_md_martnis
+		 	WHERE  
+		 	
+		 	<isNotEmpty  property="bmanNoS" > 
+		      <iterate prepend="BMAN_NO IN " property="bmanNoS" open="(" close=")" conjunction=","> 
+		        #bmanNoS[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEqual property="ven_cd" compareValue="all" >
+				<isNotEmpty  property="sele_bman"  prepend="AND"> 
+				    	ven_cd = #ven_cd#
+			    </isNotEmpty>
+		   </isNotEqual>
+    
+
+    </select>
+    
+    
+    
+
+</sqlMap>

@@ -1,0 +1,445 @@
+#=================================================#
+#System\uc601\uc5ed \uc815\uc758 START
+#=================================================#
+
+# \ud398\uc774\uc9c0\ub97c \ubcf4\uc5ec\uc904 \uac2f\uc218
+count.per.page          = 10
+# \ud55c\ud398\uc774\uc9c0\uc5d0 \ubcf4\uc5ec\uc904 \uac8c\uc2dc\ubb3c\uc218 Board
+count.row.per.page        = 50
+# \ud55c\ud398\uc774\uc9c0\uc5d0 \ubcf4\uc5ec\uc904 \uac8c\uc2dc\ubb3c\uc218 App
+count.row.per.page.app      = 21
+# \ud55c\ud398\uc774\uc9c0\uc5d0 \ubcf4\uc5ec\uc904 \uac8c\uc2dc\ubb3c\uc218 App Review
+count.row.per.page.app.review = 20
+
+# Session Key
+lottemart.epc.session.key = epcLoginSession
+lottemart.epc.temp.key = epcTempSession
+
+lottemart.aes.Key = LCN!mepc#SYSTEM@
+
+#Front URL
+online.front.url = http://wwwd.lottemart.com
+
+# \uc815\uc801\uc774\ubbf8\uc9c0(\uac1c\ubc1c/\uc2a4\ud14c\uc774\uc9d5)
+#system.cdn.static.path          =   http://img.lottemart.com
+#system.cdn.staticssl.path       =   http://img.lottemart.com
+
+# \uc815\uc801\uc774\ubbf8\uc9c0 (\uc6b4\uc601)
+system.cdn.static.path         =   //simage.lottemart.com
+system.cdn.staticssl.path      =   http://simage.lottemart.com
+
+
+
+
+# \ub85c\uadf8\uc778 URL(\ub85c\uceec)
+#login.domain.url=http://localhost:8080/lottemart-epc
+#login.sdomain.url=http://localhost:8080/lottemart-epc
+#login.admin.url=/common/epcAdmLogin.do
+#login.client.url=/common/epcVendorLogin.do
+#login.happycall.url=/common/happyLogin.do
+
+
+# \ub85c\uadf8\uc778 URL(\uac1c\ubc1c)
+login.domain.url=http://partnerd.lottemart.com/epc
+login.sdomain.url=https://partnerd.lottemart.com/epc
+login.admin.url=/common/epcAdmLogin.do
+login.client.url=/common/epcVendorLogin.do
+login.happycall.url=/common/happyLogin.do
+
+# \ub85c\uadf8\uc778 URL(\uc2a4\ud14c\uc774\uc9d5)
+#login.domain.url=http://partnert.lottemart.com/epc
+#login.sdomain.url=http://partnert.lottemart.com/epc
+#login.admin.url=/common/epcAdmLogin.do
+#login.client.url=/common/epcVendorLogin.do
+#login.happycall.url=/common/happyLogin.do
+
+
+# \ub85c\uadf8\uc778 URL(\uc6b4\uc601-SSL)
+#login.domain.url=http://partner.lottemart.com/epc
+#login.sdomain.url=https://partner.lottemart.com/epc
+#login.admin.url=https://partner.lottemart.com/epc/common/epcAdmLogin.do
+#login.client.url=https://partner.lottemart.com/epc/common/epcVendorLogin.do
+#login.happycall.url=https://partner.lottemart.com/epc/common/happyLogin.do
+
+
+#pog \uc11c\ubc84 \uc815\ubcf4
+#edi.md.ftp.url=10.52.1.163
+
+edi.pog.ftp.url=10.52.11.133
+edi.pog.ftp.userid=POG_IMAGE
+edi.pog.ftp.passwd=Lottemat!
+
+#edi.md.ftp.url=10.52.11.133
+#edi.md.ftp.userid=POG_IMAGE
+#edi.md.ftp.passwd=Lottemat!
+edi.image.url=http\://img.lottemart.com/lim/static_root/images/edi
+
+edi.pog.ftp.upc.imgPath=/TESTImages/Prod_Img/
+edi.pog.ftp.jad.imgPath=/TESTImages/IKB_Img/
+
+#SCM \uc11c\ubc84 \uacbd\ub85c
+edi.pog.scm.ftp.url=10.52.32.69
+edi.pog.scm.ftp.userid=POG
+edi.pog.scm.ftp.passwd=$cm54321
+edi.pog.ftp.scm.imgPath=/POG Images/ 
+
+#POG \uc774\ubbf8\uc9c0\ub9c1\ud06c \uacbd\ub85c
+edi.pog.fix.view.imgPath=http://10.52.1.163/IKBimages/Prod_Img/
+edi.pog.no.view.imgPath=http://img.lottemart.com/
+#edi.pog.view.imgPath=D:/Develop/FTP/IKBImages/Prod_Img/
+#edi.pog.no.view.imgPath=D:/Develop/workspace/LOTTEMART_NEW_EPC/lottemart-epc/src/main/webapp/upload/dev_web/lim/static_root/images/edi/offline/
+
+#EDI \uc2e0\uaddc\uc0c1\ud488/\uc784\uc810\uc0c1\ub2f4  \uc628\ub77c\uc778,\uc624\ud504\ub77c\uc778,\uc0c1\ud488\ub4f1\ub85d \uc774\ubbf8\uc9c0(\ub85c\uceec)#
+#edi.offline.image.path=D:/project/workspace/dev_web/lim/static_root/images/edi/offline
+#edi.consult.image.path=D:/project/workspace/dev_web/lim/static_root/images/edi/consult
+#edi.namoeditor.file.path=D:/project/workspace/dev_web/lim/static_root/images/edi/namo
+#edi.namoeditor.file.url=http://localhost/lim/static_root/images/edi/namo
+#edi.online.image.path=D:/project/workspace/dev_web/lim/static_root/images/edi/online
+
+#EDI \uc2e0\uaddc\uc0c1\ud488/\uc784\uc810\uc0c1\ub2f4  \uc628\ub77c\uc778,\uc624\ud504\ub77c\uc778,\uc0c1\ud488\ub4f1\ub85d \uc774\ubbf8\uc9c0(\uac1c\ubc1c)#
+#edi.offline.image.path=/dev_web/lim/static_root/images/edi/offline
+#edi.consult.image.path=/dev_web/lim/static_root/images/edi/consult
+#edi.namoeditor.file.path=/dev_web/lim/static_root/images/edi/namo
+#edi.namoeditor.file.url=http\://img.lottemart.com/lim/static_root/images/edi/namo
+#edi.online.image.path=/dev_web/lim/static_root/images/edi/online
+
+#EDI \uc2e0\uaddc\uc0c1\ud488/\uc784\uc810\uc0c1\ub2f4  \uc628\ub77c\uc778,\uc624\ud504\ub77c\uc778,\uc0c1\ud488\ub4f1\ub85d \uc774\ubbf8\uc9c0(\uc2a4\ud14c\uc774\uc9d5)#
+#edi.offline.image.path=/dev_web/lim/static_root/images/edi/offline
+#edi.consult.image.path=/dev_web/lim/static_root/images/edi/consult
+#edi.namoeditor.file.path=/dev_web/lim/static_root/images/edi/namo
+#edi.namoeditor.file.url=http\://img.lottemart.com/lim/static_root/images/edi/namo
+#edi.online.image.path=/dev_web/lim/static_root/images/edi/online
+
+#EDI \uc2e0\uaddc\uc0c1\ud488/\uc784\uc810\uc0c1\ub2f4  \uc628\ub77c\uc778,\uc624\ud504\ub77c\uc778,\uc0c1\ud488\ub4f1\ub85d \uc774\ubbf8\uc9c0(\uc6b4\uc601)#
+edi.offline.image.path=/nas_web/webhomes/lim_stg/static_root/images/edi/offline
+edi.consult.image.path=/nas_web/webhomes/lim_stg/static_root/images/edi/consult
+edi.namoeditor.file.path=/nas_web/webhomes/lim_stg/static_root/images/onlinedescr
+edi.namoeditor.file.url=https://124.243.53.33/lim_dev/static_root/images/edi/namo
+edi.online.image.path=/nas_web/webhomes/lim_stg/static_root/images/edi/online
+edi.online.image.url=https://124.243.53.33/lim_dev/static_root/images/edi/online
+edi.video.image.path = /nas_web/webhomes/lim_stg/static_root/images/edi/online/video
+
+#EDI \uc131\uc801\uc11c \uc5c5\ub85c\ub4dc 
+edi.pbprod.report.path = /nas_data/sjoh/report
+
+# \uc0c1\ud488 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\ub85c\uceec)
+#online.product.image.url=http://localhost:8080/lim/static_root/images/prodimg
+#online.product.image.path=C:/Project-lottemart/workspace/lottemart-common/src/main/webroot/lim/static_root/images/prodimg
+#online.product.detail.image.url=http://localhost:8080/lim/static_root/images/proddescrimg
+#online.product.detail.image.path=C:/Project-lottemart/workspace/lottemart-common/src/main/webroot/lim/static_root/images/proddescrimg
+
+# \uc0c1\ud488 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\uac1c\ubc1c)
+online.product.image.url=http://img.lottemart.com/lim/static_root/images/prodimg
+# @4up \uacbd\ub85c \uc218\uc815
+online.product.image.path=/nas_web/webhomes/lim_stg/static_root/images/prodimg
+online.product.wide.image.path= /nas_web02/lim_stg/static_root/images/prodimg/wide
+online.product.video.image.path = /nas_web02/lim_stg/static_root/images/prodimg/video
+online.product.detail.image.url=http://img.lottemart.com/lim/static_root/images/proddescrimg
+online.product.detail.image.path=/nas_web/webhomes/lim_stg/static_root/images/edidescrimg
+online.product.imageTemp.url = https://124.243.53.33/lim_dev/static_root/images/prodTemp
+online.product.imageTemp.path = /nas_web/webhomes/lim_dev/static_root/images/prodTemp
+online.product.zipTempPath = /nas_web/webhomes/lim_dev/static_root/images/zipTemp
+
+# \uc774\ubbf8\uc9c0 \uc77c\uad04\uc5c5\ub85c\ub4dc \uc6a9\ub7c9, \uac2f\uc218\uc81c\ud55c
+# \ub300\ud45c\uc774\ubbf8\uc9c0 zip\ud30c\uc77c \uc6a9\ub7c9 \uc81c\ud55c 10MB
+online.product.zip.image.maxSize=10485760
+# \ub300\ud45c\uc774\ubbf8\uc9c0 zip\ud30c\uc77c \ub0b4 \uc774\ubbf8\uc9c0 \uac2f\uc218 \uc81c\ud55c 20\uac1c
+online.product.zip.image.maxCount=20
+# \uc0c1\uc138\uc774\ubbf8\uc9c0 zip\ud30c\uc77c \uc6a9\ub7c9 \uc81c\ud55c 10MB
+online.product.zip.detailImage.maxSize=10485760
+# \uc0c1\uc138\uc774\ubbf8\uc9c0 zip\ud30c\uc77c \ub0b4 \uc774\ubbf8\uc9c0 \uac2f\uc218 \uc81c\ud55c 20\uac1c
+online.product.zip.detailImage.maxCount=20
+
+
+# \uc0c1\ud488 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\uc2a4\ud14c\uc774\uc9d5)
+#online.product.image.url=http://img.lottemart.com/lim/static_root/images/prodimg
+#online.product.image.path=/dev_web/lim/static_root/images/prodimg
+#online.product.detail.image.url=http://img.lottemart.com/lim/static_root/images/proddescrimg
+#online.product.detail.image.path=/dev_web/lim/static_root/images/proddescrimg
+
+
+# \uc0c1\ud488 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\uc6b4\uc601)
+#online.product.image.url=http://image.lottemart.com/lim/static_root/images/prodimg
+#online.product.image.path=/dev_web/lim/static_root/images/prodimg
+#online.product.detail.image.url=http://image.lottemart.com/lim/static_root/images/proddescrimg
+#online.product.detail.image.path=/dev_web/lim/static_root/images/proddescrimg
+
+
+# \uc6f9\ubc1c\uc8fc \uc5d1\uc140 \ud30c\uc77c \uc784\uc2dc\ub85c\ub4dc (\ub85c\uceec)
+#edi.weborder.excel.path = C:/Project/upload/excel_temp
+# \uc6f9\ubc1c\uc8fc \uc5d1\uc140 \ud30c\uc77c \uc784\uc2dc\ub85c\ub4dc (\uac1c\ubc1c\uae30)
+edi.weborder.excel.path = /dev_web/lim/static_root/excel/epc/
+# \uc6f9\ubc1c\uc8fc \uc5d1\uc140 \ud30c\uc77c \uc784\uc2dc\ub85c\ub4dc (\uc2a4\ud14c\uc774\uc9d5)
+#edi.weborder.excel.path = /dev_web/lim/static_root/excel/epc/
+# \uc6f9\ubc1c\uc8fc \uc5d1\uc140 \ud30c\uc77c \uc784\uc2dc\ub85c\ub4dc (\uc6b4\uc601\uae30)
+#edi.weborder.excel.path = /dev_web/lim/static_root/excel/epc/
+
+
+
+# \uac8c\uc2dc\ud310 \uc5d0\ub514\ud130 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\ub85c\uceec)
+#board.image.mime.save.url      = http://localhost:8080/lim/static_root/images/boardimg/
+#board.image.mime.save.path     = C:/Project-lottemart/workspace/lottemart-common/src/main/webroot/lim/static_root/images/boardimg/
+#board.atch.file.save.path      = C:/Project-lottemart/workspace/lottemart-common/src/main/webroot/lib/static_root/files/boardfile/
+
+# \uac8c\uc2dc\ud310 \uc5d0\ub514\ud130 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\uac1c\ubc1c)
+board.image.mime.save.url       = http://img.lottemart.com/lim/static_root/images/boardimg/
+board.image.mime.save.path      = /dev_web/lim/static_root/images/boardimg/
+board.atch.file.save.path       = /dev_web/lib/static_root/files/boardfile/
+
+# \uac8c\uc2dc\ud310 \uc5d0\ub514\ud130 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\uc2a4\ud14c\uc774\uc9d5)
+#board.image.mime.save.url       = http://img.lottemart.com/lim/static_root/images/boardimg/
+#board.image.mime.save.path      = /dev_web/lim/static_root/images/boardimg/
+#board.atch.file.save.path       = /dev_web/lib/static_root/files/boardfile/
+
+# \uac8c\uc2dc\ud310 \uc5d0\ub514\ud130 \uc774\ubbf8\uc9c0 \uacbd\ub85c (\uc6b4\uc601)
+#board.image.mime.save.url       = http://image.lottemart.com/lim/static_root/images/boardimg/
+#board.image.mime.save.path      = /dev_web/lim/static_root/images/boardimg/
+#board.atch.file.save.path       = /dev_web/lib/static_root/files/boardfile/
+
+
+# LCN\ub85c\uadf8\uc778 \ud398\uc774\uc9c0 \uc815\uc758(\uac1c\ubc1c)
+epc.lcn.login.url = https://www.lcn.co.kr
+epc.lcn.login.old.url =  http://retailscm.bizmeka.com/pine/jsp/epc/epc_login.test.jsp
+
+# LCN\ub85c\uadf8\uc778 \ud398\uc774\uc9c0 \uc815\uc758(\uc2a4\ud14c\uc774\uc9d5)
+#epc.lcn.login.url  =  http://retailscm.bizmeka.com/pine/jsp/epc/epc_login.staging.jsp
+
+# LCN\ub85c\uadf8\uc778 \ud398\uc774\uc9c0 \uc815\uc758(\uc6b4\uc601)
+#epc.lcn.login.url  =  http://retailscm.bizmeka.com/pine/jsp/epc/epc_login.jsp
+
+#=================================================#
+#System\uc601\uc5ed \uc815\uc758 END
+#=================================================#
+
+#=================================================#
+#\uc5c5\ubb34\uc601\uc5ed \uc815\uc758 START
+#=================================================#
+#\uc628\ub77c\uc778\ub300\ud45c\uc810\ud3ec\ucf54\ub4dc
+online.rep.str.cd = 981
+
+#EDI \ubc30\uce58 \uc218\ub3d9 \uc2e4\ud589 DB\uc815\ubcf4 (db password \ub294 \uc5c6\uc74c(\ud5a5\ud6c4 \uc218\uc815\ud55c\ub2e4\uace0 \ud568(\ubc30\uce58\ud300)
+edi.batch.name      =\ub300\uae08\uacb0\uc81c\uc804\uc1a1
+edi.batch.conurl    =jdbc:hsqldb:hsql://10.52.18.14/jobdb
+edi.batch.conurl.id   =sa
+edi.batch.conurl.pass   =
+
+#=================================================#
+#\uc5c5\ubb34\uc601\uc5ed \uc815\uc758 END
+#=================================================#
+
+#\ucf54\ub9ac\uc548\ub137
+korean.net.authUrl = http://gs1.koreannet.or.kr/rest/auth
+korean.net.id = lottemartdev
+korean.net.pw = lottemartdev2015
+korean.net.imgUrl = http://gs1.koreannet.or.kr/rest/product-image
+korean.net.imgPath = /dev_web/lim/static_root/images/edi/kornet
+
+
+
+#=================================================#
+#\uc6f9\ubc1c\uc8fc : \ud611\ub825\uc0ac \uc6f9\ubc1c\uc8fc \uac00\ub2a5 \uc77c\uc2dc
+#=================================================#
+edi.weboder.vendor.rtn = 0900
+edi.weboder.vendor.fr = 1200
+edi.weboder.vendor.to = 2300
+
+#\uac1c\ubc1c
+sap.conn.url = http://10.52.26.35:50000/RESTAdapter/
+#\uc6b4\uc601
+#sap.conn.url = http://10.52.11.40:50000/RESTAdapter/
+sap.conn.user = IF_EPC
+sap.conn.passwd = Interface!12
+
+## Namo Cross Editor Default Image Path
+namo.default.image.path = /dev_web/lim/static_root/images/namoimg  
+namo.default.image.url = http\://img.lottemart.com/lim/static_root/images/namoimg
+
+##DRM \ud574\uc81c\ub97c \uc704\ud55c \ud30c\uc77c \uc5c5\ub85c\ub4dc \uacbd\ub85c
+#drm dat\ud30c\uc77c \uacbd\ub85c(\ub85c\uceec)
+#markany.drm.dat.path = C:\\Project-lottemart\\MarkAny\\MarkAnyDrmInfo.dat
+#drm dat\ud30c\uc77c \uacbd\ub85c(\uac1c\ubc1c)
+markany.drm.dat.path = /dev_web/lim/static_root/dat/MarkAnyDrmInfo.dat
+#drm dat\ud30c\uc77c \uacbd\ub85c(\uc6b4\uc601)
+#markany.drm.dat.path = /sw/drm/SAFER45/java/MarkAnyDrmInfo.dat
+
+bos.drm.key.path    = /sw/Tmax/fasoo_drm/fsdinit
+bos.drm.key.keyId   = 0100000000002054
+
+#\ud655\uc815\ub41c POG \uc774\ubbf8\uc9c0 \uacbd\ub85c[\uac1c\ubc1c]
+pog.fix.path = http://10.52.11.133/TEST_IKB_Img/
+
+#\ub098\ubaa8 \ud06c\ub85c\uc2a4 \uc5d0\ub514\ud130 \ub9c1\ud06c URL[\uac1c\ubc1c]
+namo.link.path = ../../namoCross/js/namo_scripteditor.js
+
+###################################################################################################
+############                          ImageQC \uc124\uc815                                  ###############
+###################################################################################################
+## Resizing \uc774\ubbf8\uc9c0 \uc870\ud68c\ub97c \uc704\ud55c Root URL
+## \ub85c\uceec PC\uc758 hosts \ud30c\uc77c\uc5d0 image.lottemart.com \uc124\uc815 \ud558\uba74 \uc548\ub428!
+## ImageQC \uad00\ub828 \ud14c\uc2a4\ud2b8\ub294 \uac1c\ubc1c \uc11c\ubc84\uc5d0\uc11c \uc9c4\ud589, \uac1c\ubc1c \uc11c\ubc84\uc5d0\uc11c \ub4f1\ub85d\ud55c \uc774\ubbf8\uc9c0\uc5d0 \ub300\ud574\uc11c \ub85c\uceec PC \ud658\uacbd\uc5d0\uc11c Resizing \uc774\ubbf8\uc9c0 \uc870\ud68c \uac00\ub2a5
+## \ub85c\uceec PC   : http://124.243.53.33/lim_dev/static_root/images (\uac1c\ubc1c\uc11c\ubc84\uc640 \ub3d9\uc77c\ud558\uac8c \uc124\uc815)
+## \uac1c\ubc1c \uc11c\ubc84 : http://124.243.53.33/lim_dev/static_root/images
+## \uac80\uc99d \uc11c\ubc84 : http://124.243.53.33/lim_stg/static_root/images
+## \uc6b4\uc601 \uc11c\ubc84 : http://image.lottemart.com/lim/static_root/images
+imageqc.root.url = https://124.243.53.33/lim_dev/static_root/images
+
+## Resizing \uc774\ubbf8\uc9c0 \uc870\ud68c\ub97c \uc704\ud55c Sub URL
+## Root URL\uacfc \uc870\ud569\ud558\uc5ec \uc0ac\uc6a9
+## ex) http://image.lottemart.com/lim_dev/static_root/images/edi/online
+imageqc.sub.url.product.edi   = /edi/online
+imageqc.sub.url.product.bos   = /prodimg
+imageqc.sub.url.exhibition    = /exhibition
+imageqc.sub.url.event.pc      = /front/event/bn/pc
+imageqc.sub.url.event.mobile  = /front/event/bn/mobile
+imageqc.sub.url.trend.pc      = /front/trend/bn/pc
+imageqc.sub.url.trend.mobile  = /front/trend/bn/mobile
+imageqc.sub.url.recipe        = /front/recipe
+imageqc.sub.url.productreview = /files/boardfile/productreview
+
+## ImageQC \uad00\ub828 \uc774\ubbf8\uc9c0 \ud30c\uc77c \uc800\uc7a5 Root \uacbd\ub85c
+## imageqc.save.root.dir\uacfc imageqc.sub.url\uc744 \uc870\ud569\ud558\uc5ec \uc774\ubbf8\uc9c0 \ud30c\uc77c \uc800\uc7a5 \uacbd\ub85c\ub85c \uc0ac\uc6a9
+## ex) imageqc.save.root.dir + imageqc.sub.url.product.edi = /nas_web/webhomes/lim_dev/static_root/images/edi/online
+## \uc774\ubbf8\uc9c0 \ud30c\uc77c\uba85 \uae30\uc900\uc73c\ub85c \ud558\uc704\uc5d0 \ud3f4\ub354\ub97c \uc0dd\uc131\ud574\uc11c \uc800\uc7a5 \ubc14\ub78d\ub2c8\ub2e4
+## ex) \ub144/\uc6d4/\uc77c, \ub144/\uc6d4\uc77c, \ub144, \uc55e\uc790\ub9ac5\uc790 
+## \uc0c1\ud488\uc774\ubbf8\uc9c0(EDI, BOS)\ub294 \uc694\uccad\ud558\uc2dc\uba74 \uae30\uc874 \uc0c1\ud488 \uc774\ubbf8\uc9c0\ub97c lim_dev \ud3f4\ub354 \uc544\ub798\uc5d0 \ubcf5\uc0ac\ud574 \ub123\ub3c4\ub85d \ud558\uaca0\uc2b5\ub2c8\ub2e4
+## \ub85c\uceec PC   : C:/Project-lottemart/workspace2/webroot/images
+## \uac1c\ubc1c \uc11c\ubc84 : /nas_web/webhomes/lim_dev/static_root/images
+## \uac80\uc99d \uc11c\ubc84 : /dev_web/webhomes/lim_stg/static_root/images
+## \uc6b4\uc601 \uc11c\ubc84 : /dev_web/webhomes/lim/static_root/images
+imageqc.save.root.dir = /nas_web/webhomes/lim_dev/static_root/images
+
+## Cache Purge \ud638\ucd9c \ubc0f DEV, STG \uc774\ubbf8\uc9c0 \uc870\ud68c\uc6a9\uc73c\ub85c \uc0ac\uc6a9
+## ImageQC \uc11c\ubc84 2\ub300\ub294 Clustering \ub418\uc5b4 \uc788\uace0, L4\ub85c \ubb36\uc5ec \uc788\uc74c
+imageqc.cache.purge.l4.ip   = 124.243.53.33
+imageqc.cache.purge.l4.port = 8011
+
+## ImageQC \uad00\ub828 \uc774\ubbf8\uc9c0\ub97c \uc218\uc815\ud560\ub54c Cache Purge \uc2e4\ud589 \uc5ec\ubd80 y/n
+## ImageQC L4\uc5d0 8011 \ud3ec\ud2b8\ub85c URL \ud638\ucd9c
+## \ub85c\uceec PC \ud658\uacbd\uc5d0\uc11c\ub294 \ubc29\ud654\ubcbd\uc774 \uc5f4\ub824\uc788\uc9c0 \uc54a\uc544\uc11c Purge \ud638\ucd9c \uc548\ud558\ub3c4\ub85d \uc124\uc815
+## \ub85c\uceec PC : n
+## \uac1c\ubc1c/\uac80\uc99d/\uc6b4\uc601 \uc11c\ubc84 : y
+imageqc.cache.purge.yn = n
+
+## Cache Purge \ud638\ucd9c \uc804\uc6a9
+## Resizing Image Size
+imageqc.cache.purge.size.product.edi   = 80x80|90x90|94x94|120x120|140x140|158x158|185x185|204x204|208x208|210x210|220x220|250x250|272x272|308x308|320x320|375x375|450x450|464x464|500x500|584x584|640x640
+imageqc.cache.purge.size.product.bos   = 80x80|90x90|94x94|120x120|140x140|158x158|185x185|204x204|208x208|210x210|220x220|250x250|272x272|308x308|320x320|375x375|450x450|464x464|500x500|584x584|640x640
+imageqc.cache.purge.size.exhibition    = 80x80|120x120|216x216|240x240|584x460
+imageqc.cache.purge.size.event.pc      = 80x63|294x230
+imageqc.cache.purge.size.event.mobile  = 120x95|180x140|240x188
+imageqc.cache.purge.size.trend.pc      = 80x63|294x230|312x244
+imageqc.cache.purge.size.trend.mobile  = 120x95|210x165|584x460
+imageqc.cache.purge.size.recipe        = 210x210|240x240|250x250|278x278|415x415|515x515|584x584
+imageqc.cache.purge.size.productreview = 138x138
+##################################### ImageQC \uc124\uc815 \ub05d #############################################
+
+wecandeo.licenseKey=73e17e38f41dd40aac6e2bc3037935fd
+wecandeo.folder     = 2003498  
+wecandeo.pkg        = 1004641
+
+bos.drm.file.path = /nas_web/webhomes/lim_dev/static_root/dat/down
+bos.drm.dec.file.path = /nas_web/webhomes/lim_dev/static_root/dat/dec
+
+## ImageQc ,CND
+imageqc.use.yn = n
+imageqc.server.ip = 124.243.53.34
+imageqc.server.ip2 = 124.243.53.35
+
+imageqc.server.purge.port = 8011
+imageqc.server.resize.port = 8010
+cdn.purge.yn = n
+cdn.purge.req.url = openapi.kr.cdnetworks.com
+cdn.purge.user.id = lottemart.all@mz.co.kr
+cdn.purge.user.pw = changeme!
+## ImageQc ,CND
+
+
+#=================================================#
+# SRM
+#=================================================#
+# \uc785\uc810\uc0c1\ub2f4 Session Key
+lottemart.srm.session.key = srmLoginSession
+
+# \ud488\uc9c8\uacbd\uc601\ud3c9\uac00 Session Key
+lottemart.srm.evl.session.key = srmEvlLoginSession
+
+#srm \ud30c\uc77c \uc5c5\ub85c\ub4dc \uacbd\ub85c(\uac1c\ubc1c)
+edi.srm.file.path = /srmdevattach/srmdevattachments/SRM
+
+#Session Time Out Url
+#\uc785\uc810\uc0c1\ub2f4\uc2e0\uccad \ub85c\uadf8\uc778 \ud398\uc774\uc9c0
+lottemart.srm.session.jonUri = http://partnerd.lottemart.com/epc/edi/srm/SRMJON0020.do
+#\uc785\uc810\uc0c1\ub2f4\uacb0\uacfc \ub85c\uadf8\uc778 \ud398\uc774\uc9c0
+lottemart.srm.session.rstUrl = http://partnerd.lottemart.com/epc/edi/srm/SRMRST0010.do
+#\ud488\uc9c8\uacbd\uc601\ud3c9\uac00 \ub85c\uadf8\uc778 \ud398\uc774\uc9c0
+lottemart.srm.session.evlUrl = http://partnerd.lottemart.com/epc/edi/evl/SRMEVL0010.do
+
+#\uc774\uba54\uc77c \ud14c\uc2a4\ud2b8
+email.test.userName = \ud14c\uc2a4\ud2b8
+email.test.userEmail = piy0605@lottemart.com
+#=================================================#
+# \uba54\ub274\uc5bc \ub2e4\uc6b4\ub85c\ub4dc
+#=================================================#
+#\uba54\ub274\uc5bc \ub2e4\uc6b4\ub85c\ub4dc \uacbd\ub85c
+edi.srm.manual.path = /srmdevattach/srmdevattachments/SRM/manual/
+
+#\uc785\uc810\uc0c1\ub2f4 \uba54\ub274\uc5bc \uc774\ub984
+edi.srm.manual.fileName1 = Manual_jon.pdf
+#\ud488\uc9c8\uacbd\uc601\ud3c9\uac00 \uba54\ub274\uc5bc \uc774\ub984
+edi.srm.manual.fileName2 = Manual_evl.pdf
+#SRM \uba54\ub274\uc5bc \uc774\ub984
+edi.srm.manual.fileName3 = Manual_ven.pdf
+#\uad00\ub828 \uc0ac\uc774\ud2b8 \uc815\ubcf4
+edi.srm.manual.fileName4 = Manual_Site_Info.pdf
+#\ud488\uc9c8\uacbd\uc601\ud3c9\uac00(\uacf5\uc7a5\uc810\uac80)\uc2dc \uccb4\ud06c\ub9ac\uc2a4\ud2b8
+edi.srm.manual.fileName5 = CheckList.zip
+
+#\uad00\ub9ac\uc790 URL
+admin.server.url = http://limadmind.lottemart.com
+
+#sweet tracker(real)
+sweet.tracker.url=http://common-rest.sweettracker.net
+sweet.tracker.t_key=rBhfInpEFHZd1XyLmAIItA
+#=================================================#
+
+#oneapp URL
+oneapp.domain.url=http://oneappd.lottemart.com
+
+# \uae30\ud68d\uc804 \uad00\ub9ac
+# exhibition image
+fileCheck.atchFile.size = 10240000
+exhibition.image.path         = /nas_web/webhomes/lim_dev/static_root/images/exhibition/
+exhibition.image.url        = /lim_dev/static_root/images/exhibition/
+
+#bad prod
+edi.badprod.user = bad
+edi.badprod.password = bad
+edi.badprod.serverIp = 10.52.4.142
+
+
+# BATCH process(Y,N)
+batch.process.execute = Y
+
+# gcs \ub77c\uc774\uc120\uc2a4 \uacbd\ub85c
+epc.gcs.parquet.path = C:/Users/park/Desktop/mart/parquet2/
+
+# gcs \ub77c\uc774\uc120\uc2a4 \ud30c\uc77c\uba85
+epc.gcs.parquet.authKey = key.json
+
+# gcs \ubc84\ud0b7\uba85
+epc.gcs.parquet.bucketName = epc_test_bucket
+
+# \uc5c5\ubb34\uad6c\ubd84
+epc.gcs.parquet.task = epc/
+
+# parquet \u2192 csv \ubcc0\ud658 \ud30c\uc77c\uba85
+epc.gcs.parquet.localCsvFile = localfile.csv
+
+# \uac00\uc838\uc62c \ud30c\uc77c\uba85(\ud30c\ud2b8\ub108\uc0ac \uc2e4\uc801)
+epc.gcs.parquet.venPrfr = epc/ven_prfr_test.parquet
+
+# \uac00\uc838\uc62c \ud30c\uc77c\uba85(\ud30c\ud2b8\ub108\uc0ac \ub9e4\uc785\uc561)
+epc.gcs.parquet.venBuy = epc/ven_buy_test.parquet
+
+# \uac00\uc838\uc62c \ud30c\uc77c\uba85(\uc2e0\uc0c1\ud488 \uc2e4\uc801)
+epc.gcs.parquet.newProdPrfr = epc/new_prod_prfr_test.parquet

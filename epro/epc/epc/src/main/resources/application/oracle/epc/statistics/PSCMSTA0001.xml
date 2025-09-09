@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0001">
+	<typeAlias alias="pscmsta001SearchVO" type="com.lottemart.epc.statistics.model.PSCMSTA0001SearchVO"/>
+	
+	
+	<select id="selectToDate" resultClass="dataMap">
+	<![CDATA[	
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0),'YYYY-MM-DD')TO_DATE,
+			   TO_CHAR(CURRENT_TIMESTAMP(0),'YYYY-MM')||'-'||'01'FIRST_DATE
+		FROM DUAL
+	]]>
+	</select>
+	
+	<select id="selectAffiliateLinkNoList" resultClass="dataMap">
+	<![CDATA[	
+		/* PSCMSTA0001.selectAffiliateLinkNoList */ 
+		SELECT AFFILIATE_LINK_NO, AFFILIATE_LINK_NM, UP_AFFILIATE_LINK_NO, TO_CHAR(DEPTH) DEPTH, LEAF_YN 
+		FROM   TMA_AFFILIATE
+		WHERE	  AFFILIATE_LINK_NO != '00180007'
+		CONNECT BY PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO
+		START WITH AFFILIATE_LINK_NO = #rootAffiliateLinkNo#
+	]]>
+	</select>
+	
+	<select id="selectNaverEdmSummaryTotal" parameterClass="pscmsta001searchVO" resultClass="dataMap">
+		/* PSCMSTA0001.selectNaverEdmSummaryTotal */  
+		SELECT
+		NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', CNT)), 0) ORDER_CNT,
+		/* 총주문수량 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', AMT)), 0) ORDER_AMT,
+		/* 총주문금액 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', CNT)), 0) CANCEL_CNT,
+		/* 취소수량 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', AMT)), 0) CANCEL_AMT,
+		/* 취소금액 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', CNT)), 0) REFUND_CNT,
+		/* 반품수량 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', AMT)), 0) REFUND_AMT,
+		/* 반품금액 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', CNT)), 0) - NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', CNT)), 0)
+		  - NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', CNT)), 0) AS REAL_CNT,
+		/* 순주문수량 */
+		  NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', AMT)), 0) + NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', AMT)), 0)
+		  + NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', AMT)), 0) AS REAL_AMT 
+		/* 순주문금액 */
+		from (select BO.ORD_RTN_DIVN_CD, COUNT(BO.ORD_RTN_DIVN_CD) CNT,
+		   SUM(BO.ORDER_ITEM_AMT_SUM)-SUM(BO.APPLY_POINT_AMT)-SUM(BO.APPLY_COUPON_AMT)+SUM(BO.APPLY_DELIV_COUPON_AMT) AMT  from (
+		    select
+		               CASE WHEN O.ORD_RTN_DIVN_CD IN ('10', '11') THEN '10'
+		               WHEN O.ORD_RTN_DIVN_CD IN ('20', '30') THEN '20'
+		               ELSE '40' end  AS ORD_RTN_DIVN_CD,
+		       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.ORDER_ITEM_AMT_SUM, 0)
+		                                ,'11',NVL(O.ORDER_ITEM_AMT_SUM, 0)
+		                                ,NVL(-O.ORDER_ITEM_AMT_SUM, 0))ORDER_ITEM_AMT_SUM /* 주문금액 */,
+		       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_POINT_AMT, 0)
+		                               ,'11',NVL(OD.APPLY_POINT_AMT, 0)
+		                               ,NVL(-OD.APPLY_POINT_AMT, 0))APPLY_POINT_AMT /* 포인트결제 */,
+		       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_COUPON_AMT, 0)
+		                               ,'11',NVL(OD.APPLY_COUPON_AMT, 0)
+		                               ,NVL(-OD.APPLY_COUPON_AMT, 0))APPLY_COUPON_AMT /* 쿠폰결제 */,
+		       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+		                               ,'11',NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+		                               ,NVL(-OD.APPLY_DELIV_COUPON_AMT, 0))APPLY_DELIV_COUPON_AMT /* 배송비쿠폰결제 */
+		    FROM   (SELECT 
+		                   O.ORD_DY
+		                   ,O.ORDER_ID
+		                   ,O.BSKET_DIVN_CD
+		                   ,O.ORD_RTN_DIVN_CD
+		                   ,O.FIRST_ORDER_ID
+		                   ,MIN(O.ORD_STS_CD) AS ORD_STS_CD
+		                   ,SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', 0,
+		                                                     '12', 0,
+		                                                     '13', 0,
+		                                                     OI.ORD_AMT) ) AS ORDER_ITEM_AMT_SUM
+		                   ,SUM(NVL (OI.DC_AMT, 0)   + NVL (OI.CMS_COUPON_DC_AMT, 0)
+		                                                  + NVL (OI.COUPON_DC_AMT, 0)
+		                                                  + NVL (OI.STAFF_DC_AMT, 0)) AS TOTAL_DC_AMT_SUM
+		                   ,SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', OI.ORD_AMT,
+		                                                     '12', OI.ORD_AMT,
+		                                                     '13', OI.ORD_AMT,
+		                                                     0)) AS DELIVERY_AMT_SUM 
+		                   ,MIN(O.ORDER_PATH_CD) ORDER_PATH_CD   
+		                   ,MIN(O.LST_SALE_CFM_DATE) LST_SALE_CFM_DATE                                 
+		            FROM   (SELECT O2.ORDER_ID, O2.FIRST_ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.BSKET_DIVN_CD, O2.ORD_DY, O.ORD_STS_CD, O2.ORDER_PATH_CD, O2.LST_SALE_CFM_DATE
+		                    FROM    TOR_ORDER O
+		                           ,TOR_ORDER O2
+		                    WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+		                    AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+		                                              FROM    TMA_AFFILIATE
+		                                              WHERE   AFFILIATE_LINK_NO != '00180007'
+		                                              START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+		                                              CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)
+		                    AND    O2.ORD_RTN_DIVN_CD   != '50'  
+		                	AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		                    <isNotEmpty property="orderPathCd">
+		                    AND    O2.ORDER_PATH_CD = #orderPathCd#
+		                    </isNotEmpty>
+		                    ) O,
+		                   TOR_ORDER_ITEM OI
+		            WHERE  O.ORDER_ID = OI.ORDER_ID       
+		            GROUP  BY O.ORD_DY, O.ORDER_ID, O.ORD_RTN_DIVN_CD, O.BSKET_DIVN_CD, O.FIRST_ORDER_ID) O,
+		           (SELECT   O.ORDER_ID
+		                    ,SUM(CASE WHEN OD.SETL_TYPE_CD IN ('01', '02','06','07','08','09','10','12') THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_TOT_AMT
+		                    ,SUM(CASE WHEN OD.SETL_TYPE_CD = '03'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_COUPON_AMT
+		                    ,SUM(CASE WHEN OD.SETL_TYPE_CD = '04'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_POINT_AMT
+		                    ,SUM(CASE WHEN OD.SETL_TYPE_CD = '05'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_DELIV_COUPON_AMT
+		            FROM   (SELECT O2.ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.BSKET_DIVN_CD, O2.ORD_DY
+		                    FROM    TOR_ORDER O
+		                           ,TOR_ORDER O2
+		                    WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+		                    AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+		                                                   FROM    TMA_AFFILIATE
+		                                                   WHERE   AFFILIATE_LINK_NO != '00180007'
+		                                                   START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+		                                                   CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)   
+		                    AND    O2.ORD_RTN_DIVN_CD   != '50' 
+		                	AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		                    <isNotEmpty property="orderPathCd">
+		                    AND    O2.ORDER_PATH_CD = #orderPathCd#
+		                    </isNotEmpty>
+		                    ) O, TOR_DEMAND OD
+		            WHERE  O.ORDER_ID = OD.ORDER_ID
+		            GROUP  BY O.ORDER_ID) OD
+		    WHERE  O.ORDER_ID = OD.ORDER_ID
+		    )BO
+		    group by BO.ORD_RTN_DIVN_CD
+		)
+	</select>
+	
+	
+	<select id="selectNaverEdmSummaryTotal_20130311bak" parameterClass="pscmsta001searchVO" resultClass="dataMap">
+		/* PSCMSTA0001.selectNaverEdmSummaryTotal_20130311bak */ 
+		<!-- SELECT NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', CNT)),0) ORDER_CNT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', AMT)),0) ORDER_AMT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', CNT)),0) CANCEL_CNT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', AMT)),0) CANCEL_AMT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', CNT)),0) REFUND_CNT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', AMT)),0) REFUND_AMT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', CNT)),0) - 
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', CNT)),0) -
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', CNT)),0) AS REAL_CNT,
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '10', AMT)),0) -
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '20', AMT)),0) - 
+		       NVL(MAX(DECODE(ORD_RTN_DIVN_CD, '40', AMT)),0) AS REAL_AMT
+		FROM   (SELECT CASE WHEN O.ORD_RTN_DIVN_CD IN ('10', '11') THEN '10'
+		                    WHEN O.ORD_RTN_DIVN_CD IN ('20', '30') THEN '20'
+		                    ELSE '40'
+		               END ORD_RTN_DIVN_CD,
+		               COUNT(DISTINCT O.ORDER_ID) CNT,
+		               SUM(CASE WHEN OD.SETL_TYPE_CD IN ('01', '02', '04', '06', '07', '08', '09', '10', '12') THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) AMT
+		               SUM(CASE WHEN OD.ORD_SETL_DIVN_CD = '21' THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) AMT
+		        FROM   (SELECT O2.ORDER_ID, O2.ORD_RTN_DIVN_CD	
+		                FROM   TOR_ORDER O,
+		                       TOR_ORDER O2
+		                WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+		                AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+		                                          FROM    TMA_AFFILIATE
+		                                          WHERE   AFFILIATE_LINK_NO != '00180007'
+		                                          START   WITH AFFILIATE_LINK_NO = IN ( $affiliateLinkNo$ )
+		                                          CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)   
+		                AND    O2.ORD_RTN_DIVN_CD   != '50' 
+		                AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')) O,
+		               TOR_DEMAND OD
+		        WHERE  O.ORDER_ID = OD.ORDER_ID
+		        GROUP  BY CASE WHEN O.ORD_RTN_DIVN_CD IN ('10', '11') THEN '10'
+		                       WHEN O.ORD_RTN_DIVN_CD IN ('20', '30') THEN '20'
+		                       ELSE '40'
+		                  END
+		) T -->
+	</select>
+	
+	
+	
+	<select id="selectNaverEdmSummaryList" parameterClass="pscmsta001searchVO" resultClass="dataMap">
+		/* PSCMSTA0001.selectNaverEdmSummaryList */ 
+		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+			        SELECT
+			                RANK()OVER(ORDER BY O.FIRST_ORDER_ID DESC) RANK_NUM	/* 순번 */
+			               ,O.ORD_DY									/* 주문일자 */
+			               ,O.FIRST_ORDER_ID							/* 원주문번호 */
+			               ,O.ORDER_ID									/* 주문번호 */
+			               , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD ='SM137' AND MINOR_CD = O.ORDER_PATH_CD) ORDER_PATH_NM  /*주문유입경로*/
+                  		   ,CASE WHEN O.ORD_RTN_DIVN_CD IN ('10', '11') THEN '결재완료'
+		                       WHEN O.ORD_RTN_DIVN_CD IN ('20', '30') THEN '주문취소'
+		                       ELSE '반품완료' end  AS STATUS_NM  /* 주문상태 */
+			               ,O.ORD_RTN_DIVN_CD
+			      ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.ORDER_ITEM_AMT_SUM, 0)
+                                                ,'11',NVL(O.ORDER_ITEM_AMT_SUM, 0)
+                                                ,NVL(-O.ORDER_ITEM_AMT_SUM, 0))ORDER_ITEM_AMT_SUM /* 주문금액 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.TOTAL_DC_AMT_SUM, 0)
+                                               ,'11',NVL(O.TOTAL_DC_AMT_SUM, 0)
+                                               ,NVL(-O.TOTAL_DC_AMT_SUM, 0))TOTAL_DC_AMT_SUM /* 할인금액 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.DELIVERY_AMT_SUM, 0)
+                                               ,'11',NVL(O.DELIVERY_AMT_SUM, 0)
+                                               ,NVL(-O.DELIVERY_AMT_SUM, 0))DELIVERY_AMT_SUM /* 배송비 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.ORDER_ITEM_AMT_SUM, 0)-NVL(OD.APPLY_POINT_AMT, 0)-NVL(OD.APPLY_COUPON_AMT, 0)+NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,'11',NVL(O.ORDER_ITEM_AMT_SUM, 0)-NVL(OD.APPLY_POINT_AMT, 0)-NVL(OD.APPLY_COUPON_AMT, 0)+NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,NVL(-O.ORDER_ITEM_AMT_SUM, 0)-NVL(-OD.APPLY_POINT_AMT, 0)-NVL(-OD.APPLY_COUPON_AMT, 0)+NVL(-OD.APPLY_DELIV_COUPON_AMT, 0))APPLY_TOT_AMT /* 결제금액 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_POINT_AMT, 0)
+                                               ,'11',NVL(OD.APPLY_POINT_AMT, 0)
+                                               ,NVL(-OD.APPLY_POINT_AMT, 0))APPLY_POINT_AMT /* 포인트결제 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_COUPON_AMT, 0)
+                                               ,'11',NVL(OD.APPLY_COUPON_AMT, 0)
+                                               ,NVL(-OD.APPLY_COUPON_AMT, 0))APPLY_COUPON_AMT /* 쿠폰결제 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,'11',NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,NVL(-OD.APPLY_DELIV_COUPON_AMT, 0))APPLY_DELIV_COUPON_AMT /* 배송비쿠폰결제 */
+                  
+			               ,TO_CHAR(TO_DATE(LST_SALE_CFM_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS LST_SALE_CFM_DATE
+			        FROM   (SELECT 
+			                       O.ORD_DY
+			                       ,O.ORDER_ID
+			                       ,O.BSKET_DIVN_CD
+			                       ,O.ORD_RTN_DIVN_CD
+			                       ,O.FIRST_ORDER_ID
+			                       ,MIN(O.ORD_STS_CD) AS ORD_STS_CD
+			                       ,SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', 0,
+			                                                         '12', 0,
+			                                                         '13', 0,
+			                                                         OI.ORD_AMT) ) AS ORDER_ITEM_AMT_SUM
+			                       ,SUM(NVL (OI.DC_AMT, 0)   + NVL (OI.CMS_COUPON_DC_AMT, 0)
+			                                                      + NVL (OI.COUPON_DC_AMT, 0)
+			                                                      + NVL (OI.STAFF_DC_AMT, 0)) AS TOTAL_DC_AMT_SUM
+			                       ,SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', OI.ORD_AMT,
+			                                                         '12', OI.ORD_AMT,
+			                                                         '13', OI.ORD_AMT,
+			                                                         0)) AS DELIVERY_AMT_SUM 
+			                       ,MIN(O.ORDER_PATH_CD) ORDER_PATH_CD   
+			                       ,MIN(O.LST_SALE_CFM_DATE) LST_SALE_CFM_DATE                                 
+			                FROM   (SELECT O2.ORDER_ID, O2.FIRST_ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.BSKET_DIVN_CD, O2.ORD_DY, O.ORD_STS_CD, O2.ORDER_PATH_CD, O2.LST_SALE_CFM_DATE
+			                        FROM    TOR_ORDER O
+			                               ,TOR_ORDER O2
+			                        WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+			                        AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+			                                                  FROM    TMA_AFFILIATE
+			                                                  WHERE   AFFILIATE_LINK_NO != '00180007'
+			                                                  START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+			                                                  CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)
+			                        AND    O2.ORD_RTN_DIVN_CD   != '50'  
+			                        AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			                        <isNotEmpty property="orderPathCd">
+			                        AND    O2.ORDER_PATH_CD = #orderPathCd#
+			                        </isNotEmpty>
+			                        ) O,
+			                       TOR_ORDER_ITEM OI
+			                WHERE  O.ORDER_ID = OI.ORDER_ID       
+			                GROUP  BY O.ORD_DY, O.ORDER_ID, O.ORD_RTN_DIVN_CD, O.BSKET_DIVN_CD, O.FIRST_ORDER_ID) O,
+			               (SELECT   O.ORDER_ID
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD IN ('01', '02','06','07','08','09','10','12') THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_TOT_AMT
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD = '03'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_COUPON_AMT
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD = '04'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_POINT_AMT
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD = '05'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_DELIV_COUPON_AMT
+			                FROM   (SELECT O2.ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.BSKET_DIVN_CD, O2.ORD_DY
+			                        FROM    TOR_ORDER O
+			                               ,TOR_ORDER O2
+			                        WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+			                        AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+			                                                       FROM    TMA_AFFILIATE
+			                                                       WHERE   AFFILIATE_LINK_NO != '00180007'
+			                                                       START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+			                                                       CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)   
+			                        AND    O2.ORD_RTN_DIVN_CD   != '50' 
+			                        AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')	
+			                        <isNotEmpty property="orderPathCd">
+			                        AND    O2.ORDER_PATH_CD = #orderPathCd#
+			                        </isNotEmpty>
+			                        ) O, TOR_DEMAND OD
+			                WHERE  O.ORDER_ID = OD.ORDER_ID
+			                GROUP  BY O.ORDER_ID) OD
+			        WHERE  O.ORDER_ID = OD.ORDER_ID
+			        
+			) B
+		)
+     	WHERE PAGE = #pageIndex#
+	</select>
+	
+	
+	
+	<select id="selectNaverEdmSummaryList_2013311bak" parameterClass="pscmsta001searchVO" resultClass="dataMap">
+		/* PSCMSTA0001.selectNaverEdmSummaryList_2013311bak */ 
+<!-- 		SELECT *
+		FROM (
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+				SELECT 
+				       RANK()OVER(ORDER BY O.ORDER_ID DESC) RANK_NUM,
+				       O.ORD_DY, 
+				       O.ORDER_ID,
+		               (SELECT SUB.CD_NM FROM TET_CODE SUB WHERE SUB.MAJOR_CD = 'OR002' AND O.ORD_STS_CD = SUB.MINOR_CD) STATUS_NM,
+				       O.ORD_RTN_DIVN_CD,
+				       O.UP_ORDER_ID,
+				       O.FIRST_ORDER_ID,
+				       NVL(O.ORDER_ITEM_AMT_SUM,0)ORDER_ITEM_AMT_SUM,
+				       NVL(O.TOTAL_DC_AMT_SUM,0)TOTAL_DC_AMT_SUM,
+				       NVL(O.DELIVERY_AMT_SUM,0)DELIVERY_AMT_SUM,
+				       NVL(OD.APPLY_TOT_AMT,0)APPLY_TOT_AMT,
+				       NVL(OD.APPLY_COUPON_AMT,0)APPLY_COUPON_AMT,
+				       NVL(OD.APPLY_POINT_AMT,0)APPLY_POINT_AMT,
+				       NVL(OD.APPLY_DELIV_COUPON_AMT,0)APPLY_DELIV_COUPON_AMT
+				FROM   (SELECT O.ORD_DY,
+				               O.ORDER_ID, 
+				               O.ORD_STS_CD,
+				               O.ORD_RTN_DIVN_CD,
+				               O.UP_ORDER_ID,
+				               O.FIRST_ORDER_ID,
+				               SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', 0,
+				                                               '12', 0,
+				                                               '13', 0,
+				                                                     OI.ORD_AMT) ) AS ORDER_ITEM_AMT_SUM,
+				               SUM(NVL (OI.DC_AMT, 0)   + NVL (OI.CMS_COUPON_DC_AMT, 0)
+				                                              + NVL (OI.COUPON_DC_AMT, 0)
+				                                              + NVL (OI.STAFF_DC_AMT, 0)) AS TOTAL_DC_AMT_SUM,
+				               SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', OI.ORD_AMT,
+				                                               '12', OI.ORD_AMT,
+				                                               '13', OI.ORD_AMT,
+				                                                     0)) AS DELIVERY_AMT_SUM 
+				        FROM   (SELECT O2.ORDER_ID, O2.UP_ORDER_ID, O2.FIRST_ORDER_ID, O2.ORD_STS_CD, O2.ORD_RTN_DIVN_CD, O2.ORD_DY
+				                FROM   TOR_ORDER O,
+				                       TOR_ORDER O2
+				                WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+				                AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+				                                          FROM    TMA_AFFILIATE
+				                                          WHERE   AFFILIATE_LINK_NO != '00180007'
+				                                          START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+				                                          CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)
+				                AND    O2.ORD_RTN_DIVN_CD   != '50'  
+				                AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')) O,
+				               TOR_ORDER_ITEM OI
+				        WHERE  O.ORDER_ID = OI.ORDER_ID       
+				        GROUP  BY O.ORD_DY, O.ORDER_ID, O.ORD_RTN_DIVN_CD, O.ORD_STS_CD, O.FIRST_ORDER_ID, O.UP_ORDER_ID) O,
+				       (SELECT O.ORDER_ID,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD IN ('01', '02','06','07','08','09','10','12') THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_TOT_AMT,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD = '03'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_COUPON_AMT,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD = '04'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_POINT_AMT,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD = '05'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_DELIV_COUPON_AMT
+				        FROM   (SELECT O2.ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.ORD_STS_CD, O2.ORD_DY
+				                FROM   TOR_ORDER O,
+				                       TOR_ORDER O2
+				                WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+				                AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+				                                          FROM    TMA_AFFILIATE
+				                                          WHERE   AFFILIATE_LINK_NO != '00180007'
+				                                          START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+				                                          CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)   
+				                AND    O2.ORD_RTN_DIVN_CD   != '50' 
+				                AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')) O,
+				               TOR_DEMAND OD
+				        WHERE  O.ORDER_ID = OD.ORDER_ID
+				        GROUP  BY O.ORDER_ID) OD
+				WHERE  O.ORDER_ID = OD.ORDER_ID
+			) B
+		)
+     	WHERE PAGE = #pageIndex# -->
+	</select>
+	
+	
+	
+	
+	
+	<select id="selectNaverEdmSummaryListExcel" parameterClass="pscmsta001searchVO" resultClass="dataMap">
+				
+			        SELECT /* PSCMSTA0001.selectNaverEdmSummaryListExcel */
+			                RANK()OVER(ORDER BY O.FIRST_ORDER_ID DESC) RANK_NUM	/* 순번 */
+			               ,O.ORD_DY									/* 주문일자 */
+			               ,O.FIRST_ORDER_ID							/* 원주문번호 */
+			               ,O.ORDER_ID									/* 주문번호 */
+			               , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD ='SM137' AND MINOR_CD = O.ORDER_PATH_CD) ORDER_PATH_NM  /*주문유입경로*/
+                  		   ,CASE WHEN O.ORD_RTN_DIVN_CD IN ('10', '11') THEN '결재완료'
+		                       WHEN O.ORD_RTN_DIVN_CD IN ('20', '30') THEN '주문취소'
+		                       ELSE '반품완료' end  AS STATUS_NM  /* 주문상태 */
+			               ,O.ORD_RTN_DIVN_CD
+			      ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.ORDER_ITEM_AMT_SUM, 0)
+                                                ,'11',NVL(O.ORDER_ITEM_AMT_SUM, 0)
+                                                ,NVL(-O.ORDER_ITEM_AMT_SUM, 0))ORDER_ITEM_AMT_SUM /* 주문금액 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.TOTAL_DC_AMT_SUM, 0)
+                                               ,'11',NVL(O.TOTAL_DC_AMT_SUM, 0)
+                                               ,NVL(-O.TOTAL_DC_AMT_SUM, 0))TOTAL_DC_AMT_SUM /* 할인금액 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.DELIVERY_AMT_SUM, 0)
+                                               ,'11',NVL(O.DELIVERY_AMT_SUM, 0)
+                                               ,NVL(-O.DELIVERY_AMT_SUM, 0))DELIVERY_AMT_SUM /* 배송비 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(O.ORDER_ITEM_AMT_SUM, 0)-NVL(OD.APPLY_POINT_AMT, 0)-NVL(OD.APPLY_COUPON_AMT, 0)+NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,'11',NVL(O.ORDER_ITEM_AMT_SUM, 0)-NVL(OD.APPLY_POINT_AMT, 0)-NVL(OD.APPLY_COUPON_AMT, 0)+NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,NVL(-O.ORDER_ITEM_AMT_SUM, 0)-NVL(-OD.APPLY_POINT_AMT, 0)-NVL(-OD.APPLY_COUPON_AMT, 0)+NVL(-OD.APPLY_DELIV_COUPON_AMT, 0))APPLY_TOT_AMT /* 결제금액 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_POINT_AMT, 0)
+                                               ,'11',NVL(OD.APPLY_POINT_AMT, 0)
+                                               ,NVL(-OD.APPLY_POINT_AMT, 0))APPLY_POINT_AMT /* 포인트결제 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_COUPON_AMT, 0)
+                                               ,'11',NVL(OD.APPLY_COUPON_AMT, 0)
+                                               ,NVL(-OD.APPLY_COUPON_AMT, 0))APPLY_COUPON_AMT /* 쿠폰결제 */
+                  ,
+                       decode(O.ORD_RTN_DIVN_CD,'10',NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,'11',NVL(OD.APPLY_DELIV_COUPON_AMT, 0)
+                                               ,NVL(-OD.APPLY_DELIV_COUPON_AMT, 0))APPLY_DELIV_COUPON_AMT /* 배송비쿠폰결제 */
+                  
+			               ,TO_CHAR(TO_DATE(LST_SALE_CFM_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS LST_SALE_CFM_DATE
+			        FROM   (SELECT 
+			                       O.ORD_DY
+			                       ,O.ORDER_ID
+			                       ,O.BSKET_DIVN_CD
+			                       ,O.ORD_RTN_DIVN_CD
+			                       ,O.FIRST_ORDER_ID
+			                       ,MIN(O.ORD_STS_CD) AS ORD_STS_CD
+			                       ,SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', 0,
+			                                                         '12', 0,
+			                                                         '13', 0,
+			                                                         OI.ORD_AMT) ) AS ORDER_ITEM_AMT_SUM
+			                       ,SUM(NVL (OI.DC_AMT, 0)   + NVL (OI.CMS_COUPON_DC_AMT, 0)
+			                                                      + NVL (OI.COUPON_DC_AMT, 0)
+			                                                      + NVL (OI.STAFF_DC_AMT, 0)) AS TOTAL_DC_AMT_SUM
+			                       ,SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', OI.ORD_AMT,
+			                                                         '12', OI.ORD_AMT,
+			                                                         '13', OI.ORD_AMT,
+			                                                         0)) AS DELIVERY_AMT_SUM 
+			                       ,MIN(O.ORDER_PATH_CD) ORDER_PATH_CD   
+			                       ,MIN(O.LST_SALE_CFM_DATE) LST_SALE_CFM_DATE                                 
+			                FROM   (SELECT O2.ORDER_ID, O2.FIRST_ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.BSKET_DIVN_CD, O2.ORD_DY, O.ORD_STS_CD, O2.ORDER_PATH_CD, O2.LST_SALE_CFM_DATE
+			                        FROM    TOR_ORDER O
+			                               ,TOR_ORDER O2
+			                        WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+			                        AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+			                                                  FROM    TMA_AFFILIATE
+			                                                  WHERE   AFFILIATE_LINK_NO != '00180007'
+			                                                  START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+			                                                  CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)
+			                        AND    O2.ORD_RTN_DIVN_CD   != '50'  
+			                        AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			                        <isNotEmpty property="orderPathCd">
+			                        AND    O2.ORDER_PATH_CD = #orderPathCd#
+			                        </isNotEmpty>
+			                        ) O,
+			                       TOR_ORDER_ITEM OI
+			                WHERE  O.ORDER_ID = OI.ORDER_ID       
+			                GROUP  BY O.ORD_DY, O.ORDER_ID, O.ORD_RTN_DIVN_CD, O.BSKET_DIVN_CD, O.FIRST_ORDER_ID) O,
+			               (SELECT   O.ORDER_ID
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD IN ('01', '02','06','07','08','09','10','12') THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_TOT_AMT
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD = '03'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_COUPON_AMT
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD = '04'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_POINT_AMT
+			                        ,SUM(CASE WHEN OD.SETL_TYPE_CD = '05'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_DELIV_COUPON_AMT
+			                FROM   (SELECT O2.ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.BSKET_DIVN_CD, O2.ORD_DY
+			                        FROM    TOR_ORDER O
+			                               ,TOR_ORDER O2
+			                        WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+			                        AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+			                                                       FROM    TMA_AFFILIATE
+			                                                       WHERE   AFFILIATE_LINK_NO != '00180007'
+			                                                       START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+			                                                       CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)   
+			                        AND    O2.ORD_RTN_DIVN_CD   != '50' 
+			                        AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')	
+			                        <isNotEmpty property="orderPathCd">
+			                        AND    O2.ORDER_PATH_CD = #orderPathCd#
+			                        </isNotEmpty>
+			                        ) O, TOR_DEMAND OD
+			                WHERE  O.ORDER_ID = OD.ORDER_ID
+			                GROUP  BY O.ORDER_ID) OD
+			        WHERE  O.ORDER_ID = OD.ORDER_ID
+			        
+	</select>	
+	
+	
+	<select id="selectNaverEdmSummaryListExcel_20130311BAK" parameterClass="pscmsta001searchVO" resultClass="dataMap">
+<!-- 				SELECT /* PSCMSTA0001.selectNaverEdmSummaryListExcel_20130311BAK */
+				       RANK()OVER(ORDER BY O.ORDER_ID DESC) RANK_NUM,
+				       O.ORD_DY, 
+				       O.ORDER_ID,
+		               (SELECT SUB.CD_NM FROM TET_CODE SUB WHERE SUB.MAJOR_CD = 'OR002' AND O.ORD_STS_CD = SUB.MINOR_CD) STATUS_NM,
+				       O.ORD_RTN_DIVN_CD,
+				       O.UP_ORDER_ID,
+				       O.FIRST_ORDER_ID,
+				       NVL(O.ORDER_ITEM_AMT_SUM,0)ORDER_ITEM_AMT_SUM,
+				       NVL(O.TOTAL_DC_AMT_SUM,0)TOTAL_DC_AMT_SUM,
+				       NVL(O.DELIVERY_AMT_SUM,0)DELIVERY_AMT_SUM,
+				       NVL(OD.APPLY_TOT_AMT,0)APPLY_TOT_AMT,
+				       NVL(OD.APPLY_COUPON_AMT,0)APPLY_COUPON_AMT,
+				       NVL(OD.APPLY_POINT_AMT,0)APPLY_POINT_AMT,
+				       NVL(OD.APPLY_DELIV_COUPON_AMT,0)APPLY_DELIV_COUPON_AMT
+				FROM   (SELECT O.ORD_DY,
+				               O.ORDER_ID, 
+				               O.ORD_STS_CD,
+				               O.ORD_RTN_DIVN_CD,
+				               O.UP_ORDER_ID,
+				               O.FIRST_ORDER_ID,
+				               SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', 0,
+				                                               '12', 0,
+				                                               '13', 0,
+				                                                     OI.ORD_AMT) ) AS ORDER_ITEM_AMT_SUM,
+				               SUM(NVL (OI.DC_AMT, 0)   + NVL (OI.CMS_COUPON_DC_AMT, 0)
+				                                              + NVL (OI.COUPON_DC_AMT, 0)
+				                                              + NVL (OI.STAFF_DC_AMT, 0)) AS TOTAL_DC_AMT_SUM,
+				               SUM(DECODE (OI.ORD_ITEM_DIVN_CD, '11', OI.ORD_AMT,
+				                                               '12', OI.ORD_AMT,
+				                                               '13', OI.ORD_AMT,
+				                                                     0)) AS DELIVERY_AMT_SUM 
+				        FROM   (SELECT O2.ORDER_ID, O2.UP_ORDER_ID, O2.FIRST_ORDER_ID, O2.ORD_STS_CD, O2.ORD_RTN_DIVN_CD, O2.ORD_DY
+				                FROM   TOR_ORDER O,
+				                       TOR_ORDER O2
+				                WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+				                AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+				                                          FROM    TMA_AFFILIATE
+				                                          WHERE   AFFILIATE_LINK_NO != '00180007'
+				                                          START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+				                                          CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)
+				                AND    O2.ORD_RTN_DIVN_CD   != '50'  
+				                AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')) O,
+				               TOR_ORDER_ITEM OI
+				        WHERE  O.ORDER_ID = OI.ORDER_ID       
+				        GROUP  BY O.ORD_DY, O.ORDER_ID, O.ORD_RTN_DIVN_CD, O.ORD_STS_CD, O.FIRST_ORDER_ID, O.UP_ORDER_ID) O,
+				       (SELECT O.ORDER_ID,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD IN ('01', '02','06','07','08','09','10','12') THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_TOT_AMT,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD = '03'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_COUPON_AMT,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD = '04'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_POINT_AMT,
+				               SUM(CASE WHEN OD.SETL_TYPE_CD = '05'          THEN NVL(OD.DPST_AMT, 0) + NVL(OD.PROC_COMM, 0) END) APPLY_DELIV_COUPON_AMT
+				        FROM   (SELECT O2.ORDER_ID, O2.ORD_RTN_DIVN_CD, O2.ORD_STS_CD, O2.ORD_DY
+				                FROM   TOR_ORDER O,
+				                       TOR_ORDER O2
+				                WHERE  O.ORDER_ID = O2.FIRST_ORDER_ID
+				                AND    O.AFFILIATE_LINK_NO IN (SELECT  AFFILIATE_LINK_NO
+				                                          FROM    TMA_AFFILIATE
+				                                          WHERE   AFFILIATE_LINK_NO != '00180007'
+				                                          START   WITH AFFILIATE_LINK_NO IN ( $affiliateLinkNo$ )
+				                                          CONNECT BY  PRIOR AFFILIATE_LINK_NO = UP_AFFILIATE_LINK_NO)   
+				                AND    O2.ORD_RTN_DIVN_CD   != '50' 
+				                AND    O2.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+				                ) O,
+				               TOR_DEMAND OD
+				        WHERE  O.ORDER_ID = OD.ORDER_ID
+				        GROUP  BY O.ORDER_ID) OD
+				WHERE  O.ORDER_ID = OD.ORDER_ID -->
+	</select>	
+	
+</sqlMap>

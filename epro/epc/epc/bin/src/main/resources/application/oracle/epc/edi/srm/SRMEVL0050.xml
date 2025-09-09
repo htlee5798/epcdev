@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMEVL0050">
+
+	<typeAlias alias="SRMEVL0050VO" type="com.lottemart.epc.edi.srm.model.SRMEVL0050VO" />
+	<typeAlias alias="CommonFileVO"	type="com.lottemart.epc.common.model.CommonFileVO" />
+
+	<!-- 파일정보조회 resultMap -->
+	<resultMap id="selectHiddenCompFileResultMap" class="CommonFileVO">
+		<result column="DOC_NO"						property="fileId" 					/>	<!-- 파일ID -->
+		<result column="DOC_SEQ"					property="fileSeq" 					/>	<!-- 순번 -->
+		<result column="DES_FILE_NAME"				property="tempFileName" 			/>	<!-- 서버저장파일명 -->
+		<result column="SRC_FILE_NAME"				property="fileNmae" 				/>	<!-- 원본파일명 -->
+	</resultMap>
+
+
+	<!-- 점검요약 조회 resultMap -->
+	<resultMap id="selectQualityEvaluationSiteVisit1Map" class="SRMEVL0050VO">
+		<result column="EV_TOT_SCORE"				property="evTotScore" 		/>	<!--  -->
+		<result column="EV_SCORE"					property="evScore" 			/>	<!--  -->
+		<result column="EV_PER_SCORE" 				property="EvScorePer" 		/> 	   <!-- 100분위 비율 점수 계산 -->  
+		<result column="SELLER_NAME_LOC"			property="sellerNameLoc" 	/>	<!-- 업체명 -->
+		<result column="SELLER_ADDRESS"				property="sellerAddress" 	/>	<!-- 업체 주소 -->
+		<result column="EVAL_SELLER_NAME_LOC"		property="evalSellerNameLoc" 	/>	<!-- 업체 주소 -->
+		<result column="EV_CTRL_NAME"				property="evCtrlName" 		/>	<!-- 감사자명 -->
+		<result column="EV_CTRL_PHONE"				property="evCtrlPhone" 		/>	<!-- 감사자 연락처 -->
+		<result column="EV_CTRL_EMAIL"				property="evCtrlEmail" 		/>	<!-- 감사자 이메일 -->
+		<result column="EV_CTRL_DATE"				property="evCtrlDate" 		/>	<!-- 감사일 -->
+		<result column="EV_GRADE"					property="evGrade" 			/>	<!-- 평가등급 -->
+		<result column="EV_INCON_REMARK"			property="evInconRemark" 	/>	<!-- 중요부적합사항 -->
+		<result column="EV_GEN_VIEW"				property="evGenView" 		/>	<!-- 심사총평 -->
+		<result column="ATTACH_FILE_NO"				property="attachFileNo" 	/>	<!-- 심사총평 -->
+		<result column="STATUS"						property="status" 			/>	<!-- 진행상태 -->
+		<result column="STATUS_NM"					property="statusNm" 		/>	<!-- 진행상태명[SRM900]-->
+		<result column="PROGRESS_CODE"				property="progressCode"		/>	<!-- 진행상태 -->
+		<result column="CAT_LV1_CODE_NAME"			property="catLv1CodeName"	/>	<!-- 대분류 -->
+		<result column="INDUSTRY_TYPE"				property="industryType"		/>	<!-- 업종 -->
+		<result column="MAIN_PRODUCT"				property="mainProduct"		/>	<!-- 주요품목 -->
+	</resultMap>
+
+	<!-- 참석자 조회 resultMap -->
+	<resultMap id="selectQualityEvaluationSiteVisit2Map" class="SRMEVL0050VO">
+		<result column="EV_PART_NAME"				property="evPartName" 		/>	<!-- 참석자명 -->
+		<result column="EV_PART_PHONE"				property="evPartPhone" 		/>	<!-- 참석자 전화번호 -->
+		<result column="EV_PART_EMAIL"				property="evPartEmail" 		/>	<!-- 참석자 이메일 -->
+		<result column="EV_PART_DEPT"				property="evPartDept" 		/>	<!-- 참석자 부서 -->
+		<result column="EV_PART_POSTION"			property="evPartPostion" 	/>	<!-- 참석자 직위 -->
+	</resultMap>
+
+	<!-- 조치내역 조회 resultMap -->
+	<resultMap id="selectQualityEvaluationSiteVisit3Map" class="SRMEVL0050VO">
+		<result column="EV_ITEM_TYPE1_CODE"			property="evItemType1Code" 	/>	<!-- 평가관점 -->
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가관점 -->
+		<result column="IMP_REQ_REMARK"				property="impReqRemark" 	/>	<!-- 시정조치 요청내용 -->
+	</resultMap>
+
+	<!-- 조치내역 조회 resultMap -->
+	<resultMap id="selectQualityEvaluationSiteVisitDetailPopupMap" class="SRMEVL0050VO">
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 점검항목1 -->
+		<result column="EV_ITEM_TYPE2_CODE_NAME"	property="evItemType2CodeName" 	/>	<!-- 점검항목2 -->
+		<result column="ROW_SPAN"					property="rowSpan" 				/>	<!-- rowspan -->
+		<result column="EV_ID_SCORE"				property="evIdScore" 			/>	<!-- 획득가능한 점수 -->
+		<result column="EV_ID_SCORE_VAL"			property="evIdScoreVal" 		/>	<!-- 획득한 점수 -->
+	</resultMap>
+
+
+	<!-- 결과보고서 평가결과 resultMap -->
+	<resultMap id="selectQualityEvaluationSiteVisitResultMap" class="SRMEVL0050VO">
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 점검항목1 -->
+		<result column="EV_ID_SCORE"				property="evIdScore" 			/>	<!-- 획득가능한 점수 -->
+		<result column="EV_ID_SCORE_VAL"			property="evIdScoreVal" 		/>	<!-- 획득한 점수 -->
+		<result column="INCONGRUITY_CNT"			property="incongruityCnt" 		/>	<!-- 부적합수 -->
+		<result column="ROW_CNT"					property="rowCnt" 				/>	<!-- 항목수 -->
+	</resultMap>
+
+	<!-- Email 담당MD resultMap -->
+	<resultMap id="selectQualityEvaluationSiteVisitEmailListResultMap" class="SRMEVL0050VO">
+		<result column="SELLER_NAME_LOC"			property="sellerNameLoc" 		/>
+		<result column="USER_NAME_LOC"				property="userNameLoc" 		/>
+		<result column="EMAIL"						property="email" 				/>
+	</resultMap>
+
+
+	<!--첨부파일 조회-->
+	<select id="selectQualityEvaluationAttachFileList" parameterClass="SRMEVL0050VO" resultMap="selectHiddenCompFileResultMap">
+		/*SRMEVL0050.selectQualityEvaluationAttachFileList*/
+		SELECT
+				DOC_NO
+				, DOC_SEQ
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+		FROM
+				SEVEM A
+				,SFILE B
+		WHERE
+				A.ATTACH_FILE_NO = B.DOC_NO(+)
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.EV_NO = #evNo#
+	</select>
+
+
+	<!--첨부파일저장-->
+	<update id="updateQualityEvaluationFile" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.updateQualityEvaluationFile*/
+		UPDATE 	SEVEM
+		SET
+				ATTACH_FILE_NO = #attachFileNo#
+				, CHANGE_DATE = CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID = #evUserId#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+	</update>
+
+	<!--파일 정보 조회-->
+	<select id="selectQualityEvaluationFileList" parameterClass="String" resultMap="selectHiddenCompFileResultMap">
+		/*SRMEVL0050.selectQualityEvaluationFileList*/
+		SELECT
+				DOC_NO
+				, DOC_SEQ
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+		FROM
+				SFILE
+		WHERE
+				DOC_NO = #fileId#
+	</select>
+
+	<!--파일 등록-->
+	<insert id="insertQualityEvaluationFile" parameterClass="CommonFileVO">
+		/*SRMEVL0050.insertQualityEvaluationFile*/
+		INSERT INTO SFILE
+				( DOC_NO
+				, DOC_SEQ
+				, ADD_DATE
+				, ADD_TIME
+				, ADD_USER_ID
+				, TYPE
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+				, FILE_SIZE)
+		VALUES
+				( #fileId#
+				, (SELECT LPAD(NVL(MAX(DOC_SEQ),0)+1,8,'0') FROM SFILE WHERE DOC_NO = #fileId#)
+				, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+				, TO_CHAR(CURRENT_TIMESTAMP(0),'HH24MISS')
+				, #regId#
+				, 'SRM'
+				, #tempFileName#
+				, #fileNmae#
+				, #fileSize#)
+	</insert>
+
+	<!--점검요약 조회-->
+	<select id="selectQualityEvaluationSiteVisit1" parameterClass="SRMEVL0050VO" resultMap="selectQualityEvaluationSiteVisit1Map">
+		/*SRMEVL0050.selectQualityEvaluationSiteVisit1*/
+		SELECT
+				EV_TOT_SCORE
+				,EV_SCORE
+				,EV_PER_SCORE
+				,SELLER_NAME_LOC
+				,SELLER_ADDRESS
+				,EVAL_SELLER_NAME_LOC
+				,EV_CTRL_NAME
+				,EV_CTRL_PHONE
+				,EV_CTRL_EMAIL
+				,EV_CTRL_DATE
+				,CASE WHEN EV_GRADE IS NULL THEN (
+													SELECT
+															CODE
+													FROM
+															SCODE
+													WHERE
+															TYPE = 'SRM085'
+														AND EV_PER_SCORE BETWEEN TEXT1 AND TEXT2
+											) ELSE EV_GRADE
+				END AS EV_GRADE
+				,EV_INCON_REMARK
+				,EV_GEN_VIEW
+				,ATTACH_FILE_NO
+				,STATUS
+				,STATUS_NM
+				,PROGRESS_CODE
+				,CAT_LV1_CODE_NAME
+				,INDUSTRY_TYPE
+				,MAIN_PRODUCT
+		FROM
+				(
+					SELECT
+							SUM(EV_ID_SCORE) AS EV_TOT_SCORE
+							,EV_SCORE
+							,(TRUNC((EV_SCORE / SUM(EV_ID_SCORE)) * 100,2)+NVL(RSCORE.DESC_SCORE,0)) AS EV_PER_SCORE    <!-- 감점이 있는경우 비율에 감점 적용 -->       
+							,A.SELLER_NAME_LOC
+							,SELLER_ADDRESS
+							,C.SELLER_NAME_LOC AS EVAL_SELLER_NAME_LOC
+							,(CASE WHEN A.EV_CTRL_NAME IS NULL THEN B.USER_NAME_LOC ELSE A.EV_CTRL_NAME END) AS EV_CTRL_NAME						<!--SUSMT-->
+							,(CASE WHEN A.EV_CTRL_PHONE IS NULL THEN B.OFFICE_TEL_NO ELSE A.EV_CTRL_PHONE END) AS EV_CTRL_PHONE						<!--SUSMT-->
+							,(CASE WHEN A.EV_CTRL_EMAIL IS NULL THEN B.EMAIL ELSE A.EV_CTRL_EMAIL END) AS EV_CTRL_EMAIL								<!--SUSMT-->
+							<!--,(CASE WHEN A.EV_CTRL_NAME IS NULL THEN C.V_MAIN_NAME ELSE A.EV_CTRL_NAME END) AS EV_CTRL_NAME-->					<!--SSUGL-->
+							<!--,(CASE WHEN A.EV_CTRL_PHONE IS NULL THEN C.V_PHONE1 ELSE A.EV_CTRL_PHONE END) AS EV_CTRL_PHONE-->					<!--SSUGL-->
+							<!--,(CASE WHEN A.EV_CTRL_EMAIL IS NULL THEN C.V_EMAIL ELSE A.EV_CTRL_EMAIL END) AS EV_CTRL_EMAIL-->					<!--SSUGL-->
+							,EV_CTRL_DATE
+							,EV_GRADE
+							,EV_INCON_REMARK
+							,EV_GEN_VIEW
+							,ATTACH_FILE_NO
+							,STATUS
+							,STATUS_NM
+							,PROGRESS_CODE
+							,CAT_LV1_CODE_NAME
+							,A.INDUSTRY_TYPE
+							,A.MAIN_PRODUCT
+					FROM
+							(
+								<isEqual property="evalFlag" compareValue="0">
+									<!--잠재업체-->
+									SELECT
+											A.HOUSE_CODE
+											,F.EV_SCORE
+											,A.SELLER_NAME_LOC
+											,A.SELLER_ADDRESS
+											,EV_CTRL_NAME
+											,EV_CTRL_PHONE
+											,EV_CTRL_EMAIL
+											,EV_CTRL_DATE
+											,EV_GRADE
+											,EV_INCON_REMARK
+											,EV_GEN_VIEW
+											,D.EV_ID_SCORE
+											,E.ATTACH_FILE_NO
+											,A.STATUS
+											,GETCODETEXT1('SRM900', A.STATUS, UPPER(#locale#)) AS STATUS_NM
+											,F.PROGRESS_CODE
+											, GETSGCLASS('000', UPPER(#locale#), '1', G.CAT_LV1_CODE) AS CAT_LV1_CODE_NAME
+											,INDUSTRY_TYPE
+											,MAIN_PRODUCT
+											,EVAL_SELLER_CODE
+									FROM
+											SSUGL_PROCESS_SITEVISIT A
+											,SSUGL_PROCESS_SITEVISIT_COVER1 B
+											,SEVTD C
+											,SEVID D
+											,SEVEM E
+											,SEVEU F
+											,SSUGL_PROCESS_MAIN G
+											,SSUGL H
+											,(SELECT * FROM SEVEE WHERE EV_NO = #evNo#) I
+									WHERE
+											A.HOUSE_CODE = B.HOUSE_CODE(+)
+										AND A.EVAL_NO_RESULT = B.EV_NO(+)
+										AND A.VISIT_SEQ= B.VISIT_SEQ(+)
+										AND A.EVAL_NO_RESULT = F.EV_NO(+)
+										AND A.HOUSE_CODE = C.HOUSE_CODE
+										AND A.EV_TPL_NO = C.EV_TPL_NO
+										AND C.HOUSE_CODE = D.HOUSE_CODE
+										AND C.EV_ITEM_NO = D.EV_ITEM_NO
+										AND A.HOUSE_CODE = E.HOUSE_CODE
+										AND A.EVAL_NO_RESULT = E.EV_NO
+										AND A.HOUSE_CODE = F.HOUSE_CODE
+										AND A.SELLER_CODE = F.VENDOR_CODE
+										AND A.HOUSE_CODE = G.HOUSE_CODE
+										AND A.SELLER_CODE = G.SELLER_CODE
+										AND A.SEQ = G.SEQ
+										AND A.HOUSE_CODE = H.HOUSE_CODE(+)
+										AND A.SELLER_CODE = H.SELLER_CODE(+)
+										AND C.HOUSE_CODE = I.HOUSE_CODE(+)
+										AND C.EV_TPL_NO = I.EV_TPL_NO(+)
+										AND C.EV_ITEM_NO = I.EV_ITEM_NO(+)
+										AND A.HOUSE_CODE = #houseCode#
+										AND A.SELLER_CODE = #vendorCode#
+										AND A.EVAL_NO_RESULT = #evNo#
+										AND A.SEQ = #seq#
+										AND A.VISIT_SEQ = #visitSeq#
+										AND D.EV_ID_ORDER = '1'
+										AND D.DEL_FLAG = '0'
+										AND D.EV_ID_SEQ = '1'
+										AND D.EV_ID_SCORE >0     <!-- 음수일 경우 총점에서 계산을 하지 않는다. -->
+										AND I.EV_ID_SEQ <![CDATA[<>]]> '5'				<!--N/A 항목 제거-->
+								</isEqual>
+								<isEqual property="evalFlag" compareValue="1">
+									<!--파트너사-->
+									SELECT
+											A.HOUSE_CODE
+											,F.EV_SCORE
+											,A.SELLER_NAME_LOC
+											,A.SELLER_ADDRESS
+											,EV_CTRL_NAME
+											,EV_CTRL_PHONE
+											,EV_CTRL_EMAIL
+											,EV_CTRL_DATE
+											,EV_GRADE
+											,EV_INCON_REMARK
+											,EV_GEN_VIEW
+											,D.EV_ID_SCORE
+											,E.ATTACH_FILE_NO
+											,A.STATUS
+											,GETCODETEXT1('SRM900', A.STATUS, UPPER('ko')) AS STATUS_NM
+											,F.PROGRESS_CODE
+											, GETSGCLASS('000', UPPER('ko'), '1', H.ZZMCHL1) AS CAT_LV1_CODE_NAME
+											,INDUSTRY_TYPE
+											,ZDPRD AS MAIN_PRODUCT
+											,EVAL_SELLER_CODE
+									FROM
+											SSUGL_PROCESS_SITEVISIT A
+											,SSUGL_PROCESS_SITEVISIT_COVER1 B
+											,SEVTD C
+											,SEVID D
+											,SEVEM E
+											,SEVEU F
+											,SSUGL_PARTNER H
+											,(SELECT * FROM SEVEE WHERE EV_NO = #evNo#) I
+									WHERE
+											A.HOUSE_CODE = B.HOUSE_CODE(+)
+										AND A.EVAL_NO_RESULT = B.EV_NO(+)
+										AND A.VISIT_SEQ= B.VISIT_SEQ(+)
+										AND A.EVAL_NO_RESULT = F.EV_NO(+)
+										AND A.HOUSE_CODE = C.HOUSE_CODE
+										AND A.EV_TPL_NO = C.EV_TPL_NO
+										AND C.HOUSE_CODE = D.HOUSE_CODE
+										AND C.EV_ITEM_NO = D.EV_ITEM_NO
+										AND A.HOUSE_CODE = E.HOUSE_CODE
+										AND A.EVAL_NO_RESULT = E.EV_NO
+										AND A.HOUSE_CODE = F.HOUSE_CODE
+										AND A.SELLER_CODE = F.VENDOR_CODE
+										AND A.HOUSE_CODE = H.HOUSE_CODE(+)
+										AND A.SELLER_CODE = H.SELLER_CODE(+)
+										AND C.HOUSE_CODE = I.HOUSE_CODE(+)
+										AND C.EV_TPL_NO = I.EV_TPL_NO(+)
+										AND C.EV_ITEM_NO = I.EV_ITEM_NO(+)
+										AND A.HOUSE_CODE = #houseCode#
+										AND A.SELLER_CODE = #vendorCode#
+										AND A.EVAL_NO_RESULT = #evNo#
+										AND A.SEQ = #seq#
+										AND A.VISIT_SEQ = #visitSeq#
+										AND D.EV_ID_ORDER = '1'
+										AND D.DEL_FLAG = '0'
+										AND D.EV_ID_SEQ = '1'
+										AND D.EV_ID_SCORE >0     <!-- 음수일 경우 총점에서 계산을 하지 않는다. -->
+										AND I.EV_ID_SEQ <![CDATA[<>]]> '5'				<!--N/A 항목 제거-->
+								</isEqual>
+
+							) A
+							, SUSMT B
+							, SSUGL C
+							LEFT OUTER JOIN (SELECT EVEE.EV_NO, EVIM.KPI_KIND_CODE,SUM(EVEE.EV_ID_SCORE) AS DESC_SCORE  	<!--  비율 감점 항목 테이블  -->
+                                FROM SEVEE EVEE JOIN SEVIM EVIM 
+                                    ON EVEE.EV_ITEM_NO=EVIM.EV_ITEM_NO 
+                                    AND EVIM.KPI_KIND_CODE='DES' 
+                                GROUP BY  EVEE.EV_NO,EVIM.KPI_KIND_CODE
+                                )  RSCORE
+                                on RSCORE.EV_NO = #evNo#
+					WHERE 	A.EVAL_SELLER_CODE = B.USER_ID
+							AND A.EVAL_SELLER_CODE = C.SELLER_CODE
+					GROUP BY EV_CTRL_NAME
+							, EV_CTRL_PHONE
+							, EV_CTRL_EMAIL
+							, EV_CTRL_DATE
+							, EV_GRADE
+							, EV_INCON_REMARK
+							, EV_GEN_VIEW
+							, EV_SCORE
+							, ATTACH_FILE_NO
+							, STATUS
+							, STATUS_NM
+							, PROGRESS_CODE
+							,A.SELLER_NAME_LOC
+							,SELLER_ADDRESS
+							,CAT_LV1_CODE_NAME
+							,A.INDUSTRY_TYPE
+							,A.MAIN_PRODUCT
+							,C.SELLER_NAME_LOC
+							,B.USER_NAME_LOC
+							,B.OFFICE_TEL_NO
+							,B.EMAIL
+							<!--,C.V_MAIN_NAME-->
+							<!--,C.V_PHONE1-->
+							<!--,C.V_EMAIL-->
+				)
+	</select>
+
+	<!--점검요약 등록-->
+	<insert id="insertQualityEvaluationSiteVisit1" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.insertQualityEvaluationSiteVisit1*/
+		INSERT INTO SSUGL_PROCESS_SITEVISIT_COVER1
+						(HOUSE_CODE
+						, EV_NO
+						, VISIT_SEQ
+						, EV_CTRL_NAME
+						, EV_CTRL_PHONE
+						, EV_CTRL_EMAIL
+						, EV_CTRL_DATE
+						, EV_TOT_SCORE
+						, EV_SCORE
+						, EV_GRADE
+						, EV_INCON_REMARK
+						, EV_GEN_VIEW
+						, ADD_DATE
+						, ADD_USER_ID
+						, CHANGE_DATE
+						, CHANGE_USER_ID
+						, EV_PER_SCORE)
+		VALUES
+						( #houseCode#
+						,#evNo#
+						,#visitSeq#
+						,#evCtrlName#
+						,#evCtrlPhone#
+						,#evCtrlEmail#
+						,#evCtrlDate#
+						,#evTotScore#
+						,#evScore#
+						,#evGrade#
+						,#evInconRemark#
+						,#evGenView#
+						,CURRENT_TIMESTAMP(0)
+						,#evUserId#
+						,CURRENT_TIMESTAMP(0)
+						,#evUserId#
+						,#EvScorePer#)
+	</insert>
+
+	<!--점검요약 삭제-->
+	<delete id="deleteQualityEvaluationSiteVisit1" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.deleteQualityEvaluationSiteVisit1*/
+		DELETE
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER1
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #visitSeq#
+	</delete>
+
+	<!--참석자 조회-->
+	<select id="selectQualityEvaluationSiteVisit2" parameterClass="SRMEVL0050VO" resultMap="selectQualityEvaluationSiteVisit2Map">
+		/*SRMEVL0050.selectQualityEvaluationSiteVisit2*/
+		SELECT
+				EV_PART_NAME
+				,EV_PART_PHONE
+				,EV_PART_EMAIL
+				,EV_PART_DEPT
+				,EV_PART_POSTION
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER2
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #visitSeq#
+		ORDER BY EV_PART_SEQ
+	</select>
+
+	<!--참석자 등록-->
+	<insert id="insertQualityEvaluationSiteVisit2" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.insertQualityEvaluationSiteVisit2*/
+		INSERT INTO SSUGL_PROCESS_SITEVISIT_COVER2
+					(HOUSE_CODE
+					, EV_NO
+					, VISIT_SEQ
+					, EV_PART_SEQ
+					, EV_PART_NAME
+					, EV_PART_PHONE
+					, EV_PART_EMAIL
+					, EV_PART_DEPT
+					, EV_PART_POSTION
+					, ADD_DATE
+					, ADD_USER_ID
+					, CHANGE_DATE
+					, CHANGE_USER_ID)
+		VALUES
+					(#houseCode#
+					, #evNo#
+					, #visitSeq#
+					, (SELECT NVL(MAX(TO_NUMBER(EV_PART_SEQ)),0)+1 FROM SSUGL_PROCESS_SITEVISIT_COVER2 WHERE HOUSE_CODE = #houseCode# AND EV_NO = #evNo# AND VISIT_SEQ = #visitSeq#)
+					, #evPartName#
+					, #evPartPhone#
+					, #evPartEmail#
+					, #evPartDept#
+					, #evPartPostion#
+					, CURRENT_TIMESTAMP(0)
+					, #evUserId#
+					, CURRENT_TIMESTAMP(0)
+					, #evUserId#)
+	</insert>
+
+	<!--참석자 삭제-->
+	<delete id="deleteQualityEvaluationSiteVisit2" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.deleteQualityEvaluationSiteVisit2*/
+		DELETE
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER2
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #visitSeq#
+	</delete>
+
+	<!--조치내역 조회-->
+	<select id="selectQualityEvaluationSiteVisit3" parameterClass="SRMEVL0050VO" resultMap="selectQualityEvaluationSiteVisit3Map">
+		/*SRMEVL0050.selectQualityEvaluationSiteVisit3*/
+		SELECT
+				EV_ITEM_TYPE1_CODE
+				,	GETCODETEXT1(
+								CASE (	SELECT
+												EV_ITEM_KIND_CODE
+										FROM
+												SEVTD A
+												, SEVIM B
+										WHERE A.HOUSE_CODE = B.HOUSE_CODE
+										AND A.EV_ITEM_NO = B.EV_ITEM_NO
+										AND EV_TPL_NO IN (
+															SELECT
+																	EV_TPL_NO
+															FROM
+																	SEVEE
+															WHERE EV_NO = #evNo#
+															GROUP BY EV_TPL_NO
+														)
+										AND EV_ITEM_TYPE1_CODE = A.EV_ITEM_TYPE1_CODE
+										GROUP BY EV_ITEM_KIND_CODE
+										)
+								WHEN 'STA' THEN 'SRM010'
+								WHEN 'RET' THEN 'SRM011'
+								WHEN 'QBE' THEN 'SRM027'
+								ELSE ''
+								END, EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+								) AS EV_ITEM_TYPE1_CODE_NAME
+				,IMP_REQ_REMARK
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER3 A
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #visitSeq#
+		ORDER BY IMP_SEQ
+	</select>
+
+	<!--조치내역 등록-->
+	<insert id="insertQualityEvaluationSiteVisit3" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.insertQualityEvaluationSiteVisit3*/
+		INSERT INTO SSUGL_PROCESS_SITEVISIT_COVER3
+					(HOUSE_CODE
+					, EV_NO
+					, VISIT_SEQ
+					, EV_ITEM_TYPE1_CODE
+					, IMP_SEQ
+					, IMP_REQ_REMARK
+					, IMP_STATUS
+					, ADD_DATE
+					, ADD_USER_ID
+					, CHANGE_DATE
+					, CHANGE_USER_ID)
+		VALUES
+					(#houseCode#
+					, #evNo#
+					, #visitSeq#
+					, #evItemType1Code#
+					, (SELECT NVL(MAX(TO_NUMBER(IMP_SEQ)),0)+1 FROM SSUGL_PROCESS_SITEVISIT_COVER3 WHERE HOUSE_CODE = #houseCode# AND EV_NO = #evNo# AND VISIT_SEQ = #visitSeq#)
+					, #impReqRemark#
+					, #impStatus#
+					, CURRENT_TIMESTAMP(0)
+					, #evUserId#
+					, CURRENT_TIMESTAMP(0)
+					, #evUserId#)
+	</insert>
+
+	<!--조치내역 삭제-->
+	<delete id="deleteQualityEvaluationSiteVisit3" parameterClass="SRMEVL0050VO">
+		/*SRMEVL0050.deleteQualityEvaluationSiteVisit3*/
+		DELETE
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER3
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #visitSeq#
+	</delete>
+
+	<!-- 상세보기 팝업 -->
+	<select id="selectQualityEvaluationSiteVisitDetailPopup" parameterClass="SRMEVL0050VO" resultMap="selectQualityEvaluationSiteVisitDetailPopupMap">
+		/*SRMEVL0050.selectQualityEvaluationSiteVisitDetailPopup*/
+		SELECT
+				EV_ITEM_TYPE1_CODE_NAME
+				,EV_ITEM_TYPE2_CODE_NAME
+				,COUNT(1) OVER(PARTITION BY EV_ITEM_TYPE1_CODE_NAME) AS ROW_SPAN
+				,SUM(EV_ID_SCORE) AS EV_ID_SCORE
+				,SUM(EV_ID_SCORE_VAL) AS EV_ID_SCORE_VAL
+		FROM
+				(
+					SELECT
+							GETCODETEXT1(
+										CASE B.EV_ITEM_KIND_CODE
+										WHEN 'STA' THEN 'SRM010'
+										WHEN 'RET' THEN 'SRM011'
+										WHEN 'QBE' THEN 'SRM027'
+										ELSE ''
+										END, B.EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+										) AS EV_ITEM_TYPE1_CODE_NAME
+							,GETCODETEXT1(
+										CASE B.EV_ITEM_KIND_CODE
+										WHEN 'STA' THEN 'SRM010_1'
+										WHEN 'RET' THEN 'SRM011_1'
+										WHEN 'QBE' THEN 'SRM027_1'
+										ELSE ''
+										END, B.EV_ITEM_TYPE2_CODE, UPPER(#locale#)
+										) AS EV_ITEM_TYPE2_CODE_NAME
+							,EV_ITEM_TYPE1_CODE
+							,C.EV_ID_SCORE
+							,D.EV_ID_SCORE AS EV_ID_SCORE_VAL
+					FROM
+							SEVTD A
+							,SEVIM B
+							,SEVID C
+							,SEVEE D
+					WHERE
+							A.HOUSE_CODE = B.HOUSE_CODE
+							AND A.EV_ITEM_NO = B.EV_ITEM_NO
+							AND B.HOUSE_CODE = C.HOUSE_CODE
+							AND B.EV_ITEM_NO = C.EV_ITEM_NO
+							AND A.HOUSE_CODE = D.HOUSE_CODE
+							AND A.EV_TPL_NO = D.EV_TPL_NO
+							AND A.EV_ITEM_NO = D.EV_ITEM_NO
+							AND C.EV_ID_SEQ = '1'
+							AND D.EV_ID_SEQ <![CDATA[<>]]> '5'		<!--N/A 항목 제거-->
+							AND B.DEL_FLAG = '0'
+							AND C.DEL_FLAG = '0'
+							AND D.EV_NO = #evNo#
+					ORDER BY B.EV_ITEM_KIND_CODE
+				)A
+		GROUP BY EV_ITEM_TYPE1_CODE_NAME, EV_ITEM_TYPE2_CODE_NAME,EV_ITEM_TYPE1_CODE
+		ORDER BY EV_ITEM_TYPE1_CODE
+	</select>
+
+
+	<!-- 결과보고서 평가결과-->
+	<select id="selectQualityEvaluationSiteVisitResult" parameterClass="SRMEVL0050VO" resultMap="selectQualityEvaluationSiteVisitResultMap">
+		/*SRMEVL0050.selectQualityEvaluationSiteVisitResult*/
+		SELECT
+				EV_ITEM_TYPE1_CODE_NAME
+				,SUM(EV_ID_SCORE) AS EV_ID_SCORE
+				,SUM(EV_ID_SCORE_VAL) AS EV_ID_SCORE_VAL
+				,SUM(INCONGRUITY_CNT) AS INCONGRUITY_CNT
+				,COUNT(EV_ITEM_TYPE1_CODE) AS ROW_CNT
+		FROM
+				(
+				SELECT
+						GETCODETEXT1(
+							CASE B.EV_ITEM_KIND_CODE
+							WHEN 'STA' THEN 'SRM010'
+							WHEN 'RET' THEN 'SRM011'
+							WHEN 'QBE' THEN 'SRM027'
+							ELSE ''
+							END, B.EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+							) AS EV_ITEM_TYPE1_CODE_NAME
+						,GETCODETEXT1(
+							CASE B.EV_ITEM_KIND_CODE
+							WHEN 'STA' THEN 'SRM010_1'
+							WHEN 'RET' THEN 'SRM011_1'
+							WHEN 'QBE' THEN 'SRM027_1'
+							ELSE ''
+							END, B.EV_ITEM_TYPE2_CODE, UPPER(#locale#)
+							) AS EV_ITEM_TYPE2_CODE_NAME
+						,EV_ITEM_TYPE1_CODE
+						,C.EV_ID_SCORE
+						,D.EV_ID_SCORE AS EV_ID_SCORE_VAL
+						,(CASE WHEN (D.EV_ID_SEQ IN('2','3','4') AND B.KPI_KIND_CODE <![CDATA[<>]]> 'DES') THEN 1 ELSE 0 END) AS INCONGRUITY_CNT
+				FROM
+						SEVTD A
+						,SEVIM B
+						,SEVID C
+						,SEVEE D
+				WHERE
+						A.HOUSE_CODE = B.HOUSE_CODE
+					AND A.EV_ITEM_NO = B.EV_ITEM_NO
+					AND B.HOUSE_CODE = C.HOUSE_CODE
+					AND B.EV_ITEM_NO = C.EV_ITEM_NO
+					AND A.HOUSE_CODE = D.HOUSE_CODE
+					AND A.EV_TPL_NO = D.EV_TPL_NO
+					AND A.EV_ITEM_NO = D.EV_ITEM_NO
+					AND C.EV_ID_SEQ = '1'
+					AND B.DEL_FLAG = '0'
+					AND C.DEL_FLAG = '0'
+					AND D.EV_ID_SEQ <![CDATA[<>]]> '5'		<!--N/A 항목 제거-->
+					AND D.EV_NO = #evNo#
+					ORDER BY B.EV_ITEM_KIND_CODE
+				)A
+		GROUP BY EV_ITEM_TYPE1_CODE_NAME, EV_ITEM_TYPE1_CODE
+		ORDER BY EV_ITEM_TYPE1_CODE
+	</select>
+
+	<!--EMS 전송 DATA-->
+	<select id="selectQualityEvaluationSiteVisitEmailList" parameterClass="SRMEVL0050VO" resultMap="selectQualityEvaluationSiteVisitEmailListResultMap">
+		/*SRMEVL0050.selectQualityEvaluationSiteVisitEmailList*/
+		<!--잠재업체-->
+		<isEqual property="evalFlag" compareValue="0">
+			SELECT
+					B.SELLER_NAME_LOC
+					,C.USER_NAME_LOC
+					<!--<isEqual property="locale" compareValue="KO">-->
+						<!--,	C.USER_NAME_LOC AS USER_NAME_LOC-->
+					<!--</isEqual>-->
+					<!--<isEqual property="locale" compareValue="ko">-->
+						<!--,	C.USER_NAME_LOC AS USER_NAME_LOC-->
+					<!--</isEqual>-->
+					<!--<isNotEqual property="locale" compareValue="KO">-->
+						<!--<isNotEqual property="locale" compareValue="ko">-->
+							<!--,	C.USER_NAME_ENG AS USER_NAME_LOC-->
+						<!--</isNotEqual>-->
+					<!--</isNotEqual>-->
+					, C.EMAIL
+			FROM
+					SINRQ A
+					, SSUGL B
+					, SUSMT C
+			WHERE
+					A.HOUSE_CODE = B.HOUSE_CODE
+				AND A.VENDOR_CODE = B.SELLER_CODE
+				AND A.HOUSE_CODE = C.HOUSE_CODE
+				AND A.OWNER_MD = C.USER_ID
+				AND A.HOUSE_CODE = #houseCode#
+				AND A.VENDOR_CODE = #vendorCode#
+				AND A.REQ_SEQ = #seq#
+		</isEqual>
+		<isEqual property="evalFlag" compareValue="1">
+			<!--파트너사-->
+			SELECT
+					A.SELLER_NAME_LOC
+					,B.USER_NAME_LOC
+					,B.EMAIL
+			FROM
+					SSUGL_PROCESS_SITEVISIT A
+					,SUSMT B
+			WHERE
+					A.HOUSE_CODE = B.HOUSE_CODE
+				AND A.ADD_USER_ID = B.USER_ID
+				AND A.HOUSE_CODE = #houseCode#
+				AND A.SELLER_CODE = #vendorCode#
+				AND A.SEQ = #seq#
+				AND A.VISIT_SEQ = #visitSeq#
+		</isEqual>
+	</select>
+</sqlMap>

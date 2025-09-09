@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMUSP0060">
+
+	<typeAlias alias="NEDMUSP0060VO" type="com.lottemart.epc.edi.usply.model.NEDMUSP0060VO"/>
+
+	<!-- 페널티확정 -->
+	<resultMap id="NEDMUSP0060VOMap" class="NEDMUSP0060VO">
+	 	<result property="splyDy"				column="SPLY_DY"			/>	<!-- 납품일 -->
+	 	<result property="srcmkCd"				column="SRCMK_CD"			/>	<!-- 판매코드 -->
+	 	<result property="prodNm"				column="PROD_NM"			/>	<!-- 상품명 -->
+	 	<result property="prodStd"				column="PROD_STD"			/>	<!-- 상품규격 -->
+	 	<result property="ordIpsu"				column="ORD_IPSU"			/>	<!-- 발주입수 -->
+	 	<result property="ordUnit"				column="ORD_UNIT"			/>	<!-- 발주단위 -->
+	 	<result property="strNm"				column="STR_NM"				/>	<!-- 점포명 -->
+	 	<result property="usplyQty"				column="USPLY_QTY"			/>	<!-- 미납수량 -->
+	 	<result property="usplyBuyAmt"			column="USPLY_BUY_AMT"		/>	<!-- 미납원가금액 -->
+	 	<result property="minorCd"				column="MINOR_CD"			/>	<!-- 공통코드 -->
+	 	<result property="strCd"				column="STR_CD"				/>	<!-- 점포코드 -->
+	</resultMap>
+	
+	<select id="TSC_PENALTY-SELECT01" resultMap="NEDMUSP0060VOMap" parameterClass="NEDMUSP0060VO">
+		/* NEDMUSP0060.TSC_PENALTY-SELECT01 */
+		SELECT	TO_CHAR(TO_DATE(A.SPLY_DY,'yyyymmdd'),'YYYY-MM-DD') SPLY_DY
+			,	A.SRCMK_CD
+			,	A.PROD_NM
+			,	A.PROD_STD
+			,	A.ORD_IPSU
+			,	(SELECT CD_NM FROM TPC_CODE WHERE TPC_CODE.MAJOR_CD = 'CSA01' AND TPC_CODE.MINOR_CD = A.ORD_UNIT) AS ORD_UNIT
+			,	B.STR_NM
+			,	ROUND(NVL(A.USPLY_QTY/nullif(A.ORD_IPSU,0),0)) AS USPLY_QTY
+			,	A.USPLY_BUY_AMT
+			,	C.CD_NM AS MINOR_CD
+			,	B.STR_CD
+		FROM  	TPC_USPLY_PROD A
+			,	STORE B
+			,	TPC_CODE C
+		WHERE 	A.STR_CD 		= B.STR_CD
+			AND A.CFM_DETAIL_FG = C.MINOR_CD
+			AND C.MAJOR_CD 		= 'USL06'
+			AND A.CFM_REASON_FG = '1'
+			AND A.SPLY_DY between replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchStoreAl"  prepend="AND">
+				<iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchProductVal"  prepend="AND">
+				A.PROD_CD = #searchProductVal#
+			</isNotEmpty>
+	
+	</select>
+	
+</sqlMap>

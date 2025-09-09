@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0003">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<typeAlias alias="stringClass"	type="String" />
+
+<!-- 견적서 입력 -->
+<insert id="TSC_ESTIMATION-INSERT01" parameterClass="map">
+
+	INSERT  INTO TED_ESTIMATION  (PID, VEN_CD, DOC_NM, FILE_SEQ, FILE_NM, REG_DATE)
+	VALUES  (#pid# ,#entp_cd#, #e_text#,#file_seq#,#file_nm#,CURRENT_TIMESTAMP(0))
+	  
+</insert>
+
+<!-- 견적서 세부 입력 -->
+<insert id="TSC_ESTIMATION_SHEET-INSERT01" parameterClass="map">
+INSERT  INTO TED_ESTIMATION_SHEET (PID, SEQ, ES_PC, ES_STANDARD, ES_PROD_CD, ES_PROD_NM, ES_PACK_TYPE, ES_GRADE, ES_PRICE, ES_ORGIN, ES_DETAIL, REG_DATE)
+VALUES  (#pid#, #seq#, #pc#, #standard#, #product_id#, #product_name#, #pack#, #rating#, #estimate_price#, #origin#, #remark#, CURRENT_TIMESTAMP(0))
+
+</insert>
+
+<!-- 견적서 세부 Max seq -->
+<select id="SEQ_SELECT01" parameterClass="String"  resultClass="String">
+	SELECT MAX(SEQ) FROM TED_ESTIMATION_SHEET WHERE PID=#seq#
+</select>
+
+
+</sqlMap>

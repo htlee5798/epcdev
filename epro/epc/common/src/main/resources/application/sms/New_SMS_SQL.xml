@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NewSMS">
+
+	<typeAlias  alias="BaseMap" type="lcn.module.framework.ibatis.BaseMap"/>
+	<typeAlias  alias="LtnewsmsVO" type="com.lottemart.common.sms.model.LtnewsmsVO"/>
+	<typeAlias  alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<!-- to-be 데이터 as-is 데이터로 -->
+	<sql id="selectStatus">
+		CASE WHEN STATUS IN (0, 7) THEN 1
+		     WHEN STATUS = 1 THEN 2
+		     WHEN STATUS = 2 THEN 3
+		 END
+	</sql>
+	
+	<!-- to-be 데이터 as-is 데이터로 -->
+	<sql id="selectMsgType">
+		CASE WHEN MSG_TYPE = 0 THEN 4
+		     WHEN MSG_TYPE = 5 THEN 6
+		 END
+	</sql>
+	
+	<!-- to-be 데이터 as-is 데이터명으로 -->
+	<sql id="selectStatusNm">
+		CASE WHEN STATUS IN (0, 7) THEN '발송'
+		     WHEN STATUS = 1 THEN '발송중'
+		     WHEN STATUS = 2 THEN '전송완료'
+		     WHEN STATUS IS NULL THEN ' '
+		     ELSE TO_CHAR(STATUS)
+		 END
+	</sql>
+	
+	<!-- as-is 데이터 to-be 데이터로 -->
+	<sql id="insertStatus">
+		<isNotEmpty property="TRAN_STATUS">
+		CASE WHEN #TRAN_STATUS# = 1 THEN 0
+		     WHEN #TRAN_STATUS# = 2 THEN 1
+		     WHEN #TRAN_STATUS# = 3 THEN 2
+		 END
+		</isNotEmpty>
+	</sql>
+	
+	<!-- as-is 데이터 to-be 데이터로 -->
+	<sql id="insertMsgType">
+		<isNotEmpty property="TRAN_TYPE">
+		CASE WHEN #TRAN_TYPE# = 4 THEN 0
+		     WHEN #TRAN_TYPE# = 6 THEN 5
+		 END
+		</isNotEmpty>
+	</sql>
+	
+	<!-- as-is 데이터 to-be 데이터로 비교 -->
+	<sql id="whereStatus">
+		<isNotEmpty property="TRAN_STATUS">
+			AND DECODE(STATUS, 7, 0, STATUS) = <include refid="insertStatus"></include> -- AS-IS:TOBE >> 발송대기(전)[1:0(7)], 발송중(2:1), 발송완료(3, 2)
+		</isNotEmpty>
+	</sql>
+	
+	<!-- as-is 데이터 to-be 데이터로 비교 -->
+	<sql id="whereMsgType">
+		<isNotEmpty property="TRAN_TYPE">
+			AND MSG_TYPE = <include refid="insertMsgType"></include>
+		</isNotEmpty>
+	</sql>
+
+	<select id="NewSmsDAO.selectSmsInf" parameterClass="LtnewsmsVO" resultClass="LtnewsmsVO" >
+ 		<isNotEmpty property="TABLE_NAME">
+ 		SELECT
+			CMID AS TRAN_PR,
+			'' AS TRAN_REFKEY,
+			'' AS TRAN_ID,
+			DEST_PHONE AS TRAN_PHONE,
+			SEND_PHONE AS TRAN_CALLBACK,
+			<include refid="selectStatus"></include> AS TRAN_STATUS,
+			REQUEST_TIME AS TRAN_DATE,
+			'' AS TRAN_RSLTDATE,
+			'' AS TRAN_REPORTDATE,
+			CALL_STATUS AS TRAN_RSLT,
+			TEL_INFO AS TRAN_NET,
+			MSG_BODY AS TRAN_MSG,
+			USER1 AS TRAN_ETC1,
+			USER2 AS TRAN_ETC2,
+			USER3 AS TRAN_ETC3,
+			USER4 AS TRAN_ETC4,
+			<include refid="selectMsgType"></include> AS TRAN_TYPE
+		FROM $TABLE_NAME$
+		WHERE CMID = #TRAN_PR#
+ 		</isNotEmpty>
+ 	</select>
+
+ 	<select id="NewSmsDAO.selectSmsInfs" parameterClass="LtnewsmsVO" resultClass="LtnewsmsVO" >
+ 			/** NewSmsDAO.selectSmsInfs - SMS 가져오기 */
+ 			<isNotEmpty property="TABLE_NAME">
+ 			SELECT *
+ 			FROM (
+ 				SELECT ROWNUM AS NUM, SMS.*
+ 				FROM (
+			 		SELECT
+						CMID AS TRAN_PR,
+						'' AS TRAN_REFKEY,
+						'' AS TRAN_ID,
+						DEST_PHONE AS TRAN_PHONE,
+						SEND_PHONE AS TRAN_CALLBACK,
+						<include refid="selectStatus"></include> AS TRAN_STATUS,
+						REQUEST_TIME AS TRAN_DATE,
+						'' AS TRAN_RSLTDATE,
+						'' AS TRAN_REPORTDATE,
+						CALL_STATUS AS TRAN_RSLT,
+						TEL_INFO AS TRAN_NET,
+						MSG_BODY AS TRAN_MSG,
+						USER1 AS TRAN_ETC1,
+						USER2 AS TRAN_ETC2,
+						USER3 AS TRAN_ETC3,
+						USER4 AS TRAN_ETC4,
+						<include refid="selectMsgType"></include> AS TRAN_TYPE
+					FROM $TABLE_NAME$
+					WHERE 1=1
+					 <isEqual property="TRAN_ETC2" compareValue="O04">
+					      AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+					 </isEqual>
+					 <isNotEmpty property="TRAN_PHONE">AND DEST_PHONE LIKE #TRAN_PHONE#||'%'</isNotEmpty>
+                     <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+                     <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+                     <isNotEmpty property="TRAN_ETC2">AND USER2 = #TRAN_ETC2#</isNotEmpty>
+                     <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+                     <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+                     <include refid="whereStatus"></include>
+                     <include refid="whereMsgType"></include>
+                  ORDER BY TRAN_DATE DESC
+				) SMS
+			) RNUM
+			WHERE RNUM.NUM > #START# AND RNUM.NUM<![CDATA[<=]]>#END#
+			</isNotEmpty>
+ 	</select>
+
+ 	<select id="NewSmsDAO.selectSmsInfsCnt" parameterClass="LtnewsmsVO" resultClass="int" >
+ 		<isNotEmpty property="TABLE_NAME">
+ 		<![CDATA[
+ 		SELECT
+			   COUNT(CMID) AS cnt
+		FROM $TABLE_NAME$
+		WHERE 1=1
+ 		]]>
+ 		<isEqual property="TRAN_ETC2" compareValue="O04">
+		 AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+	    </isEqual>
+ 		<isNotEmpty property="TRAN_PHONE">AND DEST_PHONE LIKE #TRAN_PHONE#||'%'</isNotEmpty>
+        <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+        <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+        <isNotEmpty property="TRAN_ETC2">AND USER2 = #TRAN_ETC2#</isNotEmpty>
+        <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+        <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+        <include refid="whereStatus"></include>
+        <include refid="whereMsgType"></include>
+        </isNotEmpty>
+ 	</select>
+
+ 	<insert id="NewSmsDAO.insertSmsInf" parameterClass="LtnewsmsVO">
+ 		INSERT INTO KMP_MSG@DL_EMS_SMS_TOBE
+ 		(
+ 			CMID,
+			DEST_PHONE,
+			SEND_PHONE,
+			STATUS,
+			REQUEST_TIME,
+			MSG_BODY,
+			USER1,
+			USER2,
+			USER3,
+			USER4,
+			MSG_TYPE
+		)
+		VALUES
+		(
+			   	<isNotEmpty property="TRAN_PR">#TRAN_PR#,</isNotEmpty>
+			   	<isEmpty property="TRAN_PR">KMP_MSG_PR.NEXTVAL@DL_EMS_SMS_TOBE,</isEmpty>
+				#TRAN_PHONE#,
+				#TRAN_CALLBACK#,
+				<include refid="insertStatus"></include>,
+				DECODE(#HOUR10#, NULL, CURRENT_TIMESTAMP(0), (SELECT TO_DATE(CASE WHEN TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24') BETWEEN 21 AND 24
+                                                                                                  THEN TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYY-MM-DD') || ' 10:00:00'
+                                                                                                  WHEN TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24') &lt; 10
+                                                                                                  THEN TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYY-MM-DD') || ' 10:00:00'
+                                                                                                  ELSE TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYY-MM-DD HH24:MI:SS') END, 'YYYY-MM-DD HH24:MI:SS') FROM DUAL)),
+				#TRAN_MSG#,
+				#TRAN_ETC1#,
+				#TRAN_ETC2#,
+				#TRAN_ETC3#,
+				#TRAN_ETC4#,
+				<include refid="insertMsgType"></include>
+		)
+ 	</insert>
+
+ 	<select id="NewSmsDAO.selectSmsInfsCC" parameterClass="LtnewsmsVO" resultClass="LtnewsmsVO" >
+ 			/** NewSmsDAO.selectSmsInfsCC - SMS 가져오기 */
+ 			<isNotEmpty property="TABLE_NAME">
+ 			SELECT *
+ 			FROM (
+ 					SELECT ROWNUM AS NUM
+ 					      ,SMSLIST.*
+ 					FROM (
+			 				SELECT SMS.*
+			 				FROM (
+							 		SELECT
+										CMID AS TRAN_PR,
+										'' AS TRAN_REFKEY,
+										'' AS TRAN_ID,
+										DEST_PHONE AS TRAN_PHONE,
+										SEND_PHONE AS TRAN_CALLBACK,
+										<include refid="selectStatusNm"></include> AS TRAN_STATUS,
+										REQUEST_TIME AS TRAN_DATE,
+										'' AS TRAN_RSLTDATE,
+										'' AS TRAN_REPORTDATE,
+										CALL_STATUS AS TRAN_RSLT,
+										TEL_INFO AS TRAN_NET,
+										MSG_BODY AS TRAN_MSG,
+										USER1 AS TRAN_ETC1,
+										DECODE(USER2,
+											'O04', 'O04(CC)',
+											'O05', 'O05(FRONT)',
+											NULL, ' ',USER2) AS TRAN_ETC2,
+										USER3 AS TRAN_ETC3,
+										USER4 AS TRAN_ETC4,
+										<include refid="selectMsgType"></include> AS TRAN_TYPE
+									FROM $TABLE_NAME$
+									WHERE 1=1
+									 <isEqual property="TRAN_ETC2" compareValue="O04">
+									      AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+									 </isEqual>
+									 <isEqual property="TRAN_ETC2" compareValue="CC">
+								 		<isNotEmpty property="START_DATE"><isNotEmpty property="END_DATE">
+											AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+										</isNotEmpty></isNotEmpty>
+									 </isEqual>
+									 <isNotEmpty property="TRAN_PHONE">AND REPLACE(REPLACE(DEST_PHONE, '-', ''), ' ', '') = REPLACE(REPLACE(#TRAN_PHONE#, '-', ''), ' ', '')</isNotEmpty>
+				                     <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+				                     <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+				                     <isNotEmpty property="TRAN_ETC2">AND USER2 IN ('O04','O05')</isNotEmpty>
+				                     <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+				                     <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+				                     <isNotEmpty property="TRAN_MSG">AND MSG_BODY LIKE '%'|| #TRAN_MSG# ||'%' </isNotEmpty>
+				                     <include refid="whereStatus"></include>
+				                     <include refid="whereMsgType"></include>
+				                          AND MSG_TYPE != 5 -- mmsdummy
+								 ) SMS
+							WHERE 1=1
+						    ORDER BY TRAN_DATE DESC
+					    )SMSLIST
+				  ) RNUM
+			WHERE RNUM.NUM BETWEEN #START# AND #END#
+			</isNotEmpty>
+ 	</select>
+
+ 	<select id="NewSmsDAO.selectSmsInfsCntCC" parameterClass="LtnewsmsVO" resultClass="int" >
+ 		<isNotEmpty property="TABLE_NAME">
+ 		<![CDATA[
+ 		SELECT COUNT(CMID) AS cnt
+ 		FROM (
+		 		SELECT
+					   1 AS CMID
+				FROM $TABLE_NAME$
+				WHERE 1=1
+		 		]]>
+		 		<isEqual property="TRAN_ETC2" compareValue="O04">
+				 AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+			    </isEqual>
+		 		<isEqual property="TRAN_ETC2" compareValue="CC">
+			 		<isNotEmpty property="START_DATE"><isNotEmpty property="END_DATE">
+						AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+					</isNotEmpty></isNotEmpty>
+			    </isEqual>
+		 		<isNotEmpty property="TRAN_PHONE">AND REPLACE(REPLACE(DEST_PHONE, '-', ''), ' ', '') = REPLACE(REPLACE(#TRAN_PHONE#, '-', ''), ' ', '')</isNotEmpty>
+		        <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC2">AND USER2 IN ('O04','O05')</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+		        <isNotEmpty property="TRAN_MSG">AND MSG_BODY LIKE '%'|| #TRAN_MSG# ||'%' </isNotEmpty>
+		        <include refid="whereStatus"></include>
+		        <include refid="whereMsgType"></include>
+		        AND MSG_TYPE != 5
+		        </isNotEmpty>
+		   )
+ 	</select>
+
+ 	<select id="NewSmsDAO.selectSmsInfsBOS" parameterClass="LtnewsmsVO" resultClass="LtnewsmsVO">
+ 	/** NewSmsDAO.selectSmsInfsBOS - SMS전송내역가져오기 - 1월 31일 부터 2월 1일까지 조회 하면 두 개의 로그테이블을 조회해야하기 때문에 UNION ALL사용*/
+ 		SELECT *
+		FROM
+		(
+	        SELECT ROWNUM AS NUM,
+	        		SMS.TRAN_PR,									/* pk */
+					SMS.TRAN_PHONE,		 							/* 수신자 전화번호 */
+					NVL(SMS.TRAN_CALLBACK, 	' ') AS TRAN_CALLBACK,	/* 송신자 전화번호 */
+					SMS.TRAN_STATUS,                              	/* 메시지 상태 */
+					SMS.TRAN_DATE,									/* 메시지 접수시간 */
+					/*SMS.TRAN_RSLTDATE AS TRAN_RSLTDATE,*/	        /* 핸드폰에 전달된 시간 */
+					/*SMS.TRAN_REPORTDATE AS TRAN_REPORTDATE,*/     /* 결과 수신 시간 */
+					CASE WHEN TRAN_RSLT = '1000' THEN '성공'
+		                 WHEN TRAN_RSLT = '4000' THEN '유효기간초과'
+		                 WHEN TRAN_RSLT = '4001' THEN '단말기 BUSY'
+		                 WHEN TRAN_RSLT = '4002' THEN '음영지역'
+		                 WHEN TRAN_RSLT = '4003' THEN '단말기 POWER OFF'
+		                 WHEN TRAN_RSLT = '4004' THEN '단말기 메시지저장개수초과'
+		                 WHEN TRAN_RSLT = '4100' THEN '잘못된 전화번호'
+		                 WHEN TRAN_RSLT = '4101' THEN '단말기 일시 서비스 정지'
+		                 WHEN TRAN_RSLT = '4102' THEN '기타 단말기 문제'
+		                 WHEN TRAN_RSLT = '4103' THEN '단말기에서 착신 거절'
+		                 WHEN TRAN_RSLT = '4104' THEN '기타(단말기 문제)'
+		                 WHEN TRAN_RSLT = '4105' THEN '망 에러'
+		                 WHEN TRAN_RSLT = '4106' THEN 'SMTS 포멧 에러'
+		                 WHEN TRAN_RSLT = '4107' THEN 'SMS 서비스 불가 단말기'
+		                 WHEN TRAN_RSLT = '4108' THEN '착신측의 호 불가 상태'
+		                 WHEN TRAN_RSLT = '4109' THEN 'SMC 운영자가 삭제한 메시지'
+		                 WHEN TRAN_RSLT = '4110' THEN 'SMC 메시지큐 FULL'
+		                 WHEN TRAN_RSLT IN ('4111', '4112') THEN 'SPAM'
+					     WHEN TRAN_RSLT IS NULL THEN ' '      		    
+					     ELSE TO_CHAR(TRAN_RSLT) 
+					 END AS TRAN_RSLT,		                         /* 전송결과 */
+					NVL(SMS.TRAN_NET,		' ') AS TRAN_NET,		 /* 통신사 */
+					NVL(SMS.TRAN_MSG,		' ') AS TRAN_MSG,		 /* 메시지 */
+					DECODE(SMS.TRAN_ETC2,'O01','PP','O02','BOS','O03','SCM','O04','CC', null, ' ', SMS.TRAN_ETC2)
+												AS TRAN_ETC2,		 /* 문자참조2 - 시스템구분 */
+					SMS.TRAN_TYPE									 /* 구분 */
+	        FROM
+	        (
+		 		SELECT
+						CMID AS TRAN_PR,
+						REGEXP_REPLACE(REGEXP_REPLACE(DEST_PHONE,'[^0-9]'), '^(010|011|016|017|018|019)([0-9]{3,4})([0-9]{4})','\1****\3') AS TRAN_PHONE,
+						SEND_PHONE AS TRAN_CALLBACK,
+						<include refid="selectStatusNm"></include> AS TRAN_STATUS,
+						REQUEST_TIME AS TRAN_DATE,
+						MSG_BODY AS TRAN_MSG,
+						USER1 AS TRAN_ETC1,
+						USER2 AS TRAN_ETC2,
+						USER3 AS TRAN_ETC3,
+						USER4 AS TRAN_ETC4,
+						<include refid="selectMsgType"></include> AS TRAN_TYPE,
+						TEL_INFO AS TRAN_NET, 
+						CALL_STATUS AS TRAN_RSLT
+				FROM $TABLE_NAME$
+				WHERE 1=1
+			<![CDATA[
+				 AND  REQUEST_TIME >= TO_DATE(#START_DATE#, 'YYYYMMDD')
+				 AND  REQUEST_TIME <= TO_DATE(#END_DATE#, 'YYYYMMDD') + 1
+			]]>
+				 <isNotEmpty property="TRAN_PHONE">AND DEST_PHONE LIKE #TRAN_PHONE#||'%'</isNotEmpty>
+                    <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+                    <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+                    <isNotEmpty property="TRAN_ETC2">AND USER2 = #TRAN_ETC2#</isNotEmpty>
+                    <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+                    <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+					<include refid="whereStatus"></include>
+					<include refid="whereMsgType"></include>
+				<isNotEmpty property="TABLE_NAME2">
+				UNION ALL
+		 		SELECT
+						CMID AS TRAN_PR,
+						REGEXP_REPLACE(REGEXP_REPLACE(DEST_PHONE,'[^0-9]'), '^(010|011|016|017|018|019)([0-9]{3,4})([0-9]{4})','\1****\3') AS TRAN_PHONE,
+						SEND_PHONE AS TRAN_CALLBACK,
+						<include refid="selectStatusNm"></include> AS TRAN_STATUS,
+						REQUEST_TIME AS TRAN_DATE,
+						MSG_BODY AS TRAN_MSG,
+						USER1 AS TRAN_ETC1,
+						USER2 AS TRAN_ETC2,
+						USER3 AS TRAN_ETC3,
+						USER4 AS TRAN_ETC4,
+						<include refid="selectMsgType"></include> AS TRAN_TYPE,
+						TEL_INFO AS TRAN_NET,
+						CALL_STATUS AS TRAN_RSLT
+				FROM $TABLE_NAME2$
+				WHERE 1=1
+			<![CDATA[
+				 AND  REQUEST_TIME >= TO_DATE(#START_DATE2#, 'YYYYMMDD')
+				 AND  REQUEST_TIME <= TO_DATE(#END_DATE2#, 'YYYYMMDD') + 1
+			]]>
+			 	 <isNotEmpty property="TRAN_PHONE">AND DEST_PHONE LIKE #TRAN_PHONE#||'%'</isNotEmpty>
+	                <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+	                <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+	                <isNotEmpty property="TRAN_ETC2">AND USER2 = #TRAN_ETC2#</isNotEmpty>
+	                <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+	                <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+	                <include refid="whereStatus"></include>
+	                <include refid="whereMsgType"></include>
+				</isNotEmpty>
+                 ORDER BY TRAN_DATE DESC
+			) SMS
+		)
+		WHERE NUM BETWEEN #START# AND #END#
+ 	</select>
+
+ 	<select id="NewSmsDAO.selectSmsInfsCntBOS" parameterClass="LtnewsmsVO" resultClass="int">
+ 	/** NewSmsDAO.selectSmsInfsCntBOS - SMS 갯수 가져오기 - BOS사용 */
+ 		SELECT SUM(SMS.TOT_CNT) AS TOT_CNT
+ 		  FROM (SELECT COUNT(1) AS TOT_CNT
+				  FROM $TABLE_NAME$
+				 WHERE 1=1
+		 		<![CDATA[
+				   AND REQUEST_TIME >= TO_DATE(#START_DATE#, 'YYYYMMDD')
+				   AND REQUEST_TIME <= TO_DATE(#END_DATE#, 'YYYYMMDD') + 1
+				]]>
+		 		<isNotEmpty property="TRAN_PHONE">AND DEST_PHONE LIKE #TRAN_PHONE#||'%'</isNotEmpty>
+		        <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC2">AND USER2 = #TRAN_ETC2#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+				<include refid="whereStatus"></include>
+				<include refid="whereMsgType"></include>
+		        <isNotEmpty property="TABLE_NAME2">
+
+		        UNION ALL
+
+		        SELECT
+					   COUNT(1) AS TOT_CNT
+				FROM $TABLE_NAME2$
+				WHERE 1=1
+		 		<![CDATA[
+					 AND  REQUEST_TIME >= TO_DATE(#START_DATE2#, 'YYYYMMDD')
+					 AND  REQUEST_TIME <= TO_DATE(#END_DATE2#, 'YYYYMMDD') + 1
+				]]>
+		 		<isNotEmpty property="TRAN_PHONE">AND DEST_PHONE LIKE #TRAN_PHONE#||'%'</isNotEmpty>
+		        <isNotEmpty property="TRAN_CALLBACK">AND SEND_PHONE LIKE #TRAN_CALLBACK#||'%'</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC1">AND USER1 = #TRAN_ETC1#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC2">AND USER2 = #TRAN_ETC2#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC4">AND USER4 = #TRAN_ETC4#</isNotEmpty>
+				<include refid="whereStatus"></include>
+				<include refid="whereMsgType"></include>
+		        </isNotEmpty>
+		) SMS
+ 	</select>
+
+    <!-- 20160216 김학수 추가 [lms발송] -->
+	<parameterMap id="lmsVO" class="com.lottemart.common.sms.model.LtnewsmsVO">
+    <parameter property="TRAN_TITLE"		jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+    <parameter property="TRAN_MSG"			jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+    <parameter property="TRAN_CALLBACK"	    jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+    <parameter property="TRAN_PHONE"	    jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+    <parameter property="TRAN_ETC2"   	    jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+    <parameter property="TRAN_ETC1"   	    jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+    <parameter property="TRAN_ETC3"   	    jdbcType="VARCHAR" javaType="java.lang.String" mode="IN"  />
+	</parameterMap>
+
+    <procedure id="NewSmsDAO.lmsCh2Proc" parameterMap="lmsVO" >
+       	{ call PKG_ETC_BATCH.SEND_LMS_CH2 (?,?,?,?,?,?,?) }
+    </procedure>
+
+    <procedure id="NewSmsDAO.lmsCh3Proc" parameterMap="lmsVO" >
+       	{ call SEND_LMS_CH3 (?,?,?,?,?,?,?) }
+    </procedure>
+
+    <procedure id="NewSmsDAO.lmsCh4Proc" parameterMap="lmsVO" >
+       	{ call SEND_LMS_CH4 (?,?,?,?,?,?,?) }
+    </procedure>
+
+    <procedure id="NewSmsDAO.lmsCh2SmsProc" parameterMap="lmsVO" >
+       	{ call PKG_ETC_BATCH.SEND_LMS_CH2_SMS (?,?,?,?,?,?,?) }
+    </procedure>
+
+	<!-- 김연민 	TRAN_PR 번호 조회 -->
+	<select id="NewSmsDAO.getTranPr" resultClass="java.lang.String">
+		SELECT KMP_MSG_PR.NEXTVAL@DL_EMS_SMS_TOBE FROM DUAL
+	</select>
+	<!--  이종일   TRAN_MMS_SEQ 조회 -->
+	<select id="NewSmsDAO.selectMmsSeq" parameterClass="LtnewsmsVO" resultClass="String">
+ 	</select>
+	<insert id="NewSmsDAO.insertMmsSend" parameterClass="LtnewsmsVO">
+ 	</insert>
+ 	<insert id="NewSmsDAO.insertMmsInf" parameterClass="LtnewsmsVO">
+ 		/*MMS 2단계*/
+ 		INSERT INTO KMP_MSG@DL_EMS_SMS_TOBE
+ 		(
+ 			CMID,
+			DEST_PHONE,
+			SEND_PHONE,
+			STATUS,
+			REQUEST_TIME,
+			SUBJECT,
+			MSG_BODY,
+			ATTACHED_FILE,
+			USER1,
+			USER2,
+			USER3,
+			USER4,
+			MSG_TYPE
+		)
+		VALUES
+		(
+		   	<isNotEmpty property="TRAN_PR">#TRAN_PR#,</isNotEmpty>
+			<isEmpty property="TRAN_PR">KMP_MSG_PR.NEXTVAL@DL_EMS_SMS_TOBE,</isEmpty>
+			#TRAN_PHONE#,
+			#TRAN_CALLBACK#,
+			<include refid="insertStatus"></include>,
+			CURRENT_TIMESTAMP(0),
+			#TRAN_TITLE#,
+			#TRAN_MSG#,
+			#FILE_NAME1#,
+			#TRAN_ETC1#,
+			#TRAN_ETC2#,
+			#TRAN_ETC3#,
+			#TRAN_ETC4#,
+			<include refid="insertMsgType"></include>
+		)
+ 	</insert>
+
+	<select id="NewSmsDAO.searchSmsList" parameterClass="LtnewsmsVO" resultClass="LtnewsmsVO">
+	/*PCCMPTM0001.searchSmsList*/
+	<isNotEmpty property="TABLE_NAME">
+ 			SELECT *
+ 			FROM (
+ 					SELECT ROWNUM AS NUM
+ 					      ,SMSLIST.*
+ 					FROM (
+			 				SELECT SMS.*
+			 				FROM (
+									SELECT
+										CMID AS TRAN_PR,
+										DEST_PHONE AS TRAN_PHONE,
+										SEND_PHONE AS TRAN_CALLBACK,
+										<include refid="selectStatusNm"></include> AS TRAN_STATUS,
+									    TO_CHAR(REQUEST_TIME , 'YYYY/MM/DD HH:MI:SS') AS TRAN_DATE ,
+										MSG_BODY AS TRAN_MSG,
+									DECODE(USER2,
+							                    'O01', 'O01(PP)',
+							                    'O03', 'O03(SCM)',
+												'O04', 'O04(CC)',
+												'O05', 'O05(FRONT)',
+											NULL, ' ',USER2) AS TRAN_ETC2,
+										USER3 AS TRAN_ETC3
+									FROM $TABLE_NAME$
+									WHERE TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+							 		<isNotEmpty property="TRAN_PHONE">AND REPLACE(REPLACE(DEST_PHONE, '-', ''), ' ', '') LIKE '%' || #TRAN_PHONE# || '%'</isNotEmpty>
+							        <isEmpty property="TRAN_ETC2">AND USER2 IN ('O01','O03','O04','O05')</isEmpty>
+							       	<isNotEmpty property="TRAN_ETC2">
+								       	<isEqual property = "TRAN_ETC2" compareValue="PP">
+								       		AND USER2 = 'O01'
+								       	</isEqual>
+								       	<isEqual property = "TRAN_ETC2" compareValue="SCM">
+								       		AND USER2 = 'O03'
+								       	</isEqual>
+								       	<isEqual property = "TRAN_ETC2" compareValue="CC">
+								       		AND USER2 = 'O04'
+								       	</isEqual>
+								       	<isEqual property = "TRAN_ETC2" compareValue="FRT">
+								       		AND USER2 = 'O05'
+								       	</isEqual>
+							       	</isNotEmpty>
+							        <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+									<isNotEmpty property="TRAN_PR">AND CMID = #TRAN_PR#</isNotEmpty>
+									<include refid="whereStatus"></include>
+				                          AND MSG_TYPE != 5 -- mmsdummy
+								 ) SMS
+							WHERE 1=1
+						    ORDER BY TRAN_DATE DESC
+					    )SMSLIST
+				  ) RNUM
+			WHERE RNUM.NUM BETWEEN #START# AND #END#
+			</isNotEmpty>
+	</select>
+
+	<select id="NewSmsDAO.selectSmsListCnt" parameterClass="LtnewsmsVO" resultClass="int" >
+ 		<isNotEmpty property="TABLE_NAME">
+ 		SELECT COUNT(CMID) AS cnt
+ 		FROM (
+		 		SELECT
+					   1 AS CMID
+				FROM $TABLE_NAME$
+				WHERE 1=1
+				 AND  TO_CHAR(REQUEST_TIME,'YYYYMMDD') BETWEEN #START_DATE# AND #END_DATE#
+		 		<isNotEmpty property="TRAN_PHONE">AND REPLACE(REPLACE(DEST_PHONE, '-', ''), ' ', '') LIKE '%' || #TRAN_PHONE# || '%'</isNotEmpty>
+		        <isEmpty property="TRAN_ETC2">AND USER2 IN ('O01','O03','O04','O05')</isEmpty>
+		       	<isNotEmpty property="TRAN_ETC2">
+			       	<isEqual property = "TRAN_ETC2" compareValue="PP">
+			       		AND USER2 = 'O01'
+			       	</isEqual>
+			       	<isEqual property = "TRAN_ETC2" compareValue="SCM">
+			       		AND USER2 = 'O03'
+			       	</isEqual>
+			       	<isEqual property = "TRAN_ETC2" compareValue="CC">
+			       		AND USER2 = 'O04'
+			       	</isEqual>
+			       	<isEqual property = "TRAN_ETC2" compareValue="FRT">
+			       		AND USER2 = 'O05'
+			       	</isEqual>
+		       	</isNotEmpty>
+		        <isNotEmpty property="TRAN_ETC3">AND USER3 = #TRAN_ETC3#</isNotEmpty>
+		        <isNotEmpty property="TRAN_PR">AND CMID = #TRAN_PR#</isNotEmpty>
+		        <include refid="whereStatus"></include>
+		        AND MSG_TYPE != 5 /*MSG_TYPE5:MMS*/
+		        )
+		  </isNotEmpty>
+		 </select>
+
+		 <select id="NewSmsDAO.selectSmsDetail" parameterClass="LtnewsmsVO" resultClass="LtnewsmsVO">
+		 	<isNotEmpty property="TABLE_NAME">
+				/*PCCMPTM0001.selectSmsDetail*/
+				SELECT CMID AS TRAN_PR
+			     		  , MSG_BODY AS TRAN_MSG
+			  		FROM $TABLE_NAME$
+			      WHERE 1 = 1
+			           AND CMID = #TRAN_PR#
+		    </isNotEmpty>
+		</select>
+		
+		<select id="NewSmsDAO.selectSmsReportDetailInfo" resultClass="dataMap"  parameterClass="dataMap">
+			/* PCCMCOM0006Controller.selectSmsReportDetailInfo */
+			<isNotEmpty property="TABLE_NAME">
+				SELECT CMID AS TRAN_PR
+					 , DEST_PHONE AS TRAN_PHONE
+					 , SEND_PHONE AS TRAN_CALLBACK
+					 , REQUEST_TIME AS TRAN_DATE
+			 		 , MSG_BODY AS TRAN_MSG
+					 , DECODE(USER2,
+						   	  'O04', 'O04(CC)',
+							  'O05', 'O05(FRONT)',
+							  NULL, ' ', USER2) AS TRAN_ETC2
+				     , USER3
+					 , <include refid="selectStatusNm"></include> AS TRAN_STATUS
+					 		FROM $TABLE_NAME$
+				 WHERE 1=1
+				   AND CMID = #TRAN_PR#
+			</isNotEmpty>
+		</select>
+</sqlMap>

@@ -1,0 +1,1 @@
+document.write("<a href='http://www.lottemart.com/category/categoryList.do?CategoryID=C005'><img src='http://img.lottemart.com/images/front/common/txt-quick-cs-leaflet2_20111230.gif' class='hand' alt='e-전단보기'></a>"); 

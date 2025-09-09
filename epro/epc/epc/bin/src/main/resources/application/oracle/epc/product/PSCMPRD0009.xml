@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0009">
+
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmprd0009VO" type="com.lottemart.epc.product.model.PSCMPRD0009VO" />
+
+	<select id="selectPriceChangeList" resultClass="PSCMPRD0009VO">
+	/* PSCMPRD0009.selectPriceChangeList */
+	SELECT PROD_CD AS prodCd, PROD_NM as prodNm, STR_CD AS strCd, STR_NM AS strNm, ITEM_CD AS itemCd, REQ_SEQ AS reqSeq, CHGB_BUY_PRC AS chgbBuyPrc
+         , CHGB_SELL_PRC AS chgbSellPrc, CHGB_CURR_SELL_PRC as chgbCurrSellPrc, CHGA_BUY_PRC AS chgaBuyPrc, CHGA_CURR_SELL_PRC AS chgaCurrSellPrc
+         , PROFIT_RATE AS profitRateS,  PROFIT_RATE as profitRate, TAXAT_DIVN_CD AS taxatDivnCd, REQ_DATE AS reqDate, APRV_DATE AS aprvDate
+         , APRV_YN AS aprvYn, VENDOR_ID AS vendorId, CHG_REQ_REASON_CONTENT AS chgReqReasonContent
+         , DECODE(APRV_YN, 'Y', '승인', 'R', '반려', '승인대기') AS aprvNm, RETN_REASON AS retnReason
+         , TOTAL_COUNT AS totalCount
+      FROM (
+        SELECT CEIL(ROWNUM / #rowsPerPage# ) PAGE
+          , COUNT(*) OVER() TOTAL_COUNT
+          , A.*
+        FROM (
+            SELECT <isEqual property="planOneMonth" compareValue="Y">/*+ LEADING(T S) INDEX(T IX_PR_ITEM_PRICE_CHG_REQ_01) */</isEqual> <!-- 한달 미만 -->
+                   <isEqual property="planOneMonth" compareValue="N">/*+ LEADING(S) INDEX(T PK_PR_ITEM_PRICE_CHG_REQ) USE_NL(T) USE_NL(P)*/</isEqual> <!-- 한달 이상 -->
+                  RANK()OVER(ORDER BY T.PROD_CD, T.ITEM_CD, T.STR_CD, T.REQ_SEQ DESC) RANK_NUM
+                , T.PROD_CD, (SELECT SUB.PROD_NM FROM TPR_PRODUCT SUB WHERE SUB.PROD_CD = T.PROD_CD) PROD_NM
+                , T.ITEM_CD
+                , T.STR_CD, (SELECT STR_NM FROM TST_STORE SUB WHERE SUB.STR_CD = T.STR_CD) AS STR_NM
+                , T.REQ_SEQ
+                , T.CHGB_BUY_PRC, T.CHGB_SELL_PRC, T.CHGB_CURR_SELL_PRC, T.CHGA_BUY_PRC, T.CHGA_SELL_PRC, T.CHGA_CURR_SELL_PRC
+                , TO_CHAR(TO_DATE(SUBSTR(T.REQ_DATE, 0, 8), 'YYYY-MM-DD'), 'YYYY-MM-DD') REQ_DATE
+                , T.REQ_PSN
+                , T.APRV_YN
+                , TO_CHAR(TO_DATE(SUBSTR(T.APRV_DATE, 0, 8), 'YYYY-MM-DD'), 'YYYY-MM-DD') AS APRV_DATE
+                , T.APRV_PSN, T.REG_DATE, T.REG_ID, T.MOD_DATE, T.MOD_ID, S.VENDOR_ID
+                , T.CHG_REQ_REASON_CONTENT
+                , P.PROFIT_RATE,P.TAXAT_DIVN_CD
+                , T.RETN_REASON
+            FROM TPR_ITEM_PRICE_CHG_REQ T
+               , TPR_PRODUCT P
+               , ( SELECT SUB.PROD_CD, SUB.ITEM_CD, SUB.STR_CD, SUB.VENDOR_ID FROM TPR_STORE_ITEM_PRICE SUB
+                   <isNotEmpty property="vendorId">
+                    WHERE (0, SUB.VENDOR_ID) <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0, #vendorId[]#) </iterate>
+                   </isNotEmpty>
+                 ) S
+            WHERE T.PROD_CD = P.PROD_CD
+            AND T.PROD_CD = S.PROD_CD
+            AND T.ITEM_CD = S.ITEM_CD
+            AND T.STR_CD = S.STR_CD
+            <isNotEmpty property="startDate">AND T.REQ_DATE BETWEEN REPLACE(#startDate#, '-', '')||'000000' AND REPLACE(#endDate#, '-', '')||'235959' </isNotEmpty>
+            <isNotEmpty property="aprvYn">AND T.APRV_YN = #aprvYn# </isNotEmpty>
+            <isNotEmpty property="searchWord">
+            <isEqual property="searchCondition" compareValue="c">AND T.PROD_CD = #searchWord# </isEqual>
+            <isEqual property="searchCondition" compareValue="n">AND P.PROD_NM LIKE '%'||#searchWord#||'%' </isEqual>
+            </isNotEmpty>
+            AND P.PROD_DIVN_CD = '02'
+        )A
+    )
+    WHERE PAGE = #currentPage#
+    </select>
+
+	<insert id="insertPriceChangeReq">
+	/* PSCMPRD0009.insertPriceChangeReq */
+	INSERT INTO TPR_ITEM_PRICE_CHG_REQ (
+		PROD_CD, 
+		ITEM_CD, 
+		STR_CD, 
+		REQ_SEQ, 
+		CHGB_BUY_PRC, 
+		CHGB_SELL_PRC, 
+		CHGB_CURR_SELL_PRC, 
+		CHGA_BUY_PRC, 
+		CHGA_SELL_PRC, 
+		CHGA_CURR_SELL_PRC, 
+		REQ_DATE, 
+		REQ_PSN, 
+		APRV_YN, 
+		REG_DATE, 
+		REG_ID, 
+		MOD_DATE, 
+		MOD_ID, 
+		CHG_REQ_REASON_CONTENT
+	) VALUES (
+		  #prodCd#
+		, #itemCd#
+		, #strCd#
+		, (SELECT COUNT(PROD_CD)+1 
+		  FROM TPR_ITEM_PRICE_CHG_REQ 
+		  WHERE PROD_CD = #prodCd#
+		  AND ITEM_CD = #itemCd# AND STR_CD = #strCd#)
+		, #chgbBuyPrc#
+		, #chgbSellPrc#
+		, #chgbCurrSellPrc#
+		, (CASE WHEN #taxatDivnCd# = '1'
+            	THEN trunc(#chgaCurrSellPrc#/1.1*(1-#profitRateS#/100 ),0)
+         		ELSE trunc(#chgaCurrSellPrc#*(1-#profitRateS#/100 ),0)
+		  END)
+		, #chgaCurrSellPrc#
+		, #chgaCurrSellPrc#
+		, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+		, #reqPsn#
+		, #aprvYn#
+		, CURRENT_TIMESTAMP(0)
+		, #regId#
+		, CURRENT_TIMESTAMP(0)
+		, #modId#
+		, #chgReqReasonContent#
+	)
+	</insert>
+	
+	<update id="updatePriceChangeReq">
+	/* PSCMPRD0009.updatePriceChangeReq */
+	UPDATE TPR_ITEM_PRICE_CHG_REQ
+	SET CHGA_BUY_PRC = (CASE WHEN #taxatDivnCd# = '1'
+        		THEN TRUNC(#chgaCurrSellPrc#/1.1*(1-#profitRateS#/100 ),0)
+        		ELSE TRUNC(#chgaCurrSellPrc#*(1-#profitRateS#/100 ),0)
+						END)
+		, CHGA_SELL_PRC = #chgaCurrSellPrc#
+		, CHGA_CURR_SELL_PRC = #chgaCurrSellPrc#
+		, REQ_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+		, REQ_PSN = #reqPsn#
+		, APRV_YN = #aprvYn#
+		, APRV_DATE = #aprvDate#
+		, APRV_PSN = #aprvPsn#
+		, MOD_DATE = CURRENT_TIMESTAMP(0)
+		, MOD_ID = #modId#
+		, CHG_REQ_REASON_CONTENT = #chgReqReasonContent#
+	WHERE PROD_CD = #prodCd#
+	AND ITEM_CD = #itemCd#
+	AND STR_CD = #strCd#
+	AND REQ_SEQ = #reqSeq#
+	</update>
+
+	<update id="updateProductPrice">
+	/* PSCMPRD0009.updateProductPrice */
+	UPDATE TPR_PRODUCT
+	SET BUY_PRC = (CASE WHEN #taxatDivnCd# = '1'
+          				THEN TRUNC(#chgaCurrSellPrc#/1.1*(1-#profitRate#/100 ),0)
+          				ELSE TRUNC(#chgaCurrSellPrc#*(1-#profitRate#/100 ),0)
+					END)
+		, SELL_PRC = #chgaCurrSellPrc#
+		, CURR_SELL_PRC = #chgaCurrSellPrc#
+		, MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE PROD_CD = #prodCd#
+	</update>
+	
+	<update id="updateCategoryAssign">
+	/* PSCMPRD0009.updateCategoryAssign */
+	UPDATE TCA_CATEGORY_ASSIGN
+	SET    ORDER_CURR_SELL_PRC  = #chgaCurrSellPrc#
+		 , MOD_ID        		= #modId#
+		 , MOD_DATE      		= CURRENT_TIMESTAMP(0)
+	WHERE PROD_CD = #prodCd#
+	AND   STR_CD  = #strCd#
+	</update>
+
+	<update id="updateStoreItemPrice">
+	/* PSCMPRD0009.updateStoreItemPrice */
+	UPDATE TPR_STORE_ITEM_PRICE
+	 SET BUY_PRC = (CASE  	WHEN #taxatDivnCd# = '1'
+        					THEN TRUNC(#chgaCurrSellPrc#/1.1*(1-#profitRate#/100 ),0)
+        					ELSE TRUNC(#chgaCurrSellPrc#*(1-#profitRate#/100 ),0)
+						END)
+		, SELL_PRC = #chgaCurrSellPrc#
+		, CURR_SELL_PRC = #chgaCurrSellPrc#
+		, MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE PROD_CD = #prodCd#
+	AND ITEM_CD = #itemCd#
+	AND STR_CD = #strCd#
+	</update>
+
+	<insert id="insertStoreItemPriceLog">
+	/* PSCMPRD0009.insertStoreItemPriceLog */
+	INSERT INTO TPR_STORE_ITEM_PRICE_LOG (
+	       STR_CD, PROD_CD, ITEM_CD, END_DATE, APPLY_START_DATE,
+	       STD_BUY_PRC, STD_SELL_PRC, BUY_PRC, SELL_PRC, EVT_BUY_PRC, EVT_SELL_PRC, CURR_SELL_PRC, PRFT_RATE,
+	       DISP_YN, SOUT_YN, SELL_PSBT_YN, DISP_DEL_REQ_YN, STK_MGR_YN, VENDOR_ID, TRD_TYPE_DIVN_CD, PUR_PATH_DIVN_CD,
+	       NPUR_BUY_PSBT_YN, ENTP_DELI_DIVN_CD, PUR_STOP_DIVN_CD, DEAL_STOP_DIVN_CD, DEAL_STOP_REASON_CD,
+	       TDAY_STGE_PLAN_QTY, DD_AVG_SELL_QTY, SOUT_BASE_QTY, WEIGHT, ONLINE_SOUT_YN, MD_SOUT_YN, REG_DATE, REG_ID, MOD_DATE, MOD_ID
+	)
+	SELECT STR_CD, PROD_CD, ITEM_CD, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS'), TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS'),
+	       STD_BUY_PRC, STD_SELL_PRC, BUY_PRC, SELL_PRC, EVT_BUY_PRC, EVT_SELL_PRC, CURR_SELL_PRC, PRFT_RATE,
+	       DISP_YN, SOUT_YN, SELL_PSBT_YN, DISP_DEL_REQ_YN, STK_MGR_YN, VENDOR_ID, TRD_TYPE_DIVN_CD, PUR_PATH_DIVN_CD,
+	       NPUR_BUY_PSBT_YN, ENTP_DELI_DIVN_CD, PUR_STOP_DIVN_CD, DEAL_STOP_DIVN_CD, DEAL_STOP_REASON_CD,
+	       TDAY_STGE_PLAN_QTY, DD_AVG_SELL_QTY, SOUT_BASE_QTY, WEIGHT, ONLINE_SOUT_YN, MD_SOUT_YN, REG_DATE, REG_ID, MOD_DATE, MOD_ID
+	FROM TPR_STORE_ITEM_PRICE
+	WHERE PROD_CD = #prodCd# AND ITEM_CD = #itemCd# AND STR_CD = #strCd#
+	</insert>
+
+	<select id="selectProductItemList" resultClass="PSCMPRD0009VO">
+	/* PSCMPRD0009.selectProductItemList */
+	SELECT  P.PROD_CD as prodCd, P.PROD_NM as prodNm, T.ITEM_CD as itemCd
+		, '981' as strCd, (SELECT STR_NM FROM TST_STORE SUB WHERE SUB.STR_CD = '981') as strNm
+		, (CASE WHEN P.OPTN_PROD_PRC_MGR_YN = 'Y' THEN (SELECT TS.BUY_PRC FROM TPR_STORE_ITEM_PRICE TS WHERE TS.PROD_CD = T.PROD_CD AND TS.ITEM_CD = T.ITEM_CD)
+               ELSE P.BUY_PRC
+           END
+          ) as chgbBuyPrc
+		, (CASE WHEN P.OPTN_PROD_PRC_MGR_YN = 'Y' THEN (SELECT TS.SELL_PRC FROM TPR_STORE_ITEM_PRICE TS WHERE TS.PROD_CD = T.PROD_CD AND TS.ITEM_CD = T.ITEM_CD)
+               ELSE P.SELL_PRC
+           END
+          ) as chgbSellPrc
+        , (CASE WHEN P.OPTN_PROD_PRC_MGR_YN = 'Y' THEN (SELECT TS.CURR_SELL_PRC FROM TPR_STORE_ITEM_PRICE TS WHERE TS.PROD_CD = T.PROD_CD AND TS.ITEM_CD = T.ITEM_CD)
+               ELSE P.CURR_SELL_PRC
+           END
+          ) as chgbCurrSellPrc
+		, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYY-MM-DD') as reqDate
+		, '' APRV_DATE, 'N'  as aprvYn
+		, P.VENDOR_ID as vendorId, '' CHG_REQ_REASON_CONTENT
+		,P.PROFIT_RATE as profitRate, P.PROFIT_RATE as profitRateS, P.TAXAT_DIVN_CD as taxatDivnCd
+    FROM TPR_PRODUCT P, TPR_ITEM T
+	WHERE T.PROD_CD = P.PROD_CD
+	AND P.PROD_CD NOT IN (
+	    SELECT SUB.PROD_CD FROM TPR_ITEM_PRICE_CHG_REQ SUB
+	    WHERE SUB.APRV_YN = 'N'
+	    AND SUB.ITEM_CD = T.ITEM_CD AND SUB.STR_CD = #strCd#
+	)
+	AND T.PROD_CD
+	<iterate prepend="IN" property="selectedProdCd" open="(" close=")" conjunction=",">
+		#selectedProdCd[]#
+	</iterate>
+	</select>
+
+	<select id="selectProductItemDupCount" resultClass="dataMap">
+	/* PSCMPRD0009.selectProductItemDupCount */
+	SELECT  COUNT(*) TOTAL_COUNT
+    FROM TPR_PRODUCT P, TPR_ITEM T
+	WHERE T.PROD_CD = P.PROD_CD
+	AND P.PROD_CD IN (
+	    SELECT SUB.PROD_CD FROM TPR_ITEM_PRICE_CHG_REQ SUB
+	    WHERE SUB.APRV_YN = 'N'
+	    AND SUB.ITEM_CD = T.ITEM_CD AND SUB.STR_CD = #strCd#
+	)
+	AND T.PROD_CD 
+	<iterate prepend="IN" property="selectedProdCd" open="(" close=")" conjunction=","> 
+		#selectedProdCd[]# 
+	</iterate>
+	</select>
+
+	<select id="selectPriceChangeListExcel" parameterClass="pscmprd0009VO" resultClass="PSCMPRD0009VO">
+	/* PSCMPRD0009.selectPriceChangeListExcel */
+	SELECT T.PROD_CD as prodCd, (SELECT SUB.PROD_NM FROM TPR_PRODUCT SUB WHERE SUB.PROD_CD = T.PROD_CD) as prodNm
+			, T.ITEM_CD as itemCd
+            , T.STR_CD as strCd, (SELECT STR_NM FROM TST_STORE SUB WHERE SUB.STR_CD = T.STR_CD) as strNm
+            , T.REQ_SEQ as reqSeq
+            , T.CHGB_BUY_PRC as chgbBuyPrc , T.CHGB_SELL_PRC as chgbSellPrc, T.CHGB_CURR_SELL_PRC as chgbCurrSellPrc, T.CHGA_BUY_PRC as chgaBuyPrc, T.CHGA_SELL_PRC as chgaSellPrc, T.CHGA_CURR_SELL_PRC as chgaCurrSellPrc
+			, TO_CHAR(TO_DATE(SUBSTR(T.REQ_DATE, 0, 8), 'YYYY-MM-DD'), 'YYYY-MM-DD') as reqDate
+            , T.REQ_PSN as reqPsn
+            , T.APRV_YN as aprvYn
+			, TO_CHAR(TO_DATE(SUBSTR(T.APRV_DATE, 0, 8), 'YYYY-MM-DD'), 'YYYY-MM-DD') as aprvDate
+            , T.APRV_PSN as aprvPsn, T.REG_DATE as regDate, T.REG_ID as regId, T.MOD_DATE as modDate, T.MOD_ID as modId, S.VENDOR_ID as vendorId
+            , T.CHG_REQ_REASON_CONTENT as chgReqReasonContent
+            , DECODE(T.APRV_YN, 'Y', '승인', 'R', '반려', '승인대기') as aprvNm
+            , T.RETN_REASON as retnReason
+    FROM TPR_ITEM_PRICE_CHG_REQ T, TPR_PRODUCT P,
+    	 (
+    		SELECT SUB.PROD_CD, SUB.ITEM_CD, SUB.STR_CD, SUB.VENDOR_ID FROM TPR_STORE_ITEM_PRICE SUB
+    		<isNotEmpty property="vendorList">
+			WHERE(0,  SUB.VENDOR_ID )<iterate prepend="IN" property="vendorList" open="(" close=")" conjunction=",">(0, #vendorList[]#)</iterate>
+			</isNotEmpty>
+    	 ) S
+	WHERE T.PROD_CD = P.PROD_CD
+	AND T.PROD_CD = S.PROD_CD
+	AND T.ITEM_CD = S.ITEM_CD
+	AND T.STR_CD = S.STR_CD
+	<isNotEmpty prepend="AND" property="startDate">
+		T.REQ_DATE BETWEEN REPLACE(#startDate#, '-', '')||'000000' AND REPLACE(#endDate#, '-', '')||'235959'
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="aprvYn">
+		T.APRV_YN = #aprvYn#
+	</isNotEmpty>
+	<isNotEmpty property="searchWord">
+	<isEqual property="searchCondition" compareValue="c">AND T.PROD_CD = #searchWord#</isEqual>
+	<isEqual property="searchCondition" compareValue="n">AND P.PROD_NM LIKE '%'||#searchWord#||'%'</isEqual>
+	</isNotEmpty>
+	AND P.PROD_DIVN_CD = '02'
+	ORDER BY T.PROD_CD, T.ITEM_CD, T.STR_CD, T.REQ_SEQ DESC
+	</select>
+
+</sqlMap>

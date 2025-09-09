@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0018">
+    <typeAlias alias="pscpprd0018VO" type="com.lottemart.epc.product.model.PSCPPRD0018VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    
+    <select id="selectPrdDivnType" resultClass="dataMap">
+    <![CDATA[
+     /* pscpprd0018.selectPrdDivnType - 상품종류 쿼리 */
+	    SELECT PROD_DIVN_CD
+		     , MALL_DIVN_CD  
+		  FROM TPR_PRODUCT 
+		 WHERE PROD_CD = #prodCd# 
+    ]]>
+    </select>
+
+    <select id="selectPrdStoreList" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectPrdStoreList - 점포 목록 쿼리 */
+	    SELECT 
+	          STR_GUBUN AS strGubun
+	          ,STR_CD AS strCd
+	          ,STR_NM AS strNm
+	    FROM  ( 
+	           SELECT '01' STR_GUBUN, STR_CD, STR_NM 
+	           FROM   TST_STORE
+	           WHERE ONLINE_YN = 'Y' OR CMBN_MALL_REP_STR_YN  = 'Y'
+	           UNION ALL
+	           SELECT '02', STR_CD, STR_NM 
+	           FROM   TST_STORE
+	           WHERE FEDAY_MALL_YN = 'Y' OR CMBN_MALL_REP_STR_YN  = 'Y'
+	          )
+	    ORDER BY STR_GUBUN, STR_NM
+    ]]>
+    </select>
+
+    <select id="selectPrdCommonCodeList" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectPrdCommonCodeList - 공통코드(배송옵션) 목록 쿼리 */
+    SELECT MAJOR_CD AS majorCd
+           ,MINOR_CD AS minorCd
+           ,CD_NM AS cdNm
+    FROM   TET_CODE, (select PROD_DIVN_CD AS prodDivnCd from TPR_PRODUCT where PROD_CD     =    #prodCd#)
+    WHERE  MAJOR_CD = 'PRD27'
+    AND    USE_YN='Y'
+    AND ( ( PRODDIVNCD = '01' AND MINOR_CD IN ('0001','0002','0003','0004','0005','0006')) OR ( PRODDIVNCD = '02' AND MINOR_CD IN ('0004','0006')) OR ( PRODDIVNCD = '03' AND MINOR_CD IN ('0007','0009')))
+    ORDER BY MAJOR_CD, ORDER_SEQ
+    ]]>
+    </select>    
+
+	<!-- 실재고: 신선상품은 500g 등과 같이 단위가 있기 때문에 이 값으로 나누어 줘야함. 신선 외 상품은 '1'로 세팅되어 있음 -->
+    <select id="selectPrdPriceList" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectPrdPriceList - 가격정보 목록 쿼리 */
+        SELECT
+                V.STR_CD AS strCd
+                ,V.STR_NM AS strNm
+                ,V.ITEM_CD AS itemCd
+                ,V.PUR_STOP_DIVN_CD AS purStopDivnCd
+                ,DECODE(V.ONLINE_SOUT_YN,'Y','1','0') AS onlineSoutYn
+                ,V.MD_SOUT_YN AS mdSoutYn
+                ,V.SOUT_YN AS soutYn
+                ,DECODE(V.DISP_YN,'Y','1','0') AS dispYn
+                ,V.SELL_PSBT_YN AS sellPsbtYn
+                ,DECODE(V.STK_MGR_YN,'Y','1','0') AS stkMgrYn
+                ,C.CD_NM AS trdTypeDivnCd
+                ,DECODE(V.FORGN_DELI_YN,'Y','1','0') AS forgnDeliYn
+                ,DECODE(V.STR_PIKUP_YN,'Y','1','0') AS strPikupYn
+                ,V.DELI_OPTN_CD AS deliOptnCd
+                ,V.DISP_APPLY_BASE_DD AS dispApplyBaseDd
+                ,V.MD_RECENT_SELL_DY AS mdRecentSellDy
+                ,V.BUY_PRC AS buyPrc
+                ,V.SELL_PRC AS sellPrc
+                ,V.CURR_SELL_PRC AS currSellPrc
+                ,V.STOCK_QTY 				AS stockQty
+                ,DECODE(V.AVIL_STOCK_QTY, '10002', '999999', V.AVIL_STOCK_QTY)	AS avilStockQty
+        FROM   (SELECT  
+                        SS.STR_CD
+                       ,SS.STR_NM
+                       ,PS.ITEM_CD
+                       ,DECODE(PS.PUR_STOP_DIVN_CD,'0','정상','1','중단') AS PUR_STOP_DIVN_CD    /* 발주구분 */
+                       ,PS.TDAY_STGE_PLAN_QTY
+                       ,PS.DD_AVG_SELL_QTY
+                       ,PS.WEIGHT
+                       ,PS.ONLINE_SOUT_YN           /* 수동품절        */
+                       ,PS.MD_SOUT_YN               /* MD품절          */
+                       ,PS.SOUT_YN                  /* 품절여부        */
+                       ,PS.DISP_YN                  /* 전시여부        */
+                       ,PS.SELL_PSBT_YN             /* 판매가능여부    */
+                       ,PS.STK_MGR_YN               /* 재고관리 (Y(온라인) N(MD) */
+                       ,PS.TRD_TYPE_DIVN_CD         /* 거래형태(SRR02) */
+                       ,PS.FORGN_DELI_YN            /* 해외배송가능여부*/
+                       ,PS.STR_PIKUP_YN             /* 점포픽업가능여부*/
+                       ,PS.DELI_OPTN_CD             /* 배송옵션(PRD27) */
+                       ,PS.DISP_APPLY_BASE_DD       /* 전시적용기준일  */
+                       ,PS.MD_RECENT_SELL_DY        /* MD최근판매일    */
+                       ,PS.BUY_PRC                  /* 원가            */
+                       ,PS.SELL_PRC                 /* 매가            */
+                       ,PS.CURR_SELL_PRC            /* 판매가          */
+                       ,DECODE(PS.STK_MGR_YN, 'N', '10002', FLOOR(FN_GET_REAL_STOCK_QTY(#prodCd#, PS.ITEM_CD, SS.STR_CD, 'N')))  AS AVIL_STOCK_QTY -- 가능재고
+                       ,CASE WHEN SS.STR_CD ='985' THEN /*센터일경우*/
+					       CASE WHEN SUBSTR(PI.PROD_CD,1,1) ='B' THEN  /*부진재고일경우*/
+						        NVL((SELECT SUM(BT.AVAIL_QTY / DECODE(PP.FRSH_CONV_QTY,0,1,NULL,1,PP.FRSH_CONV_QTY))
+						        	 FROM REAL_STK_BT BT 
+						        	 WHERE (BT.STR_CD, BT.SRCMK_CD)  =  
+						        	             (SELECT SS.STR_CD, PII.MD_SRCMK_CD
+						        	                FROM TPR_ITEM PII
+						        	               WHERE PII.PROD_CD = PI.PROD_CD
+						        	                 AND PII.ITEM_CD = PI.ITEM_CD 
+						        	                 LIMIT 1)),0)
+					       ELSE
+						    /*    CASE WHEN SUBSTR(PI.PROD_CD,1,1) ='V' THEN */  /*수산소분일경우*/
+						    /*        수산소분은 합산하여 보여줘야 하나 bos내에서는 각각 분리하는것으로 관리가 되어야 함(다만 가용재고는 합산해서 보여줌 */
+						    /*    ELSE         */
+							        NVL((SELECT CT.AVAIL_QTY / DECODE(PP.FRSH_CONV_QTY,0,1,NULL,1,PP.FRSH_CONV_QTY)
+							        	   FROM REAL_STK_CT CT 
+							        	  WHERE CT.STR_CD = PS.STR_CD 
+							        	    AND CT.SRCMK_CD = PI.MD_SRCMK_CD),0)
+						    /*    END        */
+					       END
+					   ELSE 
+						   NVL((SELECT S.QTY / DECODE(PP.FRSH_CONV_QTY,0,1,NULL,1,PP.FRSH_CONV_QTY)
+							      FROM REAL_STK S
+							     WHERE S.STR_CD  = PS.STR_CD
+							       AND S.PROD_CD = PI.MD_PROD_CD),0)
+				       END  AS STOCK_QTY 																	 -- 실재고
+                FROM   TPR_PRODUCT PP
+                      ,TPR_STORE_ITEM_PRICE PS
+                      ,TPR_ITEM PI
+                      ,TST_STORE SS
+                WHERE  PP.PROD_CD	 = PS.PROD_CD 
+                AND    PS.PROD_CD	 = PI.PROD_CD
+                AND    PS.ITEM_CD	 = PI.ITEM_CD
+                AND    PS.STR_CD     = SS.STR_CD
+                AND    PS.PROD_CD     =    #prodCd#
+                ]]>
+                <isNotEmpty property="strCd">
+                AND    PS.STR_CD      LIKE #strCd#||'%'
+                </isNotEmpty>
+
+                <isEqual property="strGubun" compareValue="01">
+                <![CDATA[            
+                /* 점포분류 온라인점포 선택시 */
+                AND   ONLINE_YN     = 'Y'
+                ]]>
+                </isEqual>
+
+                <isEqual property="strGubun" compareValue="02">
+                <![CDATA[ 
+                /* 점포분류 명절점포 선택시 */
+                AND   FEDAY_MALL_YN = 'Y'
+                ]]>
+                </isEqual>
+            
+                <![CDATA[ 
+              ) V
+			LEFT OUTER JOIN TET_CODE C ON V.TRD_TYPE_DIVN_CD = C.MINOR_CD AND C.MAJOR_CD = 'SRR02' AND C.USE_YN = 'Y'
+        WHERE 1=1
+            
+        ]]>
+            <isEqual property="stockYn" compareValue="Y">
+			<![CDATA[ 
+			   AND V.STK_MGR_YN = 'Y'
+			   AND V.STOCK_QTY < 1
+			]]>
+			</isEqual>
+			<isEqual property="avilStockYn" compareValue="Y">
+		    <![CDATA[ 
+		       AND V.STK_MGR_YN = 'Y'
+		       AND V.AVIL_STOCK_QTY < 1
+			]]>
+			</isEqual>
+        ORDER BY STR_NM
+    </select>
+
+    <update id="updatePrdPrice">
+    <![CDATA[
+    /* pscpprd0018.updatePrdPrice - 가격정보 업데이트 쿼리 */
+        UPDATE TPR_STORE_ITEM_PRICE 
+        SET
+                ONLINE_SOUT_YN  = DECODE(#onlineSoutYn#,'1','Y','N')       /* 수동품절       */
+               ,DISP_YN         = DECODE(#dispYn#,'1','Y','N')              /* 전시여부       */
+               ,STK_MGR_YN      = DECODE(#stkMgrYn#,'1','Y','N')           /* 재고관리여부   */
+               ,SOUT_YN         = DECODE(#stkMgrYn#,'1',DECODE(#onlineSoutYn#,'1','Y','N'),
+                                                         GREATEST(DECODE(#onlineSoutYn#,'1','Y','N'),#mdSoutYn#)
+                                         )
+               ,FORGN_DELI_YN   = DECODE(#forgnDeliYn#,'1','Y','N')
+               ,STR_PIKUP_YN    = DECODE(#strPikupYn#,'1','Y','N')
+               ,DELI_OPTN_CD    = #deliOptnCd#
+    ]]>
+
+    <isEqual property="prdDivnType" compareValue="03">
+    <![CDATA[ 
+			/* 소셜상품인 경우 매가,판매가 수정 가능 */
+			 , SELL_PRC 		= #currSellPrc#
+			 , CURR_SELL_PRC 	= #currSellPrc#
+    ]]>
+    </isEqual>
+
+    <![CDATA[                         
+               ,DISP_APPLY_BASE_DD  = #dispApplyBaseDd# /* 전시적용기준일 */
+               ,MD_RECENT_SELL_DY   = #mdRecentSellDy#  /* MD최근판매일    */
+               ,MOD_ID			    = #regId#
+               ,MOD_DATE 		    = CURRENT_TIMESTAMP(0)
+        WHERE  PROD_CD  = #prodCd#
+        AND    ITEM_CD  = #itemCd#
+        AND    STR_CD 	= #strCd#
+    ]]>
+    </update>
+    
+    <select id="selectChkPrdVisible" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectChkPrdVisible - 상품 전시 채크 쿼리 */
+        SELECT 
+               DECODE(COUNT(*),COUNT(DECODE(DISP_YN, 'N', 1)),'N','Y') AS dispYn
+        FROM   TPR_STORE_ITEM_PRICE
+        WHERE  PROD_CD = #prodCd#
+        AND    STR_CD IN(SELECT STR_CD FROM TST_STORE 
+                          WHERE  ONLINE_YN = 'Y'  OR CMBN_MALL_REP_STR_YN  = 'Y')
+    ]]>
+    </select>
+
+    <update id="updatePrdCategoryAssign">
+    /* pscpprd0018.updatePrdCategoryAssign - 카테고리할당 수정 쿼리 */ 
+       UPDATE TCA_CATEGORY_ASSIGN CC
+           SET MOD_ID	 = #regId#
+			<isEqual property="prdDivnType" compareValue="03">
+             /* 소셜상품인 경우 매가,판매가 수정 가능 */
+             , SELL_PRC 		= #currSellPrc#
+             , CURR_SELL_PRC 	= #currSellPrc#
+            </isEqual>
+             , MOD_DATE = CURRENT_TIMESTAMP(0)
+         WHERE PROD_CD 	 = #prodCd#  
+           AND STR_CD 	 = #strCd#
+    </update>
+
+    <update id="updatePrdVisible">
+    <![CDATA[
+    /* pscpprd0018.updatePrdVisible - 상품마스터 전시여부 수정 쿼리 */
+    UPDATE TPR_PRODUCT  
+    SET    DISP_YN   = 'N'
+          ,MOD_ID	 =#regId#
+          ,MOD_DATE  = CURRENT_TIMESTAMP(0)
+    WHERE  PROD_CD = #prodCd#
+    ]]>
+    </update>
+
+    <select id="selectChkAuctionPrdInsert" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectChkAuctionPrdInsert - 옥션연동대상 채크 쿼리 */
+    /* 2015.10.26 by kmlee 옥션제휴 종료로 사용하지 않는 쿼리임 */
+        SELECT 
+                A.PROD_CD AS prodCd
+               ,DECODE(A.AU_HOME_CD, A.HOME_CD, 'N', 'Y') AS homeChgYn
+               ,(SELECT COUNT(1) 
+                 FROM   TPR_ITEM X 
+                 WHERE  X.PROD_CD = A.PROD_CD
+                ) AS itemCnt
+               ,(SELECT COUNT(1) 
+                 FROM   TPR_STORE_ITEM_PRICE X 
+                 WHERE  X.PROD_CD = A.PROD_CD 
+                 AND    X.ENTP_DELI_DIVN_CD IN ('1','3')  /* 배달/선수금상품 */
+                 ) AS delivCnt
+        FROM   TPR_PRODUCT A
+              ,TCA_MD_CATEGORY B
+        WHERE  A.CAT_CD     =  B.CAT_CD
+        AND    A.PROD_CD    = #prodCd#
+        AND    A.FEDAY_MALL_PROD_DIVN_CD NOT IN ('7','8')
+        AND    A.AU_USE_YN       = 'Y'
+        AND    B.AU_USE_YN       = 'Y'
+        AND    B.AU_CATEGORY_ID  IS NOT NULL
+    ]]>
+    </select>
+
+    <select id="selectChkAuctionAbsenceVisible" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectChkAuctionAbsenceVisible - 옥션연동대상 채크2 쿼리 */
+                 SELECT  
+                        CASE WHEN fn_get_stock_info(#prodCd#,#itemCd#,#strCd# ,'N') < 1 THEN 'N' ELSE 'Y' END AS insertYn
+                 FROM   DUAL
+    ]]>
+    </select>    
+
+    <insert id="InsertAuctionBatchLog">
+    <![CDATA[
+    /* pscpprd0018.InsertAuctionBatchLog - 옥션연동 정보 입력 쿼리 */
+                INSERT  INTO TAU_PROD_BATCH_LOG
+                (SEQ, STR_CD, PROD_CD, ITEM_CD, DATA_TYPE_CD, STS_CD, ERROR_CD, ERROR_MSG, REG_DATE, REG_ID, MOD_DATE, MOD_ID)
+                SELECT   SQ_SEQ_SEQ.NEXTVAL AS SEQ
+                        ,#strCd#  AS STR_CD
+                        ,#prodCd# AS PROD_CD
+                        ,#itemCd# AS ITEM_CD
+                        ,'5'         AS TYPE_CD   /* 전시정보수정 */
+                        ,'U'         AS STATUS_FG
+                        ,'0'         AS ERR_FG
+                        ,''          AS ERR_MSG
+                        ,CURRENT_TIMESTAMP(0) 
+                        ,#prodCd#
+                        ,CURRENT_TIMESTAMP(0) 
+                        ,#prodCd#
+                  FROM DUAL
+    ]]>
+    </insert>
+
+    <select id="selectChk11StPrdInfoUpdate" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectChk11StPrdInfoUpdate - 11번가 연동 채크 쿼리 */
+	SELECT 
+                A.PROD_CD AS prodCd
+               ,C.SITE_CD AS siteCd
+               ,C.FEDAY_MALL_USE_YN AS fedayMallUseYn
+               ,DECODE(C.SITE_PRODUCT_CD,'','N','Y') AS siteRegYn
+               ,(SELECT COUNT(1) 
+                   FROM TPR_ITEM X 
+                  WHERE X.PROD_CD = A.PROD_CD ) AS itemCnt
+               ,(SELECT COUNT(1) 
+                   FROM TPR_STORE_ITEM_PRICE X 
+                  WHERE X.PROD_CD  = A.PROD_CD 
+                    AND X.ENTP_DELI_DIVN_CD IN ('1','3')) AS delivCnt
+        FROM   TPR_PRODUCT A
+              ,TMLS_CATEGORY_MPPG B
+              ,TMLS_PRODUCT C
+        WHERE A.CAT_CD   =  B.CAT_CD
+        AND   A.PROD_CD  =  C.PROD_CD
+        AND   A.PROD_CD  =  #prodCd#
+        AND   A.FEDAY_MALL_PROD_DIVN_CD NOT IN ('7','8')
+        AND   C.USE_YN      = 'Y'
+        AND   C.SITE_CATEGORY_ID IS NOT NULL  
+    ]]>
+    </select>
+    
+    <select id="selectChk11stAbsenceVisible" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectChk11stAbsenceVisible - 11번가 연동 채크2 쿼리 */
+
+                 SELECT  
+                        CASE WHEN fn_get_stock_info(#prodCd#,#itemCd#,#strCd# ,'N') < 1 THEN 'N' ELSE 'Y' END AS insertYn
+                 FROM   DUAL
+    ]]>
+    </select>
+
+    <insert id="insertSiteLinkInfo">
+    <![CDATA[
+    /* pscpprd0018.insertSiteLinkInfo - 11번가 연동 처리 쿼리 */
+            INSERT INTO TMLS_PRODUCT_LINK_INFO
+            (SITE_CD,    PROD_CD,   LINK_DT,  LNKG_DIVN, LNKG_STS, 
+             ERROR_DIVN, REG_DATE,  REG_ID,   MOD_DATE, MOD_ID)
+            VALUES
+            ('03',      #prodCd#, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MISS') , '5', 'U', 
+             '0',        CURRENT_TIMESTAMP(0),    #regId#, CURRENT_TIMESTAMP(0), #regId#)
+    ]]>
+    </insert>
+
+    <select id="selectPrdOutOfStockDay" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectPrdOutOfStockDay - 온라인품절 채크 쿼리 */
+        SELECT 'X' AS dummy
+        FROM   TPR_ONL_SO_DTIME_MGMT
+        WHERE  PROD_CD = #prodCd#
+        AND    ITEM_CD = #itemCd#
+        AND    STR_CD  = #strCd# 
+    ]]>
+    </select>
+
+    <insert id="insertPrdOutOfStockDay">
+    <![CDATA[
+    /* pscpprd0018.insertPrdOutOfStockDay - PR_ONL_SO_DTIME_MGMT 에 저장 쿼리 */
+            INSERT INTO TPR_ONL_SO_DTIME_MGMT
+                   (STR_CD, PROD_CD, ITEM_CD, MOD_ID, MOD_DATE)
+            VALUES(#strCd#, #prodCd#, #itemCd#, #regId#, CURRENT_TIMESTAMP(0))
+    ]]>
+    </insert>   
+
+    <delete id="deletePrdOutOfStockDay">
+    <![CDATA[
+    /* pscpprd0018.deletePrdOutOfStockDay - PR_ONL_SO_DTIME_MGMT 삭제 쿼리 */
+            DELETE FROM TPR_ONL_SO_DTIME_MGMT
+            WHERE PROD_CD = #prodCd#
+            AND   STR_CD = #strCd#
+            AND   ITEM_CD = #itemCd# 
+    ]]>
+    </delete>
+    
+    <select id="selectPrdPriceDetailList" resultClass="pscpprd0018VO">
+    <![CDATA[
+    /* pscpprd0018.selectPrdPriceDetailList - 가격정보 상세 목록 쿼리 */
+    SELECT ROWNUM AS num, B.* FROM (
+        SELECT 
+            SUBSTR(A.APPLY_START_DATE,1,4)||'-'||SUBSTR(A.APPLY_START_DATE,5,2)||'-'||SUBSTR(A.APPLY_START_DATE,7,2) AS applyStartDate
+            ,SUBSTR(A.END_DATE,1,4)||'-'||SUBSTR(A.END_DATE,5,2)||'-'||SUBSTR(A.END_DATE,7,2) AS endDate
+            ,A.BUY_PRC AS buyPrc                  /* 원가            */
+            ,A.SELL_PRC AS sellPrc                /* 매가            */
+            ,A.CURR_SELL_PRC AS currSellPrc       /* 판매가          */
+        FROM TPR_STORE_ITEM_PRICE_LOG A
+        WHERE A.PROD_CD = #prodCd#
+            AND    A.ITEM_CD = #itemCd#
+            AND    A.STR_CD = #strCd#
+        ORDER BY A.END_DATE DESC
+    ) B
+    ]]>
+    </select>
+
+	<parameterMap id="procedureParameters" class="dataMap">
+		<parameter property="STR_CD" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+		<parameter property="PROD_CD"  javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+		<parameter property="ITEM_CD" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	</parameterMap>
+	          
+	<procedure id="SP_MPR_INSERT" parameterMap="procedureParameters">
+	    { CALL  SP_MPR_INSERT(?,?,?) }
+	</procedure>
+</sqlMap>

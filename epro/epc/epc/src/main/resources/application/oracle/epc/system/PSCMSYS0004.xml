@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmsys0004">
+    <typeAlias alias="pscmsys0001VO" type="com.lottemart.epc.system.model.PSCMSYS0001VO" />
+    <typeAlias alias="pscmsys0002VO" type="com.lottemart.epc.system.model.PSCMSYS0002VO" />
+    <typeAlias alias="pscmsys0003VO" type="com.lottemart.epc.system.model.PSCMSYS0003VO" />
+    <typeAlias alias="pscmsys0004VO" type="com.lottemart.epc.system.model.PSCMSYS0004VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectVendorInfoView" resultClass="pscmsys0003VO">
+    /* pscmsys0004.selectVendorInfoView */
+    SELECT VENDOR_ID AS vendorId
+         , VENDOR_NM AS vendorNm
+         , CEO_NM AS ceoNm
+         , CONO AS cono
+         , VENDOR_TYPE_CD AS vendorTypeCd
+         , (CASE WHEN LENGTH(REP_TEL_NO) > 2 THEN REP_TEL_NO ELSE '' END ) AS repTelNo
+         , (CASE WHEN LENGTH(REP_FAX_NO) > 2 THEN REP_FAX_NO ELSE '' END ) AS repFaxNo
+         , VENDOR_KIND_CD AS vendorKindCd
+         , BIZ_BTYP AS bizBtyp
+         , NVL(ZIP_CD,'') AS zipCd
+         , NVL(ADDR_1_NM,'') AS addr_1_nm
+         , NVL(ADDR_2_NM,'') AS addr_2_nm
+         , BASE_DLV_AMT AS baseDlvAmt
+         , RTN_AMT AS rtnAmt
+         , EXCH_AMT AS exchAmt
+         , ADD_DELI_AMT1 AS addDeliAmt1
+         , ADD_DELI_AMT2 AS addDeliAmt2
+         , (SELECT APPLY_START_DY FROM TVE_VENDOR_DELI_BASE WHERE VENDOR_ID = A.VENDOR_ID AND APPLY_END_DY= '99991231' AND DELI_DIVN_CD ='10') AS deliApplyStartDy
+         , (SELECT APPLY_START_DY FROM TVE_VENDOR_DELI_BASE WHERE VENDOR_ID = A.VENDOR_ID AND APPLY_END_DY= '99991231' AND DELI_DIVN_CD ='20') AS returnApplyStartDy
+      FROM TVE_VENDOR A
+     WHERE A.VENDOR_ID = #vendorId#
+    </select>
+
+    <update id="updateVendorInfo">
+    /* pscmsys0004.updateVendorInfo */
+    UPDATE TVE_VENDOR
+       SET VENDOR_NM = #vendorNm#
+         , CEO_NM = #ceoNm#
+         , CONO = #cono#
+         , VENDOR_TYPE_CD = #vendorTypeCd#
+         , REP_TEL_NO = #repTelNo#
+         , REP_FAX_NO = #repFaxNo#
+         , VENDOR_KIND_CD = #vendorKindCd#
+         , BIZ_BTYP = #bizBtyp#
+         , ZIP_CD = #zipCd#
+         , ADDR_1_NM = #addr_1_nm#
+         , ADDR_2_NM = #addr_2_nm#
+         , BASE_DLV_AMT = #baseDlvAmt#
+         , RTN_AMT = #rtnAmt#
+         , EXCH_AMT = #exchAmt#
+         , ADD_DELI_AMT1 = #addDeliAmt1#
+         , ADD_DELI_AMT2 = #addDeliAmt2#
+         , MOD_ID = #regId#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE VENDOR_ID = #vendorId#
+    </update>
+
+    <select id="selectVendorUserList" resultClass="pscmsys0002VO">
+    /* pscmsys0004.selectVendorUserList */
+    SELECT RANK()OVER(ORDER BY VENDOR_SEQ ASC) AS num
+         , #vendorId# AS vendorId
+         , VENDOR_SEQ AS vendorSeq
+         , NVL(UTAK_TYPE, '') AS utakType
+         , (SELECT CD_NM FROM TET_CODE CD WHERE MAJOR_CD = 'EPC03' AND CD.MINOR_CD = V.UTAK_TYPE) AS vendorUserGubun
+         , NVL(UTAK_NM, '') AS utakNm
+         , NVL(UTAK_DEPT_NM, '') AS utakDeptNm
+         , NVL(UTAK_POSITION_NM, '') AS utakPositionNm
+         , NVL(UTAK_TEL_NO, '') AS utakTelNo
+         , NVL(UTAK_CELL_NO, '') AS utakCellNo
+         , NVL(UTAK_FAX_NO, '') AS utakFaxNo
+         , NVL(EMAIL, '') AS email
+         , NVL(SMS_RECV_YN, 'Y') AS smsRecvYn
+         , NVL(RMK, '') AS rmk
+         , NVL(TO_CHAR(REG_DATE, 'YYYY-MM-DD'), '') AS regDate
+         , NVL(ZIP_CD, '') AS zipCd
+         , NVL(ADDR_1_NM, '') AS addr1Nm
+         , NVL(ADDR_2_NM, '') AS addr2Nm
+         , NVL(VALI_YN, 'Y') AS valiYn
+      FROM TVE_VENDOR_USER V
+     WHERE VENDOR_ID = #vendorId#
+     ORDER BY 1, 2
+    </select>
+
+    <select id="selectVendorAddrList" resultClass="pscmsys0004VO">
+    /* pscmsys0004.selectVendorAddrList */
+    SELECT RANK()OVER(ORDER BY VENDOR_ID ASC, ADDR_SEQ ASC) AS num
+         , VENDOR_ID AS vendorId
+         , ADDR_SEQ AS addrSeq
+         , ADDR_KIND_CD AS addrKindCd
+         , NVL(ZIP_CD,'') AS zipCd
+         , NVL(ADDR_1_NM,'') AS addr_1_nm
+         , NVL(ADDR_2_NM,'') AS addr_2_nm
+         , (CASE WHEN LENGTH(CELL_NO) > 2 THEN CELL_NO ELSE '' END ) AS cellNo
+         , USE_YN AS useYn
+      FROM TVE_VENDOR_ADDR_INFO
+     WHERE VENDOR_ID = #vendorId#
+     <isNotEmpty property="addrSeq">
+       AND ADDR_SEQ = #addrSeq#
+     </isNotEmpty>
+    </select>
+
+    <select id="selectVendorDeliAmtList" resultClass="pscmsys0001VO">
+    /* pscmsys0004.selectVendorDeliAmtList */
+    SELECT RANK()OVER(ORDER BY DELI_DIVN_CD, APPLY_START_DY, DELI_BASE_MIN_AMT, APPLY_END_DY) AS num
+         , VENDOR_ID
+         , APPLY_START_DY
+         , APPLY_END_DY
+         , DELI_BASE_MIN_AMT
+         , DELI_BASE_MAX_AMT
+         , DELIVERY_AMT
+         , DELI_DIVN_CD
+      FROM TVE_VENDOR_DELI_BASE
+     WHERE VENDOR_ID = #vendorId#
+       AND DELI_DIVN_CD = #deliDivnCd#
+    <isNotEmpty property="nextDate">
+        AND APPLY_END_DY = '99991231'
+    </isNotEmpty>
+    </select>
+
+    <update id="updateVendorUser"  parameterClass="pscmsys0002VO">
+    /* pscmsys0004.updateVendorUser */
+    MERGE INTO TVE_VENDOR_USER A
+    USING ( SELECT #vendorId# AS VENDOR_ID
+                , #vendorSeq# AS VENDOR_SEQ
+             FROM DUAL ) U
+       ON ( A.VENDOR_ID = U.VENDOR_ID AND A.VENDOR_SEQ = U.VENDOR_SEQ )
+    WHEN NOT MATCHED THEN
+    INSERT
+    ( VENDOR_ID
+    , VENDOR_SEQ
+    , UTAK_TYPE
+    , UTAK_NM
+    , UTAK_DEPT_NM
+    , UTAK_POSITION_NM
+    , UTAK_TEL_NO
+    , UTAK_CELL_NO
+    , UTAK_FAX_NO
+    , VALI_YN
+    , ZIP_SEQ
+    , ZIP_CD
+    , ADDR_1_NM
+    , ADDR_2_NM
+    , EMAIL
+    , SMS_RECV_YN
+    , RMK
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID )
+    VALUES
+    ( #vendorId#
+    , NVL(#vendorSeq#, (SELECT LPAD(NVL(MAX(VENDOR_SEQ), 0) + 1, '3', '0') FROM TVE_VENDOR_USER WHERE VENDOR_ID = #vendorId# ) )
+    , #utakType#
+    , #utakNm#
+    , #utakDeptNm#
+    , #utakPositionNm#
+    , REPLACE(#utakTelNo#,'-','')
+    , REPLACE(#utakCellNo#,'-','')
+    , REPLACE(#utakFaxNo#,'-','')
+    , #valiYN#
+    , 0
+    , #zipCd#
+    , #addr1Nm#
+    , #addr2Nm#
+    , #email#
+    , #smsRecvYn#
+    , #rmk#
+    , CURRENT_TIMESTAMP(0)
+    , #modId#
+    , CURRENT_TIMESTAMP(0)
+    , #modId# )
+    WHEN MATCHED THEN
+    UPDATE 
+       SET UTAK_NM = #utakNm#
+         , UTAK_TYPE = #utakType#
+         , UTAK_DEPT_NM = #utakDeptNm#
+         , UTAK_POSITION_NM  = #utakPositionNm#
+         , UTAK_TEL_NO = REPLACE(#utakTelNo#,'-','')
+         , UTAK_CELL_NO = REPLACE(#utakCellNo#,'-','')
+         , UTAK_FAX_NO = REPLACE(#utakFaxNo#,'-','')
+         , VALI_YN = #valiYN#
+         , ZIP_SEQ = 0
+         , ZIP_CD = #zipCd#
+         , ADDR_1_NM = #addr1Nm#
+         , ADDR_2_NM = #addr2Nm#
+         , EMAIL = #email#
+         , SMS_RECV_YN = #smsRecvYn#
+         , RMK = #rmk#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #modId#
+    </update>
+
+    <delete id="deleteVendorUser" parameterClass="pscmsys0002VO">
+	/* pscmsys0004.deleteVendorUser */
+	DELETE FROM TVE_VENDOR_USER
+     WHERE VENDOR_ID = #vendorId#
+	   AND VENDOR_SEQ = #vendorSeq#
+    </delete>
+
+    <update id="updateVendorAddr"  parameterClass="pscmsys0004VO">
+    /* pscmsys0004.updateVendorAddr */
+    MERGE INTO TVE_VENDOR_ADDR_INFO A
+        USING
+        (SELECT  #vendorId# AS VENDOR_ID
+                ,#addrSeq# AS ADDR_SEQ
+           FROM  DUAL) U
+        ON
+        (     A.VENDOR_ID = U.VENDOR_ID AND A.ADDR_SEQ = U.ADDR_SEQ)
+        WHEN NOT MATCHED THEN
+            INSERT
+                  (
+                    VENDOR_ID
+                  , ADDR_SEQ
+                  , ADDR_KIND_CD
+                  , ZIP_SEQ
+                  , ZIP_CD
+                  , ADDR_1_NM
+                  , ADDR_2_NM
+                  , CELL_NO
+                  , USE_YN
+                  , REG_DATE
+                  , REG_ID
+                  , MOD_DATE
+                  , MOD_ID
+                   )
+                 VALUES (
+                     #vendorId#
+                  ,  (SELECT LPAD(NVL(MAX(ADDR_SEQ),0)+1,3,'0') FROM TVE_VENDOR_ADDR_INFO WHERE VENDOR_ID = #vendorId# )
+                  ,  #addrKindCd#
+                  ,  0
+                  ,  #zipCd#
+                  ,  #addr_1_nm#
+                  ,  #addr_2_nm#
+                  ,  #cellNo#
+                  ,  #useYn#
+                  ,  CURRENT_TIMESTAMP(0)
+                  ,  #modId#
+                  ,  CURRENT_TIMESTAMP(0)
+                  ,  #modId#
+                   )
+        WHEN MATCHED THEN
+              UPDATE
+                 SET ADDR_KIND_CD      = #addrKindCd#
+                   , ZIP_SEQ           = 0
+                   , ZIP_CD            = #zipCd#
+                   , ADDR_1_NM         = #addr_1_nm#
+                   , ADDR_2_NM         = #addr_2_nm#
+                   , CELL_NO           = #cellNo#
+                   , USE_YN            = #useYn#
+                   , MOD_DATE          = CURRENT_TIMESTAMP(0)
+                   , MOD_ID            = #modId#
+    </update>
+
+    <delete id="deleteVendorAddr" parameterClass="pscmsys0004VO">
+	/* pscmsys0004.deleteVendorAddr */
+	DELETE FROM TVE_VENDOR_ADDR_INFO
+     WHERE VENDOR_ID = #vendorId#
+	   AND ADDR_SEQ = #addrSeq#
+    </delete>
+
+    <update id="updateVendorDeliAmt"  parameterClass="pscmsys0001VO">
+    /* pscmsys0004.updateVendorDeliAmt */
+    MERGE INTO TVE_VENDOR_DELI_BASE A
+        USING
+        (SELECT #VENDOR_ID# AS VENDOR_ID
+              , #APPLY_END_DY# AS APPLY_END_DY
+              , #DELI_BASE_MIN_AMT# AS DELI_BASE_MIN_AMT
+              , #DELI_DIVN_CD# AS DELI_DIVN_CD
+           FROM  DUAL) U
+        ON
+        (     A.VENDOR_ID = U.VENDOR_ID
+          AND A.APPLY_END_DY = U.APPLY_END_DY
+          AND A.DELI_BASE_MIN_AMT = U.DELI_BASE_MIN_AMT
+          AND A.DELI_DIVN_CD = U.DELI_DIVN_CD )
+        WHEN NOT MATCHED THEN
+            INSERT
+                  (
+                    VENDOR_ID
+                  , APPLY_END_DY
+                  , DELI_BASE_MIN_AMT
+                  , APPLY_START_DY
+                  , DELI_BASE_MAX_AMT
+                  , PROD_CD
+                  , DELIVERY_AMT
+                  , DELI_DIVN_CD
+                  , REG_DATE
+                  , REG_ID
+                  , MOD_DATE
+                  , MOD_ID
+                   )
+                 VALUES (
+                    #VENDOR_ID#
+                  , #APPLY_END_DY#
+                  , #DELI_BASE_MIN_AMT#
+                  , #APPLY_START_DY#
+                  , #DELI_BASE_MAX_AMT#
+                  , #PROD_CD#
+                  , #DELIVERY_AMT#
+                  , #DELI_DIVN_CD#
+                  , CURRENT_TIMESTAMP(0)
+                  , #MOD_ID#
+                  , CURRENT_TIMESTAMP(0)
+                  , #MOD_ID#
+                   )
+        WHEN MATCHED THEN
+              UPDATE
+                 SET APPLY_START_DY = #APPLY_START_DY#
+                   , DELI_BASE_MAX_AMT = #DELI_BASE_MAX_AMT#
+                   , PROD_CD = #PROD_CD#
+                   , DELIVERY_AMT = #DELIVERY_AMT#
+                   , MOD_DATE = CURRENT_TIMESTAMP(0)
+                   , MOD_ID = #MOD_ID#
+    </update>
+  
+    <update id="updateVendorReturnAmt">
+    /* pscmsys0004.updateVendorReturnAmt */
+    UPDATE TVE_VENDOR_DELI_BASE
+       SET APPLY_START_DY = #APPLY_START_DY# 
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE VENDOR_ID = #VENDOR_ID#
+       AND APPLY_END_DY = '99991231'
+       AND DELI_DIVN_CD = '10'
+    </update>
+
+    <delete id="deleteVendorDeliAmt" parameterClass="pscmsys0001VO">
+    /* pscmsys0004.deleteVendorDeliAmt */
+    DELETE FROM TVE_VENDOR_DELI_BASE
+     WHERE VENDOR_ID = #VENDOR_ID#
+       AND APPLY_END_DY = #APPLY_END_DY#
+       AND DELI_BASE_MIN_AMT = #DELI_BASE_MIN_AMT#
+       AND DELI_DIVN_CD = #DELI_DIVN_CD#
+    </delete>
+
+</sqlMap>

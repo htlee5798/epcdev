@@ -1,0 +1,117 @@
+@charset "utf-8";
+
+/* header */
+#logo {
+	float:left;
+	padding-top:32px;
+	margin-right:60px;
+}
+.gnb_wrap {
+	float:left;
+}
+.gnb {
+	overflow:hidden;
+}
+.gnb li {
+	float:left;
+	font-size:16px;
+	line-height:1.5em;
+	letter-spacing:-0.03em;
+	padding-top:35px;
+	margin-left:45px;
+}
+.gnb li:first-child {
+	margin-left:0;
+}
+.gnb a {
+	color:#333;
+}
+.gnb a:hover,
+.gnb a:focus {
+	color:#e60012;
+}
+.h_quick {
+	float:right;
+	margin-top:27px;
+	width:226px;
+	/* width:280px; */
+	height:38px;
+	padding:0 7px;
+	line-height:38px;
+	border-radius:38px;
+	font-size:13px;
+	border:1px solid #cdcdcd;
+	text-align:center;
+	font-family:'Open Sans', sans-serif;
+}
+.tnb {
+	overflow:hidden;
+}
+.tnb li {
+	float:left;
+	width:33.33%;
+	background:url("/images/epc/edi/srm/common/vline.gif") no-repeat left center;
+}
+.tnb li:first-child {
+	background:none;
+}
+.tnb a {
+	color:#888;
+}
+.tnb a:hover,
+.tnb a:focus {
+	color:#e60012;
+}
+
+.h_quick2 {
+	float:right;
+	margin-top:27px;
+	width:280px;
+	height:38px;
+	padding:0 7px;
+	line-height:38px;
+	border-radius:38px;
+	font-size:13px;
+	border:1px solid #cdcdcd;
+	text-align:center;
+	font-family:'Open Sans', sans-serif;
+}
+.tnb2 {
+	overflow:hidden;
+}
+.tnb2 li {
+	float:left;
+	width: 25%;
+	background:url("/images/epc/edi/srm/common/vline.gif") no-repeat left center;
+}
+.tnb2 li:first-child {
+	background:none;
+}
+.tnb2 a {
+	color:#888;
+}
+.tnb2 a:hover,
+.tnb2 a:focus {
+	color:#e60012;
+}
+
+/* footer */
+#footer a {color:#aaa;}
+#footer a:hover,
+#footer a:focus {color:#e60012;}
+.f_info {overflow:hidden;}
+.f_info li {float:left;}
+.f_info span {margin:0 5px;}
+#footer * {font-family:'Open Sans','nanum square', sans-serif;}
+#footer strong {font-weight:600;}
+
+/* header in main */
+.main_wrap #header {
+	position:absolute;
+	left:0; top:0; right:0;
+}
+/* footer in main */
+.main_wrap #footer {position:absolute; left:0; bottom:0; }
+.main_wrap #footer * {color:#fff;}
+.main_wrap #footer a:hover,
+.main_wrap #footer a:focus {color:#e60012;}

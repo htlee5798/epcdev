@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmcom0004">
+    <typeAlias alias="pscmcom0004VO" type="com.lottemart.epc.common.model.PSCMCOM0004VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <resultMap class="com.lottemart.epc.common.model.PSCMCOM0004VO" id="pscmcom0004VO">
+        <result property="num"           column="NUM"             />
+        <result property="categoryId"    column="CATEGORY_ID"     />
+        <result property="categoryNm"    column="CATEGORY_NM"     />
+        <result property="stdistExuseYN" column="STDIST_EXUSE_YN" />
+        <result property="startDate"     column="START_DATE"      />
+        <result property="endDate"       column="END_DATE"        />
+    </resultMap>
+
+
+	<!--  20250414 -->
+	<resultMap id="selectCategoryInListMap" 	class="dataMap">
+		<result column="CATEGORY_ID" property="CATEGORY_ID" /> 
+		<result column="CATEGORY_NM" property="CATEGORY_NM" /> 
+		<result column="DISP_YN" property="DISP_YN" />
+	</resultMap>
+	<select id="selectCategoryInList" resultMap="selectCategoryInListMap">
+        /* pscmcom0004.selectCategoryInList */
+ 
+          SELECT CATEGORY_ID
+                    ,(
+					  SELECT CONCAT(MAX(CASE DEPTH WHEN '2' THEN case B.CATEGORY_NM when '유아/아동/완구' then '유아/아동' else B.CATEGORY_NM end ELSE '' END) ,
+					  			  CASE WHEN MAX(CASE DEPTH WHEN '3' THEN B.CATEGORY_NM END) IS NULL THEN '' ELSE '/' END ,
+					              MAX(CASE DEPTH WHEN '3' THEN case B.CATEGORY_NM when '유아/아동/완구' then '유아/아동' else B.CATEGORY_NM end ELSE '' END) ,
+					              CASE WHEN MAX(CASE DEPTH WHEN '4' THEN B.CATEGORY_NM END) IS NULL THEN '' ELSE '/' END ,
+					              MAX(CASE DEPTH WHEN '4' THEN case B.CATEGORY_NM when '유아/아동/완구' then '유아/아동' else B.CATEGORY_NM end ELSE '' END))
+					     FROM TCA_CATEGORY B
+					     START WITH CATEGORY_ID = CT.CATEGORY_ID
+       			   CONNECT BY PRIOR UP_CATEGORY_ID = CATEGORY_ID
+				     ) AS FULL_CATEGORY_NM
+                    , CASE CATEGORY_NM WHEN '유아/아동/완구' THEN '유아/아동' ELSE CATEGORY_NM END AS CATEGORY_NM
+                    , CASE DISP_YN WHEN 'Y' THEN '전시' WHEN 'N' THEN '미전시' ELSE DISP_YN END AS DISP_YN
+            FROM TCA_CATEGORY CT
+           WHERE 1=1
+           <iterate prepend="AND CATEGORY_ID IN " property="categoryIdArr" open="(" close=")" conjunction=",">
+           	    #categoryIdArr[]#
+           </iterate>
+           ORDER BY CATEGORY_ID
+            
+    </select>
+
+	<!--  20250414 -->
+	<resultMap id="selectCategoryListDepth2Map" 	class="dataMap">
+		<result column="CATEGORY_ID" property="CATEGORY_ID" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="CATEGORY_NM" property="CATEGORY_NM" /> <!-- 변형... SQLINES DEMO *** -->
+	</resultMap>
+
+
+    <select id="selectCategoryListDepth2" resultMap="selectCategoryListDepth2Map">
+        /* PBOPCAT0017.selectCategoryTypeList */
+ 
+          SELECT
+            CATEGORY_ID
+          , case CATEGORY_NM when '유아/아동/완구' then '유아/아동' else CATEGORY_NM end as CATEGORY_NM
+        FROM
+            TCA_CATEGORY CT
+        WHERE 1=1
+        AND(
+            (CATEGORY_TYPE_CD = '01' AND DEPTH = 2 )
+        or (CATEGORY_TYPE_CD = '11' AND DEPTH = 1 ))
+        AND DISP_YN='Y'
+         ORDER BY
+            category_id
+            
+    </select>
+
+    <select id="selectCategoryList20120702BAK" resultMap="pscmcom0004VO">
+        /* pscmcom0004.selectCategoryList20120702BAK */
+        SELECT
+            ROWNUM  NUM
+          , v.CATEGORY_ID
+          , v.CATEGORY_NM
+          , v.CATEGORY_TYPE_CD
+          , ec.CD_NM AS CATEGORY_TYPE_NM
+          , v.DEPTH
+          , v.STDIST_EXUSE_YN
+          , SUBSTR(START_DATE, 1, 4) || '-' ||
+            SUBSTR(START_DATE, 5, 2) || '-' ||
+            SUBSTR(START_DATE, 7, 2) AS START_DATE
+          , SUBSTR(END_DATE, 1, 4) || '-' ||
+            SUBSTR(END_DATE, 5, 2) || '-' ||
+            SUBSTR(END_DATE, 7, 2) AS END_DATE
+        FROM
+        (
+            SELECT
+                CATEGORY_ID
+              , CATEGORY_NM
+              , CATEGORY_TYPE_CD
+              , DEPTH
+              , STDIST_EXUSE_YN
+              , SUBSTR(START_DATE, 1, 8) AS START_DATE
+              , SUBSTR(END_DATE,   1, 8) AS END_DATE
+            FROM
+                TCA_CATEGORY a
+            WHERE
+                CATEGORY_TYPE_CD    = #categoryTypeCd#
+            START WITH
+                UP_CATEGORY_ID = 'root'
+            CONNECT BY
+                PRIOR CATEGORY_ID = UP_CATEGORY_ID
+            ORDER SIBLINGS BY
+                ORDER_SEQ
+        ) v
+        , TET_CODE ec
+        WHERE
+            v.CATEGORY_TYPE_CD = ec.MINOR_CD
+        AND ec.MAJOR_CD        = 'SM007'
+        <isNotEmpty property="categoryIdDepth2">
+        AND v.CATEGORY_ID LIKE #categoryIdDepth2#  || '%'
+        </isNotEmpty>
+    </select>
+  <select id="selectCategoryList" resultMap="pscmcom0004VO">
+        /* pscmcom0004.selectCategoryList */
+        SELECT
+            ROWNUM  NUM
+          , v.CATEGORY_ID
+          , v.CATEGORY_NM
+          , v.CATEGORY_TYPE_CD
+          , ec.CD_NM AS CATEGORY_TYPE_NM
+          , v.DEPTH
+          , v.STDIST_EXUSE_YN
+          , SUBSTR(START_DATE, 1, 4) || '-' ||
+            SUBSTR(START_DATE, 5, 2) || '-' ||
+            SUBSTR(START_DATE, 7, 2) AS START_DATE
+          , SUBSTR(END_DATE, 1, 4) || '-' ||
+            SUBSTR(END_DATE, 5, 2) || '-' ||
+            SUBSTR(END_DATE, 7, 2) AS END_DATE
+        FROM
+        (
+            SELECT
+                CATEGORY_ID
+              , CATEGORY_NM
+              , CATEGORY_TYPE_CD
+              , DEPTH
+              , STDIST_EXUSE_YN
+              , SUBSTR(START_DATE, 1, 8) AS START_DATE
+              , SUBSTR(END_DATE,   1, 8) AS END_DATE
+            FROM TCA_CATEGORY a
+            WHERE CATEGORY_TYPE_CD  in ('01','11') 
+            AND A.DISP_YN ='Y'
+            START WITH UP_CATEGORY_ID = 'root'
+            CONNECT BY PRIOR CATEGORY_ID = UP_CATEGORY_ID
+            ORDER SIBLINGS BY ORDER_SEQ
+        ) v
+        , TET_CODE ec
+        WHERE  v.CATEGORY_TYPE_CD = ec.MINOR_CD
+        AND ec.MAJOR_CD        = 'SM007'
+        and    v.CATEGORY_ID not like 'C0010005%'
+        and    v.CATEGORY_ID not like 'C00100030006%'
+		and    v.CATEGORY_ID not like 'C00100030007%'
+		and    v.CATEGORY_ID not like 'C00100030008%'
+		and    v.CATEGORY_ID not like 'C00100030009%'
+		and    v.CATEGORY_ID not like 'C00100030010%'
+		and    v.CATEGORY_ID not like 'C00100030011%'
+		<isNotEmpty property="categoryIdDepth2">
+        AND v.CATEGORY_ID LIKE #categoryIdDepth2#  || '%'
+        </isNotEmpty>
+    </select>
+    
+    
+    
+    
+    <select id="selectVendorAddrList" resultClass="dataMap">
+    	/* pscmcom0004.selectVendorAddrList */
+    	SELECT ADDR_1_NM
+    	           ,ADDR_2_NM
+    	           ,ZIP_CD
+    	           ,CELL_NO
+    	           ,ADDR_SEQ
+    	           ,ADDR_KIND_CD
+    	  FROM TVE_VENDOR_ADDR_INFO
+    	WHERE VENDOR_ID = #vendorId#
+    	    AND ADDR_KIND_CD = '01'
+    	    AND USE_YN = 'Y'
+    	UNION ALL
+    	SELECT ADDR_1_NM
+    	           ,ADDR_2_NM
+    	           ,ZIP_CD
+    	           ,CELL_NO
+    	           ,ADDR_SEQ
+    	           ,ADDR_KIND_CD
+    	  FROM TVE_VENDOR_ADDR_INFO
+    	WHERE VENDOR_ID = #vendorId#
+    	    AND ADDR_KIND_CD = '02'
+    	    AND USE_YN = 'Y'
+    	UNION ALL
+    	SELECT ADDR_1_NM
+    	           ,ADDR_2_NM
+    	           ,ZIP_CD
+    	           ,CELL_NO
+    	           ,ADDR_SEQ
+    	           ,ADDR_KIND_CD
+    	  FROM TVE_VENDOR_ADDR_INFO
+    	WHERE VENDOR_ID = #vendorId#
+    	    AND ADDR_KIND_CD = '03'
+    	    AND USE_YN = 'Y'
+    </select>
+</sqlMap>

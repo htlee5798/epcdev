@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0010">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectComponentList"  resultClass="dataMap">
+	/*	PSCMPRD0010.selectComponentList	*/
+		SELECT *
+		 FROM (
+			        SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+					          , COUNT(*) OVER() TOTAL_COUNT
+					          , A.*   
+			         FROM (        
+			         			SELECT RANK()OVER(ORDER BY B.REG_DATE DESC) AS NUM
+			         			          , B.*
+			         			 FROM
+			         			          (
+						            		SELECT PROD_CD
+													  , PROD_NM
+													  , TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+													  , DISP_YN
+													  , APRV_YN
+													  , BUY_PRC
+													  , SELL_PRC
+													  , CURR_SELL_PRC
+													  , MALL_DIVN_CD
+													  , (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = TP.VENDOR_ID) AS VENDOR_NM
+													  , 'Image' AS IMG
+						            		 FROM TPR_PRODUCT TP
+						            	   WHERE ONLINE_PROD_TYPE_CD = '06'
+						            	   <isNotEmpty property="startDate" prepend="AND">
+										   		TO_CHAR(TP.REG_DATE,'YYYYMMDD') BETWEEN #startDate# AND #endDate# 
+										   </isNotEmpty>
+										   <isNotEmpty property="prodCd" prepend="AND">
+										   		PROD_CD LIKE #prodCd# || '%'
+										   </isNotEmpty>
+										   <isNotEmpty property="prodNm" prepend="AND">
+										   		PROD_NM LIKE '%' || #prodNm# || '%'
+										   </isNotEmpty>     
+										   <isNotEmpty property="vendorId" >
+										   	AND (0, VENDOR_ID )
+										   		<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+													(0,#vendorId[]#)
+												</iterate>
+										   </isNotEmpty>
+										   <isNotEmpty property="dispYn" prepend="AND">
+										   		DISP_YN = #dispYn#
+										   </isNotEmpty>
+										) B
+							   ) A
+				  )
+		WHERE PAGE = #currentPage#
+	</select>
+
+</sqlMap>

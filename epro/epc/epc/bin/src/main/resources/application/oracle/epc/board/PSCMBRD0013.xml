@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmbrd0013">
+    <typeAlias alias="pscmbrd0013VO" type="com.lottemart.epc.board.model.PSCMBRD0013VO" />
+    <typeAlias alias="pscmbrd0015VO" type="com.lottemart.epc.board.model.PSCMBRD0015VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectProductTotalCnt" resultClass="java.lang.Integer">
+    <![CDATA[
+    /* pscmbrd0013.selectProductTotalCnt 일반 상품평 조회 카운트 쿼리 */
+    SELECT COUNT(1) AS lec
+      FROM TBO_PRODUCT_RECOMM RE
+         , TPR_PRODUCT PR
+         , TOR_ORDER O
+     WHERE RE.PROD_CD    = PR.PROD_CD
+       AND RE.ORDER_ID   = O.ORDER_ID(+)
+       AND RE.DEPTH = '1'
+       AND RE.NTCE_DY BETWEEN #startDate# AND #endDate#
+       AND PR.VENDOR_ID IN
+    ]]>
+       <iterate property="vendorId" open="(" close=")" conjunction=","> #vendorId[]# /*협력업체코드*/ </iterate>
+       <isEmpty property="recommDivnSrch">AND RE.RECOMM_DIVN_CD IN ('01', '02') /* 구매상품평 */</isEmpty>
+       <isNotEmpty property="recommDivnSrch">AND RE.RECOMM_DIVN_CD = #recommDivnSrch#</isNotEmpty>
+       <isNotEmpty property="userSrchNm">
+       <isEqual property="userSrch" compareValue="1">AND RE.MEMBER_NM LIKE '%'||#userSrchNm#||'%'</isEqual>
+       <isEqual property="userSrch" compareValue="3">AND RE.RECOMM_SEQ LIKE '%'||#userSrchNm#||'%'</isEqual>
+       <isEqual property="userSrch" compareValue="4">AND RE.TITLE LIKE '%'||#userSrchNm#||'%'</isEqual>
+       </isNotEmpty>
+       <isNotEmpty property="prodSrchNm">
+       <isEqual property="prodSrch" compareValue="1">AND PR.PROD_NM LIKE #prodSrchNm#||'%'</isEqual>
+       <isEqual property="prodSrch" compareValue="2">AND RE.PROD_CD LIKE #prodSrchNm#||'%'</isEqual>
+       </isNotEmpty>
+       <isNotEmpty property="delYnSrch">AND NVL(RE.DEL_YN,'N') = #delYnSrch#</isNotEmpty>
+       <isNotEmpty property="exlnSltSrch">AND NVL(RE.EXLN_SLT_YN,'N') = #exlnSltSrch#</isNotEmpty>
+       <!-- mallDivnCd 몰구분(00001:롯데마트몰, 00002:토이저러스몰) 추가 -->
+       <isNotEmpty property="mallDivnCd">AND PR.MALL_DIVN_CD = #mallDivnCd#</isNotEmpty>
+    </select>
+
+    <resultMap id="selectProductListMap" class="pscmbrd0013VO">
+        <result column="num"            property="num" />
+        <result column="recommSeq"      property="recommSeq" />
+        <result column="prodCd"         property="prodCd" />
+        <result column="prodName"       property="prodName" />
+        <result column="title"          property="title" />
+        <result column="memberName"     property="memberName" />
+        <result column="ntceDy"         property="ntceDy" />
+        <result column="delYN"          property="delYN" />
+        <result column="STR_NM"         property="STR_NM" />
+        <result column="drvNo"          property="drvNo" />
+        <result column="orderId"        property="orderId" />
+        <result column="pickerNm"       property="pickerNm" />
+        <result column="item1"          property="item1" />
+        <result column="item2"          property="item2" />
+        <result column="item3"          property="item3" />
+        <result column="mainDpSeq"      property="mainDpSeq" /><!--2014.10.29 박지혜 추가  -->
+        <result column="mallDivnCd"     property="mallDivnCd" /><!--2014.10.29 박지혜 추가  -->
+        <result column="atchFileYN"     property="atchFileYN" /><!--2014.11.22 박지혜 추가  -->
+        <result column="exlnSltYn"      property="exlnSltYn" /><!--2016.05.31 추가  -->
+        <result column="vendorNm"       property="vendorNm" /><!--2016.05.31 추가  -->
+        <result column="recommPnt"      property="recommPnt" />
+        <result column="recommDivnCd"   property="recommDivnCd" /><!--2016.05.31 추가  -->
+        <result column="recommContent"  property="recommContent" jdbcType="CLOB" javaType="String" />
+        <result column="regDate"        property="regDate" />
+    </resultMap>
+		
+	<select id="selectProductSearch" resultMap="selectProductListMap">
+	<![CDATA[
+	/* pscmbrd0013.selectProductSearch 일반 상품평 조회 쿼리 */
+	SELECT *
+	  FROM ( SELECT RANK()OVER(ORDER BY RECOMM_SEQ DESC) AS  num
+			  , RE.RECOMM_SEQ AS recommSeq
+			  , RE.PROD_CD AS  prodCd
+			  , PR.PROD_NM AS  prodName
+			  , RE.TITLE AS  title
+			  , FN_MASKING_RTN(RE.MEMBER_NM,'8') AS  memberName 
+			  , SUBSTR(RE.NTCE_DY, 0, 4) ||'-'|| SUBSTR(RE.NTCE_DY, 5, 2) ||'-'|| SUBSTR(RE.NTCE_DY, 7, 2) AS  ntceDy
+			  , RE.DEL_YN AS  delYN
+			  , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) AS STR_NM /*20120409 추가*/
+			  , RE.RECOMM_CONTENT AS recommContent
+			  , (SELECT C.DRV_NM
+			       FROM TDP_DELI_PLAN_RSLT A,
+			     	  	TDE_DELI_MST B,
+			     	  	TDP_DELI_VHCL_MST C
+			      WHERE A.DELI_NO = B.DELI_NO
+			        AND A.DRV_NO = C.DRV_NO
+			        AND B.ORDER_ID = O.ORDER_ID
+			        LIMIT 1
+			    ) as drvNo
+			  , O.ORDER_ID AS orderId
+			  , (select max(admin_nm)
+			       from tad_admin
+			      where admin_id = (select max(picker_id)
+			    				      from tde_deli_item 
+			                         where order_id in (select first_order_id
+			                       					      from tde_deli_mst 
+			                                             where first_order_id=O.order_id ) )
+				) pickerNm
+			  , ITM_1_GRED AS item1
+			  , ITM_2_GRED AS item2
+			  , ITM_3_GRED AS item3
+			  , RE.RECOMM_RECOM_PNT AS  recommPnt 
+			  , RE.MAIN_DP_SEQ AS mainDpSeq	/*2014.10.29 박지혜 추가*/
+			  , PR.MALL_DIVN_CD AS mallDivnCd	/*2014.09.22 박지혜 추가*/
+			  , NVL((SELECT TN.USE_AT FROM TB_NFILE TN WHERE TN.ATCH_FILE_ID = RE.ATCH_FILE_ID),'N') AS atchFileYN /*2014.11.22 박지혜 추가*/
+			  , NVL(RE.EXLN_SLT_YN,'N') AS exlnSltYn   /*2016.05.31 추가*/
+			  , (SELECT VENDOR_NM
+			       FROM TVE_VENDOR
+             	  WHERE VENDOR_ID = ( SELECT /*+ index(PI  IX_PR_STORE_ITEM_PRICE_02 )  */ 
+                    		  			     DISTINCT VENDOR_ID
+                    		  		  	  FROM 	TPR_STORE_ITEM_PRICE PI
+			 							 WHERE 	PR.PROD_CD   = PI.PROD_CD
+ 		  								   AND 	PI.VENDOR_ID = PR.VENDOR_ID )
+				) AS vendorNm
+         	  , RE.RECOMM_DIVN_CD AS recommDivnCd   /*2016.05.31 추가*/
+			  , TO_CHAR(RE.REG_DATE,'YYYY-MM-DD') AS regDate
+		  FROM	TBO_PRODUCT_RECOMM RE,
+				TPR_PRODUCT PR,
+				TOR_ORDER O /*20120409 추가*/
+		 WHERE	RE.PROD_CD    = PR.PROD_CD
+		   AND RE.ORDER_ID = O.ORDER_ID(+) /*20120409 추가*/
+		   AND RE.DEPTH = '1'
+		   AND RE.NTCE_DY BETWEEN #startDate# AND #endDate#
+		   AND PR.VENDOR_ID IN
+	]]>
+	<iterate property="vendorId" open="(" close=")" conjunction=",">
+		#vendorId[]# -- 협력업체코드
+	</iterate>
+	<isEmpty property="recommDivnSrch">
+		AND	RE.RECOMM_DIVN_CD IN ('01', '02') /* 구매상품평 */
+	</isEmpty>
+	<isNotEmpty property="recommDivnSrch">
+		AND	RE.RECOMM_DIVN_CD = #recommDivnSrch#
+	</isNotEmpty>
+	<isNotEmpty property="userSrchNm">
+		<isEqual property="userSrch" compareValue="1">
+			AND	RE.MEMBER_NM LIKE '%'||#userSrchNm#||'%'
+		</isEqual>
+		<isEqual property="userSrch" compareValue="3">
+			AND	RE.RECOMM_SEQ LIKE '%'||#userSrchNm#||'%'
+		</isEqual>
+		<isEqual property="userSrch" compareValue="4">
+			AND	RE.TITLE LIKE '%'||#userSrchNm#||'%'
+		</isEqual>
+	</isNotEmpty>
+	<isNotEmpty property="prodSrchNm">
+		<isEqual property="prodSrch" compareValue="1">
+			AND	PR.PROD_NM LIKE #prodSrchNm#||'%'
+		</isEqual>
+		<isEqual property="prodSrch" compareValue="2">
+			AND	RE.PROD_CD LIKE #prodSrchNm#||'%'
+		</isEqual>
+	</isNotEmpty>
+	<isNotEmpty property="delYnSrch">
+		AND	NVL(RE.DEL_YN,'N') = #delYnSrch#
+	</isNotEmpty>
+	<isNotEmpty property="exlnSltSrch">
+		AND	NVL(RE.EXLN_SLT_YN,'N') = #exlnSltSrch#
+	</isNotEmpty>
+	<!-- mallDivnCd 몰구분(00001:롯데마트몰, 00002:토이저러스몰) 추가 -->
+	<isNotEmpty property="mallDivnCd">
+		AND PR.MALL_DIVN_CD = #mallDivnCd#
+	</isNotEmpty>
+	)
+	WHERE num BETWEEN #startRow# AND #endRow#
+    </select>
+    
+	<select id="selectProductView" resultClass="pscmbrd0013VO">
+		/* pscmbrd0013.selectProductView  2014.09.30 박지혜 수정*/
+		SELECT
+	             RE.RECOMM_SEQ AS  recommSeq
+	            ,RE.PROD_CD AS  prodCd
+	            ,PR.PROD_NM AS  prodName
+	            ,RE.MEMBER_NM AS  memberName
+	            ,RE.VIEW_CNT AS  viewCnt
+	            ,RE.DEL_YN AS  delYN
+	            ,SUBSTR(RE.NTCE_DY, 0, 4) ||'-'|| SUBSTR(RE.NTCE_DY, 5, 2) ||'-'|| SUBSTR(RE.NTCE_DY, 7, 2) AS  ntceDy
+	            ,RE.RECOMM_RECOM_PNT AS  recommPnt
+	            ,RE.ITM_1_GRED AS  item1
+	            ,RE.ITM_2_GRED AS  item2
+	            ,RE.ITM_3_GRED AS  item3
+	            ,RE.ITM_4_GRED AS  item4
+	            ,RE.TITLE AS  title
+	            ,RE.RECOMM_CONTENT AS  recommContent
+	            ,(SELECT RECOMM_CONTENT FROM TBO_PRODUCT_RECOMM AD WHERE UP_RECOMM_SEQ=#recommSeq#) AS  adminMemo
+	            ,RE.MAIN_DP_SEQ AS mainDpSeq	/*2014.10.29 박지혜 추가*/
+	            ,RE.ATCH_FILE_ID AS atchFileId  /*2014.09.30 박지혜 추가*/
+	            ,PR.MALL_DIVN_CD AS mallDivnCd	/*2014.10.29 박지혜 추가*/
+	            ,NVL(RE.EXLN_SLT_YN,'N') AS exlnSltYn	/*2016.05.31추가*/
+	            ,RE.RECOMM_DIVN_CD AS recommDivnCd
+                ,(SELECT FILE_STRE_COURS || '/' || STRE_FILE_NM || '.' || FILE_EXTSN  FROM TB_NFILE A, TB_FILEDETAIL B 
+                   WHERE A.ATCH_FILE_ID = B.ATCH_FILE_ID
+                     AND A.ATCH_FILE_ID = RE.ATCH_FILE_ID
+                     AND A.USE_AT = 'Y'    
+                     LIMIT 1) AS fileUrl
+	    FROM    TBO_PRODUCT_RECOMM RE,
+	            TPR_PRODUCT PR
+	    WHERE   RE.PROD_CD   = PR.PROD_CD
+	    AND     RE.RECOMM_SEQ   = #recommSeq#
+	</select>
+
+	<update id="updateExlnSltYn">
+		/* pscmbrd0013.updateExlnSltYn 2016.05.31 수정*/
+		UPDATE TBO_PRODUCT_RECOMM
+    	   SET EXLN_SLT_YN = #exlnSltYn#
+    	      ,MOD_DATE = CURRENT_TIMESTAMP(0)
+    	      ,MOD_ID = #modId#
+    	WHERE  RECOMM_SEQ = #recommSeq#
+	</update>
+
+	<update id="updateProduct">
+		/* pscmbrd0003.updateProduct 2014.10.29 박지혜 수정*/
+		UPDATE TBO_PRODUCT_RECOMM
+    	   SET DEL_YN = #delYN#
+    	      ,MAIN_DP_SEQ  = #mainDpSeq#
+    	      ,EXLN_SLT_YN = #exlnSltYn#
+    	      ,MOD_DATE = CURRENT_TIMESTAMP(0)
+    	      ,MOD_ID = #modId#
+    	WHERE  RECOMM_SEQ = #recommSeq#
+	</update>
+
+	<select id="selectPscmbrd0013Export" parameterClass="java.util.Map" resultMap="selectProductListMap">
+		/* pscmbrd0013.selectPscmbrd0013Export 일반 상품평 엑셀 쿼리 */
+		<![CDATA[
+			SELECT  RANK()OVER(ORDER BY RECOMM_SEQ DESC) AS  num
+				  , RE.RECOMM_SEQ AS recommSeq
+				  , RE.PROD_CD AS  prodCd
+				  , PR.PROD_NM AS  prodName
+				  , RE.TITLE AS  title
+				  , RE.MEMBER_NM AS  memberName
+				  , SUBSTR(RE.NTCE_DY, 0, 4) ||'-'|| SUBSTR(RE.NTCE_DY, 5, 2) ||'-'|| SUBSTR(RE.NTCE_DY, 7, 2) AS  ntceDy
+				  , RE.DEL_YN AS  delYN
+				  , RE.MEMBER_NO AS memberNo
+				  , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) AS STR_NM /*20120409 추가*/
+				  , RE.RECOMM_CONTENT AS recommContent
+				  , (SELECT C.DRV_NM
+     				   FROM TDP_DELI_PLAN_RSLT A,
+     	  					TDE_DELI_MST B,
+     	  					TDP_DELI_VHCL_MST C
+    				  WHERE A.DELI_NO = B.DELI_NO
+				        AND A.DRV_NO = C.DRV_NO
+				        AND B.ORDER_ID = O.ORDER_ID
+				        LIMIT 1
+					) as drvNo
+				  , O.ORDER_ID AS orderId
+				  , (select max(admin_nm)
+				       from tad_admin
+				      where admin_id = (select max(picker_id)
+				    				      from tde_deli_item 
+				                         where order_id in (select first_order_id
+				                       					      from tde_deli_mst 
+				                                             where first_order_id=O.order_id
+				                                           )
+									   )
+					) pickerNm
+				  , ITM_1_GRED AS item1
+				  , ITM_2_GRED AS item2
+				  , ITM_3_GRED AS item3
+				  , RE.MAIN_DP_SEQ AS mainDpSeq	/*2014.10.29 박지혜 추가*/
+				  , PR.MALL_DIVN_CD AS mallDivnCd	/*2014.09.22 박지혜 추가*/
+				  , (SELECT TN.USE_AT FROM TB_NFILE TN WHERE TN.ATCH_FILE_ID = RE.ATCH_FILE_ID)  AS atchFileYN /*2014.11.22 박지혜 추가*/
+				  , DECODE(NVL(RE.EXLN_SLT_YN,'N'),'N','미선정','선정') AS exlnSltYn
+				  , (SELECT VENDOR_NM
+					   FROM TVE_VENDOR
+					  WHERE VENDOR_ID = (
+                							SELECT 	/*+ index(PI  IX_PR_STORE_ITEM_PRICE_02 )  */ 
+                		  			   				DISTINCT VENDOR_ID
+                		  		  			  FROM 	TPR_STORE_ITEM_PRICE PI
+											 WHERE 	PR.PROD_CD   = PI.PROD_CD
+ 			   								   AND 	PI.VENDOR_ID = PR.VENDOR_ID
+     					  				)
+					) AS vendorNm
+				  , DECODE(RE.RECOMM_DIVN_CD,'01','일반','02','포토') AS recommDivnCd
+				  /* 엑셀다운로드 오류가 발생하여 추가 */
+				  , RE.RECOMM_RECOM_PNT AS  recommPnt
+				  , TO_CHAR(RE.REG_DATE,'YYYY-MM-DD') AS regDate
+			  FROM	TBO_PRODUCT_RECOMM RE,   
+					TPR_PRODUCT PR,  
+					TOR_ORDER O
+			 WHERE	1=1
+		]]>
+			   AND	RE.PROD_CD    = PR.PROD_CD
+			   AND	RE.ORDER_ID   = O.ORDER_ID(+) /*20120409 추가*/
+			   AND	RE.DEPTH = '1'
+			   AND	RE.NTCE_DY BETWEEN #startDate# AND #endDate#
+			   AND	PR.VENDOR_ID IN 	
+			<iterate property="vendorId" open="(" close=")" conjunction=",">
+				#vendorId[]# -- 협력업체코드
+			</iterate>
+			<isEmpty property="recommDivnSrch">
+				AND	RE.RECOMM_DIVN_CD IN ('01', '02') /* 구매상품평 */
+			</isEmpty>
+			<isNotEmpty property="recommDivnSrch">
+				AND	RE.RECOMM_DIVN_CD = #recommDivnSrch#
+			</isNotEmpty>
+			<isNotEmpty property="userSrchNm">
+				<isEqual property="userSrch" compareValue="1">
+					AND	RE.MEMBER_NM LIKE '%'||#userSrchNm#||'%'
+				</isEqual>
+				<isEqual property="userSrch" compareValue="3">
+					AND	RE.RECOMM_SEQ LIKE '%'||#userSrchNm#||'%'
+				</isEqual>
+				<isEqual property="userSrch" compareValue="4">
+					AND	RE.TITLE LIKE '%'||#userSrchNm#||'%'
+				</isEqual>
+			</isNotEmpty>		
+			<isNotEmpty property="prodSrchNm">
+				<isEqual property="prodSrch" compareValue="1">
+					AND	PR.PROD_NM LIKE #prodSrchNm#||'%'
+				</isEqual>
+				<isEqual property="prodSrch" compareValue="2">
+					AND	RE.PROD_CD LIKE #prodSrchNm#||'%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="delYnSrch">
+				AND	NVL(RE.DEL_YN,'N') = #delYnSrch#
+			</isNotEmpty>
+			<isNotEmpty property="exlnSltSrch">
+				AND	NVL(RE.EXLN_SLT_YN,'N') = #exlnSltSrch#
+			</isNotEmpty>
+			<!-- mallDivnCd 몰구분(00001:롯데마트몰, 00002:토이저러스몰) 추가 -->
+			<isNotEmpty property="mallDivnCd">
+				AND PR.MALL_DIVN_CD = #mallDivnCd#
+			</isNotEmpty>
+	</select>
+
+	<select id="selectProdPhotoView" resultClass="dataMap">
+	/* pscmbrd0013.selectProdPhotoView  */
+		SELECT FILE_STRE_COURS || '/' || STRE_FILE_NM || '.' || FILE_EXTSN  AS fileUrl
+		  FROM TB_NFILE a, TB_FILEDETAIL b
+		 WHERE a.ATCH_FILE_ID = #atchFileId#
+		   AND a.ATCH_FILE_ID = b.ATCH_FILE_ID
+		   AND a.USE_AT = 'Y'
+		   LIMIT 1
+    </select>
+
+	<select id="selectExprTotalCnt" resultClass="java.lang.Integer">
+    	<![CDATA[
+		/* pscmbrd0013.selectExprTotalCnt 체험형 상품평 조회 카운트 쿼리 */
+		SELECT	COUNT(1) AS  COUNT
+		  FROM 	TBO_PRODUCT_RECOMM RE,
+               	TPR_PRODUCT PR,
+               	TOR_ORDER O     
+         WHERE  RE.PROD_CD    = PR.PROD_CD
+           AND  RE.ORDER_ID = O.ORDER_ID(+)
+           AND  RE.DEPTH='1'
+		   AND  RE.NTCE_DY BETWEEN #startDate# AND #endDate#
+		   AND  PR.VENDOR_ID IN
+	    ]]>
+	    <iterate property="vendorId" open="(" close=")" conjunction=",">
+			#vendorId[]# -- 협력업체코드
+    	</iterate>
+    	<isEmpty property="recommDivnSrch">
+    		AND	RE.RECOMM_DIVN_CD IN ('03', '04') /* 체험상품평 */
+    	</isEmpty>
+        <isNotEmpty property="recommDivnSrch">
+	        AND	RE.RECOMM_DIVN_CD = #recommDivnSrch#
+		</isNotEmpty>
+        <isNotEmpty property="recommSeq">
+			AND RE.RECOMM_SEQ LIKE '%'||#recommSeq#
+		</isNotEmpty>		
+        <isNotEmpty property="prodSrchNm">
+	        <isEqual property="prodSrch" compareValue="1">
+	        	AND	PR.PROD_NM LIKE #prodSrchNm#||'%'
+			</isEqual>
+	        <isEqual property="prodSrch" compareValue="2">
+	        	AND	RE.PROD_CD LIKE #prodSrchNm#||'%'
+			</isEqual>
+		</isNotEmpty>
+        <isNotEmpty property="delYnSrch">
+			AND	NVL(RE.DEL_YN,'N') = #delYnSrch#
+		</isNotEmpty>
+		<!-- mallDivnCd 몰구분(00001:롯데마트몰, 00002:토이저러스몰) 추가 -->
+		<isNotEmpty property="mallDivnCd">
+        	AND PR.MALL_DIVN_CD = #mallDivnCd#
+        </isNotEmpty>
+    </select>
+    
+    <select id="selectExprSearch" resultClass="pscmbrd0013VO">
+    	<![CDATA[
+   		/* pscmbrd0013.selectExprSearch 체험형 상품평 조회 쿼리 */
+   		SELECT * FROM
+		(
+		    SELECT  RANK()OVER(ORDER BY RECOMM_SEQ DESC) AS  num
+		            , RE.RECOMM_SEQ AS recommSeq
+                    , RE.PROD_CD AS  prodCd
+                    , PR.PROD_NM AS  prodName
+                    , RE.TITLE AS  title       
+                    , FN_MASKING_RTN(RE.MEMBER_NM,'8') AS  memberName 
+                    , SUBSTR(RE.NTCE_DY, 0, 4) ||'-'|| SUBSTR(RE.NTCE_DY, 5, 2) ||'-'|| SUBSTR(RE.NTCE_DY, 7, 2) AS  ntceDy
+                    , RE.DEL_YN AS  delYN
+                    , FN_MASKING_RTN(RE.MEMBER_NO, '1') AS memberNo
+                    , (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) AS STR_NM 
+                    , RE.RECOMM_CONTENT AS recommContent
+                    , (SELECT C.DRV_NM
+                         FROM TDP_DELI_PLAN_RSLT A,
+                         	  TDE_DELI_MST B,
+                         	  TDP_DELI_VHCL_MST C
+					    WHERE A.DELI_NO = B.DELI_NO
+                          AND A.DRV_NO = C.DRV_NO
+                          AND B.ORDER_ID = O.ORDER_ID
+                          LIMIT 1
+                      ) as  drvNo
+                    , O.ORDER_ID AS orderId
+                    , (select max(admin_nm)
+                         from tad_admin
+                        where admin_id = (select max(picker_id)
+                        				    from tde_deli_item 
+                                           where order_id in (select first_order_id
+                                           					    from tde_deli_mst 
+                                                               where first_order_id=O.order_id ) )
+					  ) pickerNm
+					, RE.RECOMM_RECOM_PNT AS  recommPnt 
+                    , NVL((SELECT TN.USE_AT FROM TB_NFILE TN WHERE TN.ATCH_FILE_ID = RE.ATCH_FILE_ID),'N') AS atchFileYN 
+                    , RE.MAIN_DP_SEQ AS mainDpSeq	
+                    , PR.MALL_DIVN_CD AS mallDivnCd	
+                    , NVL(RE.EXLN_SLT_YN,'N') AS exlnSltYn
+                    , (SELECT VENDOR_NM
+                         FROM TVE_VENDOR
+                        WHERE VENDOR_ID = (SELECT /*+ index(PI  IX_PR_STORE_ITEM_PRICE_02 )  */ 
+                               		  			   DISTINCT VENDOR_ID
+                               		  		  FROM TPR_STORE_ITEM_PRICE PI
+							    			 WHERE PR.PROD_CD   = PI.PROD_CD
+				        		  			   AND PI.VENDOR_ID = PR.VENDOR_ID )
+					  ) AS vendorNm
+                    , RE.RECOMM_DIVN_CD AS recommDivnCd   /*2016.05.31 추가*/
+					, TO_CHAR(RE.REG_DATE,'YYYY-MM-DD') AS regDate
+          FROM   	TBO_PRODUCT_RECOMM RE,
+               		TPR_PRODUCT PR,
+               		TOR_ORDER O
+         WHERE  	RE.PROD_CD    = PR.PROD_CD
+           AND    	RE.ORDER_ID = O.ORDER_ID(+) 
+           AND    	RE.DEPTH='1'
+		   AND    	RE.NTCE_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		   AND    	PR.VENDOR_ID IN
+	    ]]>
+	    <iterate property="vendorId" open="(" close=")" conjunction=",">
+			#vendorId[]# -- 협력업체코드
+    	</iterate>
+        <isNotEmpty property="recommSeq">
+			AND	RE.RECOMM_SEQ LIKE '%'||#recommSeq#
+		</isNotEmpty>	
+    	<isEmpty property="recommDivnSrch">
+    		AND	RE.RECOMM_DIVN_CD IN ('03', '04') /* 체험상품평 */
+    	</isEmpty>
+         <isNotEmpty property="recommDivnSrch">
+	        AND	RE.RECOMM_DIVN_CD = #recommDivnSrch#
+		</isNotEmpty>		
+        <isNotEmpty property="prodSrchNm">
+	        <isEqual property="prodSrch" compareValue="1">
+	        	AND	PR.PROD_NM LIKE #prodSrchNm#||'%'
+			</isEqual>
+	        <isEqual property="prodSrch" compareValue="2">
+	        	AND	RE.PROD_CD LIKE #prodSrchNm#||'%'
+			</isEqual>
+		</isNotEmpty>
+        <isNotEmpty property="delYnSrch">
+			AND	NVL(RE.DEL_YN,'N') = #delYnSrch#
+		</isNotEmpty>
+		<!-- mallDivnCd 몰구분(00001:롯데마트몰, 00002:토이저러스몰) 추가 -->
+		<isNotEmpty property="mallDivnCd">
+        	AND PR.MALL_DIVN_CD = #mallDivnCd#
+        </isNotEmpty>
+		)	
+		WHERE num BETWEEN #startRow# AND #endRow#
+    </select>
+
+    <select id="selectExprView" resultClass="pscmbrd0013VO">
+    	/* pscmbrd0013.selectExprView */
+		SELECT
+	             RE.RECOMM_SEQ AS  recommSeq
+	            ,RE.PROD_CD AS  prodCd
+	            ,PR.PROD_NM AS  prodName
+	            ,RE.MEMBER_NM AS  memberName
+	            ,RE.VIEW_CNT AS  viewCnt
+	            ,RE.DEL_YN AS  delYN
+	            ,SUBSTR(RE.NTCE_DY, 0, 4) ||'-'|| SUBSTR(RE.NTCE_DY, 5, 2) ||'-'|| SUBSTR(RE.NTCE_DY, 7, 2) AS  ntceDy
+	            ,RE.RECOMM_RECOM_PNT AS  recommPnt 
+	            ,RE.ITM_1_GRED AS  item1
+	            ,RE.ITM_2_GRED AS  item2
+	            ,RE.ITM_3_GRED AS  item3
+	            ,RE.ITM_4_GRED AS  item4
+	            ,RE.TITLE AS  title
+	            ,RE.RECOMM_CONTENT AS  recommContent
+	            ,(SELECT RECOMM_CONTENT FROM TBO_PRODUCT_RECOMM AD WHERE UP_RECOMM_SEQ=#recommSeq#) AS  adminMemo
+	            ,RE.MAIN_DP_SEQ AS mainDpSeq	
+	            ,RE.ATCH_FILE_ID AS atchFileId  
+	            ,PR.MALL_DIVN_CD AS mallDivnCd	
+	            ,NVL(RE.EXLN_SLT_YN,'N') AS exlnSltYn	
+	            ,RE.RECOMM_DIVN_CD AS recommDivnCd
+                ,(SELECT FILE_STRE_COURS || '/' || STRE_FILE_NM || '.' || FILE_EXTSN  FROM TB_NFILE A, TB_FILEDETAIL B 
+                   WHERE A.ATCH_FILE_ID = B.ATCH_FILE_ID
+                     AND A.ATCH_FILE_ID = RE.ATCH_FILE_ID
+                     AND A.USE_AT = 'Y'
+                     LIMIT 1) AS fileUrl
+	    FROM    TBO_PRODUCT_RECOMM RE,
+	            TPR_PRODUCT PR
+	    WHERE   RE.PROD_CD   = PR.PROD_CD
+	    AND     RE.RECOMM_SEQ   = #recommSeq#
+    </select>
+
+    <update id="updateExprProd">
+    	/* pscmbrd0013.updateExprProd  */
+    	UPDATE TBO_SCAN_PRODUCT_REVIEW
+    		SET USE_YN = #useYn#
+    			,MOD_ID = #modId#
+    			,MOD_DT = CURRENT_TIMESTAMP(0)
+    	WHERE REVIEW_ID = #reviewId#
+    </update>
+
+    <select id="selectPscmbrd001302Export" resultClass="pscmbrd0013VO">
+       	/* pscmbrd0013.selectPscmbrd001302Export 체험형 상품평 엑셀 쿼리 */
+		SELECT  RANK()OVER(ORDER BY RECOMM_SEQ DESC) AS  num
+	            , RE.RECOMM_SEQ AS recommSeq
+				, RE.PROD_CD AS  prodCd
+				, PR.PROD_NM AS  prodName
+				, RE.TITLE AS  title
+				, FN_MASKING_RTN(RE.MEMBER_NM,'8') AS  memberName 
+				, SUBSTR(RE.NTCE_DY, 0, 4) ||'-'|| SUBSTR(RE.NTCE_DY, 5, 2) ||'-'|| SUBSTR(RE.NTCE_DY, 7, 2) AS  ntceDy
+				, RE.DEL_YN AS  delYN          
+				, FN_MASKING_RTN(RE.MEMBER_NO, '1') AS memberNo
+				, (SELECT STR_NM FROM TST_STORE WHERE STR_CD = O.STR_CD) AS STR_NM 
+				, RE.RECOMM_CONTENT AS recommContent
+                , (SELECT C.DRV_NM
+                     FROM TDP_DELI_PLAN_RSLT A,
+                     	  TDE_DELI_MST B,
+                     	  TDP_DELI_VHCL_MST C
+	    			WHERE A.DELI_NO = B.DELI_NO
+                      AND A.DRV_NO = C.DRV_NO
+                      AND B.ORDER_ID = O.ORDER_ID
+                      LIMIT 1
+				  ) as  drvNo
+				, O.ORDER_ID AS orderId
+				, (select max(admin_nm)
+                     from tad_admin
+                    where admin_id = (select max(picker_id)
+                    				    from tde_deli_item 
+                                       where order_id in (select first_order_id
+                                       					    from tde_deli_mst 
+                                                           where first_order_id=O.order_id ) )
+		  		  ) pickerNm
+				, RE.RECOMM_RECOM_PNT AS  recommPnt
+	   			, RE.MAIN_DP_SEQ AS mainDpSeq
+				, PR.MALL_DIVN_CD AS mallDivnCd
+				, NVL((SELECT TN.USE_AT FROM TB_NFILE TN WHERE TN.ATCH_FILE_ID = RE.ATCH_FILE_ID),'N') AS atchFileYN
+				, NVL(RE.EXLN_SLT_YN,'N') AS exlnSltYn
+				, (SELECT VENDOR_NM
+                     FROM TVE_VENDOR
+                    WHERE VENDOR_ID = ( SELECT /*+ index(PI  IX_PR_STORE_ITEM_PRICE_02 )  */ 
+                              		  		   DISTINCT VENDOR_ID
+                              		  	  FROM TPR_STORE_ITEM_PRICE PI
+						    			 WHERE PR.PROD_CD   = PI.PROD_CD
+			        		  			   AND PI.VENDOR_ID = PR.VENDOR_ID )
+				  ) AS vendorNm
+				, RE.RECOMM_DIVN_CD AS recommDivnCd
+				, TO_CHAR(RE.REG_DATE,'YYYY-MM-DD') AS regDate
+		  FROM 	TBO_PRODUCT_RECOMM RE,
+               	TPR_PRODUCT PR,
+               	TOR_ORDER O 
+		 WHERE  RE.PROD_CD    = PR.PROD_CD
+           AND	RE.ORDER_ID = O.ORDER_ID(+) 
+           AND	RE.DEPTH='1'
+		   AND	RE.NTCE_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+		   AND	PR.VENDOR_ID IN 	
+	    <iterate property="vendorId" open="(" close=")" conjunction=",">
+			#vendorId[]# -- 협력업체코드
+    	</iterate>
+        <isNotEmpty property="recommSeq">
+			AND	RE.RECOMM_SEQ LIKE '%'||#recommSeq#
+		</isNotEmpty>
+		<isEmpty property="recommDivnSrch">
+    		AND	RE.RECOMM_DIVN_CD IN ('03', '04') /* 체험상품평 */
+    	</isEmpty>
+         <isNotEmpty property="recommDivnSrch">
+			AND	RE.RECOMM_DIVN_CD = #recommDivnSrch#
+		</isNotEmpty>	
+		<isNotEmpty property="prodSrchNm">
+			<isEqual property="prodSrch" compareValue="1">
+				AND	PR.PROD_NM LIKE #prodSrchNm#||'%'
+			</isEqual>
+	        <isEqual property="prodSrch" compareValue="2">
+				AND	RE.PROD_CD LIKE #prodSrchNm#||'%'
+			</isEqual>
+		</isNotEmpty>
+        <isNotEmpty property="delYnSrch">
+			AND	NVL(RE.DEL_YN,'N') = #delYnSrch#
+		</isNotEmpty>
+		<!-- mallDivnCd 몰구분(00001:롯데마트몰, 00002:토이저러스몰) 추가 -->
+		<isNotEmpty property="mallDivnCd">
+        	AND PR.MALL_DIVN_CD = #mallDivnCd#
+        </isNotEmpty>
+    </select>
+
+</sqlMap>

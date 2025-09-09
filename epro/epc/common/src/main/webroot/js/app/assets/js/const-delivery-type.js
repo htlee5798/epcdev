@@ -1,0 +1,17 @@
+export const DELI_TYPE_RESERVE = "01";			// 근거리
+export const DELI_TYPE_MART_DELI = "02";			// 자사택배
+export const DELI_TYPE_NORMAL_PICKUP = "03";		// 매장픽업
+export const DELI_TYPE_VENDOR_DELI = "04";		// 업체택배
+export const DELI_TYPE_INTEGRATED = "05";			// 통합
+export const DELI_TYPE_INTEGRATED_GIFTMALL = "06";// 명절통합
+export const DELI_TYPE_INST_PICKUP = "07";		// 즉석조리픽업
+export const DELI_TYPE_IMPORT = "08";				// 해외
+export const DELI_TYPE_REGISTER_DELI = "09";		// 등기배송
+export const DELI_TYPE_NOT_DELI = "10";			// 무배송
+export const DELI_TYPE_ELEC = "11";				// 가전
+export const DELI_TYPE_COMBINE = "12";
+export const BDL_DELI_TYPE_CD_STORE = "01";	// 매장배송
+export const BDL_DELI_TYPE_CD_VENDOR = "02";	// 업체택배
+export const BDL_DELI_TYPE_CD_SMS = "03";	// 문자발송
+export const BDL_DELI_TYPE_CD_PARCEL = "07";	// 매장택배
+export const BDL_DELI_TYPE_CD_OVERSEA = "08";	// 구매대행상품(해외배송)

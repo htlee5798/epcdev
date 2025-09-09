@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSAL0000">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="pedmsal0000" type="com.lottemart.epc.edi.sale.model.PEDMSAL0000VO" />
+
+
+ 
+<resultMap id="pedmsal0000DayMap" class="pedmsal0000">
+	    <result property="stkDy"  	   column="STK_DY" />
+	    <result property="saleQty" 	   column="SALE_QTY" />
+	    <result property="saleAmt" 	   column="SALE_AMT" />
+</resultMap>
+ 
+<!-- 일자별 -->
+<select id="TSC_DAY-SELECT01" parameterClass="map" resultMap="pedmsal0000DayMap">
+				/* pedmsal0000.TSC_DAY-SELECT01 */
+	SELECT	
+	       
+	      	<isNotEmpty  property="storeVal" >
+				<isNotEmpty  property="productVal" > 
+					 /*+  index(TED_DY_STK IX_ED_DY_STK_05) */			 
+				</isNotEmpty>		 
+			</isNotEmpty> 
+			<isEmpty  property="productVal" >
+				<isEmpty  property="storeVal" >
+				  	/*+  index(TED_DY_STK IX_ED_DY_STK_03) */ 
+				</isEmpty>
+		   </isEmpty>	 
+	       <isNotEmpty  property="productVal" >		 
+			   	<isEmpty  property="storeVal" >
+				 	/*+  index(TED_DY_STK IX_ED_DY_STK_05) */ 
+	       		</isEmpty>			 
+	       </isNotEmpty>		 
+		   <isNotEmpty  property="storeVal" >
+  		   		<isEmpty  property="productVal" >
+			 		/*+  index(TED_DY_STK IX_ED_DY_STK_04) */ 
+		   		</isEmpty>
+         	</isNotEmpty>	    
+	             
+			TO_CHAR(TO_DATE(STK_DY,'yyyymmdd'),'YYYY-MM-DD') STK_DY
+    	   ,NVL(SUM(SALE_QTY), 0) AS SALE_QTY
+    	   ,NVL(SUM(SALE_SALE_AMT), 0) AS SALE_AMT
+
+	FROM  TED_DY_STK
+	
+	WHERE STK_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	       <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+		   
+		   <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+		   </isNotEmpty>
+		    
+	
+	          <isNotEmpty property="storeVal"  prepend="AND"> 
+		     <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+		   </isNotEmpty>
+		    
+		   <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+		   </isNotEmpty>
+
+	  GROUP BY STK_DY
+	  ORDER BY STK_DY
+</select>
+
+
+
+<resultMap id="pedmsal0000StoreMap" class="pedmsal0000">
+	   <result property="strNm" 	   column="STR_NM" />
+	   <result property="strCd" 	   column="STR_CD" />
+	   <result property="saleQty" 	   column="SALE_QTY" />
+	   <result property="saleAmt" 	   column="SALE_AMT" />
+	   <result property="sumSaleQty"   column="SUM_SALE_QTY" /> 
+       <result property="sumSaleAmt"   column="SUM_SALE_AMT" />
+</resultMap>
+ 
+<!-- 점포별 -->
+<select id="TSC_STORE-SELECT01" parameterClass="map" resultMap="pedmsal0000StoreMap">
+/* pedmsal0000.TSC_STORE-SELECT01 */
+	SELECT	C.STR_NM
+	       ,B.STR_CD
+	       ,NVL(A.SALE_QTY, 0) AS SALE_QTY
+	       ,NVL(A.SALE_AMT, 0) AS SALE_AMT
+	       ,NVL(B.SUM_SALE_QTY, 0) AS SUM_SALE_QTY
+	       ,NVL(B.SUM_SALE_AMT, 0) AS SUM_SALE_AMT
+
+	FROM  (SELECT  
+	 		 <isNotEmpty  property="storeVal" >
+				<isNotEmpty  property="productVal" > 
+					 /*+  index(A IX_ED_DY_STK_05) */			 
+				</isNotEmpty>		 
+			</isNotEmpty> 
+			<isEmpty  property="productVal" >
+				<isEmpty  property="storeVal" >
+				  	/*+  index(A IX_ED_DY_STK_03) */ 
+				</isEmpty>
+		   </isEmpty>	 
+	       <isNotEmpty  property="productVal" >		 
+			   	<isEmpty  property="storeVal" >
+				 	/*+  index(A IX_ED_DY_STK_05) */ 
+	       		</isEmpty>			 
+	       </isNotEmpty>		 
+		   <isNotEmpty  property="storeVal" >
+  		   		<isEmpty  property="productVal" >
+			 		/*+  index(A IX_ED_DY_STK_04) */ 
+		   		</isEmpty>
+         	</isNotEmpty>	   
+			
+				   A.STR_CD
+			      ,SUM(A.SALE_QTY) AS SALE_QTY
+			      ,SUM(A.SALE_SALE_AMT) AS SALE_AMT			
+			FROM TED_DY_STK A 			
+			WHERE A.STK_DY BETWEEN replace(#endDate#,'-','') and replace(#endDate#,'-','')			
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+		    </isNotEmpty>
+		    <isNotEmpty property="storeVal"  prepend="AND"> 
+		     <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+		   </isNotEmpty>
+		   <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	A.PROD_CD = #productVal#
+		   </isNotEmpty>		    
+			GROUP BY A.STR_CD
+			
+			) A RIGHT OUTER JOIN
+			
+			(SELECT 
+			 <isNotEmpty  property="storeVal" >
+				<isNotEmpty  property="productVal" > 
+					 /*+  index(A IX_ED_DY_STK_05) */			 
+				</isNotEmpty>		 
+			</isNotEmpty> 
+			<isEmpty  property="productVal" >
+				<isEmpty  property="storeVal" >
+				  	/*+  index(A IX_ED_DY_STK_03) */ 
+				</isEmpty>
+		   </isEmpty>	 
+	       <isNotEmpty  property="productVal" >		 
+			   	<isEmpty  property="storeVal" >
+				 	/*+  index(A IX_ED_DY_STK_05) */ 
+	       		</isEmpty>			 
+	       </isNotEmpty>		 
+		   <isNotEmpty  property="storeVal" >
+  		   		<isEmpty  property="productVal" >
+			 		/*+  index(A IX_ED_DY_STK_04) */ 
+		   		</isEmpty>
+         	</isNotEmpty>	   
+			  
+	      
+				   A.STR_CD
+			      ,SUM(A.SALE_QTY) AS SUM_SALE_QTY
+			      ,SUM(A.SALE_SALE_AMT) AS SUM_SALE_AMT			
+			FROM TED_DY_STK A 
+			WHERE A.STK_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')			
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+		    </isNotEmpty>
+		    <isNotEmpty property="storeVal"  prepend="AND"> 
+		     <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+		   </isNotEmpty>
+		   <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	A.PROD_CD = #productVal#
+		   </isNotEmpty>
+			
+			GROUP BY  A.STR_CD
+			) B ON A.STR_CD = B.STR_CD	
+			INNER JOIN  STORE C ON C.STR_CD = B.STR_CD		
+	   ORDER BY B.STR_CD
+</select>
+
+         
+<resultMap id="pedmsal0000ProductMap" class="pedmsal0000">
+	   <result property="srcmkCd" 	   column="SRCMK_CD" />
+	   <result property="prodNm" 	   column="PROD_NM" />
+	   <result property="saleQty" 	   column="SALE_QTY" />
+	   <result property="saleAmt" 	   column="SALE_AMT" />
+	   <result property="prodCd" 	   column="PROD_CD" />
+</resultMap>
+
+
+
+
+
+<!-- 상품별 -->
+<select id="TSC_PRODUCT-SELECT01" parameterClass="map" resultMap="pedmsal0000ProductMap">
+	/* pedmsal0000.TSC_PRODUCT-SELECT01 */
+	SELECT	
+	 		<isNotEmpty  property="storeVal" >
+				<isNotEmpty  property="productVal" > 
+					 /*+  index(TED_DY_STK IX_ED_DY_STK_05) */			 
+				</isNotEmpty>		 
+			</isNotEmpty> 
+			<isEmpty  property="productVal" >
+				<isEmpty  property="storeVal" >
+				  	/*+  index(TED_DY_STK IX_ED_DY_STK_03) */ 
+				</isEmpty>
+		   </isEmpty>	 
+	       <isNotEmpty  property="productVal" >		 
+			   	<isEmpty  property="storeVal" >
+				 	/*+  index(TED_DY_STK IX_ED_DY_STK_05) */ 
+	       		</isEmpty>			 
+	       </isNotEmpty>		 
+		   <isNotEmpty  property="storeVal" >
+  		   		<isEmpty  property="productVal" >
+			 		/*+  index(TED_DY_STK IX_ED_DY_STK_04) */ 
+		   		</isEmpty>
+         	</isNotEmpty>	
+	      
+	      
+			SRCMK_CD
+	       ,MAX(PROD_NM) AS PROD_NM
+	       ,SUM(SALE_QTY) AS SALE_QTY
+	       ,SUM(SALE_SALE_AMT) AS SALE_AMT
+	       ,PROD_CD
+	FROM  TED_DY_STK	
+	WHERE STK_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	       <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>		   
+		   <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+		   </isNotEmpty>	
+	          <isNotEmpty property="storeVal"  prepend="AND"> 
+		     <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+		   </isNotEmpty>		    
+		   <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+		   </isNotEmpty>
+    GROUP BY SRCMK_CD, PROD_CD
+    ORDER BY PROD_CD, SRCMK_CD
+</select>
+
+
+<resultMap id="pedmsal0000ProductDetailMap" class="pedmsal0000">
+	   <result property="strNm" 	   column="STR_NM" />
+	   <result property="strCd" 	   column="STR_CD" />
+	   <result property="prodCd" 	   column="PROD_CD" />
+	   <result property="prodNm" 	   column="PROD_NM" />
+	   <result property="saleQty" 	   column="SALE_QTY" />
+	   <result property="saleSaleAmt"  column="SALE_SALE_AMT" />
+	   <result property="srcmkCd" 	   column="SRCMK_CD" />
+</resultMap>
+<!-- 상품상세 -->
+<select id="TSC_PRODUCT_DETAIL-SELECT01" parameterClass="map" resultMap="pedmsal0000ProductDetailMap">
+/* pedmsal0000.TSC_PRODUCT_DETAIL-SELECT01 */
+	SELECT 	  BB.STR_NM  
+	         ,AA.STR_CD
+	         ,AA.PROD_CD
+	         ,AA.PROD_NM 
+	         ,AA.SALE_QTY 
+	         ,AA.SALE_SALE_AMT
+	         ,AA.SRCMK_CD
+	FROM (
+	SELECT 		
+		  	<isNotEmpty  property="storeVal" >
+				<isNotEmpty  property="productVal" > 
+					 /*+  index(A IX_ED_DY_STK_05) */			 
+				</isNotEmpty>		 
+			</isNotEmpty> 
+			<isEmpty  property="productVal" >
+				<isEmpty  property="storeVal" >
+				  	/*+  index(A IX_ED_DY_STK_03) */ 
+				</isEmpty>
+		   </isEmpty>	 
+	       <isNotEmpty  property="productVal" >		 
+			   	<isEmpty  property="storeVal" >
+				 	/*+  index(A IX_ED_DY_STK_05) */ 
+	       		</isEmpty>			 
+	       </isNotEmpty>		 
+		   <isNotEmpty  property="storeVal" >
+  		   		<isEmpty  property="productVal" >
+			 		/*+  index(A IX_ED_DY_STK_04) */ 
+		   		</isEmpty>
+         	</isNotEmpty>	    
+			A.STR_CD
+	       ,A.PROD_CD
+	       ,MAX(A.PROD_NM) AS PROD_NM 
+	       ,SUM(A.SALE_QTY) AS SALE_QTY 
+	       ,SUM(A.SALE_SALE_AMT) AS SALE_SALE_AMT
+	       ,A.SRCMK_CD
+	FROM  TED_DY_STK A 
+	
+	WHERE STK_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	       <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+		   
+		   <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+		   </isNotEmpty>		    
+	
+	       <isNotEmpty property="storeVal"  prepend="AND"> 
+		     <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+		   </isNotEmpty>
+		    
+		   <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	A.PROD_CD = #productVal#
+		   </isNotEmpty>
+		   
+
+   GROUP BY A.STR_CD, A.PROD_CD, A.SRCMK_CD 
+   ) AA  INNER JOIN  store BB
+  ON AA.STR_CD=BB.STR_CD
+   ORDER BY AA.STR_CD 
+</select>
+
+</sqlMap>

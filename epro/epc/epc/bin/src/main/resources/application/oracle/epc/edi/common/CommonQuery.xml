@@ -1,0 +1,1229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="common">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="ediCommonCode" type="com.lottemart.epc.edi.comm.model.EdiCommonCode" />
+	<typeAlias alias="searchParam"   type="com.lottemart.epc.edi.comm.model.SearchParam" />
+	
+	<typeAlias alias="nEDMCST0310VO"   	type="com.lottemart.epc.edi.consult.model.NEDMCST0310VO" />
+
+	
+  
+     
+   
+  <resultMap id ="getConsultcategroyListNew2Map" class="nEDMCST0310VO">   
+   <result property="teamCd"  		 		column="TEAM_CD" 	/>						<!-- 사업... SQLINES DEMO *** -->
+   <result property="teamNm"  		 		column="TEAM_NM" 	/>						<!-- 사업... SQLINES DEMO *** -->
+   <result property="mainProd"  		 	column="MAIN_PROD" 	/>						<!-- 사업... SQLINES DEMO *** -->
+   <result property="cellCntCd"  		 	column="CELL_CNT_CD" 	/>					<!-- 사업... SQLINES DEMO *** -->
+  </resultMap>
+	
+
+  <resultMap id ="COMMON_CODE_SQL01Map" class="resultClass">   
+   <result property="CODE_ID"  		 		column="CODE_ID" 	/>						<!-- 사업... SQLINES DEMO *** -->
+   <result property="CODE_NAME"  		 	column="CODE_NAME" 	/>						<!-- 사업... SQLINES DEMO *** -->
+  </resultMap>
+  	
+	<!-- TP... SQLINES DEMO *** -->
+	<select id="COMMON_CODE_SQL01" parameterClass="paramClass" resultMap="COMMON_CODE_SQL01Map">
+		/* SQLINES DEMO *** ON_CODE_SQL01*/
+		SELECT 	MINOR_CD AS CODE_ID
+			,	CASE #parentCodeId#  WHEN 'PRD40' THEN  CONCAT(CD_NM , '(' , MINOR_CD , ')')  WHEN 'PRD17' THEN  CONCAT(CD_NM , '(' , MINOR_CD , ')') ELSE  CD_NM END AS CODE_NAME	/* SQLINES DEMO *** 폐단위는 코드값을 괄호안에 보여주기 DECODE사용 */
+		FROM 	TPC_CODE
+		WHERE 	MAJOR_CD = #parentCodeId#
+		 	AND USE_YN = 'Y'
+		 	
+		 	<isNotEmpty property="childCodeId" removeFirstPrepend="true">  <!-- 코드... SQLINES DEMO *** -->
+		 		AND LET_1_REF = #childCodeId#
+		 	</isNotEmpty>
+		 	<isNotEmpty property="subCodeId" removeFirstPrepend="true">    <!-- 코드... SQLINES DEMO *** -->
+		 		AND LET_4_REF = #subCodeId#
+		 	</isNotEmpty>
+		 	<isEmpty property="orderSeqYn" >
+		 		ORDER BY 2  
+		 	</isEmpty>
+		 	<isNotEmpty property="orderSeqYn" >
+		 		ORDER BY ORDER_SEQ
+		 	</isNotEmpty>
+	</select>
+	
+	<select id="COMMON_CODE_SQL01_OLD" parameterClass="paramClass" resultClass="resultClass">
+	/* SQLINES DEMO *** ON_CODE_SQL01_OLD*/
+		SELECT MINOR_CD AS CODE_ID
+			  ,CD_NM AS CODE_NAME
+		  FROM TED_CODE
+		 WHERE MAJOR_CD = #parentCodeId#
+	     <isNotEmpty property="childCodeId" removeFirstPrepend="true">  <!-- 코드... SQLINES DEMO *** -->
+	      	AND LET_1_REF = #childCodeId#
+	     </isNotEmpty>
+		 <isNotEmpty property="subCodeId" removeFirstPrepend="true">    <!-- 코드... SQLINES DEMO *** -->
+		    AND LET_4_REF = #subCodeId#
+		 </isNotEmpty>
+	   ORDER BY CD_DESC  
+	</select>
+	
+	<!-- TE... SQLINES DEMO *** -->
+	<select id="COMMON_CODE_SQL02" parameterClass="paramClass" resultClass="resultClass">
+		/* SQLINES DEMO *** ON_CODE_SQL02*/
+		SELECT	MINOR_CD AS CODE_ID
+			,	CD_NM AS CODE_NAME
+		FROM 	TET_CODE
+		WHERE 	MAJOR_CD = #parentCodeId#
+		ORDER BY CD_DESC  
+	</select>
+	
+	
+	<select id="COMMON_CODE_SQL02_OLD" parameterClass="paramClass" resultClass="resultClass">
+	/* SQLINES DEMO *** ON_CODE_SQL02_OLD*/
+		SELECT MINOR_CD AS CODE_ID
+			  ,CD_NM AS CODE_NAME
+		  FROM TET_CODE
+		 WHERE MAJOR_CD = #parentCodeId#
+	   ORDER BY CD_DESC  
+	</select>
+	
+	
+	<!-- 지역... SQLINES DEMO *** -->
+	<select id="COMMON_AREA_SQL01" parameterClass="paramClass" resultClass="resultClass">
+		/* SQLINES DEMO *** MON_AREA_SQL01 */
+		SELECT  A.MINOR_CD AS CODE_ID
+			,	A.CD_NM AS CODE_NAME
+		FROM 	TPC_CODE A
+		WHERE 	A.MAJOR_CD = 'STR04'
+			AND A.MINOR_CD NOT IN('10', '90')
+		ORDER BY A.MINOR_CD
+	</select>
+	
+	
+	<select id="COMMON_AREA_SQL01_OLD" parameterClass="paramClass" resultClass="resultClass">
+	/* SQLINES DEMO *** MON_AREA_SQL01_OLD */
+	
+	SELECT  A.DETAIL_CD AS CODE_ID
+		   ,A.DETAIL_NM AS CODE_NAME
+	  FROM ALL_CD@Dl_MD_MARTNIS A
+     WHERE A.GRP_CD = 'STR04'
+       AND A.DETAIL_CD NOT IN('10', '90')
+     ORDER BY A.DETAIL_CD
+</select>
+	
+	<!-- SQLINES DEMO ***   [N개사업자번호 단위]  -->
+	<select id="COMMON_CP_SQL01" parameterClass="hashMap"  resultClass="resultClass" >
+		/* SQLINES DEMO *** ON_CP_SQL01*/
+		SELECT 	VENDOR_ID AS CODE_ID
+			,	VENDOR_ID AS CODE_NAME
+		FROM TVE_VENDOR
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="bmanNos">
+				<iterate prepend="CONO IN " property="bmanNos" open="(" close=")" conjunction=",">
+					#bmanNos[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+		GROUP BY VENDOR_ID
+	</select>
+	
+	
+	<!-- SQLINES DEMO ***   [N개사업자번호 단위]  -->
+	<select id="COMMON_CP_SQL01_OLD" parameterClass="hashMap"  resultClass="resultClass" >
+	/* SQLINES DEMO *** ON_CP_SQL01_OLD */
+		SELECT VENDOR_ID AS CODE_ID
+			  ,VENDOR_ID AS CODE_NAME 
+	      FROM TVE_VENDOR
+	  	<dynamic prepend="WHERE"> 
+			<isNotEmpty prepend="AND" property="bmanNos"> 
+		      <iterate prepend="CONO IN " property="bmanNos" open="(" close=")" conjunction=","> 
+		        #bmanNos[]# 
+		      </iterate> 
+		    </isNotEmpty> 
+	  	</dynamic> 
+		GROUP BY VENDOR_ID
+	</select >
+	
+	<select id="COMMON_L1_SQL01_OLD"  resultClass="resultClass" >
+	/* SQLINES DEMO *** ON_L1_SQL01_OLD*/
+	       SELECT T1.TEAM_CD AS CODE_ID , 
+	              T1.ORG_NM  AS CODE_NAME
+	    FROM TED_L1_CD T1
+	    GROUP BY  T1.TEAM_CD, T1.ORG_NM
+	    ORDER BY T1.TEAM_CD	
+	</select>
+	
+	<select id="COMMON_ORG_SQL01_OLD"  resultClass="resultClass" >
+	/* SQLINES DEMO *** ON_ORG_SQL01_OLD */
+	       SELECT T1.ORG_CD AS CODE_ID , 
+	              T1.ORG_NM  AS CODE_NAME
+	    FROM TED_L1_CD T1
+	    GROUP BY  T1.ORG_CD, T1.ORG_NM
+	    ORDER BY T1.ORG_CD	
+	</select>
+	
+	<resultMap id ="COMMON_CODE_MAP" class="resultClass">   
+		<result property="CODE_ID"			column="CODE_ID" 	/>
+		<result property="CODE_NAME"		column="CODE_NAME" 	/>
+	</resultMap>
+	
+	<!-- TE... SQLINES DEMO *** -->
+	<select id="COMMON_L1_SQL01"  resultMap="COMMON_CODE_MAP" >
+		/* SQLINES DEMO *** ON_L1_SQL01*/
+		SELECT 	T1.TEAM_CD AS CODE_ID
+			,	T1.TEAM_NM  AS CODE_NAME
+		FROM 	TPC_L1_CD T1
+		GROUP BY T1.TEAM_CD, T1.TEAM_NM
+		ORDER BY T1.TEAM_CD
+	</select>
+	
+	<!-- 대분... SQLINES DEMO *** -->
+	<select id="COMMON_ORG_SQL01"  resultMap="COMMON_CODE_MAP" >
+		/* SQLINES DEMO *** ON_ORG_SQL01*/
+		SELECT 	T1.L1_CD AS CODE_ID
+			,	T1.L1_NM AS CODE_NAME
+		FROM TPC_L1_CD T1
+		GROUP BY  T1.L1_CD, T1.L1_NM
+		ORDER BY T1.L1_CD
+	</select>
+	
+	<!-- 점포... SQLINES DEMO *** -->
+	<select id="STORE_SELECT"  resultClass="resultClass">
+		/* SQLINES DEMO *** E_SELECT*/
+		<![CDATA[
+			SELECT STR_CD, STR_NM FROM STORE
+			 --WHERE STR_CD NOT LIKE '9%' OR STR_CD IN ('981') 
+			 ORDER BY STR_NM
+		]]>
+	</select>
+	
+	<!-- 상품... SQLINES DEMO *** -->
+	<!-- SQLINES DEMO *** nk table -->
+	<select id="PRODUCT_SELECT"  parameterClass="map" resultClass="resultClass">
+		/* SQLINES DEMO *** UCT_SELECT*/
+		SELECT 	PROD_CD
+			, 	PROD_NM
+		FROM 	PRODUCT
+		
+		<isEqual property="productVal" compareValue="1">
+			WHERE PROD_CD = #inputProduct#
+		</isEqual>
+		<isEqual property="productVal" compareValue="2">
+			WHERE PROD_NM LIKE Concat('%' , #inputProduct# , '%')
+			
+			<isNotEmpty  property="venCds"  prepend="AND">
+				<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+					#venCds[]#
+				</iterate>
+			</isNotEmpty>
+		</isEqual>
+	</select>
+	
+	<!-- SQLINES DEMO *** 20326 이동빈 -->
+	<select id="ORG_SELECT"  resultClass="resultClass" parameterClass="map">
+		/* SQLINES DEMO *** SELECT*/
+		SELECT 	ORG_CD
+			,	ORG_NM
+			,	CAT_NM
+		FROM
+		(
+			SELECT	TEAM_CD 	AS ORG_CD
+				,	TEAM_NM		AS ORG_NM
+				,	L3_NM		AS CAT_NM
+			FROM 	TPC_L1_CD
+			WHERE 	TEAM_CD = #orgCd#
+		) s
+		LIMIT 1
+	</select>
+
+<!-- OR... SQLINES DEMO *** -->
+<select id="L1Team_SELECT"  resultClass="resultClass" parameterClass="String">
+	/* SQLINES DEMO *** am_SELECT*/
+	SELECT	TEAM_CD
+		,	TEAM_NM
+	FROM 	TPC_CONSULT_TEAMCD
+	WHERE 	XTNC_YN = 'Y'
+		AND TEAM_CD = #teamCd#
+	GROUP BY TEAM_CD, TEAM_NM
+</select>
+
+<select id="L1Cd_SELECT"  resultClass="resultClass" parameterClass="String">
+	  /* SQLINES DEMO *** _SELECT*/
+	SELECT 
+		A.L1_CD,A.L1_NM
+		FROM TED_CONSULT_TEAM_L1CD A, TED_CONSULT_TEAMCD B
+		WHERE   A.TEAM_CD=B.TEAM_CD
+        AND     A.USE_YN='Y'
+        AND     B.XTNC_YN='Y'
+		AND     A.TEAM_CD=#teamCd#
+		GROUP BY A.L1_CD,A.L1_NM
+	 	ORDER BY A.L1_CD
+</select>
+
+<select id="L1Cd_SELECT_ETC"  resultClass="resultClass" parameterClass="String">
+	  /* SQLINES DEMO *** _SELECT_ETC*/
+	SELECT 
+		A.L1_CD,A.L1_NM
+		FROM TED_CONSULT_TEAM_L1CD A, TED_CONSULT_TEAMCD B
+		WHERE   A.TEAM_CD=B.TEAM_CD
+        AND     A.USE_YN='Y'
+        AND     B.XTNC_YN='Y'
+		GROUP BY A.L1_CD,A.L1_NM
+		ORDER BY A.L1_CD	 
+</select>
+
+	<resultMap id="commonCodeResultMap" class="ediCommonCode">
+		<result property="groupCode"  column="MAJOR_CD"  columnIndex="1"/>
+		<result property="detailCode" column="MINOR_CD"  columnIndex="2"/>
+		<result property="detailName" column="CD_NM"  	 columnIndex="3"/>
+	</resultMap>
+
+	<resultMap id="teamListResultMap" class="ediCommonCode">
+		<result property="teamCode" column="L1_CD" columnIndex="1"/>
+		<result property="teamName" column="CAT_NM"  columnIndex="2"/>
+	</resultMap>
+
+	<resultMap id="departmentResultMap" class="ediCommonCode">
+		<result property="teamCode" column="org_cd2" />
+		<result property="teamName" column="org_nm2" />
+		<result property="orgCode"  column="org_cd"  />
+		<result property="orgName"  column="org_nm"  />
+		<result property="l1Cd"  column="cat_cd"  />
+	</resultMap>
+
+	<resultMap id="departmentResultDetailMap"      class="ediCommonCode">
+		<result property="teamCode" column="org_cd2" />
+		<result property="teamName" column="org_nm2" />
+		<result property="orgCode"  column="org_cd"  />
+		<result property="orgName"  column="org_nm"  />
+		<result property="orgDesc"  column="org_desc"  />     
+	</resultMap>
+
+
+	<resultMap id="departmentResultUpdateDetailMap" class="ediCommonCode">
+		<result property="teamCode" column="org_cd2" />
+		<result property="orgCode"  column="org_cd"  />
+		<result property="orgName"  column="org_nm"  />
+		<result property="orgDesc"  column="org_desc"  />
+		<result property="colVal"   column="col_val"  />
+	</resultMap>
+
+	<select id="getCommonCodeList" resultMap="commonCodeResultMap" parameterClass="searchParam">
+		/* SQLINES DEMO *** ommonCodeList*/
+		SELECT	MAJOR_CD
+			,	MINOR_CD
+			,	CD_NM
+		FROM 	TET_CODE
+		WHERE 	MAJOR_CD = #groupCode#
+		<isNotEqual property="detailCode" compareValue="all">
+			AND MINOR_CD = #detailCode#
+		</isNotEqual>
+	</select>
+	
+	<resultMap id="teamListMap" class="ediCommonCode">
+		<result property="teamCode" column="TEAM_CD" columnIndex="1"/>
+		<result property="teamName" column="ORG_NM"  columnIndex="2"/>
+	</resultMap>
+	
+	<select id="getTeamList" resultMap="teamListMap" parameterClass="searchParam">
+		/* SQLINES DEMO *** eamList*/
+		SELECT	DISTINCT
+				TEAM_CD
+			, 	TEAM_NM AS ORG_NM
+		FROM 	TPC_L1_CD
+		<isNotEqual property="detailCode" compareValue="all">
+			WHERE TEAM_CD = #detailCode#
+		</isNotEqual>
+		ORDER BY TEAM_CD
+	</select>
+	
+	<select id="getTeamListOld" resultMap="teamListMap" parameterClass="searchParam">
+     /* SQLINES DEMO *** eamListOld*/
+   		SELECT 
+   			DISTINCT TEAM_CD, ORG_NM
+   		FROM TED_L1_CD
+	   	<isNotEqual property="detailCode" compareValue="all">
+	   	WHERE TEAM_CD = #detailCode#	
+	   	</isNotEqual>
+	   	ORDER BY TEAM_CD 
+  </select>
+	
+	<select id="getL1List" resultMap="teamListResultMap" parameterClass="searchParam">
+		/* SQLINES DEMO *** 1List*/
+		SELECT	DISTINCT
+				L1_CD
+			,	L1_NM AS CAT_NM
+		FROM 	TPC_L1_CD
+		WHERE 	TEAM_CD = #groupCode#
+		<isNotEqual property="detailCode" compareValue="all" prepend="AND">
+			L1_CD = #detailCode#
+		</isNotEqual>
+		ORDER BY L1_CD
+	</select>
+	
+	
+	<select id="getL1ListOld" resultMap="teamListResultMap" parameterClass="searchParam">
+    /* SQLINES DEMO *** 1ListOld*/
+   		SELECT 
+   			DISTINCT L1_CD, CAT_NM
+   		FROM TED_L1_CD
+	   	WHERE TEAM_CD = #groupCode#
+
+	   	<isNotEqual property="detailCode" compareValue="all" prepend="AND">	
+	   	   L1_CD = #detailCode#
+	   	</isNotEqual>
+	   	ORDER BY L1_CD
+  </select>
+	
+	
+	
+	<resultMap id="l4ListResultMap" class="ediCommonCode">
+		<result property="categoryCode"		column="L1_CD" />
+		<result property="categoryName"		column="CAT_NM" />
+		<result property="teamCode"			column="TEAM_CD"  />
+		<result property="orgName"			column="ORG_NM"  />
+		<result property="detailCode"		column="L4_CD"  />
+		<result property="detailName"		column="L4_NM"  />
+	</resultMap>
+
+  <select id="getL4List" resultMap="l4ListResultMap" parameterClass="searchParam">
+    /* SQLINES DEMO *** 4List*/
+   		SELECT 
+   			DISTINCT L1_CD, CAT_NM, TEAM_CD,ORG_NM, L4_CD,	L4_NM
+   		FROM TED_L1_CD
+	   	WHERE TEAM_CD  = #groupCode#
+	   	 AND  L1_CD    = #detailCode#
+	     AND  L4_CD    = #l4Code#
+	   	ORDER BY L1_CD
+  </select>
+
+
+
+   <resultMap id="l4ListAjaxResultMap" class="ediCommonCode">
+     <result property="categoryCode"   column="L4_CD"  />
+     <result property="categoryName"   column="L4_NM"  />
+
+  </resultMap>
+
+  <select id="getL4ListAjax" resultMap="l4ListAjaxResultMap" parameterClass="searchParam">
+   	  /* SQLINES DEMO *** 4ListAjax*/
+   		SELECT 
+   			 L4_CD,	L4_NM
+   		FROM TED_L1_CD
+	   	WHERE TEAM_CD  = #groupCode#
+	   	 AND  L1_CD    = #detailCode#
+	   	ORDER BY L4_NM, L4_CD
+  </select>
+
+
+  <select id="getL4ListForOnlineAjax" resultMap="l4ListAjaxResultMap" parameterClass="searchParam">
+   		/* SQLINES DEMO *** L4ListForOnlineAjax*/
+   		SELECT  
+   			M.CAT_CD AS L4_CD
+   			,C.CAT_NM AS L4_NM
+   		--	,C... SQLINES DEMO ***
+		FROM    
+		 	 TCA_CATEGORY_MAPPING M 
+		LEFT JOIN TCA_MD_CATEGORY C
+		on M.CAT_CD = C.CAT_CD
+		WHERE   
+			M.CATEGORY_ID = #detailCode#
+  </select>
+
+  <resultMap id="otherStoreMap" class="ediCommonCode">
+    <result property="orgCode" column="MINOR_CD" columnIndex="1"/>
+    <result property="orgName" column="CD_NM"  columnIndex="2"/>
+  </resultMap>
+  
+  <select id="getOtherStoreList" resultMap="otherStoreMap">
+  /* SQLINES DEMO *** OtherStoreList*/
+   		SELECT 
+   			MINOR_CD, CD_NM
+   			FROM TET_CODE
+   		WHERE MAJOR_CD = 'OTH01'	and
+   		    MINOR_CD &gt; 0
+  </select>
+
+<select id="getDepartmentList" resultMap="departmentResultMap">
+  /* SQLINES DEMO *** DepartmentList*/
+	  select d.org_cd as org_cd, d.org_nm as org_nm, e.org_cd as org_cd2, e.org_nm as org_nm2 
+	 from TET_ORGANIZATION d, TET_ORGANIZATION e where d.lvl = '4' and d.org_cd = e.hi_org_cd 
+	 and e.lvl = '5'
+	 and ((d.org_cd between  '00211' and  '00300') or e.hi_org_cd='01824' )
+	 or (d.org_cd='00019' and  e.org_cd= '00194')
+	 and e.org_cd not in ('01132')
+	 order by d.org_cd 
+</select>
+
+
+ <resultMap id="departmentResultMapGroupByOrgCode" class="ediCommonCode">
+    <result property="orgCode"  column="org_cd"  />
+    <result property="orgName"  column="org_nm"  />
+    <result property="orgSubName"  column="org_sub_nm"  />
+    <result property="count"  column="cnt"  />
+    
+  </resultMap>
+
+<select id="getDepartmentListGroupByOrgCd" resultMap="departmentResultMapGroupByOrgCode">
+ /* SQLINES DEMO *** DepartmentListGroupByOrgCd*/
+	 select d.org_cd as org_cd, d.org_nm as org_nm, e.org_nm as org_sub_nm, COUNT(*) OVER (PARTITION BY d.org_cd ) as cnt  
+	 from TET_ORGANIZATION d, TET_ORGANIZATION e where d.lvl = '4' and d.org_cd = e.hi_org_cd 
+	 and e.lvl = '5'
+	 and ((d.org_cd between  '00211' and  '00300') or e.hi_org_cd='01824' )
+	 or (d.org_cd='00019' and  e.org_cd= '00194')
+	 and e.org_cd not in ('01132')
+	 group by d.org_cd , d.org_nm, e.org_nm 
+	 order by d.org_cd 
+</select>
+
+
+<select id="getDepartmentListGroupByOrgCdNew" parameterClass="map" resultClass="resultClass">
+ /* SQLINES DEMO *** DepartmentListGroupByOrgCdNew*/
+	 SELECT TEAM_CD,
+	        DEPT_CD AS ORG_CD, 
+	        TEAM_NM AS ORG_NM,  
+	        DEPT_NM AS CAT_NM, 
+	        TEAM_CD_CNT AS ROW_CNT 
+	 FROM   TED_CONSULT_ORG
+	 ORDER BY TEAM_CD
+</select>
+
+<select id="getConsultcategroyListNew" parameterClass="map" resultClass="resultClass">
+	/* SQLINES DEMO *** ConsultcategroyListNew */
+	select TEAM_CD,TEAM_NM,L1_CD,L1_NM,CELL_CNT_CD
+			 FROM   TED_CONSULT_L1CD 
+		     where XTNC_YN='Y'
+			 ORDER BY ORDER_SEQ
+</select>
+
+<!-- SQLINES DEMO *** nsultcategroyListNew2" parameterClass="map" resultClass="resultClass">
+	/* SQLINES DEMO *** ltcategroyListNew2 */
+	select TEAM_CD,TEAM_NM,S_L1_NM,MAIN_PROD,CELL_CNT_CD
+			 FROM   TED_CONSULT_TEAMCD 
+		     where XTNC_YN='Y'
+			 ORDER BY ORDER_SEQ
+</select> -->
+
+<select id="getConsultcategroyListNew2" parameterClass="map" resultMap="getConsultcategroyListNew2Map">
+	/* SQLINES DEMO *** ltcategroyListNew2 */
+	SELECT  TEAM_CD,
+	        TEAM_NM,
+	        CONCAT(MAX(CASE RID  WHEN 1 THEN  MAIN_PROD END) , NVL2(MAX(CASE RID  WHEN 2 THEN  MAIN_PROD END), ', ', '')  ,
+	        MAX(CASE RID  WHEN 2 THEN  MAIN_PROD END) , NVL2(MAX(CASE RID  WHEN 3 THEN  MAIN_PROD END), ', ', '')  ,
+	        MAX(CASE RID  WHEN 3 THEN  MAIN_PROD END) , NVL2(MAX(CASE RID  WHEN 4 THEN  MAIN_PROD END), ', ', '')  ,
+	        MAX(CASE RID  WHEN 4 THEN  MAIN_PROD END) , NVL2(MAX(CASE RID  WHEN 5 THEN  MAIN_PROD END), ', ', '')  ,
+	        MAX(CASE RID  WHEN 5 THEN  MAIN_PROD END) , NVL2(MAX(CASE RID  WHEN 6 THEN  MAIN_PROD END), ', ', '')  ,
+	        MAX(CASE RID  WHEN 6 THEN  MAIN_PROD END) , NVL2(MAX(CASE RID  WHEN 7 THEN  MAIN_PROD END), ', ', '')  ,
+	        MAX(CASE RID  WHEN 7 THEN  MAIN_PROD END)) AS MAIN_PROD,
+	        CELL_CNT_CD
+	FROM (            
+	        SELECT  TEAM_CD, TEAM_NM, ROW_NUMBER() OVER (PARTITION BY TEAM_CD ORDER BY MAIN_PROD) RID, MAIN_PROD, CELL_CNT_CD
+	        FROM    TED_CONSULT_TEAMCD
+	     ) s
+	GROUP BY TEAM_CD, TEAM_NM, CELL_CNT_CD
+	ORDER BY TEAM_CD
+</select>
+
+ 
+
+<select id="getConsultTeamList" parameterClass="map" resultClass="resultClass">
+	/* SQLINES DEMO *** ltTeamList */
+	  SELECT  TEAM_CD, TEAM_NM
+	  FROM    TPC_CONSULT_TEAMCD
+      where XTNC_YN='Y'
+      group by TEAM_CD, TEAM_NM
+      ORDER BY TEAM_CD
+</select>
+
+
+
+
+  <resultMap id="colorListMap" class="ediCommonCode">
+    <result property="categoryCode" column="COLOR_CD" />
+    <result property="categoryName" column="COLOR_NM"  />
+  </resultMap>
+  
+  <select id="getColorList" resultMap="colorListMap">
+  /* SQLINES DEMO *** ColorList */
+   		SELECT 
+   			COLOR_CD, COLOR_NM
+   			FROM TPR_COLOR
+   		
+  </select>
+
+
+
+  <resultMap id="sizeCategoryLisMap" class="ediCommonCode">
+    <result property="categoryCode" column="SZ_CAT_CD" />
+    <result property="categoryName" column="SZ_CAT_NM"  />
+  </resultMap>
+  
+  <select id="getSizeCategoryList" resultMap="sizeCategoryLisMap">
+  /* SQLINES DEMO *** SizeCategoryList */
+   		SELECT 
+   			SZ_CAT_CD, SZ_CAT_NM
+   			FROM TPR_SIZE_CATEGORY
+  </select>
+
+
+  <resultMap id="sizeLisMap" class="ediCommonCode">
+    <result property="categoryCode" column="SZ_CD" />
+    <result property="categoryName" column="SZ_NM"  />
+  </resultMap>
+  
+  <select id="getSizeList" resultMap="sizeLisMap"  parameterClass="String">
+   /* SQLINES DEMO *** SizeList */
+   		SELECT 
+   			SZ_CD, SZ_NM
+   			FROM TPR_SIZE 
+   			WHERE SZ_CAT_CD=#sizeCategoryCode#
+  </select>
+  
+  <select id="getSizeListOld" resultMap="sizeLisMap"  parameterClass="String">
+   /* SQLINES DEMO *** SizeListOld */
+   		SELECT 
+   			SZ_CD, SZ_NM
+   			FROM TPR_SIZE 
+   			WHERE SZ_CAT_CD=#sizeCategoryCode#
+  </select>
+  
+  <!-- SQLINES DEMO *** 20120326 -->
+  <select id="selectL4CodeList" parameterClass="map" resultClass="resultClass">
+   /* SQLINES DEMO *** ectL4CodeList */
+     SELECT L4_CD, L4_NM
+      FROM TED_L1_CD A
+     WHERE A.TEAM_CD = #teamCd#
+       AND A.ORG_CD  = #orgCd#
+      ORDER BY A.L4_NM
+   </select>   
+     <!-- L4... SQLINES DEMO *** -->
+  <select id="selectL1CodeListNew" parameterClass="map" resultClass="resultClass"> 
+        /* SQLINES DEMO *** ectL1CodeListNew */
+      select L2_CD,L2_NM
+		from CATEGORY_V4
+		where L1_CD=#L1_CD#
+		group by L2_CD,L2_NM
+		order by L2_NM
+   </select>   
+   <select id="selectAllL1CodeListNew" parameterClass="map" resultClass="resultClass"> 
+      /* SQLINES DEMO *** ectAllL1CodeListNew  */
+      select A.AU_DY,A.L1_NM,B.TEAM_NM, A.PROD_NM,A.START_PRC,A.QTY,A.UNIT,A.DETL_CONTENT,A.MOD_DATE
+		from TED_ENTAU_ITEM A ,TED_CONSULT_TEAM_L1CD B, TED_CONSULT_TEAMCD C
+		where A.L1_CD=B.L1_CD
+		AND B.TEAM_CD=C.TEAM_CD
+		AND A.USE_YN='Y' 
+		AND C.XTNC_YN='Y'
+		AND A.AU_DY BETWEEN TO_CHAR(CURRENT_TIMESTAMP(0)+INTERVAL '1' DAY,'YYYYMMDD') AND TO_CHAR(CURRENT_TIMESTAMP(0)+Interval '60' DAY,'YYYYMMDD')
+		order by A.L1_NM,A.AU_DY
+   </select>   
+   
+   
+   
+
+  <select id="selectBrandList" resultMap="sizeLisMap"  parameterClass="String">
+   		/* SQLINES DEMO *** ectBrandList */
+   		SELECT 
+   			BRAND_CD as SZ_CD, BRAND_NM as SZ_NM
+   			FROM TPR_BRAND 
+   			WHERE BRAND_NM like Concat('%' , #brandName# , '%')
+  </select>
+  
+  <select id="selectMakerList" resultMap="sizeLisMap"  parameterClass="String">
+  /* SQLINES DEMO *** ectMakerList */
+   		SELECT 
+   			MAKER_CD as SZ_CD, MAKER_NM as SZ_NM
+   			FROM TPR_MAKER 
+   			WHERE MAKER_NM  like Concat('%' , #makerName# , '%')
+  </select>
+  
+  <select id="VENDER_SQL01" parameterClass="paramClass" resultClass="resultClass">
+       SELECT VENDOR_ID AS CODE_ID
+             ,VENDOR_ID AS CODE_NAME
+         FROM TVE_VENDOR    
+	    WHERE CONO = #parentCodeId#
+  </select>
+  
+    <select id="VENDER_SQL01_OLD" parameterClass="paramClass" resultClass="resultClass">
+       SELECT VENDOR_ID AS CODE_ID
+             ,VENDOR_ID AS CODE_NAME
+         FROM TVE_VENDOR    
+	    WHERE CONO = #parentCodeId#
+  </select>
+  
+  
+  <select id="geVendorListByBusinessNo" parameterClass="String" resultMap="sizeLisMap">
+       SELECT VENDOR_ID AS SZ_CD
+             ,VENDOR_ID AS SZ_NM
+         FROM TVE_VENDOR    
+	    WHERE CONO in ( #parentCodeId# )
+  </select>
+  
+  <!-- SQLINES DEMO *** ee DBLink 삭제, 코드체계 변경되어 YEAR[4] -->
+  <select id="getStyleCodeList" resultMap="sizeLisMap">
+   		SELECT 
+   			 CONCAT(STYLE_YR, STYLE_CD)         AS SZ_CD, 
+   			 CONCAT(STYLE_YR , '년 ' , STYLE_NM)  AS SZ_NM
+   		FROM STYLE 
+       ORDER BY STYLE_YR DESC, STYLE_CD
+  </select>
+      
+   <select id="getStyleCodeListOld" resultMap="sizeLisMap">
+   		SELECT 
+   			STYLE_CD AS SZ_CD, 
+   			STYLE_NM AS SZ_NM
+   		FROM STYLE@DL_MD_MARTNIS
+  </select>
+  
+  
+  <select id="getSeasonTypeList" resultMap="sizeLisMap" parameterClass="searchParam">
+   		SELECT 
+   			 MINOR_CD AS SZ_CD, 
+   			 CD_NM AS SZ_NM
+   		FROM TET_CODE
+   		WHERE MAJOR_CD = #groupCode#
+  </select>
+  
+   
+     <resultMap id="onlineDisplayCategoryMap" class="com.lottemart.epc.edi.product.model.OnlineDisplayCategory" >
+		<result property="num"					column="NUM"				/>
+		<result property="categoryId"			column="CATEGORY_ID"		/>
+		<result property="categoryNm"			column="CATEGORY_NM"		/>
+		<result property="fullCategoryNm"			column="FULL_CATEGORY_NM"		/>
+		<result property="stdistExuseYN"		column="STDIST_EXUSE_YN"	/>
+		<result property="startDate"			column="START_DATE"			/>
+		<result property="endDate"				column="END_DATE"			/>
+		<result property="displayFlag"			column="DISP_YN"			/>
+		<result property="depth"				column="DEPTH"			/>
+	</resultMap>
+	
+	<resultMap id="onlineDisplayAllCategoryMap" class="com.lottemart.epc.edi.product.model.OnlineDisplayCategory" >
+		<result property="num"					column="NUM"				/>
+		<result property="categoryId"			column="CATEGORY_ID"		/>
+		<result property="categoryNm"			column="CATEGORY_NM"		/>
+		<result property="fullCategoryNm"			column="FULL_CATEGORY_NM"		/>
+		<result property="catCd1"				column="CATCD1"			/>
+		<result property="catCd2"				column="CATCD2"			/>
+		<result property="catCd3"				column="CATCD3"			/>
+		<result property="teamCd"				column="TEAMCD"			/>
+	</resultMap>
+	
+    <select id="selectOnlineDisplayCategoryList" resultMap="onlineDisplayCategoryMap" parameterClass="String">
+    	/* SQLINES DEMO *** lineDisplayCategoryList */
+WITH RECURSIVE category_tree AS (
+-- 최상위(root) 카테고리부터 시작
+SELECT 
+CATEGORY_ID,
+UP_CATEGORY_ID,
+CATEGORY_NM,
+CATEGORY_TYPE_CD,
+DEPTH,
+STDIST_EXUSE_YN,
+DISP_YN,
+START_DATE,
+END_DATE,
+ORDER_SEQ,
+CATEGORY_NM AS FULL_CATEGORY_NM,
+1 AS LVL
+FROM TCA_CATEGORY
+WHERE UP_CATEGORY_ID = 'root'
+
+UNION ALL
+
+-- 자식 카테고리를 재귀적으로 연결
+SELECT 
+c.CATEGORY_ID,
+c.UP_CATEGORY_ID,
+c.CATEGORY_NM,
+c.CATEGORY_TYPE_CD,
+c.DEPTH,
+c.STDIST_EXUSE_YN,
+c.DISP_YN,
+c.START_DATE,
+c.END_DATE,
+c.ORDER_SEQ,
+parent.FULL_CATEGORY_NM || '/' || 
+CASE 
+WHEN c.CATEGORY_NM = '유아/아동/완구' THEN '유아/아동'
+ELSE c.CATEGORY_NM
+END AS FULL_CATEGORY_NM,
+parent.LVL + 1
+FROM TCA_CATEGORY c
+INNER JOIN category_tree parent ON c.UP_CATEGORY_ID = parent.CATEGORY_ID
+),
+filtered_category AS (
+SELECT 
+ct.*,
+TO_CHAR(TO_DATE(START_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS START_DATE_FMT,
+TO_CHAR(TO_DATE(END_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS END_DATE_FMT
+FROM category_tree ct
+WHERE 
+ct.CATEGORY_TYPE_CD IN ('01', '11')
+AND ct.DISP_YN = 'Y'
+AND NOW() BETWEEN TO_TIMESTAMP(ct.START_DATE || '000000', 'YYYYMMDDHH24MISS')
+AND TO_TIMESTAMP(ct.END_DATE || '000000', 'YYYYMMDDHH24MISS')
+)
+SELECT 
+ROW_NUMBER() OVER () AS num,
+fc.CATEGORY_ID,
+fc.FULL_CATEGORY_NM,
+CASE 
+WHEN fc.CATEGORY_NM = '유아/아동/완구' THEN '유아/아동'
+ELSE fc.CATEGORY_NM
+END AS CATEGORY_NM,
+fc.CATEGORY_TYPE_CD,
+ec.CD_NM AS CATEGORY_TYPE_NM,
+fc.DEPTH,
+fc.STDIST_EXUSE_YN,
+fc.DISP_YN,
+fc.START_DATE_FMT AS START_DATE,
+fc.END_DATE_FMT AS END_DATE
+FROM filtered_category fc
+JOIN TET_CODE ec 
+ON fc.CATEGORY_TYPE_CD = ec.MINOR_CD
+WHERE ec.MAJOR_CD = 'SM007'
+AND fc.CATEGORY_ID NOT LIKE 'C0010005%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030006%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030007%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030008%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030009%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030010%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030011%'
+AND fc.CATEGORY_ID LIKE CONCAT(#categoyDepth2#::varchar , '%')
+</select>
+    
+<select id="selectNewOnlineDisplayCategoryList"  resultMap="onlineDisplayCategoryMap"  parameterClass="dataMap">
+WITH RECURSIVE category_hierarchy AS (
+SELECT 
+CATEGORY_ID,
+UP_CATEGORY_ID,
+CATEGORY_NM,
+CATEGORY_TYPE_CD,
+DEPTH,
+STDIST_EXUSE_YN,
+DISP_YN,
+START_DATE,
+END_DATE,
+ORDER_SEQ,
+ARRAY[
+CASE 
+WHEN CATEGORY_NM = '유아/아동/완구' THEN '유아/아동' 
+ELSE CATEGORY_NM 
+END
+] AS path_names
+FROM TCA_CATEGORY
+WHERE UP_CATEGORY_ID = 'root'
+
+UNION ALL
+
+SELECT 
+c.CATEGORY_ID,
+c.UP_CATEGORY_ID,
+c.CATEGORY_NM,
+c.CATEGORY_TYPE_CD,
+c.DEPTH,
+c.STDIST_EXUSE_YN,
+c.DISP_YN,
+c.START_DATE,
+c.END_DATE,
+c.ORDER_SEQ,
+parent.path_names || 
+CASE 
+WHEN c.CATEGORY_NM = '유아/아동/완구' THEN '유아/아동'
+ELSE c.CATEGORY_NM
+END
+FROM TCA_CATEGORY c
+INNER JOIN category_hierarchy parent ON c.UP_CATEGORY_ID = parent.CATEGORY_ID
+),
+filtered_category AS (
+SELECT *
+FROM category_hierarchy
+WHERE (
+CATEGORY_TYPE_CD IN ('01', '11')
+AND DISP_YN = 'Y'
+AND NOW() BETWEEN TO_TIMESTAMP(START_DATE || '000000', 'YYYYMMDDHH24MISS')
+AND TO_TIMESTAMP(END_DATE || '000000', 'YYYYMMDDHH24MISS')
+)
+OR LEFT(CATEGORY_ID, 8) = 'C2020042'
+),
+final_category AS (
+SELECT 
+ROW_NUMBER() OVER () AS num,
+fc.CATEGORY_ID,
+CASE 
+WHEN fc.CATEGORY_NM = '유아/아동/완구' THEN '유아/아동'
+ELSE fc.CATEGORY_NM
+END AS CATEGORY_NM,
+fc.CATEGORY_TYPE_CD,
+ec.CD_NM AS CATEGORY_TYPE_NM,
+fc.DEPTH,
+fc.STDIST_EXUSE_YN,
+fc.DISP_YN,
+TO_CHAR(TO_DATE(fc.START_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS START_DATE,
+TO_CHAR(TO_DATE(fc.END_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS END_DATE,
+array_to_string(fc.path_names, '/') AS FULL_CATEGORY_NM
+FROM filtered_category fc
+JOIN TET_CODE ec 
+ON fc.CATEGORY_TYPE_CD = ec.MINOR_CD
+WHERE ec.MAJOR_CD = 'SM007'
+AND fc.CATEGORY_ID NOT LIKE 'C0010005%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030006%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030007%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030008%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030009%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030010%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030011%'
+AND fc.CATEGORY_ID LIKE CONCAT(#categoyDepth2#::varchar , '%')
+AND EXISTS (
+SELECT 1
+FROM TCA_CATEGORY_MAPPING TCM
+WHERE TCM.CATEGORY_ID = fc.CATEGORY_ID
+AND TCM.CAT_CD = #catCd#
+)
+)
+SELECT * FROM final_category
+
+    </select>
+    
+    
+    <select id="selectNewOnlineDisplayAllCategoryList"  resultMap="onlineDisplayAllCategoryMap"  parameterClass="dataMap">
+WITH RECURSIVE category_tree AS (
+SELECT 
+CATEGORY_ID,
+UP_CATEGORY_ID,
+CATEGORY_NM,
+CATEGORY_TYPE_CD,
+DEPTH,
+STDIST_EXUSE_YN,
+DISP_YN,
+START_DATE,
+END_DATE,
+ORDER_SEQ,
+ARRAY[
+CASE WHEN CATEGORY_NM = '유아/아동/완구' THEN '유아/아동' ELSE CATEGORY_NM END
+] AS path_names
+FROM TCA_CATEGORY
+WHERE UP_CATEGORY_ID = 'root'
+
+UNION ALL
+
+SELECT 
+c.CATEGORY_ID,
+c.UP_CATEGORY_ID,
+c.CATEGORY_NM,
+c.CATEGORY_TYPE_CD,
+c.DEPTH,
+c.STDIST_EXUSE_YN,
+c.DISP_YN,
+c.START_DATE,
+c.END_DATE,
+c.ORDER_SEQ,
+parent.path_names || 
+CASE WHEN c.CATEGORY_NM = '유아/아동/완구' THEN '유아/아동' ELSE c.CATEGORY_NM END
+FROM TCA_CATEGORY c
+INNER JOIN category_tree parent ON c.UP_CATEGORY_ID = parent.CATEGORY_ID
+),
+filtered_categories AS (
+SELECT *
+FROM category_tree
+WHERE (
+CATEGORY_TYPE_CD IN ('01', '11')
+AND DISP_YN = 'Y'
+AND NOW() BETWEEN TO_TIMESTAMP(START_DATE || '000000', 'YYYYMMDDHH24MISS')
+AND TO_TIMESTAMP(END_DATE || '000000', 'YYYYMMDDHH24MISS')
+)
+OR LEFT(CATEGORY_ID, 8) = 'C2020042'
+),
+final_categories AS (
+SELECT 
+ROW_NUMBER() OVER () AS num,
+fc.CATEGORY_ID,
+#catCd1# AS CATCD1,
+#catCd2# AS CATCD2,
+#catCd3# AS CATCD3,
+#teamCd# AS TEAMCD,
+array_to_string(fc.path_names, '/') AS FULL_CATEGORY_NM,
+CASE WHEN fc.CATEGORY_NM = '유아/아동/완구' THEN '유아/아동' ELSE fc.CATEGORY_NM END AS CATEGORY_NM,
+fc.CATEGORY_TYPE_CD,
+ec.CD_NM AS CATEGORY_TYPE_NM,
+fc.DEPTH,
+fc.STDIST_EXUSE_YN,
+fc.DISP_YN,
+TO_CHAR(TO_DATE(fc.START_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS START_DATE,
+TO_CHAR(TO_DATE(fc.END_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS END_DATE
+FROM filtered_categories fc
+JOIN TET_CODE ec ON fc.CATEGORY_TYPE_CD = ec.MINOR_CD
+WHERE ec.MAJOR_CD = 'SM007'
+AND fc.CATEGORY_ID NOT LIKE 'C0010005%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030006%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030007%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030008%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030009%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030010%'
+AND fc.CATEGORY_ID NOT LIKE 'C00100030011%'
+AND EXISTS (
+SELECT 1
+FROM TCA_CATEGORY_MAPPING TCM
+WHERE TCM.CATEGORY_ID = fc.CATEGORY_ID
+AND TCM.CAT_CD = #catCd3#
+)
+)
+SELECT * FROM final_categories
+
+    </select>
+
+<!-- se... SQLINES DEMO *** -->
+<parameterMap id="procedureParametersEMS" class="java.util.HashMap">
+	<parameter property="V_BMAN_NO" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_ID" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_AUTHO_FG" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_TEL_NO" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_EMAIL" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_SUB_INFO_ID" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_EMS_CD" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_SVC_SEQ" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	
+	<parameter property="V_MSG" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT" />
+	<parameter property="V_ERR" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT" />
+	<parameter property="V_LOG" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT" />
+</parameterMap>
+
+
+
+   
+<!-- se... SQLINES DEMO *** -->
+<parameterMap id="procedureParametersSMS" class="java.util.HashMap">
+	<parameter property="V_BMAN_NO" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_VENDOR_ID" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_TEL_NO" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_EMAIL" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_ANX_INFO_CD" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_DEST_CALL_NO" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_MSGS" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_SMS_CD" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	<parameter property="V_SVC_SEQ" javaType="java.lang.String" jdbcType="VARCHAR" mode="IN" />
+	
+	<parameter property="V_MSG" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT" />
+	<parameter property="V_ERR" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT" />
+	<parameter property="V_LOG" javaType="java.lang.String" jdbcType="VARCHAR" mode="OUT" />
+</parameterMap>
+
+
+
+<select id="getProdAddTemplateList" resultMap="departmentResultMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+   	/* common.getProdAddTemplateList */
+   	
+   		SELECT  MST.INFO_GRP_NM AS org_nm2
+		       ,MST.INFO_GRP_CD AS org_cd2
+		       ,DET.INFO_COL_CD AS org_cd
+		       ,DET.INFO_COL_NM AS org_nm
+		       ,MST.CAT_CD AS cat_cd
+		  FROM  TPR_PROD_ADD_INFO_MST MST 
+		       ,TPR_PROD_ADD_INFO_DET DET
+		 WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND MST.INFO_GRP_CD = #infoGrpCd#
+      </isNotEmpty>
+      <isEqual property="flag" compareValue="2">
+      	AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY 
+      	                   WHERE CAT_CD = #catCd#)
+      </isEqual>
+      
+      <isEqual property="flag" compareValue="1">
+      	<isNotEmpty property="catCd" >  <!-- 코드... SQLINES DEMO *** -->
+      		AND MST.CAT_CD = #catCd#
+      	</isNotEmpty>
+      </isEqual>
+      
+	<![CDATA[
+		   AND MST.USE_YN = 'Y'
+		   AND DET.USE_YN = 'Y'
+		 ORDER BY MST.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 
+   	]]>
+  </select>  
+  
+  <select id="getProdCertTemplateList" resultMap="departmentResultMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+   	/* common.getProdCertTemplateList */
+   	
+   		SELECT  MST.INFO_GRP_NM AS org_nm2
+		       ,MST.INFO_GRP_CD AS org_cd2
+		       ,DET.INFO_COL_CD AS org_cd
+		       ,DET.INFO_COL_NM AS org_nm
+		       ,MST.CAT_CD AS cat_cd
+		  FROM  TPR_PROD_CERT_INFO_MST MST 
+		       ,TPR_PROD_CERT_INFO_DET DET
+		 WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND MST.INFO_GRP_CD = #infoGrpCd#
+      </isNotEmpty>
+      <isEqual property="flag" compareValue="2">
+      	AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY 
+      	                   WHERE CAT_CD = #catCd#)
+      </isEqual>
+      
+      <isEqual property="flag" compareValue="1">
+      	<isNotEmpty property="catCd" >  <!-- 코드... SQLINES DEMO *** -->
+      		AND MST.CAT_CD = #catCd#
+      	</isNotEmpty>
+      </isEqual>
+      
+	<![CDATA[
+		   AND MST.USE_YN = 'Y'
+		   AND DET.USE_YN = 'Y'
+		 ORDER BY org_cd2 ASC
+   	]]>
+  </select>
+  
+	<select id="getProdAddTemplateUpdateList" resultMap="departmentResultMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+   	/* common.getProdAddTemplateUpdateList */
+   	
+   		SELECT  MST.INFO_GRP_NM AS org_nm2
+		       ,MST.INFO_GRP_CD AS org_cd2
+		       ,DET.INFO_COL_CD AS org_cd
+		       ,DET.INFO_COL_NM AS org_nm
+		       ,MST.CAT_CD AS cat_cd
+		  FROM  TPR_PROD_ADD_INFO_MST MST 
+		       ,TPR_PROD_ADD_INFO_DET DET
+		 WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND MST.INFO_GRP_CD = #infoGrpCd#
+      </isNotEmpty>
+      <isEqual property="flag" compareValue="2">
+      	AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY WHERE CAT_CD = #catCd#)
+      </isEqual>
+      
+      <isEqual property="flag" compareValue="1">
+      	<isNotEmpty property="catCd" >  <!-- 코드... SQLINES DEMO *** -->
+      		AND MST.CAT_CD = #catCd#
+      	</isNotEmpty>
+      </isEqual>
+      
+	<![CDATA[
+		   AND MST.USE_YN = 'Y'
+		   AND DET.USE_YN = 'Y'
+		 ORDER BY MST.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 
+   	]]>
+  	</select>
+  
+  
+  <select id="getProdAddTemplateDetailList" resultMap="departmentResultDetailMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+  	/* common.getProdAddTemplateDetailList */
+   		SELECT  (select MST.INFO_GRP_NM from TPR_PROD_ADD_INFO_MST MST where  MST.INFO_GRP_CD=DET.INFO_GRP_CD LIMIT 1) AS org_nm2
+		       ,DET.INFO_GRP_CD AS org_cd2
+		       ,DET.INFO_COL_CD AS org_cd
+		       ,DET.INFO_COL_NM AS org_nm
+               ,DET.INFO_COL_DESC AS org_desc
+               ,DET.ORDER_SEQ  
+		  FROM  TPR_PROD_ADD_INFO_DET DET
+		  WHERE 1=1 AND DET.USE_YN='Y'
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND DET.INFO_GRP_CD = #infoGrpCd# 
+      </isNotEmpty>
+	<![CDATA[
+		ORDER BY DET.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 
+		 
+   	]]>
+  </select>
+  
+  <select id="getProdCertTemplateDetailList" resultMap="departmentResultDetailMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+  	/* common.getProdCertTemplateDetailList */
+   		SELECT  (select MST.INFO_GRP_NM from TPR_PROD_ADD_INFO_MST MST where  MST.INFO_GRP_CD=DET.INFO_GRP_CD LIMIT 1) AS org_nm2
+		       ,DET.INFO_GRP_CD AS org_cd2
+		       ,DET.INFO_COL_CD AS org_cd
+		       ,DET.INFO_COL_NM AS org_nm
+               ,DET.INFO_COL_DESC AS org_desc
+               ,DET.ORDER_SEQ  
+		  FROM  TPR_PROD_CERT_INFO_DET DET
+		  WHERE 1=1 AND DET.USE_YN='Y'
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND DET.INFO_GRP_CD = #infoGrpCd# 
+      </isNotEmpty>
+	<![CDATA[
+		ORDER BY DET.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 
+		 
+   	]]>
+  </select>  
+  
+  
+  
+  <select id="getProdAddTemplateUpdateDetailList" resultMap="departmentResultUpdateDetailMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+  	/* common.getProdAddTemplateUpdateDetailList */
+   		 SELECT  DET.INFO_GRP_CD AS org_cd2
+               ,DET.INFO_COL_CD AS org_cd
+               ,DET.INFO_COL_NM AS org_nm
+               ,DET.INFO_COL_DESC AS org_desc
+               ,VAL.COL_VAL AS col_val
+          FROM TPR_PROD_ADD_INFO_DET DET, 
+                      TPR_PROD_ADD_INFO_VAL VAL	
+		WHERE DET.INFO_GRP_CD = VAL.INFO_GRP_CD(+)
+           AND DET.INFO_COL_CD = VAL.INFO_COL_CD(+)
+           AND DET.USE_YN = 'Y'
+           AND CURRENT_TIMESTAMP(0) BETWEEN TO_DATE(DET.VALI_START_DATE,'YYYYMMDDHH24MISS') AND TO_DATE(DET.VALI_END_DATE,'YYYYMMDDHH24MISS')
+    
+       
+       	AND DET.INFO_GRP_CD = #infoGrpCd# 
+       	AND VAL.NEW_PROD_CD(+) = #newProductCode# 
+  
+		 ORDER BY DET.ORDER_SEQ 
+		 
+   	]]>
+   	
+  </select>
+  
+  <select id="getProdCertTemplateUpdateDetailList" resultMap="departmentResultUpdateDetailMap" parameterClass="searchParam">
+   	<![CDATA[	
+   	
+  	/* common.getProdCertTemplateUpdateDetailList */
+   		 SELECT  DET.INFO_GRP_CD AS org_cd2
+               ,DET.INFO_COL_CD AS org_cd
+               ,DET.INFO_COL_NM AS org_nm
+               ,DET.INFO_COL_DESC AS org_desc
+               ,VAL.COL_VAL AS col_val
+          FROM TPR_PROD_CERT_INFO_DET DET, 
+                      TPR_PROD_CERT_INFO_VAL VAL	
+		WHERE DET.INFO_GRP_CD = VAL.INFO_GRP_CD(+)
+           AND DET.INFO_COL_CD = VAL.INFO_COL_CD(+)
+           AND DET.USE_YN = 'Y'
+           AND CURRENT_TIMESTAMP(0) BETWEEN TO_DATE(DET.VALI_START_DATE,'YYYYMMDDHH24MISS') AND TO_DATE(DET.VALI_END_DATE,'YYYYMMDDHH24MISS')
+    
+       
+       	AND DET.INFO_GRP_CD = #infoGrpCd# 
+       	AND VAL.NEW_PROD_CD(+) = #newProductCode# 
+  
+		 ORDER BY DET.ORDER_SEQ 
+		 
+   	]]>
+   	
+  </select>  
+  
+	<!-- SQLINES DEMO ***  -->
+	<select id="ALL_CODE_SQL01" parameterClass="paramClass" resultClass="resultClass">
+		/* SQLINES DEMO *** CODE_SQL01 */
+		SELECT 	DETAIL_CD AS CODE_ID
+			, 	DETAIL_NM AS CODE_NAME
+		FROM ALL_CD@DL_MD_MARTNIS
+		WHERE GRP_CD = #parentCodeId#
+		<isNotEmpty property="subCodeId" removeFirstPrepend="true">    <!-- 코드... SQLINES DEMO *** -->
+			AND DETAIL_VAL1 = #subCodeId#
+		</isNotEmpty>
+		
+		ORDER BY DETAIL_CD
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- 
+		##########################################################################################
+		### 인터셉터 구현 
+		##########################################################################################
+	-->
+
+<!--  acceccfilter 개선 현재 내용 없음 .. 인터셉터 참조 
+    		 
+	<bean id="userInterceptor" class="lcn.module.common.interceptor.UserInterceptor" >
+		<property name="authErrorUri" value="/common/view/showView.do?viewName=common/authError"/>
+		<property name="loginUri" value="/common/login/viewLoginForm.do"/>
+		<property name="loginFreeActions">
+			<list>
+			  	<value>/common/login/viewLoginForm.do<value></value>
+				<value>/common/login/login.do<value></value>
+				<value>/common/login/loginTest.do<value></value>
+				<value>/common/login/logout.do<value></value>
+				<value>/common/view/showView.do?viewName=common/endOfSessionError<value></value>
+				<value>/common/view/showView.do?viewName=common/authError<value></value>
+				<value>/common/view/showView.do?viewName=common/blank<value></value>
+				<value>/common/login/gnb.do<value></value>
+				<value>/common/login/lnb.do<value></value>
+				<value>/common/login/content.do<value></value>
+				<value>/common/login/menuClick.do<value></value>
+				<value>/hocommon/accept/find.do<value></value>
+				<value>/dcmobile/login/PDCMGOT0001.do<value></value> 
+				<value>/dcmobile/login/login.do<value></value>
+				<value>/dcmobile/login/logout.do<value></value>
+				<value>/FileUp.do<value></value>
+				<value>/FileDown.do<value></value>
+				<value>/FileUpload.do<value></value>
+				<value>/FileDownlist.do<value></value>
+				<value>/sample/<value></value>
+				<value>validator.do<value></value>
+				<value>/files/getImage.do<value>
+				<value>/FileDownById.do<value>
+			</list>
+		</property>
+		<property name="accessFreeActions">
+			<list>
+				<value>/common/login/viewMain.do</value>
+				<value>/common/login/logout.do</value>
+				<value>/dcmobile/login/login.do</value>
+				<value>/dcmobile/login/logout.do</value>
+			</list>
+		</property>		
+		
+	</bean>
+		 
+	<bean id="annotationMapping"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="alwaysUseFullPath" value="true"/>
+		<property name="interceptors" ref="userInterceptor" />
+	</bean>	
+	
+	-->
+	
+	
+
+
+	
+	
+</beans>

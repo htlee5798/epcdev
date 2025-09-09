@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0015">
+    <typeAlias alias="pscpprd0015VO" type="com.lottemart.epc.product.model.PSCPPRD0015VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectPrdStoreList" resultClass="pscpprd0015VO">
+    <![CDATA[
+    /* pscpprd0015.selectPrdStoreList */
+            SELECT 
+                  STR_GUBUN AS strGubun
+                  ,STR_CD AS strCd
+                  ,STR_NM AS strNm
+            FROM  ( 
+                   SELECT '01' STR_GUBUN, STR_CD, STR_NM 
+                   FROM   TST_STORE
+                   WHERE ONLINE_YN = 'Y' OR CMBN_MALL_REP_STR_YN  = 'Y'
+                   UNION ALL
+                   SELECT '02', STR_CD, STR_NM 
+                   FROM   TST_STORE
+                   WHERE FEDAY_MALL_YN = 'Y' OR CMBN_MALL_REP_STR_YN  = 'Y'
+                  )
+            ORDER BY STR_GUBUN, STR_NM
+    ]]>
+    </select>
+
+    <select id="selectPrdIconList" resultClass="pscpprd0015VO">
+    <![CDATA[    
+    /* pscpprd0015.selectPrdIconList */
+    SELECT AA.*, ROWNUM AS num FROM (
+        SELECT
+          C.STR_NM AS strNm
+	      ,A.STR_CD AS strCd
+	      ,A.PROD_CD AS prodCd
+	      ,B.PROD_NM AS prodNm
+	      ,DECODE(ICON_1,'1','1','0') AS icon1
+	      ,DECODE(ICON_2,'1','1','0') AS icon2
+	      ,DECODE(ICON_3,'1','1','0') AS icon3
+	      ,DECODE(ICON_4,'1','1','0') AS icon4
+	      ,DECODE(ICON_5,'1','1','0') AS icon5
+	      ,DECODE(ICON_6,'1','1','0') AS icon6
+	      ,DECODE(ICON_7,'1','1','0') AS icon7
+	      ,DECODE(ICON_8,'1','1','0') AS icon8
+	      ,DECODE(ICON_9,'1','1','0') AS icon9
+	      ,DECODE(ICON_10,'1','1','0') AS icon10
+	      ,DECODE(ICON_11,'1','1','0') AS icon11
+	      ,DECODE(ICON_12,'1','1','0') AS icon12
+	      ,DECODE(ICON_13,'1','1','0') AS icon13
+	      ,DECODE(ICON_14,'1','1','0') AS icon14
+	      ,DECODE(A.DEL_YN,'Y','1','0') AS delYn
+	      ,TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS regDate
+        FROM  TPR_PRODUCT_ICON A,
+              TPR_PRODUCT B,
+              TST_STORE C
+        WHERE A.PROD_CD = B.PROD_CD
+        AND   A.STR_CD = C.STR_CD
+        AND   A.PROD_CD = #prodCd#
+        ]]>
+        <isNotEmpty property="strCd">
+        AND   A.STR_CD LIKE #strCd#||'%'
+        </isNotEmpty>
+
+        <isEqual property="strGubun" compareValue="01">
+        <![CDATA[
+        AND C.ONLINE_YN = 'Y'
+        ]]>
+        </isEqual>
+
+        <isEqual property="strGubun" compareValue="02">
+        <![CDATA[
+        AND C.FEDAY_MALL_YN = 'Y'
+        ]]>
+        </isEqual>
+        
+        ORDER BY C.STR_NM
+    ) AA
+    </select>
+
+    <update id="updatePrdIconList">
+    <![CDATA[
+    /* pscpprd0015.updatePrdIconList */
+    UPDATE TPR_PRODUCT_ICON
+    SET    ICON_1 = DECODE(#icon1#,'1','Y','N')
+           ,ICON_2 = DECODE(#icon2#,'1','Y','N')
+           ,ICON_3 = DECODE(#icon3#,'1','Y','N')
+           ,ICON_4 = DECODE(#icon4#,'1','Y','N')
+           ,ICON_5 = DECODE(#icon5#,'1','Y','N')
+           ,ICON_6 = DECODE(#icon6#,'1','Y','N')
+           ,ICON_7 = DECODE(#icon7#,'1','Y','N')
+           ,ICON_8 = DECODE(#icon8#,'1','Y','N')
+           ,ICON_9 = DECODE(#icon9#,'1','Y','N')
+           ,ICON_10 = DECODE(#icon10#,'1','Y','N')
+           ,ICON_11 = DECODE(#icon11#,'1','Y','N')
+           ,ICON_12 = DECODE(#icon12#,'1','Y','N')
+           ,ICON_13 = DECODE(#icon13#,'1','Y','N')
+           ,ICON_14 = DECODE(#icon14#,'1','Y','N')
+           ,DEL_YN = DECODE(#delYn#,'1','Y','N')
+           ,MOD_ID = #regId#
+           ,MOD_DATE = CURRENT_TIMESTAMP(0)
+    WHERE  PROD_CD = #prodCd#
+    AND    STR_CD = #strCd# 
+    ]]>
+    </update>     
+    
+</sqlMap>

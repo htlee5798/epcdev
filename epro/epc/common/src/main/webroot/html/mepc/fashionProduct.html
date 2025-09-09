@@ -1,0 +1,201 @@
+
+
+
+
+
+
+
+
+
+
+<!--사용자권한을 가져오기 위해 필요함 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>코리안넷</title>
+<script type="text/javascript">
+
+function lfn_write() {
+	var lv_form = document.ltmart;
+	lv_form.submit();
+}
+
+
+function lfn_ltmart() {
+  	var p_form = document.PR2110Form;
+  	var lv_form = document.ltmart;
+  	
+  	var p_gtin = p_form.gtin.value;
+  	
+  	if( p_form.arr_chk != undefined){
+  		if( p_form.arr_chk.length == undefined ) {		// 체크박스 하나
+			if( p_form.arr_chk.checked == true){
+				p_gtin += "|" + p_form.arr_chk.value;
+			}
+		}else{										// 체크박스 여러개
+			for(var i = 0; i < p_form.arr_chk.length; i++ ) {
+				if( p_form.arr_chk[i].checked == true){
+					p_gtin += "|" + p_form.arr_chk[i].value;
+				}
+			}
+		}
+	}
+	
+  	lv_form.SRCMK_CD.value =  p_gtin;  	
+  	
+  	lv_form.target = "_self";
+  	//lv_form.action = "https://ediven.lottemart.com/kor_net_fashion.asp";
+  	
+  	var userName = "kcci1";
+  	if(userName == "kcci1") lv_form.action = "/epc/edi/product/PEDMPRO0200.do";
+  	else lv_form.action = "https://ediven.lottemart.com/kor_net_fashion.asp";
+  	
+  	lv_form.submit();
+	
+}
+
+/*
+* Fuction Name  : lfn_Allchk
+* Param type 	: 
+* Return Value 	: 없음
+* Description
+* 체크박스 모두 체크
+*/
+function lfn_Allchk() {
+	var lv_form = document.PR2110Form;
+	gfn_ChkAllItem(lv_form.arr_chk,lv_form.allchk.checked);
+}
+
+</script>
+</head>
+<body>
+<form name="PR2110Form" method="post" action="/product/PR6112L.do">
+<input type="hidden" name="gln" value="8800902122013">
+<input type="hidden" name="gtin" value="4893055001483">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+	<TR>
+		<TD>
+		<TABLE border="0" cellspacing="0" cellpadding="0" width="100%" height="" background="/images/popup/top02_bg.gif">
+			<TR>
+				<TD><img src="/images/popup/top02_logo.gif"></TD>
+				<TD align="right" style="padding-right:10px;"><input type="button" value="닫기" class="btn12_02" onclick="javascript: self.close();"></TD>
+			</TR>
+		</TABLE>	
+		</TD>
+	</TR>   
+	<tr>
+    	<td width="100%" valign="top" style="padding:10px">
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+	            <td class="title01_l"><img src="/images/arrow_01.gif" style="vertical-align:middle;">  유통업체 상품등록</td>
+            </tr>
+		</table>
+        <!-- 게시판 시작 -->
+        <table width="100%" border="0" cellspacing="1" cellpadding="0" class="table01">
+    		<tr>
+    	    	<td width="15%" class="td07_c">바코드(GTIN-13)</td>
+				<td width="40%" class="td07_c">상품명</td>
+				<td width="15%" class="td07_c">스타일</td>
+				<td width="15%" class="td07_c">색상</td>
+				<td width="15%" class="td07_c">사이즈</td>
+			</tr>
+			<tr class="tr01" onmouseover="this.style.backgroundColor='#FFF7FF'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+    	    	<td class="td08_c">4893055001483</td>
+    	    	<td class="td08_l">대한모직 여름반바지  어두운회 연두색 여성하의-26</td>
+    	    	<td class="td08_c">여름</td>
+    	    	<td class="td08_c">어두운회 연두색</td>
+    	    	<td class="td08_c">여성하의 - 26</td>    	                           
+			</tr>
+    	</table>
+		<br/>
+    	<!-- 페이지 상단 부분 시작 -->
+      	<!-- 네비게이터, 도움말 -->
+      	<table cellpadding="2" cellspacing="1" border="0" bgcolor=#B0C3D6 width=100%>
+			<tr bgcolor="#FFFFFF"> 
+				<td align=left class="chn1" valign="middle" width="20%"><br><b><font color="red">*</font></b> 등록할 해당상품의 바코드(GTIN-13)를 선택하시기 바랍니다 <br><br></td>
+			</tr>
+		</table>
+      	<table width="100%" border="0" cellspacing="1" cellpadding="0" class="table01">
+    		<tr>
+    			<td width="5%" class="td07_c"><input type="checkbox" class="checkbox" name="allchk" onclick="lfn_Allchk();"/></td>
+    	    	<td width="15%" class="td07_c">GTIN</td>
+				<td width="50%" class="td07_c">상품명</td>
+				<td width="15%" class="td07_c">색상</td>
+				<td width="15%" class="td07_c">사이즈</td>
+			</tr>
+			
+			
+			
+    	    <tr class="tr01" onmouseover="this.style.backgroundColor='#FFF7FF'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+    	    	<td class="td08_c"><input type="checkbox" name="arr_chk" value="8805555555522" class="checkbox"></td>
+    	    	<td class="td08_c">8805555555522</td>
+    	    	<td class="td08_l">대한상의 원피스 12G x 1EA</td>
+    	        <td class="td08_c">회 녹색</td>
+    	        <td class="td08_c">신발 - 200</td>    	                  
+			</tr>
+			
+    	    <tr class="tr01" onmouseover="this.style.backgroundColor='#FFF7FF'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+    	    	<td class="td08_c"><input type="checkbox" name="arr_chk" value="4893055001476" class="checkbox"></td>
+    	    	<td class="td08_c">4893055001476</td>
+    	    	<td class="td08_l">일반단품 미원 조미료 200G x 1EA</td>
+    	        <td class="td08_c">칙칙한 주황색</td>
+    	        <td class="td08_c">여성하의 - 27</td>    	                  
+			</tr>
+			
+    	    <tr class="tr01" onmouseover="this.style.backgroundColor='#FFF7FF'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+    	    	<td class="td08_c"><input type="checkbox" name="arr_chk" value="8805555555546" class="checkbox"></td>
+    	    	<td class="td08_c">8805555555546</td>
+    	    	<td class="td08_l">대한상의 원피스 12G x 1EA</td>
+    	        <td class="td08_c">해맑은 노랑색</td>
+    	        <td class="td08_c">성인내의 - M</td>    	                  
+			</tr>
+			
+    	    <tr class="tr01" onmouseover="this.style.backgroundColor='#FFF7FF'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+    	    	<td class="td08_c"><input type="checkbox" name="arr_chk" value="8805555555553" class="checkbox"></td>
+    	    	<td class="td08_c">8805555555553</td>
+    	    	<td class="td08_l">대한상의 원피스 12G x 1EA</td>
+    	        <td class="td08_c">아주연한 주황색</td>
+    	        <td class="td08_c">유아동내의 - 65</td>    	                  
+			</tr>
+			
+    	    <tr class="tr01" onmouseover="this.style.backgroundColor='#FFF7FF'" onmouseout="this.style.backgroundColor='#FFFFFF'">
+    	    	<td class="td08_c"><input type="checkbox" name="arr_chk" value="4893055001490" class="checkbox"></td>
+    	    	<td class="td08_c">4893055001490</td>
+    	    	<td class="td08_l">대한모직 여름반바지  짙은 노랑색 여성하의-25</td>
+    	        <td class="td08_c">짙은 노랑색</td>
+    	        <td class="td08_c">여성하의 - 25</td>    	                  
+			</tr>
+			
+    	    
+    	    
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+        	<tr>            	
+            	<td align="right" height="30">
+            		<input type="button" class="btn02_04" value="계속진행" onClick="lfn_write();lfn_ltmart();">
+            	</td>
+            </tr>
+        </table>       
+    	</td>
+    </tr>
+</table>
+</form>
+<!-------- 컨텐츠 끝 ------->
+<form name="ltmart" method="post" action="/epc/edi/product/PEDMPRO0200.do">
+	<INPUT TYPE="HIDDEN" NAME="bman_no" VALUE="1048203590"><!-- 사업자등록번호 -->
+	<INPUT TYPE="HIDDEN" NAME="SRCMK_CD" VALUE="8805555555553|4893055001490|8805555555546"><!-- GTIN -->
+	<INPUT TYPE="HIDDEN" NAME="PROD_NM" VALUE="대한모직 여름반바지 "><!-- 상품명 -->
+	<INPUT TYPE="HIDDEN" NAME="SHORT_NM" VALUE="대한모직 여름반바지 "><!-- 단축상품명 -->
+	<INPUT TYPE="HIDDEN" NAME="ISSUE_DATE" VALUE=""><!-- 최초출시일자 -->
+	<INPUT TYPE="HIDDEN" NAME="PROD_STD" VALUE=".3"><!-- 상품규격 -->
+	<INPUT TYPE="HIDDEN" NAME="PRODUCER" VALUE="01"><!-- 원산지코드 -->
+	<INPUT TYPE="HIDDEN" NAME="PROD_WIDTH" VALUE="10"><!-- 가로 -->
+	<INPUT TYPE="HIDDEN" NAME="PROD_LENGTH" VALUE="10"><!-- 세로 -->
+	<INPUT TYPE="HIDDEN" NAME="PROD_HEIGHT" VALUE="10"><!-- 높이 -->
+	<INPUT TYPE="HIDDEN" NAME="bcd_fg" VALUE="KR00246708"><!-- 바코드번호 -->
+	
+</form>
+<iframe id="ifr_hidden" name="ifr_hidden" src="about:blank" frameborder="no" width="0" height="0" scrolling="yes"></iframe>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                        

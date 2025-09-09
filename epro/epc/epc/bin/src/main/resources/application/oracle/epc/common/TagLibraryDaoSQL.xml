@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 공통 콤보박스 -->
+<sqlMap namespace="TagLibraryDao">
+    <typeAlias alias="resultMap" type="lcn.module.common.util.LowerCaseMap" />
+
+<resultMap id="code" class="com.lottemart.epc.common.model.OptionTagVO">
+    <result property="code" column="MINOR_CD"/>
+    <result property="name" column="CD_NM"/>
+</resultMap> 
+
+<select id="selectCodeList" resultMap="code">
+    SELECT 
+        MINOR_CD
+      , CD_NM 
+    FROM   
+        TET_CODE 
+    WHERE  
+        MAJOR_CD = #val#
+    ORDER BY 
+        ORDER_SEQ
+</select>
+
+</sqlMap>
+
+
+
+
+

@@ -1,0 +1,928 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmprd0015">
+    <typeAlias alias="pscmprd0015VO" type="com.lottemart.epc.product.model.PSCMPRD0015VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+       
+    <sql id="pre-page-frag">
+		SELECT RS1.*
+
+          ,CASE WHEN RPSA_AMT > 0 THEN ROUND(CONTB_PRFT_1_AMT / RPSA_AMT * 100,2) ELSE 0 END  AS CONTB_PRFT_1
+          ,CASE WHEN RPSA_AMT > 0 THEN ROUND(CONTB_PRFT_2_AMT / RPSA_AMT * 100,2) ELSE 0 END  AS CONTB_PRFT_2
+          ,TGT_CONTB_PRFT1
+          ,TGT_CONTB_PRFT2
+
+		  FROM (SELECT SELECT_BOS.*
+		             , CEIL( ROWNUM / #rowsPerPage# ) PAGEINDEX
+		             , COUNT(1) OVER() TOTAL_COUNT
+		             , SUM(CONTB_PRFT_1_AMT) AS CONTB_PRFT_1_AMT/* 현재 공헌이익1 */
+	                 , SUM(CONTB_PRFT_2_AMT) AS CONTB_PRFT_2_AMT /* 현재 공헌이익2 */
+	                 , SUM(RPSA_AMT) AS RPSA_AMT /* 세제외 매출 */
+		          FROM (
+	</sql>
+    
+    <sql id="post-page-frag">
+		                ) SELECT_BOS 
+						LEFT OUTER JOIN TCP_MMPROD_CONTB_PRFT TC1 ONSELECT_BOS.SALE_MM = TC1.SALE_MM 
+						AND 'D2' = TC1.SALE_CHNNEL 
+						AND SELECT_BOS.MD_SRCMK_CD = TC1.SRCMK_CD
+						AND SELECT_BOS.PROD_CD = TC1.T_PROD_CD
+          WHERE 1=1            
+             GROUP BY  ROWNUM,SELECT_BOS.PROD_CD,SELECT_BOS.PROD_NM ,SELECT_BOS.REP_PROD_CD ,SELECT_BOS.MD_SRCMK_CD ,SELECT_BOS.PROD_DIVN_CD ,SELECT_BOS.VENDOR_ID ,SELECT_BOS.DISP_YN, SELECT_BOS.TAXAT_DIVN_CD
+             ,SELECT_BOS.BUY_PRC ,SELECT_BOS.SELL_PRC ,SELECT_BOS.CURR_SELL_PRC ,SELECT_BOS.STAFF_DC_AMT ,SELECT_BOS.APRV_YN ,SELECT_BOS.OPTN_PROD_PRC_MGR_YN , SELECT_BOS.REG_DATE
+             , SELECT_BOS.L2_CD, SELECT_BOS.CAT_CD , SELECT_BOS.SALE_MM, MALL_DIVN_CD
+              ) RS1 
+				LEFT OUTER JOIN (SELECT * FROM TCP_TGT_PRFT_RATE_MGR
+                    WHERE 1=1
+                     <include refid="contb_prft_date2" />
+                      AND USE_YN = 'Y'
+                    )RS2 ON RS1.L2_CD = RS2.MGR_CD
+		 WHERE
+		   PAGEINDEX = #currentPage#
+	</sql>
+	
+	<!--  목표공헌이익 조회시 -->
+    <sql id="contb_prft_date2">
+            AND TGT_MM   =  NVL((SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'CP004' AND USE_YN = 'Y' ) ,  TO_CHAR(CURRENT_TIMESTAMP(0)-1,'YYYYMM') )
+    </sql>
+    
+	<!-- 대표상품코드 조회-->
+	<select id="selectRepProdCdList" resultClass="pscmprd0015VO">
+		/* pscmprd0015.selectRepProdCdList */
+		SELECT * 
+		  FROM (SELECT
+		   			<isEqual property="hintFlag" compareValue="1">
+		   			/*+ leading(pr) index(pr IX_PR_PRODUCT_05) */
+		   			</isEqual>
+		   			<isEqual property="hintFlag" compareValue="2">
+		   			/*+ leading(rh) index(rh IX_TPC_REP_PROD_CHG_TMP_02) */
+		   			</isEqual>
+		   			   ROW_NUMBER() OVER(ORDER BY RH.APPLY_START_DY DESC, RH.PROD_CD ASC, RH.ITEM_CD ASC) AS num
+		   			 , RH.SEQ_NO AS seqNo
+	                 , COUNT(1) OVER() AS cnt
+	                 , PR.PROD_CD as prodCd
+	                 , PR.PROD_NM || DECODE(PR.OPTN_PROD_PRC_MGR_YN, 'Y', ' - 옵션:' || PI.OPTN_DESC, '') AS prodNm
+	                 , TO_CHAR(TO_DATE(RH.APPLY_START_DY, 'YYYYMMDD'),'YYYY-MM-DD') AS applyStartDy
+	                 , TO_CHAR(TO_DATE(RH.APPLY_END_DY, 'YYYYMMDD'),'YYYY-MM-DD') AS applyEndDy	
+	                 , RH.REP_PROD_CD as repProdCd 
+	                 , RH.BUY_PRC as buyPrc 	
+	                 , RH.SELL_PRC as sellPrc	
+	                 , RH.CURR_SELL_PRC as currSellPrc
+	                 , RH.PROFIT_RATE as profitRate
+	                 , TO_CHAR(RH.REG_DATE,'YYYY-MM-DD') AS regDate
+	                 , RH.APPLY_YN as applyYn
+	                 , FN_GET_PROMO_COUNT(PR.PROD_CD) AS promoCnt /* 프로모션 개수 */
+	                 , (SELECT CAT_NM FROM TCA_MD_CATEGORY WHERE CAT_CD = CT.LGRP_CD) AS l1Nm
+	                 , NVL(PR.OPTN_PROD_PRC_MGR_YN,'N') AS optnProdPrcMgrYn
+	                 , RH.ITEM_CD as itemCd
+	                 , RH.REQ_REASON_CONTENT AS reqReasonContent
+	                 , RH.RETN_REASON AS retnReason 
+	                 , DECODE(RH.ADM_YN,'N','승인전','Y','승인','R','반려') AS admYn
+	                 , (SELECT A.MD_PROD_CD || ' ' || A.PROD_NM ||' / '|| A.PROFIT_RATE AS CAT_NM  
+                           FROM TPR_PRODUCT A                
+                        WHERE A.VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = PR.VENDOR_ID)		
+                             AND A.MD_PROD_CD = RH.REP_PROD_CD) AS repProdCdNm      
+	          FROM TPC_REP_PROD_CHG_TMP RH /*@AsError {guess} {TPC_REP_PROD_CHG_TMP 테이블이 존재하지 않습니다}*/
+	                 , TPR_PRODUCT PR
+	                 , TCA_MD_CATEGORY CT
+	                 , TPR_ITEM PI
+	             WHERE RH.PROD_CD   = PR.PROD_CD
+	               AND PR.CAT_CD    = CT.CAT_CD
+	               AND RH.PROD_CD   = PI.PROD_CD
+	               AND RH.ITEM_CD   = PI.ITEM_CD
+<![CDATA[	               
+	               AND RH.REG_DATE >= TO_DATE(#startDate#,'YYYYMMDD')
+	               AND RH.REG_DATE <= TO_DATE(#endDate#,'YYYYMMDD') + 1
+	               AND (0, PR.VENDOR_ID)
+    ]]>	               
+			     <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+			            (0, #vendorId[]#)
+			     </iterate>
+	               AND PR.PROD_CD   LIKE #prodCd# || '%'
+	               AND PR.PROD_NM   LIKE #prodNm# || '%'	          
+	                <isNotEmpty property="admYn">     
+		               <isEqual compareValue="Y" property="admYn">
+		               		AND (RH.ADM_YN = 'Y' AND RH.PROD_CD IN (SELECT PROD_CD FROM TPR_REP_PROD_CHG_HST WHERE PROD_CD = RH.PROD_CD AND APPLY_START_DY = RH.APPLY_START_DY AND ITEM_CD = RH.ITEM_CD))
+		               	</isEqual>
+						<isEqual compareValue="N" property="admYn">
+							AND RH.ADM_YN = #admYn#						               	                
+		               </isEqual>
+		               <isEqual compareValue="R" property="admYn">
+		               		AND RH.ADM_YN = #admYn#						               	                
+		               </isEqual>
+		               </isNotEmpty>	               
+	               
+   	               <isNotEmpty property="l1Nm">
+	               AND CT.LGRP_CD = #l1Nm#
+	               </isNotEmpty>
+	               <isNotEmpty property="optnPrcYn">
+	               AND NVL(PR.OPTN_PROD_PRC_MGR_YN,'N') = #optnPrcYn#
+	               </isNotEmpty>	               
+           	   )
+     	 WHERE NUM BETWEEN #startRow# AND #endRow#
+
+	</select>
+	
+	
+	<select id="selectProductItemList" resultClass="PSCMPRD0015VO">
+		/*	PSCMPRD0015.selectProductItemList	*/
+		SELECT  P.PROD_CD as prodCd, P.PROD_NM as prodNm, T.ITEM_CD as itemCd, P.REP_PROD_CD AS repProdCd
+			, '981' as strCd, (SELECT STR_NM FROM TST_STORE SUB WHERE SUB.STR_CD = '981') as strNm
+			, (CASE WHEN P.OPTN_PROD_PRC_MGR_YN = 'Y' THEN (SELECT TS.BUY_PRC FROM TPR_STORE_ITEM_PRICE TS WHERE TS.PROD_CD = T.PROD_CD AND TS.ITEM_CD = T.ITEM_CD)
+                   ELSE P.BUY_PRC
+               END
+              ) as chgbBuyPrc
+			, (CASE WHEN P.OPTN_PROD_PRC_MGR_YN = 'Y' THEN (SELECT TS.SELL_PRC FROM TPR_STORE_ITEM_PRICE TS WHERE TS.PROD_CD = T.PROD_CD AND TS.ITEM_CD = T.ITEM_CD)
+                   ELSE P.SELL_PRC
+               END
+              ) as chgbSellPrc
+            , (CASE WHEN P.OPTN_PROD_PRC_MGR_YN = 'Y' THEN (SELECT TS.CURR_SELL_PRC FROM TPR_STORE_ITEM_PRICE TS WHERE TS.PROD_CD = T.PROD_CD AND TS.ITEM_CD = T.ITEM_CD)
+                   ELSE P.CURR_SELL_PRC
+               END
+              ) as chgbCurrSellPrc
+			, TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYY-MM-DD') as reqDate
+			, '' APRV_DATE, 'N'  as aprvYn
+			, P.VENDOR_ID as vendorId
+			,'' CHG_REQ_REASON_CONTENT
+			,P.PROFIT_RATE as profitRate, P.PROFIT_RATE as profitRateS, P.TAXAT_DIVN_CD as taxatDivnCd
+	    FROM TPR_PRODUCT P, TPR_ITEM T
+		WHERE T.PROD_CD = P.PROD_CD
+		AND P.PROD_CD NOT IN (
+		    SELECT SUB.PROD_CD FROM TPR_REP_PROD_CHG_HST SUB
+		    WHERE SUB.APPLY_YN = 'N'
+		    AND SUB.ITEM_CD = T.ITEM_CD 
+		    --AND SUB.STR_CD = #strCd#
+		)
+		AND T.PROD_CD 
+	<iterate prepend="IN" property="selectedProdCd" open="(" close=")" conjunction=","> 
+		#selectedProdCd[]# 
+	</iterate>             
+	</select>
+	
+	<select id="selectProductItemDupCount" resultClass="dataMap">
+		/*	PSCMPRD0009.selectProductItemDupCount	*/
+		SELECT  COUNT(*) TOTAL_COUNT
+	    FROM TPR_PRODUCT P, TPR_ITEM T
+		WHERE T.PROD_CD = P.PROD_CD
+		AND P.PROD_CD IN (
+		    SELECT SUB.PROD_CD FROM TPR_REP_PROD_CHG_HST SUB
+		    WHERE SUB.APPLY_YN = 'N'
+		    AND SUB.ITEM_CD = T.ITEM_CD 
+		    --AND SUB.STR_CD = #strCd#
+		)
+		AND T.PROD_CD 
+	<iterate prepend="IN" property="selectedProdCd" open="(" close=")" conjunction=","> 
+		#selectedProdCd[]# 
+	</iterate>             
+	</select>
+	
+	
+	<resultMap id="code" class="com.lottemart.epc.common.model.OptionTagVO">
+	    <result property="code" column="CAT_CD"/>
+	    <result property="name" column="CAT_NM"/>
+	</resultMap>
+	
+	<!-- 협력사별 대표판매코드 조회 -->
+	<select id="selectRepProdCdComboList_20160224" resultMap="code">
+	 	/* pscmprd0015.selectRepProdCdComboList */
+		SELECT A.PROD_NM ||' / '|| A.PROFIT_RATE AS CAT_NM  -- 2016.03.31 changed by 주환철 -- PROFIT_RT
+	         , A.MD_PROD_CD 		  AS CAT_CD
+	      FROM TPR_PRODUCT A                -- 2016.03.31 changed by 주환철 -- PRODUCT
+	     WHERE A.REP_PROD_CD_YN = 'Y'       -- 2016.03.31 changed by 주환철 -- ONLINE_FG   = 'X'
+	       AND A.DEL_STOP_DIVN_YN = '0'     -- 2016.03.31 changed by 주환철 -- PROD_STATUS = '01'
+	       AND A.VENDOR_ID IN (SELECT SALE_VENDOR_ID          -- 2016.03.31 changed by 주환철 -- VEN_CD 
+							     FROM TVE_VENDOR 
+							    WHERE VENDOR_ID = #vendorId#)					  
+ 	     ORDER BY MD_PROD_CD
+    </select>
+
+	<!-- 협력사별 대표판매코드 조회 -->
+	<select id="selectRepProdCdComboList" resultMap="code">
+	 	/* pscmprd0015.selectRepProdCdComboList */
+		SELECT A.MD_PROD_CD || ' ' || A.PROD_NM ||' / '|| A.PROFIT_RATE AS CAT_NM  -- 2016.03.31 changed by 주환철 -- PROFIT_RT
+	         , A.MD_PROD_CD 		  AS CAT_CD
+	      FROM TPR_PRODUCT A                -- 2016.03.31 changed by 주환철 -- PRODUCT
+	     WHERE A.REP_PROD_CD_YN = 'Y'       -- 2016.03.31 changed by 주환철 -- ONLINE_FG   = 'X'
+	       AND A.DEL_STOP_DIVN_YN = '0'     -- 2016.03.31 changed by 주환철 -- PROD_STATUS = '01'
+	       AND A.VENDOR_ID IN (SELECT SALE_VENDOR_ID          -- 2016.03.31 changed by 주환철 -- VEN_CD 
+							     FROM TVE_VENDOR 
+							    WHERE VENDOR_ID = #vendorId#)					  
+ 	     ORDER BY MD_PROD_CD
+    </select>
+    
+	<!-- 협력사별 대표판매코드 조회 -->
+	<select id="selectTprStoreItemPriceList" resultClass="java.util.HashMap">
+		/* pscmprd0015.selectTprStoreItemPriceList */
+	 	SELECT   
+				  T2.PROD_CD, T1.ITEM_CD, T1.STR_CD 
+				, T1.SELL_PRC, T1.CURR_SELL_PRC, T1.PRFT_RATE AS PROFIT_RATE
+				, T2.PROD_NM || DECODE(T2.OPTN_PROD_PRC_MGR_YN, 'Y', ' - 옵션:' || T3.OPTN_DESC, '') AS PROD_NM
+				, T2.APRV_YN, '' AS REQ_REASON_CONTENT
+ 	 	FROM     TPR_STORE_ITEM_PRICE T1, TPR_PRODUCT T2, TPR_ITEM T3
+	 	WHERE    T1.PROD_CD = T2.PROD_CD
+	 	AND      T1.PROD_CD = T3.PROD_CD
+	 	AND      T1.ITEM_CD = T3.ITEM_CD 
+	 	AND      T2.PROD_CD = #prodCd# 
+	 	<isNotEmpty property="optnProdPrcMgrYn">
+	 		<isEqual property="optnProdPrcMgrYn" compareValue="N">
+	 			AND T1.ITEM_CD = '001'
+	 			AND T1.STR_CD = '981'
+	 		</isEqual>
+	 	</isNotEmpty>
+	 	ORDER BY T1.ITEM_CD
+    </select>
+
+
+	<!-- 대표상품코드 변경이력 조회 -->
+	<select id="selectTprRepProdChgHst" resultClass="dataMap">
+		/* pscmprd0015.selectTprRepProdChgHst - 대표상품코드 변경이력 조회 */
+		SELECT ROWNUM AS SEQ 
+		     , '0' AS SELECTED
+		     , RP.CURR_SELL_PRC	 AS BEFORE_CURR_SELL_PRC
+		     , RP.PROFIT_RATE AS BEFORE_PROFIT_RATE
+		     , RP.PROD_CD
+		     , RP.ITEM_CD
+		     , RP.REP_PROD_CD
+		     , RP.BUY_PRC
+		     , RP.SELL_PRC
+		     , RP.CURR_SELL_PRC
+		     , RP.PROFIT_RATE
+		     , PR.TAXAT_DIVN_CD
+		     , FN_GET_PROMO_COUNT(RP.PROD_CD) AS PROMO_CNT /* 프로모션 개수 */
+		     , NVL(PR.OPTN_PROD_PRC_MGR_YN, 'N') AS OPTN_PROD_PRC_MGR_YN
+			<isNotEmpty property="applyEndDy">
+		     , PR.PROD_NM
+		     , RP.APPLY_START_DY
+		     , RP.APPLY_END_DY
+		     , RP.APPLY_START_DY AS BEFORE_APPLY_START_DY
+		     , RP.APPLY_YN
+			</isNotEmpty>
+			 , '' AS REQ_REASON_CONTENT 
+		  FROM TPR_REP_PROD_CHG_HST RP
+		     , TPR_PRODUCT PR
+		 WHERE RP.PROD_CD = #prodCd#
+		   AND RP.PROD_CD = PR.PROD_CD
+		   AND ((PR.OPTN_PROD_PRC_MGR_YN = 'N' AND RP.ITEM_CD = '001') OR (PR.OPTN_PROD_PRC_MGR_YN = 'Y' AND RP.ITEM_CD = #itemCd#))
+		<isNotEmpty property="applyEndDy">
+		   AND RP.APPLY_END_DY = #applyEndDy#
+		</isNotEmpty>
+	</select>
+    
+	<!-- 상품마스터 조회 -->
+	<select id="selectTprProduct" resultClass="dataMap">
+		/* pscmprd0015.selectTprProduct - 상품마스터 조회  */ 
+		SELECT ROWNUM AS SEQ 
+		     , '0' AS SELECTED
+		     , T1.CURR_SELL_PRC AS BEFORE_CURR_SELL_PRC
+		     , T1.PROFIT_RATE AS BEFORE_PROFIT_RATE
+		     , T1.PROD_CD
+		     , T1.REP_PROD_CD
+		     , T1.BUY_PRC
+		     , T1.SELL_PRC
+		     , T1.CURR_SELL_PRC
+		     , T1.PROFIT_RATE 
+		     , T1.PROD_NM
+		     , T1.TAXAT_DIVN_CD
+		     , FN_GET_PROMO_COUNT(T1.PROD_CD) AS PROMO_CNT /* 프로모션 개수 */
+		     , NVL(T1.OPTN_PROD_PRC_MGR_YN, 'N') AS OPTN_PROD_PRC_MGR_YN
+		     , T2.ITEM_CD
+		  FROM TPR_PRODUCT T1
+		     , TPR_STORE_ITEM_PRICE T2
+		 WHERE T1.PROD_CD = T2.PROD_CD
+		   AND T1.PROD_CD = #prodCd#
+		   AND ((NVL(T1.OPTN_PROD_PRC_MGR_YN, 'N') = 'N' AND T2.ITEM_CD = '001') OR (NVL(T1.OPTN_PROD_PRC_MGR_YN, 'N') = 'Y' AND T2.ITEM_CD = #itemCd#))
+		<isNotEmpty property="vendorId">
+		   AND T1.VENDOR_ID = #vendorId#  
+		</isNotEmpty>
+	</select>
+    
+	<!-- 상품정보조회 -->
+	<select id="selectProdInfo" resultClass="dataMap">
+		/* pscmprd0015.selectProdInfo - 상품정보조회*/
+		SELECT PROD_CD
+			 , REP_PROD_CD
+		     , BUY_PRC
+		     , SELL_PRC
+		     , CURR_SELL_PRC
+		     , PROFIT_RATE 
+		     , PROD_NM
+		     , (SELECT APPLY_START_DY 
+		     	  FROM TPR_REP_PROD_CHG_HST 
+		     	 WHERE APPLY_END_DY = '99991231' 
+		     	   AND PROD_CD = #prodCd#
+		       ) AS APPLY_START_DY
+		  FROM TPR_PRODUCT 
+		 WHERE PROD_CD = #prodCd#
+		<isNotEmpty property="vendorId">
+		   AND VENDOR_ID = #vendorId#
+		</isNotEmpty>
+	</select>
+    
+	<!-- 적용시작일시를 현재날짜와 비교 -->
+	<select id="chkCurrDate" resultClass="dataMap">
+	<![CDATA[
+		/* pscmprd0015.chkCurrDate */
+		SELECT (CASE WHEN #applyStartDy# < TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')  THEN -1
+	             	 WHEN #applyStartDy# = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')  THEN 0
+	             	 ELSE 1
+	           END) AS CURR_DATE_CHK
+	  	  FROM DUAL
+	]]>
+	</select>
+	
+    <!-- 변경 요청 정보 중복 체크  -->
+    <select id="chkCurrChgSts" resultClass="dataMap">
+	<![CDATA[
+	    SELECT COUNT(0) AS CURR_CHG_STATUS 
+	       FROM TPC_REP_PROD_CHG_TMP
+	    WHERE PROD_CD = #prodCd#			 
+			 AND REP_PROD_CD = #repProdCd#		
+			 AND APPLY_START_DY = #applyStartDy#
+			 AND ADM_YN = 'N'
+  	]]>
+		 	<isNotEmpty property="itemCd">
+		   	 	AND ITEM_CD = #itemCd#
+			</isNotEmpty>
+			
+	</select>    
+    
+    <!-- 적용시작일시 중복체크 -->
+    <select id="chkRegisteredRepProdCd" resultClass="dataMap">
+    <![CDATA[
+ 	/* pscmprd0015.chkRegisteredRepProdCd */
+ 	SELECT COUNT(1) OVER() CNT
+         , (CASE
+                 WHEN TO_DATE(#applyStartDy#, 'YYYYMMDD') > TO_DATE(APPLY_START_DY, 'YYYYMMDD')
+                      THEN 1
+                 ELSE 0
+             END) AS DUP_DATE_CHK
+		 , (CASE
+                 WHEN CURRENT_TIMESTAMP(0) > APPLY_START_DY
+                      THEN 'Y'
+                 ELSE 'N'
+             END) AS APPLY_YN  
+		 , PROD_CD
+         , REP_PROD_CD
+         , APPLY_START_DY
+      FROM TPR_REP_PROD_CHG_HST
+     WHERE PROD_CD = #prodCd#
+       AND APPLY_END_DY = '99991231'
+    ]]>
+    <isNotEmpty property="itemCd">
+       AND ITEM_CD = #itemCd#
+    </isNotEmpty>
+    </select>
+    
+    <!-- 이익률 중복체크 -->
+    <select id="chkProfitRate" resultClass="dataMap">
+    	/* pscmprd0015.chkProfitRate */
+	 	SELECT DECODE(#profitRate#, PROFIT_RATE, 0, 1) AS PROFIT_RATE_CHK
+	      FROM TPR_REP_PROD_CHG_HST
+	     WHERE APPLY_END_DY = '99991231'
+	       AND PROD_CD      = #prodCd# 
+    </select>
+    
+	<!-- 해당협력사의 상품이 맞는지 확인 -->
+	<select id="chkProduct" resultClass="dataMap">
+		/* pscmprd0015.chkProduct - 해당협력사의 상품이 맞는지 확인 */
+		SELECT PROD_CD 
+		  FROM TPR_PRODUCT 
+		 WHERE PROD_CD 	 = #prodCd# 
+		   AND VENDOR_ID = #vendorId#
+	</select>
+    
+	<!-- 등록시 이전 데이터의 정보를 수정 -->
+	<update id="updateBeforeRepProdCd">
+	<![CDATA[
+ 	/* pscmprd0015.updateBeforeRepProdCd */
+	UPDATE TPR_REP_PROD_CHG_HST
+       SET APPLY_END_DY = TO_CHAR(TO_DATE(#applyStartDy#, 'YYYYMMDD') - 1, 'YYYYMMDD')
+         , MOD_ID = #modId#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD 		  = #prodCd#
+     AND   REP_PROD_CD 	  = #repProdCd#
+     AND   APPLY_START_DY = #applyStartDy_old#
+    ]]>
+	</update>
+	
+	<!-- 대표상품코드 등록 -->
+	<insert id="insertRepProdCd">
+	<![CDATA[
+	/* pscmprd0015.insertRepProdCd */
+		INSERT INTO TPR_REP_PROD_CHG_HST (
+			  PROD_CD
+			, REP_PROD_CD
+			, APPLY_START_DY
+			, APPLY_END_DY
+			, BUY_PRC
+			, SELL_PRC
+			, CURR_SELL_PRC
+			, PROFIT_RATE
+			, ITEM_CD
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE 
+		) VALUES ( 
+			  #prodCd#
+			, #repProdCd#
+			, #applyStartDy#
+			, '99991231'
+	        , (CASE WHEN #taxatDivnCd# = '1' -- 2016.02.22 change by 김남갑(0:면세, 1:과세, 2:영세)
+	                THEN TRUNC( #currSellPrc#/1.1*(1- #profitRate#/100))
+	                ELSE TRUNC( #currSellPrc#*(1- #profitRate#/100))
+	           END)
+	        , #sellPrc#
+	        , #currSellPrc#
+	        , #profitRate#
+	        , #itemCd#
+	        , #regId#
+	        , CURRENT_TIMESTAMP(0)
+	        , #modId#
+	        , CURRENT_TIMESTAMP(0) 
+		)
+	]]>
+	</insert>
+
+	<!-- 대표상품코드 상세 조회 -->
+    <select id="selectRepProdCdInfo" resultClass="dataMap">
+    <![CDATA[
+ 	/* pscmprd0015.selectRepProdCdInfo */
+ 	SELECT RP.PROD_CD
+         , PR.PROD_NM
+         , RP.ITEM_CD
+         , RP.REP_PROD_CD
+         , TO_CHAR(TO_DATE(RP.APPLY_START_DY, 'YYYYMMDD'),'YYYY-MM-DD') AS APPLY_START_DY
+         , TO_CHAR(TO_DATE(RP.APPLY_END_DY, 'YYYYMMDD'),'YYYY-MM-DD') AS APPLY_END_DY
+         , RP.SELL_PRC
+         , RP.CURR_SELL_PRC
+         , RP.PROFIT_RATE
+         , PR.TAXAT_DIVN_CD
+         , PR.VENDOR_ID
+         , RP.APPLY_YN
+         , NVL(PR.OPTN_PROD_PRC_MGR_YN,'N') OPTN_PROD_PRC_MGR_YN
+         , RP.REQ_REASON_CONTENT
+      FROM TPC_REP_PROD_CHG_TMP RP
+         , TPR_PRODUCT PR
+     WHERE RP.PROD_CD = PR.PROD_CD
+       AND RP.PROD_CD = #prodCd#
+       AND RP.REP_PROD_CD = #repProdCd#
+       AND RP.APPLY_START_DY = #applyStartDy#
+ 	]]>
+ 	</select>
+	
+	<!-- 대표상품코드 수정 -->
+	<update id="updateRepProdCd">
+	<![CDATA[
+	/* pscmprd0015.updateRepProdCd */
+	UPDATE TPC_REP_PROD_CHG_TMP
+       SET REP_PROD_CD = #repProdCd#
+         , BUY_PRC = (CASE WHEN #taxatDivnCd# = '1'  -- 2016.02.22 change by 김남갑(0:면세, 1:과세, 2:영세)
+	                       THEN TRUNC( #currSellPrc#/1.1 * (1- #profitRate#/100))
+			               ELSE TRUNC( #currSellPrc# * (1- #profitRate#/100))
+			          END)
+         , SELL_PRC = #currSellPrc#
+         , CURR_SELL_PRC = #currSellPrc#
+         , PROFIT_RATE = #profitRate#
+         , REQ_REASON_CONTENT = #reqReasonContent# 
+         , MOD_ID = #modId#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD = #prodCd#
+       AND APPLY_START_DY = #applyStartDy#
+    ]]>
+    <isNotEmpty property="itemCd">
+       AND ITEM_CD = #itemCd#
+    </isNotEmpty>
+    </update>
+
+	<!-- 삭제시 이전 데이터 적용끝일자 수정여부 체크 -->
+	<select id="chkUpdateFlag" resultClass="dataMap">
+ 	/* pscmprd0015.chkUpdateFlag */
+ 	SELECT 'NO' AS UPDATE_FLAG FROM DUAL
+     WHERE 'TRUE' = (SELECT DECODE(APPLY_END_DY,'99991231','FALSE','TRUE') AS CHK
+                       FROM TPR_REP_PROD_CHG_HST
+                      WHERE PROD_CD = #prodCd#
+                        AND REP_PROD_CD = #repProdCd#
+                        AND APPLY_START_DY = #applyStartDy#
+						<isNotEmpty property="itemCd">
+				        AND ITEM_CD = #itemCd#
+				    	</isNotEmpty>
+    				 )
+     UNION ALL
+    SELECT 'NO' AS UPDATE_FLAG FROM DUAL
+     WHERE 'TRUE' = (SELECT DECODE(COUNT(1),1,'TRUE','FALSE') AS CHK
+                       FROM TPR_REP_PROD_CHG_HST
+                      WHERE PROD_CD = #prodCd#)
+	</select>
+	
+	<!-- 삭제시 이전 데이터의 적용끝일자를 수정 -->
+	<update id="updateApplyEndDy">
+	 	/* pscmprd0015.updateApplyEndDy */
+		UPDATE TPR_REP_PROD_CHG_HST
+	       SET APPLY_END_DY = '99991231'
+	     WHERE (PROD_CD, REP_PROD_CD, APPLY_START_DY
+				<isNotEmpty property="itemCd">
+      			, ITEM_CD
+				</isNotEmpty>
+	           ) 
+	           IN (
+	               SELECT PROD_CD, REP_PROD_CD, APPLY_START_DY
+						<isNotEmpty property="itemCd">
+		      			, ITEM_CD
+						</isNotEmpty>
+	                 FROM TPR_REP_PROD_CHG_HST
+	                WHERE APPLY_START_DY = (SELECT TO_CHAR(MAX(TO_DATE(APPLY_START_DY,'YYYYMMDD')), 'YYYYMMDD') AS APPLY_START_DY
+	                                          FROM TPR_REP_PROD_CHG_HST
+	                                         WHERE PROD_CD = #prodCd#
+	                                           AND APPLY_END_DY != '99991231'
+											<isNotEmpty property="itemCd">
+					        				  AND ITEM_CD = #itemCd#
+					    					</isNotEmpty>
+	                                           )
+	                  AND PROD_CD = #prodCd#
+					<isNotEmpty property="itemCd">
+       				  AND ITEM_CD = #itemCd#
+   					</isNotEmpty>
+	              )
+	</update>
+
+	<!-- 대표상품코드 삭제 -->
+	<delete id="deleteRepProdCd">
+	 	/* pscmprd0015.deleteRepProdCd */
+	    DELETE 
+	      FROM TPC_REP_PROD_CHG_TMP
+	     WHERE PROD_CD = #prodCd#
+	       AND REP_PROD_CD = #repProdCd#
+	       AND APPLY_START_DY = #applyStartDy#
+	       AND SEQ_NO = #seqNo#
+		<isNotEmpty property="itemCd">
+		   AND ITEM_CD = #itemCd#
+		</isNotEmpty>
+		
+	</delete>
+	
+	<!-- 
+		대표상품코드변경이력을 등록한다. 
+	  						가격정보: 사용자가 입력한 값
+	  						시작일자: 사용자가 입력한 시작일자
+	  						종료일자: 사용자가 입력한 종료일자
+	 -->  
+	<insert id="insertRepProdCd_startDy_endDy">
+	/* pscmprd0015.insertRepProdCd_startDy_endDy */
+	 	INSERT 
+	      INTO TPR_REP_PROD_CHG_HST
+	           ( PROD_CD, REP_PROD_CD, APPLY_START_DY, APPLY_END_DY
+	           , BUY_PRC, ITEM_CD
+	           , SELL_PRC, CURR_SELL_PRC, PROFIT_RATE
+	           , REG_ID, REG_DATE, MOD_ID, MOD_DATE )
+	    VALUES ( #prodCd#, #repProdCd#
+	    	   , #applyStartDy#
+	    	   , #applyEndDy#
+	           , (CASE
+			                 WHEN #taxatDivnCd# = '1' -- 2016.02.22 change by 김남갑(0:면세, 1:과세, 2:영세)
+		                      THEN TRUNC( #currSellPrc#/1.1*(1- #profitRate#/100))
+			                  ELSE TRUNC( #currSellPrc#*(1- #profitRate#/100))
+			             END), #itemCd#
+	           , #currSellPrc#, #currSellPrc#, #profitRate#
+	           , #regId#, CURRENT_TIMESTAMP(0), #modId#, CURRENT_TIMESTAMP(0) )
+	</insert>
+	
+	<!-- 
+		대표상품코드변경이력을 등록한다. 
+	  						가격정보: 상품마스터의 값
+							시작일자: 사용자가 입력한 종료일자 +1
+							종료일자: 99991231
+	 -->  
+	<insert id="insertRepProdCd_1_endDy_plus_1_99991231">
+	/* pscmprd0015.insertRepProdCd_1_endDy_plus_1_99991231 */
+		INSERT 
+	     INTO TPR_REP_PROD_CHG_HST
+	           ( PROD_CD, REP_PROD_CD
+	           , APPLY_START_DY
+	           , APPLY_END_DY
+	           , BUY_PRC, ITEM_CD
+	           , SELL_PRC, CURR_SELL_PRC, PROFIT_RATE
+	           , REG_ID, REG_DATE, MOD_ID, MOD_DATE )
+	     ( SELECT    PROD_CD
+	                , (SELECT REP_PROD_CD FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD)
+	                , (SELECT TO_CHAR(TO_DATE(#applyEndDy#, 'YYYYMMDD') + 1, 'YYYYMMDD') FROM DUAL)   
+	                , '99991231'
+	                , BUY_PRC, ITEM_CD
+	                , CURR_SELL_PRC AS SELL_PRC, CURR_SELL_PRC, PRFT_RATE AS PROFIT_RATE 
+	                , #regId#, CURRENT_TIMESTAMP(0), #modId#, CURRENT_TIMESTAMP(0) 
+	        FROM TPR_STORE_ITEM_PRICE A
+	        WHERE PROD_CD = #prodCd#
+	          AND ITEM_CD = #itemCd#
+	          AND STR_CD  = '981'
+	          AND ROWNUM  = 1
+	      )
+	</insert>
+	
+	<!-- 
+		대표상품코드변경이력을 등록한다. 
+	  						가격정보: 최근 변경이력 값
+							시작일자: 사용자가 입력한 종료일자 +1
+							종료일자: 99991231
+	 -->  
+	<insert id="insertRepProdCd_2_endDy_plus_1_99991231">
+	/* pscmprd0015.insertRepProdCd_2_endDy_plus_1_99991231 */
+		INSERT 
+	     INTO TPR_REP_PROD_CHG_HST
+	           ( PROD_CD, REP_PROD_CD
+	           , APPLY_START_DY
+	           , APPLY_END_DY
+	           , BUY_PRC, ITEM_CD
+	           , SELL_PRC, CURR_SELL_PRC, PROFIT_RATE
+	           , REG_ID, REG_DATE, MOD_ID, MOD_DATE )
+	     ( SELECT    PROD_CD, REP_PROD_CD
+	                , (SELECT TO_CHAR(TO_DATE(#applyEndDy#, 'YYYYMMDD') + 1, 'YYYYMMDD') FROM DUAL)   
+	                , '99991231'
+	                , BUY_PRC, ITEM_CD
+	                , CURR_SELL_PRC AS SELL_PRC, CURR_SELL_PRC, PROFIT_RATE 
+	                , #regId#, CURRENT_TIMESTAMP(0), #modId#, CURRENT_TIMESTAMP(0) 
+	        FROM TPR_REP_PROD_CHG_HST 
+	        WHERE PROD_CD = #prodCd#
+	          AND ITEM_CD = #itemCd#
+	          AND APPLY_END_DY='99991231'
+	          )
+	</insert>
+
+	<insert id="insertRepChgProdCd">
+	/* pscmprd0015.insertRepChgProdCd */
+	INSERT INTO TPC_REP_PROD_CHG_TMP
+	( SEQ_NO, PROD_CD, ITEM_CD, VENDOR_ID, REP_PROD_CD, APPLY_START_DY
+	, APPLY_END_DY, BUY_PRC , SELL_PRC, CURR_SELL_PRC, PROFIT_RATE
+	, REQ_REASON_CONTENT, REG_ID, REG_DATE, MOD_ID, MOD_DATE)
+	VALUES (
+	 (SELECT NVL(MAX(SEQ_NO),0)+1
+	   FROM TPC_REP_PROD_CHG_TMP
+	  WHERE PROD_CD = #prodCd#
+	    AND ITEM_CD = #itemCd#
+	    AND REP_PROD_CD = #repProdCd# 
+	    AND VENDOR_ID = #vendorId#
+	    AND APPLY_START_DY = #applyStartDy#)
+	, #prodCd#, #itemCd#, #vendorId#, #repProdCd#, #applyStartDy#, #applyEndDy# 
+	, (CASE WHEN #taxatDivnCd# = '1' -- (0:면세, 1:과세, 2:영세)
+	             THEN TRUNC( #currSellPrc# / 1.1 * (1- #profitRate# / 100))
+	             ELSE TRUNC( #currSellPrc# * (1- #profitRate# / 100))
+	   END) 
+	, #sellPrc#, #currSellPrc#, #profitRate#
+	, #reqReasonContent#, #regId#, CURRENT_TIMESTAMP(0), #modId#, CURRENT_TIMESTAMP(0))
+	</insert>
+	
+    <select id="selectRepProdCdTaxatDivnCd" resultClass="dataMap">
+    SELECT A.MD_PROD_CD AS REP_PROD_CD
+         , A.TAXAT_DIVN_CD
+      FROM TPR_PRODUCT A
+     WHERE A.REP_PROD_CD_YN = 'Y'
+       AND A.DEL_STOP_DIVN_YN = '0'
+       AND A.VENDOR_ID IN (SELECT SALE_VENDOR_ID 
+                             FROM TVE_VENDOR
+                            WHERE VENDOR_ID = #vendorId#)
+       AND A.MD_PROD_CD = #repProdCd#
+       LIMIT 1
+    </select>
+	
+
+	<!-- 긴급매가1 - 대상 상품정보 조회 -->
+	<select id="selectRepProdSellingPrc" resultClass="dataMap">
+	/* pscmprd0015.selectRepProdSellingPrc */
+    SELECT A.PROD_CD
+         , A.REP_PROD_CD
+         , A.APPLY_END_DY
+         , A.APPLY_START_DY
+         , A.BUY_PRC
+         , A.SELL_PRC
+         , A.CURR_SELL_PRC
+         , A.PROFIT_RATE
+         , A.MOD_ID
+         , B.TAXAT_DIVN_CD
+         , NVL(C.OPTN_PROD_PRC_MGR_YN,'N') AS OPTN_PROD_PRC_MGR_YN
+         , A.ITEM_CD
+      FROM TPR_REP_PROD_CHG_HST A
+         , TPR_PRODUCT B
+         , TPR_PRODUCT C
+     WHERE A.APPLY_START_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+       AND A.APPLY_YN       = 'N'
+       AND A.REP_PROD_CD    = B.MD_PROD_CD
+       AND A.PROD_CD        = C.PROD_CD
+       AND C.PROD_CD        = #prodCd#
+	</select>
+
+	<!-- 긴급매가2 - 점포별가격정보 가격 update -->
+	<update id="updateTprStoreItemPriceRepProd"  parameterClass="java.util.HashMap">
+	/* pscmprd0015.updateTprStoreItemPriceRepProd */
+    UPDATE TPR_STORE_ITEM_PRICE
+       SET BUY_PRC       = #BUY_PRC#
+         , SELL_PRC      = #SELL_PRC#
+         , CURR_SELL_PRC = #CURR_SELL_PRC#
+         , PRFT_RATE     = #PROFIT_RATE#
+         , MOD_ID        = #MOD_ID#
+         , MOD_DATE      = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD       = #PROD_CD#
+       AND STR_CD        = '981'
+     <isNotEmpty property="ITEM_CD">
+     	<isEqual  property="OPTN_PROD_PRC_MGR_YN" compareValue="Y">
+           AND ITEM_CD  = #ITEM_CD#   /* 단품별 차이 가격을 반영 한다. - jaehwa 2016.7.8 */
+     	</isEqual>
+     </isNotEmpty>
+	</update>
+
+	<!-- 긴급매가3 - 점포별가격정보 이력 insert -->
+	<insert id="insertTprStoreItemPriceHistRepProd"  parameterClass="java.util.HashMap">
+	/* pscmprd0015.insertTprStoreItemPriceHistRepProd */
+    INSERT INTO TPR_STORE_ITEM_PRICE_HIST
+         (
+          PROD_CD, ITEM_CD, SEQ, STD_BUY_PRC
+        , STD_SELL_PRC, BUY_PRC, SELL_PRC, EVT_BUY_PRC, EVT_SELL_PRC
+        , CURR_SELL_PRC, PRFT_RATE, DISP_YN, SOUT_YN, SELL_PSBT_YN
+        , DISP_DEL_REQ_YN, STK_MGR_YN, VENDOR_ID, TRD_TYPE_DIVN_CD, PUR_PATH_DIVN_CD
+        , NPUR_BUY_PSBT_YN, ENTP_DELI_DIVN_CD, PUR_STOP_DIVN_CD, DEAL_STOP_DIVN_CD, DEAL_STOP_REASON_CD
+        , TDAY_STGE_PLAN_QTY, DD_AVG_SELL_QTY, SOUT_BASE_QTY, WEIGHT, REG_DATE
+        , REG_ID, MOD_DATE, MOD_ID, HDBIL_EVT_START_DY, HDBIL_EVT_END_DY
+        , ONLINE_SOUT_YN, MD_SOUT_YN, RSERV_STK_QTY, PROD_TAG_INFO_CONTENT, DISP_APPLY_BASE_DD
+        , MD_RECENT_SELL_DY, DELI_OPTN_CD, FORGN_DELI_YN, STR_PIKUP_YN, TEL_ORD_YN
+         )
+    SELECT
+          PROD_CD, ITEM_CD, (SELECT NVL(MAX(SEQ),0)+1 FROM TPR_STORE_ITEM_PRICE_HIST WHERE PROD_CD=A.PROD_CD AND ITEM_CD=A.ITEM_CD AND STR_CD=A.STR_CD) AS SEQ, STD_BUY_PRC
+        , STD_SELL_PRC, BUY_PRC, SELL_PRC, EVT_BUY_PRC, EVT_SELL_PRC
+        , CURR_SELL_PRC, PRFT_RATE, DISP_YN, SOUT_YN, SELL_PSBT_YN
+        , DISP_DEL_REQ_YN, STK_MGR_YN, VENDOR_ID, TRD_TYPE_DIVN_CD, PUR_PATH_DIVN_CD
+        , NPUR_BUY_PSBT_YN, ENTP_DELI_DIVN_CD, PUR_STOP_DIVN_CD, DEAL_STOP_DIVN_CD, DEAL_STOP_REASON_CD
+        , TDAY_STGE_PLAN_QTY, DD_AVG_SELL_QTY, SOUT_BASE_QTY, WEIGHT, REG_DATE
+        , REG_ID, MOD_DATE, MOD_ID, HDBIL_EVT_START_DY, HDBIL_EVT_END_DY
+        , ONLINE_SOUT_YN, MD_SOUT_YN, RSERV_STK_QTY, PROD_TAG_INFO_CONTENT, DISP_APPLY_BASE_DD
+        , MD_RECENT_SELL_DY, DELI_OPTN_CD, FORGN_DELI_YN, STR_PIKUP_YN, TEL_ORD_YN
+      FROM TPR_STORE_ITEM_PRICE A
+     WHERE PROD_CD = #PROD_CD#
+       AND STR_CD  = '981'
+     <isNotEmpty property="ITEM_CD">
+     	<isEqual  property="OPTN_PROD_PRC_MGR_YN" compareValue="Y">
+           AND ITEM_CD  = #ITEM_CD#   /* 단품별 차이 가격을 반영 한다. - jaehwa 2016.7.8 */
+     	</isEqual>
+     </isNotEmpty>
+	</insert>
+	
+	<!-- 긴급매가4 - 대표판매코드변경이력 적용여부 update -->
+	<update id="updateTcaRepProdChgHstRepProd"  parameterClass="java.util.HashMap">
+	/* pscmprd0015.updateTcaRepProdChgHstRepProd */
+    UPDATE TPR_REP_PROD_CHG_HST
+       SET APPLY_YN  = 'Y'
+         , MOD_ID    = #MOD_ID#
+         , MOD_DATE  = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD        = #PROD_CD#
+       AND REP_PROD_CD    = #REP_PROD_CD#
+       AND APPLY_START_DY = #APPLY_START_DY#
+       AND APPLY_YN       = 'N'
+     <isNotEmpty property="ITEM_CD">
+     	<isEqual  property="OPTN_PROD_PRC_MGR_YN" compareValue="Y">
+           AND ITEM_CD  = #ITEM_CD#  /* 대표단품의 가격으로 반영 - jaehwa */
+     	</isEqual>
+     </isNotEmpty>
+	</update>
+
+	<!-- 긴급매가5 - 상품마스터 가격 update -->
+	<update id="updateTprProductRepProd"  parameterClass="java.util.HashMap">
+	/* pscmprd0015.updateTprProductRepProd */
+    UPDATE TPR_PRODUCT
+       SET REP_PROD_CD   = #REP_PROD_CD#
+         , BUY_PRC       = #BUY_PRC#
+         , SELL_PRC      = #SELL_PRC#
+         , CURR_SELL_PRC = #CURR_SELL_PRC#
+         , PROFIT_RATE   = #PROFIT_RATE#
+         , TAXAT_DIVN_CD = #TAXAT_DIVN_CD# /* modified by azabong 20160419 면과세구분추가*/
+         , MOD_ID        = #MOD_ID#
+         , MOD_DATE      = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD       = #PROD_CD#
+     <isNotEmpty property="ITEM_CD">
+     	<isEqual  property="OPTN_PROD_PRC_MGR_YN" compareValue="Y">
+           AND #ITEM_CD# = '001'  /* 대표단품의 가격으로 반영 - jaehwa */
+     	</isEqual>
+     </isNotEmpty>
+	</update>
+
+	<!-- 긴급매가6 - 카테고리할당상품 가격 update -->
+	<update id="updateTcaCategoryAssignRepProd"  parameterClass="java.util.HashMap">
+	 	/* pscmprd0015.updateTcaCategoryAssignRepProd */
+        UPDATE TCA_CATEGORY_ASSIGN
+           SET ORDER_CURR_SELL_PRC = #CURR_SELL_PRC#
+             , MOD_ID              = #MOD_ID#
+             , MOD_DATE            = CURRENT_TIMESTAMP(0)
+         WHERE PROD_CD             = #PROD_CD#
+	</update>
+
+	<!--  2016.08.02 수정 (공헌이익 추가)  -->
+   <select id="pscmprd0015List" parameterClass="java.util.HashMap" resultClass="dataMap">
+   <![CDATA[
+        SELECT /*+ opt_param('_optimizer_cost_based_transformation','off') */
+                /* pscmprd0015.pscmprd0015List */
+                      ROWNUM AS SEQ, T1.*
+        FROM (
+        ]]>
+        <include refid="pre-page-frag"/>
+                <![CDATA[
+                SELECT
+                      ]]>
+                        PR.PROD_NM AS PROD_NM
+
+                    <isEqual compareValue="Y" prepend="" property="searFile">
+                        , T1.PROD_CD AS PROD_CD
+                    </isEqual>
+                    <isNotEqual compareValue="Y" prepend="" property="searFile">
+                        , PR.PROD_CD AS PROD_CD
+                    </isNotEqual>
+                <![CDATA[
+                     , PR.REP_PROD_CD AS REP_PROD_CD
+                     , PR.MD_SRCMK_CD AS MD_SRCMK_CD
+                     , PR.PROD_DIVN_CD AS PROD_DIVN_CD
+                     , PR.MALL_DIVN_CD AS MALL_DIVN_CD
+                     , PR.VENDOR_ID AS VENDOR_ID
+                     , PR.DISP_YN AS DISP_YN
+                     , PR.BUY_PRC AS BUY_PRC
+                     , PR.SELL_PRC AS SELL_PRC
+                     , PR.CURR_SELL_PRC AS CURR_SELL_PRC
+                     , PR.STAFF_DC_AMT AS STAFF_DC_AMT
+                     , PR.APRV_YN APRV_YN
+                     , NVL(PR.OPTN_PROD_PRC_MGR_YN,'N') OPTN_PROD_PRC_MGR_YN
+                     , DECODE(NVL(PR.REG_ID,'N'),'N','N','Y') REG_DATE	
+                     , CAT_CD /* 소 카테고리 */
+                     , VV.L2_CD /* 중카테고리 */
+                     , NVL((SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'CP004' AND USE_YN = 'Y' ) ,  TO_CHAR(CURRENT_TIMESTAMP(0)-1,'YYYYMM') ) AS SALE_MM
+                     , TAXAT_DIVN_CD                         
+                  FROM TPR_PRODUCT PR, V_CA_MD_CATEGORY  VV
+                   ]]>
+                      <isEqual compareValue="Y" prepend="" property="searFile">
+                     ,(
+                                <iterate prepend=""  open="" close="" property="prodCdArr" conjunction="union all">
+                                    SELECT #prodCdArr[]# AS PROD_CD FROM DUAL
+                                </iterate>
+                      ) T1
+                     </isEqual>
+                 <![CDATA[
+                 WHERE PR.REP_PROD_CD_YN(+) = 'N'
+                     AND PR.VENDOR_ID = #vendorId# 
+                   ]]>
+                   <isNotEmpty property="aprvYn">
+                    <isEqual property="aprvYn" compareValue="Y">
+                       AND PR.APRV_YN(+) = #aprvYn#
+                    </isEqual>
+                    <isEqual property="aprvYn" compareValue="N">
+                       AND PR.APRV_YN(+) = #aprvYn#
+                    </isEqual>
+                    <isEqual property="aprvYn" compareValue="D">
+                       AND PR.APRV_YN(+) = #aprvYn#
+                    </isEqual>
+                   </isNotEmpty>
+                   <isEqual compareValue="Y" prepend="AND" property="periDeli">
+                       PR.PERI_DELI_YN = 'Y'
+                   </isEqual>
+                   <isEqual compareValue="Y" prepend="AND" property="searFile">
+                        PR.PROD_CD(+) = T1.PROD_CD
+                   </isEqual>
+                   <isNotEmpty property="onOffYn">
+                       <isEqual compareValue="N" prepend="AND" property="onOffYn">
+                            PR.PROD_DIVN_CD IN ('02','03')
+                       </isEqual>
+                       <isEqual compareValue="Y" prepend="AND" property="onOffYn">
+                            PR.PROD_DIVN_CD = '01'
+                       </isEqual>
+                   </isNotEmpty>
+                   <isEqual compareValue="N" prepend="AND" property="dealYn">
+                       NVL(PR.ONLINE_PROD_TYPE_CD,'0') NOT IN ('05')
+                   </isEqual>
+                   <isEqual compareValue="N" prepend="AND" property="ctpdYn">
+                       NVL(PR.ONLINE_PROD_TYPE_CD,'0') NOT IN ('06')
+                   </isEqual>
+                   <isEqual compareValue="N" prepend="AND" property="dealCtpdYn">
+                       NVL(PR.ONLINE_PROD_TYPE_CD,'0') NOT IN ('05','06')
+                   </isEqual>
+                   <isEqual compareValue="N" property="searFile">
+                       <isNotEmpty property="productType">
+                           <isNotEmpty property="productSearValue">
+                               <isEqual compareValue="01" property="productType" prepend="AND">
+                                PR.PROD_CD like #productSearValue# || '%'
+                               </isEqual>
+                               <isEqual compareValue="02" property="productType" prepend="AND">
+                                PR.REP_PROD_CD like #productSearValue# || '%'
+                               </isEqual>
+                               <isEqual compareValue="03" property="productType" prepend="AND">
+                                PR.MD_SRCMK_CD like #productSearValue# || '%'
+                               </isEqual>
+                               <isEqual compareValue="04" property="productType" prepend="AND">
+                                PR.PROD_NM like #productSearValue# || '%'
+                               </isEqual>
+                           </isNotEmpty>
+                       </isNotEmpty>
+                   </isEqual>
+
+            AND PR.CAT_CD = VV.L3_CD (+)
+        <include refid="post-page-frag"/>
+        )T1
+    </select>
+    
+    
+    
+</sqlMap>

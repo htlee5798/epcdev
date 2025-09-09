@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPAY0000">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 사업자 등록정보 -->
+<select id="TSC_COMINFOR-SELECT01" parameterClass="map" resultClass="resultClass">
+        /* PEDMPAY0000.TSC_COMINFOR-SELECT01 */
+		SELECT	B.STR_NM
+		       ,A.STR_CD
+		       ,B.BMAN_NO
+		       ,B.ADDR1 || B.ADDR2 AS ADDR
+           	   ,B.PRESID_NM AS CEO_NM
+		       ,B.REP_TEL_NO
+		       ,B.BTYP
+		       ,B.BKIND
+		       ,A.TRD_TYP_FG
+		       ,DECODE(A.PROMO_AMT_RT,'0','0','1') AS PROMO_AMT_RT
+		
+		FROM  TED_VENDOR A INNER JOIN STORE@dl_md_martnis B ON A.STR_CD = B.STR_CD
+		
+		WHERE
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+		
+		ORDER BY A.STR_CD	  
+</select>
+
+
+<!-- 대금결제정보 -->
+<select id="TSC_PAYMENT_DAY-SELECT01" parameterClass="map" resultClass="resultClass">
+/* PEDMPAY0000.TSC_PAYMENT_DAY-SELECT01*/
+	SELECT BB.PAY_DAY
+	      ,NVL(BB.PAY_BUY, 0) AS PAY_BUY
+	      ,NVL(BB.SUB_BUY, 0) AS SUB_BUY
+	      ,NVL(AA.PANJANG, 0) AS PANJANG
+	      ,NVL(AA.MUL, 0) AS MUL
+	      ,NVL(AA.USPLY, 0) AS USPLY
+	      ,NVL(AA.SINSANG, 0) AS SINSANG
+	      ,NVL(AA.SUGI, 0) AS SUGI
+	      ,NVL(AA.GITA, 0) AS GITA
+	      ,NVL(AA.TOTAL, 0) AS TOTAL
+	      ,NVL(BB.OCCASION_PAY_BUY, 0) AS OCCASION_PAY_BUY	
+	      ,OCCASION_SUB_PAY
+	FROM 	
+		(SELECT A.PAY_DAY
+		      ,SUM(PANJANG) AS PANJANG
+		      ,SUM(MUL) AS MUL
+		      ,SUM(USPLY) AS USPLY
+		      ,SUM(SINSANG) AS SINSANG
+		      ,SUM(SUGI) AS SUGI
+		      ,SUM(GITA) AS GITA		
+		      ,(SUM(PANJANG) + SUM(MUL) + SUM(USPLY) + SUM(SINSANG) + SUM(SUGI) + SUM(GITA)) AS TOTAL
+		      
+<![CDATA[		
+		FROM	
+			(SELECT PAY_DAY
+			      --,(CASE WHEN ACCT_CD || ACCT_GRP_CD = '22W' THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS PANJANG
+			      ,(CASE WHEN	(ACCT_CD || ACCT_GRP_CD = '22W' OR
+								ACCT_CD || ACCT_GRP_CD = 'A1W' OR
+								ACCT_CD || ACCT_GRP_CD = 'A3W' OR
+								ACCT_CD || ACCT_GRP_CD = 'A5W') 
+			        THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS PANJANG
+			      ,(CASE WHEN (ACCT_CD || ACCT_GRP_CD = '25W' OR ACCT_CD || ACCT_GRP_CD = '39W') THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS MUL
+			      ,(CASE WHEN ACCT_CD || ACCT_GRP_CD = '28W' THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS USPLY
+			      ,(CASE WHEN ACCT_CD || ACCT_GRP_CD = '26W' THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS SINSANG
+			      --,(CASE WHEN (ACCT_CD || ACCT_GRP_CD = '30W' OR ACCT_CD || ACCT_GRP_CD = '40W') THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS SUGI
+			      ,(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = '30W' OR
+								ACCT_CD || ACCT_GRP_CD = '40W' OR
+								ACCT_CD || ACCT_GRP_CD = 'A2W' OR
+								ACCT_CD || ACCT_GRP_CD = 'A4W' OR
+								ACCT_CD || ACCT_GRP_CD = 'A6W')
+					THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS SUGI			
+			      --,(CASE WHEN (ACCT_CD || ACCT_GRP_CD <> '22W' AND ACCT_CD || ACCT_GRP_CD <> '25W' AND ACCT_CD || ACCT_GRP_CD <> '28W'AND ACCT_CD || ACCT_GRP_CD <> '26W' AND ACCT_CD || ACCT_GRP_CD <> '30W' AND ACCT_CD || ACCT_GRP_CD <> '39W' AND ACCT_CD || ACCT_GRP_CD <> '40W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END)  AS GITA
+			      ,(CASE WHEN	(ACCT_CD || ACCT_GRP_CD <> '22W' AND
+								ACCT_CD || ACCT_GRP_CD <> '25W' AND
+								ACCT_CD || ACCT_GRP_CD <> '28W' AND
+								ACCT_CD || ACCT_GRP_CD <> '26W' AND
+								ACCT_CD || ACCT_GRP_CD <> '30W' AND
+								ACCT_CD || ACCT_GRP_CD <> '39W' AND
+								ACCT_CD || ACCT_GRP_CD <> '40W' AND
+								ACCT_CD || ACCT_GRP_CD <> 'A1W' AND
+								ACCT_CD || ACCT_GRP_CD <> 'A2W' AND
+								ACCT_CD || ACCT_GRP_CD <> 'A3W' AND
+								ACCT_CD || ACCT_GRP_CD <> 'A4W' AND
+								ACCT_CD || ACCT_GRP_CD <> 'A5W' AND
+								ACCT_CD || ACCT_GRP_CD <> 'A6W') 
+					THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END)  AS GITA			      
+			      ,SUM(SUB_AMT) + SUM(VAT) TOTAL_SUB 
+]]>			
+			FROM V_ED_SUB_AGG			
+			WHERE PAY_DAY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			AND ACCT_GRP_CD = 'W'
+		    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+		    
+		    <isNotEmpty prepend="AND" property="entp_cd"> 
+		    	VEN_CD = #entp_cd#
+		    </isNotEmpty>  
+			GROUP BY ACCT_CD || ACCT_GRP_CD, PAY_DAY
+			) A		
+		GROUP BY A.PAY_DAY
+		) AA RIGHT OUTER JOIN 
+	
+		(SELECT PAY_DAY,
+        SUM(PAY_BUY_AMT) + SUM(PAY_VAT) AS PAY_BUY,
+        SUM(SUB_BUY_AMT)+SUM(SUB_VAT) AS SUB_BUY,
+       (CASE WHEN '85J' IN (SELECT ACCT_CD||ACCT_GRP_CD FROM V_ED_SUB_AGG        
+       WHERE 
+		    <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		       #venCds[]# 
+		    </iterate> 
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	 	    </isNotEmpty>       
+       GROUP BY ACCT_CD||ACCT_GRP_CD)  
+       THEN SUM(OCCASION_AMT) + SUM(OCCASION_VAT) ELSE 0 END) OCCASION_PAY_BUY,  
+ 
+	      SUM(OCCASION_AMT) + SUM(OCCASION_VAT) AS OCCASION_SUB_PAY	
+
+   		 FROM V_ED_PAYMENT  
+ 	 WHERE PAY_DAY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+   	   AND
+   			<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		       #venCds[]# 
+		    </iterate> 
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	 	    </isNotEmpty>   
+    GROUP BY PAY_DAY		
+		) BB ON AA.PAY_DAY = BB.PAY_DAY	
+	ORDER BY BB.PAY_DAY	  
+</select>
+
+
+
+
+<!-- 점포별 대금결제 -->
+<select id="TSC_PAYMENT_STORE-SELECT01" parameterClass="map" resultClass="resultClass">
+/* PEDMPAY0000.TSC_PAYMENT_STORE-SELECT01*/
+	SELECT  BB.PAY_DAY
+	       ,NVL(BB.PAY_BUY, 0) AS PAY_BUY
+	       ,NVL(BB.SUB_BUY, 0) AS SUB_BUY
+	       ,CC.STR_NM
+	       ,NVL(AA.PANJANG, 0) AS PANJANG
+	       ,NVL(AA.MUL, 0) AS MUL
+	       ,NVL(AA.USPLY, 0) AS USPLY
+	       ,NVL(AA.SINSANG, 0) AS SINSANG
+	       ,NVL(AA.SUGI, 0) AS SUGI
+	       ,NVL(AA.GITA, 0) AS GITA
+	       ,NVL(AA.TOTAL, 0) AS TOTAL
+	       ,NVL(BB.OCCASION_PAY_BUY, 0) AS OCCASION_PAY_BUY	
+	       ,OCCASION_SUB_PAY
+	FROM 	
+		(SELECT  PAY_DAY
+		       ,STR_CD
+		       ,(SUM(PAY_BUY_AMT) + SUM(PAY_VAT)) AS PAY_BUY
+		       ,(SUM(SUB_BUY_AMT) + SUM(SUB_VAT)) AS SUB_BUY
+		       ,(CASE WHEN '85J' IN (SELECT ACCT_CD||ACCT_GRP_CD FROM V_ED_SUB_AGG 
+		        WHERE 
+		        	<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+				      #venCds[]# 
+				    </iterate>             
+		            <isNotEmpty prepend="AND" property="entp_cd"> 
+				    	VEN_CD = #entp_cd#
+				    </isNotEmpty>    
+          GROUP BY ACCT_CD||ACCT_GRP_CD)  THEN SUM(OCCASION_AMT) + SUM(OCCASION_VAT) ELSE 0 END) OCCASION_PAY_BUY
+		  ,SUM(OCCASION_AMT) + SUM(OCCASION_VAT) AS OCCASION_SUB_PAY	
+		FROM  V_ED_PAYMENT		
+		WHERE PAY_DAY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')		 
+			  <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty prepend="AND" property="entp_cd"> 
+		    	VEN_CD = #entp_cd#
+		    </isNotEmpty>		    
+		<isNotEmpty prepend="AND" property="storeVal"> 
+		     <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+	    </isNotEmpty>    
+		GROUP BY PAY_DAY, STR_CD
+		) BB LEFT OUTER JOIN 		
+		(SELECT  A.STR_CD
+		       ,A.STR_NM
+		       ,A.PAY_DAY
+		       ,SUM(PANJANG) AS PANJANG
+		       ,SUM(MUL) AS MUL
+		       ,SUM(USPLY) AS USPLY
+		       ,SUM(SINSANG) AS SINSANG
+		       ,SUM(SUGI) AS SUGI
+		       ,SUM(GITA) AS GITA		
+		       ,(SUM(PANJANG) + SUM(MUL) + SUM(USPLY) + SUM(SINSANG) + SUM(SUGI) + SUM(GITA)) AS TOTAL
+		FROM
+<![CDATA[	
+			(SELECT  A.STR_CD
+			       ,B.STR_NM
+			       ,A.PAY_DAY
+			      -- ,(CASE WHEN ACCT_CD || ACCT_GRP_CD = '22W' THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS PANJANG
+			       ,(CASE WHEN	(ACCT_CD || ACCT_GRP_CD = '22W' OR ACCT_CD || ACCT_GRP_CD = 'A1W' OR ACCT_CD || ACCT_GRP_CD = 'A3W' OR	ACCT_CD || ACCT_GRP_CD = 'A5W')	THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS PANJANG
+			       ,(CASE WHEN (ACCT_CD || ACCT_GRP_CD = '25W' OR ACCT_CD || ACCT_GRP_CD = '39W') THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS MUL
+			       ,(CASE WHEN ACCT_CD || ACCT_GRP_CD = '28W' THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS USPLY
+			       ,(CASE WHEN ACCT_CD || ACCT_GRP_CD = '26W' THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS SINSANG
+			     --  ,(CASE WHEN (ACCT_CD || ACCT_GRP_CD = '30W' OR ACCT_CD || ACCT_GRP_CD = '40W') THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS SUGI
+			       ,(CASE WHEN	(ACCT_CD || ACCT_GRP_CD = '30W' OR ACCT_CD || ACCT_GRP_CD = '40W' OR ACCT_CD || ACCT_GRP_CD = 'A2W' OR ACCT_CD || ACCT_GRP_CD = 'A4W' OR ACCT_CD || ACCT_GRP_CD = 'A6W') THEN (SUM(SUB_AMT) + SUM(VAT)) ELSE 0 END ) AS SUGI
+			       --,(CASE WHEN (ACCT_CD || ACCT_GRP_CD <> '22W' AND ACCT_CD || ACCT_GRP_CD <> '25W' AND ACCT_CD || ACCT_GRP_CD <> '28W'AND ACCT_CD || ACCT_GRP_CD <> '26W' AND ACCT_CD || ACCT_GRP_CD <> '30W' AND ACCT_CD || ACCT_GRP_CD <> '39W' AND ACCT_CD || ACCT_GRP_CD <> '40W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END)  AS GITA
+			      ,(CASE WHEN	(ACCT_CD || ACCT_GRP_CD <> '22W' AND ACCT_CD || ACCT_GRP_CD <> '25W' AND	ACCT_CD || ACCT_GRP_CD <> '28W' AND	ACCT_CD || ACCT_GRP_CD <> '26W' AND	ACCT_CD || ACCT_GRP_CD <> '30W' AND	ACCT_CD || ACCT_GRP_CD <> '39W' AND	ACCT_CD || ACCT_GRP_CD <> '40W' AND	ACCT_CD || ACCT_GRP_CD <> 'A1W' AND	ACCT_CD || ACCT_GRP_CD <> 'A2W' AND	ACCT_CD || ACCT_GRP_CD <> 'A3W' AND	ACCT_CD || ACCT_GRP_CD <> 'A4W' AND	ACCT_CD || ACCT_GRP_CD <> 'A5W' AND ACCT_CD || ACCT_GRP_CD <> 'A6W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END)  AS GITA
+			       
+]]>
+			FROM V_ED_SUB_AGG A INNER JOIN STORE B ON A.STR_CD = B.STR_CD			
+			WHERE PAY_DAY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			AND ACCT_GRP_CD = 'W'
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty prepend="AND" property="entp_cd"> 
+		    	VEN_CD = #entp_cd#
+		    </isNotEmpty>		    
+		    <isNotEmpty prepend="AND" property="storeVal"> 
+		     <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+	    </isNotEmpty>	    
+<![CDATA[			
+			GROUP BY ACCT_CD || ACCT_GRP_CD, PAY_DAY, A.STR_CD, B.STR_NM, A.PAY_DAY
+			) A		
+		GROUP BY A.PAY_DAY, A.STR_CD, A.STR_NM
+		) AA ON AA.PAY_DAY = BB.PAY_DAY AND AA.STR_CD =BB.STR_CD	
+	INNER JOIN STORE CC ON CC.STR_CD = BB.STR_CD	
+	ORDER BY BB.PAY_DAY, BB.STR_CD	  
+]]>
+</select>
+
+
+
+
+
+
+
+
+
+
+<!-- 세금계산서 정보 -->
+<select id="TSC_CRED_AGG-SELECT01" parameterClass="map" resultClass="resultClass">
+<![CDATA[
+
+	SELECT	B.STR_NM
+	       ,DECODE(TAX_FG,'1','과세','2','면세','3','영세') AS TAX_FG
+	       ,SUM(BUY_AMT) AS BUY_AMT
+	       ,SUM(VAT) AS VAT
+	       ,SUM(BUY_AMT + VAT) AS TOTAL
+	
+	FROM  TED_CRED_BUY_AGG A INNER JOIN STORE@dl_md_martnis B ON A.STR_CD = B.STR_CD
+	
+	WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	  AND BUY_AMT <> 0
+]]>
+		<isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+		    
+		    <isNotEmpty prepend="AND" property="entp_cd"> 
+		    	A.VEN_CD = #entp_cd#
+		    </isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="storeVal"> 
+		     <iterate prepend="B.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+	    </isNotEmpty>
+		<isNotEmpty property="tax" prepend="AND"> 
+	    	<isNotEqual property="tax" compareValue="ALL">
+	    		 TAX_FG = #tax#
+	    	</isNotEqual>
+	    </isNotEmpty>
+<![CDATA[
+	GROUP BY B.STR_NM, TAX_FG
+	ORDER BY STR_NM, TAX_FG
+]]>
+</select>
+
+<!-- 물류비 정보 -->
+<select id="TSC_LOGI_AMT-SELECT01" parameterClass="map" resultClass="resultClass">
+			/*PEDMPAY0000.TSC_LOGI_AMT-SELECT01*/
+	SELECT	A.SUB_MM
+	       ,B.STR_NM
+	       ,NVL(SUM(A.STR_SPLY_AMT), 0) AS STR_SPLY_AMT
+	       ,NVL(SUM(A.SUB_AMT), 0) AS SUB_AMT
+	       ,NVL(SUM(A.VAT), 0) AS VAT
+	       ,NVL(SUM(A.SUB_AMT), 0) + NVL(SUM(A.VAT), 0) AS SUB_SUM
+	     --  ,NVL(TRUNC(DECODE(SUM(A.STR_SPLY_AMT),'0','0',(SUM(A.SUB_AMT) / SUM(A.STR_SPLY_AMT) * 100 )),1), 0) AS RATE
+	       ,NVL(ROUND(DECODE(SUM(A.STR_SPLY_AMT),'0','0',(SUM(A.SUB_AMT) / SUM(A.STR_SPLY_AMT) * 100 )),2), 0) AS RATE
+	 
+	
+	FROM  TED_SUB_AGG A INNER JOIN STORE@dl_md_martnis B ON A.STR_CD = B.STR_CD
+	
+	WHERE A.SUB_MM BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	  AND A.ACCT_CD IN ('25','39')
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty prepend="AND" property="entp_cd"> 
+	    	A.VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	
+	GROUP BY A.SUB_MM, B.STR_NM
+	ORDER BY A.SUB_MM, B.STR_NM
+	  
+</select>
+
+<!-- 판매장려금 정보 2014.04이전-->
+<select id="TSC_PROMO_SALE-SELECT01" parameterClass="map" resultClass="resultClass">
+/* PEDMPAY0000.TSC_PROMO_SALE-SELECT01*/
+	SELECT  SUB_YM
+	       ,STR_NM
+	       ,BUY_BUY_AMT
+	       ,PB_BUY_AMT
+	       ,EXPROMO_BUY_AMT
+	       ,PROMO_ADJ_AMT
+	       ,PROMO_AMT
+	       ,PROMO_AMT_RT
+	       ,MANUAL_PROMO_AMT
+	       ,SUM_AMT
+	       ,MANUAL_RT
+	
+	
+	FROM
+	
+		(SELECT  SUBSTR(AL.SUB_DY,1,6) AS SUB_YM
+		       ,AL.STR_CD AS STR_CD
+		       ,MIN(STR_NM) AS STR_NM
+		       ,AL.VEN_CD AS VEN_CD
+		       ,MIN(BM.COM_NM) AS COM_NM
+		       ,SUM(AL.BUY_BUY_AMT) AS BUY_BUY_AMT
+		       ,SUM(AL.PB_BUY_AMT) AS PB_BUY_AMT
+		       ,SUM(AL.EXPROMO_BUY_AMT) AS EXPROMO_BUY_AMT
+		       ,SUM(AL.BUY_BUY_AMT - AL.PB_BUY_AMT - AL.EXPROMO_BUY_AMT) AS PROMO_ADJ_AMT
+		       ,SUM(AL.PROMO_AMT) AS PROMO_AMT
+		       ,MAX(AL.PROMO_AMT_RT) AS PROMO_AMT_RT
+		       ,SUM(AL.MANUAL_PROMO_AMT) AS MANUAL_PROMO_AMT
+		       ,SUM(AL.PROMO_AMT + AL.MANUAL_PROMO_AMT) AS SUM_AMT
+		       ,DECODE(SUM(AL.BUY_BUY_AMT - AL.PB_BUY_AMT - AL.EXPROMO_BUY_AMT), 0, 0
+		              ,ROUND(SUM(AL.PROMO_AMT + AL.MANUAL_PROMO_AMT) / SUM(AL.BUY_BUY_AMT - AL.PB_BUY_AMT - AL.EXPROMO_BUY_AMT) * 100,2)) AS MANUAL_RT
+		
+		FROM
+		
+		(
+			(SELECT  A1.SUB_DY AS SUB_DY
+			        ,A1.STR_CD AS STR_CD
+			        ,A1.VEN_CD AS VEN_CD
+			        ,MAX(A1.SPLY_SEQ) AS SPLY_SEQ
+			        ,SUM(A1.BUY_BUY_AMT) AS BUY_BUY_AMT
+			        ,SUM(A1.PB_BUY_AMT) AS PB_BUY_AMT
+			        ,SUM(A1.EXPROMO_BUY_AMT) AS EXPROMO_BUY_AMT
+			        ,SUM(A1.PROMO_AMT) AS PROMO_AMT
+			        ,MAX(A1.PROMO_AMT_RT) AS PROMO_AMT_RT
+			        ,0 AS MANUAL_PROMO_AMT
+			
+			FROM SALE_PROMO_AMT@dl_md_martnis A1
+			
+			WHERE A1.SUB_DY LIKE replace(#startDate#,'-','') || '%' 
+			
+		
+			<isNotEmpty prepend="AND" property="storeVal"> 
+				     <iterate prepend="A1.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+				       #storeVal[]# 
+				     </iterate> 
+			</isNotEmpty>
+	
+			<isNotEmpty  property="venCds" prepend="AND" > 
+		      <iterate prepend="A1.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A1.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			
+			
+			GROUP BY A1.SUB_DY, A1.STR_CD, A1.VEN_CD
+			)
+		
+			UNION ALL
+		
+				(SELECT  A2.SUB_DY AS SUB_DY
+				        ,A2.STR_CD
+				        ,A2.VEN_CD
+				        ,''
+				        ,0
+				        ,0
+				        ,0
+				        ,0
+				        ,0
+				        ,SUM(SUB_AMT)
+				
+				FROM ETC_SUB@dl_md_martnis A2
+				
+				WHERE A2.SUB_DY LIKE replace(#startDate#,'-','') || '%' 
+				
+							
+			
+				<isNotEmpty prepend="AND" property="storeVal"> 
+					     <iterate prepend="A2.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+					       #storeVal[]# 
+					     </iterate> 
+				</isNotEmpty>
+	
+				
+				<isNotEmpty  property="venCds" prepend="AND" > 
+			      <iterate prepend="A2.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]#
+			      </iterate> 
+			    </isNotEmpty>
+			    
+			    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+			    	A2.VEN_CD = #entp_cd#
+		 	    </isNotEmpty>
+				
+				  AND A2.ACCT_GRP_CD = 'W'
+				  AND A2.ACCT_CD IN ('30','40')
+				
+				GROUP BY A2.SUB_DY, A2.STR_CD, A2.VEN_CD
+				)
+				
+				) AL, VENDOR@dl_md_martnis VD, BIZ_MAN@dl_md_martnis BM, STORE S
+			
+			WHERE AL.STR_CD = S.STR_CD
+			  AND AL.STR_CD = VD.STR_CD
+			  AND AL.VEN_CD = VD.VEN_CD
+			  AND VD.BMAN_NO = BM.BMAN_NO
+			
+			GROUP BY SUBSTR(AL.SUB_DY,1,6), AL.STR_CD, AL.VEN_CD
+			
+			)
+	  
+</select>
+
+
+<!-- 판매장려금 정보 2014.4 이후 -->
+<select id="TSC_PROMO_SALE-SELECT02" parameterClass="map" resultClass="resultClass">
+/* PEDMPAY0000.TSC_PROMO_SALE-SELECT02*/
+
+SELECT	AA.STR_CD AS STR_CD,			
+	MAX(BB.STR_NM) AS STR_NM,				
+	SUM(AA.TOT_BUY_AMT) AS TOT_BUY_AMT,			
+	SUM(AA.NEW_PROD_PROMO_AMT_AUTO) AS NEW_PROD_PROMO,	
+	SUM(AA.STAND_PROMO_AMT_AUTO) AS STAND_PROMO_AMT_AUTO,		
+	SUM(AA.OVER_PROMO_AMT_AUTO) AS OVER_PROMO_AMT_AUTO,		
+	
+	SUM(AA.NEW_PROD_PROMO_AMT_AUTO)
+	+ SUM(AA.STAND_PROMO_AMT_AUTO)
+	+ SUM(AA.OVER_PROMO_AMT_AUTO) AS NEW_PROD_PROMO_AMT_AUTO,		
+	
+	SUM(AA.NEW_PROD_PROMO_AMT_MAN) AS NEW_PROD_PROMO_AMT_MAN,		
+	SUM(AA.STAND_PROMO_AMT_MAN) AS STAND_PROMO_AMT_MAN,		
+	SUM(AA.OVER_PROMO_AMT_MAN) AS OVER_PROMO_AMT_MAN,			
+	
+	SUM(AA.NEW_PROD_PROMO_AMT_MAN)
+	+ SUM(AA.STAND_PROMO_AMT_MAN)
+	+ SUM(AA.OVER_PROMO_AMT_MAN) AS NEW_PROD_PROMO_AMT_MAN,		
+	
+	SUM(AA.NEW_PROD_PROMO_AMT_AUTO) 
+	+ SUM(AA.STAND_PROMO_AMT_AUTO)
+	+ SUM(AA.OVER_PROMO_AMT_AUTO)		
+	+ SUM(AA.NEW_PROD_PROMO_AMT_MAN)
+	+ SUM(AA.STAND_PROMO_AMT_MAN)
+	+ SUM(AA.OVER_PROMO_AMT_MAN) AS SUM		
+FROM 	(
+		 SELECT A.STR_CD,
+		              SUM(A.BUY_AMT) AS TOT_BUY_AMT,
+		              0        AS NEW_PROD_PROMO_AMT_AUTO,
+		              0        AS STAND_PROMO_AMT_AUTO,
+		              0        AS OVER_PROMO_AMT_AUTO,
+		              0        AS NEW_PROD_PROMO_AMT_MAN,
+		              0        AS STAND_PROMO_AMT_MAN,
+		              0        AS OVER_PROMO_AMT_MAN
+		             FROM  TED_CRED_BUY_AGG A,
+		                  VENDOR@dl_md_martnis  B
+		             WHERE A.STR_CD = B.STR_CD
+		             AND A.VEN_CD = B.VEN_CD
+		             AND B.TRD_TYP_FG = '1'
+				   /*	SELECT	A.STR_CD,
+					 	SUM(A.TAX_BUY_AMT+A.NTAX_BUY_AMT+A.ZTAX_BUY_AMT+A.BT_AMT)	AS TOT_BUY_AMT, 
+					
+						0								AS NEW_PROD_PROMO_AMT_AUTO,
+						0								AS STAND_PROMO_AMT_AUTO,
+						0								AS OVER_PROMO_AMT_AUTO,
+						0								AS NEW_PROD_PROMO_AMT_MAN,
+						0								AS STAND_PROMO_AMT_MAN,
+						0								AS OVER_PROMO_AMT_MAN	
+					  FROM 	CRED_BUY_AGG@dl_md_martnis	A,  
+						    VENDOR@dl_md_martnis		B
+					WHERE	A.STR_CD	= B.STR_CD
+					AND	A.VEN_CD	= B.VEN_CD
+					AND	B.TRD_TYP_FG	= '1'						*/
+					
+	AND	A.BUY_DY LIKE replace(#startDate#,'-','') || '%' 
+	<isNotEmpty prepend="AND" property="storeVal"> 
+		     <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+	</isNotEmpty>
+	
+	<isNotEmpty  property="venCds" prepend="AND" > 
+	 <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			    #venCds[]# 
+	</iterate> 
+	
+	</isNotEmpty>
+			    
+	<isNotEmpty  property="entp_cd"  prepend="AND"> 
+			      A.VEN_CD = #entp_cd#
+	</isNotEmpty>
+	
+	GROUP BY
+		A.STR_CD
+
+	UNION ALL
+
+	SELECT	A.STR_CD,
+		0		AS TOT_BUY_AMT,
+		SUM(DECODE(A.ACCT_CD,'A1', 1, 0) * A.SUB_AMT)	AS NEW_PROD_PROMO_AMT_AUTO,
+		SUM(DECODE(A.ACCT_CD,'A3', 1, 0) * A.SUB_AMT)	AS STAND_PROMO_AMT_AUTO,
+		SUM(DECODE(A.ACCT_CD,'A5', 1, 0) * A.SUB_AMT)	AS OVER_PROMO_AMT_AUTO,
+		SUM(DECODE(A.ACCT_CD,'A2', 1, 0) * A.SUB_AMT)	AS NEW_PROD_PROMO_AMT_MAN,
+		SUM(DECODE(A.ACCT_CD,'A4', 1, 0) * A.SUB_AMT)	AS STAND_PROMO_AMT_MAN,
+		SUM(DECODE(A.ACCT_CD,'A6', 1, 0) * A.SUB_AMT)	AS OVER_PROMO_AMT_MAN
+		
+		FROM 	ETC_SUB@dl_md_martnis		A
+		WHERE A.SUB_DY LIKE replace(#startDate#,'-','') || '%' 
+	
+
+	<isNotEmpty prepend="AND" property="storeVal"> 
+		     <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		       #storeVal[]# 
+		     </iterate> 
+	</isNotEmpty>
+	
+	<isNotEmpty  property="venCds" prepend="AND" > 
+	 <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]# 
+	</iterate> 
+	</isNotEmpty>
+			    
+	<isNotEmpty  property="entp_cd"  prepend="AND"> 
+			    	A.VEN_CD = #entp_cd#
+	</isNotEmpty>
+			
+	
+		GROUP BY
+					A.STR_CD
+			)		AA,
+		STORE		BB
+		WHERE		AA.STR_CD	= BB.STR_CD
+		GROUP BY 	AA.STR_CD
+			
+</select>
+
+
+</sqlMap>

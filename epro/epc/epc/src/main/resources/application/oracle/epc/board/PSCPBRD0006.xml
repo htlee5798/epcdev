@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscpbrd0006">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="pscpbrd0006SaveVO" type="com.lottemart.epc.board.model.PSCPBRD0006SaveVO"/>
+	
+	<!-- 상세보기팝업  -->
+    <insert id="insertSuggestionPopup">
+        /* pscpbrd0006.insertSuggestionPopup */
+		INSERT INTO TBO_BOARD
+		(
+		    BOARD_SEQ
+		  , LIST_SEQ          /* ORDER_SEQ    */
+		  , UP_BOARD_SEQ      /* UP_BOARD_SEQ */
+		  , BOARD_DIVN_CD     /* BOARD_GB     */
+		  , SCRP_OBJECT_CD    /* OBJECT_ID    */
+		  , CHILD_SCRP_CNT    /* CHILD_CNT    */
+		  , DEPTH
+		  
+		  , NTCE_START_DY
+		  , NTCE_END_DY
+		  , TITLE
+		  , CONTENT
+		  , VIEW_CNT
+		  , WRT_DY            /* BOARD_REG_DATE */
+		  , CLM_LGRP_CD       /* REASON_BCD     */
+    <isNotEmpty property="atchFileId">
+          , ATCH_FILE_ID
+    </isNotEmpty>
+		  , ATCH_FILE_YN      /* ATTACHED_YN */
+		  , DEL_YN            /* DELETE_YN   */
+		  , REG_ID
+		  , REG_DATE
+		  , MOD_ID
+		  , MOD_DATE
+		  , SCRP_KIND_CD      /* REG_TYPE */
+		)
+		VALUES
+		(
+		    LPAD(SQ_BOARD_SEQ_SEQ.NEXTVAL, 12, 0) 
+		  , LPAD(SQ_BOARD_SEQ_SEQ.CURRVAL, 12, 0) || '~'
+		  , ''
+		  , '17'
+		  , '0014'
+		  , 0
+		  , 1
+		  
+		  , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		  , '99991231'
+		  , #title#
+		  , #content#
+		  , 0
+		  , TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		  , '01'
+	<isNotEmpty property="atchFileId">
+	      , #atchFileId#
+	</isNotEmpty>
+		  , #atchFileYn#
+		  , 'N'
+		  , #vendorId#
+		  , CURRENT_TIMESTAMP(0)
+		  , #vendorId#
+		  , CURRENT_TIMESTAMP(0)
+		  , #scrpKindCd#
+		)
+    </insert>
+	
+</sqlMap>

@@ -1,0 +1,625 @@
+@charset "utf-8";
+
+div.inConts {
+	overflow:hidden; zoom:1;
+	width:100%;
+	padding:0 0 20px;
+	background:#f5ebe1;
+}
+div.inConts ul.txtusList {margin:10px 0 0 44px;}
+div.inConts ul.txtusList li {
+	color:#656565;
+	font-size:12px;
+	line-height:16px;
+}
+div.inConts div.pointRoundB {
+	width:864px;
+	margin:0 auto;
+	padding:0 0 17px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_round_btm.gif') no-repeat 0 100%;
+}
+div.inConts div.pointRoundT {
+	width:864px;
+	margin:0 auto;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_round_top.gif') no-repeat 0 0;
+}
+div.conts-top {
+	width:100%;
+	padding:0 0 20px;
+}
+div.conts-top div.cont-one {margin:0 0 0 -2px;}
+div.conts-top div.cont-tow,
+div.conts-top div.cont-three {
+	position:relative;
+	width:804px;
+	height:456px;
+	margin:0 auto;
+	padding:20px 0 0 0;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_bg_conts_top_box.gif') no-repeat 0 20px;
+}
+div.conts-top div h2.title {
+	position:absolute;
+	top:51px; left:127px;
+	*top:47px;
+	width:373px;
+	color:#2a2a2a;
+	font-weight:bold;
+	font-size:25px;
+	text-align:center;
+	line-height:28px;
+	letter-spacing:-3px;
+}
+div.conts-top div h2.title span {
+	display:inline-block;
+	color:#8e2d58;
+}
+div.conts-top ul.graphList {
+	overflow:hidden; zoom:1;
+	position:absolute;
+	top:105px; left:34px;
+	height:212px;
+}
+div.conts-top ul.graphList li {
+	float:left;
+	position:relative;
+	width:95px;
+	height:150px;
+	font-size:0;
+	line-height:0;
+	text-align:center;
+}
+div.conts-top ul.graphList li div {
+	position:absolute;
+	letter-spacing:0;
+}
+div.conts-top ul.graphList li div.diss1 {
+	bottom:29px; left:35%;
+	width:23px;
+	background:#f1b584;
+}
+div.conts-top ul.graphList li div.bgColor {background:#cadba6;}
+div.conts-top ul.graphList li div.diss2 {
+	left:0;
+	width:100%;
+	color:#636363;
+	font-size:16px;
+	text-align:center;
+	line-height:18px;
+}
+div.conts-top ul.graphList li div.diss3 {
+	top:120px; left:0;
+	width:100%;
+	height:23px;
+	padding:6px 0 0 0;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_bg_box_mid.gif') repeat-x 0 0;
+	color:#4c4c4c;
+	font-size:16px;
+	line-height:18px;
+}
+:root div.conts-top ul.graphList li div.diss3 {
+	height:25px;
+	padding:4px 0 0 0;
+}
+div.conts-top ul.graphList li.first div.diss3 {
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_bg_box_left.gif') no-repeat 0 0;
+}
+div.conts-top ul.graphList li.last div.diss3 {
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_bg_box_right.gif') no-repeat 100% 0;
+}
+div.conts-top div.amounts1 {
+	position:absolute;
+	top:317px; left:52px;
+	font-size:0;
+	text-align:center;
+	line-height:0;
+}
+div.conts-top div.amounts1 div.won1 {
+	*margin:-1px 0 0;
+	color:#f05b28;
+	font-size:17px;
+	line-height:20px;
+}
+div.conts-top div.amounts1 div.won2 {
+	*margin:-5px 0 0;
+	color:#5d5d5d;
+	font-size:17px;
+	line-height:20px;
+}
+div.conts-top div.amounts1 div span {
+	display:inline-block;
+	font-size:20px;
+	line-height:23px;
+	*line-height:27px;
+	letter-spacing:0;
+	vertical-align:-1px;
+	*vertical-align:1px;
+}
+div.conts-top div.amounts2 {
+	position:relative;
+	position:absolute;
+	top:144px; left:353px;
+	width:418px;
+	height:266px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_bg_box_amounts.gif') no-repeat 0 0;
+}
+div.conts-top div.amounts2 div {
+	position:absolute;
+	left:27px;
+	height:24px;
+	font-size:21px;
+	font-family:'Co Headline';
+	font-weight:bold;
+	text-align:right;
+	line-height:24px;
+	letter-spacing:0;
+	word-spacing:-1px;
+}
+div.conts-top div.amounts2 div img {
+	vertical-align:-5px;
+	*vertical-align:middle;
+}
+div.conts-top div.amounts2 div.won1 {
+	top:67px;
+	*top:64px;
+	width:167px;
+}
+div.conts-top div.amounts2 div.won2 {
+	top:97px;
+	*top:99px;
+	width:149px;
+}
+:root div.conts-top div.amounts2 div.won1 {top:69px;}
+:root div.conts-top div.amounts2 div.won2 {top:99px;}
+div.conts-top div.percent {
+	position:relative;
+	position:absolute;
+	top:56px; left:610px;
+	width:195px;
+	height:348px;
+}
+div.conts-top div.percent div {position:absolute;}
+div.conts-top div.percent div.perc1 {bottom:0; left:28px;}
+div.conts-top div.percent div.perc2 {
+	bottom:53px; left:60px;
+	color:#282828;
+	font-size:23px;
+	line-height:28px;
+	letter-spacing:-2px;
+}
+div.conts-top div.percent div.perc2 span {
+	font-size:40px;
+	line-height:44px;
+}
+div.conts-top div.percent div.perc3 {
+	overflow:hidden; zoom:1;
+	bottom:56px; left:28px;
+	width:24px;
+	height:242px;
+	border:1px solid #c7c7c7;
+	background:#cadba6;
+}
+div.conts-top div.percent div.perc3 span {
+	display:block;
+	width:24px;
+	background:#fff;
+}
+div.conts-top div.percent div.perc4,
+div.conts-top div.percent div.perc5 {
+	color:#787878;
+	font-size:16px;
+	line-height:20px;
+}
+div.conts-top div.percent div.perc4 span,
+div.conts-top div.percent div.perc5 span {letter-spacing:0;}
+div.conts-top div.percent div.perc4 {text-align:center;}
+div.conts-top div.percent div.perc5 {
+	top:100px; left:60px;
+}
+div.conts-top ul.etcList {
+	position:absolute;
+	bottom:15px; left:296px;
+}
+div.conts-top ul.etcList li {
+	padding:0 0 0 10px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_blt_etc.gif') no-repeat 0 5px;
+	color:#929292;
+	font-size:11px;
+	line-height:15px;
+}
+div.conts-top ul.etcList li a {
+	color:#a82078;
+	text-decoration:underline;
+}
+
+div.conts-btm {
+	width:821px;
+	margin:0 auto;
+	padding:1px 16px 20px 15px;
+	background:#f9f0e9 url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_blt_dotted.gif') repeat-x 0 0;
+}
+div.conts-btm p.txt1 {padding:12px 0 0 5px;}
+div.conts-btm div.cont-one {padding:6px 0 0 0;}
+div.conts-btm div.cont-tow {padding:6px 0 0 0;}
+div.conts-btm div.cont-tow ul {
+	overflow:hidden; zoom:1;
+	width:100%;
+}
+div.conts-btm div.cont-tow ul li {
+	position:relative;
+	float:left;
+	height:212px;
+	font-size:0;
+	text-align:center;
+	line-height:0;
+}
+div.conts-btm div.cont-tow ul li.diss2 {
+	width:237px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201303/C0070259_table_v2_02_on.gif') no-repeat 0 0;
+}
+div.conts-btm div.cont-tow ul li.diss3 {
+	width:237px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201303/C0070259_table_v2_03_on.gif') no-repeat 0 0;
+}
+div.conts-btm div.cont-tow ul li.diss4 {
+	width:242px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201303/C0070259_table_v2_04_on.gif') no-repeat 0 0;
+}
+div.conts-btm div.cont-tow ul li div.on .btn,
+div.conts-btm div.cont-tow ul li div.off .btn {
+	height:34px;
+	padding:34px 0 0 0;
+}
+div.conts-btm div.cont-tow ul li div.on .txt .radio,
+div.conts-btm div.cont-tow ul li div.off .txt .radio {display:none;}
+div.conts-btm div.cont-tow ul li div.on .txt,
+div.conts-btm div.cont-tow ul li div.off .txt {
+	height:68px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201302/C0070259_txt_appl.gif') no-repeat center 38px;
+}
+div.conts-btm div.cont-tow ul li div.on .won1,
+div.conts-btm div.cont-tow ul li div.off .won1 {
+	padding:12px 0 0 0;
+	color:#4f7b17;
+	font-size:20px;
+	line-height:22px;
+}
+div.conts-btm div.cont-tow ul li div.on .won1 span,
+div.conts-btm div.cont-tow ul li div.off .won1 span {
+	display:inline-block;
+	font-size:24px;
+	line-height:26px;
+	*line-height:29px;
+	vertical-align:-2px;
+	*vertical-align:2px;
+}
+div.conts-btm div.cont-tow ul li div.on .won2,
+div.conts-btm div.cont-tow ul li div.off .won2 {
+	padding:2px 0 0 0;
+	color:#979797;
+	font-size:16px;
+	line-height:18px;
+}
+div.conts-btm div.cont-tow ul li div.on .img {display:none;}
+div.conts-btm div.cont-tow ul li div.off .img {
+	display:block;
+	position:absolute;
+	top:0; left:0;
+}
+
+/* 2013-03-13 */
+div.conts-btm div.cont-one ul {
+	overflow:hidden; zoom:1;
+	width:716px;
+	height:134px;
+	padding:0 0 0 105px;
+	background:url('//simage.lottemart.com/images/contentimg/event/201303/C0070259_bg_table.gif') no-repeat 0 0;
+}
+div.conts-btm div.cont-one ul li {
+	float:left;
+	width:237px;
+	text-align:center;
+}
+div.conts-btm div.cont-one ul li.diss3 {width:242px;}
+div.conts-btm div.cont-one ul li .radio {
+	width:25px;
+	height:25px;
+	margin:35px 0 0;
+	cursor:pointer;
+}
+div.conts-btm div.cont-tow ul li div.on .btn .radio,
+div.conts-btm div.cont-tow ul li div.off .btn .radio {
+	width:25px;
+	height:25px;
+	margin:2px 0 0;
+	cursor:pointer;
+}
+div.conts-btm div.pointButton {
+	margin:20px 0 0 0;
+	font-size:0;
+	text-align:center;
+	line-height:0;
+}
+div.pointRoundB p.txt2 {
+	width:821px;
+	padding:9px 16px 0 15px;
+	margin:0 0 0 6px;
+	border-top:1px solid #f5e6e6;
+	background:#f1d7e2;
+}
+
+/* 2013-03-14 포인트 모바일 */
+div.mobilePoint {
+	width:600px;
+	margin:0 auto;
+	background:#f5ebdf;
+}
+div.mobilePoint div.zero {
+	font-size:0;
+	line-height:0;
+	vertical-align:top;
+}
+div.mobilePoint div.m-cont-one {
+	position:relative;
+	width:600px;
+}
+div.mobilePoint ul.m-list {
+	overflow:hidden; zoom:1;
+	position:absolute;
+	top:245px; left:28px;
+	width:542px;
+}
+div.mobilePoint ul.m-list li {
+	float:left;
+	width:177px;
+	text-align:center;
+}
+div.mobilePoint ul.m-list li.diss2 {margin:0 5px 0 6px;}
+div.mobilePoint ul.m-list li .radio {
+	width:25px;
+	height:25px;
+	cursor:pointer;
+}
+div.mobilePoint ul.m-list2 {
+	overflow:hidden; zoom:1;
+	width:600px;
+	height:209px;
+	padding:82px 0 0;
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_mobile_submitted02.gif') no-repeat 0 0;
+}
+div.mobilePoint ul.m-list2 li {
+	_display:inline;
+	float:left;
+	width:177px;
+	height:176px;
+	font-size:0;
+	line-height:0;
+}
+div.mobilePoint ul.m-list2 li.diss1 {margin:0 0 0 28px;}
+div.mobilePoint ul.m-list2 li.diss2 {margin:0 5px 0 6px;}
+div.mobilePoint ul.m-list2 li.complete {
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_m_complete.png') no-repeat 0 0;
+}
+div.mobilePoint ul.m-list2 li span {
+	width:0;
+	height:0;
+	text-indent:-99999px;
+	visibility:hidden;
+}
+div.mobilePoint div.m-cont-tow {
+	position:relative;
+	width:600px;
+	margin:20px 0 0;
+	padding:70px 0 0;
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_m_bg_top.gif') no-repeat 0 0;
+}
+div.mobilePoint div.m-cont-tow div.round-btm {
+	width:600px;
+	padding:0 0 25px;
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_m_bg_btm.gif') no-repeat 0 100%;
+}
+div.mobilePoint div.m-cont-tow h2 {
+	position:absolute;
+	top:22px; left:4px;
+	width:300px;
+	height:48px;
+	color:#fff;
+	font-weight:bold;
+	font-size:24px;
+	text-align:right;
+	line-height:42px;
+	letter-spacing:-3px;
+}
+div.mobilePoint div.m-cont-tow h2 strong {
+	color:#fffdaa;
+	font-weight:bold;
+	font-size:28px;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph1,
+div.mobilePoint div.m-cont-tow ul.m-graph2 {
+	overflow:hidden; zoom:1;
+	width:340px;
+	height:225px;
+	padding:15px 0 0 11px;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph2 {
+	height:auto;
+	margin:0 auto;
+	padding:15px 0 10px;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li {
+	position:relative;
+	height:69px;
+	padding:0 0 0 148px;
+	font-size:16px;
+	line-height:24px;
+	letter-spacing:0;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li div.diss1,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li div.diss1 {
+	width:46px;
+	height:62px;
+	padding:7px 0 0;
+	border-left:1px solid #c9c9c9;
+	border-right:1px solid #c9c9c9;
+	background:#e1e1e1;
+	text-align:center;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li.first div,
+div.mobilePoint div.m-cont-tow ul.m-graph1 li.first div {white-space:nowrap;}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li.first div.diss1,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li.first div.diss1 {border-top:1px solid #c9c9c9;}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li.last div.diss1,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li.last div.diss1 {border-bottom:1px solid #c9c9c9;}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li div.diss2,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li div.diss2 {
+	position:absolute;
+	top:8px; left:199px;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li div.diss3,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li div.diss3 {
+	position:absolute;
+	bottom:13px; left:197px;
+	height:20px;
+	background:#f1b485;
+}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li.pos1 div.diss2,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li.pos1 div.diss2 {left:auto; right:195px;}
+div.mobilePoint div.m-cont-tow ul.m-graph1 li.pos1 div.diss3,
+div.mobilePoint div.m-cont-tow ul.m-graph2 li.pos1 div.diss3 {left:auto; right:193px;}
+div.mobilePoint div.m-cont-tow ul.amounts1,
+div.mobilePoint div.m-cont-tow ul.amounts2 {
+	position:absolute;
+	top:85px; left:350px;
+	width:223px;
+	height:199px;
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_m_bg_box01.gif') no-repeat 0 0;
+	text-align:center;
+}
+div.mobilePoint div.m-cont-tow ul.amounts2 {
+	position:static;
+	width:264px;
+	height:165px;
+	margin:0 0 0 29px;
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_m_bg_box02.gif') no-repeat 0 0;
+}
+div.mobilePoint div.m-cont-tow ul.amounts3 {
+	position:absolute;
+	top:509px; left:277px;
+}
+div.mobilePoint div.m-cont-tow ul.amounts1 li,
+div.mobilePoint div.m-cont-tow ul.amounts2 li {
+	color:#242424;
+	font-size:22px;
+	line-height:26px;
+}
+div.mobilePoint div.m-cont-tow ul.amounts1 li.won1,
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won1 {
+	height:47px;
+	padding:13px 0 0;
+	font-weight:bold;
+	font-size:24px;
+	line-height:30px;
+	letter-spacing:-2px;
+	word-spacing:-2px;
+}
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won1 {
+	height:39px;
+	padding:8px 0 0;
+}
+div.mobilePoint div.m-cont-tow ul.amounts1 li.won2,
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won2 {
+	height:60px;
+	margin:0 1px;
+	padding:3px 0 0;
+	background:#ebebeb;
+}
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won2 {
+	height:37px;
+	padding:4px 0 0;
+}
+div.mobilePoint div.m-cont-tow ul.amounts1 li.won3,
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won3 {
+	padding:5px 0 0;
+	letter-spacing:0;
+}
+div.mobilePoint div.m-cont-tow ul.amounts1 li.won3 span,
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won3 span {
+	display:block;
+	margin:3px 0 0;
+	color:#737373;
+	letter-spacing:-1px;
+}
+div.mobilePoint div.m-cont-tow ul.amounts1 li.won3 span em,
+div.mobilePoint div.m-cont-tow ul.amounts2 li.won3 span em {
+	display:inline-block;
+	font-size:19px;
+	vertical-align:top;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 {
+	position:relative;
+	width:600px;
+	height:137px;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div {
+	position:absolute;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc1 {
+	top:23px; left:29px;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc2 {
+	top:26px; left:115px;
+	width:453px;
+	height:45px;
+	border:1px solid #c6c6c6;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc2 span {
+	display:block;
+	height:41px;
+	padding:4px 0 0;
+	background:#bed591;
+	color:#5b5b5b;
+	font-size:29px;
+	text-align:center;
+	line-height:33px;
+	
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc3,
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc4 {
+	top:77px;
+	color:#5b5b5b;
+	font-size:20px;
+	line-height:22px;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc3 {
+	left:114px;
+}
+div.mobilePoint div.m-cont-tow div.amounts4 div.perc4 {
+	right:30px;
+	text-align:right;
+}
+div.mobilePoint div.m-cont-tow p.txt1 {
+	padding:0 0 0 30px;
+	color:#5b5b5b;
+	font-weight:bold;
+	font-size:22px;
+	line-height:32px;
+}
+div.mobilePoint div.m-cont-tow ul.etc {margin:0 0 0 29px;}
+div.mobilePoint div.m-cont-tow ul.etc li {
+	padding:0 0 0 16px;
+	background:url('//simage.lottemart.com/images/mobile/contentimg/event/C0070259_m_blt_sta.gif') no-repeat 0 10px;
+	color:#5b5b5b;
+	font-weight:bold;
+	font-size:22px;
+	line-height:28px;
+}
+div.mobilePoint div.m-cont-tow ul.etc li span {
+	display:inline-block;
+	color:#5b5b5b;
+	font-weight:normal;
+}
+div.mobilePoint .color-m1 {color:#ec0500 !important;}
+div.mobilePoint .color-m2 {color:#ac060a !important;}
+div.mobilePoint .color-m3 {background:#bfd491 !important;}
+div.mobilePoint .color-m4 {color:#f1463f !important;}

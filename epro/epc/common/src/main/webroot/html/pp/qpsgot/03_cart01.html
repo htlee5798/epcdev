@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>모바일 QPS 피킹 관리 시스템</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<link rel="shortcut icon" href="http://image.lottemart.com/images/front/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" href="http://image.lottemart.com/images/mobile/contentimg/ico/ico-a_72_72.png">
+
+	<!-- CSS 임시경로  -->
+	<link rel="stylesheet" href=".//lib_new.css">
+</head>	
+<body>
+<!-- 화면 전체 구성 -->
+
+	<!-- 03. 비밀번호 변경 full Layer popup -->
+	<div id="password_popup"></div>
+	<!-- //03. 비밀번호 변경 full Layer popup -->
+	
+	<!-- 05. CONTAINER START -->
+	<div class="m-container-scroll">
+		<!-- a. HEADER -->
+		<div class="header">
+			<div class="user_info">
+				<a href="01_mypage.html" class="mypage">
+					운영자님<em>(123.123.123.333)</em>
+					<em>2020-01-30 오전 11:30:30</em>
+				</a>
+			</div>
+		</div>
+		<!-- //a. HEADER -->
+		<!-- b. INNER -->
+		<div class="picking_list">
+			<!-- 현재 상태 -->
+			<div class="picking_status">
+				<ul>
+					<li class="r1"><em class="tit">패킹지시 :</em> 총 <strong class="point2">N</strong>개 할당</li>
+					<li class="r2">
+						<em class="tit">바구니번호 </em><input type="text" class="no" value="PA12345">
+					</li>
+				</ul>
+			</div>
+			<!-- //현재 상태 -->
+			<!-- 피킹 리스트 -->
+			<div class="prod_tbl01">
+				<div class="box_btnR">
+					<button type="button" class="btn-common-color1">피킹바구니완료</button>
+					<button type="button" class="btn-common-color2">Chute조회</button>
+				</div>
+				<table>
+					<caption>피킹 리스트</caption>
+					<colgroup>
+						<col style="width:15%;">
+						<col style="width:*;">
+						<col style="width:12%;">
+						<col style="width:12%;">
+						<col style="width:12%;">
+						<col style="width:12%;">
+					</colgroup>
+					<tbody>
+						<tr>
+							<th>구분</th>
+							<th>상품명</th>
+							<th>주문</th>
+							<th>피킹</th>
+							<th>대체</th>
+							<th>결품</th>
+						</tr>
+						<tr class="bg_sky">
+							<td>일반</td>
+							<td class="lft">Only Price 대패삼겹살(냉동)(800G)</td>
+							<td><strong class="point4">1,000</strong></td>
+							<td><strong class="point4">60</strong></td>
+							<td><strong class="point1">30</strong></td>
+							<td><strong class="point3">1</strong></td>
+						</tr>
+						<tr>
+							<td>장척물</td>
+							<td class="lft">룸바이홈키친 원터치 싱크선반(80CM)</td>
+							<td><strong class="point4">1,000</strong></td>
+							<td><strong class="point4">60</strong></td>
+							<td><strong class="point1">30</strong></td>
+							<td><strong class="point3">1</strong></td>
+						</tr>
+						<tr>
+							<td>상차장</td>
+							<td class="lft">롯데 아이시스 8.0(2L*6) <span class="point3">[상품2개 이상 구매 시 물병증정]</span></td>
+							<td><strong class="point4">1,000</strong></td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- //피킹 리스트 -->
+		</div>
+		<!-- //b. INNER -->
+	</div>
+	<!-- 05. CONTAINER START -->
+
+	<!-- 06. layer popup -->
+	<div id="dialog_popup"></div>
+	<div id="detail_popup"></div>
+	<!-- //06. layer popup -->
+
+<!-- //화면 전체 구성 -->
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script>
+$(document).ready(function() {
+	// 메뉴 열기
+	$('#openMenu').click(function(e) {
+		$('.menu-open').show();
+		$('.layer-mask').show();
+	});
+	// 메뉴 닫기
+	$('#closeMenu').click(function(e) {
+		$('.menu-open').hide();
+		$('.layer-mask').hide();
+	});
+	
+
+});
+</script>
+</body>
+</html>

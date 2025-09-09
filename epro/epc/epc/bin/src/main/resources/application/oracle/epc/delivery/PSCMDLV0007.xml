@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMDLV0007">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmdlv0007VO" type="com.lottemart.epc.delivery.model.PSCMDLV0007VO"/>
+
+	<select id="selectPartherReturnStatusList"  parameterClass="pscmdlv0007VO"  resultClass="dataMap">
+		/* PSCMDLV0007.selectPartherReturnStatusList */ 
+		SELECT *
+		  FROM (
+		    SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+		        , COUNT(*) OVER() TOTAL_COUNT
+		        , B.*
+		      FROM (
+		        SELECT
+		             V.VENDOR_ID 
+		             , NVL(V.VENDOR_NM, '마트') AS VENDOR_NM
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '61', 1)), 0)  DELI_STATUS_61  /*반품대기*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '62', 1)), 0)  DELI_STATUS_62  /*반품지시*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '66', 1)), 0)  DELI_STATUS_66  /*반품회수확인*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '67', 1)), 0)  DELI_STATUS_67  /*반품취소*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '65', 1)), 0)  DELI_STATUS_65  /*반품회수실패*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '71', 1)), 0)  DELI_STATUS_71  /*교환대기*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '72', 1)), 0)  DELI_STATUS_72  /*교환지시*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '77', 1)), 0)  DELI_STATUS_77  /*교환회수확인*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '76', 1)), 0)  DELI_STATUS_76  /*교환취소*/
+		             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '75', 1)), 0)  DELI_STATUS_75  /*교환회수실패*/  
+		             , SUM(CNT) AS CNT       
+		          FROM (
+		            SELECT
+		                O.ORDER_ID
+		                , DM.DELIVERY_ID
+		                , DM.VEN_CD
+		                , DM.DELI_STATUS_CD
+		                , COUNT(*) CNT
+		              FROM TOR_ORDER O, TDE_DELI_MST DM
+		             WHERE O.ORDER_ID = DM.ORDER_ID
+		               AND DM.DELI_METHOD_DIVN_CD = '20'    /*배송방법코드(DE021) 20: 업체*/
+		               AND DM.DELI_TYPE_CD IN ('04', '06')
+		               AND O.ORD_DY BETWEEN #fromDate#  AND #toDate#
+		               AND O.ORD_RTN_DIVN_CD IN ('40', '50') /*주문반품구분코드(OR001) 40:반품주문, 50:교환주문*/
+		               AND O.ORD_STS_CD IN ('40', '41', '42', '50', '51', '52') /*주문상태코드(OR002) 40 : 반품접수, 41 : 반품완료 42 : 반품취소  50 : 교환접수, 51 : 교환완료 52 : 교환취소*/ 
+		               AND DM.DELI_STATUS_CD > 52   /* 배송상태(DE002) */
+		          GROUP BY O.ORDER_ID, DM.DELIVERY_ID, DM.VEN_CD, DM.DELI_STATUS_CD
+		        )S, TVE_VENDOR V
+		         WHERE S.VEN_CD = V.VENDOR_ID(+)
+			       AND S.VEN_CD
+					<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+							#vendorId[]# 
+					</iterate>	         
+		      GROUP BY V.VENDOR_ID, V.VENDOR_NM
+		    ) B
+		)
+		  WHERE PAGE = #pageIndex#       
+	</select>
+	
+	
+	<select id="selectPartherReturnStatusSum"  parameterClass="pscmdlv0007VO"  resultClass="dataMap">
+		/* PSCMDLV0007.selectPartherReturnStatusSum */  
+	SELECT 
+	     COUNT(VEN_CD) AS VENDOR_COUNT
+	     , SUM(CNT) AS CNT
+         , SUM(DELI_STATUS_61)  DELI_STATUS_61  /*반품대기*/
+         , SUM(DELI_STATUS_62)  DELI_STATUS_62  /*반품지시*/
+         , SUM(DELI_STATUS_66)  DELI_STATUS_66  /*반품회수확인*/
+         , SUM(DELI_STATUS_67)  DELI_STATUS_67  /*반품취소*/
+         , SUM(DELI_STATUS_65)  DELI_STATUS_65  /*반품회수실패*/
+         , SUM(DELI_STATUS_71)  DELI_STATUS_71  /*교환대기*/
+         , SUM(DELI_STATUS_72)  DELI_STATUS_72  /*교환지시*/
+         , SUM(DELI_STATUS_77)  DELI_STATUS_77  /*교환회수확인*/
+         , SUM(DELI_STATUS_76)  DELI_STATUS_76  /*교환취소*/
+         , SUM(DELI_STATUS_75)  DELI_STATUS_75  /*교환회수실패*/    
+	  FROM (		
+        SELECT
+            S.VEN_CD
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '61', 1)), 0)  DELI_STATUS_61
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '62', 1)), 0)  DELI_STATUS_62
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '66', 1)), 0)  DELI_STATUS_66
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '67', 1)), 0)  DELI_STATUS_67
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '65', 1)), 0)  DELI_STATUS_65
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '71', 1)), 0)  DELI_STATUS_71
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '72', 1)), 0)  DELI_STATUS_72
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '77', 1)), 0)  DELI_STATUS_77
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '76', 1)), 0)  DELI_STATUS_76
+             , NVL(SUM(DECODE(S.DELI_STATUS_CD, '75', 1)), 0)  DELI_STATUS_75     
+             , SUM(CNT) AS CNT        
+          FROM (
+            SELECT
+                O.ORDER_ID
+                , DM.DELIVERY_ID
+                , DM.VEN_CD
+                , DM.DELI_STATUS_CD
+                , COUNT(*) CNT
+              FROM TOR_ORDER O, TDE_DELI_MST DM
+             WHERE O.ORDER_ID = DM.ORDER_ID
+               AND DM.DELI_METHOD_DIVN_CD = '20'    /*배송방법코드(DE021) 20: 업체*/
+               AND DM.DELI_TYPE_CD IN ('04', '06')
+               AND O.ORD_DY BETWEEN #fromDate#  AND #toDate#
+               AND O.ORD_RTN_DIVN_CD IN ('40', '50') /*주문반품구분코드(OR001) 40:반품주문, 50:교환주문*/
+               AND O.ORD_STS_CD IN ('40', '41', '42', '50', '51', '52') /*주문상태코드(OR002) 40 : 반품접수, 41 : 반품완료 42 : 반품취소  50 : 교환접수, 51 : 교환완료 52 : 교환취소*/ 
+               AND DM.DELI_STATUS_CD > 52   /* 배송상태(DE002) */
+          GROUP BY O.ORDER_ID, DM.DELIVERY_ID, DM.VEN_CD, DM.DELI_STATUS_CD
+        )S, TVE_VENDOR V
+         WHERE S.VEN_CD = V.VENDOR_ID(+)
+	       AND S.VEN_CD
+			<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+					#vendorId[]# 
+			</iterate>	 
+	  GROUP BY S.VEN_CD
+		)	
+			        	
+	</select>	
+    	
+    
+</sqlMap>

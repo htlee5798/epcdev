@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmdlv0011">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    
+    
+    <select id="selectVendorPenaltyCompRate" resultClass ="dataMap">
+        <![CDATA[
+        SELECT * FROM
+        (
+            SELECT /*+ LEADING(O) INDEX(O IX_OR_ORDER_11) */  --@@ EXEM. 힌트변경
+                  ROW_NUMBER()OVER(ORDER BY O.ORD_DY DESC,O.ORDER_ID,OI.PROD_CD) AS NUM
+                , O.ORDER_ID
+                , TO_CHAR(TO_DATE(O.ORD_DY),'yyyy-MM-dd') AS ORD_DY
+                , OI.PROD_CD
+                , OI.PROD_NM
+                , DECODE(DM.VEN_DELI_STATUS_CD,'05','Y','09','Y','N') AS DELI_YN
+                , DECODE(DM.DELI_FNSH_DATE,NULL,'','D+'|| TO_CHAR(TO_DATE(SUBSTR(DM.DELI_FNSH_DATE,0,8)) - TO_DATE(O.ORD_DY))) AS D_DAY
+                , NVL(TO_CHAR(TO_DATE(SUBSTR(DM.DELI_FNSH_DATE,0,8)),'yyyy-MM-dd'),'')  AS DELI_FNSH_DATE
+                , PEC.PENALTY_CNT
+            FROM TOR_ORDER O
+                , TOR_ORDER_ITEM OI
+                , TDE_DELI_MST DM 
+                ,(SELECT
+                    VENDOR_ID,PROD_CD,COUNT(PROD_CD) AS PENALTY_CNT 
+                  FROM TVE_VENDOR_PENALTY GROUP BY VENDOR_ID,PROD_CD) PEC
+            WHERE DM.ORDER_ID = O.ORDER_ID
+            AND O.ORDER_ID = OI.ORDER_ID
+            AND OI.ORDER_ID = DM.ORDER_ID
+            AND OI.DELIVERY_ID = DM.DELIVERY_ID
+            AND OI.STR_VENDOR_ID = PEC.VENDOR_ID(+)     
+            AND OI.PROD_CD = PEC.PROD_CD(+)
+            AND DM.DELI_METHOD_DIVN_CD = '20'
+            AND DM.INVOICE_STATUS_CD = '10'
+            AND DM.DELI_DIVN_CD = '10'
+            AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+            AND OI.DELIVERY_ID != '000'
+            AND OI.ORD_ITEM_DIVN_CD = '00'
+            AND DM.DELI_TYPE_CD  in ( '04' , '06')
+            AND O.ORD_DY BETWEEN #startDate# AND #endDate#
+            ]]>
+            <isNotEmpty property="vendorId">
+                AND (0, OI.STR_VENDOR_ID) 
+               <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+                    (0, #vendorId[]#) 
+                </iterate>        
+            </isNotEmpty>
+            <isNotEmpty property="prodCd">    
+                AND OI.PROD_CD LIKE '%'||#prodCd#||'%'
+            </isNotEmpty>
+            <isNotEmpty property="prodNm">    
+                AND OI.PROD_NM LIKE '%'||#prodNm#||'%'
+            </isNotEmpty>
+            <isNotEmpty property="penaltyCnt">    
+                AND PEC.PENALTY_CNT = #penaltyCnt#
+            </isNotEmpty>
+            ORDER BY O.ORD_DY DESC,O.ORDER_ID,OI.PROD_CD
+        )    
+        WHERE num BETWEEN #startRow# AND #endRow# 
+    </select>
+    
+    <select id="vendorPenaltyTotalCnt" resultClass="java.lang.Integer">
+        <![CDATA[
+        SELECT /*+ LEADING(O) INDEX(O IX_OR_ORDER_11) */  --@@ EXEM. 힌트변경
+            COUNT(1) AS  COUNT 
+        FROM TOR_ORDER O
+            , TOR_ORDER_ITEM OI
+            , TDE_DELI_MST DM 
+            ,(SELECT
+                VENDOR_ID,PROD_CD,COUNT(PROD_CD) AS PENALTY_CNT 
+              FROM TVE_VENDOR_PENALTY GROUP BY VENDOR_ID,PROD_CD) PEC
+        WHERE DM.ORDER_ID = O.ORDER_ID
+        AND O.ORDER_ID = OI.ORDER_ID
+        AND OI.ORDER_ID = DM.ORDER_ID
+        AND OI.DELIVERY_ID = DM.DELIVERY_ID
+        AND OI.STR_VENDOR_ID = PEC.VENDOR_ID(+)     
+        AND OI.PROD_CD = PEC.PROD_CD(+)
+        AND DM.DELI_METHOD_DIVN_CD = '20'
+        AND DM.INVOICE_STATUS_CD = '10'
+        AND DM.DELI_DIVN_CD = '10'
+        AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+        AND OI.DELIVERY_ID != '000'
+        AND OI.ORD_ITEM_DIVN_CD = '00'
+        AND DM.DELI_TYPE_CD  in ( '04' , '06')
+        AND O.ORD_DY BETWEEN #startDate# AND #endDate#
+        ]]>
+        <isNotEmpty property="vendorId">
+            AND (0, OI.STR_VENDOR_ID) 
+           <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+                (0, #vendorId[]#) 
+            </iterate>        
+        </isNotEmpty>
+        <isNotEmpty property="prodCd">    
+            AND OI.PROD_CD LIKE '%'||#prodCd#||'%'
+        </isNotEmpty>
+        <isNotEmpty property="prodNm">    
+            AND OI.PROD_NM LIKE '%'||#prodNm#||'%'
+        </isNotEmpty>
+        <isNotEmpty property="penaltyCnt">    
+            AND PEC.PENALTY_CNT = #penaltyCnt#
+        </isNotEmpty>
+    </select>
+    
+    <select id="selectVendorPenaltyCompRateExcel" resultClass ="dataMap">
+        <![CDATA[
+        SELECT /*+ LEADING(O) INDEX(O IX_OR_ORDER_11) */  --@@ EXEM. 힌트변경
+              ROW_NUMBER()OVER(ORDER BY O.ORD_DY DESC,O.ORDER_ID,OI.PROD_CD) AS NUM
+            , O.ORDER_ID
+            , TO_CHAR(TO_DATE(O.ORD_DY),'yyyy-MM-dd') AS ORD_DY
+            , OI.PROD_CD
+            , OI.PROD_NM
+            , DECODE(DM.VEN_DELI_STATUS_CD,'05','Y','09','Y','N') AS DELI_YN
+            , DECODE(DM.DELI_FNSH_DATE,NULL,'','D+'|| TO_CHAR(TO_DATE(SUBSTR(DM.DELI_FNSH_DATE,0,8)) - TO_DATE(O.ORD_DY))) AS D_DAY
+            , NVL(TO_CHAR(TO_DATE(SUBSTR(DM.DELI_FNSH_DATE,0,8)),'yyyy-MM-dd'),'')  AS DELI_FNSH_DATE
+            , PEC.PENALTY_CNT
+        FROM TOR_ORDER O
+            , TOR_ORDER_ITEM OI
+            , TDE_DELI_MST DM 
+            ,(SELECT
+                VENDOR_ID,PROD_CD,COUNT(PROD_CD) AS PENALTY_CNT 
+              FROM TVE_VENDOR_PENALTY GROUP BY VENDOR_ID,PROD_CD) PEC
+        WHERE DM.ORDER_ID = O.ORDER_ID
+        AND O.ORDER_ID = OI.ORDER_ID
+        AND OI.ORDER_ID = DM.ORDER_ID
+        AND OI.DELIVERY_ID = DM.DELIVERY_ID
+        AND OI.STR_VENDOR_ID = PEC.VENDOR_ID(+)     
+        AND OI.PROD_CD = PEC.PROD_CD(+)
+        AND DM.DELI_METHOD_DIVN_CD = '20'
+        AND DM.INVOICE_STATUS_CD = '10'
+        AND DM.DELI_DIVN_CD = '10'
+        AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+        AND OI.DELIVERY_ID != '000'
+        AND OI.ORD_ITEM_DIVN_CD = '00'
+        AND DM.DELI_TYPE_CD  in ( '04' , '06')
+        AND O.ORD_DY BETWEEN #startDate# AND #endDate#
+        ]]>
+        <isNotEmpty property="vendorId">
+            AND (0, OI.STR_VENDOR_ID) 
+           <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+                (0, #vendorId[]#) 
+            </iterate>        
+        </isNotEmpty>
+        <isNotEmpty property="prodCd">    
+            AND OI.PROD_CD LIKE '%'||#prodCd#||'%'
+        </isNotEmpty>
+        <isNotEmpty property="prodNm">    
+            AND OI.PROD_NM LIKE '%'||#prodNm#||'%'
+        </isNotEmpty>
+        <isNotEmpty property="penaltyCnt">    
+            AND PEC.PENALTY_CNT = #penaltyCnt#
+        </isNotEmpty>
+        ORDER BY O.ORD_DY DESC,O.ORDER_ID,OI.PROD_CD
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:04:33 KST 2025
+jackson-core-asl-1.9.2.jar>neonexus=
+jackson-core-asl-1.9.2-sources.jar>neonexus=
+jackson-core-asl-1.9.2.pom>neonexus=

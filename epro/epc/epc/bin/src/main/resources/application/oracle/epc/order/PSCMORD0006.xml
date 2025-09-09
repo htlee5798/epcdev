@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMORD0006">
+
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectSaleInfoByStore" resultClass="dataMap" timeout="900000">
+	/* PSCMORD0006.selectSaleInfoByStore */
+	SELECT A.*, (SELECT STR_NM FROM TST_STORE WHERE STR_CD = A.STR_CD) STR_NM
+	  FROM (SELECT /*+ USE_HASH(P)*/
+	               B.STR_CD
+	             , SUM(DECODE(P.SALE_TYPE,'3',B.ORD_QTY,'4',-B.ORD_QTY,0)) SALE_QTY
+	             , SUM(DECODE(P.SALE_TYPE,'3',B.ORD_AMT,'4',-B.ORD_AMT,0)) SALE_AMT
+	             , SUM(DECODE(P.SALE_TYPE,'3',B.TOT_SELL_AMT,'4',-B.TOT_SELL_AMT,0)) TOT_SELL_AMT
+	           FROM (SELECT /*+ NO_UNNEST FULL(TS) USE_HASH(TS LS) */ DISTINCT TS.WORKSTATIONID AS POS_NO
+	                      , TS.BUSINESSDAYDATE AS SALE_DY
+	                      , TS.ORDER_ID
+	                   FROM TSA_TLOGSELECT TS
+	                       ,TLOGSEND LS
+	                  WHERE TS.BUSINESSDAYDATE BETWEEN REPLACE(#startDate#,'-','') AND REPLACE(#endDate#,'-','')
+	                    AND LS.BUSINESSDAYDATE BETWEEN REPLACE(#startDate#,'-','') AND REPLACE(#endDate#,'-','')
+	                    AND TS.RECORDQUALIFIER = '1'
+	                    AND TS.RETAILSTOREID   = LS.RETAILSTOREID
+	                    AND TS.BUSINESSDAYDATE = LS.BUSINESSDAYDATE
+	                    AND TS.WORKSTATIONID   = LS.WORKSTATIONID
+	                    AND TS.TRANSNUMBER     = LS.TRANSNUMBER
+	                    AND TS.TRANSTYPECODE   = LS.TRANSTYPECODE  /* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */
+	                    AND LS.RESULT_STATUS   = 'C'
+	                    AND LS.TRANSTYPECODE NOT IN ('0050','0060')  /* 20160624 김학수 추가 [현금연수증,LPOINT는 매출에서제외(중복제거)] */
+	                    AND NOT EXISTS (SELECT /*+ UNNEST FULL(LE) */ 1 FROM TLOGERR LE
+	                                     WHERE TS.RETAILSTOREID  = LE.RETAILSTOREID
+	                                       AND TS.BUSINESSDAYDATE = LE.BUSINESSDAYDATE
+	                                       AND TS.WORKSTATIONID   = LE.WORKSTATIONID
+	                                       AND TS.TRANSNUMBER     = LE.TRANSNUMBER
+	                                       AND TS.TRANSTYPECODE   = LE.TRANSTYPECODE  /* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */
+	                                   )
+	                ) H  /* TSA_SALE_HEAD_IMALL 변경*/
+	              , TOR_ORDER_ITEM B
+	              , (SELECT /*+ NO_UNNEST */ POS_NO, SALE_TYPE FROM TET_TLOG_POS WHERE SALE_TYPE IN ('3', '4') AND USE_YN = 'Y') P
+	          WHERE H.ORDER_ID  = B.ORDER_ID
+	            AND H.POS_NO = P.POS_NO
+	            AND B.ORD_ITEM_DIVN_CD = '00'
+	            <isNotEmpty property="storeVal" prepend="AND">
+	            <iterate prepend="B.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> #storeVal[]# </iterate> 
+	            </isNotEmpty>
+	            <isEmpty property="entp_cd">
+	            AND B.STR_VENDOR_ID IN (SELECT VENDOR_ID FROM TVE_VENDOR WHERE <isNotEmpty property="cono"> CONO = #cono#</isNotEmpty>
+	                                     <isNotEmpty property="conos"> CONO IN <iterate property="conos" open="(" close=")" conjunction=","> #conos[]# </iterate> </isNotEmpty> )
+	            </isEmpty>
+	            <isNotEmpty property="entp_cd">
+	            AND B.STR_VENDOR_ID = #entp_cd#
+	            </isNotEmpty>
+	            <isNotEmpty property="productVal">
+	            AND B.PROD_CD = #productVal#
+	            </isNotEmpty>
+	         GROUP BY B.STR_CD
+	       ) A
+	</select>
+
+</sqlMap>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0070">
+	<typeAlias alias="NEDMPRO0070VO" type="com.lottemart.epc.edi.product.model.NEDMPRO0070VO" />
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="COMMON_CODE" parameterClass="dataMap" resultClass="NEDMPRO0070VO">
+		SELECT ROW_NUMBER() OVER () AS num 	
+			,	MINOR_CD AS code
+			,	CASE #orderItem#  WHEN 'PRD40' THEN  CONCAT(CD_NM , '(' , MINOR_CD , ')')  WHEN 'PRD17' THEN  CONCAT(CD_NM , '(' , MINOR_CD , ')') ELSE  CD_NM END AS name
+		FROM 	TPC_CODE
+		WHERE 	MAJOR_CD = #orderItem#
+		 	AND USE_YN = 'Y'
+		 	<isNotEmpty property="codeNm">
+		 		AND CD_NM LIKE Concat('%',#codeNm#,'%')
+		 	</isNotEmpty>
+	</select>
+	
+	<select id="COMMON_CODE_KC" parameterClass="dataMap" resultClass="NEDMPRO0070VO">
+		SELECT A.*, ROW_NUMBER() OVER () AS num FROM
+		(SELECT DISTINCT	
+           MST.INFO_GRP_NM AS name
+		   ,	MST.INFO_GRP_CD AS code
+		FROM  TPR_PROD_CERT_INFO_MST MST 
+		  	, TPR_PROD_CERT_INFO_DET DET
+		WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+     	   AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY WHERE CAT_CD = #category#)
+		   AND MST.USE_YN = 'Y'
+		   AND DET.USE_YN = 'Y'
+		   <isNotEmpty property="codeNm">
+		   AND MST.INFO_GRP_NM LIKE Concat('%',#codeNm#,'%')
+		   </isNotEmpty>
+		   )A
+	</select>
+	
+	<select id="COMMON_CODE_BO" parameterClass="dataMap" resultClass="NEDMPRO0070VO">
+		SELECT A.*, ROW_NUMBER() OVER () AS num FROM
+		(SELECT DISTINCT 
+           	   MST.INFO_GRP_NM AS name
+		       ,MST.INFO_GRP_CD AS code
+		  FROM  TPR_PROD_ADD_INFO_MST MST 
+		       ,TPR_PROD_ADD_INFO_DET DET
+		 WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+      			AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY WHERE CAT_CD = #category#)
+		  		AND MST.USE_YN = 'Y'
+		   		AND DET.USE_YN = 'Y'
+		   		<isNotEmpty property="codeNm">
+		   		AND MST.INFO_GRP_NM LIKE Concat('%',#codeNm#,'%')
+		   		</isNotEmpty>
+		   		) A
+	</select>
+	
+	<select id="COMMON_CODE_PL" parameterClass="dataMap" resultClass="NEDMPRO0070VO">
+	   	SELECT  ROW_NUMBER() OVER () AS num
+	   			    , P.MD_PROD_CD AS code		               
+	   			    , P.PROD_NM AS name
+	   			    , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'PRD06' AND MINOR_CD = P.TAXAT_DIVN_CD) AS TAX_FG
+			 FROM  TPR_PRODUCT P  LEFT JOIN  TPC_L1_CD  T   
+		     ON  P.CAT_CD = T.L3_CD                                   
+		WHERE P.REP_PROD_CD_YN = 'Y'                          
+	        AND P.DEL_STOP_DIVN_YN = '0'                       
+	        AND P.VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #vendorId#) 
+	        AND ( (P.NEW_PROD_FG IS NULL OR P.NEW_PROD_FG= '') OR P.NEW_PROD_FG != '3')	/* SQLINES DEMO *** 행사상품 제외 노출  */
+			<isNotEmpty property="codeNm">
+			AND P.PROD_NM LIKE Concat('%',#codeNm#,'%')
+			</isNotEmpty>
+	  </select>
+	
+</sqlMap>	

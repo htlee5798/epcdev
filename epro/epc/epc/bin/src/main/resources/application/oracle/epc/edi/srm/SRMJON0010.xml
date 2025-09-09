@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0010">
+
+	<typeAlias alias="srmJon0010Vo"	type="com.lottemart.epc.edi.srm.model.SRMJON0010VO" />
+	
+	<!-- 로그인시 정보동의 INSERT -->
+	<insert id="insertCounselInfo" parameterClass="srmJon0010Vo">
+		/* SRMJON0010.insertCounselInfo */
+		INSERT INTO SSUIF (
+		        HOUSE_CODE
+		     ,  SHIPPER_TYPE
+		     ,  IRS_NO
+		     ,  SEQ
+		     ,  SELLER_NAME_LOC
+		     ,  AGREE_DATE
+			 ,  AGREE_FILE_VER
+		     ,  IP_ADDRESS
+		     ,  ADD_DATE
+		     ,  ADD_USER_ID
+		     ,  AGREE_TYPE
+		        )
+		VALUES (#houseCode#
+		     ,  #shipperType#
+		     ,  #irsNo#
+		     ,  (SELECT NVL(MAX(SEQ),0)+1 FROM SSUIF WHERE HOUSE_CODE = #houseCode# AND IRS_NO = #irsNo#)
+		     ,  #sellerNameLoc#
+		     ,  CURRENT_TIMESTAMP(0)
+		     ,	#agreeFileVer#
+		     ,  #ipAddress#
+		     ,  CURRENT_TIMESTAMP(0)
+		     ,  #irsNo#
+		     ,  #agreeType#
+		     )
+	</insert>
+	
+</sqlMap>

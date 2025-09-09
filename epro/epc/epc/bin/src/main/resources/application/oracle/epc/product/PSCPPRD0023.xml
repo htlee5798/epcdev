@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0023">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<!-- 추가구성품 조회 -->
+	<select id="selectProdComponentList" resultClass="dataMap">
+    <![CDATA[
+    	/* pscpprd0023.selectProdComponentList */
+    	SELECT *
+    	 FROM
+    	          (
+			    	SELECT CEIL(NUM / #rowsPerPage#) AS PAGE
+			    	          , COUNT(*) OVER() AS TOTAL_COUNT
+			       		      , B.*
+			         FROM
+			                  (
+			         		   SELECT RANK()OVER(ORDER BY A.ASSO_CD ASC) AS NUM
+			         		             , A.*
+			         		    FROM
+						       		      (
+									        SELECT TC.PROD_CD
+									                  , TC.ASSO_CD
+									                  , TC.DISP_YN
+									                  , TC.PROD_LINK_KIND_CD
+									                  , TC.BATCH_ORDER_SEQ
+									                  , TC.ORDER_SEQ
+									                  , TP.PROD_NM AS ASSO_NM
+									                  , TP.MD_SRCMK_CD AS SRCMK_CD
+									                  , TP.BUY_PRC
+									                  , TP.SELL_PRC
+									                  , TP.CURR_SELL_PRC
+									                  , (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = TP.VENDOR_ID) AS VENDOR_NM
+													  , 'Image' AS IMG
+									          FROM TPR_CROSS_SELLING TC, TPR_PRODUCT TP
+									        WHERE TC.PROD_CD = #prodCd#
+									            AND TC.PROD_LINK_KIND_CD = #prodLinkKindCd#
+									            AND TC.ASSO_CD = TP.PROD_CD
+									      ) A
+							) B
+				  )
+	   WHERE PAGE = #currentPage#
+    ]]>
+    </select>
+    
+    <!-- 추가구성품 조회 -->
+	<select id="selectProdCrossSellingCount" resultClass="String">
+    <![CDATA[
+    	/* pscpprd0023.selectProdCrossSellingCount */
+    	SELECT COUNT(*) 
+    	  FROM TPR_CROSS_SELLING 
+    	WHERE PROD_CD = #prodCd# 
+    	    AND PROD_LINK_KIND_CD = #prodLinkKindCd#
+    ]]>
+    </select>
+    
+    
+    <!-- 추가구성품,연관상품 등록 -->
+    <insert id="insertProdComponent">
+    	/* pscpprd0023.insertProdComponent */
+    	INSERT INTO TPR_CROSS_SELLING
+    	                  (
+    	                    PROD_CD
+    	                   ,ASSO_CD
+    	                   ,DISP_YN
+    	                   ,PROD_LINK_KIND_CD
+    	                   ,BATCH_ORDER_SEQ
+    	                   ,ORDER_SEQ
+    	                   ,REG_DATE
+    	                   ,REG_ID
+    	                   ,MOD_DATE
+    	                   ,MOD_ID
+    	                  )
+    	       VALUES
+    	                  (
+    	                    #prodCd#
+    	                   ,#assoCd#
+    	                   ,#dispYn#
+    	                   ,#prodLinkKindCd#
+    	                   ,0
+    	                   ,0
+    	                   ,CURRENT_TIMESTAMP(0)
+    	                   ,#vendorId#
+    	                   ,CURRENT_TIMESTAMP(0)
+    	                   ,#vendorId#
+    	                  )
+    </insert>
+    
+    <update id="updateCtpdDealYn">
+    	/* pscpprd0023.updateCtpdDealYn */
+    	UPDATE TPR_PRODUCT
+    	      SET CTPD_DEAL_YN = #ctpdDealYn#
+    	      , MOD_DATE = CURRENT_TIMESTAMP(0)
+    	WHERE PROD_CD = #prodCd#
+    </update>
+    
+    <update id="updateProductCatCd">
+    	/* pscpprd0023.updateProductCatCd */
+    	UPDATE TPR_PRODUCT
+    		  SET CAT_CD = (SELECT CAT_CD FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#)
+    		  , MOD_DATE = CURRENT_TIMESTAMP(0)
+    	 WHERE PROD_CD = #assoCd#
+    </update>
+    
+    <delete id="deleteProdComponent">
+    	/* pscpprd0023.deleteProdComponent */
+    	DELETE FROM TPR_CROSS_SELLING 
+    	WHERE PROD_CD = #prodCd#
+  	    <isNotEmpty property="assoCd">
+			AND	ASSO_CD = #assoCd#
+		</isNotEmpty>
+    </delete>
+</sqlMap>

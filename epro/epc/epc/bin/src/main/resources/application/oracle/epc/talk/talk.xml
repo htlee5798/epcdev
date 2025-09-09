@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Talk">
+<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectMemberInfo" parameterClass="map" resultClass="dataMap">
+	/* Talk.selectMemberInfo */
+		SELECT 
+		        MEMBER_NM
+		       ,(SELECT DECODE(COUNT(1), 1, 'Y', 'N')    FROM TME_GROUP_EMP A WHERE A.UNT_MBRS_NO = M.UNT_MBRS_NO AND APPLY_YN != 'D') AS EMP_YN	--임직원구분
+		       ,MEMBER_NO
+		       ,(SELECT USE_PSBT_POINT FROM TME_POINT A WHERE A.MEMBER_NO = M.MEMBER_NO AND A.POINT_DIVN_CD = '00001') AS PNT_00001 --마일리지
+		       ,(SELECT USE_PSBT_POINT FROM TME_POINT A WHERE A.MEMBER_NO = M.MEMBER_NO AND A.POINT_DIVN_CD = '00003') AS PNT_00003 --예치금
+		  FROM TME_MEMBER M
+		 WHERE MEMBER_NO = #memberNo#
+	</select>
+	 
+	<select id="selectOrderInfo" parameterClass="map" resultClass="dataMap">
+	/* Talk.selectOrderInfo */
+	SELECT    ROWNUM AS NUM
+	 		, AA.*
+	  FROM (
+		       SELECT  
+		       /*+ INDEX(ORD IX_OR_ORDER_05) */
+                ORD.UP_ORDER_ID 
+                ,ORD.ORDER_ID                                                                     --주문번호
+                ,ORD.FIRST_ORDER_ID 
+                ,DECODE (ORD.BSKET_DIVN_CD,
+			                 '01', PG_UTIL.FN_GET_CD_NM ('OR001',ORD.ORD_RTN_DIVN_CD),
+			                 '02',PG_UTIL.FN_GET_CD_NM ('OR001',ORD.ORD_RTN_DIVN_CD),
+			                 '03', PG_UTIL.FN_GET_CD_NM ('OR017',ORD.BSKET_DIVN_CD)||'주문',
+			                 '04', PG_UTIL.FN_GET_CD_NM ('OR001',ORD.ORD_RTN_DIVN_CD)
+			             ) AS ORD_RTN_DIVN_CD_NM
+                ,PG_UTIL.FN_GET_CD_NM('OR002',ORD.ORD_STS_CD) AS ORD_STS_CD_NM                    --주문상태(OR002)
+                ,PG_UTIL.FN_GET_CD_NM('OR003',ORD.SALE_STS_CD) AS SALE_STS_CD_NM                  --매출상상태(OR003)
+                , ( SELECT STR_NM FROM TST_STORE WHERE STR_CD = ORD.STR_CD ) AS STR_CD_NM
+                , ORD.STR_CD
+                , (    SELECT 
+                         SUM (DECODE (TEMP.ORD_ITEM_DIVN_CD , 
+                                       '11', 0,
+                                       '12', 0,
+                                       '13', 0,
+                                       TEMP.ORD_AMT
+                                     )
+                             ) AS ORDER_ITEM_AMT_SUM
+                     FROM  TOR_ORDER_ITEM  TEMP
+                     WHERE TEMP.ORDER_ID = ORD.ORDER_ID ) AS ORD_AMT                            --주문금액
+                , CASE WHEN LENGTH(HOPE_DELI_DY) > 0 THEN
+                        TO_CHAR(to_date(SUBSTR(HOPE_DELI_DY|| ' ' || HOPE_DELI_TM,1,17),'yyyymmdd hh24:mi:ss'),'yyyy-mm-dd hh24:mi')
+                    ELSE
+                        ''  
+                  END    AS HOPE_DELI_DATE                            							--희망배송일시
+                , TO_CHAR(to_date(SUBSTR(ORD_DY|| ' ' || ORD_TM,1,17),'yyyymmdd hh24:mi:ss'),'yyyy-mm-dd hh24:mi')   AS ORD_DATE   --주문일시
+                ,(   SELECT  PG_UTIL.FN_GET_CD_NM('OR008',MIN(SETL_TYPE_CD)) 
+                    FROM    TOR_DEMAND TEMP
+                    WHERE   ORD.ORDER_ID =TEMP.ORDER_ID)    AS SETL_TYPE						--결제방법008
+                ,(   SELECT COUNT(SETL_TYPE_CD)
+                    FROM    TOR_DEMAND TEMP
+                    WHERE   ORD.ORDER_ID =TEMP.ORDER_ID)  AS SETL_TYPE_COUNT 					--결제방법수
+                ,(
+                        SELECT SUM(DPST_AMT)
+                        FROM     TOR_DEMAND TEMP2
+                        WHERE   ORD.ORDER_ID =TEMP2.ORDER_ID
+                  )   DPST_AMT
+             , (SELECT DP.DELI_NO
+				  FROM TDP_DELI_PLAN_RSLT DP
+				      ,TDE_DELI_MST DM
+				 WHERE DP.DELI_NO = DM.DELI_NO
+				   AND DM.INVOICE_STATUS_CD = '10'
+				   AND DM.DELI_DIVN_CD = '10'
+				   AND DM.DELI_DIVN_DTL_CD = '11'
+				   AND DM.ORDER_ID = ORD.ORDER_ID
+				   LIMIT 1
+				) AS DELI_NO
+             , PG_UTIL.FN_GET_CD_NM ('SM137',ORD.ORDER_PATH_CD) AS ORDER_PATH_CD
+             , 
+             (SELECT DELI_SEQNC 
+                FROM TDP_RSERV_DELI_MST ZZ 
+               WHERE ZZ.STR_CD       = (SELECT A.STR_CD       FROM TOR_ORDER_ITEM A WHERE A.ORDER_ID = ORD.ORDER_ID AND A.STR_CD !='981' LIMIT 1)
+                 AND ZZ.DELI_TYPE_CD IN ('01','03','04') -- 온라인,온라인점포픽업,DriveThru
+                 AND REPLACE(ZZ.DELI_PRAR_START_TM,':','') = ORD.HOPE_DELI_TM
+                 LIMIT 1
+             )AS DELI_SEQNC
+                , (SELECT 
+                           DPT_START_TM ||'~'|| ARV_END_TM AS DELI_TM 
+	                FROM 
+	                       TDP_DELI_PLAN_BIZS_RULE ZZ 
+	                WHERE  1=1
+                       AND ZZ.STR_CD    =  (SELECT A.STR_CD   FROM TOR_ORDER_ITEM A WHERE A.ORDER_ID = ORD.ORDER_ID AND A.STR_CD !='981' LIMIT 1)
+                       AND ZZ.DELI_SEQNC = (SELECT DELI_SEQNC FROM TDP_RSERV_DELI_MST ZZ WHERE ZZ.STR_CD       = (SELECT A.STR_CD       FROM TOR_ORDER_ITEM A WHERE A.ORDER_ID = ORD.ORDER_ID AND A.STR_CD !='981' LIMIT 1)
+                                                                                           --20150728 DriveThru selectMemberOrderList
+                                                                                           --AND ZZ.DELI_TYPE_CD = (SELECT A.DELI_TYPE_CD FROM TOR_ORDER_ITEM A WHERE A.ORDER_ID = ORD.ORDER_ID AND A.STR_CD !='981' LIMIT 1)
+                                                                                           AND ZZ.DELI_TYPE_CD IN ('01','03','04') -- 온라인,온라인점포픽업,DriveThru
+                                                                                           AND REPLACE(ZZ.DELI_PRAR_START_TM,':','') = ORD.HOPE_DELI_TM LIMIT 1)
+               )AS DELI_TM
+                ,CASE                    
+                     WHEN
+                        ORD.ORD_RTN_DIVN_CD = '40' -- 반품주문
+                     THEN                                                               
+                          DECODE (ORD.ORD_STS_CD
+                                 ,'50', (SELECT DECODE(MAX(DELI_STATUS_CD), '66', 'Y', 'N') FROM TOR_ORDER_ITEM WHERE ORDER_ID = ORD.ORDER_ID)                                         
+                                 ,'N'
+                                 )                        
+                     ELSE 'N'
+                END AS RETURN_CONFIRM -- 반품확인여부.
+               ,CASE
+                    WHEN (   ORD.ORD_RTN_DIVN_CD = '10'
+                       OR ORD.ORD_RTN_DIVN_CD = '11'
+                       OR ORD.ORD_RTN_DIVN_CD = '50'
+                      )
+                    AND ORD.ORD_STS_CD = '11'
+                    AND ORD.SALE_STS_CD = '00'
+                        THEN CASE
+                             WHEN ORD.TMP_DELI_YN = 'Y'
+                                 THEN 'Y'
+                             ELSE DECODE (ORD.ORD_RTN_DIVN_CD
+                                         ,'10', (SELECT DECODE(MAX(DELI_STATUS_CD), '34', 'Y', 'N') FROM TOR_ORDER_ITEM WHERE ORDER_ID = ORD.ORDER_ID)
+                                         ,'11', (SELECT DECODE(MAX(DELI_STATUS_CD), '33', 'Y', 'N') FROM TOR_ORDER_ITEM WHERE ORDER_ID = ORD.ORDER_ID)
+                                         ,'N'
+                                         )
+                         END
+                 ELSE 'N'
+               END AS LOSS_EXISTS -- 결품여부
+            FROM  TOR_ORDER ORD
+            WHERE ORD.MEMBER_NO = #memberNo#
+              <isEmpty property="orderId">
+              AND ORD.ORD_DY BETWEEN to_char(CURRENT_TIMESTAMP(0)-14, 'YYYYMMDD') and to_char(CURRENT_TIMESTAMP(0), 'YYYYMMDD')               
+			  </isEmpty>   
+             -- AND ORD.FIRST_ORDER_ID = ORD.ORDER_ID
+            ORDER BY ORD.ORDER_ID DESC
+		) AA
+	</select> 
+
+</sqlMap>

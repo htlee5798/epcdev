@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0019">
+    <typeAlias alias="pscpprd0019VO" type="com.lottemart.epc.product.model.PSCPPRD0019VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectPrdAttributeList" resultClass="pscpprd0019VO">
+    <![CDATA[
+    /* pscpprd0019.selectPrdAttributeList - 추가속성 목록 쿼리 */
+    SELECT
+           PA.PROD_CD AS prodCd
+          ,PA.ADD_COL_SEQ AS addColSeq
+          ,PA.ADD_COL_VAL_SEQ AS addColValSeq 
+          ,PA.CATEGORY_ID AS categoryId        /* 카테고리ID*/
+          ,PA.COND_SEARCH_YN AS condSearchYn   /* 조건검색여부 */
+          ,CT.CATEGORY_NM AS categoryNm        /* 카테고리명*/
+          ,CA.COL_NM AS colNm                  /* 항목명    */
+          ,PA.COL_VAL AS colVal                /* 항목값    */
+          ,CA.USE_YN AS useYn                  /* 사용여부  */
+    FROM   PROD_ADD_ATT PA
+          ,TCA_CATEGORY_ADD_COL CA
+          ,TCA_CATEGORY CT												-- 2015.10.22 by kmlee 카테고리 체계 변경 확인 필요
+    WHERE  PA.CATEGORY_ID     = CA.CATEGORY_ID							-- 기본카테고리로 조회를 하지 않아서 PROD_ADD_ATT에 다른 카테고리로 등록되어 있어도 조회가 되고 있음.
+    AND    PA.ADD_COL_SEQ     = CA.ADD_COL_SEQ
+    AND    CA.CATEGORY_ID     = CT.CATEGORY_ID
+    AND    PA.PROD_CD         = #prodCd#
+    
+    ]]>
+    </select>
+
+    <select id="selectPrdAttributeColVal" resultClass="pscpprd0019VO">
+    <![CDATA[
+    /* pscpprd0019.selectPrdAttributeColVal - 추가속성 항목값 쿼리 */
+     SELECT COL_VAL AS colVal
+     FROM   PROD_ADD_ATT
+     WHERE  PROD_CD         = #prodCd#
+     AND    CATEGORY_ID     = #categoryId#
+     AND    ADD_COL_SEQ     = #addColSeq#
+     AND    ADD_COL_VAL_SEQ = #addColValSeq#   
+    ]]>
+    </select>
+
+    <select id="selectPrdAttributeCategory" resultClass="pscpprd0019VO">
+    <![CDATA[
+    /* pscpprd0019.selectPrdAttributeCategory - 추가속성 카테고리 쿼리 */
+     SELECT CATEGORY_ID AS categoryId
+     FROM   TPR_PRODUCT
+     WHERE  PROD_CD = #prodCd#
+    ]]>
+    </select>
+    
+    <!--
+    	1. 추가속성등록대상
+    	   - 상품마스터의 기본카테고리에 등록된 추가속성으로 등록한다.
+    	   - 기등록건 제외 처리한다. 
+     -->
+    <select id="selectPrdAttributeCategoryList" resultClass="pscpprd0019VO">
+    <![CDATA[
+    /* pscpprd0019.selectPrdAttributeCategoryList - 추가속성 카테고리 목록 쿼리 */
+    SELECT ROWNUM AS num, B.* FROM (
+    SELECT 
+           /*+ ORDERED USE_NL(CT AC AA)*/
+           #prodCd# AS prodCd
+          ,AA.CATEGORY_ID AS categoryId
+          ,AA.ADD_COL_SEQ AS addColSeq
+          ,AA.ADD_COL_VAL_SEQ AS addColValSeq
+          ,CT.CATEGORY_NM AS categoryNm           						/* 카테고리명 */
+          ,AC.COL_NM AS colNm                     						/* 항목명*/
+          ,DECODE(AC.COND_SEARCH_YN,'Y',AA.COL_VAL,NULL) AS colVal 		/* 항목값*/
+          ,AC.COND_SEARCH_YN AS condSearchYn        					/* 조건검색여부 */
+          ,AC.USE_YN AS useYn               							/* 사용여부     */
+    FROM   TCA_CATEGORY CT
+          ,TCA_CATEGORY_ADD_COL AC
+          ,TCA_CATEGORY_ADD_ATT_CD AA
+    WHERE  CT.CATEGORY_ID = AC.CATEGORY_ID
+    AND    AC.CATEGORY_ID = AA.CATEGORY_ID
+    AND    AC.ADD_COL_SEQ = AA.ADD_COL_SEQ
+     ]]>
+    <isNotEmpty property="categoryId">
+	AND	CT.CATEGORY_ID
+		<iterate prepend="IN" property="categoryId" open="(" close=")" conjunction=",">
+			#categoryId[]#
+		</iterate>
+	</isNotEmpty>
+     <![CDATA[
+    AND    NOT EXISTS(SELECT '1' FROM PROD_ADD_ATT A
+                      WHERE A.PROD_CD         = #prodCd#
+                      AND   A.CATEGORY_ID     = AA.CATEGORY_ID
+                      AND   A.ADD_COL_SEQ     = AA.ADD_COL_SEQ
+                      )
+    ORDER BY  CT.CATEGORY_ID
+             ,AC.ADD_COL_SEQ
+             ,AA.ADD_COL_VAL_SEQ
+    ) B
+    ]]>
+    </select>
+
+    <insert id="insertPrdAttributeList">
+    <![CDATA[
+    /* pscpprd0019.insertPrdAttributeList - 추가속성 다중 입력 쿼리 */
+    MERGE INTO PROD_ADD_ATT A
+    USING(SELECT  #prodCd#         AS PROD_CD
+                 ,#categoryId#     AS CATEGORY_ID
+                 ,#addColSeq#      AS ADD_COL_SEQ
+                 ,#addColValSeq#   AS ADD_COL_VAL_SEQ
+                 ,#condSearchYn#   AS COND_SEARCH_YN
+                 ,#colVal#         AS COL_VAL
+                 ,#regId#          AS REG_ID
+           FROM   DUAL
+          ) B
+    ON   
+    (     A.PROD_CD         = B.PROD_CD 
+      AND A.CATEGORY_ID     = B.CATEGORY_ID
+      AND A.ADD_COL_SEQ     = B.ADD_COL_SEQ
+      AND A.ADD_COL_VAL_SEQ = B.ADD_COL_VAL_SEQ)
+                 
+    WHEN NOT MATCHED THEN
+      INSERT (PROD_CD,         
+              CATEGORY_ID,   
+              ADD_COL_SEQ,   
+              ADD_COL_VAL_SEQ,  
+              COND_SEARCH_YN,  
+              COL_VAL,       
+              REG_ID,        
+              REG_DATE,           
+              MOD_ID,    
+              MOD_DATE)
+      VALUES (B.PROD_CD,       
+              B.CATEGORY_ID, 
+              B.ADD_COL_SEQ, 
+              B.ADD_COL_VAL_SEQ, 
+              B.COND_SEARCH_YN,
+              B.COL_VAL,     
+              B.REG_ID,      
+              CURRENT_TIMESTAMP(0),            
+              B.REG_ID, 
+              CURRENT_TIMESTAMP(0))
+    ]]>
+    </insert>
+
+    <insert id="insertPrdAttribute">
+    <![CDATA[
+    /* pscpprd0019.insertPrdAttribute - 추가속성 N 입력 쿼리 */
+    INSERT INTO PROD_ADD_ATT
+    (PROD_CD, CATEGORY_ID, ADD_COL_SEQ, ADD_COL_VAL_SEQ, COND_SEARCH_YN, COL_VAL, REG_ID, REG_DATE, MOD_ID, MOD_DATE)
+    SELECT 
+           #prodCd#
+          ,#categoryId#
+          ,#addColSeq#
+          ,NVL(MAX(ADD_COL_VAL_SEQ),0)+1 AS ADD_COL_VAL_SEQ 
+          ,'N'
+          ,#colVal#
+          ,#regId#
+          ,CURRENT_TIMESTAMP(0)
+          ,#regId#
+          ,CURRENT_TIMESTAMP(0)
+    FROM   PROD_ADD_ATT
+    WHERE  PROD_CD     = #prodCd#
+    AND    CATEGORY_ID = #categoryId#
+    AND    ADD_COL_SEQ = #addColSeq#
+    ]]>
+    </insert>
+
+    <delete id="deletePrdAttribute">
+    <![CDATA[
+    /* pscpprd0019.deletePrdAttribute - 추가속성 삭제 쿼리 */ 
+    DELETE PROD_ADD_ATT
+    WHERE  PROD_CD         = #prodCd#
+    AND    CATEGORY_ID     = #categoryId#
+    AND    ADD_COL_SEQ     = #addColSeq#
+    AND    ADD_COL_VAL_SEQ = #addColValSeq#
+    ]]>
+    </delete>   
+
+    <update id="updatePrdAttribute">
+    <![CDATA[
+    /* pscpprd0019.updatePrdAttribute - 추가속성 N 업데이트 쿼리 */
+    UPDATE PROD_ADD_ATT
+    SET    COL_VAL  = #colVal#
+          ,MOD_ID   = #regId#
+          ,MOD_DATE = CURRENT_TIMESTAMP(0)
+    WHERE  PROD_CD         = #prodCd#
+    AND    CATEGORY_ID     = #categoryId#
+    AND    ADD_COL_SEQ     = #addColSeq#
+    AND    ADD_COL_VAL_SEQ = #addColValSeq#
+    ]]>
+    </update>
+    
+</sqlMap>

@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmprd0041">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmbrd0041VO" type="com.lottemart.epc.product.model.PSCMPRD0041VO" />
+	<typeAlias alias="pscmbrd0041DtlVO" type="com.lottemart.epc.product.model.PSCMPRD0041DtlVO" />
+		
+		<!-- 컬럼 카운트 -->
+		<select id="selectVendorMgrCnt" resultClass="java.lang.Integer">
+			/* pscmprd0041.selectVendorMgrCnt */	
+					
+	    		SELECT COUNT(1) AS  COUNT FROM(
+	       			SELECT ROWNUM AS num, AD.* FROM(	
+						SELECT  modDate, modId,  regDate, regId, apryId,apryDate, useYn  ,announEndDy, announStartDy, title, announSeq  FROM (
+							SELECT
+								TVAM.ANNOUN_SEQ AS announSeq,
+								TVAM.TITLE AS title,
+								TVAM.ANNOUN_START_DY AS announStartDy,
+								TVAM.ANNOUN_END_DY AS announEndDy,
+								DECODE(TVAM.USE_YN, 'Y', '사용', 'N','미사용') AS useYn,
+								TVAM.APRY_DATE AS apryDate,
+								TVAM.APRY_ID AS apryId,
+								TVAM.REG_ID AS regId,
+								TVAM.REG_DATE AS regDate,
+								TVAM.MOD_ID AS modId,
+								TVAM.MOD_DATE AS modDate,
+			        			TVAMD.ANNOUN_DTL_SEQ AS announDtlSeq
+			          
+							FROM TVE_VENDOR_ANNOUN_MGR TVAM,
+			     			   TVE_VENDOR_ANNOUN_MGR_DTL TVAMD
+							
+							WHERE TVAM.ANNOUN_SEQ = TVAMD.ANNOUN_SEQ  
+							AND 	( 0 , TVAM.VENDOR_ID ) IN
+							
+								<iterate property="vendorId" open="(" close=")" conjunction=",">
+									/* 협력사 검색*/
+									( 0 , #vendorId[]# ) -- 협력업체코드
+								</iterate>
+								
+								 <isEqual property="selectSarch" compareValue="1">
+								 <![CDATA[	
+									AND
+									 (TVAM.ANNOUN_START_DY BETWEEN #startDate# AND #endDate#
+			        				OR TVAM.ANNOUN_END_DY BETWEEN #startDate# AND #endDate#  )
+			   					 	]]>
+								</isEqual>
+								
+								<isEqual property="selectSarch" compareValue="2">
+									AND TVAM.REG_DATE BETWEEN  TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')
+								</isEqual>
+								
+								<isNotEmpty property="searchNm">
+						     		 <isEqual property="seachType"  compareValue="pdNm">
+							     	  	AND TVAMD.APPLY_TO_CD IN (SELECT PROD_CD  FROM TPR_PRODUCT WHERE PROD_NM   LIKE  '%'||#searchNm#||'%')
+							     	  	AND TVAMD.APPLY_TO_TYPE_CD = 10
+							     	  </isEqual>   	  
+							     	  <isEqual property="seachType" compareValue="cgNm">
+							     	  	AND TVAMD.APPLY_TO_CD IN ( SELECT CATEGORY_ID FROM  TCA_CATEGORY WHERE CATEGORY_NM  LIKE  '%'||#searchNm#||'%')
+							     	  	AND TVAMD.APPLY_TO_TYPE_CD = 20
+							     	  </isEqual>  	  
+							     	  <isEqual property="seachType"  compareValue="vdId">
+							     	     AND TVAMD.APPLY_TO_CD IN ( SELECT VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_NM LIKE '%'||#searchNm#||'%' )
+							     	     AND TVAMD.APPLY_TO_TYPE_CD = 30
+							     	  </isEqual>
+						     	</isNotEmpty>
+						     	
+							<isNotEmpty property="titleNm">
+							AND TVAM.TITLE LIKE '%'||#titleNm#||'%'
+							</isNotEmpty>
+						)
+					GROUP BY  modDate, modId,  regDate, regId, apryId,apryDate, useYn  ,announEndDy, announStartDy, title, announSeq
+					ORDER BY announSeq
+					)AD
+			)
+			WHERE num BETWEEN #startRow# AND #endRow#
+		</select>
+		
+		<!-- 협력사공지 검색 -->
+		<select id="selectVendorMgr" resultClass="pscmbrd0041VO">
+			/* pscmprd0041.selectVendorMgr */	
+			
+				SELECT * FROM(
+	       			SELECT ROWNUM AS num, AD.* FROM(	
+						SELECT   modDate, modId,  regDate, regId, apryId,apryDate, useYn  ,announEndDy, announStartDy, title, announSeq  FROM (
+							SELECT
+								TVAM.ANNOUN_SEQ AS announSeq,
+								TVAM.TITLE AS title,
+								TVAM.ANNOUN_START_DY AS announStartDy,
+								TVAM.ANNOUN_END_DY AS announEndDy,
+								DECODE(TVAM.USE_YN, 'Y', '사용', 'N','미사용') AS useYn,
+								TVAM.APRY_DATE AS apryDate,
+								TVAM.APRY_ID AS apryId,
+								TVAM.REG_ID AS regId,
+								TVAM.REG_DATE AS regDate,
+								TVAM.MOD_ID AS modId,
+								TVAM.MOD_DATE AS modDate,
+			        			TVAMD.ANNOUN_DTL_SEQ AS announDtlSeq
+			          
+							FROM TVE_VENDOR_ANNOUN_MGR TVAM,
+			     			   TVE_VENDOR_ANNOUN_MGR_DTL TVAMD
+							
+							WHERE TVAM.ANNOUN_SEQ = TVAMD.ANNOUN_SEQ  
+							AND ( 0 , TVAM.VENDOR_ID ) IN
+							
+								<iterate property="vendorId" open="(" close=")" conjunction=",">
+									/* 협력사 검색*/
+								 ( 0 , #vendorId[]# ) -- 협력업체코드
+								</iterate>
+								
+								 <isEqual property="selectSarch" compareValue="1">
+								 <![CDATA[	
+									AND
+									 (TVAM.ANNOUN_START_DY BETWEEN #startDate# AND #endDate#
+			        				OR TVAM.ANNOUN_END_DY BETWEEN #startDate# AND #endDate#  )
+			   					 	]]>
+								</isEqual>
+								
+								<isEqual property="selectSarch" compareValue="2">
+									AND TVAM.REG_DATE BETWEEN  TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')
+								</isEqual>
+								
+								<isNotEmpty property="searchNm">
+						     		 <isEqual property="seachType"  compareValue="pdNm">
+							     	  	AND TVAMD.APPLY_TO_CD IN (SELECT PROD_CD  FROM TPR_PRODUCT WHERE PROD_NM   LIKE  '%'||#searchNm#||'%')
+							     	  	AND TVAMD.APPLY_TO_TYPE_CD = 10
+							     	  </isEqual>   	  
+							     	  <isEqual property="seachType" compareValue="cgNm">
+							     	  	AND TVAMD.APPLY_TO_CD IN ( SELECT CATEGORY_ID FROM  TCA_CATEGORY WHERE CATEGORY_NM  LIKE  '%'||#searchNm#||'%')
+							     	  	AND TVAMD.APPLY_TO_TYPE_CD = 20
+							     	  </isEqual>  	  
+							     	  <isEqual property="seachType"  compareValue="vdId">
+							     	     AND TVAMD.APPLY_TO_CD IN ( SELECT VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_NM LIKE '%'||#searchNm#||'%' )
+							     	     AND TVAMD.APPLY_TO_TYPE_CD = 30
+							     	  </isEqual>
+						     	</isNotEmpty>
+						     	
+							<isNotEmpty property="titleNm">
+							AND TVAM.TITLE LIKE '%'||#titleNm#||'%'
+							</isNotEmpty>
+							)
+					GROUP BY  modDate, modId,  regDate, regId, apryId,apryDate, useYn  ,announEndDy, announStartDy, title, announSeq
+					ORDER BY announSeq
+					)AD
+			)
+			WHERE num BETWEEN #startRow# AND #endRow#
+		</select>
+		
+		<!-- 사용승인 해제   -->
+		<update id="updateVendorMgr">
+			/* pscmprd0041.updateVendorMgr */	
+			
+			UPDATE TVE_VENDOR_ANNOUN_MGR
+			SET 
+				 USE_YN = #apryYn#
+				,MOD_ID = #modId#
+				,MOD_DATE = CURRENT_TIMESTAMP(0)
+			WHERE ANNOUN_SEQ = #announSeq# 
+		</update>
+		
+		<!-- 협력사 공지 등록 -->
+		<insert id="saveVondorMgr" parameterClass="dataMap">
+		/* pscmprd0041.saveVondorMgr */	
+			INSERT INTO TVE_VENDOR_ANNOUN_MGR(
+				ANNOUN_SEQ,
+				VENDOR_ID,
+				TITLE,
+				ANNOUN_START_DY,
+				ANNOUN_END_DY,
+				PC_CONTENT,
+				USE_YN,
+				APRY_YN,
+				REG_ID,
+				REG_DATE
+			)VALUES(
+				#announSeq#,
+				#venderId#,
+				#title#,
+				#startDate#,
+				#endDate#,
+				#pcContent#,
+				'Y',
+				'Y',
+				#venderId#,
+				CURRENT_TIMESTAMP(0)
+				)
+		</insert>
+		
+		<!-- 협력사 공지 상세 등록 -->
+		<insert id="saveVondorMgrDtl" parameterClass="dataMap">
+		/* pscmprd0041.saveVondorMgrDtl */	
+		
+		INSERT INTO TVE_VENDOR_ANNOUN_MGR_DTL(
+	        ANNOUN_DTL_SEQ,
+	        ANNOUN_SEQ,
+	        <isNotEmpty property="applyToTypeCd">
+	        APPLY_TO_TYPE_CD,
+	        </isNotEmpty>
+	        <isNotEmpty property="applyToCd">
+	        APPLY_TO_CD,
+	        </isNotEmpty>
+	        REG_ID,
+	        REG_DATE
+        )VALUES(
+	        (select nvl(max(to_number(ANNOUN_DTL_SEQ)),0)+1 from TVE_VENDOR_ANNOUN_MGR_DTL WHERE ANNOUN_SEQ=#announSeq#),
+	        #announSeq#,
+	        <isNotEmpty property="applyToTypeCd">
+	        #applyToTypeCd#,
+	        </isNotEmpty>
+	        <isNotEmpty property="applyToCd">
+	        #applyToCd#,
+	        </isNotEmpty>
+	        #venderId#,
+	        CURRENT_TIMESTAMP(0)
+       )		
+		</insert>
+		
+		<!-- 협력사  SEQ VALUE -->
+		<select id="VondorMgrCnt"  resultClass="String">
+			/* pscmprd0041.VondorMgrCnt */	
+			
+			select (LPAD(SQ_ANNOUN_SEQ.nextval, 12, 0))from dual
+	    </select>
+	    	
+	    <!-- 협력사 공지 관리 디테일 -->
+	    <select id="selectVendorMgrView" resultClass="pscmbrd0041VO">
+	    /* pscmprd0041.selectVendorMgrView */	
+		    SELECT  
+				ANNOUN_SEQ AS annouseq,
+				VENDOR_ID AS vendorId,
+				TITLE AS title,
+				TO_CHAR(TO_DATE(SUBSTR(ANNOUN_START_DY, 1, 8),'yyyymmdd'),'YYYY-MM-DD') AS announStartDy ,
+      			TO_CHAR(TO_DATE( SUBSTR(ANNOUN_END_DY, 1, 8),'yyyymmdd'),'YYYY-MM-DD') AS announEndDy ,
+        		SUBSTR(ANNOUN_START_DY, 9, 10) AS startTime ,
+        		SUBSTR(ANNOUN_END_DY, 9, 10) AS endTime ,
+				PC_CONTENT AS pcContent,
+				USE_YN AS useYn,
+				APRY_YN AS apryYn,
+				REG_ID AS regId,
+				REG_DATE AS regDate
+			FROM TVE_VENDOR_ANNOUN_MGR
+			WHERE ANNOUN_SEQ=#announSeq#
+	    </select>
+	    
+	    <!--  협력사 공지 수정 -->
+	    <update id="updateVondorMgr" parameterClass="dataMap">
+	     /* pscmprd0041.updateVondorMgr */	
+	     
+	    	UPDATE TVE_VENDOR_ANNOUN_MGR
+				SET TITLE = #title#,
+				ANNOUN_START_DY= #startDate#,
+				ANNOUN_END_DY = #endDate#,
+				PC_CONTENT = #pcContent#,
+				MOD_ID = #venderId#,
+				MOD_DATE = CURRENT_TIMESTAMP(0)
+			WHERE ANNOUN_SEQ=  #announSeq#
+	    </update>
+	     
+	    <!--  협력사 공지 디테일 삭제 -->
+	    <delete id="deleteVondorMgrDtl" parameterClass="dataMap">
+	    /* pscmprd0041.deleteVondorMgrDtl */	
+	    
+	    	DELETE TVE_VENDOR_ANNOUN_MGR_DTL 
+	    	WHERE ANNOUN_SEQ = #announSeq#
+	    </delete>
+	   
+	    <!-- IBSHEET 세팅 -->
+	    <select id="selectSheet"  resultClass="pscmbrd0041DtlVO">
+	    /* pscmprd0041.selectSheet */	
+	    
+	    	SELECT   ANNOUN_SEQ AS announDtlSeq
+		    	,ANNOUN_DTL_SEQ AS announSeq
+		    	,APPLY_TO_TYPE_CD AS applyToTypeCd
+		    	,APPLY_TO_CD AS applyToCd
+                ,CASE WHEN APPLY_TO_TYPE_CD = '10' THEN ( SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.APPLY_TO_CD )
+                      WHEN APPLY_TO_TYPE_CD = '20' THEN ( SELECT CATEGORY_NM FROM TCA_CATEGORY WHERE CATEGORY_ID = A.APPLY_TO_CD )
+                      WHEN APPLY_TO_TYPE_CD = '30' THEN ( SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.APPLY_TO_CD )
+                      ELSE '' END AS applyToNm
+		    	,REG_ID AS regId
+		    	,REG_DATE AS regDate
+	    	 FROM TVE_VENDOR_ANNOUN_MGR_DTL A
+			WHERE ANNOUN_SEQ = #announSeq#
+	    </select>
+	    
+	 <!-- 엑셀 다운 -->
+	<select id="selectPscmbrd0014Export" parameterClass="java.util.Map" resultClass="pscmbrd0041DtlVO">
+	 /* pscmprd0041.selectPscmbrd0014Export */	
+	 
+		SELECT ANNOUN_DTL_SEQ AS announDtlSeq
+		    	,ANNOUN_DTL_SEQ AS announSeq
+		    	,APPLY_TO_TYPE_CD AS applyToTypeCd
+		    	,APPLY_TO_CD AS applyToCd
+                ,CASE WHEN APPLY_TO_TYPE_CD = '10' THEN ( SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.APPLY_TO_CD )
+                      WHEN APPLY_TO_TYPE_CD = '20' THEN ( SELECT CATEGORY_NM FROM TCA_CATEGORY WHERE CATEGORY_ID = A.APPLY_TO_CD )
+                      WHEN APPLY_TO_TYPE_CD = '30' THEN ( SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.APPLY_TO_CD )
+                      ELSE '' END AS applyToNm
+		    	,REG_ID AS regId
+		    	,REG_DATE AS regDate
+	   FROM TVE_VENDOR_ANNOUN_MGR_DTL A
+	   WHERE ANNOUN_SEQ = #announSeq#
+	</select>    	
+	
+	<!-- 공지사항 ec연동여부 확인  -->
+	<select id="selectNotiEcInfo" resultClass="pscmbrd0041VO">
+		/* pscmprd0041.selectNotiEcInfo */
+		SELECT 	TVAM.ANNOUN_SEQ AS announSeq
+				,TVAM.VENDOR_ID AS vendorId
+				,TVAM.ANNOUN_START_DY AS announStartDy
+				,TVAM.ANNOUN_START_DY AS announEndDy
+				,TVAM.PC_CONTENT AS pcContent
+				,TVAM.TITLE AS title
+				,TVAM.USE_YN AS useYn
+				,TVAM.APRY_YN AS apryYn
+				,TVAM.REG_DATE AS regDate
+				,(SELECT A.ADMIN_NM FROM TAD_ADMIN A WHERE A.ADMIN_ID = TVAM.REG_ID) AS regId
+				,TVAM.MOD_DATE AS modDate
+				,(SELECT A.ADMIN_NM FROM TAD_ADMIN A WHERE A.ADMIN_ID = TVAM.MOD_ID) AS modId
+				,TVAM.EC_NOTI_NO AS ecNotiNo
+		 FROM	TVE_VENDOR_ANNOUN_MGR TVAM
+		 WHERE	TVAM.ANNOUN_SEQ = #announSeq#
+		 <isNotEqual property="useFlag" compareValue="N">
+		 AND	TVAM.USE_YN = 'Y'
+		 </isNotEqual>
+	</select>
+	
+	<!-- 같은 공지기간에 상품 중복 여부 체크 -->
+	<select id="selectNotiEcProductCheck" resultClass="java.lang.Integer">
+		SELECT SUM(CNT) AS CNT
+		FROM (
+			SELECT 
+				COUNT(1) AS CNT 
+			FROM TVE_VENDOR_ANNOUN_MGR M INNER JOIN TVE_VENDOR_ANNOUN_MGR_DTL D ON M.ANNOUN_SEQ = D.ANNOUN_SEQ
+			WHERE
+			M.ANNOUN_SEQ != #announSeq# 
+			AND M.EC_NOTI_NO IS NOT NULL
+			AND M.VENDOR_ID = #venderId#
+			AND M.USE_YN = 'Y' 
+			AND 
+			(
+				(#announStartDy#  BETWEEN M.ANNOUN_START_DY AND M.ANNOUN_END_DY)
+			OR  
+				(#announEndDy#  BETWEEN M.ANNOUN_START_DY AND M.ANNOUN_END_DY)
+			)
+			AND D.APPLY_TO_CD	
+			<iterate prepend=" IN " property="applyToCd" open="(" close=")" conjunction=",">
+					#applyToCd[]#
+			</iterate>
+			
+			UNION
+			
+			SELECT
+				COUNT(1) AS CNT
+			FROM TCA_PROD_ANN_BNR BNR INNER JOIN TCA_PROD_ANN_BNR_ASS ASS ON BNR.BNR_NO = ASS.BNR_NO
+			WHERE
+			BNR.EC_NOTI_NO IS NOT NULL
+			AND
+			(
+				(#announStartDy#  BETWEEN BNR.VALI_START_DATE AND BNR.VALI_END_DATE)
+			OR
+				(#announEndDy#  BETWEEN BNR.VALI_START_DATE AND BNR.VALI_END_DATE)
+			)
+			AND ASS.PROD_CD	
+			<iterate prepend=" IN " property="applyToCd" open="(" close=")" conjunction=",">
+					#applyToCd[]#
+			</iterate>
+		)
+	</select>
+	
+</sqlMap>

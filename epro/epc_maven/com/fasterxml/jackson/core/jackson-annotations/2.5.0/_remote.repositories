@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:37 KST 2025
+jackson-annotations-2.5.0.jar>neonexus=
+jackson-annotations-2.5.0-sources.jar>neonexus=
+jackson-annotations-2.5.0.pom>neonexus=

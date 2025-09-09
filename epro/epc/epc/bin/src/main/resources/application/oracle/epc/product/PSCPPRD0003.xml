@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+    <!-- 2015.12.01 by kmlee 상품 속성관련 변경사항 적용
+       TPR_SIZE_CATEGORY,
+       TPR_COLOR,
+       TPR_SIZE,
+       TPR_ITEM
+    -->
+
+<sqlMap namespace="pscpprd0003">
+    <typeAlias alias="pscpprd0003VO" type="com.lottemart.epc.product.model.PSCPPRD0003VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<resultMap id="code" class="com.lottemart.epc.common.model.OptionTagVO">
+	    <result property="code" column="CAT_CD"/>
+	    <result property="name" column="CAT_NM"/>
+	</resultMap>
+
+    <select id="selectPrdType" resultClass="java.lang.Integer">
+    /* pscpprd0003.selectPrdType */
+    SELECT DECODE(PROD_DIVN_CD,'02','1','2') AS prodDivnType 
+    FROM TPR_PRODUCT
+    WHERE PROD_CD = #prodCd#
+    </select>
+
+	<select id="selectPrdItemType" resultClass="java.lang.Integer">
+	/* pscpprd0003.selectPrdItemType - 인터넷 전용상품 여부 쿼리(01:온오프겸용, 02:인터넷전용) */
+   SELECT COUNT(*)
+       FROM TPR_ITEM TI
+          , TEC_ATTR_PROD_MAPPING TAPM
+          , TEC_ATTR_CD TAC
+      WHERE TI.PROD_CD = TAPM.PROD_CD
+        AND TI.ITEM_CD = TAPM.ITEM_CD
+        AND TAPM.ATTR_ID = TAC.ATTR_ID
+        AND TAPM.USE_YN = 'Y'
+        AND TAC.USE_YN = 'Y'
+        AND TAC.ATTR_PI_TYPE = 'I'
+        AND TI.PROD_CD = #prodCd#
+	</select>
+
+    <select id="selectPrdItemList" resultClass="pscpprd0003VO">
+	/* pscpprd0003.selectPrdItemList */
+    SELECT itemCd
+	      ,attrNm
+	      ,attrValNm
+	      ,classNm
+	      ,szCatCd
+	      ,attrsNm
+	  FROM(
+	        SELECT TI.ITEM_CD AS itemCd
+			      ,LISTAGG(TAC.ATTR_NM, ' | ') WITHIN GROUP (ORDER BY TAPM.ATTR_ID) AS attrNm
+			      ,LISTAGG(NVL(NVL(TAPM.ATTR_DTL_VAL,CASE WHEN TAPM.ATTR_CODE_USE_YN = 'N' THEN TAPM.ATTR_VAL ELSE TAV.ATTR_VAL_NM END), '-'), ' | ') WITHIN GROUP (ORDER BY TAPM.ATTR_ID) AS attrValNm
+	          FROM TPR_ITEM TI
+			      ,TEC_ATTR_PROD_MAPPING TAPM 
+			      ,TEC_ATTR_CAT_MAPPING TACM
+			      ,TEC_ATTR_CD TAC
+			      ,TEC_ATTR_VAL TAV
+			  WHERE TI.PROD_CD        = TAPM.PROD_CD(+)
+	            AND TI.ITEM_CD        = TAPM.ITEM_CD(+)
+	            AND TAPM.STD_CAT_CD   = TACM.STD_CAT_CD(+)
+	            AND TAPM.ATTR_ID      = TACM.ATTR_ID(+)
+	            AND TACM.ATTR_ID      = TAV.ATTR_ID(+)
+	            AND TAPM.ATTR_VAL_ID  = TAV.ATTR_VAL_ID(+)
+	            AND TACM.ATTR_ID      = TAC.ATTR_ID(+)
+			    AND TI.PROD_CD	  	  = #prodCd#
+	   			GROUP BY TI.ITEM_CD) TI
+	      ,(
+	         SELECT TI.ITEM_CD
+	               ,TC.CLASS_NM        AS classNm
+			       ,LISTAGG(TC.ATT_GRP_CD, ',') WITHIN GROUP (ORDER BY TC.ATT_GRP_CD) AS szCatCd
+	               ,LISTAGG(TC.ATT_DETAIL_NM, ',') WITHIN GROUP (ORDER BY TC.ATT_GRP_CD) AS attrsNm
+			   FROM TPR_ITEM TI
+	               ,TPR_PROD_ATT_ASIGN TP  -- 상품변형속성
+	               ,TPR_PROD_ATT_CD    TC  -- 변형속성코드
+			  WHERE TI.MD_PROD_CD     = TP.MD_PROD_CD(+)
+	            AND TP.ATT_GRP_CD     = TC.ATT_GRP_CD(+)
+	            AND TP.ATT_DETAIL_CD  = TC.ATT_DETAIL_CD(+)
+	            AND TP.PROD_RANGE     = TC.PROD_RANGE(+)
+	            AND TP.CLASS          = TC.CLASS(+)
+			    AND TI.PROD_CD	  	  = #prodCd#
+	   			GROUP BY TI.ITEM_CD, TC.CLASS_NM) TP
+	            WHERE TI.itemCd=TP.ITEM_CD(+)
+	            ORDER BY TI.itemCd
+    </select>
+
+    <select id="selectPrdItemList1" resultClass="pscpprd0003VO">
+    SELECT TI.ITEM_CD AS itemCd
+         , NVL(TAC.ATTR_NM, '-') AS attrNm
+         , NVL(NVL(TAPM.ATTR_DTL_VAL,CASE WHEN TAPM.ATTR_CODE_USE_YN = 'N' THEN TAPM.ATTR_VAL ELSE TAV.ATTR_VAL_NM END), '-') AS attrValNm
+      FROM TPR_ITEM TI
+         , TEC_ATTR_PROD_MAPPING TAPM 
+         , TEC_ATTR_CAT_MAPPING TACM
+         , TEC_ATTR_CD TAC
+         , TEC_ATTR_VAL TAV
+     WHERE TI.PROD_CD = TAPM.PROD_CD (+)
+       AND TI.ITEM_CD = TAPM.ITEM_CD (+)
+       AND TAPM.STD_CAT_CD = TACM.STD_CAT_CD (+)
+       AND TAPM.ATTR_ID = TACM.ATTR_ID (+)
+       AND TACM.ATTR_ID = TAV.ATTR_ID (+)
+       AND TAPM.ATTR_VAL_ID = TAV.ATTR_VAL_ID (+)
+       AND TACM.ATTR_ID = TAC.ATTR_ID (+)
+       AND TI.PROD_CD = #prodCd#
+     ORDER BY TI.ITEM_CD, TAPM.ATTR_ID
+    </select>
+
+    <select id="selectPrdItemList2" resultClass="pscpprd0003VO">
+    SELECT TI.ITEM_CD AS itemCd
+         , NVL(TC.CLASS_NM, '-') AS classNm
+         , NVL(TC.ATT_GRP_CD, '-') AS szCatCd
+         , NVL(TC.ATT_DETAIL_NM, '-') AS attrsNm
+      FROM TPR_ITEM TI 
+         , TPR_PROD_ATT_ASIGN TP
+         , TPR_PROD_ATT_CD TC
+     WHERE TI.MD_PROD_CD = TP.MD_PROD_CD (+)
+       AND TP.ATT_GRP_CD = TC.ATT_GRP_CD (+)
+       AND TP.ATT_DETAIL_CD = TC.ATT_DETAIL_CD (+)
+       AND TP.PROD_RANGE = TC.PROD_RANGE (+)
+       AND TP.CLASS = TC.CLASS (+)
+       AND TI.PROD_CD = #prodCd#
+     ORDER BY TI.ITEM_CD, TC.ATT_GRP_CD
+    </select>
+
+    <select id="selectPrdItemOnlineList" resultClass="pscpprd0003VO">
+    /* pscpprd0003.selectPrdItemOnlineList - 단품 목록 쿼리 */
+    SELECT TI.ITEM_CD AS itemCd
+         , TI.PROD_CD AS prodCd
+         , NVL(TI.OPTN_DESC, '-') AS optnDesc
+         , NVL(TAC.ATTR_NM, '-') AS attrNm
+         , NVL(NVL(TAPM.ATTR_DTL_VAL,CASE WHEN TAPM.ATTR_CODE_USE_YN = 'N' THEN TAPM.ATTR_VAL ELSE TAV.ATTR_VAL_NM END), '-') AS attrValNm
+         , NVL((SELECT RSERV_STK_QTY FROM TPR_STORE_ITEM_PRICE WHERE PROD_CD=TI.PROD_CD AND STR_CD='981' AND ITEM_CD=TI.ITEM_CD),0) AS rservStkQty
+      FROM TPR_ITEM TI
+         , TEC_ATTR_PROD_MAPPING TAPM
+         , TEC_ATTR_CAT_MAPPING TACM
+         , TEC_ATTR_CD TAC
+         , TEC_ATTR_VAL TAV
+     WHERE TI.PROD_CD = TAPM.PROD_CD(+)
+       AND TI.ITEM_CD = TAPM.ITEM_CD(+)
+       AND TAPM.STD_CAT_CD = TACM.STD_CAT_CD(+)
+       AND TAPM.ATTR_ID = TACM.ATTR_ID(+)
+       AND TACM.ATTR_ID = TAV.ATTR_ID(+)
+       AND TAPM.ATTR_VAL_ID = TAV.ATTR_VAL_ID(+)
+       AND TACM.ATTR_ID = TAC.ATTR_ID(+)
+       AND TI.PROD_CD = #prodCd#
+     ORDER BY TI.ITEM_CD, TAPM.ATTR_ID
+    </select>
+
+	<!-- NotUse , 미사용 - JSP호출 없음 -->
+    <select id="selectPrdItem" resultClass="pscpprd0003VO">
+    /* pscpprd0003.selectPrdItem */
+    SELECT  PR.PROD_CD					AS prodCd			-- MD상품코드
+		 , PR.MD_PROD_CD				AS mdProdCd			-- 단품코드
+		 , TI.ITEM_CD					AS itemCd			-- 단품코드
+		 , LISTAGG(TP.ATT_DETAIL_CD,',') WITHIN GROUP (ORDER BY TP.ATT_DETAIL_CD)	AS colorCd 			-- 색상코드
+		 , LISTAGG(TC.ATT_DETAIL_NM,',') WITHIN GROUP (ORDER BY TC.ATT_DETAIL_NM)	AS attrsNm 			-- 색상명
+		 , PR.PROD_DIVN_CD 	  			AS prodDivnCd 		-- 상품구분코드
+	  FROM TPR_PRODUCT	      PR							-- 인터넷상품
+		 , TPR_ITEM           TI							-- 단품정보
+		 , TPR_PROD_ATT_ASIGN TP 							-- 상품변형속성 
+		 , TPR_PROD_ATT_CD	  TC 							-- 변형속성코드
+	 WHERE PR.PROD_CD   	= TI.PROD_CD
+	   AND TI.MD_PROD_CD	= TP.MD_PROD_CD
+	   AND TP.ATT_GRP_CD 	= TC.ATT_GRP_CD
+	   AND TP.ATT_DETAIL_CD	= TC.ATT_DETAIL_CD
+	   AND PR.PROD_CD       = #prodCd#
+	   AND TI.ITEM_CD   	= #itemCd#
+	 GROUP BY PR.PROD_CD, PR.MD_PROD_CD, TI.ITEM_CD, PR.PROD_DIVN_CD
+    </select>
+
+	<!-- 2015.12.01 by kmlee 상품 속성체계 변경으로 관련 필드 삭제. 온라인전용 상품의 경우 현재 속성테이블을 사용하지 않고 있는데,
+	     온/오프 겸용처럼 속성테이블을 사용할 경우 속성을 추가하는 화면이 별도로 필요하고, 아래 내용 수정이 필요하다. -->
+    <insert id="insertPrdItem">
+    /* pscpprd0003.insertPrdItem */
+    INSERT INTO TPR_ITEM
+    (PROD_CD
+    ,ITEM_CD
+    ,MD_PROD_CD
+    ,MD_SRCMK_CD
+    ,REP_CD
+    ,REG_DATE
+    ,REG_ID
+    ,MOD_DATE
+    ,MOD_ID)
+    VALUES
+    (#prodCd#
+    ,NVL((SELECT LPAD(NVL(MAX(ITEM_CD)+1,'001'),3,'0')
+          FROM TPR_ITEM
+          WHERE PROD_CD = #prodCd#), '001')
+    ,(SELECT MD_PROD_CD
+        FROM TPR_PRODUCT
+       WHERE PROD_CD = #prodCd#)
+    ,(SELECT MD_SRCMK_CD
+        FROM TPR_PRODUCT
+       WHERE PROD_CD = #prodCd#)
+    ,' '
+    ,CURRENT_TIMESTAMP(0)
+    ,#regId#
+    ,CURRENT_TIMESTAMP(0)
+    ,#regId#)
+    </insert>
+
+    <!-- 2015.12.01 by kmlee 온라인 전용 업데이트 쿼리인데, 상품 속성체계를 온/오프 겸용 상품의 체계를 적용할 경우
+                 아래 쿼리 수정이 필요함. -->
+    <update id="updateTprItemList">
+    /* pscpprd0003.updateTprItemList - 단품 업데이트 쿼리 */
+	UPDATE TPR_ITEM
+	   SET  OPTN_DESC = #optnDesc#
+           ,MOD_ID = #regId#
+           ,MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD = #prodCd#
+       AND ITEM_CD = #itemCd#
+    </update>
+
+    <update id="updateTprStoreItemList">
+    /* pscpprd0003.updateTprStoreItemList - 단품 업데이트 쿼리 */
+    UPDATE TPR_STORE_ITEM_PRICE
+	   SET RSERV_STK_QTY = #rservStkQty#
+	      ,MOD_ID = #regId#
+	      ,MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #prodCd#
+	   AND ITEM_CD = #itemCd#
+    </update>
+
+    <!-- 2015.12.01 by kmlee 옥션제휴 종료로 관련 필드 삭제, 상품 속성체계 변경으로 관련 필드 삭제  -->
+    <insert id="insertTprItemList">
+   	<selectKey keyProperty="newItemCd" resultClass="String">
+	SELECT LPAD(NVL(MAX(ITEM_CD),0)+1,3,0) FROM TPR_ITEM WHERE PROD_CD = #prodCd#
+	</selectKey>
+    /* pscpprd0003.insertTprItemList - 단품 업데이트 쿼리 */
+    INSERT INTO TPR_ITEM (
+    		PROD_CD,
+    		ITEM_CD,
+    		MD_PROD_CD,
+			MD_SRCMK_CD,
+			REP_CD,
+			CNVSN_VAL,
+			IMG_QTY,
+	        REG_DATE,
+	        REG_ID,
+	        MOD_DATE,
+	        MOD_ID,
+	        OPTN_DESC
+	 ) 
+	SELECT 	PROD_CD,
+			#newItemCd#,
+			MD_PROD_CD,
+		    MD_SRCMK_CD,
+		    REP_CD,
+		    CNVSN_VAL,
+		    IMG_QTY,
+		  	CURRENT_TIMESTAMP(0) AS REG_DATE,
+		  	#regId# AS REG_ID,
+		  	CURRENT_TIMESTAMP(0) AS MOD_DATE,
+		  	#regId# AS MOD_ID,
+		  	#optnDesc# AS OPTN_DESC
+	  FROM TPR_ITEM
+	 WHERE PROD_CD = #prodCd#
+	   AND ITEM_CD = '001'
+    </insert>
+
+    <insert id="insertTprStoreItemList">
+    /* pscpprd0003.insertTprStoreItemList - 단품 업데이트 쿼리 */
+    INSERT INTO TPR_STORE_ITEM_PRICE
+     (   PROD_CD , ITEM_CD, STR_CD, STD_BUY_PRC, STD_SELL_PRC
+		,BUY_PRC , SELL_PRC , EVT_BUY_PRC, EVT_SELL_PRC, CURR_SELL_PRC
+		,PRFT_RATE, DISP_YN, SOUT_YN , SELL_PSBT_YN, DISP_DEL_REQ_YN
+		,STK_MGR_YN, VENDOR_ID, TRD_TYPE_DIVN_CD, PUR_PATH_DIVN_CD
+		,NPUR_BUY_PSBT_YN, ENTP_DELI_DIVN_CD
+		,PUR_STOP_DIVN_CD, DEAL_STOP_DIVN_CD, DEAL_STOP_REASON_CD
+		,TDAY_STGE_PLAN_QTY, DD_AVG_SELL_QTY, SOUT_BASE_QTY, WEIGHT
+		,REG_DATE, REG_ID, MOD_DATE, MOD_ID, HDBIL_EVT_START_DY
+		,HDBIL_EVT_END_DY, ONLINE_SOUT_YN, MD_SOUT_YN, RSERV_STK_QTY, PROD_TAG_INFO_CONTENT
+		,DISP_APPLY_BASE_DD, MD_RECENT_SELL_DY
+		,DELI_OPTN_CD, FORGN_DELI_YN , STR_PIKUP_YN
+	 ) 
+	SELECT   PROD_CD , #itemCd# AS ITEM_CD, STR_CD, STD_BUY_PRC, STD_SELL_PRC
+			,BUY_PRC , SELL_PRC , EVT_BUY_PRC, EVT_SELL_PRC, CURR_SELL_PRC
+			,PRFT_RATE, DISP_YN, SOUT_YN , SELL_PSBT_YN, DISP_DEL_REQ_YN
+			,STK_MGR_YN, VENDOR_ID, TRD_TYPE_DIVN_CD, PUR_PATH_DIVN_CD
+			,NPUR_BUY_PSBT_YN, ENTP_DELI_DIVN_CD
+			,PUR_STOP_DIVN_CD, DEAL_STOP_DIVN_CD, DEAL_STOP_REASON_CD
+			,TDAY_STGE_PLAN_QTY, DD_AVG_SELL_QTY, SOUT_BASE_QTY, WEIGHT
+			,CURRENT_TIMESTAMP(0) AS REG_DATE, #regId# AS REG_ID, CURRENT_TIMESTAMP(0) AS MOD_DATE ,#regId# AS MOD_ID, HDBIL_EVT_START_DY
+			,HDBIL_EVT_END_DY, ONLINE_SOUT_YN, MD_SOUT_YN, #rservStkQty# AS RSERV_STK_QTY, PROD_TAG_INFO_CONTENT
+			,DISP_APPLY_BASE_DD, MD_RECENT_SELL_DY
+			,DELI_OPTN_CD, FORGN_DELI_YN , STR_PIKUP_YN
+	  FROM TPR_STORE_ITEM_PRICE 
+	 WHERE PROD_CD = #prodCd#
+	   AND ITEM_CD = '001'
+    </insert>
+
+    <!-- 2016.03.02 kmlee -->	
+	<!-- 온라인 전용상품에서 단품이 2개 이상일 때 TPR_PRODUCT.VARIATION_YN = 'Y'로 UPDATE -->
+	<update id="updateTprProductVariation">
+	/* pbomprd0003.updateTprProductVariation - 변형상품여부 'Y'로 Update */
+	UPDATE TPR_PRODUCT 
+	   SET VARIATION_YN = 'Y'
+	     , MOD_ID = #regId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #prodCd#
+	</update>
+
+</sqlMap>

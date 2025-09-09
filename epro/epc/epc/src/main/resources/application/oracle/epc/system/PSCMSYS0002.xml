@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="pscmsys0002">
+	<typeAlias alias="pscmsys0002" type="com.lottemart.epc.system.model.PSCMSYS0002VO" />
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<resultMap class="com.lottemart.epc.system.model.PSCMSYS0002VO" id="pscmsys0002">
+		<!-- 	hidden -->
+		<result property="vendorId"			column="VENDOR_ID"			/>
+		<result property="vendorSeq"		column="VENDOR_SEQ"			/>
+		<result property="vendorUserGubun"	column="VENDOR_USER_GUBUN"	/>
+		<result property="utakNm"			column="UTAK_NM"			/>
+		<result property="utakDeptNm"		column="UTAK_DEPT_NM"		/>
+		<result property="utakPositionNm"	column="UTAK_POSITION_NM"	/>
+		<result property="utakTelNo"		column="UTAK_TEL_NO"		/>
+		<result property="utakCellNo"		column="UTAK_CELL_NO"		/>
+		<result property="utakFaxNo"		column="UTAK_FAX_NO"		/>
+		<result property="addr1Nm"			column="ADDR_1_NM"			/>
+		<result property="addr2Nm"			column="ADDR_2_NM"			/>
+		<result property="valiYN"			column="VALI_YN"			/>	
+	</resultMap>
+	
+	<select id="selectVendorInfo" resultClass="dataMap">
+		/* PSCMSYS0002.selectVendorInfo */
+		SELECT
+            VENDOR_NM
+		FROM
+            TVE_VENDOR
+		WHERE
+            VENDOR_ID = #vendorId#	
+	</select>
+	
+	<select id="selectPersonInChargeInfo" resultMap="pscmsys0002">
+        /* PSCMSYS0002.selectPersonInChargeInfo */
+        SELECT
+            #vendorId#                 AS VENDOR_ID
+          , LPAD(CP.NUM,'3','0')       AS VENDOR_SEQ
+          , CASE LPAD(CP.NUM,'3','0')
+                WHEN '001' THEN '상품담당자명(정)'
+                WHEN '002' THEN '상품담당자명(부)'
+                WHEN '003' THEN '배송담당자(정)'
+                WHEN '004' THEN '배송담당자(부)'
+                WHEN '005' THEN '반품담당자'
+            END AS VENDOR_USER_GUBUN
+          , NVL(UTAK_NM,          ' ') AS UTAK_NM
+          , NVL(UTAK_DEPT_NM,     ' ') AS UTAK_DEPT_NM
+          , NVL(UTAK_POSITION_NM, ' ') AS UTAK_POSITION_NM
+          , NVL(UTAK_TEL_NO,      ' ') AS UTAK_TEL_NO
+          , NVL(UTAK_CELL_NO,     ' ') AS UTAK_CELL_NO
+          , NVL(UTAK_FAX_NO,      ' ') AS UTAK_FAX_NO
+          , NVL(ADDR_1_NM,        ' ') AS ADDR_1_NM
+          , NVL(ADDR_2_NM,        ' ') AS ADDR_2_NM
+          , VALI_YN
+        FROM
+        (
+            SELECT
+                VENDOR_SEQ
+              , UTAK_NM
+              , UTAK_DEPT_NM
+              , UTAK_POSITION_NM
+              , VALI_YN
+              , UTAK_TEL_NO
+              , UTAK_CELL_NO
+              , UTAK_FAX_NO
+              , ADDR_1_NM
+              , ADDR_2_NM
+            FROM
+                TVE_VENDOR_USER VU
+            WHERE
+                VENDOR_ID = #vendorId#
+        ) V
+          , TET_COPY_NO CP
+        WHERE
+            LPAD(CP.NUM,'3','0') = V.VENDOR_SEQ(+)
+        AND CP.NUM  BETWEEN 1 AND 5
+        ORDER BY 
+            1, 2
+	</select>
+	
+	<update id="updateListPersonInCharge">
+        /* PSCMSYS0002.updateListPersonInCharge */
+        MERGE INTO TVE_VENDOR_USER A
+        USING
+        (
+            SELECT
+                #vendorId#  AS VENDOR_ID
+              , #vendorSeq# AS VENDOR_SEQ
+            FROM
+                DUAL
+        ) B
+        ON
+        (
+            A.VENDOR_ID  = B.VENDOR_ID
+            AND
+            A.VENDOR_SEQ = B.VENDOR_SEQ
+        )
+        WHEN MATCHED THEN
+            UPDATE
+            SET UTAK_NM          = #utakNm#
+              , UTAK_DEPT_NM     = #utakDeptNm#
+              , UTAK_POSITION_NM = #utakPositionNm#
+              , UTAK_TEL_NO      = #utakTelNo#
+              , UTAK_CELL_NO     = #utakCellNo#
+              , UTAK_FAX_NO      = #utakFaxNo#
+              , ADDR_1_NM        = #addr1Nm#
+              , ADDR_2_NM        = #addr2Nm#
+              , VALI_YN          = #valiYN#
+              , MOD_DATE         = CURRENT_TIMESTAMP(0)
+              , MOD_ID           = #userId#
+        WHEN NOT MATCHED THEN
+            INSERT
+            (
+                VENDOR_ID
+              , VENDOR_SEQ
+              , UTAK_NM
+              , UTAK_DEPT_NM
+              , UTAK_POSITION_NM
+              , UTAK_TEL_NO
+              , UTAK_CELL_NO
+              , UTAK_FAX_NO
+              , ADDR_1_NM
+              , ADDR_2_NM
+              , VALI_YN
+              , REG_DATE
+              , REG_ID
+              , MOD_DATE
+              , MOD_ID
+            )
+            VALUES
+            (
+                #vendorId#
+              , #vendorSeq#
+              , #utakNm#
+              , #utakDeptNm#
+              , #utakPositionNm#
+              , #utakTelNo#
+              , #utakCellNo#
+              , #utakFaxNo#
+              , #addr1Nm#
+              , #addr2Nm#
+              , #valiYN#
+              , CURRENT_TIMESTAMP(0)
+              , #userId#
+              , CURRENT_TIMESTAMP(0)
+              , #userId#
+            )
+	</update>
+	
+</sqlMap>

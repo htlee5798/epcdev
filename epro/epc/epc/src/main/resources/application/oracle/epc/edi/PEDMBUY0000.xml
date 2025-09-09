@@ -1,0 +1,1447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMBUY0000">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 일자별 -->
+<select id="TSC_BUY-SELECT01" parameterClass="map" resultClass="resultClass">
+
+		/*PEDMBUY0000.TSC_BUY-SELECT01*/
+	SELECT	TO_CHAR(TO_DATE(BUY_DY,'yyyymmdd'),'YYYY-MM-DD') BUY_DY
+	       ,NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+	       ,NVL(SUM(TOT_PRC), 0) AS TOT_PRC 
+	       ,SUM(decode(buy_rtn_fg, '1', 0, '2', 1, '3', 0, '4', 1) * BUY_BOX_QTY) AS BUY_BOX_QTY 
+           ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_QTY) AS BUY_QTY 
+       	   ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_BUY_AMT) AS BUY_BUY_PRC 
+	       ,NVL(SUM(ANS_QTY), 0) AS ANS_QTY
+	       ,NVL(SUM(ANS_PRC), 0) AS ANS_PRC
+	FROM (
+		SELECT  A.BUY_SLIP_NO
+		       ,A.STR_CD
+		       ,A.STR_NM
+		       ,A.ORD_SLIP_NO
+		       ,A.BUY_PROD_FG
+		       ,A.SRCMK_CD
+		       ,A.PROD_CD
+		       ,A.PROD_NM
+		       ,A.PROD_STD
+		       ,A.VEN_CD
+		       ,A.ORD_IPSU
+		       ,A.DANWI
+		       ,A.BUY_DY
+		       ,A.BUY_RTN_FG
+		       ,A.BUY_RTN_NM
+		       ,A.BUY_QTY
+		       ,A.ORD_FG
+		       ,(B.ORD_QTY) AS TOT_QTY
+		       ,(B.BUY_PRC) AS TOT_PRC
+		       ,A.CTR_ARR_DY
+		       ,A.SPLY_DY
+		       ,A.ROUTE_FG
+		       ,A.BUY_BOX_QTY
+		       ,A.BUY_BUY_PRC
+		       ,A.BUY_SALE_PRC
+		       ,A.BUY_BUY_AMT
+		       ,A.BUY_SALE_AMT
+		       ,A.ADJ_FG
+		       ,A.TAX_FG
+		       ,(B.SPLY_ABLE_QTY) AS ANS_QTY
+		       ,(B.SPLY_ABLE_PRC) AS ANS_PRC  
+	   FROM (
+	   		SELECT  A.BUY_SLIP_NO
+			       ,A.STR_CD
+			       ,A.STR_NM
+			       ,A.ORD_SLIP_NO
+			       ,A.BUY_PROD_FG
+			       ,A.SRCMK_CD
+			       ,A.PROD_CD
+			       ,A.PROD_NM
+			       ,A.PROD_STD
+			       ,A.VEN_CD
+			       ,A.ORD_IPSU
+			       ,A.DANWI
+			       ,A.BUY_DY
+			       ,A.BUY_RTN_FG
+			       ,A.BUY_RTN_NM
+			       ,A.BUY_QTY
+			       ,C.ORD_FG
+			       ,C.CTR_ARR_DY
+			       ,C.SPLY_DY
+			       ,C.ROUTE_FG
+			       ,A.BUY_BOX_QTY
+			       ,A.BUY_BUY_PRC
+			       ,A.BUY_SALE_PRC
+			       ,A.BUY_BUY_AMT
+			       ,A.BUY_SALE_AMT
+			       ,A.ADJ_FG
+			       ,A.TAX_FG
+			FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO
+			
+			WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			
+		    <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			  
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	    </dynamic>
+	    
+	    
+		) A 
+		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty> 
+	         
+		GROUP BY BUY_DY
+		ORDER BY BUY_DY
+</select>
+
+<!-- 점포별 -->
+<select id="TSC_STORE-SELECT01" parameterClass="map" resultClass="resultClass">
+				/*PEDMBUY0000.TSC_STORE-SELECT01*/
+	SELECT	TO_CHAR(TO_DATE(BUY_DY,'yyyymmdd'),'YYYY-MM-DD') BUY_DY
+	       ,STR_CD
+	       ,STR_NM
+	       ,NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+	       ,NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+	       ,SUM(decode(buy_rtn_fg, '1', 0, '2', 1, '3', 0, '4', 1) * BUY_BOX_QTY) AS BUY_BOX_QTY 
+	       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_QTY) AS BUY_QTY       
+	       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_BUY_AMT) AS BUY_BUY_PRC
+	FROM (
+		SELECT  A.BUY_SLIP_NO
+		       ,A.STR_CD
+		       ,A.STR_NM
+		       ,A.ORD_SLIP_NO
+		       ,A.BUY_PROD_FG
+		       ,A.SRCMK_CD
+		       ,A.PROD_CD
+		       ,A.PROD_NM
+		       ,A.PROD_STD
+		       ,A.VEN_CD
+		       ,A.ORD_IPSU
+		       ,A.DANWI
+		       ,A.BUY_DY
+		       ,A.BUY_RTN_FG
+		       ,A.BUY_RTN_NM
+		       ,A.BUY_QTY
+		       ,A.ORD_FG
+		       ,(B.ORD_QTY) AS TOT_QTY
+		       ,(B.BUY_PRC) AS TOT_PRC
+		       ,A.CTR_ARR_DY
+		       ,A.SPLY_DY
+		       ,A.ROUTE_FG
+		       ,A.BUY_BOX_QTY
+		       ,A.BUY_BUY_PRC
+		       ,A.BUY_SALE_PRC
+		       ,A.BUY_BUY_AMT
+		       ,A.BUY_SALE_AMT
+		       ,A.ADJ_FG
+		       ,A.TAX_FG
+ 
+	   FROM (
+	   		SELECT  A.BUY_SLIP_NO
+			       ,A.STR_CD
+			       ,A.STR_NM
+			       ,A.ORD_SLIP_NO
+			       ,A.BUY_PROD_FG
+			       ,A.SRCMK_CD
+			       ,A.PROD_CD
+			       ,A.PROD_NM
+			       ,A.PROD_STD
+			       ,A.VEN_CD
+			       ,A.ORD_IPSU
+			       ,A.DANWI
+			       ,A.BUY_DY
+			       ,A.BUY_RTN_FG
+			       ,A.BUY_RTN_NM
+			       ,A.BUY_QTY
+			       ,C.ORD_FG
+			       ,C.CTR_ARR_DY
+			       ,C.SPLY_DY
+			       ,C.ROUTE_FG
+			       ,A.BUY_BOX_QTY
+			       ,A.BUY_BUY_PRC
+			       ,A.BUY_SALE_PRC
+			       ,A.BUY_BUY_AMT
+			       ,A.BUY_SALE_AMT
+			       ,A.ADJ_FG
+			       ,A.TAX_FG
+			FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO
+			
+			WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			  
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	    </dynamic>
+	    
+		) A 
+		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty> 
+	       
+	       
+	         
+		 GROUP BY BUY_DY, STR_CD, STR_NM
+ 		 ORDER BY BUY_DY, STR_CD
+</select>
+
+<!-- 상품별 -->
+
+	
+<select id="TSC_PRODUCT-SELECT01" parameterClass="map" resultClass="resultClass">
+		/*PEDMBUY0000.TSC_PRODUCT-SELECT01*/
+	SELECT	TO_CHAR(TO_DATE(BUY_DY,'yyyymmdd'),'YYYY-MM-DD') BUY_DY
+	       ,PROD_CD
+	       ,PROD_NM
+	       ,PROD_STD
+	       ,ORD_IPSU
+	       ,DANWI
+	       ,NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+	       ,NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+	       ,BUY_RTN_NM
+	       ,SUM(decode(buy_rtn_fg, '1', 0, '2', 1, '3', 0, '4', 1) * BUY_BOX_QTY) AS BUY_BOX_QTY 
+		   ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) *BUY_QTY) AS BUY_QTY     	       
+	       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) *BUY_BUY_AMT) AS BUY_BUY_PRC
+	FROM (
+		SELECT  A.BUY_SLIP_NO
+		       ,A.STR_CD
+		       ,A.STR_NM
+		       ,A.ORD_SLIP_NO
+		       ,A.BUY_PROD_FG
+		       ,A.SRCMK_CD
+		       ,A.PROD_CD
+		       ,A.PROD_NM
+		       ,A.PROD_STD
+		       ,A.VEN_CD
+		       ,A.ORD_IPSU
+		       ,A.DANWI
+		       ,A.BUY_DY
+		       ,A.BUY_RTN_FG
+		       ,A.BUY_RTN_NM
+		       ,A.BUY_QTY
+		       ,A.ORD_FG
+		       ,(B.ORD_QTY) AS TOT_QTY
+		       ,(B.BUY_PRC) AS TOT_PRC
+		       ,A.CTR_ARR_DY
+		       ,A.SPLY_DY
+		       ,A.ROUTE_FG
+		       ,A.BUY_BOX_QTY
+		       ,A.BUY_BUY_PRC
+		       ,A.BUY_SALE_PRC
+		       ,A.BUY_BUY_AMT
+		       ,A.BUY_SALE_AMT
+		       ,A.ADJ_FG
+		       ,A.TAX_FG
+ 
+	   FROM (
+	   		SELECT  A.BUY_SLIP_NO
+			       ,A.STR_CD
+			       ,A.STR_NM
+			       ,A.ORD_SLIP_NO
+			       ,A.BUY_PROD_FG
+			       ,A.SRCMK_CD
+			       ,A.PROD_CD
+			       ,A.PROD_NM
+			       ,A.PROD_STD
+			       ,A.VEN_CD
+			       ,A.ORD_IPSU
+			       ,A.DANWI
+			       ,A.BUY_DY
+			       ,A.BUY_RTN_FG
+			       ,A.BUY_RTN_NM
+			       ,A.BUY_QTY
+			       ,C.ORD_FG
+			       ,C.CTR_ARR_DY
+			       ,C.SPLY_DY
+			       ,C.ROUTE_FG
+			       ,A.BUY_BOX_QTY
+			       ,A.BUY_BUY_PRC
+			       ,A.BUY_SALE_PRC
+			       ,A.BUY_BUY_AMT
+			       ,A.BUY_SALE_AMT
+			       ,A.ADJ_FG
+			       ,A.TAX_FG
+			FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO
+			      
+			WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			  
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	    </dynamic>
+	    
+		) A 
+		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty> 
+	       
+	       
+	         
+	  GROUP BY BUY_DY, PROD_CD, PROD_NM, PROD_STD, ORD_IPSU, DANWI, BUY_RTN_NM
+	  ORDER BY BUY_DY
+</select>
+
+<!-- 전표별 -->
+<select id="TSC_JUNPYO-SELECT01" parameterClass="map" resultClass="resultClass">
+
+				/*PEDMBUY0000.TSC_JUNPYO-SELECT01*/
+	SELECT	TO_CHAR(TO_DATE(BUY_DY,'yyyymmdd'),'YYYY-MM-DD') BUY_DY
+	       ,STR_NM
+	       ,BUY_SLIP_NO
+	       ,DECODE(ORD_SLIP_NO,NULL,'20','20'||SUBSTR(ORD_SLIP_NO,1,6)) AS ORD_DY
+	       ,NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+	       ,NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+	       ,BUY_RTN_NM
+	       ,SUM(decode(buy_rtn_fg, '1', 0, '2', 1, '3', 0, '4', 1) * BUY_BOX_QTY) AS BUY_BOX_QTY 
+           ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_QTY) AS BUY_QTY         	       
+	       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_BUY_AMT) AS BUY_BUY_PRC
+	       ,STR_CD
+	       
+	FROM (
+		SELECT  A.BUY_SLIP_NO
+		       ,A.STR_CD
+		       ,A.STR_NM
+		       ,A.ORD_SLIP_NO
+		       ,A.BUY_PROD_FG
+		       ,A.SRCMK_CD
+		       ,A.PROD_CD
+		       ,A.PROD_NM
+		       ,A.PROD_STD
+		       ,A.VEN_CD
+		       ,A.ORD_IPSU
+		       ,A.DANWI
+		       ,A.BUY_DY
+		       ,A.BUY_RTN_FG
+		       ,A.BUY_RTN_NM
+		       ,A.BUY_QTY
+		       ,A.ORD_FG
+		       ,(B.ORD_QTY) AS TOT_QTY
+		       ,(B.BUY_PRC) AS TOT_PRC
+		       ,A.CTR_ARR_DY
+		       ,A.SPLY_DY
+		       ,A.ROUTE_FG
+		       ,A.BUY_BOX_QTY
+		       ,A.BUY_BUY_PRC
+		       ,A.BUY_SALE_PRC
+		       ,A.BUY_BUY_AMT
+		       ,A.BUY_SALE_AMT
+		       ,A.ADJ_FG
+		       ,A.TAX_FG
+ 
+	   FROM (
+	   		SELECT  A.BUY_SLIP_NO
+			       ,A.STR_CD
+			       ,A.STR_NM
+			       ,A.ORD_SLIP_NO
+			       ,A.BUY_PROD_FG
+			       ,A.SRCMK_CD
+			       ,A.PROD_CD
+			       ,A.PROD_NM
+			       ,A.PROD_STD
+			       ,A.VEN_CD
+			       ,A.ORD_IPSU
+			       ,A.DANWI
+			       ,A.BUY_DY
+			       ,A.BUY_RTN_FG
+			       ,A.BUY_RTN_NM
+			       ,A.BUY_QTY
+			       ,C.ORD_FG
+			       ,C.CTR_ARR_DY
+			       ,C.SPLY_DY
+			       ,C.ROUTE_FG
+			       ,A.BUY_BOX_QTY
+			       ,A.BUY_BUY_PRC
+			       ,A.BUY_SALE_PRC
+			       ,A.BUY_BUY_AMT
+			       ,A.BUY_SALE_AMT
+			       ,A.ADJ_FG
+			       ,A.TAX_FG
+			FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO
+			      
+			WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			  
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	    </dynamic>
+	    
+		) A 
+		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]#
+	      </iterate> 
+	    </isNotEmpty>
+	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>
+	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 
+	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty> 
+	       
+	  GROUP BY BUY_DY, STR_NM, BUY_SLIP_NO, ORD_SLIP_NO, BUY_RTN_NM, STR_CD 
+	  ORDER BY BUY_DY, STR_CD, BUY_SLIP_NO
+</select>
+
+<!-- 전표상세별 -->
+<select id="TSC_JUNPYO_DETAIL-SELECT01" parameterClass="map" resultClass="resultClass">
+
+	/*PEDMBUY0000.TSC_JUNPYO_DETAIL-SELECT01*/
+SELECT Z.* FROM(
+
+SELECT	'1' AS DEPTH
+	   ,A.STR_NM AS STR_NM_T
+       ,BUY_SLIP_NO
+       ,NVL(SUM(A.TOT_QTY), 0) AS TOT_QTY
+       ,NVL(SUM(A.TOT_PRC), 0) AS TOT_PRC
+       ,BUY_RTN_NM
+       ,C1.CD_NM AS ORD_FG
+       ,DECODE(ORD_SLIP_NO,NULL,'20','20'||SUBSTR(ORD_SLIP_NO,1,6)) AS ORD_DY
+       ,TO_CHAR(TO_DATE(A.CTR_ARR_DY,'yyyymmdd'),'YYYY-MM-DD') CTR_ARR_DY
+       ,TO_CHAR(TO_DATE(A.SPLY_DY,'yyyymmdd'),'YYYY-MM-DD') SPLY_DY
+       ,C2.CD_NM AS ROUTE_FG
+       ,D.STR_NM
+       ,VEN_CD
+       ,'' AS PROD_CD
+       ,'' AS PROD_NM
+       ,'' AS PROD_STD
+       ,0 AS ORD_IPSU
+       ,'' AS DANWI
+       ,0 AS BUY_BOX_QTY 
+       ,0 AS BUY_QTY 
+       ,0 AS BUY_BUY_PRC
+
+FROM (
+SELECT  A.BUY_SLIP_NO
+       ,A.STR_CD
+       ,A.STR_NM
+       ,A.ORD_SLIP_NO
+       ,A.BUY_PROD_FG
+       ,A.SRCMK_CD
+       ,A.PROD_CD
+       ,A.PROD_NM
+       ,A.PROD_STD
+       ,A.VEN_CD
+       ,A.ORD_IPSU
+       ,A.DANWI
+       ,A.BUY_DY
+       ,A.BUY_RTN_FG
+       ,A.BUY_RTN_NM
+       ,A.BUY_QTY
+       ,A.ORD_FG
+       ,(B.ORD_QTY) AS TOT_QTY
+       ,(B.BUY_PRC) AS TOT_PRC
+       ,A.CTR_ARR_DY
+       ,A.SPLY_DY
+       ,A.ROUTE_FG
+       ,A.BUY_BOX_QTY
+       ,A.BUY_BUY_PRC
+       ,A.BUY_SALE_PRC
+       ,A.BUY_BUY_AMT
+       ,A.BUY_SALE_AMT
+       ,A.ADJ_FG
+       ,A.TAX_FG
+FROM (
+SELECT  A.BUY_SLIP_NO
+       ,A.STR_CD
+       ,A.STR_NM
+       ,A.ORD_SLIP_NO
+       ,A.BUY_PROD_FG
+       ,A.SRCMK_CD
+       ,A.PROD_CD
+       ,A.PROD_NM
+       ,A.PROD_STD
+       ,A.VEN_CD
+       ,A.ORD_IPSU
+       ,A.DANWI
+       ,A.BUY_DY
+       ,A.BUY_RTN_FG
+       ,A.BUY_RTN_NM
+       ,A.BUY_QTY
+       ,C.ORD_FG
+       ,C.CTR_ARR_DY
+       ,C.SPLY_DY
+       ,C.ROUTE_FG
+       ,A.BUY_BOX_QTY
+       ,A.BUY_BUY_PRC
+       ,A.BUY_SALE_PRC
+       ,A.BUY_BUY_AMT
+       ,A.BUY_SALE_AMT
+       ,A.ADJ_FG
+       ,A.TAX_FG
+FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO
+			WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	    <dynamic prepend="WHERE">
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	    </dynamic>
+	    
+		) A LEFT OUTER JOIN TED_CODE C1 ON C1.MAJOR_CD = 'ORD01' AND C1.MINOR_CD = A.ORD_FG
+		    LEFT OUTER JOIN TED_CODE C2 ON C2.MAJOR_CD = 'SRR04' AND C2.MINOR_CD = A.ROUTE_FG
+		    INNER JOIN STORE D	ON A.STR_CD = D.STR_CD		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')		
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty>
+  GROUP BY BUY_RTN_NM, BUY_SLIP_NO, ORD_FG, ORD_SLIP_NO, CTR_ARR_DY, SPLY_DY, ROUTE_FG, D.STR_NM, VEN_CD, C1.CD_NM, C2.CD_NM, A.STR_NM
+
+UNION ALL
+
+SELECT	'2' AS DEPTH
+	   ,'' AS STR_NM_T
+       ,BUY_SLIP_NO
+       ,NVL(SUM(A.TOT_QTY), 0) AS TOT_QTY
+       ,NVL(SUM(A.TOT_PRC), 0) AS TOT_PRC
+       ,'' AS BUY_RTN_NM
+       ,'' AS ORD_FG
+       ,'' AS ORD_DY
+       ,'' AS CTR_ARR_DY
+       ,'' AS SPLY_DY
+       ,'' AS ROUTE_FG
+       ,'' AS STR_NM
+       ,'' AS VEN_CD
+       ,PROD_CD
+       ,PROD_NM
+       ,PROD_STD
+       ,ORD_IPSU
+       ,DANWI
+       ,SUM(decode(buy_rtn_fg, '1', 0, '2', 1, '3', 0, '4', 1) * A.BUY_BOX_QTY) AS BUY_BOX_QTY 
+       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * A.BUY_QTY) AS BUY_QTY 
+       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * A.BUY_BUY_AMT) AS BUY_BUY_PRC
+
+FROM (
+SELECT  A.BUY_SLIP_NO
+       ,A.STR_CD
+       ,A.STR_NM
+       ,A.ORD_SLIP_NO
+       ,A.BUY_PROD_FG       
+       ,A.SRCMK_CD
+       ,A.PROD_CD
+       ,A.PROD_NM
+       ,A.PROD_STD
+       ,A.VEN_CD
+       ,A.ORD_IPSU
+       ,A.DANWI
+       ,A.BUY_DY
+       ,A.BUY_RTN_FG
+       ,A.BUY_RTN_NM
+       ,A.BUY_QTY
+       ,A.ORD_FG
+       ,(B.ORD_QTY) AS TOT_QTY
+       ,(B.BUY_PRC) AS TOT_PRC
+       ,A.CTR_ARR_DY
+       ,A.SPLY_DY
+       ,A.ROUTE_FG
+       ,A.BUY_BOX_QTY
+       ,A.BUY_BUY_PRC
+       ,A.BUY_SALE_PRC
+       ,A.BUY_BUY_AMT
+       ,A.BUY_SALE_AMT
+       ,A.ADJ_FG
+       ,A.TAX_FG
+FROM (
+SELECT  A.BUY_SLIP_NO
+       ,A.STR_CD
+       ,A.STR_NM
+       ,A.ORD_SLIP_NO
+       ,A.BUY_PROD_FG
+       ,A.SRCMK_CD
+       ,A.PROD_CD
+       ,A.PROD_NM
+       ,A.PROD_STD
+       ,A.VEN_CD
+       ,A.ORD_IPSU
+       ,A.DANWI
+       ,A.BUY_DY
+       ,A.BUY_RTN_FG
+       ,A.BUY_RTN_NM
+       ,A.BUY_QTY
+       ,C.ORD_FG
+       ,C.CTR_ARR_DY
+       ,C.SPLY_DY
+       ,C.ROUTE_FG
+       ,A.BUY_BOX_QTY
+       ,A.BUY_BUY_PRC
+       ,A.BUY_SALE_PRC
+       ,A.BUY_BUY_AMT
+       ,A.BUY_SALE_AMT
+       ,A.ADJ_FG
+       ,A.TAX_FG       
+	FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO			
+		<dynamic prepend="WHERE">	
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	   </dynamic>
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	       WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>	    
+		) A 
+		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')		
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty>
+
+  GROUP BY BUY_SLIP_NO, PROD_CD, PROD_NM, PROD_STD, ORD_IPSU, DANWI
+ 
+) Z
+
+ORDER BY BUY_SLIP_NO, DEPTH, PROD_CD
+
+
+</select>
+
+<!-- 점포상품별 -->
+<select id="TSC_STORE_PRODUCT-SELECT01" parameterClass="map" resultClass="resultClass">
+			/*PEDMBUY0000.TSC_STORE_PRODUCT-SELECT01*/
+	SELECT	SRCMK_CD
+	       ,PROD_NM
+	       ,PROD_STD
+	       ,ORD_IPSU
+	       ,DANWI
+	       ,STR_NM
+	       ,STR_CD
+	       ,NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+	       ,NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+	       ,BUY_RTN_NM
+	       ,SUM(decode(buy_rtn_fg, '1', 0, '2', 1, '3', 0, '4', 1) * BUY_BOX_QTY) AS BUY_BOX_QTY
+	       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_QTY) AS BUY_QTY
+	       ,SUM(decode(buy_rtn_fg, '1', -1, '2', 1, '3', -1, '4', 1) * BUY_BUY_AMT) AS BUY_BUY_PRC       
+	FROM (
+		SELECT  A.BUY_SLIP_NO
+		       ,A.STR_CD
+		       ,A.STR_NM
+		       ,A.ORD_SLIP_NO
+		       ,A.BUY_PROD_FG
+		       ,A.SRCMK_CD
+		       ,A.PROD_CD
+		       ,A.PROD_NM
+		       ,A.PROD_STD
+		       ,A.VEN_CD
+		       ,A.ORD_IPSU
+		       ,A.DANWI
+		       ,A.BUY_DY
+		       ,A.BUY_RTN_FG
+		       ,A.BUY_RTN_NM
+		       ,A.BUY_QTY
+		       ,A.ORD_FG
+		       ,(B.ORD_QTY) AS TOT_QTY
+		       ,(B.BUY_PRC) AS TOT_PRC
+		       ,A.CTR_ARR_DY
+		       ,A.SPLY_DY
+		       ,A.ROUTE_FG
+		       ,A.BUY_BOX_QTY
+		       ,A.BUY_BUY_PRC
+		       ,A.BUY_SALE_PRC
+		       ,A.BUY_BUY_AMT
+		       ,A.BUY_SALE_AMT
+		       ,A.ADJ_FG
+		       ,A.TAX_FG
+ 
+	   FROM (
+	   		SELECT  A.BUY_SLIP_NO
+			       ,A.STR_CD
+			       ,A.STR_NM
+			       ,A.ORD_SLIP_NO
+			       ,A.BUY_PROD_FG
+			       ,A.SRCMK_CD
+			       ,A.PROD_CD
+			       ,A.PROD_NM
+			       ,A.PROD_STD
+			       ,A.VEN_CD
+			       ,A.ORD_IPSU
+			       ,A.DANWI
+			       ,A.BUY_DY
+			       ,A.BUY_RTN_FG
+			       ,A.BUY_RTN_NM
+			       ,A.BUY_QTY
+			       ,C.ORD_FG
+			       ,C.CTR_ARR_DY
+			       ,C.SPLY_DY
+			       ,C.ROUTE_FG
+			       ,A.BUY_BOX_QTY
+			       ,A.BUY_BUY_PRC
+			       ,A.BUY_SALE_PRC
+			       ,A.BUY_BUY_AMT
+			       ,A.BUY_SALE_AMT
+			       ,A.ADJ_FG
+			       ,A.TAX_FG
+			FROM  V_ED_STR_BUY_PROD A 
+			      LEFT OUTER JOIN TED_ORD C ON A.ORD_SLIP_NO = C.ORD_SLIP_NO
+			
+		<dynamic prepend="WHERE">	
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			and  A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	   </dynamic>
+			) A LEFT OUTER JOIN TED_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD	  			  
+	       
+	       WHERE A.BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	    	<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	A.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	    
+		) A 		
+		WHERE BUY_DY BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		 <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		 </isNotEmpty>	       
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	    </isNotEmpty>	    
+	    <isNotEmpty property="storeVal"  prepend="AND"> 
+		      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+	    </isNotEmpty> 	    
+	    <isNotEmpty  property="productVal"  prepend="AND"> 
+		    	PROD_CD = #productVal#
+	    </isNotEmpty> 	    
+	    <isNotEmpty  property="buying"  prepend="AND"> 
+		    	BUY_RTN_FG = #buying#
+	    </isNotEmpty> 
+	  GROUP BY SRCMK_CD, PROD_NM, PROD_STD, ORD_IPSU, DANWI, STR_NM, BUY_RTN_NM, STR_CD
+	  ORDER BY STR_CD, SRCMK_CD
+</select>
+
+<!-- 점포별 가매입 -->
+<select id="TSC_STORE_PURCHASE-SELECT01" parameterClass="map" resultClass="resultClass">
+/* PEDMBUY0000.TSC_STORE_PURCHASE-SELECT01 */
+SELECT  CTR_CD, 
+   VEN_CD, 
+   PROD_CD, 
+   STR_NM, 
+   LOGI_BCD, 
+   SRCMK_CD, 
+   PROD_NM, 
+   PROD_STD, 
+   ORD_IPSU, 
+   DETAIL_NM, 
+   SUM( ORD_QTY) AS ORD_QTY,  
+   SUM( ORD_AMT) AS ORD_AMT,  
+   SUM( BUY_QTY) AS BUY_QTY,  
+   SUM( BUY_AMT) AS BUY_AMT,  
+   BUY_FG, 
+   SPLY_FG, 
+   GETSTRNM_FNC@dl_md_martnis(CTR_CD) CTR_NM 
+ FROM   ( 
+     SELECT  /*+ ORDERED USE_NL( T S P AC) */ 
+           T.CTR_CD,   
+           T.VEN_CD,   
+           T.PROD_CD,  
+           S.STR_NM,   
+           T.LOGI_BCD, 
+           T.SRCMK_CD, 
+           P.PROD_NM,  
+           P.PROD_STD, 
+           T.ORD_IPSU, 
+           AC.DETAIL_NM,   
+           SUM(ORD_QTY) ORD_QTY,   
+           SUM(ORD_AMT) ORD_AMT,   
+           SUM(BUY_QTY) BUY_QTY,   
+           SUM(BUY_AMT) BUY_AMT,   
+           'C' BUY_FG, 
+           SPLY_FG     
+   FROM (  SELECT  ORD_SLIP_NO,    
+           CTR_CD,     
+           STR_CD,     
+           VEN_CD,     
+           PROD_CD,    
+           LOGI_BCD,   
+           SRCMK_CD,   
+           ORD_IPSU,   
+           ORD_UNIT,   
+           SUM( ORD_QTY ) ORD_QTY, 
+           SUM( ORD_AMT ) ORD_AMT, 
+           SUM( BUY_QTY ) BUY_QTY, 
+           SUM( BUY_AMT ) BUY_AMT, 
+           SPLY_FG         
+       FROM (  
+       SELECT  O.ORD_SLIP_NO,  
+               O.CTR_CD,   
+               O.STR_CD,   
+               O.VEN_CD,   
+               A.PROD_CD,  
+               A.LOGI_BCD, 
+               OP.SRCMK_CD,    
+               OP.ORD_IPSU,    
+               OP.ORD_UNIT,    
+               SUM( ORD_QTY ) ORD_QTY, 
+               SUM( ((ORD_QTY * ORD_IPSU)/GET_CONV_VAL@dl_md_martnis(ORD_UNIT) ) * BUY_PRC) ORD_AMT, 
+               0 BUY_QTY,  
+               0 BUY_AMT,  
+               GET_ALL_CODE@dl_md_martnis( 'ASN01', SPLY_FG, '') SPLY_FG 
+           FROM ( 
+               SELECT  /*+ ORDERED USE_NL(F, FP) INDEX( FP WMS_FWD_PROD_PK) */ 
+                        ORD_SLIP_NO,    
+                        PROD_CD,    
+                        LOGI_BCD,   
+                        WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'FORWARDING', F.FWD_SLIP_NO, FP.PROD_CD) SPLY_FG   
+               FROM    WMS_FORWARDING@dl_md_martnis F,   
+                   WMS_FWD_PROD@dl_md_martnis FP     
+               WHERE   F.FWD_SLIP_NO = FP.FWD_SLIP_NO  
+               AND F.ROUTE_FG = '2'    
+               AND F.ORD_FG NOT IN ('4', '7', '8') 
+               
+              
+              
+            AND F.PICK_DY between replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		    <isNotEmpty  property="venCds"  prepend="AND"> 
+			      <iterate prepend="F.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]# 
+			      </iterate> 
+			    </isNotEmpty>
+		       
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+			    	F.VEN_CD = #entp_cd#
+		    </isNotEmpty>
+
+
+               AND   'C'     LIKE #buy_cen_fg#
+                
+            <isNotEmpty property="delivery">
+               AND     WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'FORWARDING', F.FWD_SLIP_NO, FP.PROD_CD) LIKE #delivery#
+            </isNotEmpty>   
+            
+		    <isNotEmpty prepend="AND" property="productVal"> 
+		    	FP.PROD_CD = #productVal#
+		    </isNotEmpty>
+		    
+            <isNotEmpty prepend="AND" property="storeVal"> 
+		      <iterate prepend="F.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+               
+<![CDATA[
+            	   AND CHG_SLIP_FG <> '2'  
+]]>
+               
+               
+               GROUP BY            
+                   ORD_SLIP_NO@dl_md_martnis,        
+                   PROD_CD@dl_md_martnis,        
+                   LOGI_BCD@dl_md_martnis,       
+                   WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'FORWARDING', F.FWD_SLIP_NO, FP.PROD_CD) ) A,  
+               ORD@dl_md_martnis O,      
+               ORD_PROD@dl_md_martnis OP 
+           WHERE   A.ORD_SLIP_NO = O.ORD_SLIP_NO   
+           AND O.ORD_SLIP_NO = OP.ORD_SLIP_NO  
+           AND A.PROD_CD = OP.PROD_CD      
+           AND O.ROUTE_FG = '2'        
+           AND O.ORD_FG NOT IN ('4', '7', '8') 
+
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+			      <iterate prepend="O.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]# 
+			      </iterate> 
+			    </isNotEmpty>
+		       
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+			    	O.VEN_CD = #entp_cd#
+		    </isNotEmpty>
+ 
+  			<isNotEmpty prepend="AND" property="productVal"> 
+		    	OP.PROD_CD = #productVal#
+		    </isNotEmpty>
+		    
+            <isNotEmpty prepend="AND" property="storeVal"> 
+		      <iterate prepend="O.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+		        #storeVal[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+
+           GROUP BY        
+               O.ORD_SLIP_NO,  
+               O.CTR_CD,   
+               O.STR_CD,   
+               O.VEN_CD,   
+               A.PROD_CD,  
+               A.LOGI_BCD, 
+               OP.SRCMK_CD,    
+               OP.ORD_IPSU,    
+               OP.ORD_UNIT,    
+               SPLY_FG     
+           UNION ALL       
+           SELECT  /*+ ORDERED USE_NL( F FP ) INDEX( FP WMS_FWD_PROD_PK) */    
+               F.ORD_SLIP_NO,  
+               F.CTR_CD,   
+               F.STR_CD,   
+               F.VEN_CD,       
+               FP.PROD_CD, 
+               FP.LOGI_BCD,    
+               FP.SRCMK_CD,    
+               FP.ORD_IPSU,    
+               FP.ORD_UNIT,    
+               0 ORD_QTY,  
+               0 ORD_AMT,  
+               SUM( DECODE( FP.BUY_SIGN_FG, '1', 1, -1) * FP.FWD_EA_QTY / (GET_CONV_VAL@dl_md_martnis( FP.ORD_UNIT) * FP.ORD_IPSU)) BUY_QTY, 
+               SUM( DECODE( FP.BUY_SIGN_FG, '1', 1, -1) * ( FP.FWD_EA_QTY / GET_CONV_VAL@dl_md_martnis( FP.ORD_UNIT)) * FP.BUY_PRC) BUY_AMT, 
+               GET_ALL_CODE@dl_md_martnis( 'ASN01', WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'FORWARDING', F.FWD_SLIP_NO, FP.PROD_CD), '') SPLY_FG       
+           FROM    WMS_FORWARDING@dl_md_martnis F,   
+               WMS_FWD_PROD@dl_md_martnis FP     
+           WHERE   F.FWD_SLIP_NO   = FP.FWD_SLIP_NO    
+           AND     F.ROUTE_FG  IN ( '2')           
+           AND     F.ORD_FG    NOT IN ( '4', '7', '8') 
+
+		   AND F.PICK_DY between replace(#startDate#,'-','') and replace(#endDate#,'-','')
+				    <isNotEmpty  property="venCds"  prepend="AND"> 
+					      <iterate prepend="F.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        #venCds[]# 
+					      </iterate> 
+					    </isNotEmpty>
+				       
+				    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+					    	F.VEN_CD = #entp_cd#
+				    </isNotEmpty>
+		
+		
+		               AND   'C'     LIKE #buy_cen_fg#
+		                
+		            <isNotEmpty property="delivery">
+		               AND     WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'FORWARDING', F.FWD_SLIP_NO, FP.PROD_CD) LIKE #delivery#
+		            </isNotEmpty>   
+		            
+		            <isNotEmpty prepend="AND" property="productVal"> 
+				    	FP.PROD_CD = #productVal#
+				    </isNotEmpty>
+				    
+		            <isNotEmpty prepend="AND" property="storeVal"> 
+				      <iterate prepend="F.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+				        #storeVal[]# 
+				      </iterate> 
+				    </isNotEmpty>
+               
+<![CDATA[
+            	   AND CHG_SLIP_FG <> '2'  
+]]>
+
+
+           GROUP BY        
+               F.ORD_SLIP_NO,  
+               F.CTR_CD,   
+               F.STR_CD,   
+               F.VEN_CD,   
+               FP.PROD_CD, 
+               FP.LOGI_BCD,    
+               FP.SRCMK_CD,    
+               FP.ORD_IPSU,    
+               ORD_UNIT,   
+               GET_ALL_CODE@dl_md_martnis( 'ASN01', WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'FORWARDING', F.FWD_SLIP_NO, FP.PROD_CD), '') ) 
+       GROUP BY            
+           ORD_SLIP_NO,        
+           CTR_CD,         
+           STR_CD,         
+           VEN_CD,         
+           PROD_CD,        
+           LOGI_BCD,       
+           SRCMK_CD,       
+           ORD_IPSU,       
+           ORD_UNIT,       
+           SPLY_FG  ) T,       
+       STORE@DL_MD_MARTNIS S,            
+       PRODUCT@DL_MD_MARTNIS P,          
+       ALL_CD@DL_MD_MARTNIS AC           
+   WHERE   T.STR_CD = S.STR_CD     
+   AND T.PROD_CD = P.PROD_CD       
+   AND T.ORD_UNIT = AC.DETAIL_CD   
+   AND     AC.GRP_CD   = 'CSA01'       
+   GROUP BY        
+       T.CTR_CD,   
+       T.VEN_CD,   
+       T.PROD_CD,  
+       S.STR_NM,   
+       T.LOGI_BCD,     
+       T.SRCMK_CD,     
+       P.PROD_NM,  
+       P.PROD_STD, 
+       T.ORD_IPSU, 
+       AC.DETAIL_NM,   
+       SPLY_FG     
+       UNION ALL
+       SELECT  A.CTR_CD,       
+           A.VEN_CD,       
+           AP.PROD_CD, 
+           S.STR_NM,
+           AP.LOGI_BCD,
+           AP.SRCMK_CD,
+           SP.PROD_NM,
+           SP.PROD_STD,
+           AP.ORD_IPSU,
+           AC.DETAIL_NM,
+           MAX( OP.ORD_QTY) ORD_QTY,
+           MAX( OP.ORD_QTY * AP.ORD_IPSU * AP.BUY_PRC) ORD_AMT,
+           SUM( DECODE( AP.BUY_SIGN_FG, '1', 1, -1) * ( AP.EA_QTY / ( GET_CONV_VAL@dl_md_martnis( AP.ORD_UNIT) * AP.ORD_IPSU)))BUY_QTY,
+           SUM( DECODE( AP.BUY_SIGN_FG, '1', 1, -1) * ( AP.EA_QTY / GET_CONV_VAL@dl_md_martnis( AP.ORD_UNIT)) * AP.BUY_PRC) BUY_AMT,
+           --GET_ALL_CODE@dl_md_martnis( 'ASN01', WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'ARRIVAL', A.ARR_SLIP_NO, AP.PROD_CD), '') SPLY_FG,
+           GET_ALL_CODE@dl_md_martnis( 'ASN01', DECODE( A.CTR_TYP_FG, '2', DECODE( NVL( A.TEMP_FG, '0'), '1', '6', '2', '7', '5'),
+		            DECODE( A.ROUTE_FG || NVL( A.DPS_FG, '0'), '30', '3', '31', '8',
+			      DECODE( NVL( A.MIX_PROD_FG, '0'), '1', '4', 
+			        DECODE( NVL( AP.SORTER_FG, '0'), '1', '1', '2')
+			    )   
+			  )
+			), '') SPLY_FG,
+			
+           
+           'C' BUY_FG
+       FROM    WMS_ARRIVAL@dl_md_martnis A,
+           WMS_ARR_PROD@dl_md_martnis AP,
+           STORE@DL_MD_MARTNIS S,
+           STR_PROD@dl_md_martnis SP,
+           ALL_CD@dl_md_martnis AC,
+           ORD_PROD@dl_md_martnis OP
+       WHERE   A.ARR_SLIP_NO   = AP.ARR_SLIP_NO
+       AND A.STR_CD    = S.STR_CD
+       AND A.ROUTE_FG  IN ( '3', '4')
+       AND AP.PROD_CD  = SP.PROD_CD
+       AND A.STR_CD    = SP.STR_CD
+       AND AP.ORD_UNIT = AC.DETAIL_CD
+       AND AC.GRP_CD   = 'CSA01'
+       AND A.ORD_FG    NOT IN ( '4', '7', '8')
+       AND A.ARR_TYP_FG    = '1'
+       AND A.ORD_SLIP_NO   = OP.ORD_SLIP_NO
+       AND AP.PROD_CD  = OP.PROD_CD
+       
+       
+       	   AND A.ARR_DY between replace(#startDate#,'-','') and replace(#endDate#,'-','')
+				    <isNotEmpty  property="venCds"  prepend="AND"> 
+					      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        #venCds[]# 
+					      </iterate> 
+					    </isNotEmpty>
+				       
+				    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+					    	A.VEN_CD = #entp_cd#
+				    </isNotEmpty>
+				    
+				     <isNotEmpty prepend="AND" property="productVal"> 
+				    	AP.PROD_CD = #productVal#
+				    </isNotEmpty>
+				    
+		            <isNotEmpty prepend="AND" property="storeVal"> 
+				      <iterate prepend="S.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+				        #storeVal[]#
+				      </iterate> 
+				    </isNotEmpty>
+		
+		
+		               AND   'C'     LIKE #buy_cen_fg#
+		                
+		            <isNotEmpty property="delivery">
+		                AND    WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'ARRIVAL', A.ARR_SLIP_NO, AP.PROD_CD) LIKE #delivery#
+		            </isNotEmpty>   
+
+
+       GROUP BY
+           A.ARR_SLIP_NO,
+           A.CTR_CD,
+           A.VEN_CD,
+           AP.PROD_CD,
+           S.STR_NM,
+           AP.LOGI_BCD,
+           AP.SRCMK_CD,
+           SP.PROD_NM,
+           SP.PROD_STD,
+           AP.ORD_IPSU,
+           AC.DETAIL_NM,
+           --GET_ALL_CODE@dl_md_martnis( 'ASN01', WMS_GET_ANS_SPLY_FG@dl_md_martnis( 'ARRIVAL', A.ARR_SLIP_NO, AP.PROD_CD), '')
+           GET_ALL_CODE@dl_md_martnis( 'ASN01', DECODE( A.CTR_TYP_FG, '2', DECODE( NVL( A.TEMP_FG, '0'), '1', '6', '2', '7', '5'),
+		            DECODE( A.ROUTE_FG || NVL( A.DPS_FG, '0'), '30', '3', '31', '8',
+			      DECODE( NVL( A.MIX_PROD_FG, '0'), '1', '4', 
+			        DECODE( NVL( AP.SORTER_FG, '0'), '1', '1', '2')
+			    )   
+			  )
+			), '') 
+       
+       UNION ALL
+       SELECT  /*+ INDEX( AC ALL_CD_PK) */
+           SB.STR_CD,
+           SB.VEN_CD,
+           SB.PROD_CD,
+           S.STR_NM,
+           '' LOGI_BCD,
+           SB.SRCMK_CD,
+           SP.PROD_NM,
+           SP.PROD_STD,
+           SB.ORD_IPSU,
+           AC.DETAIL_NM,
+           MAX( OP.ORD_QTY) ORD_QTY,
+           MAX( OP.ORD_QTY * SB.ORD_IPSU * SB.BUY_BUY_PRC) ORD_AMT,
+           SUM( SB.BUY_BOX_QTY) BUY_QTY, 
+           SUM( SB.BUY_BUY_AMT) BUY_AMT, 
+           '직납' SPLY_FG, 
+           'S' BUY_FG 
+       FROM    (
+               SELECT  SB.STR_CD,
+                   SB.VEN_CD,
+                   SB.ORD_SLIP_NO,
+                   SBP.PROD_CD,
+                   SBP.SRCMK_CD,
+                   SBP.ORD_IPSU,
+                   SBP.BUY_BUY_PRC,
+                   SBP.ORD_UNIT,
+                   SUM( DECODE( SBP.ADJ_FG, '1', 1, -1) * SBP.BUY_BOX_QTY) BUY_BOX_QTY,
+                   SUM( DECODE( SBP.ADJ_FG, '1', 1, -1) * SBP.BUY_QTY) BUY_QTY,
+                   SUM( DECODE( SBP.ADJ_FG, '1', 1, -1) * SBP.BUY_BUY_AMT) BUY_BUY_AMT,
+                   SUM( DECODE( SBP.ADJ_FG, '1', 1, -1) * SBP.BUY_SALE_AMT) BUY_SALE_AMT
+               FROM    STR_BUY@dl_md_martnis SB, 
+                   STR_BUY_PROD@dl_md_martnis SBP 
+               WHERE   SB.BUY_SLIP_NO  = SBP.BUY_SLIP_NO
+               AND SB.ROUTE_FG = '1'
+               AND SB.BUY_RTN_FG   IN ( '2', '4')
+               
+
+				AND SB.BUY_DY between replace(#startDate#,'-','') and replace(#endDate#,'-','')
+				    <isNotEmpty  property="venCds"  prepend="AND"> 
+					      <iterate prepend="SB.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        #venCds[]# 
+					      </iterate> 
+					    </isNotEmpty>
+				       
+				    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+					    	SB.VEN_CD = #entp_cd#
+				    </isNotEmpty>
+				    
+				     <isNotEmpty prepend="AND" property="productVal"> 
+				    	SBP.PROD_CD = #productVal#
+				    </isNotEmpty>
+				    
+		            <isNotEmpty prepend="AND" property="storeVal"> 
+				      <iterate prepend="SB.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+				        #storeVal[]#
+				      </iterate> 
+				    </isNotEmpty>
+		
+		
+		               AND   'S'     LIKE #buy_cen_fg#
+		                
+               GROUP BY
+                   SB.STR_CD,
+                   SB.VEN_CD,
+                   SB.ORD_SLIP_NO,
+                   SBP.PROD_CD,
+                   SBP.SRCMK_CD,
+                   SBP.ORD_IPSU,
+                   SBP.BUY_BUY_PRC,
+                   SBP.ORD_UNIT
+           ) SB,
+           STORE@dl_md_martnis S,
+           STR_PROD@dl_md_martnis SP,
+           ALL_CD@dl_md_martnis AC,
+           ORD_PROD@dl_md_martnis OP
+       WHERE   SB.STR_CD   = S.STR_CD
+       AND SB.STR_CD   = SP.STR_CD
+       AND SB.PROD_CD  = SP.PROD_CD
+       AND SB.ORD_UNIT = AC.DETAIL_CD
+       AND AC.GRP_CD   = 'CSA01'
+       AND SB.ORD_SLIP_NO  = OP.ORD_SLIP_NO(+)
+       AND SB.PROD_CD  = OP.PROD_CD(+)
+       GROUP BY    
+           SB.ORD_SLIP_NO,
+           SB.STR_CD,
+           SB.VEN_CD,
+           SB.PROD_CD,
+           S.STR_NM,
+           SB.SRCMK_CD,
+           SP.PROD_NM,
+           SP.PROD_STD,
+           SB.ORD_IPSU,
+           AC.DETAIL_NM
+   ) 
+ GROUP BY
+   CTR_CD      ,
+   VEN_CD      ,
+   PROD_CD     ,
+   STR_NM      ,
+   LOGI_BCD    ,
+   SRCMK_CD    ,
+   PROD_NM     ,
+   PROD_STD    ,
+   ORD_IPSU    ,
+   DETAIL_NM   ,
+   BUY_FG      ,
+   SPLY_FG       
+</select>
+
+<!-- 증정품 확정 -->
+<select id="TSC_GIFT-SELECT01" parameterClass="map" resultClass="resultClass">
+SELECT  COMPANY,
+   		RETAILSKU,
+    	DESCR,
+    	ORG_PROD_NM,
+	    PACKKEY,
+	    UOM,
+	    ORD_QTY,
+	    BUY_QTY,
+	    TEMP,
+	    ROUTE,
+	    CEN_NM,
+	    DY,
+	    VEN_CD,
+	    STR_CD
+	    SRC
+FROM    NWMS_IF_GIFT_INFO_V@dl_md_martnis
+
+WHERE 	DY  BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+
+	<isNotEmpty  property="venCds"  prepend="AND"> 
+      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+        #venCds[]# 
+      </iterate> 
+    </isNotEmpty>
+       
+    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	VEN_CD = #entp_cd#
+    </isNotEmpty>
+    
+    <isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+    </isNotEmpty>
+
+</select>
+
+</sqlMap>

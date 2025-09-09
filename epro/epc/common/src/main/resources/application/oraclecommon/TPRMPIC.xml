@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+	<sqlMap namespace="tprMpic">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<sql id="pre-page-frag">
+		SELECT *
+		  FROM (SELECT SELECT_BOS.*
+		             , CEIL( ROWNUM / #rowsPerPage# ) PAGEINDEX
+		             , COUNT(1) OVER() TOTAL_COUNT
+		          FROM (
+	</sql>
+	<sql id="post-page-frag">
+		                ) SELECT_BOS
+		       )
+		 WHERE PAGEINDEX = #currentPage#
+	</sql>
+
+	<select id="selectTprMpicList" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		<include refid="pre-page-frag"/>
+			SELECT 
+			         PROD_CD
+			        ,MPIC_SEQ
+			        ,DURATION
+			        ,VIDEO_HEIGHT
+			        ,VIDEO_WIDTH
+			        ,VIDEO_FRAMERATE
+			        ,FOLDER
+			        ,PKG
+			        ,TITLE
+			        ,CONTENT
+			        ,USE_YN
+			        ,MPIC_URL
+			        ,ACCESS_KEY
+			        ,CID
+			        ,REG_ID
+			        ,TO_CHAR(REG_DATE, 'YYYY-MM-DD') REG_DATE
+			        ,MOD_ID
+			        ,TO_CHAR(MOD_DATE, 'YYYY-MM-DD') MOD_DATE
+			FROM    TPR_MPIC
+			WHERE   PROD_CD = #prodCd#
+			AND     ACCESS_KEY IS NOT NULL
+			ORDER BY MPIC_SEQ ASC
+		<include refid="post-page-frag"/>
+	</select>
+	
+	<select id="selectTprMpicInfo" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			SELECT 
+			         PROD_CD
+			        ,MPIC_SEQ
+			        ,TITLE
+			        ,CONTENT
+			        ,USE_YN
+			        ,MPIC_URL
+			        ,ACCESS_KEY
+			        ,CID
+			        ,MOD_ID
+			        ,TO_CHAR(MOD_DATE, 'YYYY-MM-DD') MOD_DATE
+			FROM    TPR_MPIC
+			WHERE   PROD_CD  = #prodCd#
+			AND     MPIC_SEQ = #mpicSeq#
+	</select>
+	
+	<insert id="insertTPRMPICinfo" parameterClass="java.util.HashMap">
+		INSERT INTO TPR_MPIC( PROD_CD, CID, MPIC_SEQ, FOLDER, PKG, TOKEN, REG_ID, REG_DATE, MOD_ID, MOD_DATE )
+		VALUES( #prodCd#, #cid#, ( SELECT NVL(MAX(MPIC_SEQ),0)+1 maxMpicSeq FROM TPR_MPIC WHERE PROD_CD = #prodCd#  ), #folder#, #pkg#, #token#, #regId#, CURRENT_TIMESTAMP(0), #regId#, CURRENT_TIMESTAMP(0)  )
+	</insert>
+	<update id="updateTprMpicInfo" parameterClass="java.util.HashMap">
+			UPDATE      TPR_MPIC 
+			SET
+				         MOD_DATE = CURRENT_TIMESTAMP(0)
+				        ,MOD_ID   = #modId#
+				        <isNotEmpty property="title">
+				       		,TITLE    = #title#
+				        </isNotEmpty>
+				        <isNotEmpty property="content">
+				        	,CONTENT  = #content#
+				        </isNotEmpty>
+				        <isNotEmpty property="useYn">
+				       		,USE_YN   = #useYn#
+				        </isNotEmpty>
+				        <isNotEmpty property="token">
+				       		,TOKEN   = #token#
+				        </isNotEmpty>
+				        <isNotEmpty property="accessKey">
+				       		,ACCESS_KEY  = #accessKey#
+				        </isNotEmpty>
+				        <isNotEmpty property="duration">
+				       		,DURATION = #duration#
+				        </isNotEmpty>
+				        <isNotEmpty property="videoHeight">
+				       		,VIDEO_HEIGHT  = #videoHeight#
+				        </isNotEmpty>
+				        <isNotEmpty property="videoWidth">
+				       		,VIDEO_WIDTH  = #videoWidth#
+				        </isNotEmpty>
+				        <isNotEmpty property="videoFramerate">
+				       		,VIDEO_FRAMERATE   = #videoFramerate#
+				        </isNotEmpty>
+				        <isNotEmpty property="mpicUrl">
+				       		,MPIC_URL   = #mpicUrl#
+				        </isNotEmpty>
+				        <isNotEmpty property="status">
+				       		,STATUS   = #status#
+				        </isNotEmpty>
+			WHERE    1=1
+	        <isNotEmpty property="prodCd">
+			AND      PROD_CD   = #prodCd#
+	        </isNotEmpty>
+			AND      CID       = #cid#
+	</update>
+	
+	<delete id="deleteMpicInfo" parameterClass="java.util.HashMap">
+			DELETE FROM TPR_MPIC 
+			WHERE  PROD_CD = #prodCd#
+			<iterate prepend="AND     MPIC_SEQ NOT IN " property="arrMpicSeq" open="(" close=")" conjunction=",">
+				#arrMpicSeq[]#
+			</iterate>
+	</delete>
+	
+	<select id="selectTPRMPICInfo2" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+			SELECT 
+			         ACCESS_KEY
+			        ,TOKEN
+			        ,PKG
+			FROM    TPR_MPIC
+			WHERE   CID  = #cid#
+	</select>
+	
+</sqlMap>

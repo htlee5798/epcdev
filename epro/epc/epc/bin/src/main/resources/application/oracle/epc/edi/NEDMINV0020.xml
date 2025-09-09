@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMINV0020">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="nedminv0020VO" type="com.lottemart.epc.edi.inventory.model.NEDMINV0020VO" />
+	
+	
+	 
+	<resultMap id="nedminv0020ListMap"    class="nedminv0020VO">                                         	
+	 	<result column="SRCMK_CD" 				property="srcmkCd"           />		<!-- // 판매코드     		-->
+	 	<result column="PROD_CD" 				property="prodCd"            />		<!-- // 상품코드     		-->
+	    <result column="PROD_NM" 				property="prodNm"            />	    <!-- // 상품명       		-->
+	    <result column="BUY_SALE_AMT" 			property="buySaleAmt"        />     <!-- // 매입금액     		-->
+	    <result column="RTN_SALE_AMT" 			property="rtnSaleAmt"        />     <!-- // 반품금액     		-->
+	    <result column="STRIO_SALE_AMT" 		property="strioSaleAmt"      />     <!-- // 점출입금액   		-->
+	    <result column="SALE_PRC_UPDOWN_AMT" 	property="salePrcUpdownAmt"  />     <!-- // 매가인상하금액	-->
+	    <result column="SALE_SALE_AMT" 			property="saleSaleAmt"       />     <!-- // 매출금액     		-->
+	    <result column="BUY_QTY" 				property="buyQty"            />     <!-- // 매입수량     		-->
+	    <result column="RTN_QTY" 				property="rtnQty"            />     <!-- // 반품수량     		-->
+	    <result column="STRIO_QTY" 				property="strioQty"          />     <!-- // 점출입수량   		-->
+	    <result column="SALE_QTY" 				property="saleQty"           />     <!-- // 매출수량     		-->
+	    <result column="STK_ADJ_SALE_AMT" 		property="stkAdjSaleAmt"     />     <!--                 	-->
+	    <result column="STK_ADJ_QTY" 			property="stkAdjQty"         />     <!--                 	-->
+	    <result column="BOOK_FWD_SALE" 			property="bookFwdSale"       />     <!-- // 기초재고금액 		-->
+	    <result column="BOOK_FWD_QTY" 			property="bookFwdQty"        />     <!-- // 기초재고 수량		-->
+	    <result column="FINAL_AMT" 				property="finalAmt"       	 />     <!-- // 기말금액 		-->
+		<result column="FINAL_QTY" 				property="finalQty"        	 />     <!-- // 기말수량		-->
+	</resultMap>
+	 
+	<resultMap id="nedminv0020ListMap2"    class="nedminv0020VO">                                         	
+		<result column="VEN_CD" 				property="venCd"             />		<!-- // 업체코드     		-->
+		<result column="STR_CD" 				property="strCd"             />		<!-- // 점포코드     		-->
+	    <result column="STR_NM" 				property="strNm"             />	    <!-- // 점포명       		-->
+	 	<result column="SRCMK_CD" 				property="srcmkCd"           />		<!-- // 판매코드     		-->
+	 	<result column="PROD_CD" 				property="prodCd"            />		<!-- // 상품코드     		-->
+	    <result column="PROD_NM" 				property="prodNm"            />	    <!-- // 상품명       		-->
+	    <result column="BUY_SALE_AMT" 			property="buySaleAmt"        />     <!-- // 매입금액     		-->
+	    <result column="RTN_SALE_AMT" 			property="rtnSaleAmt"        />     <!-- // 반품금액     		-->
+	    <result column="STRIO_SALE_AMT" 		property="strioSaleAmt"      />     <!-- // 점출입금액   		-->
+	    <result column="SALE_PRC_UPDOWN_AMT" 	property="salePrcUpdownAmt"  />     <!-- // 매가인상하금액	-->
+	    <result column="SALE_SALE_AMT" 			property="saleSaleAmt"       />     <!-- // 매출금액     		-->
+	    <result column="BUY_QTY" 				property="buyQty"            />     <!-- // 매입수량     		-->
+	    <result column="RTN_QTY" 				property="rtnQty"            />     <!-- // 반품수량     		-->
+	    <result column="STRIO_QTY" 				property="strioQty"          />     <!-- // 점출입수량   		-->
+	    <result column="SALE_QTY" 				property="saleQty"           />     <!-- // 매출수량     		-->
+	    <result column="STK_ADJ_SALE_AMT" 		property="stkAdjSaleAmt"     />     <!--                 	-->
+	    <result column="STK_ADJ_QTY" 			property="stkAdjQty"         />     <!--                 	-->
+	    <result column="BOOK_FWD_SALE" 			property="bookFwdSale"       />     <!-- // 기초재고금액 		-->
+	    <result column="BOOK_FWD_QTY" 			property="bookFwdQty"        />     <!-- // 기초재고 수량		-->
+	    <result column="FINAL_AMT" 				property="finalAmt"       	 />     <!-- // 기말금액 		-->
+		<result column="FINAL_QTY" 				property="finalQty"        	 />     <!-- // 기말수량		-->
+	</resultMap>
+	
+	
+	
+	<!-- 현재고(상품) -->
+	<select id="TSC_PRODUCT-SELECT01" parameterClass="nedminv0020VO" resultMap="nedminv0020ListMap">
+		/* NEDMINV0020.TSC_PRODUCT-SELECT01*/
+                  SELECT 
+                    SRCMK_CD
+                   , PROD_NM
+                   , PROD_CD
+                   , NVL(BUY_SALE_AMT,0) AS BUY_SALE_AMT
+                   , NVL(RTN_SALE_AMT,0) AS RTN_SALE_AMT
+                   , NVL(STRIO_SALE_AMT,0) AS STRIO_SALE_AMT
+                   , NVL(SALE_PRC_UPDOWN_AMT,0) AS SALE_PRC_UPDOWN_AMT
+                   , NVL(SALE_SALE_AMT,0) AS SALE_SALE_AMT
+                   , NVL(BUY_QTY,0) AS BUY_QTY
+                   , NVL(RTN_QTY,0) AS RTN_QTY
+                   , NVL(STRIO_QTY,0) AS STRIO_QTY
+                   , NVL(SALE_QTY,0) AS SALE_QTY
+                   , NVL(STK_ADJ_SALE_AMT,0) AS STK_ADJ_SALE_AMT
+                   , NVL(STK_ADJ_QTY,0) AS STK_ADJ_QTY
+                   , NVL(BOOK_FWD_SALE,0) AS BOOK_FWD_SALE
+                   , NVL(BOOK_FWD_QTY,0) AS BOOK_FWD_QTY
+                   , NVL(FINAL_AMT,0) AS FINAL_AMT
+                   , NVL(FINAL_QTY,0) AS FINAL_QTY
+                  FROM
+                  (
+                   SELECT 
+					 <isNotEmpty  property="srchStoreVal" >
+						<isNotEmpty  property="srchProductVal" >
+							/*+  index(A IX_PC_MM_FWD_STK_NEW01_02) */
+						</isNotEmpty>
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchProductVal" >
+						<isEmpty  property="srchStoreVal" >
+							/*+  index(A IX_PC_MM_FWD_STK_NEW01_02) */
+						</isEmpty>
+					</isNotEmpty>
+					<isNotEmpty  property="srchStoreVal" >
+						<isEmpty  property="srchProductVal" >
+							/*+  index(A IX_PC_MM_FWD_STK_NEW01_03) */
+						</isEmpty>
+					</isNotEmpty>
+		   				PROD_CD
+                    , SRCMK_CD
+                    , MAX(PROD_NM) AS PROD_NM
+                    , SUM(NVL(A.BUY_SALE_AMT,0)) AS BUY_SALE_AMT
+                    , SUM(NVL(A.RTN_SALE_AMT,0)) AS RTN_SALE_AMT
+                    , SUM(NVL(A.STRI_SALE_AMT,0) - NVL(A.STRO_SALE_AMT,0)) AS STRIO_SALE_AMT
+                    , SUM(NVL(A.SALE_PRC_UP_AMT,0) - NVL(A.SALE_PRC_DOWN_AMT,0)) AS SALE_PRC_UPDOWN_AMT
+                    , SUM(NVL(A.SALE_AMT,0)) AS SALE_SALE_AMT
+                    , SUM(NVL(A.BUY_QTY,0)) AS BUY_QTY
+                    , SUM(NVL(A.RTN_QTY,0)) AS RTN_QTY
+                    , SUM(NVL(A.STRI_QTY,0) - NVL(A.STRO_QTY,0)) AS STRIO_QTY
+                    , SUM(NVL(A.SALE_QTY,0)) AS SALE_QTY
+                    , SUM(NVL(A.STK_ADJ_SALE_AMT,0)) AS STK_ADJ_SALE_AMT
+                    , SUM(NVL(A.STK_ADJ_QTY,0)) AS STK_ADJ_QTY    
+                    , SUM(NVL(BOOK_FWD_SALE,0)) AS BOOK_FWD_SALE
+                    , SUM(NVL(BOOK_FWD_QTY,0)) AS BOOK_FWD_QTY
+                    , SUM(NVL(FINAL_AMT,0)) AS FINAL_AMT
+                    , SUM(NVL(FINAL_QTY,0)) AS FINAL_QTY
+                  FROM  TPC_MM_FWD_STK_new01 A
+                  WHERE 	A.STK_DY = replace(#srchStartDate#, '-', '')
+				<isEmpty property="srchEntpCode">
+					<isNotEmpty  property="venCds"  prepend="AND">
+						<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				<isNotEmpty  property="srchEntpCode"  prepend="AND">
+					A.VEN_CD = #srchEntpCode#
+				</isNotEmpty>
+				<isNotEmpty property="srchStoreVal"  prepend="AND">
+					<iterate prepend="A.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=",">
+						#srchStoreVal[]#
+					</iterate>
+				</isNotEmpty>
+				<isNotEmpty  property="srchProductVal"  prepend="AND">
+					A.PROD_CD = #srchProductVal#
+				</isNotEmpty>
+                   GROUP BY A.PROD_CD, A.SRCMK_CD, A.PROD_NM
+                  )
+	</select>
+	
+	<!-- 현재고(상품) 텍스트 -->
+	<select id="TSC_PRODUCT-SELECT02" parameterClass="nedminv0020VO" resultMap="nedminv0020ListMap2">
+		/* NEDMINV0020.selectProductInfoText */
+ 			SELECT
+						 <isNotEmpty  property="srchStoreVal" >
+							<isNotEmpty  property="srchProductVal" >
+								/*+ index(A IX_PC_MM_FWD_STK_NEW01_02) */
+							</isNotEmpty>
+						</isNotEmpty>
+					
+						<isNotEmpty  property="srchProductVal" >
+							<isEmpty  property="srchStoreVal" >
+								/*+index(A IX_PC_MM_FWD_STK_NEW01_02) */
+							</isEmpty>
+						</isNotEmpty>
+						<isNotEmpty  property="srchStoreVal" >
+							<isEmpty  property="srchProductVal" >
+								/*+ index(A IX_PC_MM_FWD_STK_NEW01_03) */
+							</isEmpty>
+						</isNotEmpty>
+		       A.VEN_CD
+		    , A.STR_CD
+		    , b.STR_NM
+		    , A.SRCMK_CD
+		    , A.PROD_CD
+		    , A.PROD_NM AS PROD_NM
+		    , NVL(A.BOOK_FWD_QTY,0) BOOK_FWD_QTY
+		    , NVL(A.BUY_QTY,0) BUY_QTY
+		    , NVL(A.RTN_QTY,0) RTN_QTY
+		    , NVL(A.STRI_QTY,0) - NVL(A.STRO_QTY,0) STRIO_QTY
+		    , NVL(A.SALE_QTY,0) SALE_QTY
+		    , NVL(A.BOOK_FWD_SALE,0) BOOK_FWD_SALE
+		    , NVL(A.BUY_SALE_AMT,0) BUY_SALE_AMT
+		    , NVL(A.RTN_SALE_AMT,0) RTN_SALE_AMT
+		    , NVL(A.STRI_SALE_AMT,0)-NVL(A.STRO_SALE_AMT,0) STRIO_SALE_AMT
+		    , NVL(A.SALE_PRC_UP_AMT,0)-NVL(A.SALE_PRC_DOWN_AMT,0) SALE_PRC_UPDOWN_AMT
+		    , NVL(A.SALE_SALE_AMT,0) SALE_SALE_AMT
+		    , NVL(A.STK_ADJ_QTY,0) STK_ADJ_QTY
+		    , NVL(A.STK_ADJ_SALE_AMT,0) STK_ADJ_SALE_AMT
+		    , NVL(A.FINAL_AMT,0) FINAL_AMT
+		    , NVL(A.FINAL_QTY,0) FINAL_QTY
+		    FROM TPC_MM_FWD_STK_new01 A ,store b    
+		    WHERE a.str_cd=b.str_cd 
+		    AND	STK_DY = replace(#srchStartDate#, '-', '')
+					<isEmpty property="srchEntpCode">
+						<isNotEmpty  property="venCds"  prepend="AND">
+							<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					</isEmpty>
+					<isNotEmpty  property="srchEntpCode"  prepend="AND">
+						A.VEN_CD = #srchEntpCode#
+					</isNotEmpty>
+					<isNotEmpty  property="srchProductVal"  prepend="AND">
+						A.PROD_CD = #srchProductVal#
+					</isNotEmpty>
+					<isNotEmpty property="srchStoreVal"  prepend="AND">
+						<iterate prepend="A.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=",">
+							#srchStoreVal[]#
+						</iterate>
+					</isNotEmpty>
+	</select>
+</sqlMap>

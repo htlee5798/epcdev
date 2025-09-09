@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscmbrd0005">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="pscmbrd0005SearchVO" type="com.lottemart.epc.board.model.PSCMBRD0005SearchVO"/>
+	
+
+	<!-- 상태코드 / 명칭  -->
+	<select id="selectStatusList" parameterClass="pscmbrd0005SearchVO" resultClass="dataMap">
+	<![CDATA[	
+        /* pscmbrd0005.selectStatusList */
+        SELECT
+            MINOR_CD
+          , CD_NM
+        FROM 
+            TET_CODE
+        WHERE 1=1
+        AND MAJOR_CD = 'SM069'
+        AND MINOR_CD <> '*'
+	]]>
+	</select>
+
+
+	<!-- 게시글 리스트  -->
+	<select id="selectBoardList" resultClass="pscmbrd0005SearchVO">
+	<![CDATA[
+        /* pscmbrd0005.selectBoardList */
+        SELECT
+            rowNum, TOTAL_COUNT as totalCount, GBN as gbn, BOARD_SEQ as boardSeq, LIST_SEQ as listSeq, BOARD_DIVN_CD as boardDivnCd
+          , DEL_YN as delYn, DEPTH as depth, TITLE as title, COMM_CNT as commCnt, VIEW_CNT as viewCnt, REG_ID as regId, REG_DATE as regDate, SCRP_KIND_CD as  scrpKindCd
+        FROM
+        (
+            SELECT
+                ROWNUM
+              , CEIL(ROWNUM / #rowsPerPage#) AS PAGE
+              , COUNT(*) OVER()                     AS TOTAL_COUNT
+              , SUB.*
+            FROM
+            (
+                SELECT
+                    GBN
+                  , BOARD_SEQ
+                  , LIST_SEQ
+                  , BOARD_DIVN_CD
+                  , DEL_YN
+                  , DEPTH
+                  , FN_GET_DEPTH(TITLE, DEPTH) AS TITLE
+                  , COMM_CNT
+                  , VIEW_CNT
+                  , REG_ID
+                  , REG_DATE
+                  , SCRP_KIND_CD
+                FROM
+                (
+                    SELECT
+                        '2' GBN
+                      , BOARD_SEQ
+                      , LIST_SEQ
+                      , BOARD_DIVN_CD
+                      , DEL_YN
+                      , DEPTH
+                      , LPAD(' ',4*(DEPTH-1))||TITLE AS TITLE
+                      , ( SELECT COUNT(*) FROM TBO_BOARD_COMMENT B WHERE B.BOARD_SEQ = A.BOARD_SEQ ) AS COMM_CNT
+                      , VIEW_CNT
+                      , NVL(AD.ADMIN_NM, A.REG_ID)  AS REG_ID
+                      , TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+                      , SCRP_KIND_CD
+                    FROM
+                        TBO_BOARD A
+                      , TAD_ADMIN AD
+                    WHERE 1=1
+                    AND A.REG_ID = AD.ADMIN_ID(+)
+                    AND BOARD_SEQ IN
+                    (
+                        SELECT
+                            BOARD_SEQ
+                        FROM
+                        (
+                            SELECT /*+ INDEX_DESC(A BO_BOARD_IDX2)*/
+                                ROWNUM AS NUM
+                              , BOARD_SEQ
+                            FROM
+                                TBO_BOARD A
+                            WHERE 1=1
+                            ]]> 
+                            <isNotEmpty prepend="AND" property="startDate">
+                            WRT_DY BETWEEN REPLACE(#startDate#, '-', '')||'000000' AND REPLACE(#endDate#, '-', '')||'235959'
+							</isNotEmpty>
+                            <isNotEmpty property="searchWord">	                            
+                            AND TITLE LIKE #searchWord# || '%'
+							</isNotEmpty>   
+							<![CDATA[
+                            AND DEL_YN = 'N'
+                            AND BOARD_DIVN_CD = '17'
+                            AND SCRP_KIND_CD IS NULL
+                        )
+                    )
+
+                    UNION ALL
+
+                    SELECT
+                        '1'GBN
+                      , BOARD_SEQ
+                      , LIST_SEQ
+                      , BOARD_DIVN_CD
+                      , DEL_YN
+                      , DEPTH
+                      , LPAD(' ',4*(DEPTH-1))||TITLE AS TITLE
+                      , ( SELECT COUNT(*) FROM TBO_BOARD_COMMENT B WHERE B.BOARD_SEQ = A.BOARD_SEQ  ) COMM_CNT
+                      , VIEW_CNT
+                      , NVL(AD.ADMIN_NM, A.REG_ID)  AS REG_ID
+                      , TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+                      , SCRP_KIND_CD
+                    FROM
+                        TBO_BOARD A
+                      , TAD_ADMIN AD
+                    WHERE 1=1
+                    AND A.REG_ID      = AD.ADMIN_ID(+)
+                    AND DEL_YN        = 'N'
+                    AND BOARD_DIVN_CD = '17'
+                    AND SCRP_KIND_CD  = '01'
+                )
+                ORDER BY
+                    GBN
+                  , LIST_SEQ DESC
+            ) SUB
+        )
+        WHERE PAGE = #currentPage#
+		]]>  
+	</select>
+	
+</sqlMap>

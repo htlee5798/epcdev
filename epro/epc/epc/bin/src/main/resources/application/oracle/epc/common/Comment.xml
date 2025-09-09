@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Comment">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	
+	<resultMap id="commentList" class="com.lottemart.epc.common.model.CommentVO">
+		<result property="rankNum" column="rank_num"/>
+		<result property="boardSeq" column="board_seq"/>
+		<result property="commentSeq" column="comment_seq"/>
+		<result property="lineComment" column="line_comment"/>
+		<result property="delYn" column="del_yn"/>
+		<result property="memberNo" column="member_no"/>
+		<result property="evltCd" column="evlt_cd"/>
+		<result property="userIp" column="user_ip"/>
+		<result property="typeCd" column="type_cd"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="regId" column="reg_id"/>
+		<result property="modDate" column="mod_date"/>
+		<result property="modId" column="mod_id"/>
+	</resultMap>
+	
+	<select id="selectCommentList" resultMap="commentList">
+		SELECT 
+			RANK()OVER(ORDER BY BOARD_SEQ, COMMENT_SEQ) RANK_NUM,
+			BOARD_SEQ, 
+			COMMENT_SEQ, 
+			LINE_COMMENT, 
+			DEL_YN, 
+			MEMBER_NO, 
+			EVLT_CD, 
+			USER_IP, 
+			TYPE_CD, 
+			REG_DATE, 
+			REG_ID, 
+			MOD_DATE, 
+			MOD_ID
+		FROM TBO_BOARD_COMMENT
+		WHERE BOARD_SEQ = #boardSeq#
+		AND DEL_YN = 'N'
+	</select>
+	
+	<insert id="insertComment">
+		INSERT INTO TBO_BOARD_COMMENT (
+			BOARD_SEQ, 
+			COMMENT_SEQ, 
+			LINE_COMMENT, 
+			DEL_YN, 
+			MEMBER_NO, 
+			EVLT_CD, 
+			USER_IP, 
+			TYPE_CD, 
+			REG_DATE, 
+			REG_ID, 
+			MOD_DATE, 
+			MOD_ID
+		) VALUES (
+			#boardSeq#,
+			(SELECT MAX(TO_NUMBER(COMMENT_SEQ))+1 FROM TBO_BOARD_COMMENT),
+			#lineComment#,
+			'N',
+			#memberNo#,
+			'',
+			#userIp#,
+			'01',
+			CURRENT_TIMESTAMP(0),
+			#regId#,
+			CURRENT_TIMESTAMP(0),
+			#modId#
+		)
+	</insert>
+	
+	<delete id="deleteComment">
+		DELETE FROM TBO_BOARD_COMMENT
+		WHERE BOARD_SEQ = #boardSeq# 
+		AND COMMENT_SEQ = #commentSeq#
+	</delete>
+	
+</sqlMap>

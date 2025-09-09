@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscpbrd0010">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="pscpbrd0010SearchVO" type="com.lottemart.epc.board.model.PSCPBRD0010SearchVO"/>
+	
+	<!-- 게시글 리스트  -->
+	<select id="selectCallCenterPopupDetail" resultClass="pscpbrd0010SearchVO">
+	<![CDATA[
+        /* pscpbrd0010.selectCallCenterPopupDetail */
+        SELECT
+            COUNSEL_SEQ       AS counselSeq
+          , TITLE             AS title
+          , ANS_SMS_RECV_YN   AS smsDspYn
+          , CELL_NO           AS cellNo
+          , EMAIL             AS email
+          , CONTENT           AS content
+          , BOARD_PRGS_STS_CD AS boardPrgsStsCd
+          , REG_ID            AS regId
+          , ORDER_ID          AS orderId
+          , CLM_LGRP_CD       AS typeBig
+          , CLM_MGRP_CD       AS typeSmall
+        FROM
+            TOR_COUNSEL
+        WHERE
+            COUNSEL_SEQ = #counselSeq#
+	]]>
+	</select>
+	
+	<select id="selectCodeList" resultClass="dataMap" parameterClass="dataMap">
+		/* pscpbrd0010.selectCodeList*/
+		SELECT MINOR_CD, CD_NM FROM TET_CODE WHERE MAJOR_CD = #majorCd#	
+	</select>		
+		
+    <update id="updateCallCenterPopupDetail">
+        /* pscpbrd0010.updateCallCenterPopupDetail */
+        UPDATE TOR_COUNSEL 
+        SET TITLE           = #title#
+          , ANS_SMS_RECV_YN = #smsDspYn#
+          , CELL_NO         = #cellNo#
+          , EMAIL           = #email#
+          , CONTENT         = #content#
+          , MOD_ID          = #vendorId#
+          , MOD_DATE        = CURRENT_TIMESTAMP(0)
+          , REG_ID          = #vendorId#
+          , REG_DATE        = CURRENT_TIMESTAMP(0)
+          , ORDER_ID        = #orderId#
+          , CLM_LGRP_CD     = #typeBig#
+          , CLM_MGRP_CD     = #typeSmall#
+        WHERE 
+            COUNSEL_SEQ = #counselSeq#
+        AND BOARD_PRGS_STS_CD = '1'
+    </update>
+	
+</sqlMap>

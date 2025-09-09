@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMUSP0040">
+
+	<typeAlias alias="NEDMUSP0040VO" type="com.lottemart.epc.edi.usply.model.NEDMUSP0040VO"/>
+
+	<!-- 상품상세 -->
+	<resultMap id="NEDMUSP0040VOMap" class="NEDMUSP0040VO">
+	 	<result property="srcmkCd"			column="SRCMK_CD"		/>	<!-- 판매코드 -->
+	 	<result property="prodNm"			column="PROD_NM"		/>	<!-- 상품명 -->
+	 	<result property="ordIpsu"			column="ORD_IPSU"		/>	<!-- 발주입수 -->
+	 	<result property="ordUnit"			column="ORD_UNIT"		/>	<!-- 발주단위 -->
+	 	<result property="strNm"			column="STR_NM"			/>	<!-- 점포명 -->
+	 	<result property="strCd"			column="STR_CD"			/>	<!-- 점포코드 -->
+	 	<result property="ordQty"			column="ORD_QTY"		/>	<!-- 발주수량 -->
+	 	<result property="ordBuyAmt"		column="ORD_BUY_AMT"	/>	<!-- 발주원가금액 -->
+	 	<result property="buyQty"			column="BUY_QTY"		/>	<!-- 매입수량 -->
+	 	<result property="buyBuyAmt"		column="BUY_BUY_AMT"	/>	<!-- 매입원가금액 -->
+	 	<result property="usplyQty"			column="USPLY_QTY"		/>	<!-- 미납수량 -->
+	 	<result property="usplyBuyAmt"		column="USPLY_BUY_AMT"	/>	<!-- 미납원가금액 -->
+	</resultMap>
+	
+	<select id="TSC_PRODUCT_DETAIL-SELECT01" resultMap="NEDMUSP0040VOMap" parameterClass="NEDMUSP0040VO">
+		/* NEDMUSP0040.TSC_PRODUCT_DETAIL-SELECT01 */
+		SELECT	A.SRCMK_CD
+			,	MAX(A.PROD_NM) AS PROD_NM
+			,	A.ORD_IPSU
+			,	C1.CD_NM AS ORD_UNIT
+			,	B.STR_NM
+			,	B.STR_CD
+			,	SUM(NVL(A.ORD_QTY,0))   AS ORD_QTY
+			,	SUM(A.ORD_BUY_AMT) 		AS ORD_BUY_AMT
+			,	SUM(NVL(A.BUY_QTY,0))   AS BUY_QTY
+			,	SUM(A.BUY_BUY_AMT) 		AS BUY_BUY_AMT
+			,	SUM(NVL(A.USPLY_QTY,0))  AS USPLY_QTY
+			,	SUM(A.USPLY_BUY_AMT) AS USPLY_BUY_AMT
+		FROM  	TPC_USPLY_PROD A
+				LEFT OUTER JOIN TPC_CODE C1 ON C1.MAJOR_CD = 'CSA01' AND C1.MINOR_CD = A.ORD_UNIT
+				INNER JOIN STORE B ON A.STR_CD = B.STR_CD
+		WHERE 	SPLY_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchStoreAl"  prepend="AND">
+				<iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty  property="searchProductVal"  prepend="AND">
+				A.PROD_CD = #searchProductVal#
+			</isNotEmpty>
+			
+			<isNotEmpty  property="searchSrcmkVal"  prepend="AND">
+				A.SRCMK_CD = #searchSrcmkVal#
+			</isNotEmpty>
+		
+		GROUP BY A.SRCMK_CD, A.PROD_STD, A.ORD_IPSU, B.STR_NM, A.STR_CD, C1.CD_NM, B.STR_CD
+		ORDER BY A.SRCMK_CD, A.STR_CD
+	</select>
+	
+</sqlMap>

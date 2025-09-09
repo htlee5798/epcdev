@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0140">
+
+	<typeAlias alias="NEDMPRO0140VO" type="com.lottemart.epc.edi.product.model.NEDMPRO0140VO" />
+	
+<resultMap id="NEDMPRO0140VOMap" class="NEDMPRO0140VO">
+		<result property="sumDy" 			column="SUM_DY" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="sumWk" 			column="SUM_WK" 			/>	<!-- 상품... SQLINES DEMO *** -->
+		<result property="venCd" 			column="VEN_CD" 			/>	<!-- 상품... SQLINES DEMO *** -->
+		<result property="prodCd" 			column="PROD_CD" 			/>	<!-- 입수... SQLINES DEMO *** -->
+		<result property="l1Cd" 			column="L1_CD" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="l1Nm" 			column="L1_NM" 	/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="l2Cd" 			column="L2_CD" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="l2Nm" 			column="L2_NM" 	/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="l3Cd" 			column="L3_CD" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="l3Nm" 			column="L3_NM" 	/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="srcmkCd" 			column="SRCMK_CD" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="prodNm" 			column="PROD_NM" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="gradeCd" 			column="GRADE_Cd" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="gradeNm" 			column="GRADE_NM" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="zzekorg" 			column="ZZEKORG" 			/>	<!-- 발주... SQLINES DEMO *** -->
+		<result property="plcFg" 			column="PLC_FG" 			/>	<!-- 처분... SQLINES DEMO *** -->		
+	</resultMap>
+	
+<!-- 상품... SQLINES DEMO *** -->
+	<select id="selectPlcProductList" resultMap="NEDMPRO0140VOMap" parameterClass="NEDMPRO0140VO">
+		/* SQLINES DEMO *** ectPlcProductList */
+		select   AA.SUM_DY        ,AA.SUM_WK      ,AA.VEN_CD             ,AA.PROD_CD
+				,AA.L1_CD        ,AA.L1_NM       ,AA.L2_CD              ,AA.L2_NM
+				,AA.L3_CD        ,AA.L3_NM       ,AA.SRCMK_CD           ,AA.PROD_NM
+				,case AA.ZZEKORG when 'KR02' then '하이퍼마켓' when 'KR03' then 'VIC마켓' end   ZZEKORG      ,AA.GRADE_CD    
+				,CASE WHEN aa.GRADE_CD = 'Z' THEN BB.CD_NM
+					ELSE aa.GRADE_CD END AS GRADE_NM
+				,CASE WHEN AA.PLC_FG = '07' THEN '처분위험'
+					WHEN AA.PLC_FG = '08' THEN '처분'
+					ELSE '정상' END PLC_FG
+		
+		from (	
+				SELECT   A.SUM_DY    ,A.SUM_WK    ,A.VEN_CD      ,A.PROD_CD
+					    ,A.L1_CD     ,A.L1_NM     ,A.L2_CD       ,A.L2_NM
+					    ,A.L3_CD     ,A.L3_NM     ,A.SRCMK_CD    ,A.PROD_NM
+					    ,A.ZZEKORG 	, CASE  WHEN A.ZZEKORG='KR02' THEN A.GRADE_H
+						                    WHEN A.ZZEKORG='KR03' THEN A.GRADE_V	END GRADE_CD
+						,CASE WHEN A.ZZEKORG='KR03' THEN 'XX'
+							WHEN A.ZZEKORG='KR02' THEN A.PLC_FG_H END PLC_FG
+				FROM TPC_PLC_PRODUCT A 
+				WHERE 1=1
+					
+					AND A.SUM_DY = TO_CHAR(TO_DATE(CONCAT(#srchStartDate#,' 23:59:59'), 'YYYYMMDD HH24:MI:SS') - INTERVAL '7' DAY, 'yyyymmdd')
+					<isEmpty property="searchEntpCd">
+						<isNotEmpty property="venCds" prepend="AND">
+							<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					</isEmpty>					
+					<isNotEmpty  property="searchEntpCd"  prepend="AND">
+						A.VEN_CD = #searchEntpCd#
+					</isNotEmpty>
+					
+					<isNotEmpty  property="searchProductVal"  prepend="AND">
+						A.PROD_CD = #searchProductVal#
+					</isNotEmpty>
+			) aa
+			,tpc_code bb
+		where aa.GRADE_CD=bb.MINOR_CD  
+			and bb.MAJOR_CD='PLC01'
+			AND aa.PLC_FG <![CDATA[<>]]> '08'
+					
+	</select>
+</sqlMap>

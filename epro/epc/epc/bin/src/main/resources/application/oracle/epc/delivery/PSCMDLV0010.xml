@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmdlv0010">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectVendorPenalty" resultClass="dataMap">
+	<![CDATA[
+	/* PSCMDLV0010.selectVendorPenalty */
+	SELECT
+	     ROW_NUMBER()OVER(PE.REG_DATE DESC) AS RNO
+	    ,PE.VENDOR_ID    --거래처ID
+	    ,PE.PROD_CD      --상품코드
+	    ,PE.PROD_NM      --상품명
+	    ,TO_CHAR(PE.REG_DATE,'yyyy-MM-dd') AS REG_DATE     --페널티적용일
+	    ,PE.PENALTY_CNT  --페널티적용횟수
+	    ,P.DISP_YN       --전시여부
+	    ,IP.SOUT_YN      --품절여부
+	FROM 
+	    (SELECT
+	        VENDOR_ID
+	        ,PROD_CD
+	        ,PROD_NM
+	        ,MAX(REG_DATE) AS REG_DATE
+	        ,COUNT(PROD_CD) AS PENALTY_CNT
+	    FROM TVE_VENDOR_PENALTY
+	    GROUP BY VENDOR_ID,PROD_CD,PROD_NM) PE
+	    ,TPR_PRODUCT P
+	    ,TPR_STORE_ITEM_PRICE IP
+	WHERE PE.PROD_CD = P.PROD_CD		
+	AND PE.PROD_CD = IP.PROD_CD
+	AND PE.REG_DATE BETWEEN #startDate# AND #endDate#
+	]]>
+    <isNotEmpty property="vendorId">
+        AND PE.VENDOR_ID
+        <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+            (#vendorId[]#)
+        </iterate>
+    </isNotEmpty>
+    <isNotEmpty property="prodCd">	
+        AND PE.PROD_CD LIKE '%'||#prodCd#||'%'
+    </isNotEmpty>
+    <isNotEmpty property="prodNm">	
+        AND PE.PROD_NM LIKE '%'||#prodNm#||'%'
+    </isNotEmpty>
+    <isNotEmpty property="penaltyCnt">	
+        AND PE.PENALTY_CNT = #penaltyCnt#
+    </isNotEmpty>
+    <isNotEmpty property="soutYn">	
+        AND IP.SOUT_YN = #soutYn#
+    </isNotEmpty>
+    <isNotEmpty property="dispYn">	
+        AND P.DISP_YN = #dispYn#
+    </isNotEmpty>
+    ORDER BY PE.REG_DATE DESC
+	</select>
+	 
+</sqlMap>

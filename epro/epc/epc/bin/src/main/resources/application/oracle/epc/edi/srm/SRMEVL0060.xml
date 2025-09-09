@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMEVL0060">
+
+	<typeAlias alias="SRMEVL0060VO" type="com.lottemart.epc.edi.srm.model.SRMEVL0060VO" />
+
+	<!--품질평가 list Map-->
+	<resultMap id="selectQualityEvaluationPeriodicListMap" class="SRMEVL0060VO">
+		<result column="RNUM"							property="rnum" 				/>	<!-- No  -->
+		<result column="HOUSE_CODE"						property="houseCode" 			/>	<!-- 하우스코드  -->
+		<result column="SELLER_CODE"					property="sellerCode" 			/>	<!-- 업체코드  -->
+		<result column="SEQ"							property="seq" 					/>	<!-- 순번  -->
+		<result column="VISIT_SEQ"						property="visitSeq" 			/>	<!-- 평가요청 순번  -->
+		<result column="EVAL_SELLER_CODE"				property="evalSellerCode" 		/>	<!-- 평가요청업체  -->
+		<result column="EVAL_NO_RESULT"					property="evalNoResult" 		/>	<!-- 의뢰번호  -->
+		<result column="SELLER_NAME_LOC"				property="sellerNameLoc" 		/>	<!-- 파트너사명  -->
+		<result column="CAT_LV1_CODE"					property="catLv1Code" 			/>	<!-- 대분류 -->
+		<result column="CAT_LV1_CODE_NAME"				property="catLv1CodeName" 		/>	<!-- 대분류명 -->
+		<result column="REQ_DATE"						property="reqDate" 				/>	<!-- 신청일자 -->
+		<result column="RECEIPT_DATE"					property="receiptDate" 			/>	<!-- 접수일자  -->
+		<result column="CHANGE_DATE"					property="changeDate" 			/>	<!-- 상태변경일자  -->
+		<result column="STATUS"							property="status" 				/>	<!-- 진행상태  -->
+		<result column="PROGRESS_CODE"					property="progressCode" 		/>	<!-- 진행상태  -->
+		<result column="STATUS_NM"						property="statusNm" 			/>	<!-- 진행상태명  -->
+		<result column="EV_TPL_NO"						property="evTplNo" 				/>	<!-- 평가시트번호  -->
+	</resultMap>
+
+	<!--파트너사 정보 Map-->
+	<resultMap id="selectQualityEvaluationCompInfoMap" class="SRMEVL0060VO">
+		<result column="HOUSE_CODE"						property="houseCode" 			/>	<!-- 하우스코드  -->
+		<result column="SELLER_CODE"					property="sellerCode" 			/>	<!-- 업체코드  -->
+		<result column="SEQ"							property="seq" 					/>	<!-- 순번  -->
+		<!--<result column="CHANNEL_CODE_NM"				property="channelCodeNm" 		/>	&lt;!&ndash; 채널선택{scode_type=SRM053} &ndash;&gt;-->
+		<result column="CAT_LV1_CODE_NAME"				property="catLv1CodeName" 		/>	<!-- 대분류 -->
+		<!--<result column="SHIPPER_TYPE_NAME"				property="shipperTypeName" 		/>	&lt;!&ndash; 업체소싱국가구분[M025] &ndash;&gt;-->
+		<!--<result column="SHIPPER_TYPE"					property="shipperType" 		/>	&lt;!&ndash; 업체소싱국가구분[M025] &ndash;&gt;-->
+		<result column="IRS_NO"							property="irsNo" 				/>	<!-- 사업자등록번호 -->
+		<result column="SELLER_NAME_LOC"				property="sellerNameLoc" 		/>	<!-- 파트너사명  -->
+		<result column="COMPANY_TYPE_NM"				property="companyTypeNm" 		/>	<!-- 법인구분{scode_type=M074} -->
+		<result column="SELLER_CEO_NAME"				property="sellerCeoName" 		/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<result column="V_MAIN_NAME"					property="vMainName" 			/>	<!-- 파트너사 담당자명  -->
+		<result column="V_PHONE1"						property="vPhone1"		 		/>	<!-- 등록자 유선 전화번호 -->
+		<result column="V_MOBILE_PHONE"					property="vMobilePhone" 		/>	<!-- 파트너사 담당자 휴대전화번호  -->
+		<result column="V_EMAIL"						property="vEmail" 				/>	<!-- 파트너사 담당자 이메일  -->
+		<result column="FAX_NO"							property="faxFhone" 			/>	<!-- FAX -->
+		<result column="SELLER_ADDRESS"					property="sellerAddress" 		/>	<!-- 파트너사 주소  -->
+		<result column="INDUSTRY_TYPE"					property="industryType" 		/>	<!-- 업종 -->
+		<result column="BUSINESS_TYPE"					property="businessType" 		/>	<!-- 업태 -->
+		<result column="SELLER_TYPE_NM"					property="sellerTypeNm" 		/>	<!-- 파트너사 사업 유형{scode_type=M076} -->
+		<result column="COUNTRY_NM"						property="countryNm" 			/>	<!-- 국가코드{scode_type=M001} -->
+		<result column="REGIO"							property="cityText" 			/>	<!-- 도시명 -->
+		<!--<result column="FOUNDATION_DATE"				property="foundationDate" 		/>	&lt;!&ndash; 설립일자 &ndash;&gt;-->
+		<result column="BASIC_AMT"						property="basicAmt" 			/>	<!-- 자본금 -->
+		<result column="ZREVN"							property="salesAmt" 			/>	<!-- 연간 매출액(최근 3년) -->
+		<!--<result column="EMP_COUNT"						property="empCount" 			/>	&lt;!&ndash; 종업원 수(정규직) &ndash;&gt;-->
+		<!--<result column="PLANT_OWN_TYPE"					property="plantOwnType" 		/>	&lt;!&ndash; 공장소유구분 &ndash;&gt;-->
+		<!--<result column="PLANT_ROLE_TYPE_NM"				property="plantRoleTypeNm" 		/>	&lt;!&ndash; 공장 운영 형태{scode_type=M792} &ndash;&gt;-->
+		<!--<result column="MAIN_CUSTOMER"					property="mainCustomer" 		/>	&lt;!&ndash; 주요거래처 &ndash;&gt;-->
+		<!--<result column="ABOARD_CHANNEL_TEXT"			property="aboardChannelText" 	/>	&lt;!&ndash; 롯데마트 旣 진출 채널 &ndash;&gt;-->
+		<!--<result column="ABOARD_COUNTRY_TEXT"			property="aboardCountryText" 	/>	&lt;!&ndash; 롯데마트 旣 진출 국가 &ndash;&gt;-->
+		<result column="REMARK"							property="remark" 				/>	<!-- 비고  -->
+		<result column="STATUS"							property="status" 				/>	<!-- 진행상태  -->
+		<result column="STATUS_NM"						property="statusNm" 			/>	<!-- 진행상태명  -->
+		<result column="PROGRESS_CODE"					property="progressCode" 		/>	<!-- 진행상태명  -->
+		<result column="REQ_DATE"						property="reqDate" 				/>	<!-- 요청일자 -->
+		<result column="RECEIPT_DATE"					property="receiptDate" 			/>	<!-- 접수일자  -->
+		<result column="CHECK_DATE"						property="checkDate" 			/>	<!-- 현장점검일  -->
+		<result column="EVAL_NO_RESULT"					property="evalNoResult" 		/>	<!-- 평가결과번호  -->
+		<result column="CHECK_TIME"						property="checkTime" 			/>	<!-- 현장점검일 시간  -->
+		<result column="ZZQC_FG1"						property="zzqcFg1" 				/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"						property="zzqcFg2" 				/>	<!-- FSSC 22000 -->
+		<result column="ZZQC_FG3"						property="zzqcFg3" 				/>	<!-- ISO 22000 -->
+		<result column="ZZQC_FG4"						property="zzqcFg4" 				/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"						property="zzqcFg5" 				/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"						property="zzqcFg6" 				/>	<!-- 우수농산물(GAP)인증 -->
+		<result column="ZZQC_FG7"						property="zzqcFg7" 				/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"						property="zzqcFg8" 				/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"						property="zzqcFg9" 				/>	<!-- ISO 9001 -->
+		<result column="ZZQC_FG10"						property="zzqcFg10" 			/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"						property="zzqcFg11" 			/>	<!-- PAS 220 -->
+		<result column="ZZQC_FG12"						property="zzqcFg12" 			/>	<!-- 기타 품질인증 텍스트 -->
+		<result column="EVAL_FLAG"						property="evalFlag" 			/>
+	</resultMap>
+
+	<!--EMS 정보 조회-->
+	<resultMap id="selectQualityEvaluationEMSInfoResultMap" class="SRMEVL0060VO">
+		<result column="V_MAIN_NAME"					property="vMainName" 			/>	<!-- 파트너사 담당자명  -->
+		<result column="V_EMAIL"						property="vEmail" 				/>	<!-- 파트너사 담당자 이메일  -->
+		<result column="SELLER_NAME_LOC"				property="sellerNameLoc" 		/>	<!-- 파트너사명  -->
+	</resultMap>
+
+	<!--품질평가 list count-->
+	<select id="selectQualityEvaluationPeriodicListCount" parameterClass="SRMEVL0060VO" resultClass="Integer">
+		/*SRMEVL0060.selectQualityEvaluationPeriodicListCount*/
+		SELECT
+				COUNT(*)
+		FROM
+				SSUGL_PROCESS_SITEVISIT A
+				,SEVUS D
+				,SSUGL_PARTNER B
+				,SSGMT C
+		WHERE
+				A.HOUSE_CODE = D.HOUSE_CODE
+			AND A.EVAL_NO_RESULT = D.EV_NO
+			AND A.HOUSE_CODE = B.HOUSE_CODE
+			AND A.SELLER_CODE = B.SELLER_CODE
+			AND B.HOUSE_CODE = C.HOUSE_CODE
+			AND NVL(B.ZZMCHL1,'999') = C.SG_NO(+)
+			AND A.EVAL_FLAG = '1'
+			AND A.EVAL_SELLER_CODE = #evalSellerCode#
+			<!--AND D.EV_USER_ID = #evUserId#-->
+			<isNotEmpty property="sellerNameLoc">
+				AND SELLER_NAME_LOC LIKE '%'||#sellerNameLoc#||'%'
+			</isNotEmpty>
+			<isNotEmpty property="status">
+				<!--<isEqual property="status" compareValue="100">-->
+					<!--AND A.STATUS IN ('G04', 'G05')-->
+				<!--</isEqual>-->
+				<!--<isEqual property="status" compareValue="200">-->
+					<!--AND A.STATUS = 'G06'-->
+				<!--</isEqual>-->
+				<!--<isEqual property="status" compareValue="300">-->
+					<!--AND A.STATUS = 'G08'-->
+				<!--</isEqual>-->
+				AND D.PROGRESS_CODE = #status#
+			</isNotEmpty>
+
+	</select>
+
+	<!--품질평가 list-->
+	<select id="selectQualityEvaluationPeriodicList" parameterClass="SRMEVL0060VO" resultMap="selectQualityEvaluationPeriodicListMap">
+		/*SRMEVL0060.selectQualityEvaluationPeriodicList*/
+		SELECT 	*
+		FROM 	(
+				SELECT 	ROWNUM RNUM
+						, A.*
+				FROM 	(
+						SELECT
+								A.HOUSE_CODE
+								,A.SELLER_CODE
+								,A.SEQ
+								,A.VISIT_SEQ
+								,EVAL_SELLER_CODE
+								,EVAL_NO_RESULT
+								,A.SELLER_NAME_LOC
+								,C.SG_NO AS CAT_LV1_CODE
+								,C.SG_NAME AS CAT_LV1_CODE_NAME
+								,TO_CHAR(A.REQ_DATE,'YYYY-MM-DD') AS REQ_DATE
+								,TO_CHAR(A.RECEIPT_DATE,'YYYY-MM-DD') AS RECEIPT_DATE
+								,A.CHANGE_DATE
+								,A.STATUS
+								,D.PROGRESS_CODE
+								,GETCODETEXT1('SRM900', A.STATUS, UPPER(#locale#)) AS STATUS_NM
+								,EV_TPL_NO
+						FROM
+								SSUGL_PROCESS_SITEVISIT A
+								,SEVUS D
+								,SSUGL_PARTNER B
+								,SSGMT C
+						WHERE
+								A.HOUSE_CODE = D.HOUSE_CODE
+							AND A.EVAL_NO_RESULT = D.EV_NO
+							AND A.HOUSE_CODE = B.HOUSE_CODE
+							AND A.SELLER_CODE = B.SELLER_CODE
+							AND B.HOUSE_CODE = C.HOUSE_CODE
+							AND NVL(B.ZZMCHL1,'999') = C.SG_NO(+)
+							AND A.EVAL_FLAG = '1'
+							AND A.EVAL_SELLER_CODE = #evalSellerCode#
+							<!--AND D.EV_USER_ID = #evUserId#-->
+							<isNotEmpty property="sellerNameLoc">
+								AND SELLER_NAME_LOC LIKE '%'||#sellerNameLoc#||'%'
+							</isNotEmpty>
+							<isNotEmpty property="status">
+								<!--<isEqual property="status" compareValue="100">-->
+									<!--AND A.STATUS IN ('G04', 'G05')-->
+								<!--</isEqual>-->
+								<!--<isEqual property="status" compareValue="200">-->
+									<!--AND A.STATUS = 'G06'-->
+								<!--</isEqual>-->
+								<!--<isEqual property="status" compareValue="300">-->
+									<!--AND A.STATUS = 'G08'-->
+								<!--</isEqual>-->
+								AND D.PROGRESS_CODE = #status#
+							</isNotEmpty>
+							ORDER BY EVAL_NO_RESULT DESC, SEQ DESC
+						)A
+				)
+		WHERE RNUM BETWEEN #firstIndex# AND #lastIndex#
+	</select>
+
+
+	<!--품질평가 list Excel-->
+	<select id="selectQualityEvaluationPeriodicListExcel" parameterClass="SRMEVL0060VO" resultMap="selectQualityEvaluationPeriodicListMap">
+		/*SRMEVL0060.selectQualityEvaluationPeriodicListExcel*/
+		SELECT 	*
+		FROM 	(
+					SELECT 	ROWNUM RNUM
+							, A.*
+					FROM 	(
+								SELECT
+										A.HOUSE_CODE
+										,A.SELLER_CODE
+										,A.SEQ
+										,A.VISIT_SEQ
+										,EVAL_SELLER_CODE
+										,EVAL_NO_RESULT
+										,A.SELLER_NAME_LOC
+										,C.SG_NO AS CAT_LV1_CODE
+										,C.SG_NAME AS CAT_LV1_CODE_NAME
+										,TO_CHAR(A.REQ_DATE,'YYYY-MM-DD') AS REQ_DATE
+										,TO_CHAR(A.RECEIPT_DATE,'YYYY-MM-DD') AS RECEIPT_DATE
+										,A.CHANGE_DATE
+										,A.STATUS
+										,D.PROGRESS_CODE
+										,CASE WHEN D.PROGRESS_CODE='300' THEN GETCODETEXT1('SRM900', 'G08', UPPER(#locale#)) ELSE GETCODETEXT1('SRM900', A.STATUS, UPPER(#locale#))END AS STATUS_NM
+										,EV_TPL_NO
+								FROM
+										SSUGL_PROCESS_SITEVISIT A
+										,SEVUS D
+										,SSUGL_PARTNER B
+										,SSGMT C
+								WHERE
+										A.HOUSE_CODE = D.HOUSE_CODE
+									AND A.EVAL_NO_RESULT = D.EV_NO
+									AND A.HOUSE_CODE = B.HOUSE_CODE
+									AND A.SELLER_CODE = B.SELLER_CODE
+									AND B.HOUSE_CODE = C.HOUSE_CODE
+									AND NVL(B.ZZMCHL1,'999') = C.SG_NO(+)
+									AND A.EVAL_FLAG = '1'
+									AND A.EVAL_SELLER_CODE = #evalSellerCode#
+									<!--AND D.EV_USER_ID = #evUserId#-->
+									<isNotEmpty property="sellerNameLoc">
+										AND SELLER_NAME_LOC LIKE '%'||#sellerNameLoc#||'%'
+									</isNotEmpty>
+									<isNotEmpty property="status">
+										<!--<isEqual property="status" compareValue="100">-->
+											<!--AND A.STATUS IN ('G04', 'G05')-->
+										<!--</isEqual>-->
+										<!--<isEqual property="status" compareValue="200">-->
+											<!--AND A.STATUS = 'G06'-->
+										<!--</isEqual>-->
+										<!--<isEqual property="status" compareValue="300">-->
+											<!--AND A.STATUS = 'G08'-->
+										<!--</isEqual>-->
+										AND D.PROGRESS_CODE = #status#
+									</isNotEmpty>
+								ORDER BY EVAL_NO_RESULT DESC, SEQ DESC
+							)A
+				)
+	</select>
+
+	<!--파트너사 정보-->
+	<select id="selectQualityEvaluationCompInfo" parameterClass="SRMEVL0060VO" resultMap="selectQualityEvaluationCompInfoMap">
+		/*SRMEVL0060.selectQualityEvaluationCompInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, A.SEQ
+				<!--, GETCODETEXT1('SRM053',B.CHANNEL_CODE,UPPER('ko')) AS CHANNEL_CODE_NM-->
+				, GETSGCLASS('000', UPPER('ko'), '1', b.ZZMCHL1) AS CAT_LV1_CODE_NAME
+				<!--, B.SHIPPER_TYPE-->
+				<!--, GETCODETEXT1('M076',B.SHIPPER_TYPE,UPPER('ko')) AS SHIPPER_TYPE_NAME-->
+				, B.IRS_NO
+				, A.SELLER_NAME_LOC
+				, GETCODETEXT1('M074',B.COMPANY_TYPE, UPPER('ko')) AS COMPANY_TYPE_NM
+				, B.SELLER_CEO_NAME
+				, A.V_MAIN_NAME
+				, B.V_PHONE1
+				, A.V_MOBILE_PHONE
+				, A.V_EMAIL
+				, B.FAX_NO
+				, A.SELLER_ADDRESS
+				, B.INDUSTRY_TYPE
+				, B.BUSINESS_TYPE
+				, GETCODETEXT1('M076',B.SELLER_TYPE, UPPER('ko')) AS SELLER_TYPE_NM
+				, GETCODETEXT1('M001',B.COUNTRY, UPPER('ko')) AS COUNTRY_NM
+				, B.REGIO
+				<!--, B.FOUNDATION_DATE-->
+				, B.BASIC_AMT
+				, B.ZREVN
+				<!--, B.EMP_COUNT-->
+				<!--, B.PLANT_OWN_TYPE-->
+				<!--, B.PLANT_ROLE_TYPE-->
+				<!--, GETCODETEXT1('M729',B.PLANT_ROLE_TYPE, UPPER('ko')) AS PLANT_ROLE_TYPE_NM-->
+				<!--, B.MAIN_CUSTOMER-->
+				<!--, B.ABOARD_CHANNEL_TEXT-->
+				<!--, B.ABOARD_COUNTRY_TEXT-->
+				, A.REMARK
+				, A.STATUS
+				, GETCODETEXT1('SRM900',A.STATUS,UPPER('ko')) AS STATUS_NM
+				, D.PROGRESS_CODE
+				, TO_CHAR(A.REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
+				, TO_CHAR(A.RECEIPT_DATE, 'YYYY-MM-DD') AS RECEIPT_DATE
+				, TO_CHAR(TO_DATE(A.CHECK_DATE, 'YYYY-MM-DD'),'YYYY-MM-DD') AS CHECK_DATE
+				, A.EVAL_NO_RESULT
+				, A.CHECK_TIME
+				, B.ZZQC_FG1
+				, B.ZZQC_FG2
+				, B.ZZQC_FG3
+				, B.ZZQC_FG4
+				, B.ZZQC_FG5
+				, B.ZZQC_FG6
+				, B.ZZQC_FG7
+				, B.ZZQC_FG8
+				, B.ZZQC_FG9
+				, B.ZZQC_FG10
+				, B.ZZQC_FG11
+				, B.ZZQC_FG12
+				, A.EVAL_FLAG
+		FROM
+				SSUGL_PROCESS_SITEVISIT A
+				, SSUGL_PARTNER B
+				, SEVUS D
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE
+			AND A.SELLER_CODE = B.SELLER_CODE
+			AND A.HOUSE_CODE = D.HOUSE_CODE
+			AND A.EVAL_NO_RESULT = D.EV_NO
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND A.SEQ = #seq#
+			AND A.VISIT_SEQ = #visitSeq#
+	</select>
+</sqlMap>
+

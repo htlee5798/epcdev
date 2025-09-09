@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PDCMHPC0001">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectHappyCallList" resultClass="dataMap">
+	/* PDCMHPC0001.selectHappyCallList 해피콜 정보 검색 */
+	SELECT * 
+	FROM (
+		SELECT	T2.*
+		     ,  TO_CHAR(ROWNUM) AS NUM
+		     ,  COUNT(*) OVER() TOTAL_COUNT
+	     	 ,	CEIL(TO_CHAR(ROWNUM) / #rowsPerPage#  ) PAGE
+		FROM 	(
+		    SELECT * 
+		    FROM (
+				SELECT	SUBSTR(IA.ACCEPT_DATE, 1, 4)||'-'||
+						SUBSTR(IA.ACCEPT_DATE, 5, 2)||'-'||
+						SUBSTR(IA.ACCEPT_DATE, 7, 2) AS ACCEPT_DATE /*접수일자*/    
+					  , ST.STR_NM AS SALE_STR_NM		/*판매점포명*/
+		              , CASE WHEN ST2.STR_NM IS NULL
+                        THEN PG_UTIL.FN_GET_CD_NM('HO20', IA.DELI_STR_CD) 
+                        ELSE ST2.STR_NM
+                        END  AS DELI_STR_NM
+					  , IA.ACCEPT_NO					/*접수번호*/
+					  , IA.INVOICE_NO					/*운송장번호*/
+                      , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'HO02' AND MINOR_CD = IA.ACCEPT_DIVN_CD)  AS ACCEPT_DIVN_NM
+					  , IA.HODECO_INVOICE_NO			/*택배사운송장번호*/
+					  , PG_UTIL.FN_GET_CD_NM('HO04', IA.DELI_PRGS_STEP_CD) AS DELI_PRGS_STEP_NM         -- 배송진행상태
+					  , PG_UTIL.FN_GET_CD_NM('HO05', IA.DELI_PRGS_STEP_STS_CD) AS DELI_PRGS_STEP_STS_NM -- 배송진행단계상태
+					  , (SELECT  /*+ INDEX_DESC(HR PK_HO_HPCL_RSLT)*/ 
+					             REPLACE(SUBSTR(HPCL_DATE,1,4)||'-'||SUBSTR(HPCL_DATE,5,2)||'-'||SUBSTR(HPCL_DATE,7,2)||' '||SUBSTR(HPCL_DATE,9,2)||':'||SUBSTR(HPCL_DATE,11,2),'-- :','') 
+						FROM     THO_HPCL_RSLT HR
+						WHERE    IA.INVOICE_NO = HR.INVOICE_NO
+						AND      LIMIT 1') AS HAPPY_MOD_DATE    /*최종해피콜일시*/
+					  , PG_UTIL.FN_GET_CD_NM('HO19', IA.HPCL_RSLT_CD) AS HPCL_RSLT_NM 	/*해피콜상태*/  
+	                  , (SELECT  /*+ INDEX_DESC(HR PK_HO_HPCL_RSLT)*/ 
+	                             HR.HPCL_CONTENT 
+	                     FROM    THO_HPCL_RSLT HR
+	                     WHERE   IA.INVOICE_NO = HR.INVOICE_NO
+	                     AND     LIMIT 1
+	                     ) AS HPCL_CONTENT		       /* 해피콜 메시지 */       
+					  ,(SELECT /*+ INDEX_DESC(IP PK_HO_INVOICE_PROD)*/ 
+                             PROD_NM || CASE WHEN PROD_SEQ = 1 THEN '' ELSE ' 외 '||(PROD_SEQ-1)||'건' END 
+                       FROM THO_INVOICE_PROD IP WHERE IP.INVOICE_NO = IA.INVOICE_NO LIMIT 1) PROD_NM 
+                      , (SELECT LOGIN_ID FROM TAD_ADMIN WHERE ADMIN_ID = IA.MOD_ID) AS MOD_ID
+                      , DELI_MSG
+                      , IA.HPCL_UTAKMN_ID
+                      , HUR.STR_UTAKMN_NM_1            /*담당자 이름*/
+                      , HUR.STR_UTAKMN_CELL_NO_1	   /*연락처*/
+                      , CASE WHEN IA.DELI_ORDER_DY IS NULL THEN ''
+                             ELSE SUBSTR(IA.DELI_ORDER_DY, 1, 4)||'-'||	SUBSTR(IA.DELI_ORDER_DY, 5, 2)||'-'||SUBSTR(IA.DELI_ORDER_DY, 7, 2) 
+                        END AS DELI_ORDER_DY /* 출고일 2021.07.27 추가 */  
+                      , (SELECT DECODE(PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD,'4','냉장','9','냉동','NULL') 
+               			   FROM TPR_PRODUCT PR
+               			      , THO_INVOICE_PROD IP
+               			      , TPR_PRODUCT_EXT PE 
+              			  WHERE PR.MD_PROD_CD = IP.PROD_CD
+                			AND PR.PROD_CD = PE.PROD_CD
+                			AND IP.INVOICE_NO = IA.INVOICE_NO
+                			--AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능*/
+                			--AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+                			LIMIT 1
+            		    ) AS FEDAY_MALL_PROD_DIVN_NM /* 명절몰 상품유형명  2021.07.27 추가 */
+            		  , IA.ORDER_APPLY_YN   /* 발주반영여부  2021.07.27 추가 */
+				FROM    THO_INVOICE_ACCEPT IA          /*송장접수*/
+					  , THO_INVOICE_CUST   IC          /*송장-고객*/
+					  , THO_HODECO_UTAKMN_REG HUR
+					  , THO_STR_MST        SM          /*점포마스터*/
+					  , STORE              ST
+					  , STORE              ST2
+				WHERE	IA.INVOICE_NO = IC.INVOICE_NO
+				AND     IA.SALE_STR_CD = SM.STR_CD
+				AND     IA.DELI_STR_CD = ST2.STR_CD(+)
+				AND     SM.STR_CD = ST.STR_CD
+				AND		HUR.STR_CD = IA.SALE_STR_CD
+				AND     IA.HPCL_RSLT_CD IS NOT NULL
+				AND     IA.DELI_TYPE_CD = '20'  --센터배송
+				AND		IA.HPCL_RSLT_CD != '10'	--해피콜미대상제외
+				AND     IA.CTR_PROD_GBN != '2'  --과일 제외
+				AND		IA.ACCEPT_DATE  BETWEEN #rtnAcceptFromDt# AND #rtnAcceptToDt#
+			  	<isNotEmpty property="sale_str_cd">
+				AND     IA.SALE_STR_CD = #sale_str_cd#
+				</isNotEmpty>
+			  	<isNotEmpty property="happyCallState">
+				AND     IA.HPCL_RSLT_CD = #happyCallState#
+				</isNotEmpty>
+			    <isNotEmpty property="acceptDivnCd">
+			    AND		IA.ACCEPT_DIVN_CD = #acceptDivnCd#
+			    </isNotEmpty>
+			    <isNotEmpty property="sc_deli_prgs_step_cd">
+			    AND		IA.DELI_PRGS_STEP_CD = #sc_deli_prgs_step_cd#
+			    </isNotEmpty>
+			    <isNotEmpty property="sc_deli_prgs_step_sts_cd">
+			    AND		IA.DELI_PRGS_STEP_STS_CD = #sc_deli_prgs_step_sts_cd#
+			    </isNotEmpty>
+			    <isNotEmpty property="acceptNo">
+			    AND		IA.ACCEPT_NO LIKE '%'||#acceptNo#||'%'
+			    </isNotEmpty>
+			    <isNotEmpty property="hodecoInvoiceNo">
+			    AND		IA.HODECO_INVOICE_NO LIKE '%'||#hodecoInvoiceNo#||'%'
+			    </isNotEmpty>
+			    <isNotEmpty property="sendPsnNm">
+			    AND		IC.SEND_PSN_NM LIKE '%'||#sendPsnNm#||'%'
+			    </isNotEmpty>
+			    <isNotEmpty property="recvPsnNm">
+			    AND		IC.RECV_PSN_NM LIKE '%'||#recvPsnNm#||'%'
+			    </isNotEmpty>
+			    <isNotEmpty property="hpcUtakmnId" >
+			    	<isNotEqual property="hpcUtakmnId" compareValue="0">
+				    	AND	IA.HPCL_UTAKMN_ID = #hpcUtakmnId#
+				    </isNotEqual>
+				    <isEqual property="hpcUtakmnId" compareValue="0">
+				    	AND (IA.HPCL_UTAKMN_ID IS NULL OR IA.HPCL_UTAKMN_ID = '') 
+				    </isEqual>
+			    </isNotEmpty>
+			    <isEqual property="chkVal" compareValue="Y">
+			    	<isNotEmpty property="deliOrderDy" >
+			    		AND IA.DELI_ORDER_DY = #deliOrderDy#
+			    	</isNotEmpty>
+			    </isEqual>
+			    <isNotEmpty property="cellNo" >
+			    AND		(IC.SEND_PSN_CELL_NO LIKE '%' || #cellNo# || '%'
+							OR IC.SEND_PSN_TEL_NO  LIKE '%' || #cellNo# || '%'
+							OR IC.RECV_PSN_CELL_NO  LIKE '%' || #cellNo# || '%'
+							OR IC.RECV_PSN_TEL_NO  LIKE '%' || #cellNo# || '%')
+			    </isNotEmpty>
+		    	ORDER BY IA.INVOICE_NO DESC
+			)T1
+			<dynamic prepend="WHERE">
+				1=1
+				<isNotEmpty property="hpclContent">
+				    <isNotEqual prepend="AND" property="hpclContent" compareValue="0">
+				    	AND T1.HPCL_CONTENT = #hpclContent#
+				    </isNotEqual>
+				    <isEqual prepend="AND" property="hpclContent" compareValue="0" >
+				    	AND T1.HPCL_CONTENT NOT IN 
+				        <iterate property="hpclContentNm" open="(" conjunction="," close=")">
+						#hpclContentNm[]#
+						</iterate>
+				    </isEqual>
+			    </isNotEmpty>
+			    <isNotEmpty property="tempProdDivnNmArrFlag">
+	                AND T1.FEDAY_MALL_PROD_DIVN_NM IN
+	                <iterate property="tempProdDivnNmArr" open="(" conjunction="," close=")">
+	                		#tempProdDivnNmArr[]#
+	                </iterate>
+                </isNotEmpty>
+		    </dynamic>
+		)T2
+	)
+	WHERE PAGE = #currentPage# 
+	</select>
+	
+	<select id="selectHappyCallCount" resultClass="dataMap">
+	/* PDCMHPC0001.selectHappyCallCount 해피콜 실적 집계 */ 
+	SELECT	DECODE(HPCL_UTAKMN_ID,'','미할당',HPCL_UTAKMN_ID) AS HPCL_ID
+			,COUNT(*) - COUNT(HPCL_UTAKMN_ID) AS HPCL_UNASMT
+			,COUNT(HPCL_UTAKMN_ID) AS HPCL_ASMT
+			,SUM(DECODE(HPCL_RSLT_CD,'30','1','0')) AS HPCL_COMP
+			,SUM(DECODE(HPCL_RSLT_CD,'20','1','0')) AS HPCL_UNCOMP
+	FROM	THO_INVOICE_ACCEPT
+	WHERE	1=1
+	AND		HPCL_RSLT_CD IS NOT NULL
+	AND		DELI_TYPE_CD = '20'				--센터배송
+	AND		HPCL_RSLT_CD NOT IN ('10','40')	--해피콜미대상,취소요청 제외
+	AND		CTR_PROD_GBN != '2'				--과일제외
+	AND		DELI_PRGS_STEP_STS_CD != '15'	--배송전취소 제외
+	AND		ACCEPT_DATE  BETWEEN #rtnAcceptFromDt# AND #rtnAcceptToDt#
+	GROUP BY HPCL_UTAKMN_ID
+	ORDER BY TO_NUMBER(SUBSTR(HPCL_UTAKMN_ID,4))	
+	</select>
+	
+	<select id="selectHappyCallCountNew" resultClass="dataMap">
+    /* PDCMHPC0001.selectHappyCallCountNew 해피콜 실적 집계 20211214 정수연담당 요청*/
+	SELECT   HPCL_ID
+	        ,DECODE(HPCL_ID,'미할당',DECODE(MAX(PROD_TYPE),'4',MAX(HPCL_UNASMT_COLD),0),MAX(HPCL_ASMT_COLD)) AS HPCL_ASMT_COLD
+	        ,DECODE(HPCL_ID,'미할당',DECODE(MAX(PROD_TYPE),'9',MAX(HPCL_UNASMT_ICE),0),MAX(HPCL_ASMT_ICE)) AS HPCL_ASMT_ICE
+	        ,DECODE(HPCL_ID,'미할당',DECODE(MAX(PROD_TYPE),'',MAX(HPCL_UNASMT_ETC),0),MAX(HPCL_ASMT_ETC)) AS HPCL_ASMT_ETC
+	        ,MAX(HPCL_COMP_COLD) AS HPCL_COMP_COLD
+	        ,MAX(HPCL_COMP_ICE) AS HPCL_COMP_ICE
+	        ,MAX(HPCL_COMP_ETC) AS HPCL_COMP_ETC
+	FROM (
+	    SELECT  DECODE(HPCL_UTAKMN_ID, NULL, '미할당', HPCL_UTAKMN_ID) AS HPCL_ID
+	            ,DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',COUNT(*),0)
+	            -SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_UTAKMN_ID,NULL,0,1))) AS HPCL_UNASMT_COLD
+	            ,DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',COUNT(*),0)
+	            -SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_UTAKMN_ID,NULL,0,1))) AS HPCL_UNASMT_ICE
+	            ,DECODE(FEDAY_MALL_PROD_DIVN_CD,'',COUNT(*),0)
+	            -SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_UNASMT_ETC
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_ASMT_COLD
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_ASMT_ICE
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_ASMT_ETC      
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_RSLT_CD,'30',1,0),0)) AS HPCL_COMP_COLD
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_RSLT_CD,'30',1,0),0)) AS HPCL_COMP_ICE
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_RSLT_CD,'30',1,0),0)) AS HPCL_COMP_ETC
+	            ,FEDAY_MALL_PROD_DIVN_CD AS PROD_TYPE
+	    FROM (
+	        SELECT  HPCL_RSLT_CD
+	                ,HPCL_UTAKMN_ID
+	                ,DELI_ORDER_DY
+	                ,(SELECT PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD
+	                   FROM TPR_PRODUCT PR
+	                      , THO_INVOICE_PROD IP
+	                      , TPR_PRODUCT_EXT PE 
+	                  WHERE PR.MD_PROD_CD = IP.PROD_CD
+	                    AND IP.INVOICE_NO = IA.INVOICE_NO
+	                    AND PR.PROD_CD = PE.PROD_CD
+	                    AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능*/
+	                    AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+	                    LIMIT 1) AS FEDAY_MALL_PROD_DIVN_CD           
+	        FROM	THO_INVOICE_ACCEPT IA, THO_INVOICE_PROD IP
+	        WHERE	1=1
+	        AND     IA.INVOICE_NO = IP.INVOICE_NO
+	        AND		IA.HPCL_RSLT_CD IS NOT NULL
+	        AND		IA.DELI_TYPE_CD = '20'				--센터배송
+	        AND		IA.HPCL_RSLT_CD NOT IN ('10','40')	--해피콜미대상,취소요청 제외
+	        AND		IA.CTR_PROD_GBN != '2'				--과일제외
+	        AND		IA.DELI_PRGS_STEP_STS_CD != '15'	--배송전취소 제외
+	        AND		IA.ACCEPT_DATE  BETWEEN #rtnAcceptFromDt# AND #rtnAcceptToDt#
+	        )
+	    GROUP BY HPCL_UTAKMN_ID, FEDAY_MALL_PROD_DIVN_CD
+	    )GROUP BY HPCL_ID
+        ORDER BY CASE WHEN HPCL_ID IN ('미할당') THEN 1 ELSE 2 END, TO_NUMBER(SUBSTR(HPCL_ID,4))
+	</select>
+	
+	<select id="selectHappyCallCountTotal" resultClass="dataMap">
+	/* PDCMHPC0001.selectHappyCallCountTotal 해피콜 실적 집계 20211214 정수연담당 요청*/
+	--해피콜 할당/미할당 건수 집계
+	SELECT * FROM (
+	SELECT   HPCL_ID AS GB
+	        ,SUM(DECODE(HPCL_ID,'미할당',DECODE(PROD_TYPE,'4',HPCL_UNASMT_COLD,0),HPCL_ASMT_COLD)) AS COLD
+	        ,SUM(DECODE(HPCL_ID,'미할당',DECODE(PROD_TYPE,'9',HPCL_UNASMT_ICE,0),HPCL_ASMT_ICE)) AS ICE
+	        --,SUM(DECODE(HPCL_ID,'미할당',DECODE(PROD_TYPE,'',HPCL_UNASMT_ETC,0),HPCL_ASMT_ETC))AS ETC    
+	        ,NVL(SUM(DECODE(HPCL_ID,'미할당',DECODE(PROD_TYPE,'4',HPCL_UNASMT_COLD,''),HPCL_ASMT_COLD)),0)
+	        +NVL(SUM(DECODE(HPCL_ID,'미할당',DECODE(PROD_TYPE,'9',HPCL_UNASMT_ICE,''),HPCL_ASMT_ICE)),0)
+	        --+NVL(SUM(DECODE(HPCL_ID,'미할당',DECODE(PROD_TYPE,'',HPCL_UNASMT_ETC,''),HPCL_ASMT_ETC)),0) 
+	        AS SUB_SUM
+	FROM (
+	    SELECT  DECODE(HPCL_UTAKMN_ID, NULL, '해피콜 미할당', '해피콜 할당') AS HPCL_ID
+	            ,DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',COUNT(*),0)
+	            -SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_UNASMT_COLD
+	            ,DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',COUNT(*),0)
+	            -SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_UNASMT_ICE
+	            ,DECODE(FEDAY_MALL_PROD_DIVN_CD,'',COUNT(*),0)
+	            -SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_UNASMT_ETC
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_ASMT_COLD
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_ASMT_ICE
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_UTAKMN_ID,NULL,0,1),0)) AS HPCL_ASMT_ETC 
+	            ,FEDAY_MALL_PROD_DIVN_CD AS PROD_TYPE
+	    FROM (
+	        SELECT  HPCL_RSLT_CD
+	                ,HPCL_UTAKMN_ID
+	                ,DELI_ORDER_DY
+	                ,(SELECT PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD
+	                   FROM TPR_PRODUCT PR
+	                      , THO_INVOICE_PROD IP
+	                      , TPR_PRODUCT_EXT PE 
+	                  WHERE PR.MD_PROD_CD = IP.PROD_CD
+	                    AND IP.INVOICE_NO = IA.INVOICE_NO
+	                    AND PR.PROD_CD = PE.PROD_CD
+	                    AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능*/
+	                    AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+	                    LIMIT 1) AS FEDAY_MALL_PROD_DIVN_CD           
+	        FROM	THO_INVOICE_ACCEPT IA, THO_INVOICE_PROD IP
+	        WHERE	1=1
+	        AND     IA.INVOICE_NO = IP.INVOICE_NO
+	        AND		IA.HPCL_RSLT_CD IS NOT NULL
+	        AND		IA.DELI_TYPE_CD = '20'				--센터배송
+	        AND		IA.HPCL_RSLT_CD NOT IN ('10','40')	--해피콜미대상,취소요청 제외
+	        AND		IA.CTR_PROD_GBN != '2'				--과일제외
+	        AND		IA.DELI_PRGS_STEP_STS_CD != '15'	--배송전취소 제외
+	        AND		IA.ACCEPT_DATE  BETWEEN #rtnAcceptFromDt# AND #rtnAcceptToDt#
+	        )
+	    GROUP BY HPCL_UTAKMN_ID, FEDAY_MALL_PROD_DIVN_CD
+	    )GROUP BY HPCL_ID
+	    
+	UNION ALL
+	
+	--해피콜 확정/미확정 건수 집계
+	SELECT   DECODE(HPCL_RSLT_CD,'30','해피콜 확정','20','해피콜 미확정','') AS GB
+	        ,MAX(DECODE(PROD_TYPE,'4',DECODE(HPCL_RSLT_CD,'30',HPCL_COMP_COLD,'20',HPCL_UNCOMP_COLD,0),0)) AS COLD
+	        ,MAX(DECODE(PROD_TYPE,'9',DECODE(HPCL_RSLT_CD,'30',HPCL_COMP_ICE,'20',HPCL_UNCOMP_ICE,0),0)) AS ICE
+	        --,MAX(DECODE(PROD_TYPE,'',DECODE(HPCL_RSLT_CD,'30',HPCL_COMP_ETC,'20',HPCL_UNCOMP_ETC,0),0)) AS ETC
+	        ,NVL(MAX(DECODE(PROD_TYPE,'4',DECODE(HPCL_RSLT_CD,'30',HPCL_COMP_COLD,'20',HPCL_UNCOMP_COLD,0),0)),0)
+	        +NVL(MAX(DECODE(PROD_TYPE,'9',DECODE(HPCL_RSLT_CD,'30',HPCL_COMP_ICE,'20',HPCL_UNCOMP_ICE,0),0)),0)
+	        --+NVL(MAX(DECODE(PROD_TYPE,'',DECODE(HPCL_RSLT_CD,'30',HPCL_COMP_ETC,'20',HPCL_UNCOMP_ETC,0),0)),0) 
+	        AS SUB_SUM
+	FROM (
+	    SELECT  
+	            SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_RSLT_CD,'30',1,0))) AS HPCL_COMP_COLD
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_RSLT_CD,'30',1,0))) AS HPCL_COMP_ICE
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_RSLT_CD,'30',1,0))) AS HPCL_COMP_ETC    
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(HPCL_RSLT_CD,'20',1,0))) AS HPCL_UNCOMP_COLD
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(HPCL_RSLT_CD,'20',1,0))) AS HPCL_UNCOMP_ICE
+	            ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(HPCL_RSLT_CD,'20',1,0))) AS HPCL_UNCOMP_ETC
+	            ,HPCL_RSLT_CD
+	            ,FEDAY_MALL_PROD_DIVN_CD AS PROD_TYPE
+	    FROM (
+	        SELECT  HPCL_RSLT_CD
+	                ,HPCL_UTAKMN_ID
+	                ,DELI_ORDER_DY
+	                ,(SELECT PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD
+	                   FROM TPR_PRODUCT PR
+	                      , THO_INVOICE_PROD IP
+	                      , TPR_PRODUCT_EXT PE 
+	                  WHERE PR.MD_PROD_CD = IP.PROD_CD
+	                    AND IP.INVOICE_NO = IA.INVOICE_NO
+	                    AND PR.PROD_CD = PE.PROD_CD
+	                    AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능*/
+	                    AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+	                    LIMIT 1) AS FEDAY_MALL_PROD_DIVN_CD           
+	        FROM	THO_INVOICE_ACCEPT IA, THO_INVOICE_PROD IP
+	        WHERE	1=1
+	        AND     IA.INVOICE_NO = IP.INVOICE_NO
+	        AND		IA.HPCL_RSLT_CD IS NOT NULL
+	        AND		IA.DELI_TYPE_CD = '20'				--센터배송
+	        AND		IA.HPCL_RSLT_CD NOT IN ('10','40')	--해피콜미대상,취소요청 제외
+	        AND		IA.CTR_PROD_GBN != '2'				--과일제외
+	        AND		IA.DELI_PRGS_STEP_STS_CD != '15'	--배송전취소 제외
+	        AND		IA.ACCEPT_DATE  BETWEEN #rtnAcceptFromDt# AND #rtnAcceptToDt#
+	        )
+	    GROUP BY FEDAY_MALL_PROD_DIVN_CD, HPCL_RSLT_CD
+	    )
+	    GROUP BY HPCL_RSLT_CD
+	)
+	ORDER BY CASE WHEN GB IN ('해피콜 할당') THEN 1
+	              WHEN GB IN ('해피콜 미할당') THEN 2
+	              WHEN GB IN ('해피콜 확정') THEN 3
+	              WHEN GB IN ('해피콜 미확정') THEN 4 
+	              ELSE 5 END
+	</select>
+	
+	<select id="selectHappyCallCountDeliDy" resultClass="dataMap">
+	/* PDCMHPC0001.selectHappyCallCountDeliDy 해피콜 실적 집계 20211214 정수연담당 요청*/
+	--해피콜 출고일 건수 집계
+	SELECT DECODE(DELI_ORDER_DY,NULL,'출고일미정',DELI_ORDER_DY) AS DELI_DY
+	        ,DECODE(DELI_ORDER_DY,NULL,MAX(HPCL_COLD_DY),MAX(HPCL_COLD)) AS COLD
+	        ,DECODE(DELI_ORDER_DY,NULL,MAX(HPCL_ICE_DY),MAX(HPCL_ICE)) AS ICE
+	        --,DECODE(DELI_ORDER_DY,NULL,MAX(HPCL_ETC_DY),MAX(HPCL_ETC)) AS ETC
+	        --,DECODE(DELI_ORDER_DY,NULL,SUM(HPCL_COLD_DY+HPCL_ICE_DY+HPCL_ETC_DY),SUM(HPCL_COLD+HPCL_ICE+HPCL_ETC)) AS SUB_SUM
+	        ,DECODE(DELI_ORDER_DY,NULL,SUM(HPCL_COLD_DY+HPCL_ICE_DY),SUM(HPCL_COLD+HPCL_ICE)) AS SUB_SUM
+	        
+	FROM (
+	SELECT  DELI_ORDER_DY
+	        ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(DELI_ORDER_DY,NULL,0,1),0)) AS HPCL_COLD
+	        ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(DELI_ORDER_DY,NULL,0,1),0)) AS HPCL_ICE
+	        ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(DELI_ORDER_DY,NULL,0,1),0)) AS HPCL_ETC 
+	        ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'4',DECODE(DELI_ORDER_DY,NULL,1,0),0)) AS HPCL_COLD_DY
+	        ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'9',DECODE(DELI_ORDER_DY,NULL,1,0),0)) AS HPCL_ICE_DY
+	        ,SUM(DECODE(FEDAY_MALL_PROD_DIVN_CD,'',DECODE(DELI_ORDER_DY,NULL,1,0),0)) AS HPCL_ETC_DY
+	    FROM
+	        (
+	        SELECT  IA.HPCL_RSLT_CD
+	                ,IA.HPCL_UTAKMN_ID
+	                ,IA.DELI_ORDER_DY
+	                ,IA.INVOICE_NO
+	                ,(SELECT PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD
+	                   FROM TPR_PRODUCT PR
+	                      , THO_INVOICE_PROD IP
+	                      , TPR_PRODUCT_EXT PE 
+	                  WHERE PR.MD_PROD_CD = IP.PROD_CD
+	                    AND IP.INVOICE_NO = IA.INVOICE_NO
+	                    AND PR.PROD_CD = PE.PROD_CD
+	                    AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능*/
+	                    AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+	                    LIMIT 1) AS FEDAY_MALL_PROD_DIVN_CD           
+	        FROM	THO_INVOICE_ACCEPT IA, THO_INVOICE_PROD IP
+	        WHERE	1=1
+	        AND     IA.INVOICE_NO = IP.INVOICE_NO
+	        AND		IA.HPCL_RSLT_CD IS NOT NULL
+	        AND		IA.DELI_TYPE_CD = '20'				--센터배송
+	        AND		IA.HPCL_RSLT_CD NOT IN ('10','40')	--해피콜미대상,취소요청 제외
+	        AND		IA.CTR_PROD_GBN != '2'				--과일제외
+	        AND		IA.DELI_PRGS_STEP_STS_CD != '15'	--배송전취소 제외
+	        AND		IA.ACCEPT_DATE  BETWEEN #rtnAcceptFromDt# AND #rtnAcceptToDt#
+	        ) A
+	    GROUP BY A.DELI_ORDER_DY, A.FEDAY_MALL_PROD_DIVN_CD
+	    ORDER BY A.DELI_ORDER_DY, A.FEDAY_MALL_PROD_DIVN_CD
+	    )
+	    GROUP BY DELI_ORDER_DY
+	    ORDER BY CASE WHEN DELI_DY IN ('출고일미정') THEN 1 ELSE 2 END, DELI_DY
+	</select>
+	
+	<select id="selectConfInfo" resultClass="dataMap">
+	/* PDCMHPC0001.selectConfInfo 현재일자 / 조회일자차수가 적용된 일자 / 조회일자차수 정보 조회 */
+	SELECT	CE.QRY_DATE_DG
+	FROM	THO_CONF_EST CE
+	WHERE	CE.EVT_YYYY = #yyyy#
+	</select>
+	
+	<select id="selectFromToDate" resultClass="dataMap">
+	SELECT	TO_CHAR(CURRENT_TIMESTAMP(0) - #qryDateFg#, 'YYYY-MM-DD') FROM_DATE
+	      , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYY-MM-DD') TO_DATE
+	FROM	DUAL
+	</select>
+	
+	<select id="selectStoreList" resultClass="dataMap">
+	/* PDCMHPC0001.selectStoreList 점포 전체 목록 조회 */
+	SELECT	SM.STR_CD                  /*점포코드*/
+		  , ST.STR_NM                  /*점포명*/
+		  , SM.STR_TYPE_CD             /*점포유형(HO01)*/
+		  , SM.HODECO_ENTP_CD          /*택배사 업체코드*/
+		  , SM.FEDAY_DELI_ENTP_CD      /*명절배송 업체코드*/
+	FROM	THO_STR_MST SM
+		  , STORE       ST
+	WHERE	SM.STR_CD = ST.STR_CD
+	AND		SM.USE_YN = 'Y'
+	ORDER BY SM.PICK_ENTP_NM
+	</select>
+	
+	<select id="selectActiveIdList" resultClass="dataMap">
+		SELECT
+			ADMIN_ID, LOGIN_ID
+		FROM TAD_ADMIN
+		WHERE ADMIN_ID LIKE 'HP%'
+		AND  ACTIVE_YN = 'Y'
+		ORDER BY TO_NUMBER(SUBSTR(ADMIN_ID,3)) ASC
+	</select>
+	
+
+	
+	<update id="updatdUtakmnId">
+	UPDATE 
+		THO_INVOICE_ACCEPT
+	   SET HPCL_UTAKMN_ID = #HPCL_UTAKMN_ID#
+	   WHERE INVOICE_NO in
+	   <iterate property="INVOICE_NO" open="(" close=")" conjunction=",">
+	   		#INVOICE_NO[]#
+	   </iterate>
+	</update>
+	
+</sqlMap>

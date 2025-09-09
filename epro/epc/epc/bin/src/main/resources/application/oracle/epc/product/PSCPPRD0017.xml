@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0017">
+
+	<typeAlias alias="pscpprd0017VO" type="com.lottemart.epc.product.model.PSCPPRD0017VO" />
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectPrdKeywordList" resultClass="pscpprd0017VO">
+	/* pscpprd0017.selectPrdKeywordList - 키워드 목록 쿼리 */
+	SELECT A.PROD_CD AS prodCd
+	     , ROWNUM AS num
+	     , A.SEQ AS seq
+	     , A.SEARCH_KYWRD AS searchKywrd
+	     , ( SELECT COUNT(1)
+	           FROM TPR_PRODUCT_KEYWORD A
+	          WHERE A.PROD_CD = B.PROD_CD
+	       ) AS keyCount
+	     , ( SELECT LENGTHB(SEARCH_KYWRD)
+	           FROM TPR_PRODUCT_KEYWORD A
+	          WHERE A.PROD_CD = B.PROD_CD
+	            AND A.SEQ = '000'
+	       ) AS byteChk
+	  FROM TPR_PRODUCT_KEYWORD A
+	     , TPR_PRODUCT B
+	 WHERE A.PROD_CD = B.PROD_CD
+	   AND A.PROD_CD = #prodCd#
+	   AND A.SEQ != '000'
+	 ORDER BY A.SEQ
+	</select>
+
+	<insert id="insertPrdKeyword">
+	/* pscpprd0017.insertPrdKeyword - 키워드 입력 쿼리 */
+	INSERT INTO TPR_PRODUCT_KEYWORD
+	( PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE )
+	VALUES
+	( #prodCd#
+	, NVL((SELECT LPAD(NVL(MAX(SEQ) + 1, '001'), 3, '0')
+	         FROM TPR_PRODUCT_KEYWORD
+	        WHERE PROD_CD = #prodCd#), '001')
+	, #searchKywrd#
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0) )
+	</insert>
+
+	<delete id="deletePrdKeyword">
+	/* pscpprd0017.deletePrdKeyword - 키워드 삭제 쿼리 */
+	DELETE FROM TPR_PRODUCT_KEYWORD
+	 WHERE PROD_CD = #prodCd#
+	   AND SEQ IN(#seq#, '000')
+	</delete>
+
+	<update id="updatePrdKeyword">
+	/* pscpprd0017.updatePrdKeyword - 키워드 업데이트 쿼리 */
+	UPDATE TPR_PRODUCT_KEYWORD 
+	   SET SEARCH_KYWRD = #searchKywrd#
+	     , MOD_ID = #regId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #prodCd#
+	   AND SEQ = #seq#
+	</update>
+
+	<select id="selectChkPrdTotalKeyword" resultClass="pscpprd0017VO">
+	/* pscpprd0017.selectChkPrdTotalKeyword - 전체키워드 정보 조회 쿼리 */
+	SELECT K1|| DECODE (K2, '', '', ';')|| K2|| DECODE (K3, '', '', ';')|| K3|| DECODE (K4,  '', '', ';')|| K4||
+	       DECODE (K5, '', '', ';')|| K5|| DECODE (K6, '', '', ';')|| K6|| DECODE (K7,  '', '', ';')|| K7||
+	       DECODE (K8, '', '', ';')|| K8|| DECODE (K9, '', '', ';')|| K9|| DECODE (K10, '', '', ';')|| K10 AS totalKywrd
+	     , ( SELECT MIN(SEQ) FROM TPR_PRODUCT_KEYWORD WHERE PROD_CD = #prodCd# ) AS seq
+	  FROM ( SELECT MAX(DECODE( P1, '', '',  P1)) K1
+	              , MAX(DECODE( P2, '', '',  P2)) K2
+	              , MAX(DECODE( P3, '', '',  P3)) K3
+	              , MAX(DECODE( P4, '', '',  P4)) K4
+	              , MAX(DECODE( P5, '', '',  P5)) K5
+	              , MAX(DECODE( P6, '', '',  P6)) K6
+	              , MAX(DECODE( P7, '', '',  P7)) K7
+	              , MAX(DECODE( P8, '', '',  P8)) K8
+	              , MAX(DECODE( P9, '', '',  P9)) K9
+	              , MAX(DECODE(P10, '', '', P10)) K10
+	           FROM ( SELECT MAX(DECODE(NUM,  1, KEYWORD)) P1
+	                       , MAX(DECODE(NUM,  2, KEYWORD)) P2
+	                       , MAX(DECODE(NUM,  3, KEYWORD)) P3
+	                       , MAX(DECODE(NUM,  4, KEYWORD)) P4
+	                       , MAX(DECODE(NUM,  5, KEYWORD)) P5
+	                       , MAX(DECODE(NUM,  6, KEYWORD)) P6
+	                       , MAX(DECODE(NUM,  7, KEYWORD)) P7
+	                       , MAX(DECODE(NUM,  8, KEYWORD)) P8
+	                       , MAX(DECODE(NUM,  9, KEYWORD)) P9
+	                       , MAX(DECODE(NUM, 10, KEYWORD)) P10
+	                    FROM ( SELECT ROWNUM NUM
+	                                , PROD_CD
+	                                , SEARCH_KYWRD AS KEYWORD
+	                             FROM TPR_PRODUCT_KEYWORD
+	                            WHERE PROD_CD = #prodCd#
+	                              AND SEQ != '000' )
+	                   GROUP BY NUM, PROD_CD
+	                )
+	       )
+	</select>
+
+	<update id="updatePrdTotalKeyword">
+	/* pscpprd0017.updatePrdTotalKeyword - 전체키워드 업데이트 쿼리 */
+	UPDATE TPR_PRODUCT_KEYWORD
+	   SET SEARCH_KYWRD = #totalKywrd#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #regId#
+	 WHERE PROD_CD = #prodCd#
+	   AND SEQ = '000'
+	</update>
+
+	<insert id="insertPrdTotalKeyword">
+	/* pscpprd0017.insertPrdTotalKeyword - 전체키워드 입력 쿼리 */
+	INSERT INTO TPR_PRODUCT_KEYWORD
+	( PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #prodCd#
+	, '000'
+	, #totalKywrd#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+	</insert>
+
+	<!-- 20180911 상품키워드 입력 기능 추가 -->
+	<typeAlias alias="pscpprd0005VO" type="com.lottemart.epc.product.model.PSCPPRD0005VO" />
+
+	<!-- 상품키워드 수정 이력 마스터 테이블 -->
+	<select id="selectPrdMdAprvMstCnt" resultClass="java.lang.Integer">
+	/* pscpprd0005.selectPrdMdAprvMstCnt */
+	SELECT COUNT(1) COUNT
+	  FROM TPR_PROD_MD_APRV_MST A
+	 WHERE A.PROD_CD = #prodCd#
+	   AND A.TYPE_CD = #typeCd#
+	   AND A.APRV_CD IN ('001', '002')
+	<isNotEmpty property="rowCnt">
+	   AND EXISTS(SELECT 1 FROM TPR_PRODUCT_KEYWORD_HIST B WHERE A.SEQ= B.KEYWORD_SEQ AND B.PROD_IMG_NO = #rowCnt#)
+	</isNotEmpty>
+	</select>
+
+	<select id="selectPrdMdAprvMst" resultClass="pscpprd0005VO">
+	/* pscpprd0005.selectPrdMdAprvMst */
+	SELECT A.SEQ AS seq
+	     , A.PROD_CD AS prodCd
+	     , A.APRV_CD AS aprvCd
+	     , A.APRV_DATE AS aprvDate
+	     , A.APRV_ID AS aprvId
+	     , A.TYPE_CD AS typeCd
+	     , A.MEMO AS memo
+	     , A.VENDOR_ID AS vendorId
+	     , A.REG_DATE AS regDate
+	     , A.REG_ID AS regId
+	     , A.MOD_DATE AS modDate
+	     , A.MOD_ID AS modId
+	  FROM TPR_PROD_MD_APRV_MST A
+	 WHERE A.PROD_CD = #prodCd#
+	   AND A.TYPE_CD = #typeCd#
+	   AND A.APRV_CD IN ('001', '002')
+	<isNotEmpty property="rowCnt">
+	   AND EXISTS(SELECT 1 FROM TPR_PRODUCT_KEYWORD_HIST B WHERE A.SEQ= B.KEYWORD_SEQ AND B.PROD_IMG_NO = #rowCnt#)
+	</isNotEmpty>
+	</select>
+
+	<insert id="insertPrdMdAprvMst">
+	<selectKey keyProperty="seq" resultClass="String">
+	SELECT LPAD(SEQ_PROD_MD_APRV_MST.NEXTVAL, 12, '0') AS SEQ FROM DUAL
+	</selectKey>
+	/* pscpprd0005.insertPrdMdAprvMst */
+	INSERT INTO TPR_PROD_MD_APRV_MST
+	( SEQ
+	, PROD_CD
+	, APRV_CD
+	, TYPE_CD
+	, MEMO
+	, VENDOR_ID
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #seq#
+	, #prodCd#
+	, #aprvCd#
+	, #typeCd#
+	, #memo#
+	, #vendorId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+	</insert>
+
+	<delete id="deletePrdKeywordHistAll">
+	/* pscpprd0017.deletePrdKeywordHistAll */
+	DELETE FROM TPR_PRODUCT_KEYWORD_HIST
+	 WHERE KEYWORD_SEQ = #keywordSeq# 
+	</delete>
+
+	<insert id="insertPrdKeywordHistAll">
+	/* pscpprd0017.insertPrdKeywordHistAll */
+	INSERT INTO TPR_PRODUCT_KEYWORD_HIST
+	( KEYWORD_SEQ
+	, PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	SELECT #keywordSeq#
+	     , PROD_CD
+	     , SEQ
+	     , SEARCH_KYWRD
+	     , CURRENT_TIMESTAMP(0)
+	     , #vendorId#
+	     , CURRENT_TIMESTAMP(0)
+	     , #vendorId#
+	  FROM TPR_PRODUCT_KEYWORD
+	 WHERE PROD_CD = #prodCd#
+	</insert>
+
+	<insert id="mergePrdKeywordHistAll">
+	/* pscpprd0017.mergePrdKeywordHistAll */
+	MERGE INTO TPR_PRODUCT_KEYWORD_HIST
+	USING DUAL
+	   ON (    PROD_CD = #prodCd#
+	       AND SEQ = #seq#
+	       AND KEYWORD_SEQ = #keywordSeq# )
+	WHEN MATCHED THEN
+	UPDATE
+	   SET SEARCH_KYWRD = #searchKywrd#
+	     , MOD_ID = #regId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	  WHEN NOT MATCHED THEN
+	INSERT
+	( KEYWORD_SEQ
+	, PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #keywordSeq#
+	, #prodCd#
+	, (SELECT LPAD(NVL(MAX(SEQ) + 1, 1), 3, 0)
+	     FROM TPR_PRODUCT_KEYWORD_HIST
+	    WHERE KEYWORD_SEQ = #keywordSeq# AND PROD_CD = #prodCd#)
+	, TRIM(#searchKywrd#)
+	, CURRENT_TIMESTAMP(0)
+	, #modId#
+	, CURRENT_TIMESTAMP(0)
+	, #modId# )
+	</insert>
+
+	<update id="masterKeywordHistUpdate">
+	/* pscpprd0017.masterKeywordHistUpdate */
+	MERGE INTO TPR_PRODUCT_KEYWORD_HIST BBB
+	USING ( SELECT PROD_CD
+	             , LISTAGG(SEARCH_KYWRD, ';') WITHIN GROUP (ORDER BY SEQ) SEARCH_KYWRD
+	          FROM TPR_PRODUCT_KEYWORD_HIST
+	         WHERE KEYWORD_SEQ = #keywordSeq#
+	           AND PROD_CD = #prodCd#
+	           AND SEQ != 000
+	         GROUP BY PROD_CD ) AAA
+	   ON (    BBB.KEYWORD_SEQ = #keywordSeq#
+	       AND BBB.PROD_CD = #prodCd#
+	       AND BBB.SEQ = '000' )
+	WHEN MATCHED THEN
+	UPDATE
+	   SET BBB.SEARCH_KYWRD = AAA.SEARCH_KYWRD
+	     , BBB.MOD_ID = #modId#
+	     , BBB.MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHEN NOT MATCHED THEN
+	INSERT
+	( KEYWORD_SEQ
+	, PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #keywordSeq#
+	, #prodCd#
+	, '000'
+	, AAA.SEARCH_KYWRD
+	, CURRENT_TIMESTAMP(0)
+	, #modId#
+	, CURRENT_TIMESTAMP(0)
+	, #modId# )
+	</update>
+
+	<typeAlias alias="pSCPPRD0017HistVO" type="com.lottemart.epc.product.model.PSCPPRD0017HistVO" />
+
+	<insert id="insertPrdKeywordHist">
+	/* pscpprd0017.insertPrdKeywordHist */
+	INSERT INTO TPR_PRODUCT_KEYWORD_HIST
+	( KEYWORD_SEQ
+	, PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE )
+	VALUES
+	( #keywordSeq#
+	,  #prodCd#
+	, NVL((SELECT LPAD(NVL(MAX(SEQ) + 1, '001'), 3, '0')
+	         FROM TPR_PRODUCT_KEYWORD_HIST
+	        WHERE KEYWORD_SEQ = #keywordSeq#
+	          AND PROD_CD = #prodCd#), '001')
+	, #searchKywrd#
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0) )
+	</insert>
+
+	<update id="updatePrdKeywordHist">
+	/* pscpprd0017.updatePrdKeywordHist */
+	UPDATE TPR_PRODUCT_KEYWORD_HIST
+	   SET SEARCH_KYWRD = #searchKywrd#
+	     , MOD_ID = #regId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE KEYWORD_SEQ = #keywordSeq#
+	   AND PROD_CD = #prodCd#
+	   AND SEQ = #seq#
+	</update>
+
+	<delete id="deletePrdKeywordHist">
+	/* pscpprd0017.deletePrdKeywordHist */
+	DELETE FROM TPR_PRODUCT_KEYWORD_HIST
+	 WHERE KEYWORD_SEQ = #keywordSeq#
+	   AND PROD_CD = #prodCd#
+	   AND SEQ IN(#seq#, '000')
+	</delete>
+
+	<select id="selectChkPrdTotalKeywordHist" resultClass="pSCPPRD0017HistVO">
+	/* pscpprd0017.selectChkPrdTotalKeywordHist */
+	SELECT K1|| DECODE (K2, '', '', ';')|| K2|| DECODE (K3, '', '', ';')|| K3|| DECODE (K4,  '', '', ';')|| K4||
+	       DECODE (K5, '', '', ';')|| K5|| DECODE (K6, '', '', ';')|| K6|| DECODE (K7,  '', '', ';')|| K7||
+	       DECODE (K8, '', '', ';')|| K8|| DECODE (K9, '', '', ';')|| K9|| DECODE (K10, '', '', ';')|| K10 AS totalKywrd
+	     , ( SELECT MIN(SEQ) FROM TPR_PRODUCT_KEYWORD_HIST WHERE KEYWORD_SEQ = #keywordSeq# AND PROD_CD = #prodCd# ) AS seq
+	  FROM ( SELECT MAX(DECODE( P1, '', '',  P1)) K1
+	              , MAX(DECODE( P2, '', '',  P2)) K2
+	              , MAX(DECODE( P3, '', '',  P3)) K3
+	              , MAX(DECODE( P4, '', '',  P4)) K4
+	              , MAX(DECODE( P5, '', '',  P5)) K5
+	              , MAX(DECODE( P6, '', '',  P6)) K6
+	              , MAX(DECODE( P7, '', '',  P7)) K7
+	              , MAX(DECODE( P8, '', '',  P8)) K8
+	              , MAX(DECODE( P9, '', '',  P9)) K9
+	              , MAX(DECODE(P10, '', '', P10)) K10
+	           FROM ( SELECT MAX(DECODE(NUM,  1, KEYWORD)) P1
+	                       , MAX(DECODE(NUM,  2, KEYWORD)) P2
+	                       , MAX(DECODE(NUM,  3, KEYWORD)) P3
+	                       , MAX(DECODE(NUM,  4, KEYWORD)) P4
+	                       , MAX(DECODE(NUM,  5, KEYWORD)) P5
+	                       , MAX(DECODE(NUM,  6, KEYWORD)) P6
+	                       , MAX(DECODE(NUM,  7, KEYWORD)) P7
+	                       , MAX(DECODE(NUM,  8, KEYWORD)) P8
+	                       , MAX(DECODE(NUM,  9, KEYWORD)) P9
+	                       , MAX(DECODE(NUM, 10, KEYWORD)) P10
+	                    FROM ( SELECT ROWNUM NUM
+	                                , PROD_CD
+	                                , SEARCH_KYWRD AS KEYWORD
+	                             FROM TPR_PRODUCT_KEYWORD_HIST
+	                            WHERE KEYWORD_SEQ = #keywordSeq#
+	                              AND PROD_CD = #prodCd#
+	                              AND SEQ != '000' )
+	                   GROUP BY NUM, PROD_CD
+	                )
+	       )
+	</select>
+
+	<update id="updatePrdTotalKeywordHist">
+	/* pscpprd0017.updatePrdTotalKeywordHist */
+	UPDATE TPR_PRODUCT_KEYWORD_HIST
+	   SET SEARCH_KYWRD = #totalKywrd#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #regId#
+	 WHERE KEYWORD_SEQ = #keywordSeq#
+	   AND PROD_CD = #prodCd#
+	   AND SEQ = '000'
+	</update>
+
+	<insert id="insertPrdTotalKeywordHist">
+	/* pscpprd0017.insertPrdTotalKeywordHist */
+	INSERT INTO TPR_PRODUCT_KEYWORD_HIST
+	( KEYWORD_SEQ
+	, PROD_CD
+	, SEQ
+	, SEARCH_KYWRD
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #keywordSeq#
+	, #prodCd#
+	, '000'
+	, #totalKywrd#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+	</insert>
+	<!-- 20180911 상품키워드 입력 기능 추가 -->
+
+</sqlMap>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMWEB0120">
+
+	<typeAlias alias="resultClass" type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass" type="lcn.module.common.util.HashBox" />
+
+	<typeAlias alias="NEDMWEB0120VO" type="com.lottemart.epc.edi.weborder.model.NEDMWEB0120VO" />
+
+	<resultMap id="NEDMWEB0120VOMAP" class="NEDMWEB0120VO">
+		<result property="rrlReqNo" 	column="RRL_REQ_NO" />
+		<result property="rrlDy" 	column="RRL_DY" />
+		<result property="prodCd" 	column="PROD_CD" />
+		<result property="srcmkCd" 	column="SRCMK_CD" />
+		<result property="prodNm" 	column="PROD_NM" />
+		<result property="venCd" 	column="VEN_CD" />
+		<result property="strCd" 	column="STR_CD" />
+		<result property="strNm" 	column="STR_NM" />
+		<result property="ordIpsu" 	column="ORD_IPSU" />
+		<result property="ordUnit" 	column="ORD_UNIT" />
+		<result property="stdBuyPrc" 	column="STD_BUY_PRC" />
+		<result property="rrlQty" 	column="RRL_QTY" />
+		<result property="regStsCd" 	column="REG_STS_CD" />
+		<result property="regStsCdNm" 	column="REG_STS_CD_NM" />
+		<result property="rrlStkQty" 	column="RRL_STK_QTY" />
+	</resultMap>
+	
+	<!-- 조회 -->
+	<select id="EDI_TPC_PO_RRL_PROD_01" parameterClass="NEDMWEB0120VO" resultMap="NEDMWEB0120VOMAP">
+		/* NEDMWEB0120.EDI_TPC_PO_RRL_PROD_01 */
+		SELECT	M1.RRL_REQ_NO
+			,	M1.RRL_DY
+			,	M1.PROD_CD
+			,	M1.SRCMK_CD
+			,	M1.PROD_NM
+			,	M1.VEN_CD
+			,	M1.STR_CD
+			,	S1.STR_NM
+			,	M1.ORD_IPSU
+			,	M1.ORD_UNIT
+			,	M1.STD_BUY_PRC
+			,	M1.RRL_QTY
+			,	M1.REG_STS_CD
+			,	S2.CD_NM REG_STS_CD_NM
+			,	NVL(M1.RRL_STK_QTY, 0) AS RRL_STK_QTY
+		FROM 	TPC_PO_RRL_PROD M1
+				LEFT OUTER JOIN STORE S1 ON M1.STR_CD = S1.STR_CD
+				LEFT OUTER JOIN TPC_CODE S2 ON S2.MAJOR_CD = 'WPO09' AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE 	M1.VEN_CD = #venCd#
+			
+			<isNotEmpty property="strCd">
+				AND M1.STR_CD = #strCd#
+			</isNotEmpty>
+			
+			<isEmpty property="strCd">
+				<isNotEmpty property="areaCd">
+					AND M1.STR_CD IN (SELECT STR_CD FROM STORE WHERE AREA_FG = #areaCd# AND CHG_FG <![CDATA[<>]]> 'D')
+				</isNotEmpty>
+			</isEmpty>
+			
+			AND M1.RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		ORDER BY S1.STR_NM,M1.PROD_CD
+	</select>
+	
+	<!-- 수량수정(Master) -->
+	<update id="EDI_TPC_PO_RRL_MST_01" parameterClass="NEDMWEB0120VO">
+		/* NEDMWEB0120.EDI_TPC_PO_RRL_MST_01 */
+		UPDATE 	TPC_PO_RRL_MST
+		SET 	RRL_TOT_QTY = #rrlQty#
+			,	RRL_TOT_PRC = #rrlTotPrc#
+			,	SMS_FG 		= 'N'
+		WHERE 	RRL_REQ_NO 	= #rrlReqNo#
+	</update>
+	
+	<!-- 삭제(Master) -->
+	<delete id="EDI_TPC_PO_RRL_MST_02" parameterClass="NEDMWEB0120VO">
+		/* NEDMWEB0120.EDI_TPC_PO_RRL_MST_02 */
+		DELETE FROM TPC_PO_RRL_MST
+		WHERE RRL_REQ_NO = #rrlReqNo#
+	</delete>
+	
+	<!-- 수량수정 -->
+	<update id="EDI_TPC_PO_RRL_PROD_02" parameterClass="NEDMWEB0120VO">
+		/* NEDMWEB0120.EDI_TPC_PO_RRL_PROD_02 */
+		UPDATE 	TPC_PO_RRL_PROD
+		SET		RRL_QTY 	= #rrlQty#
+			,	MOD_DT 		= CURRENT_TIMESTAMP(0)
+		WHERE RRL_REQ_NO 	= #rrlReqNo#
+	</update>
+	
+	<!-- RFC 호출 데이터 조회 -->
+	<select id="selectRfcReqData" parameterClass="map" resultClass="dataMap">
+		/* NEDMWEB0120.selectRfcReqData */
+		SELECT	M1.RRL_DY AS RTN_DY
+			,	M1.PROD_CD AS PROD_CD
+			,	M1.VEN_CD AS VEN_CD
+			,	M1.STR_CD AS STR_CD
+			,	M1.RRL_QTY AS RTN_QTY
+		FROM 	TPC_PO_RRL_PROD M1
+		WHERE 	1 = 1
+			AND
+			<iterate prepend="M1.RRL_REQ_NO IN " property="rrlReqNos" open="(" close=")" conjunction=",">
+				#rrlReqNos[]#
+			</iterate>
+	</select>
+	
+	<!-- 반품요청 데이터 처리 Flag -->
+	<update id="updateRfcReqData" parameterClass="map">
+		/* NEDMWEB0120.updateRfcReqData */
+		UPDATE 	TPC_PO_RRL_PROD
+		SET 	REG_STS_CD = '1'
+		WHERE 	1 = 1
+			AND
+			<iterate prepend="RRL_REQ_NO IN " property="rrlReqNos" open="(" close=")" conjunction=",">
+				#rrlReqNos[]#
+			</iterate>
+	</update>
+	
+	<delete id="EDI_TPC_PO_RRL_PROD_03" parameterClass="NEDMWEB0120VO">
+		/* NEDMWEB0120.EDI_TPC_PO_RRL_PROD_03 */
+		DELETE FROM TPC_PO_RRL_PROD
+		WHERE RRL_REQ_NO = #rrlReqNo#
+	</delete>
+	
+</sqlMap>

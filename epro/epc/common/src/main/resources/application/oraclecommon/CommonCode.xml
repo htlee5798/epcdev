@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommonCode">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<!-- 공통코드 ResultMap -->
+	<resultMap id="codeListMap" class="dataMap">
+		<result property="MAJOR_CD" column="MAJOR_CD"/>
+		<result property="MINOR_CD" column="MINOR_CD"/>
+		<result property="CD_NM" column="CD_NM"/>
+		<result property="CD_DESC" column="CD_DESC"/>
+		<result property="ORDER_SEQ" column="ORDER_SEQ"/>
+		<result property="LET_1_REF" column="LET_1_REF"/>
+		<result property="LET_2_REF" column="LET_2_REF"/>
+		<result property="LET_3_REF" column="LET_3_REF"/>
+		<result property="LET_4_REF" column="LET_4_REF"/>
+		<result property="CNT_1_REF" column="CNT_1_REF"/>
+		<result property="CNT_2_REF" column="CNT_2_REF"/>
+		<result property="CNT_3_REF" column="CNT_3_REF"/>
+		<result property="CNT_4_REF" column="CNT_4_REF"/>
+		<result property="REG_DIVN_CD" column="REG_DIVN_CD"/>
+		<result property="USE_YN" column="USE_YN"/>
+		<result property="VALI_END_DATE" column="VALI_END_DATE"/>
+		<result property="VALI_START_DATE" column="VALI_START_DATE"/>
+		<result property="REG_DATE" column="REG_DATE"/>
+		<result property="REG_ID" column="REG_ID"/>
+		<result property="MOD_DATE" column="MOD_DATE"/>
+		<result property="MOD_ID" column="MOD_ID"/>
+	</resultMap>
+	
+	<!-- EC 코드리스트 ResultMap -->
+	<resultMap id="ecCodeListMap" class="dataMap">
+		<result property="EC_MAJOR_CD" column="EC_MAJOR_CD"/>
+		<result property="EC_MINOR_CD" column="EC_MINOR_CD"/>
+		<result property="EC_CD_NM" column="EC_CD_NM"/>
+		<result property="MART_MAJOR_CD" column="MART_MAJOR_CD"/>
+		<result property="MART_MINOR_CD" column="MART_MINOR_CD"/>
+		<result property="DEL_YN" column="DEL_YN"/>
+		<result property="REG_DATE" column="REG_DATE"/>
+		<result property="REG_ID" column="REG_ID"/>
+		<result property="MOD_DATE" column="MOD_DATE"/>
+		<result property="MOD_ID" column="MOD_ID"/>
+	</resultMap>	
+
+	<!-- 공통코드리스트조회 -->
+	<select id="getCodeList" resultMap="codeListMap">
+		/* CommonCode.getCodeList */
+		SELECT MAJOR_CD
+            , MINOR_CD
+            , CD_NM
+            , CD_DESC
+            , ORDER_SEQ
+            , LET_1_REF
+            , LET_2_REF
+            , LET_3_REF
+            , LET_4_REF
+            , CNT_1_REF
+            , CNT_2_REF
+            , CNT_3_REF
+            , CNT_4_REF
+            , REG_DIVN_CD
+            , USE_YN
+            , VALI_END_DATE
+            , VALI_START_DATE
+            , REG_DATE
+            , REG_ID
+            , MOD_DATE
+            , MOD_ID
+		FROM   TET_CODE 
+		WHERE  MAJOR_CD = #majorCd#
+		AND    USE_YN = 'Y'
+		<isEqual property="majorCd" compareValue="BND02">
+		AND    REG_DIVN_CD = '02'
+		</isEqual>
+		ORDER BY ORDER_SEQ
+	</select>
+	
+	<!-- 상세코드값으로 공통코드리스트조회 -->
+	<select id="getCodeListByMinorCd" resultMap="codeListMap">
+		/* CommonCode.getCodeListByMinorCd */
+		SELECT MAJOR_CD
+            , MINOR_CD
+            , CD_NM
+            , CD_DESC
+            , ORDER_SEQ
+            , LET_1_REF
+            , LET_2_REF
+            , LET_3_REF
+            , LET_4_REF
+            , CNT_1_REF
+            , CNT_2_REF
+            , CNT_3_REF
+            , CNT_4_REF
+            , REG_DIVN_CD
+            , USE_YN
+            , VALI_END_DATE
+            , VALI_START_DATE
+            , REG_DATE
+            , REG_ID
+            , MOD_DATE
+            , MOD_ID
+		FROM  TET_CODE 
+		WHERE MAJOR_CD = #majorCd#
+		  AND MINOR_CD IN 
+		<iterate property="minorCds" open="(" conjunction="," close=")">
+            #minorCds[]#
+        </iterate> 
+		AND    USE_YN = 'Y'
+		ORDER BY ORDER_SEQ
+	</select>
+	
+	
+	
+	<select id="getCode" resultClass="dataMap">
+		/* Code.getCode */
+
+		SELECT MAJOR_CD
+            , MINOR_CD
+            , CD_NM
+            , CD_DESC
+            , ORDER_SEQ
+            , LET_1_REF
+            , LET_2_REF
+            , LET_3_REF
+            , LET_4_REF
+            , CNT_1_REF
+            , CNT_2_REF
+            , CNT_3_REF
+            , CNT_4_REF
+            , REG_DIVN_CD
+            , USE_YN
+            , VALI_END_DATE
+            , VALI_START_DATE
+            , REG_DATE
+            , REG_ID
+            , MOD_DATE
+            , MOD_ID
+		FROM  TET_CODE 
+		WHERE MAJOR_CD = #majorCd#
+		  AND MINOR_CD = #minorCd#
+		AND    USE_YN = 'Y'
+		ORDER BY ORDER_SEQ
+	</select>
+	
+	<select id="selectAuthYn" parameterClass="dataMap" resultClass="java.lang.String">
+		/* CommonCode.selectAuthYn */
+		<![CDATA[
+		SELECT 'Y' FROM TAD_ADMIN TA, TET_CODE TC
+		WHERE TC.MAJOR_CD = #majorCd#
+		AND TA.ADMIN_ID = #adminId#
+		AND (TA.DEPT_CD = TC.LET_1_REF OR TA.ADMIN_ID = TC.LET_2_REF)
+		AND (CASE WHEN LENGTH(TC.LET_3_REF) = 8 THEN TO_DATE(TC.LET_3_REF) ELSE TO_DATE('99991231') END) >= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		AND TC.USE_YN = 'Y'
+		]]>
+	</select>
+
+	<!-- 특정 EC 코드 조회 -->
+	<select id="getEcCode" resultMap="ecCodeListMap">
+		/* CommonCode.getEcCode */
+		SELECT EC_MAJOR_CD
+			 , EC_MINOR_CD
+			 , EC_CD_NM
+			 , MART_MAJOR_CD
+			 , MART_MINOR_CD
+			 , DEL_YN
+			 , REG_DATE
+			 , REG_ID
+			 , MOD_DATE
+			 , MOD_ID
+		  FROM TEC_CODE_MAPPING
+		 WHERE EC_MAJOR_CD = #ecMajorCd#
+		   AND EC_MINOR_CD = #ecMinorCd#
+		   AND DEL_YN = 'N'
+	</select>
+
+	<!-- EC 코드리스트 조회 -->
+	<select id="getEcCodeList" resultMap="ecCodeListMap">
+		/* CommonCode.getEcCodeList */
+		SELECT EC_MAJOR_CD
+			 , EC_MINOR_CD
+			 , EC_CD_NM
+			 , MART_MAJOR_CD
+			 , MART_MINOR_CD
+			 , DEL_YN
+			 , REG_DATE
+			 , REG_ID
+			 , MOD_DATE
+			 , MOD_ID
+		  FROM TEC_CODE_MAPPING
+		 WHERE EC_MAJOR_CD = #ecMajorCd#
+		   AND DEL_YN = 'N'
+	</select>	
+	
+</sqlMap>

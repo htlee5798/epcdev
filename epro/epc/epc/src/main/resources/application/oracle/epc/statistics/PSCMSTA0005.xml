@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0005">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="getAsianaMileageList" resultClass="dataMap">
+	<![CDATA[ 
+		SELECT /* PSCMSTA0005.getAsianaMileageList */ 
+ 			* 
+		FROM (
+			SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+				SELECT 	ROW_NUMBER()OVER(ORDER BY ORD_DY DESC,A.ALGN_MEMB_NO, A.RECKON__CD)RANK_NUM,
+						A.ORD_DY, A.ALGN_MEMB_NO, '' ADJ_NAME, --PKG_UTIL.F_GET_CODE_NAME ('SM097', A.RECKON__CD)ADJ_NAME, 
+						A.SAVU_MILE, A.SETL_AMT, (SAVU_MILE*18) CHARGE, 
+						A.ERROR_DIVN_CD, TO_CHAR(A.MOD_DATE,'YYYY-MM-DD')UPD_DATE 
+				FROM TADJ_ASN_MILG_INF A
+				WHERE A.REG_DATE BETWEEN TO_DATE(#search_date# || '01', 'yyyymmdd')
+				AND LAST_DAY(TO_DATE(#search_date# || '01', 'yyyymmdd')) + 0.99999
+			) B
+		)
+     	WHERE PAGE = #currentPage#
+	]]>
+	<isEqual property="proc_gbn" compareValue="c">AND ERROR_DIVN_CD = '0000' </isEqual>
+	<isEqual property="proc_gbn" compareValue="e">AND ERROR_DIVN_CD != '0000' </isEqual>
+	</select>
+	
+	<select id="getSavingMileageList" resultClass="dataMap">
+	<![CDATA[ 
+		SELECT /* PSCMSTA0005.getSavingMileageInfoList */ 
+	  		* 
+		FROM (
+			SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+					, COUNT(*) OVER() TOTAL_COUNT
+					, B.*
+			FROM (
+				SELECT ROW_NUMBER()OVER(ORDER BY START_DY DESC, END_DY DESC)RANK_NUM,
+					--PKG_UTIL.F_GET_CODE_NAME ('SIT15', MILG_SCT)MILG_SCT,
+					'' MILG_SCT,
+					MILE_DIVN_CD, 
+					TO_CHAR(TO_DATE(START_DY,'yyyy-mm-dd'),'yyyy-mm-dd') START_DY, 
+					TO_CHAR(TO_DATE(END_DY,'yyyy-mm-dd'),'yyyy-mm-dd') END_DY,
+					NVL(SAVU_MILE,0) SAVU_MILE, 
+					TO_CHAR(REG_DATE,'yyyy-mm-dd')REG_DATE,
+					--PKG_UTIL.F_GET_ADMIN_LOGIN_ID(REG_ID)REG_ID,
+					'' REG_ID,
+					CASE WHEN TO_DATE(START_DY) > CURRENT_TIMESTAMP(0) THEN 'Y'
+						ELSE 'N'
+					END DELETE_YN
+				FROM TALGN_MILG_LOG
+				WHERE MILE_DIVN_CD LIKE #milleage_code#
+			) B
+		)
+		WHERE PAGE = #currentPage#
+	]]>
+    <isNotEmpty prepend="AND" property="search_date" > #search_date# BETWEEN START_DY AND END_DY</isNotEmpty>
+	</select>
+	
+	<select id="getSavingMileageCodeList" resultClass="dataMap">
+	<![CDATA[ 
+		SELECT /* PSCMSTA0005.getSavingMileageCodeList */  
+		    MINOR_CD, 
+		    CD_NM
+		FROM TET_CODE
+		WHERE MAJOR_CD = 'SIT15'
+		AND MINOR_CD != '*'
+	]]>
+	</select>
+	
+</sqlMap>

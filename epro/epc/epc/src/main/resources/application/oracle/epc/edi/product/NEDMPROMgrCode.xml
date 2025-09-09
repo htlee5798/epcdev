@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+  
+ <sqlMap namespace="NedmproMgrCode">
+ 		<typeAlias alias="commonProductVo"	type="com.lottemart.epc.edi.product.model.CommonProductVO" />				<!-- 팀, 대분류, 소분류, 계절리스트, 계절년도 전상법 리스트 공통 VO -->
+ 		
+ 		<!-- 상세 코드 데이터 -->
+ 		<resultMap id="commonCodeMap" class="commonProductVo">
+ 			<result column="RNUM"				property="rnum" 			/>	<!--순번  -->
+ 			<result column="MAJOR_CD"			property="majorCd" 			/>	<!--마스터코드  -->
+ 			<result column="MINOR_CD"			property="minorCd" 			/>	<!--세부코드  -->
+ 			<result column="CD_NM"				property="cdNm" 			/>	<!--코드명  -->
+ 			<result column="CD_DESC"			property="cdDesc" 			/>	<!--마스터코드 명   -->
+ 			<result column="LET_1_REF"			property="subExtent01" 		/>	<!--세부코드 명 확장   -->
+ 			<result column="LET_2_REF"			property="subExtent02" 		/>	<!--세부코드 명 확장   -->
+ 			<result column="LET_3_REF"			property="subExtent03" 		/>	<!--세부코드 명 확장   -->
+ 			<result column="LET_4_REF"			property="subExtent04" 		/>	<!--세부코드 명 확장   -->
+ 			<result column="CNT_1_REF"			property="subExtentCnt01" 	/>	<!--세부코드 숫자 확장   -->
+ 			<result column="CNT_2_REF"			property="subExtentCnt02" 	/>	<!--세부코드 숫자 확장   -->
+ 			<result column="CNT_3_REF"			property="subExtentCnt03" 	/>	<!--세부코드 숫자 확장   -->
+ 			<result column="CNT_4_REF"			property="subExtentCnt04" 	/>	<!--세부코드 숫자 확장   -->
+ 			<result column="USE_YN"				property="useYn" 			/>	<!--사용여부  -->
+ 			<result column="ORDER_SEQ"			property="orderSeq" 		/>	<!--정렬순서  -->
+ 			<result column="MOD_ID"				property="modId" 			/>	<!--수정자  -->
+ 			<result column="MOD_DATE"			property="modDate" 			/>	<!--수정일시  -->
+ 			<result column="REG_ID"				property="regId" 			/>	<!--등록자  -->
+ 			<result column="REG_DATE"			property="regDate" 			/>	<!--등록일시  -->
+ 		</resultMap>
+ 		
+ 		<!-- 마스터 코드 데이터 -->
+ 		<resultMap id="commonMstCodeMap" class="commonProductVo">
+ 			<result column="RNUM"				property="rnum" 		/>	<!--순번  -->
+ 			<result column="MAJOR_CD"			property="majorCd" 		/>	<!--마스터코드  -->
+ 			<result column="CD_DESC"			property="cdDesc" 		/>	<!--마스터코드 명   -->
+ 			<result column="USE_YN"				property="useYn" 		/>	<!--사용여부  -->
+ 			<result column="MOD_ID"				property="modId" 		/>	<!--등록자  -->
+ 			<result column="MOD_DATE"			property="modDate" 		/>	<!--등록일시  -->
+ 		</resultMap>
+ 		
+ 		<!-- 마스터 코드 카운트 조회 -->
+ 		<select id="selectMgrCodeListCount"  resultClass="Integer" parameterClass="commonProductVo">
+ 			/* CommonMgrCode.selectMgrCodeListCount*/
+	 		SELECT COUNT(1) AS CNT
+	 		FROM (	
+	 			SELECT	 MAJOR_CD
+						,MINOR_CD
+						,CD_NM
+						,USE_YN
+						,MOD_ID
+						,MOD_DATE
+	 			FROM TPC_NEW_CODE A
+	 			WHERE 1 = 1
+			    <isNotEmpty property="cdNm" prepend="AND" >
+					(MAJOR_CD = #cdNm#  OR CD_DESC LIKE'%'|| #cdNm# ||'%')
+				</isNotEmpty>
+				<isNotEmpty property="dtlNm" prepend="AND" >
+					(MINOR_CD = #dtlNm# OR CD_NM LIKE '%'|| #dtlNm# ||'%')
+				</isNotEmpty>
+	 			) T1
+ 		</select>
+ 		
+ 		<!-- 마스터 코드 조회 -->
+ 		<select id="selectMgrCodeList" resultMap="commonMstCodeMap" parameterClass="commonProductVo">
+ 			/* CommonMgrCode.selectMgrCodeList*/
+			SELECT 
+			    ROW_NUMBER() OVER (ORDER BY T1.MOD_DATE DESC) AS RNUM,
+			    T1.MAJOR_CD,
+			    T1.CD_DESC,
+			    T1.USE_YN,
+			    T1.MOD_ID,
+			    T1.MOD_DATE
+			FROM (
+			    SELECT SUB.MAJOR_CD
+			    		,MINOR_CD
+			            ,CD_NM
+			    		,SUB.CD_DESC
+			    		,SUB.USE_YN
+			    		,SUB.MOD_ID
+			    		,SUB.MOD_DATE
+			    		,SUB.RN
+			    FROM (
+			        SELECT 
+			            MAJOR_CD,
+			            MINOR_CD,
+			            CD_NM,
+			            CD_DESC,
+			            USE_YN,
+			            MOD_ID,
+			            TO_CHAR(MOD_DATE, 'yyyy-mm-dd') AS MOD_DATE, 
+			            ROW_NUMBER() OVER (PARTITION BY TRIM(MAJOR_CD) ORDER BY MOD_DATE DESC) AS RN
+			        FROM TPC_NEW_CODE
+			    ) SUB
+			    WHERE RN = 1
+			    <isNotEmpty property="cdNm" prepend="AND" >
+					(SUB.MAJOR_CD = #cdNm#  OR SUB.CD_DESC LIKE'%'|| #cdNm# ||'%')
+				</isNotEmpty>
+				<isNotEmpty property="dtlNm" prepend="AND" >
+					(SUB.MINOR_CD = #dtlNm# OR SUB.CD_NM LIKE '%'|| #dtlNm# ||'%')
+				</isNotEmpty>
+			) T1
+ 		</select>
+ 		
+ 		<!-- 상세 코드 카운트 조회 -->
+ 		<select id="selectMgrCodeDtlListCount"  resultClass="Integer" parameterClass="commonProductVo">
+ 			/* CommonMgrCode.selectMgrCodeDtlListCount*/
+	 		SELECT COUNT(1) AS CNT
+	 		FROM (	
+	 			SELECT	 MAJOR_CD
+						,MINOR_CD
+						,CD_NM
+						,USE_YN
+						,MOD_ID
+						,MOD_DATE
+	 			FROM TPC_NEW_CODE A
+	 			) T1
+	 		WHERE 1=1 
+	 		AND MAJOR_CD = #majorCd#
+ 		</select>
+ 		
+ 		<!-- 상세 코드 조회 -->
+ 		<select id="selectMgrCodeDtlList" resultMap="commonCodeMap" parameterClass="commonProductVo">
+ 			/* CommonMgrCode.selectMgrCodeDtlList*/
+ 			SELECT   ROW_NUMBER() OVER (ORDER BY T1.REG_DATE DESC) 	 			AS RNUM
+ 					,T1.MAJOR_CD
+ 					,T1.MINOR_CD
+ 					,T1.CD_NM
+ 					,T1.CD_DESC
+ 					,T1.LET_1_REF 
+					,T1.LET_2_REF
+					,T1.LET_3_REF
+					,T1.LET_4_REF
+					,T1.CNT_1_REF
+					,T1.CNT_2_REF
+					,T1.CNT_3_REF
+					,T1.CNT_4_REF
+ 					,T1.USE_YN
+ 					,T1.ORDER_SEQ
+ 					,T1.MOD_ID
+					,T1.MOD_DATE
+ 					,T1.REG_ID
+ 					,T1.REG_DATE
+ 			FROM(	
+ 				SELECT	 MAJOR_CD
+						,MINOR_CD
+						,CD_NM
+						,CD_DESC
+						,LET_1_REF 
+						,LET_2_REF
+						,LET_3_REF
+						,LET_4_REF
+						,CNT_1_REF
+						,CNT_2_REF
+						,CNT_3_REF
+						,CNT_4_REF
+						,USE_YN
+						,ORDER_SEQ
+						,MOD_ID
+						,TO_CHAR(MOD_DATE, 'yyyy-mm-dd') AS MOD_DATE 
+						,REG_ID
+						,TO_CHAR(REG_DATE, 'yyyy-mm-dd') AS REG_DATE
+	 			FROM TPC_NEW_CODE A
+	 			) T1
+	 		WHERE 1=1 
+	 		AND MAJOR_CD = #majorCd#
+ 		</select>
+ 		
+ 		<!-- 분류코드 마스터 코드 중복검사 -->
+ 		<select id="selectMasterCodeCount" parameterClass="commonProductVo" resultClass="Integer">
+ 			/* CommonMgrCode.selectMasterCodeCount*/
+ 			SELECT	COUNT(1) AS CNT
+ 			FROM TPC_NEW_CODE A
+ 			WHERE MAJOR_CD = #mstComCd#
+ 		</select>
+ 		
+ 		
+ 		<!-- 분류코드 전체 update -->
+<!-- 		<update  id="updateCodeMaster" parameterClass="commonProductVo">
+			/* CommonMgrCode.updateCodeMaster*/
+			 UPDATE	TPC_NEW_CODE 
+			     SET	MAJOR_CD  	 = #mstComCd#
+			     		,MINOR_CD 	 = #mstSubDtlCd#
+			     		,CD_NM 		 = #mstSubDtlNm#
+		               ,CD_DESC  	 = #mstComNm#
+		               ,MOD_DATE  	 = NOW()
+		               ,MOD_ID  	 = #workId#
+				WHERE MAJOR_CD = #mstComCdOld# 
+		</update> -->
+		
+ 		
+ 		<!-- 분류코드 마스터 저장  -->
+ 		<insert id="insertCodeMaster" parameterClass="commonProductVo">
+ 			/*CommonMgrCode.insertCodeMaster*/
+ 			INSERT INTO TPC_NEW_CODE (
+                   MAJOR_CD 
+		             ,MINOR_CD
+				 	 ,CD_NM
+				 	 ,CD_DESC
+				 	 ,ORDER_SEQ
+				 	 ,LET_1_REF
+				 	 ,LET_2_REF
+				 	 ,LET_3_REF
+				 	 ,LET_4_REF
+				 	 ,CNT_1_REF
+				 	 ,CNT_2_REF
+				 	 ,CNT_3_REF
+				 	 ,CNT_4_REF
+				 	 ,REG_DIVN_CD
+					 ,USE_YN
+		             ,REG_DATE
+		             ,REG_ID 
+		             ,MOD_DATE
+		             ,MOD_ID
+                   )
+           VALUES ( 
+           		 #mstComCd#
+                    ,#subDtlCd#
+					,#subDtlNm#
+					,#mstComNm#
+					,#subSortNo#
+					,#subExtent01#
+					,#subExtent02#
+					,#subExtent03#
+					,#subExtent04#
+					,#subExtentCnt01#
+					,#subExtentCnt02#
+					,#subExtentCnt03#
+					,#subExtentCnt04#
+					,''
+					,#subUseYn#
+		            ,NOW()
+		            ,#workId#
+		            ,NOW()
+		            ,#workId#
+                   )
+ 		</insert>
+ 		
+ 	
+ 		<!-- 상세코드 중복 검사 -->
+ 		<select id="selectSubCodeCount" parameterClass="commonProductVo" resultClass="Integer">
+ 			/*CommonMgrCode.selectSubCodeCount*/
+ 			SELECT COUNT(1) CNT FROM TPC_NEW_CODE  
+		 	WHERE MAJOR_CD = #mstComCd#
+				AND MINOR_CD = #subDtlCd#
+				AND CD_DESC = #mstComNm#
+				AND CD_NM = #subDtlNm#
+				<isNotEmpty property="subExtent01" prepend="AND" >
+					LET_1_REF = #subExtent01#
+				</isNotEmpty>
+				<isNotEmpty property="subExtent02" prepend="AND" >
+					LET_2_REF = #subExtent02#
+				</isNotEmpty>
+				<isNotEmpty property="subExtent03" prepend="AND" >
+					LET_3_REF = #subExtent03#
+				</isNotEmpty>
+				<isNotEmpty property="subExtent04" prepend="AND" >
+					LET_4_REF = #subExtent04#
+				</isNotEmpty>
+				<isNotEmpty property="subExtentCnt01" prepend="AND" >
+					CNT_1_REF = #subExtentCnt01#
+				</isNotEmpty>
+				<isNotEmpty property="subExtentCnt02" prepend="AND" >
+					CNT_2_REF = #subExtentCnt02#
+				</isNotEmpty>
+				<isNotEmpty property="subExtentCnt03" prepend="AND" >
+					CNT_3_REF = #subExtentCnt03#
+				</isNotEmpty>
+				<isNotEmpty property="subExtentCnt04" prepend="AND" >
+					CNT_4_REF = #subExtentCnt04#
+				</isNotEmpty>
+				<isNotEmpty property="subUseYn" prepend="AND" >
+					USE_YN = #subUseYn#
+				</isNotEmpty>
+				<isNotEmpty property="subSortNo" prepend="AND" >
+					ORDER_SEQ = #subSortNo#
+				</isNotEmpty>
+ 		</select>
+ 		
+ 		<!-- 분류코드 전체 update -->
+		<update  id="updateCodeMaster" parameterClass="commonProductVo">
+			/* CommonMgrCode.updateCodeMaster*/
+			 UPDATE	TPC_NEW_CODE 
+			     SET	MAJOR_CD  	 = #mstComCd#
+		               ,CD_DESC  	 = #mstComNm#
+		               ,MOD_DATE  	 = NOW()
+		               ,MOD_ID  	 = #workId#
+				WHERE MAJOR_CD = #mstComCdOld# 
+		</update>
+ 		
+ 		<!-- 상세코드 수정 -->
+ 		<update id="updateCodeSub" parameterClass="commonProductVo">
+ 			/*CommonMgrCode.updateCodeSub*/
+ 			UPDATE TPC_NEW_CODE  
+		      SET MINOR_CD  		  = #subDtlCd#
+                 ,CD_NM		  = #subDtlNm#
+                 ,CD_DESC	  = #mstComNm#
+                 ,LET_1_REF	  = #subExtent01#
+                 ,LET_2_REF	  = #subExtent02#
+                 ,LET_3_REF	  = #subExtent03#
+                 ,LET_4_REF	  = #subExtent04#
+                 ,CNT_1_REF	  = #subExtentCnt01#
+                 ,CNT_2_REF	  = #subExtentCnt02#
+                 ,CNT_3_REF	  = #subExtentCnt03#
+                 ,CNT_4_REF	  = #subExtentCnt04#
+				 ,USE_YN		  = #subUseYn#
+				 ,ORDER_SEQ         = #subSortNo#
+                 ,MOD_DATE          = NOW()
+		         ,MOD_ID          = #workId#
+		   WHERE MAJOR_CD = #mstComCd#
+		     AND MINOR_CD = #subDtlCdOld# 
+ 		</update>
+ 		
+ 		
+ 		
+ 		<!-- 상세코드 저장 -->
+ 		<insert id="insertCodeSub" parameterClass="commonProductVo">
+ 			/*CommonMgrCode.insertCodeSub*/
+ 			INSERT INTO TPC_NEW_CODE(
+		              MAJOR_CD 
+		             ,MINOR_CD
+				 	 ,CD_NM
+				 	 ,CD_DESC
+				 	 ,ORDER_SEQ
+				 	 ,LET_1_REF
+				 	 ,LET_2_REF
+				 	 ,LET_3_REF
+				 	 ,LET_4_REF
+				 	 ,CNT_1_REF
+				 	 ,CNT_2_REF
+				 	 ,CNT_3_REF
+				 	 ,CNT_4_REF
+				 	 ,REG_DIVN_CD
+					 ,USE_YN
+		             ,REG_DATE
+		             ,REG_ID 
+		             ,MOD_DATE
+		             ,MOD_ID
+		             )
+             VALUES(
+             		#mstComCd#
+                    ,#subDtlCd#
+					,#subDtlNm#
+					,#mstComNm#
+					,#subSortNo#
+					,#subExtent01#
+					,#subExtent02#
+					,#subExtent03#
+					,#subExtent04#
+					,#subExtentCnt01#
+					,#subExtentCnt02#
+					,#subExtentCnt03#
+					,#subExtentCnt04#
+					,''
+					,#subUseYn#
+		            ,NOW()
+		            ,#workId#
+		            ,NOW()
+		            ,#workId#
+		            )
+ 		</insert>
+ 		
+ 		<!-- 세부코드 삭제  -->
+ 		<delete id="deleteMgrDtlCode" parameterClass="commonProductVo">
+ 			/*CommonMgrCode.deleteMgrDtlCode*/
+ 			UPDATE TPC_NEW_CODE
+ 			SET USE_YN = 'N'
+ 				,MOD_ID = #workId#
+ 				,MOD_DATE = NOW()
+ 			WHERE 1=1 
+ 			<isNotEmpty property="mstComCd" prepend="AND" >
+				MAJOR_CD = #mstComCd#
+			</isNotEmpty>
+			<isNotEmpty property="subDtlCdOld" prepend="AND" >
+				MINOR_CD = #subDtlCdOld#
+			</isNotEmpty>
+ 		</delete>
+ 		
+ 		<!-- 코드 중복 검사 -->
+ 		<select id="selectCodeCount" parameterClass="commonProductVo" resultClass="Integer">
+ 			/*CommonMgrCode.selectCodeCount*/
+ 			SELECT COUNT(1) CNT FROM TPC_NEW_CODE  
+		 	WHERE MAJOR_CD = #mstComCd#
+				AND MINOR_CD = #subDtlCd#
+ 		</select>
+ 
+ </sqlMap>  

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0099">
+
+	<typeAlias alias="pedmsct0099VO" type="com.lottemart.epc.edi.consult.model.PEDMSCT0099VO" />
+	
+	<resultMap id="selectBmanNoZipListMap" class="pedmsct0099VO">
+		<result column="BMAN_NO" 			property="bmanNo" 		/>
+		<result column="VEN_NM" 			property="venNm" 		/>
+		<result column="ZIP_CD" 			property="zipCd" 		/>
+		<result column="addr1" 				property="addr1" 		/>
+		<result column="addr2" 				property="addr2" 		/>
+		<result column="BEFORE_ZIP" 		property="beforeZip"	/>
+		<result column="BEFORE_ADDR1" 		property="beforeAddr1" 	/>
+		<result column="BEFORE_ADDR2" 		property="beforeAddr2" 	/>	
+	</resultMap>
+	
+	<resultMap id="selectZipListMap" class="pedmsct0099VO">
+		<result column="ZIP_CD" 			property="zipCd" 		/>
+		<result column="CITY_NM" 			property="cityNm" 		/>
+		<result column="GU_NM" 				property="guNm" 		/>
+		<result column="STREET_NM" 			property="streetNm" 	/>
+		<result column="BIDNG_MAIN_NO" 		property="bidngMainNo" 	/>
+		<result column="BIDNG_SUB_NO" 		property="bidngSubNo" 	/>
+		<result column="FULL_BIDNG_NO" 		property="fullBidngNo" 	/>
+		<result column="JUSO" 				property="juso" 		/>
+	</resultMap>
+	
+	<!-- 사업자 List -->
+	<select id="selectBmanNoZipList" resultMap="selectBmanNoZipListMap">
+		/* PEDMSCT0099.selectBmanNoZipList */
+		SELECT 	A.BMAN_NO
+			, 	A.VEN_NM
+			, 	B.ZIP_CD
+			, 	B.ADDR1
+			, 	B.ADDR2
+			,	MIN(C.ZIP)		BEFORE_ZIP
+			,	MIN(C.ADDR1)	BEFORE_ADDR1
+			,	MIN(C.ADDR2)	BEFORE_ADDR2
+		FROM 	TED_VENDOR A
+			, 	TPC_ZIP_CD_TEMP B
+			,	BIZ_MAN@DL_MD_MARTNIS C
+		WHERE A.BMAN_NO =  	C.BMAN_NO
+		AND A.BMAN_NO = B.CONO(+)
+		
+			<isNotEmpty prepend="AND" property="cono">
+				<iterate prepend="A.BMAN_NO IN" property="cono" open="(" close=")" conjunction=",">
+					#cono[]#
+				</iterate>
+			</isNotEmpty>
+
+		GROUP BY A.BMAN_NO, A.VEN_NM, B.ZIP_CD, B.ADDR1, B.ADDR2
+	</select>
+	
+	<!-- 우편번호 검색 -->
+	<select id="selectZipList" resultMap="selectZipListMap" parameterClass="pedmsct0099VO">
+		/* PEDMSCT0099.selectZipList */
+		SELECT 	ZIP_CD
+			, 	CITY_NM
+			, 	GU_NM
+			, 	STREET_NM
+			, 	BIDNG_MAIN_NO
+			, 	BIDNG_SUB_NO
+			, 	FULL_BIDNG_NO
+			, 	(CITY_NM || ' ' || GU_NM || ' ' || STREET_NM || ' ' ||  FULL_BIDNG_NO) AS JUSO
+		FROM 
+		(
+			SELECT 	ZIP_CD
+				, 	CITY_NM
+				, 	GU_NM
+				, 	STREET_NM
+				, 	BIDNG_MAIN_NO
+				, 	BIDNG_SUB_NO
+				, 	CASE 	WHEN BIDNG_SUB_NO = '0' THEN
+								CASE WHEN APART_NM IS NULL THEN BIDNG_MAIN_NO || ' (' || DONG_NM || ')' ELSE BIDNG_MAIN_NO || ' (' || DONG_NM || ', ' || APART_NM || ')' END
+							ELSE 
+								CASE WHEN APART_NM IS NULL THEN BIDNG_MAIN_NO || '-' || BIDNG_SUB_NO || ' (' || DONG_NM || ')' ELSE BIDNG_MAIN_NO || '-' || BIDNG_SUB_NO || ' (' || DONG_NM || ', ' || APART_NM || ')' END
+					END AS FULL_BIDNG_NO
+			FROM 	TET_ZIP_CODE
+			WHERE 	CITY_NM = #cityNm#
+			<isNotEmpty property="srchStreetNm">
+				AND STREET_NM LIKE #srchStreetNm# || '%'
+			</isNotEmpty>
+			<isNotEmpty property="srchBidngMainNo">
+				AND BIDNG_MAIN_NO LIKE #srchBidngMainNo# || '%'
+			</isNotEmpty>
+			
+		)
+		ORDER BY TO_NUMBER(BIDNG_MAIN_NO), TO_NUMBER(BIDNG_SUB_NO)
+	</select>
+	
+	<!-- 주소 삭제 -->
+	<delete id="deleteZip" parameterClass="pedmsct0099VO">
+		/* PEDMSCT0099.deleteZip */
+		DELETE FROM TPC_ZIP_CD_TEMP
+		WHERE CONO = #bmanNo#
+	</delete>
+	
+	<!-- 주소 저장 -->
+	<insert id="insertZip" parameterClass="pedmsct0099VO">
+		/* PEDMSCT0099.insertZip */
+		INSERT INTO TPC_ZIP_CD_TEMP
+		(
+				CONO
+			, 	ZIP_CD
+			, 	ADDR1
+			, 	ADDR2
+			, 	REG_DATE
+		)
+		VALUES
+		(
+				#bmanNo#
+			,	#zipCd#
+			, 	#addr1#
+			, 	#addr2#
+			, 	CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+	
+</sqlMap>

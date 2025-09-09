@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="mallInterface">
+	
+	<typeAlias alias="ChannelVO" type="com.lottemart.epc.ecsees.mallInterface.model.ChannelVO" />
+	<typeAlias alias="Order_itemVO" type="com.lottemart.epc.ecsees.mallInterface.model.Order_itemVO" />
+	<typeAlias alias="ProductVO" type="com.lottemart.epc.ecsees.mallInterface.model.ProductVO" />
+	<typeAlias alias="StoreVO" type="com.lottemart.epc.ecsees.mallInterface.model.StoreVO" />
+	<typeAlias alias="TeamVO" type="com.lottemart.epc.ecsees.mallInterface.model.TeamVO" />
+	<typeAlias alias="CategoryVO" type="com.lottemart.epc.ecsees.mallInterface.model.CategoryVO" />
+	<typeAlias alias="AffiliateVO" type="com.lottemart.epc.ecsees.mallInterface.model.AffiliateVO" />
+	<typeAlias alias="ProductNaverFinalVO" type="com.lottemart.epc.ecsees.mallInterface.model.ProductNaverFinalVO" />
+	
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="channel" resultClass="ChannelVO">
+		<![CDATA[
+		SELECT  
+		    MINOR_CD AS CHANNEL_ID
+		    , CD_NM AS CHANNEL_NM
+		    , LET_2_REF AS CHANNEL_TYPE_CD
+		    , LET_4_REF AS CHANNEL_TYPE_NM 
+		    , 'CHANNEL_CD' AS PARAM_ID
+		    , MINOR_CD AS PARAM_VAL
+		    , CD_NM AS PARTNER_CO_NM
+		    , REG_ID
+		    , REG_DATE
+		    , MOD_ID AS UPD_ID
+		    , MOD_DATE AS UPD_DATE
+		FROM TET_CODE 
+		WHERE MAJOR_CD='SM093'
+		AND MOD_DATE > TO_DATE(#sync_date#,'yyyymmddhh24miss')
+		]]>
+	</select>
+
+	<select id="order_item" resultClass="Order_itemVO">
+		<![CDATA[
+		SELECT
+    ORD.ORDER_ID
+    , ORD.FIRST_ORDER_ID
+    , (SELECT OTSD_CHL_NO FROM TOTSD_CHL_INFW_LOG WHERE SCT_CD='0' AND ORD_BASKET_ID=ORD.ORDER_ID) CHANNEL_CD
+    , ORD.AFFILIATE_LINK_NO as AFFILIATE_ID
+    , ORD.ORD_DY||ORD.ORD_TM AS ORDER_DATE
+    , (SELECT SUM(ORD_QTY) FROM TOR_ORDER_ITEM WHERE ORDER_ID=ORD.ORDER_ID AND ORD_ITEM_DIVN_CD='00') AS TOT_ORDER_QTY
+    , (SELECT SUM(TOT_SELL_AMT) FROM TOR_ORDER_ITEM WHERE ORDER_ID=ORD.ORDER_ID AND ORD_ITEM_DIVN_CD='00') AS TOT_ORDER_AMT
+    , (SELECT CAT.TEAM_CD FROM CATEGORY_V4@DL_MD_MARTNIS CAT WHERE CAT.L4_CD=PRD.CAT_CD) AS TEAM_ID
+    , OTM.ORDER_ITEM_SEQ AS ORDER_DTL_SEQ
+    , OTM.PROD_CD AS PRODUCT_ID
+    , OTM.ITEM_CD AS ITEM_ID
+    , OTM.ORD_QTY AS ORDER_QTY
+    , OTM.TOT_SELL_AMT AS ORDER_AMT
+    , OTM.STR_CD
+    , OTM.REG_DATE
+    , OTM.REG_ID
+    , OTM.MOD_DATE AS UPD_DATE
+    , OTM.MOD_ID AS UPD_ID
+    , OTM.CATEGORY_ID as CATEGORY_ID
+	FROM TOR_ORDER ORD, TOR_ORDER_ITEM OTM, TPR_PRODUCT PRD
+	WHERE ORD.ORDER_ID=OTM.ORDER_ID
+	AND OTM.PROD_CD=PRD.PROD_CD
+	AND ORD.SITE_CD='01'
+	AND ORD.BSKET_DIVN_CD<>'03'
+	AND ORD.ORD_DY >= TO_CHAR(TO_DATE(#startDate#,'YYYYMMDDHH24MISS'),'YYYYMMDD')
+	AND OTM.ORD_ITEM_DIVN_CD='00'
+	AND (ORD.ORD_DY||ORD.ORD_TM) >= TO_CHAR(TO_DATE(#startDate#,'YYYYMMDDHH24MISS'),'YYYYMMDDHH24MISS')
+	AND (ORD.ORD_DY||ORD.ORD_TM) <  TO_CHAR(TO_DATE(#endDate#,'YYYYMMDDHH24MISS'),'YYYYMMDDHH24MISS')
+	AND ORD.FIRST_ORDER_ID = ORD.ORDER_ID
+	AND EXISTS (SELECT 1 FROM TOR_ORDER X WHERE X.ORDER_ID=ORD.FIRST_ORDER_ID AND X.ORD_DY=TO_CHAR(TO_DATE(#startDate#,'YYYYMMDDHH24MISS'),'YYYYMMDD'))
+		]]>
+	</select>
+
+	<select id="order_itemById" resultClass="Order_itemVO">
+	<![CDATA[
+		SELECT
+		    ORD.ORDER_ID
+		    , ORD.ORD_DY||ORD.ORD_TM AS ORDER_DATE
+		    , (SELECT SUM(ORD_QTY) FROM TOR_ORDER_ITEM WHERE ORDER_ID=ORD.ORDER_ID AND ORD_ITEM_DIVN_CD='00') AS TOT_ORDER_QTY
+		    , (SELECT SUM(TOT_SELL_AMT) FROM TOR_ORDER_ITEM WHERE ORDER_ID=ORD.ORDER_ID AND ORD_ITEM_DIVN_CD='00') AS TOT_ORDER_AMT
+		    , OTM.ORDER_ITEM_SEQ AS ORDER_DTL_SEQ
+		    , OTM.PROD_CD AS PRODUCT_ID
+		    , OTM.ITEM_CD AS ITEM_ID
+		    , (SELECT CAT.TEAM_CD FROM CATEGORY_V4@DL_MD_MARTNIS CAT WHERE CAT.L4_CD=PRD.CAT_CD) AS TEAM_ID
+		    , OTM.ORD_QTY AS ORDER_QTY
+		    , OTM.TOT_SELL_AMT AS ORDER_AMT
+		    , OTM.STR_CD
+		    , OTM.REG_DATE
+		    , OTM.REG_ID
+		    , OTM.MOD_DATE AS UPD_DATE
+		    , OTM.MOD_ID AS UPD_ID
+		    , OTM.CATEGORY_ID as CATEGORY_ID
+		FROM TOR_ORDER ORD, TOR_ORDER_ITEM OTM, TPR_PRODUCT PRD
+		WHERE ORD.ORDER_ID=OTM.ORDER_ID
+		AND OTM.PROD_CD=PRD.PROD_CD
+		AND ORD.ORD_DY >= '20130701'
+		AND ORD.SITE_CD = '01'
+		AND OTM.ORD_ITEM_DIVN_CD='00'
+		AND ORD.ORDER_ID IN 
+		]]>
+		<iterate open="(" conjunction="," close=")">
+			#[]#
+		</iterate>
+	</select>
+	
+	<select id="product" resultClass="ProductVO">
+	<![CDATA[
+		SELECT
+		    PRD.PROD_CD AS PRODUCT_ID
+		    , PRD.PROD_NM AS PRODUCT_NM
+		    , PRD.VENDOR_ID AS VENDOR_ID
+		    , PRD.BRAND_CD AS BRAND_ID
+		    , (SELECT CAT.TEAM_CD FROM CATEGORY_V4@DL_MD_MARTNIS CAT WHERE CAT.L4_CD=PRD.CAT_CD) AS TEAM_ID
+		    , PRD.REG_ID AS REG_ID
+		    , PRD.REG_DATE AS REG_DATE
+		    , PRD.MOD_ID AS UPD_ID
+		    , PRD.MOD_DATE AS UPD_DATE
+		    , PRD.MD_SRCMK_CD AS MD_SRCMK_CD
+		FROM TPR_PRODUCT PRD
+		WHERE PRD.APRV_YN='Y'
+		AND PRD.DISP_YN='Y'
+		AND PRD.MOD_DATE > TO_DATE(#sync_date#,'yyyymmddhh24miss')
+		AND PRD.MOD_DATE <= TO_DATE(#sync_date#,'yyyymmddhh24miss') + 1
+	]]>	
+	</select>
+	
+	<select id="productById" resultClass="ProductVO">
+	<![CDATA[
+		SELECT
+		    PRD.PROD_CD AS PRODUCT_ID
+		    , PRD.PROD_NM AS PRODUCT_NM
+		    , PRD.VENDOR_ID AS VENDOR_ID
+		    , PRD.BRAND_CD AS BRAND_ID
+		    , (SELECT CAT.TEAM_CD FROM CATEGORY_V4@DL_MD_MARTNIS CAT WHERE CAT.L4_CD=PRD.CAT_CD) AS TEAM_ID
+		    , PRD.REG_ID AS REG_ID
+		    , PRD.REG_DATE AS REG_DATE
+		    , PRD.MOD_ID AS UPD_ID
+		    , PRD.MOD_DATE AS UPD_DATE
+		    , PRD.MD_SRCMK_CD AS MD_SRCMK_CD
+		FROM TPR_PRODUCT PRD
+		WHERE PRD.APRV_YN='Y'
+		AND PRD.DISP_YN='Y'
+		AND PRD.PROD_CD = #product_id#
+	]]>	
+	</select>
+
+	<select id="store" resultClass="StoreVO">
+	<![CDATA[
+		SELECT
+  			  STR_CD
+    		, STR_NM
+    		, ONLINE_YN
+    		, FEDAY_MALL_YN
+    		, STR_RECP_YN
+    		, REG_DATE
+    		, REG_ID
+    		, MOD_DATE AS UPD_DATE
+    		, MOD_ID AS UPD_ID
+		FROM TST_STORE
+		WHERE MOD_DATE > TO_DATE(#sync_date#,'yyyymmddhh24miss')
+	]]>	
+	</select>
+
+	<select id="team" resultClass="TeamVO">
+	<![CDATA[
+		SELECT 
+   			 DISTINCT TEAM_CD
+    				, TEAM_NM 
+		FROM CATEGORY_V4@DL_MD_MARTNIS
+	]]>	
+	</select>
+
+	<select id="category" resultClass="CategoryVO">
+	<![CDATA[
+		SELECT
+		    CATEGORY_ID "category_id"
+		    , CATEGORY_NM "category_nm"
+		    , UP_CATEGORY_ID "upper_id"
+		    , DEPTH "lvl"
+		    , LEAF_YN "leaf_yn"
+		    , CATEGORY_TYPE_CD "category_typr_cd"
+		    , ORDER_SEQ "disp_seq"
+		    , DISP_YN "disp_yn"
+		    , REG_ID "reg_id"
+		    , to_char(REG_DATE,'yyyymmddhh24miss')  "reg_date"
+		    , MOD_ID "upd_id"
+		    , to_char(MOD_DATE,'yyyymmddhh24miss') "upd_date"
+		FROM TCA_CATEGORY
+		WHERE MOD_DATE > TO_DATE(#sync_date#,'yyyymmddhh24miss')
+		AND MOD_DATE <= TO_DATE(#sync_date#,'yyyymmddhh24miss') + 7
+	]]>	
+	</select>
+	
+	<select id="affiliate" resultClass="AffiliateVO">
+	<![CDATA[
+		SELECT
+		AFFILIATE_LINK_NO "AFFILIATE_ID"
+		, UP_AFFILIATE_LINK_NO "UPPER_ID"
+		, AFFILIATE_LINK_NM "AFFILIATE_NM"
+		, DEPTH 
+		, to_char(REG_DATE,'yyyymmddhh24miss') AS "REG_DATE"
+		, REG_ID
+		, to_char(MOD_DATE,'yyyymmddhh24miss') AS "UPD_DATE"
+		, MOD_ID "UPD_ID"
+		FROM TMA_AFFILIATE
+		WHERE USE_YN='Y' AND MOD_DATE > TO_DATE(#sync_date#,'yyyymmddhh24miss')
+		        AND MOD_DATE <= TO_DATE(#sync_date#,'yyyymmddhh24miss') + 7
+		ORDER BY AFFILIATE_LINK_NO, DEPTH
+	]]>	
+	</select>
+	
+	<select id="orderCancellation" resultClass="Order_itemVO">
+	<![CDATA[
+		SELECT
+		    ORD.ORDER_ID
+		    , ORD.FIRST_ORDER_ID
+		    , ORD.ORD_STS_CD
+		    , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD='OR002' AND MINOR_CD=ORD.ORD_STS_CD) ORD_STS_NM
+		    , ORD.ORD_DY||ORD.ORD_TM AS ORDER_DATE
+		    , (SELECT SUM(ORD_QTY) FROM TOR_ORDER_ITEM WHERE ORDER_ID=ORD.ORDER_ID AND ORD_ITEM_DIVN_CD='00') AS TOT_ORDER_QTY
+		    , (SELECT SUM(TOT_SELL_AMT) FROM TOR_ORDER_ITEM WHERE ORDER_ID=ORD.ORDER_ID AND ORD_ITEM_DIVN_CD='00') AS TOT_ORDER_AMT
+		    , OTM.ORDER_ITEM_SEQ AS ORDER_DTL_SEQ
+		    , OTM.FIRST_ORDER_ITEM_SEQ
+		    , OTM.PROD_CD AS PRODUCT_ID
+		    , OTM.ITEM_CD AS ITEM_ID
+		    , OTM.ORD_QTY AS ORDER_QTY
+		    , OTM.TOT_SELL_AMT AS ORDER_AMT
+		    , OTM.STR_CD
+		    , OTM.REG_DATE
+		    , OTM.REG_ID
+		    , OTM.MOD_DATE AS UPD_DATE
+		    , OTM.MOD_ID AS UPD_ID
+		FROM TOR_ORDER ORD, TOR_ORDER_ITEM OTM
+		WHERE ORD.ORDER_ID=OTM.ORDER_ID
+		AND ORD.SITE_CD='01'
+		AND ORD.BSKET_DIVN_CD<>'03'
+		AND ORD.ORD_DY >= TO_CHAR(TO_DATE(#startDate#,'YYYYMMDDHH24MISS'),'YYYYMMDD')
+		AND OTM.ORD_ITEM_DIVN_CD='00'
+		AND (ORD.ORD_DY||ORD.ORD_TM) >= TO_CHAR(TO_DATE(#startDate#,'YYYYMMDDHH24MISS'),'YYYYMMDDHH24MISS')
+		AND (ORD.ORD_DY||ORD.ORD_TM) <  TO_CHAR(TO_DATE(#endDate#,'YYYYMMDDHH24MISS'),'YYYYMMDDHH24MISS')
+		AND ORD.FIRST_ORDER_ID < ORD.ORDER_ID
+		AND EXISTS (SELECT 1 FROM TOR_ORDER X WHERE X.ORDER_ID=ORD.FIRST_ORDER_ID AND X.ORD_DY=TO_CHAR(TO_DATE(#startDate#,'YYYYMMDDHH24MISS'),'YYYYMMDD'))
+	]]>	
+	</select>
+	
+	<select id="productNaverFinalList" resultClass="ProductNaverFinalVO">
+	<![CDATA[
+		SELECT *
+          FROM (
+                SELECT /*+ INDEX(A IX_PR_PRODUCT_NAVER_FINAL_03) */ 
+                       ROWNUM RNUM
+                         , TR_DT
+                         , TR_HH
+                         , PROD_CD
+                         , ITEM_ID
+                         , SRCMK_CD
+                         , NV_MAPID
+                         , NV_PNAME
+                         , NV_PRICE
+                         , NV_PGURL
+                         , NV_IGURL
+                         , NV_CATE1
+                         , NV_CATE2
+                         , NV_CATE3
+                         , NV_CATE4
+                         , NV_CAID1
+                         , NV_CAID2
+                         , NV_CAID3
+                         , NV_CAID4
+                         , NV_MODEL
+                         , NV_BRAND
+                         , NV_MAKER
+                         , NV_ORIGI
+                         , NV_PDATE
+                         , NV_DELIV
+                         , NV_EVENT
+                         , NV_COUPO
+                         , NV_PCARD
+                         , NV_POINT
+                         , NV_MODIG
+                         , NV_PTYPE
+                         , NV_DTERM
+                         , NV_RISKY
+                         , NV_BARCODE
+                         , NV_CLASS
+                         , NV_UTIME
+                         , REG_DATE
+                         , REG_ID
+                         , MOD_DATE
+                         , MOD_ID
+                         , NV_REVCT
+                  FROM TPR_PRODUCT_NAVER_FINAL A
+                  WHERE TR_DT = #sync_date#
+                    AND ROWNUM <= #startRN# + 1999
+               )
+          WHERE RNUM >= #startRN#
+	]]>	
+	</select>
+	
+	
+</sqlMap>    

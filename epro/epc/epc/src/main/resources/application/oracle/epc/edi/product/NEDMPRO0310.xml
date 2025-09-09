@@ -1,0 +1,1131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="NEDMPRO0310">
+	<typeAlias alias="nEDMPRO0310VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0310VO" />		<!-- 행사정보 등록내역 현황 조회 VO -->
+
+	<!-- 행사정보 등록내역 조회 Map -->	
+	<resultMap id="selectProEventAppDetailMap"		class="nEDMPRO0310VO">
+		<result column="REQ_OFRCD"				property="reqOfrcd" 			/>	<!-- 파트너사행사번호 -->
+		<result column="LIFNR"					property="lifnr" 				/>	<!-- 파트너사코드 -->
+		<result column="LIFNR_TXT"				property="lifnrTxt"				/>	<!-- 파트너사코드 -->
+		<result column="VKORG"					property="vkorg" 				/>	<!-- 계열사 -->
+		<result column="VKORG_TXT"				property="vkorgTxt" 			/>	<!-- 계열사명 -->
+		<result column="REQ_PUR_TXT"			property="reqPurTxt" 			/>  <!-- 행사목적 -->
+		<result column="REQ_OFR_TXT"			property="reqOfrTxt" 			/>  <!-- 행사명 -->
+		<result column="ZDEAL"					property="zdeal" 				/>  <!-- 거래형태 -->
+		<result column="ZDEAL_TXT"				property="zdealTxt" 			/>  <!-- 거래형태명 -->
+		<result column="REQ_TYPE"				property="reqType" 				/>  <!-- 행사유형 -->
+		<result column="REQ_TYPE_TXT"			property="reqTypeTxt" 			/>  <!-- 행사유형명 -->
+		<result column="REQ_DISC"				property="reqDisc" 				/>  <!-- 할인유형 -->
+		<result column="REQ_DISC_TXT"			property="reqDiscTxt" 			/>  <!-- 할인유형명 -->
+		<result column="COST_TYPE"				property="costType" 			/>  <!-- 비용적용방식 -->
+		<result column="COST_TYPE_TXT"			property="costTypeTxt" 			/>  <!-- 비용적용방식명 -->
+		<result column="REQ_CONTYP"				property="reqContyp" 			/>  <!-- 판촉요청합의서 -->
+		<result column="REQ_CONTYP_TXT"			property="reqContypTxt" 		/>  <!-- 판촉요청합의서명 -->
+		<result column="HD_VEN_RATE"			property="hdVenRate" 			/>  <!-- 파트너사분담율 -->
+		<result column="VKORG_RATE"				property="vkorgRate" 			/>  <!-- 계열사 분담율 -->
+		<result column="OFR_COST"				property="ofrCost" 				/>  <!-- 예상판촉비용 -->
+		<result column="OFSDT"					property="ofsdt" 				/>  <!-- 행사시작일 -->
+		<result column="OFEDT"					property="ofedt" 				/>  <!-- 행사종료일 -->
+		<result column="PRSDT"					property="prsdt" 				/>  <!-- 발주시작일 -->
+		<result column="PREDT"					property="predt" 				/>  <!-- 발주종료일 -->
+		<result column="WERKS_TYPE"				property="werksType" 			/>  <!-- 대상점포 -->
+		<result column="WERKS_TYPE_TXT"			property="werksTypeTxt" 		/>  <!-- 대상점포명 -->
+		<result column="WERKS_ETC_TXT"			property="werksEtcTxt" 			/>  <!-- 기타점포명 -->
+		<result column="REQ_OFR_DESC"			property="reqOfrDesc" 			/>  <!-- 행사세부요청사항 -->
+		<result column="WAERS"					property="waers" 				/>  <!-- 통화 -->
+		<result column="APPR_STATUS"			property="apprStatus" 			/>  <!-- 승인여부 -->
+		<result column="DOC_TYPE"				property="docType" 				/>  <!-- 서식유형 -->
+		<result column="DEL_YN"					property="delYn" 				/>  <!-- 삭제여부 -->
+		<result column="MOD_DATE"				property="modDate" 				/>  <!-- 수정일시 -->
+		<result column="MOD_ID"					property="modId" 				/>  <!-- 수정자 -->
+		<result column="REG_DATE"				property="regDate" 				/>  <!-- 등록일시 -->
+		<result column="REG_ID"					property="regId" 				/>  <!-- 등록자 -->
+		<result column="ITME_PROD_CNT"			property="itmeProdCnt" 			/>  <!-- 상품수 -->
+		<result column="ITME_APPR_PROD_CNT"		property="itmeApprProdCnt" 		/>  <!-- 승인 상품수 -->
+		<result column="DEP_CD"					property="depCd" 				/>  <!-- 팀코드 -->
+		<result column="DEP_TXT"				property="depTxt"				/>  <!-- 팀명 	-->
+		<result column="SUB_NO"					property="subNo" 				/>  <!-- 테마번호 -->
+		<result column="SUB_TXT"				property="subTxt" 				/>  <!-- 테마명 -->
+		<result column="EMP_NO"					property="empNo" 				/>  <!-- 사번 -->
+		<result column="EMP_TXT"				property="empTxt" 				/>  <!-- 담당자명 -->
+		<result column="SRC_DEP_TXT"			property="srcDepTxt" 			/>  <!-- 화면에 보여지는 팀명 -->
+	</resultMap>
+
+    <resultMap id="selectProEventAppItemListMap"		class="nEDMPRO0310VO">
+    	<result column="REQ_OFRCD"				property="reqOfrcd" 			/>	<!-- 파트너사행사번호 -->
+    	<result column="EAN11"					property="ean11" 				/>  <!-- 판매바코드(13) -->
+		<result column="MATNR"					property="matnr" 				/>  <!-- 상품코드 -->
+		<result column="MAKTX"					property="maktx"      			/>  <!-- 상품명 -->
+		<result column="OFR_STD"				property="ofrStd"     			/>  <!-- 행사기준 -->
+		<result column="GIFT_AMT"				property="giftAmt"    			/>  <!-- 증정/사은 금액 -->
+		<result column="OFR_STD1"				property="ofrStd1"    			/>  <!-- 기준1 -->
+		<result column="OFR_DISC1"				property="ofrDisc1"   			/>  <!-- 할인1	-->
+		<result column="OFR_STD2"				property="ofrStd2"    			/>  <!-- 기준1	-->
+		<result column="OFR_DISC2"				property="ofrDisc2"   			/>  <!-- 할인2	-->
+		<result column="OFR_STD3"				property="ofrStd3"    			/>  <!-- 기준2	-->
+		<result column="OFR_DISC3"				property="ofrDisc3"   			/>  <!-- 할인3	-->
+		<result column="OFR_M"					property="ofrM"       			/>  <!-- M 	-->
+		<result column="OFR_N"					property="ofrN"       			/>  <!-- N -->
+		<result column="CAL_PUR_PRC"			property="calPurPrc"  			/>  <!-- 변경금액(원) -->
+		<result column="REQ_PUR_PRC"			property="reqPurPrc"  			/>  <!-- 제안 납품가(원) -->
+		<result column="PUR_PRC"				property="purPrc"     			/>  <!-- 기존 납품가(원) -->
+		<result column="CAL_SALES_PRC"			property="calSalesPrc"			/>  <!-- 변경금액(원) -->
+		<result column="CAL_SALES_RATE"			property="calSalesRate"			/>  <!-- 변경수수료(%) -->
+		<result column="REQ_SALES_PRC"			property="reqSalesPrc"			/>  <!-- 제안 판매가(원) -->
+		<result column="SALES_PRC"				property="salesPrc"   			/>  <!-- 기존 판매가(원) -->
+		<result column="VEN_RATE"				property="venRate"    			/>  <!-- 파트너사분담율(%) -->
+		<result column="CAL_COM_RATE"			property="calComRate" 			/>  <!-- 변경수수료(%) -->
+		<result column="REQ_ITEM_DESC"			property="reqItemDesc"			/>  <!-- 행사상품 특이사항 -->
+		<result column="ZBIGO"					property="zbigo"				/>  <!-- 비고 -->
+		<result column="WAERS"					property="waers"  				/>  <!-- 통화 -->
+		<result column="APPR_STATUS"			property="apprStatus"			/>  <!-- 승인여부 -->
+		<result column="MOD_DATE"				property="modDate" 				/>  <!-- 수정일시 -->
+		<result column="MOD_ID"					property="modId" 				/>  <!-- 수정자 -->
+		<result column="REG_DATE"				property="regDate" 				/>  <!-- 등록일시 -->
+		<result column="REG_ID"					property="regId" 				/>  <!-- 등록자 -->
+    </resultMap>
+
+    <resultMap id="selectSaleBarcodeListMap"		class="nEDMPRO0310VO">
+    	<result column="ROWNUM"					property="rowNum" 				/>  <!-- 행번호	 -->
+    	<result column="EAN11"					property="ean11" 				/>  <!-- 판매바코드(13) -->
+		<result column="MATNR"					property="matnr" 				/>  <!-- 상품코드 -->
+		<result column="MAKTX"					property="maktx"      			/>  <!-- 상품명 -->
+    </resultMap>
+    
+    <resultMap class="java.util.LinkedHashMap" id="rfcCallDataMap">
+		<result property="REQ_OFRCD"				nullValue=""		/>	<!-- 파트너사행사번호 -->
+		<result property="LIFNR"					nullValue=""		/>	<!-- 파트너사코드 -->
+		<result property="VKORG"					nullValue=""		/>	<!-- 계열사 -->
+		<result property="VKORG_TXT"				nullValue=""		/>	<!-- 계열사명 -->
+		<result property="REQ_PUR_TXT"				nullValue=""		/>  <!-- 행사목적 -->
+		<result property="REQ_OFR_TXT"				nullValue=""		/>  <!-- 행사명 -->
+		<result property="ZDEAL"					nullValue=""		/>  <!-- 거래형태 -->
+		<result property="ZDEAL_TXT"				nullValue=""		/>  <!-- 거래형태명 -->
+		<result property="REQ_TYP"					nullValue=""		/>  <!-- 행사유형 -->
+		<result property="REQ_TYPE_TXT"				nullValue=""		/>  <!-- 행사유형명 -->
+		<result property="REQ_DISC"					nullValue=""		/>  <!-- 할인유형 -->
+		<result property="REQ_DISC_TXT"				nullValue=""		/>  <!-- 할인유형명 -->
+		<result property="COST_TYPE"				nullValue=""		/>  <!-- 비용적용방식 -->
+		<result property="COST_TYPE_TXT"			nullValue=""		/>  <!-- 비용적용방식명 -->
+		<result property="REQ_CONTYP"				nullValue=""		/>  <!-- 판촉요청합의서 -->
+		<result property="REQ_CONTYP_TXT"			nullValue=""		/>  <!-- 판촉요청합의서명 -->
+		<result property="HD_VEN_RATE"				nullValue=""		/>  <!-- 파트너사분담율 -->
+		<result property="OFR_COST"					nullValue=""		/>  <!-- 예상판촉비용 -->
+		<result property="OFSDT"					nullValue=""		/>  <!-- 행사시작일 -->
+		<result property="OFEDT"					nullValue=""		/>  <!-- 행사종료일 -->
+		<result property="PRSDT"					nullValue=""		/>  <!-- 발주시작일 -->
+		<result property="PREDT"					nullValue=""		/>  <!-- 발주종료일 -->
+		<result property="WERKS_TYPE"				nullValue=""		/>  <!-- 대상점포 -->
+		<result property="WERKS_TYPE_TXT"			nullValue=""		/>  <!-- 대상점포명 -->
+		<result property="WERKS_ETC_TXT"			nullValue=""		/>  <!-- 기타점포명 -->
+		<result property="REQ_OFR_DESC"				nullValue=""		/>  <!-- 행사세부요청사항 -->
+		<result property="WAERS"					nullValue=""		/>  <!-- 통화 -->
+		<result property="APPR_STATUS"				nullValue=""		/>  <!-- 승인여부 -->
+		<result property="DOC_TYPE"					nullValue=""		/>  <!-- 서식유형 -->
+		<result property="DOC_DATE"					nullValue=""		/>  <!-- 등록일시 -->
+		<result property="DEP_CD"					nullValue="" 		/>  <!-- 팀코드 -->
+		<result property="SUB_NO"					nullValue="" 		/>  <!-- 서브테마번호 -->
+	</resultMap>
+	
+	<resultMap class="java.util.LinkedHashMap" id="rfcItemCallDataMap">
+		<result property="REQ_OFRCD"				nullValue=""		/>	<!-- 파트너사행사번호 -->
+    	<result property="EAN11"					nullValue=""		/>  <!-- 판매바코드(13) -->
+		<result property="MATNR"					nullValue=""		/>  <!-- 상품코드 -->
+		<result property="MAKTX"					nullValue=""		/>  <!-- 상품명 -->
+		<result property="OFR_STD"					nullValue=""		/>  <!-- 행사기준 -->
+		<result property="GIFT_AMT"					nullValue=""		/>  <!-- 증정/사은 금액 -->
+		<result property="OFR_STD1"					nullValue=""		/>  <!-- 기준1 -->
+		<result property="OFR_DISC1"				nullValue=""		/>  <!-- 할인1	-->
+		<result property="OFR_STD2"					nullValue=""		/>  <!-- 기준1	-->
+		<result property="OFR_DISC2"				nullValue=""		/>  <!-- 할인2	-->
+		<result property="OFR_STD3"					nullValue=""		/>  <!-- 기준2	-->
+		<result property="OFR_DISC3"				nullValue=""		/>  <!-- 할인3	-->
+		<result property="OFR_M"					nullValue=""		/>  <!-- M 	-->
+		<result property="OFR_N"					nullValue=""		/>  <!-- N -->
+		<result property="CAL_PUR_PRC"				nullValue=""		/>  <!-- 변경금액(원) -->
+		<result property="CAL_COM_RATE"				nullValue=""		/>  <!-- 변경수수료(%) -->
+		<result property="REQ_PUR_PRC"				nullValue=""		/>  <!-- 제안 납품가(원) -->
+		<result property="PUR_PRC"					nullValue=""		/>  <!-- 기존 납품가(원) -->
+		<result property="CAL_SALES_PRC"			nullValue=""		/>  <!-- 변경금액(원) -->
+		<result property="CAL_SALES_RATE"			nullValue=""		/>  <!-- 변경수수료(%) -->
+		<result property="REQ_SALES_PRC"			nullValue=""		/>  <!-- 제안 판매가(원) -->
+		<result property="SALES_PRC"				nullValue=""		/>  <!-- 기존 판매가(원) -->
+		<result property="VEN_RATE"					nullValue=""		/>  <!-- 파트너사분담율(%) -->
+		<result property="REQ_ITEM_DESC"			nullValue=""		/>  <!-- 행사상품 특이사항 -->
+		<result property="ZBIGO"					nullValue=""		/>  <!-- 비고 -->
+		<result property="WAERS"					nullValue=""		/>  <!-- 통화 -->
+	</resultMap>
+	
+	<resultMap id="selectProdEvntThmMap"		class="nEDMPRO0310VO">
+		<result column="ROWNUM"					property="rowNum" 		/>  <!-- 행번호	 -->
+		<result column="SUB_NO"					property="subNo"		/>  <!-- 서브테마번호 -->
+		<result column="VKORG"					property="vkorg"		/>  <!-- 영업조직 -->
+		<result column="SUB_TXT"				property="subTxt"		/>  <!-- 서브테마명 -->
+		<result column="ST_DY"					property="stDy"			/>  <!-- 행사시작일 -->
+		<result column="EN_DY"					property="enDy"			/>  <!-- 행사종료일 -->
+		<result column="PUR_ST_DY"				property="purStDy"		/>  <!-- 발주시작일 -->
+		<result column="PUR_EN_DY"				property="purEnDy"		/>  <!-- 발주종료일 -->
+		<result column="END_DY"					property="endDy"		/>  <!-- 등록종료일 -->
+    </resultMap>
+	
+	<resultMap id="selectDepCdMap"		class="nEDMPRO0310VO">
+		<result column="ROWNUM"					property="rowNum" 		/>  <!-- 행번호	 -->
+		<result column="DEP_CD"					property="depCd"		/>  <!-- 팀코드 	-->
+		<result column="DEP_TXT"				property="depTxt"		/>  <!-- 팀명 	-->
+    </resultMap>
+    
+    <!-- 행사정보 등록내역 상세 조회 -->
+    <select id="selectProEventAppDetail" parameterClass="nEDMPRO0310VO" resultMap="selectProEventAppDetailMap" >
+    /* NEDMPRO0310.selectProEventAppDetail */
+	    SELECT                                     
+			  A.REQ_OFRCD				 /* 파트너사행사번호 	*/ 
+			, A.LIFNR                    /* 파트너사코드 	*/  
+			, A.LIFNR_TXT                /* 파트너사명	   	*/
+			, A.VKORG                    /* 계열사      	*/
+			, A.VKORG_TXT                /* 계열사명     	*/
+			, A.REQ_PUR_TXT              /* 행사목적     	*/
+			, A.REQ_OFR_TXT              /* 행사명	    */
+			, A.ZDEAL                    /* 거래형태     	*/
+			, A.ZDEAL_TXT                /* 거래형태명    	*/
+			, A.REQ_TYPE                 /* 행사유형     	*/
+			, A.REQ_TYPE_TXT             /* 행사유형명    	*/
+			, A.REQ_DISC                 /* 할인유형     	*/
+			, A.REQ_DISC_TXT             /* 할인유형명    	*/
+			, A.COST_TYPE                /* 비용적용방식   	*/
+			, A.COST_TYPE_TXT            /* 비용적용방식명  	*/
+			, A.REQ_CONTYP               /* 판촉요청합의서  	*/
+			, A.REQ_CONTYP_TXT           /* 판촉요청합의서명 	*/
+			, A.HD_VEN_RATE              /* 파트너사분담율  	*/
+			, 100 - CAST(A.HD_VEN_RATE AS INTEGER) AS VKORG_RATE /* 계열사 분담율 */
+			, COALESCE(A.OFR_COST, '0') AS OFR_COST    /* 예상판촉비용 */
+			, TO_CHAR(CAST(A.OFSDT AS TIMESTAMP), 'YYYY-MM-DD') AS OFSDT	/* 행사시작일  */
+			, TO_CHAR(CAST(A.OFEDT AS TIMESTAMP), 'YYYY-MM-DD') AS OFEDT	/* 행사종료일  */
+			, TO_CHAR(CAST(A.PRSDT AS TIMESTAMP), 'YYYY-MM-DD') AS PRSDT	/* 발주시작일  */
+			, TO_CHAR(CAST(A.PREDT AS TIMESTAMP), 'YYYY-MM-DD') AS PREDT	/* 발주종료일  */
+			, A.WERKS_TYPE               /* 대상점포     	*/
+			, A.WERKS_TYPE_TXT           /* 대상점포명    	*/
+			, A.WERKS_ETC_TXT            /* 기타점포명    	*/
+			, A.REQ_OFR_DESC             /* 행사세부요청사항 	*/
+			, A.WAERS                    /* 통화       	*/
+			, A.APPR_STATUS              /* 승인여부     	*/
+			, A.DOC_TYPE                 /* 서식유형     	*/
+			, A.DEL_YN				   	 /* 삭제여부		*/
+			, A.APPR_STATUS              /* 진행상태		*/
+			, (SELECT COUNT(*) FROM TPC_PROD_EVNT_ITEM B WHERE A.REQ_OFRCD = B.REQ_OFRCD AND B.DEL_YN = 'N' ) AS ITME_PROD_CNT	/* 상품수 */
+			, (SELECT COUNT(*) FROM TPC_PROD_EVNT_ITEM B WHERE A.REQ_OFRCD = B.REQ_OFRCD AND APPR_STATUS = 'Y' AND B.DEL_YN = 'N' ) AS ITME_APPR_PROD_CNT /* 승인 상품수 */
+			, TO_CHAR(A.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE   /* 수정일시	*/
+			, A.MOD_ID                   /* 수정자		*/
+			, TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE  /* 등록일시	*/
+			, A.REG_ID                   /* 등록자		*/	
+			, A.DEP_CD				   	 /* 팀코드		*/
+			, A.DEP_TXT	 				 /* 팀명			*/
+			, A.SUB_NO					 /* 서브테마번호	*/
+			, B.SUB_TXT					 /* 테마명		*/
+			, A.EMP_NO					 /* 사번			*/
+			, A.EMP_TXT					 /* 담당자명		*/
+			, A.EMP_TXT || '[' || A.DEP_TXT || ']' AS SRC_DEP_TXT /* 화면에 보여질 팀명 */
+			FROM TPC_PROD_EVNT A
+			LEFT JOIN TPC_PROD_EVNT_THM B ON A.SUB_NO = B.SUB_NO
+			LEFT JOIN TPC_PROD_EVNT_THM C ON A.DEP_CD = C.SUB_NO
+			WHERE A.REQ_OFRCD = #reqOfrcd#
+			AND A.DEL_YN = 'N'
+    </select>
+
+	<!-- 파트너사 행사 신청 상세 아이템 조회 -->
+	<select id="selectProEventAppItemList" resultMap="selectProEventAppItemListMap" parameterClass="nEDMPRO0310VO">
+	/* NEDMPRO0310.selectProEventAppItemList */
+	    SELECT 
+			  REQ_OFRCD					/* 파트너사행사번호	*/
+			, EAN11                     /* 판매바코드(13) 	*/
+			, MATNR                     /* 상품코드		*/    
+			, MAKTX                     /* 상품명			*/     
+			, OFR_STD                   /* 행사기준    	*/
+			, GIFT_AMT                  /* 증정/사은 금액	*/
+			, OFR_STD1                  /* 기준1     		*/
+			, OFR_DISC1                 /* 할인1	   		*/
+			, OFR_STD2                  /* 기준1	   		*/
+			, OFR_DISC2                 /* 할인2	   		*/
+			, OFR_STD3                  /* 기준2	   		*/
+			, OFR_DISC3                 /* 할인3	   		*/
+			, OFR_M                     /* M 	       	*/
+			, OFR_N                     /* N       		*/
+			, CAL_PUR_PRC               /* 변경금액(원) 	*/
+			, CAL_COM_RATE              /* 변경수수료(%)	*/
+			, REQ_PUR_PRC               /* 제안 납품가(원) 	*/
+			, PUR_PRC                   /* 기존 납품가(원) 	*/
+			, CAL_SALES_PRC             /* 변경금액(원) 	*/
+			, CAL_SALES_RATE            /* 변경수수료(%) 	*/
+			, REQ_SALES_PRC             /* 제안 판매가(원) 	*/
+			, SALES_PRC                 /* 기존 판매가(원) 	*/
+			, VEN_RATE                  /* 파트너사분담율(%)	*/
+			, REQ_ITEM_DESC             /* 행사상품 특이사항 	*/
+			, ZBIGO             		/* 비고 			*/
+			, WAERS                     /* 통화      		*/
+			, APPR_STATUS               /* 승인여부    	*/
+			, TO_CHAR(MOD_DATE,'YYYY-MM-DD') AS MOD_DATE     /* 수정일시	*/
+			, MOD_ID                    /* 수정자			*/
+			, TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE     /* 등록일시	*/
+			, REG_ID                    /* 등록자			*/
+		FROM TPC_PROD_EVNT_ITEM
+		WHERE REQ_OFRCD = #reqOfrcd#
+		AND DEL_YN = 'N'
+	</select>
+	
+	<!-- 행사 header 정보 저장 전 삭제 -->
+	<delete id="deleteProEventApp" parameterClass="nEDMPRO0310VO">
+	    /* NEDMPRO0310.deleteProEventApp	*/ 
+	    DELETE FROM TPC_PROD_EVNT WHERE REQ_OFRCD = #reqOfrcd#
+    </delete>
+	
+	<!-- 파트너사 행사 번호 순번 조회 -->
+	<select id="selectReqOfrcdSeq" resultClass="String" parameterClass="nEDMPRO0310VO">
+		SELECT 
+			<isEqual property="vkorg" compareValue="KR02">
+			'M' ||
+			</isEqual>
+			<isEqual property="vkorg" compareValue="KR04">
+			'S' ||
+			</isEqual>
+			TO_CHAR(NOW(),'YYMM')||LPAD(CAST( ( 
+			SELECT COALESCE(CAST(MAX(RIGHT(REQ_OFRCD,5)) AS INTEGER)+1, 1) 
+			FROM TPC_PROD_EVNT 
+			WHERE TO_CHAR(REG_DATE, 'YYMM') = TO_CHAR(NOW(), 'YYMM') ) AS CHAR(10)), 5, '0')
+	</select>
+	
+	<!-- 행사 header 정보 저장 -->
+	<insert id="insertProEventApp" parameterClass="nEDMPRO0310VO">
+		/* NEDMPRO0310.insertProEventApp	*/ 
+		
+		INSERT INTO TPC_PROD_EVNT(
+			  REQ_OFRCD
+			, LIFNR
+			, VKORG
+			, VKORG_TXT
+			, REQ_PUR_TXT
+			, REQ_OFR_TXT
+			, ZDEAL
+			, ZDEAL_TXT
+			, REQ_TYPE
+			, REQ_TYPE_TXT
+			, REQ_DISC
+			, REQ_DISC_TXT
+			, COST_TYPE
+			, COST_TYPE_TXT
+			, REQ_CONTYP
+			, REQ_CONTYP_TXT
+			<isNotEqual property="hdVenRate" compareValue="">
+			, HD_VEN_RATE
+			</isNotEqual>
+			<isNotEqual property="ofrCost" compareValue="">
+			, OFR_COST
+			</isNotEqual>
+			, OFSDT
+			, OFEDT
+			, PRSDT
+			, PREDT
+			, WERKS_TYPE
+			, WERKS_TYPE_TXT
+			, WERKS_ETC_TXT
+			, REQ_OFR_DESC
+			, WAERS
+			, APPR_STATUS
+			, DOC_TYPE
+			, DEL_YN
+			, SUB_NO
+			, DEP_CD
+			, DEP_TXT
+			, EMP_NO
+			, EMP_TXT
+			, MOD_DATE
+			, MOD_ID
+			, REG_DATE
+			, REG_ID
+		    )
+		    VALUES
+		    ( 
+		      #reqOfrcd#
+			, #lifnr#
+			, #vkorg#
+			, #vkorgTxt#
+			, #reqPurTxt#
+			, #reqOfrTxt#
+			, #zdeal#
+			, #zdealTxt#
+			, #reqType#
+			, #reqTypeTxt#
+			, #reqDisc#
+			, #reqDiscTxt#
+			, #costType#
+			, #costTypeTxt#
+			, #reqContyp#
+			, #reqContypTxt#
+			<isNotEqual property="hdVenRate" compareValue="">
+			, replace(#hdVenRate#,'.','')
+			</isNotEqual>
+			<isNotEqual property="ofrCost" compareValue="">
+			, replace(#ofrCost#,',','')
+			</isNotEqual>
+			, #ofsdt#
+			, #ofedt#
+			, #prsdt#
+			, #predt#
+			, #werksType#
+			, #werksTypeTxt#
+			, #werksEtcTxt#
+			, #reqOfrDesc#
+			, 'KRW'
+			, '01'
+			, #docType#
+			, 'N'
+			, #subNo#
+			, #depCd#
+			, #depTxt#
+			, #empNo#
+			, #empTxt#
+			, NOW()
+			, #workId#
+			, NOW()
+			, #workId#
+		    )
+	</insert>
+
+	<!-- 행사정보 수정 -->
+	<update id="updateProEventApp" parameterClass="nEDMPRO0310VO">
+		/* NEDMPRO0310.updateProEventApp */
+		UPDATE TPC_PROD_EVNT
+		SET
+			  MOD_DATE       = NOW()
+			, MOD_ID         = #workId#
+			<isNotEqual property="taskGbn" compareValue="contCode">
+			, VKORG			 = #vkorg#
+			, VKORG_TXT      = #vkorgTxt#
+			, REQ_PUR_TXT    = #reqPurTxt#
+			, REQ_OFR_TXT    = #reqOfrTxt#
+			, ZDEAL          = #zdeal#
+			, ZDEAL_TXT      = #zdealTxt#
+			, REQ_TYPE       = #reqType#
+			, REQ_TYPE_TXT   = #reqTypeTxt#
+			, REQ_DISC       = #reqDisc#
+			, REQ_DISC_TXT   = #reqDiscTxt#
+			, COST_TYPE      = #costType#
+			, COST_TYPE_TXT  = #costTypeTxt#
+			, REQ_CONTYP     = #reqContyp#
+			, REQ_CONTYP_TXT = #reqContypTxt#
+			<isNotEqual property="hdVenRate" compareValue="">
+			, HD_VEN_RATE    = replace(#hdVenRate#,'.','')
+			</isNotEqual>
+			<isNotEqual property="ofrCost" compareValue="">
+			, OFR_COST       = replace(#ofrCost#,',','')
+			</isNotEqual>
+			, OFSDT          = #ofsdt#
+			, OFEDT          = #ofedt#
+			, PRSDT          = #prsdt#
+			, PREDT          = #predt#
+			, WERKS_TYPE     = #werksType#
+			, WERKS_TYPE_TXT = #werksTypeTxt#
+			, WERKS_ETC_TXT  = #werksEtcTxt#
+			, REQ_OFR_DESC   = #reqOfrDesc#
+			, WAERS          = 'KRW'
+			, DOC_TYPE       = #docType#
+			, DEL_YN         = #delYn#
+			, APPR_STATUS    = #apprStatus# 
+			, SUB_NO    	 = #subNo#
+			, DEP_CD		 = #depCd#
+			, DEP_TXT		 = #depTxt#
+			, EMP_NO		 = #empNo#
+			, EMP_TXT		 = #empTxt#
+			</isNotEqual>
+			<isEqual property="taskGbn" compareValue="contCode">
+			<isNotEqual property="contCode" compareValue="">
+			, CONT_CODE		= #contCode#
+			</isNotEqual>
+			<isNotEqual property="contCode2" compareValue="">
+			, CONT_CODE2	= #contCode2#
+			</isNotEqual>
+			</isEqual>
+		 WHERE REQ_OFRCD = #reqOfrcd#
+	</update>
+	
+	<!-- 행사 itme 저장 전 정보 삭제 -->
+	<delete id="deleteProEventAppItemList" parameterClass="nEDMPRO0310VO">
+	    /* NEDMPRO0310.deleteProEventAppItemList	*/
+	    UPDATE TPC_PROD_EVNT_ITEM
+		SET
+			  MOD_DATE       = NOW()
+			, MOD_ID         = #workId#
+			, DEL_YN         = 'Y'
+		 WHERE REQ_OFRCD = #reqOfrcd#
+    </delete>
+    
+    <!-- 행사 item 저장 -->
+	<insert id="insertProEventAppItemList" parameterClass="nEDMPRO0310VO">
+		/* NEDMPRO0310.insertProEventAppItemList	*/
+		INSERT INTO TPC_PROD_EVNT_ITEM( 
+			  REQ_OFRCD
+			, EAN11
+			, MATNR
+			, MAKTX
+			, OFR_STD
+			<isNotEqual property="giftAmt" compareValue="">
+			, GIFT_AMT
+			</isNotEqual>
+			<isNotEqual property="ofrStd1" compareValue="">
+			, OFR_STD1
+			</isNotEqual>
+			<isNotEqual property="ofrDisc1" compareValue="">
+			, OFR_DISC1
+			</isNotEqual>
+			<isNotEqual property="ofrStd2" compareValue="">
+			, OFR_STD2
+			</isNotEqual>
+			<isNotEqual property="ofrDisc2" compareValue="">
+			, OFR_DISC2
+			</isNotEqual>
+			<isNotEqual property="ofrStd3" compareValue="">
+			, OFR_STD3
+			</isNotEqual>
+			<isNotEqual property="ofrDisc3" compareValue="">
+			, OFR_DISC3
+			</isNotEqual>
+			, OFR_M
+			, OFR_N
+			<isNotEqual property="calPurPrc" compareValue="">
+			, CAL_PUR_PRC
+			</isNotEqual>
+			<isNotEqual property="reqPurPrc" compareValue="">
+			, REQ_PUR_PRC
+			</isNotEqual>
+			<isNotEqual property="purPrc" compareValue="">
+			, PUR_PRC
+			</isNotEqual>
+			<isNotEqual property="calSalesPrc" compareValue="">
+			, CAL_SALES_PRC
+			</isNotEqual>
+			<isNotEqual property="calSalesRate" compareValue="">
+			, CAL_SALES_RATE
+			</isNotEqual>
+			<isNotEqual property="reqSalesPrc" compareValue="">
+			, REQ_SALES_PRC
+			</isNotEqual>
+			<isNotEqual property="salesPrc" compareValue="">
+			, SALES_PRC
+			</isNotEqual>
+			<isNotEqual property="venRate" compareValue="">
+			, VEN_RATE 
+			</isNotEqual>
+			<isNotEqual property="calComRate" compareValue="">
+			, CAL_COM_RATE
+			</isNotEqual>
+			, REQ_ITEM_DESC
+			, ZBIGO
+			, WAERS
+			, APPR_STATUS
+			, DEL_YN
+			, MOD_DATE
+			, MOD_ID
+			, REG_DATE
+			, REG_ID
+		    )
+		    VALUES
+		    ( 
+		      #reqOfrcd#
+			, #ean11#
+			, #matnr#
+			, #maktx#
+			, #ofrStd#
+			<isNotEqual property="giftAmt" compareValue="">
+			, #giftAmt#
+			</isNotEqual>
+			<isNotEqual property="ofrStd1" compareValue="">
+			, #ofrStd1#
+			</isNotEqual>
+			<isNotEqual property="ofrDisc1" compareValue="">
+			, #ofrDisc1#
+			</isNotEqual>
+			<isNotEqual property="ofrStd2" compareValue="">
+			, #ofrStd2#
+			</isNotEqual>
+			<isNotEqual property="ofrDisc2" compareValue="">
+			, #ofrDisc2#
+			</isNotEqual>
+			<isNotEqual property="ofrStd3" compareValue="">
+			, #ofrStd3#
+			</isNotEqual>
+			<isNotEqual property="ofrDisc3" compareValue="">
+			, #ofrDisc3#
+			</isNotEqual>
+			, #ofrM#
+			, #ofrN#
+			<isNotEqual property="calPurPrc" compareValue="">
+			, replace(#calPurPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="reqPurPrc" compareValue="">
+			, replace(#reqPurPrc#,',','')  
+			</isNotEqual>
+			<isNotEqual property="purPrc" compareValue="">
+			, replace(#purPrc#,',','')   
+			</isNotEqual>
+			<isNotEqual property="calSalesPrc" compareValue="">
+			, replace(#calSalesPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="calSalesRate" compareValue="">
+			, replace(#calSalesRate#,'.','')
+			</isNotEqual>
+			<isNotEqual property="reqSalesPrc" compareValue="">
+			, replace(#reqSalesPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="salesPrc" compareValue="">
+			, replace(#salesPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="venRate" compareValue="">
+			, replace(#venRate#,'.','')    
+			</isNotEqual>
+			<isNotEqual property="calComRate" compareValue="">
+			, replace(#calComRate#,'.','')
+			</isNotEqual>
+			, #reqItemDesc#
+			, #zbigo#
+			, 'KRW'
+			, '01'
+			, 'N'
+			, NOW()
+			, #workId#
+			, NOW()
+			, #workId#
+		    )
+	</insert>
+	
+	<!-- 파트너사 행사 itme 정보 -->
+	<update id="updateProEventAppItemList" parameterClass="nEDMPRO0310VO">
+		/* NEDMPRO0310.updateProEventAppItemList */
+		UPDATE TPC_PROD_EVNT_ITEM
+		SET
+			  MATNR			= #matnr#         
+			, MAKTX         = #maktx#         
+			<isNotEqual property="ofrStd" compareValue="">
+			, OFR_STD       = replace(#ofrStd#,',','')
+			</isNotEqual>
+			<isNotEqual property="giftAmt" compareValue="">
+			, GIFT_AMT      = replace(#giftAmt#,',','')
+			</isNotEqual>
+			<isNotEqual property="ofrStd1" compareValue="">
+			, OFR_STD1      = replace(#ofrStd1#,',','')      
+			</isNotEqual>
+			<isNotEqual property="ofrDisc1" compareValue="">
+			, OFR_DISC1     = replace(#ofrDisc1#,',','')
+			</isNotEqual>
+			<isNotEqual property="ofrStd2" compareValue="">
+			, OFR_STD2      = replace(#ofrStd2#,',','')      
+			</isNotEqual>
+			<isNotEqual property="ofrDisc2" compareValue="">
+			, OFR_DISC2     = replace(#ofrDisc2#,',','')
+			</isNotEqual>
+			<isNotEqual property="ofrStd3" compareValue="">
+			, OFR_STD3      = replace(#ofrStd3#,',','')      
+			</isNotEqual>
+			<isNotEqual property="ofrDisc3" compareValue="">
+			, OFR_DISC3     = replace(#ofrDisc3#,',','')
+			</isNotEqual>
+			<isNotEqual property="ofrM" compareValue="">
+			, OFR_M         = #ofrM#         
+			</isNotEqual>
+			<isNotEqual property="ofrN" compareValue="">
+			, OFR_N         = #ofrN#         
+			</isNotEqual>
+			<isNotEqual property="calPurPrc" compareValue="">
+			, CAL_PUR_PRC   = replace(#calPurPrc#,',','')   
+			</isNotEqual>
+			<isNotEqual property="reqPurPrc" compareValue="">
+			, REQ_PUR_PRC   = replace(#reqPurPrc#,',','')  
+			</isNotEqual>
+			<isNotEqual property="purPrc" compareValue="">
+			, PUR_PRC       = replace(#purPrc#,',','')  
+			</isNotEqual>
+			<isNotEqual property="calSalesPrc" compareValue="">
+			, CAL_SALES_PRC = replace(#calSalesPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="calSalesRate" compareValue="">
+			, CAL_SALES_RATE = replace(#calSalesRate#,'.','')
+			</isNotEqual>
+			<isNotEqual property="reqSalesPrc" compareValue="">
+			, REQ_SALES_PRC = replace(#reqSalesPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="salesPrc" compareValue="">
+			, SALES_PRC     = replace(#salesPrc#,',','')
+			</isNotEqual>
+			<isNotEqual property="venRate" compareValue="">
+			, VEN_RATE      = replace(#venRate#,'.','')    
+			</isNotEqual>
+			<isNotEqual property="calComRate" compareValue="">
+			, CAL_COM_RATE  = replace(#calComRate#,'.','')
+			</isNotEqual>
+			, REQ_ITEM_DESC = #reqItemDesc# 
+			, ZBIGO 		= #zbigo# 
+			, WAERS         = 'KRW'         
+			, DEL_YN		= #delYn#
+			, MOD_DATE      = NOW()   
+			, MOD_ID        = #workId#
+		 WHERE REQ_OFRCD = #reqOfrcd#
+		 AND EAN11 = #ean11#
+	</update>
+	
+	<!-- 행사 item 저장 MERGE -->
+	 <insert id="mergeProEvntItemList" parameterClass="nEDMPRO0310VO">	  
+    	/*NEDMPRO0310.mergeProEvntItemList*/
+    	MERGE INTO TPC_PROD_EVNT_ITEM A
+			USING (
+				SELECT
+					#reqOfrcd#	AS reqOfrcd		/* 행사번호 */
+					, #matnr#	AS matnr		/* 상품코드 */
+			) B
+				ON ( A.REQ_OFRCD = b.reqofrcd and a.MATNR = b.matnr )
+			WHEN MATCHED THEN
+				UPDATE SET
+					  EAN11         = #ean11#         
+					<isNotEqual property="ofrStd" compareValue="">
+					, OFR_STD       = replace(#ofrStd#,',','')
+					</isNotEqual>
+					<isNotEqual property="giftAmt" compareValue="">
+					, GIFT_AMT      = replace(#giftAmt#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrStd1" compareValue="">
+					, OFR_STD1     = replace(#ofrStd1#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrDisc1" compareValue="">
+					, OFR_DISC1     = replace(#ofrDisc1#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrStd2" compareValue="">
+					, OFR_STD2     = replace(#ofrStd2#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrDisc2" compareValue="">
+					, OFR_DISC2     = replace(#ofrDisc2#,',','') 
+					</isNotEqual>
+					<isNotEqual property="ofrStd3" compareValue="">
+					, OFR_STD3     = replace(#ofrStd3#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrDisc3" compareValue="">
+					, OFR_DISC3     = replace(#ofrDisc3#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrM" compareValue="">
+					, OFR_M         = #ofrM#  
+					</isNotEqual>
+					<isNotEqual property="ofrN" compareValue="">
+					, OFR_N         = #ofrN#
+					</isNotEqual>
+					<isNotEqual property="calPurPrc" compareValue="">
+					, CAL_PUR_PRC   = replace(#calPurPrc#,',','')   
+					</isNotEqual>
+					<isNotEqual property="reqPurPrc" compareValue="">
+					, REQ_PUR_PRC   = replace(#reqPurPrc#,',','')  
+					</isNotEqual>
+					<isNotEqual property="purPrc" compareValue="">
+					, PUR_PRC       = replace(#purPrc#,',','')  
+					</isNotEqual>
+					<isNotEqual property="calSalesPrc" compareValue="">
+					, CAL_SALES_PRC = replace(#calSalesPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="calSalesRate" compareValue="">
+					, CAL_SALES_RATE = replace(#calSalesRate#,'.','')
+					</isNotEqual>
+					<isNotEqual property="reqSalesPrc" compareValue="">
+					, REQ_SALES_PRC = replace(#reqSalesPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="salesPrc" compareValue="">
+					, SALES_PRC     = replace(#salesPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="venRate" compareValue="">
+					, VEN_RATE      = replace(#venRate#,'.','')    
+					</isNotEqual>
+					<isNotEqual property="calComRate" compareValue="">
+					, CAL_COM_RATE  = replace(#calComRate#,'.','')
+					</isNotEqual>
+					, REQ_ITEM_DESC = #reqItemDesc# 
+					, ZBIGO			= #zbigo# 
+					, WAERS         = 'KRW'         
+					, DEL_YN		= #delYn#
+					, MOD_DATE      = NOW()   
+					, MOD_ID        = #workId#
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  REQ_OFRCD
+					, EAN11
+					, MATNR
+					, MAKTX
+					<isNotEqual property="ofrStd" compareValue="">
+					, OFR_STD
+					</isNotEqual>
+					<isNotEqual property="giftAmt" compareValue="">
+					, GIFT_AMT
+					</isNotEqual>
+					<isNotEqual property="ofrStd1" compareValue="">
+					, OFR_STD1
+					</isNotEqual>
+					<isNotEqual property="ofrDisc1" compareValue="">
+					, OFR_DISC1
+					</isNotEqual>
+					<isNotEqual property="ofrStd2" compareValue="">
+					, OFR_STD2
+					</isNotEqual>
+					<isNotEqual property="ofrDisc2" compareValue="">
+					, OFR_DISC2
+					</isNotEqual>
+					<isNotEqual property="ofrStd3" compareValue="">
+					, OFR_STD3
+					</isNotEqual>
+					<isNotEqual property="ofrDisc3" compareValue="">
+					, OFR_DISC3
+					</isNotEqual>
+					<isNotEqual property="ofrM" compareValue="">
+					, OFR_M  
+					</isNotEqual>
+					<isNotEqual property="ofrN" compareValue="">
+					, OFR_N
+					</isNotEqual>
+					<isNotEqual property="calPurPrc" compareValue="">
+					, CAL_PUR_PRC
+					</isNotEqual>
+					<isNotEqual property="reqPurPrc" compareValue="">
+					, REQ_PUR_PRC
+					</isNotEqual>
+					<isNotEqual property="purPrc" compareValue="">
+					, PUR_PRC
+					</isNotEqual>
+					<isNotEqual property="calSalesPrc" compareValue="">
+					, CAL_SALES_PRC
+					</isNotEqual>
+					<isNotEqual property="calSalesRate" compareValue="">
+					, CAL_SALES_RATE
+					</isNotEqual>
+					<isNotEqual property="reqSalesPrc" compareValue="">
+					, REQ_SALES_PRC
+					</isNotEqual>
+					<isNotEqual property="salesPrc" compareValue="">
+					, SALES_PRC
+					</isNotEqual>
+					<isNotEqual property="venRate" compareValue="">
+					, VEN_RATE 
+					</isNotEqual>
+					<isNotEqual property="calComRate" compareValue="">
+					, CAL_COM_RATE
+					</isNotEqual>
+					, REQ_ITEM_DESC
+					, ZBIGO
+					, WAERS
+					, DEL_YN
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) values (
+					#reqOfrcd#
+					, #ean11#
+					, #matnr#
+					, #maktx#
+					<isNotEqual property="ofrStd" compareValue="">
+					, replace(#ofrStd#,',','')
+					</isNotEqual>
+					<isNotEqual property="giftAmt" compareValue="">
+					, replace(#giftAmt#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrStd1" compareValue="">
+					, replace(#ofrStd1#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrDisc1" compareValue="">
+					, replace(#ofrDisc1#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrStd2" compareValue="">
+					, replace(#ofrStd2#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrDisc2" compareValue="">
+					, replace(#ofrDisc2#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrStd3" compareValue="">
+					, replace(#ofrStd3#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrDisc3" compareValue="">
+					, replace(#ofrDisc3#,',','')
+					</isNotEqual>
+					<isNotEqual property="ofrM" compareValue="">
+					, #ofrM#  
+					</isNotEqual>
+					<isNotEqual property="ofrN" compareValue="">
+					, #ofrN#
+					</isNotEqual>
+					<isNotEqual property="calPurPrc" compareValue="">
+					, replace(#calPurPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="reqPurPrc" compareValue="">
+					, replace(#reqPurPrc#,',','')  
+					</isNotEqual>
+					<isNotEqual property="purPrc" compareValue="">
+					, replace(#purPrc#,',','')   
+					</isNotEqual>
+					<isNotEqual property="calSalesPrc" compareValue="">
+					, replace(#calSalesPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="calSalesRate" compareValue="">
+					, replace(#calSalesRate#,'.','')
+					</isNotEqual>
+					<isNotEqual property="reqSalesPrc" compareValue="">
+					, replace(#reqSalesPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="salesPrc" compareValue="">
+					, replace(#salesPrc#,',','')
+					</isNotEqual>
+					<isNotEqual property="venRate" compareValue="">
+					, replace(#venRate#,'.','')    
+					</isNotEqual>
+					<isNotEqual property="calComRate" compareValue="">
+					, replace(#calComRate#,'.','')
+					</isNotEqual>
+					, #reqItemDesc#
+					, #zbigo#
+					, 'KRW'
+					, 'N'
+					, NOW()
+					, #workId#
+					, NOW()
+					, #workId#
+				);
+ 	</insert>
+
+
+
+
+	 <!-- 판매바코드 카운터 조회 -->
+    <select id="selectSaleBarcodeListCount" parameterClass="nEDMPRO0310VO" resultClass="Integer" >
+    /* NEDMPRO0310.selectSaleBarcodeListCount */
+	    
+	    SELECT COUNT(*)
+	    FROM(
+	    	 SELECT                                     
+				'1' AS ROWNUM				/* ROW 번호	*/
+			,	'100000' AS EAN11			/* 판매바코드 	*/
+			,	'1000' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임1' AS MAKTX		/* 상품명		*/
+	    )A
+    </select>
+    
+    <!-- 판매바코드 조회 -->
+    <select id="selectSaleBarcodeList" parameterClass="nEDMPRO0310VO" resultMap="selectSaleBarcodeListMap" >
+    /* NEDMPRO0310.selectSaleBarcodeList */
+	    
+	    SELECT                                     
+				'1' AS ROWNUM				/* ROW 번호	*/
+			,	'100000' AS EAN11			/* 판매바코드 	*/
+			,	'1000' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임1' AS MAKTX		/* 상품명		*/
+		
+		UNION ALL
+		
+		SELECT                                     
+				'2' AS ROWNUM				/* ROW 번호	*/
+			,	'200000' AS EAN11			/* 판매바코드 	*/
+			,	'1001' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임2' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'3' AS ROWNUM				/* ROW 번호	*/
+			,	'300000' AS EAN11			/* 판매바코드 	*/
+			,	'1002' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임3' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'4' AS ROWNUM				/* ROW 번호	*/
+			,	'400000' AS EAN11			/* 판매바코드 	*/
+			,	'1003' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임4' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'5' AS ROWNUM				/* ROW 번호	*/
+			,	'500000' AS EAN11			/* 판매바코드 	*/
+			,	'1004' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임5' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'6' AS ROWNUM				/* ROW 번호	*/
+			,	'600000' AS EAN11			/* 판매바코드 	*/
+			,	'1005' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임6' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'7' AS ROWNUM				/* ROW 번호	*/
+			,	'700000' AS EAN11			/* 판매바코드 	*/
+			,	'1006' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임7' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'8' AS ROWNUM				/* ROW 번호	*/
+			,	'800000' AS EAN11			/* 판매바코드 	*/
+			,	'1007' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임8' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                          	           
+				'9' AS ROWNUM				/* ROW 번호	*/
+			,	'900000' AS EAN11			/* 판매바코드 	*/
+			,	'1008' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임9' AS MAKTX		/* 상품명		*/
+		UNION ALL
+		
+		SELECT                                     
+				'10' AS ROWNUM				/* ROW 번호	*/
+			,	'110000' AS EAN11			/* 판매바코드 	*/
+			,	'1009' AS MATNR				/* 상품코드	*/
+			,	'상품명 테스트임10' AS MAKTX		/* 상품명		*/
+    </select>
+    
+	<!-- ecs 연계 계약 번호 생성 -->
+	<select id="selectEcsContCode" resultClass="String" parameterClass="nEDMPRO0310VO">
+		SELECT 'ET' || TO_CHAR(NOW(),'YYYYMMDD')||LPAD(CAST(nextval('tpc_prod_seq') AS CHAR(10)), 5, '0')
+	</select>
+
+
+	<!-- RFC 호출 정보 조회 -->
+	<select id="selectEvntRfcCallData" parameterClass="nEDMPRO0310VO" resultMap="rfcCallDataMap">
+		/* NEDMPRO0310.selectEvntRfcCallData */
+		SELECT                                     
+			  REQ_OFRCD				   /* 파트너사행사번호 	*/ 
+			, LIFNR          		   /* 파트너사코드 		*/  
+			, VKORG                    /* 계열사      	*/
+			, VKORG_TXT                /* 계열사명     	*/
+			, REQ_PUR_TXT              /* 행사목적     	*/
+			, REQ_OFR_TXT              /* 행사명	    	*/
+			, ZDEAL                    /* 거래형태     	*/
+			, ZDEAL_TXT                /* 거래형태명    	*/
+			, REQ_TYPE AS REQ_TYP      /* 행사유형     	*/
+			, REQ_TYPE_TXT             /* 행사유형명    	*/
+			, REQ_DISC                 /* 할인유형     	*/
+			, REQ_DISC_TXT             /* 할인유형명    	*/
+			, COST_TYPE                /* 비용적용방식   	*/
+			, COST_TYPE_TXT            /* 비용적용방식명  	*/
+			, REQ_CONTYP               /* 판촉요청합의서  	*/
+			, REQ_CONTYP_TXT           /* 판촉요청합의서명 	*/
+			, COALESCE(HD_VEN_RATE, '0') AS HD_VEN_RATE /* 파트너사분담율  	*/
+			, COALESCE(OFR_COST, '0') AS OFR_COST		/* 예상판촉비용   	*/
+			, OFSDT					   /* 행사시작일  		*/
+			, OFEDT					   /* 행사종료일  		*/
+			, PRSDT					   /* 발주시작일  		*/
+			, PREDT					   /* 발주종료일  		*/
+			, WERKS_TYPE               /* 대상점포     	*/
+			, WERKS_TYPE_TXT           /* 대상점포명    	*/
+			, WERKS_ETC_TXT            /* 기타점포명    	*/
+			, REQ_OFR_DESC             /* 행사세부요청사항 	*/
+			, WAERS                    /* 통화       		*/
+			, APPR_STATUS              /* 승인여부     	*/
+			, DOC_TYPE                 /* 서식유형     	*/
+			, TO_CHAR(REG_DATE,'YYYYMMDD') AS DOC_DATE	/* 등록일시 */
+			, DEP_CD				   /* 팀코드			*/
+			, SUB_NO				   /* 서브테마번호		*/
+			FROM TPC_PROD_EVNT A
+			WHERE A.REQ_OFRCD = #reqOfrcd#
+			AND A.DEL_YN = 'N'
+	</select>
+	
+	<!-- RFC 호출 정보 조회 -->
+	<select id="selectEvntItemRfcCallData" parameterClass="nEDMPRO0310VO" resultMap="rfcItemCallDataMap">
+		/* NEDMPRO0310.selectEvntItemRfcCallData */
+		SELECT 
+			  REQ_OFRCD					/* 파트너사행사번호	*/
+			, EAN11                     /* 판매바코드(13) 	*/
+			, MATNR                     /* 상품코드		*/    
+			, MAKTX                     /* 상품명			*/     
+			, OFR_STD                   /* 행사기준    	*/
+			, COALESCE(GIFT_AMT, '0') AS GIFT_AMT /* 증정/사은 금액 */
+			, OFR_STD1                  /* 기준1     		*/
+			, COALESCE(OFR_DISC1, '0') AS OFR_DISC1	 /* 할인1	  */
+			, OFR_STD2                  /* 기준1	   		*/
+			, COALESCE(OFR_DISC2, '0') AS OFR_DISC2  /* 할인2	  */
+			, OFR_STD3                  /* 기준2	   		*/
+			, COALESCE(OFR_DISC3, '0') AS OFR_DISC3  /* 할인3	  */
+			, OFR_M                     /* M 	       	*/
+			, OFR_N                     /* N       		*/
+			, COALESCE(CAL_PUR_PRC, '0') AS CAL_PUR_PRC     	/* 변경금액(원) 	*/
+			, COALESCE(CAL_COM_RATE, '0') AS CAL_COM_RATE  	/* 변경수수료(%)	*/
+			, COALESCE(REQ_PUR_PRC, '0') AS REQ_PUR_PRC    	/* 제안 납품가(원) 	*/
+			, COALESCE(PUR_PRC, '0') AS PUR_PRC          		/* 기존 납품가(원) 	*/
+			, COALESCE(CAL_SALES_PRC, '0') AS CAL_SALES_PRC   	/* 변경금액(원) 	*/
+			, COALESCE(CAL_SALES_RATE, '0') AS CAL_SALES_RATE 	/* 변경수수료(%) 	*/
+			, COALESCE(REQ_SALES_PRC, '0') AS REQ_SALES_PRC 	/* 제안 판매가(원) 	*/
+			, COALESCE(SALES_PRC, '0') AS SALES_PRC 			/* 기존 판매가(원) 	*/
+			, COALESCE(VEN_RATE, '0') AS VEN_RATE				/* 파트너사분담율(%)	*/
+			, REQ_ITEM_DESC             /* 행사상품 특이사항 	*/
+			, ZBIGO             		/* 비고 			*/
+			, WAERS                     /* 통화      		*/
+		FROM TPC_PROD_EVNT_ITEM
+		WHERE REQ_OFRCD = #reqOfrcd#
+		AND DEL_YN = 'N'
+	</select>
+
+	
+	<!-- 행사 서브 테마 번호 카운터 조회 -->
+    <select id="selectProdEvntThmCount" parameterClass="nEDMPRO0310VO" resultClass="Integer" >
+    /* NEDMPRO0310.selectProdEvntThmCount */
+	    
+	    SELECT COUNT(*)
+		FROM TPC_PROD_EVNT_THM
+		WHERE TO_CHAR(CAST(EN_DY AS TIMESTAMP), 'YYYYMMDD') >= TO_CHAR(NOW(),'YYYYMMDD')
+		<isNotEqual property="srcSubTxt" compareValue="">
+		AND (SUB_NO LIKE '%'|| #srcSubTxt# ||'%' OR SUB_TXT LIKE '%'|| #srcSubTxt# ||'%')
+		</isNotEqual>
+		<isNotEqual property="vkorg" compareValue="">
+		AND VKORG = #vkorg#
+		</isNotEqual>
+    </select>
+    
+	<!-- 행사 서브 테마 번호 조회 -->
+    <select id="selectProdEvntThmList" parameterClass="nEDMPRO0310VO" resultMap="selectProdEvntThmMap" >
+    /* NEDMPRO0310.selectProdEvntThmList */
+	    SELECT                                     
+			 (ROW_NUMBER() OVER()) AS ROWNUM /* 행번호 */
+			, SUB_NO		/* 서브테마번호	*/
+			, VKORG			/* 영업조직	*/
+			, SUB_TXT		/* 서브테마명	*/
+			, TO_CHAR(CAST(ST_DY AS TIMESTAMP), 'YYYY-MM-DD') AS ST_DY			/* 행사시작일	*/
+			, TO_CHAR(CAST(EN_DY AS TIMESTAMP), 'YYYY-MM-DD') AS EN_DY			/* 행사종료일	*/
+			, TO_CHAR(CAST(PUR_ST_DY AS TIMESTAMP), 'YYYY-MM-DD') AS PUR_ST_DY	/* 발주시작일	*/
+			, TO_CHAR(CAST(PUR_EN_DY AS TIMESTAMP), 'YYYY-MM-DD') AS PUR_EN_DY	/* 발주종료일	*/
+			, TO_CHAR(CAST(END_DY AS TIMESTAMP), 'YYYY-MM-DD') AS END_DY		/* 등록종료일	*/
+			FROM TPC_PROD_EVNT_THM
+			WHERE TO_CHAR(CAST(EN_DY AS TIMESTAMP), 'YYYYMMDD') <![CDATA[>=]]> TO_CHAR(NOW(),'YYYYMMDD')
+			AND END_DY <![CDATA[>=]]> TO_CHAR(NOW(), 'YYYYMMDD')
+			<isNotEqual property="srcSubTxt" compareValue="">
+			AND (SUB_NO LIKE '%'|| #srcSubTxt# ||'%' OR SUB_TXT LIKE '%'|| #srcSubTxt# ||'%')
+			</isNotEqual>
+			<isNotEqual property="vkorg" compareValue="">
+			AND VKORG = #vkorg#
+			</isNotEqual>
+    </select>
+	
+	<!-- 팀 정보 카운터 조회 -->
+    <select id="selectDepCdCount" parameterClass="nEDMPRO0310VO" resultClass="Integer" >
+    /* NEDMPRO0310.selectDepCdCount */
+	    
+	    SELECT COUNT(*)
+		FROM TPC_PROD_EVNT_THM
+		WHERE TO_CHAR(CAST(EN_DY AS TIMESTAMP), 'YYYYMMDD') >= TO_CHAR(NOW(),'YYYYMMDD')
+		
+    </select>
+    
+	<!-- 팀 정보 조회 -->
+    <select id="selectDepCdList" parameterClass="nEDMPRO0310VO" resultMap="selectDepCdMap" >
+    /* NEDMPRO0310.selectDepCdList */
+	    SELECT                                     
+			 (ROW_NUMBER() OVER()) AS ROWNUM /* 행번호 */
+			, SUB_NO AS DEP_CD			/* 팀코드	*/
+			, SUB_TXT AS DEP_CD_TXT 	/* 팀명	*/
+			FROM TPC_PROD_EVNT_THM
+    </select>
+
+
+</sqlMap>	

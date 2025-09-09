@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMBRD0003">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+    <typeAlias alias="pscmbrd0003SearchVO" type="com.lottemart.epc.board.model.PSCMBRD0003SearchVO"/>
+
+
+    <select id="selectinquireList" resultClass="dataMap">
+    <![CDATA[
+        /* PSCMBRD0003.selectinquireList */
+        SELECT
+            *
+        FROM
+        (
+            SELECT
+                ROWNUM
+              , CEIL(ROWNUM / #recordCountPerPage#) AS PAGE
+              , COUNT(*) OVER()                     AS TOTAL_COUNT
+              , SUB.*
+            FROM
+            (
+                SELECT
+                    TC.SCRP_KIND_CD                                                 AS SCRP_KIND_CD         --글종류코드(Q:질문/ A:답변)
+                  , DECODE(NVL(TC.CALL_ID, ''), '', 'N', 'Y')                       AS DEL_YN               --녹취여부(Call ID 존재시 청취 할수있음.)
+                  , TC.CALL_ID                                                      AS CALL_ID
+                  , TC.COUNSEL_SEQ                                                  AS COUNSEL_SEQ          --순번
+                  , TCT.TRANSFER_SEQ                                                 AS TRANSFER_SEQ         --이관순번
+                  , PG_UTIL.FN_GET_CD_NM('QA001', TC.CLM_LGRP_CD)                   AS CLM_LGRP_CD_NM       --문의유형(대)명칭(QA001)
+                  , (
+                      SELECT T.CD_NM FROM TET_CODE T WHERE T.MINOR_CD = TC.CLM_MGRP_CD AND LET_4_REF IN('QAH01', 'QA001')
+                    )                                                               AS CLM_MGRP_CD_NM       --문의유형(소)명칭(QA100, (QA999))
+                  , TC.TITLE                                                        AS TITLE                --문의제목
+                  , PG_UTIL.FN_GET_CD_NM('QA004', TC.BOARD_PRGS_STS_CD)             AS BOARD_PRGS_STS_CD_NM --처리상태(QA004)
+                  , PG_UTIL.FN_GET_CD_NM('QA005', TC.ACCEPT_LOCA_CD)                AS ACCEPT_LOCA_CD_NM    --접수처
+                  , (SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = TC.ACCEPT_ID)  AS ACCEPT_ID            --접수자
+                  , TO_CHAR(TC.REG_DATE, 'YYYY-MM-DD HH24:MI:SS')                   AS REG_DATE             --접수일시
+                  , TC.CLM_LGRP_CD                                                  AS CLM_LGRP_CD          --문의유형(대)코드
+                  , TC.ORDER_ID                                                     AS ORDER_ID             --고객문의구분(문의유형대)로 DP
+                  , TCT.TRANSFER_OBJECT_CD                                          AS TRANSFER_OBJECT_CD   --이관TO코드(협력업체코드)
+                  
+                FROM
+                    TOR_COUNSEL          TC
+                  , TOR_COUNSEL_TRANSFER TCT
+                WHERE 1=1
+                AND TC.COUNSEL_SEQ = TCT.COUNSEL_SEQ
+                AND TC.SCRP_KIND_CD = 'Q'
+                AND TC.WRT_DY BETWEEN #startDate# AND #endDate#
+                AND TCT.TRANSFER_OBJECT_CD IN
+    ]]>
+    <iterate property="vendorId" open="(" close=")" conjunction=",">
+                #vendorId[]# -- 협력업체코드
+    </iterate>
+    <isNotEmpty property="custQstDivnCd">
+                AND TC.CLM_LGRP_CD = #custQstDivnCd# -- 고객문의구분
+    </isNotEmpty>
+    <isNotEmpty property="agentLocation">
+                AND TC.ACCEPT_LOCA_CD = #agentLocation# --접수위치
+    </isNotEmpty>
+    <isNotEmpty property="typeCheck">
+        <isEqual property="typeCheck" compareValue="Y">
+                AND TC.BOARD_PRGS_STS_CD = '4'
+        </isEqual>
+        <isEqual property="typeCheck" compareValue="N">
+                AND TC.BOARD_PRGS_STS_CD != '4'
+        </isEqual>
+    </isNotEmpty>
+    <![CDATA[
+                ORDER BY
+                    TC.COUNSEL_SEQ DESC
+            ) SUB
+        )
+        WHERE PAGE = #pageIndex#
+    ]]>
+    </select>
+    
+    <select id="agentLocation" resultClass="dataMap">
+    <![CDATA[   
+	    /* PSCMBRD0003.agentLocation */
+	        SELECT   
+	            MINOR_CD
+	          , CD_NM
+	    FROM 
+	        TET_CODE      
+	    WHERE 
+	        MAJOR_CD  = 'QA005' 
+	    AND MINOR_CD != '*'
+    ]]>
+    </select>
+
+    <select id="custQstDivnCd" resultClass="dataMap">
+    <![CDATA[
+        /* PSCMBRD0003.custQstDivnCd */
+        SELECT
+            MINOR_CD
+          , CD_NM
+        FROM 
+            TET_CODE
+        WHERE 
+            MAJOR_CD  = 'QA001'  
+        AND MINOR_CD != '*'
+    ]]>
+    </select>
+
+    <select id="selectCounselCount" resultClass="dataMap">
+    <![CDATA[
+        /* PSCMBRD0003.selectCounselCount */
+        SELECT
+            SUM( COUNTALL ) AS COUNTALL
+          , SUM( COUNTPRO ) AS COUNTPRO
+          , SUM( COUNTANS ) AS COUNTANS
+        FROM
+        (
+            SELECT
+                COUNT(*) AS COUNTALL
+              , 0        AS COUNTPRO
+              , 0        AS COUNTANS
+            FROM
+            (
+                SELECT
+                    B.ACCEPT_ID
+                  , (
+                        SELECT
+                            ANS_MNGR_ID
+                        FROM
+                            TOR_COUNSEL_TRANSFER
+                        WHERE REG_DATE IN ( SELECT MAX(A.REG_DATE) FROM TOR_COUNSEL_TRANSFER A WHERE A.COUNSEL_SEQ = B.COUNSEL_SEQ)
+                    ) AS ANS_MNGR_ID
+                FROM
+                    TOR_COUNSEL B
+                  , TOR_COUNSEL_TRANSFER C
+                WHERE 1=1
+                AND B.COUNSEL_SEQ = C.COUNSEL_SEQ
+                AND B.SCRP_KIND_CD = 'Q'
+		        AND B.WRT_DY BETWEEN #startDate# AND #endDate#
+		        AND C.TRANSFER_OBJECT_CD IN
+    ]]>
+        <iterate property="vendorId" open="(" close=")" conjunction=",">
+		        #vendorId[]# -- 협력업체코드
+		</iterate>
+    <![CDATA[
+            ) A
+              
+            UNION ALL
+
+            SELECT
+                0        AS COUNTALL
+              , COUNT(*) AS COUNTPRO
+              , 0        AS COUNTANS
+            FROM
+            (
+                SELECT
+                    B.ACCEPT_ID
+                  , (
+                        SELECT
+                            ANS_MNGR_ID
+                        FROM
+                            TOR_COUNSEL_TRANSFER
+                        WHERE REG_DATE IN ( SELECT MAX(A.REG_DATE) FROM TOR_COUNSEL_TRANSFER A WHERE A.COUNSEL_SEQ = B.COUNSEL_SEQ)
+                    ) AS ANS_MNGR_ID
+                FROM
+                    TOR_COUNSEL B
+                  , TOR_COUNSEL_TRANSFER C
+                WHERE 1=1
+                AND B.COUNSEL_SEQ = C.COUNSEL_SEQ
+                AND B.SCRP_KIND_CD = 'Q'
+                AND B.WRT_DY BETWEEN #startDate# AND #endDate#
+                AND B.BOARD_PRGS_STS_CD IN ('2', '3', '5', '6', '7')
+                AND C.TRANSFER_OBJECT_CD IN
+    ]]>
+        <iterate property="vendorId" open="(" close=")" conjunction=",">
+                #vendorId[]# -- 협력업체코드
+        </iterate>
+    <![CDATA[
+            ) A
+
+            UNION ALL
+
+            SELECT
+                0        AS COUNTALL
+              , 0        AS COUNTPRO
+              , COUNT(*) AS COUNTANS
+            FROM
+            (
+                SELECT
+                    B.ACCEPT_ID
+                  , (
+                        SELECT
+                            ANS_MNGR_ID
+                        FROM
+                            TOR_COUNSEL_TRANSFER
+                        WHERE REG_DATE IN ( SELECT MAX(A.REG_DATE) FROM TOR_COUNSEL_TRANSFER A WHERE A.COUNSEL_SEQ = B.COUNSEL_SEQ)
+                    )AS ANS_MNGR_ID
+                FROM
+                    TOR_COUNSEL B
+                  , TOR_COUNSEL_TRANSFER C
+                WHERE 1=1
+                AND B.COUNSEL_SEQ = C.COUNSEL_SEQ 
+                AND B.SCRP_KIND_CD = 'Q'
+                AND B.WRT_DY BETWEEN #startDate# AND #endDate#
+                AND B.BOARD_PRGS_STS_CD = '4'
+                AND C.TRANSFER_OBJECT_CD IN
+    ]]>
+        <iterate property="vendorId" open="(" close=")" conjunction=",">
+                #vendorId[]# -- 협력업체코드
+        </iterate>
+    <![CDATA[
+            ) A
+        )
+    ]]>
+    </select>
+
+</sqlMap>

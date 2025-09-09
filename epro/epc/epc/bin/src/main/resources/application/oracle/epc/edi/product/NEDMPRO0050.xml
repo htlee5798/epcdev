@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0050">
+
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectDealProductList" resultClass="dataMap">
+	/* SQLINES DEMO *** ectDealProductList */
+	SELECT C.*
+	     , CASE WHEN DISP_YN = 'N' THEN '판매중지'
+	            WHEN SOUT_YN = 0 THEN '판매중'
+	            WHEN DISP_YN = 'Y' AND SOUT_YN = ITEM_CNT AND STOCK_QTY = 0 THEN '품절'
+	            ELSE '' 
+	       END AS SELL_FLAG
+	  FROM (SELECT COUNT(*) OVER() TOTAL_COUNT
+	             , B.PROD_CD
+	             , B.PROD_NM
+	             , A.REP_YN
+	             , B.CURR_SELL_PRC
+	             , B.DISP_YN
+	             , A.ORDER_SEQ
+	             , (SELECT SUM(RSERV_STK_QTY)
+                     FROM TPR_STORE_ITEM_PRICE TIP 
+                    WHERE TIP.PROD_CD = A.PROD_CD) AS STOCK_QTY
+                 , (SELECT SUM(CASE SOUT_YN WHEN 'Y' THEN 1 WHEN 'N' THEN 0 END)
+                      FROM TPR_STORE_ITEM_PRICE TIP 
+                     WHERE TIP.PROD_CD = A.PROD_CD) AS SOUT_YN
+                 , (SELECT COUNT(*)
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = A.PROD_CD) AS ITEM_CNT
+                 , COALESCE(A.THEMA_SEQ, '0') AS THEMA_SEQ
+                 , A.MAIN_PROD_YN
+	          FROM TPC_DEAL_PROD_INFO A
+	             , TPR_PRODUCT B
+	         WHERE PGM_ID = #pgmId#
+	           AND A.PROD_CD = B.PROD_CD
+	       ) C
+	 ORDER BY C.ORDER_SEQ
+	</select>
+
+	<select id="selectDealThemaList" resultClass="dataMap">
+	/* SQLINES DEMO *** ectDealThemaList */
+	SELECT ROW_NUMBER() OVER () AS SEQ
+         , DT.PGM_ID
+	     , COALESCE(DT.THEMA_SEQ, '0') AS THEMA_SEQ
+	     , DT.THEMA_NM
+	     , DT.ORDER_SEQ
+         , (SELECT CASE WHEN MAX(DP.REP_YN) = 'Y' THEN 'Y' ELSE '' END
+             FROM TPC_DEAL_PROD_INFO DP
+            WHERE DP.PGM_ID = #pgmId#
+              AND DP.PGM_ID = DT.PGM_ID
+              AND DP.THEMA_SEQ = DT.THEMA_SEQ ) AS REP_PROD_EXISTS_YN
+         , (SELECT P.PROD_CD
+              FROM TPC_DEAL_PROD_INFO DP
+                 , TPR_PRODUCT P
+             WHERE DP.PGM_ID = #pgmId#
+               AND DP.PROD_CD = P.PROD_CD
+               AND DP.PGM_ID = DT.PGM_ID
+               AND DP.THEMA_SEQ = DT.THEMA_SEQ
+               AND DP.MAIN_PROD_YN = 'Y' ) AS MAIN_PROD_CD
+         , (SELECT P.PROD_NM
+              FROM TPC_DEAL_PROD_INFO DP
+                 , TPR_PRODUCT P
+             WHERE DP.PGM_ID = #pgmId#
+               AND DP.PROD_CD = P.PROD_CD
+               AND DP.PGM_ID = DT.PGM_ID
+               AND DP.THEMA_SEQ = DT.THEMA_SEQ
+               AND DP.MAIN_PROD_YN = 'Y' ) AS MAIN_PROD_NM
+	     , (SELECT COUNT(PROD_CD)
+              FROM TPC_DEAL_PROD_INFO A
+             WHERE A.PGM_ID = #pgmId#
+               AND A.PGM_ID = DT.PGM_ID
+               AND A.THEMA_SEQ = DT.THEMA_SEQ ) AS PROD_QTY
+         , DT.REG_ID
+	     , DT.REG_DATE
+	     , DT.MOD_ID
+	     , DT.MOD_DATE
+	  FROM TPC_DEAL_THEMA DT
+	 WHERE DT.PGM_ID = #pgmId#
+	 ORDER BY DT.ORDER_SEQ
+	</select>
+	
+	<select id="selectDealThemaProdList" resultClass="dataMap">
+	/* SQLINES DEMO *** ectDealThemaProdList */
+	SELECT T.PROD_CD AS "prodCd"
+         , T.MAIN_PROD_YN AS "mainProdYn"
+         , T.REP_YN AS "repYn"
+         , T.ORDER_SEQ AS "orderSeq"
+         , T.PROD_NM AS "prodNm"
+         , T.APRV_YN AS "aprvYn"
+         , T.CURR_SELL_PRC AS "currSellPrc"
+         , CASE WHEN T.DISP_YN = 'N' THEN '판매중지'
+                WHEN T.SOUT_YN = 0 THEN '판매중'
+                WHEN T.DISP_YN = 'Y' AND T.SOUT_YN = T.ITEM_CNT AND T.RSERV_STK_QTY = 0 THEN '품절'
+                ELSE '' 
+           END AS "sellFlag"
+      FROM (SELECT DP.PGM_ID
+                 , COALESCE(DP.THEMA_SEQ, '0') AS THEMA_SEQ
+                 , DP.PROD_CD
+                 , DP.MAIN_PROD_YN
+                 , DP.REP_YN
+                 , DP.ORDER_SEQ
+                 , P.APRV_YN
+                 , P.PROD_NM
+                 , P.DISP_YN
+                 , P.CURR_SELL_PRC
+                 , (SELECT SUM(RSERV_STK_QTY)
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = DP.PROD_CD
+                   ) AS RSERV_STK_QTY
+                 , (SELECT SUM(CASE SOUT_YN WHEN 'Y' THEN 1 WHEN 'N' THEN 0 END)
+                      FROM TPR_STORE_ITEM_PRICE TIP 
+                     WHERE TIP.PROD_CD = DP.PROD_CD) AS SOUT_YN
+                 , (SELECT COUNT(1)
+                      FROM TPR_STORE_ITEM_PRICE TIP 
+                     WHERE TIP.PROD_CD = DP.PROD_CD) AS ITEM_CNT
+              FROM TPC_DEAL_PROD_INFO DP
+                 , TPR_PRODUCT P
+             WHERE DP.PGM_ID = #pgmId#
+               AND DP.THEMA_SEQ = #themaSeq#
+               AND DP.PROD_CD = P.PROD_CD
+           ) T
+     ORDER BY T.ORDER_SEQ
+	</select>
+
+	<insert id="insertDealThema">
+	/* SQLINES DEMO *** ertDealThema */
+	INSERT INTO TPC_DEAL_THEMA
+	( PGM_ID
+	, THEMA_SEQ
+	, THEMA_NM
+	, ORDER_SEQ
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE )
+	VALUES
+	( #pgmId#
+	, #themaSeq#
+	, #themaNm#
+	, #orderSeq#
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #modId#
+	, CURRENT_TIMESTAMP(0) )
+	</insert>
+
+	<delete id="deleteDealThema">
+	/* SQLINES DEMO *** eteDealThema */
+	DELETE FROM TPC_DEAL_THEMA WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 묶음... SQLINES DEMO *** -->
+	<delete id="deleteDealProduct">
+	/* SQLINES DEMO *** eteDealProduct */
+	DELETE FROM TPC_DEAL_PROD_INFO WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 묶음... SQLINES DEMO *** -->
+	<insert id="insertDealProduct">
+	/* SQLINES DEMO *** ertDealProduct */
+	INSERT INTO TPC_DEAL_PROD_INFO
+	( PGM_ID
+	, PROD_CD
+	, REP_YN
+	, ORDER_SEQ
+	, THEMA_SEQ
+	, MAIN_PROD_YN
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE )
+	VALUES
+	( #pgmId#
+	, #prodCd#
+	, #repYn#
+	, #orderSeq#
+	, #themaSeq#
+	, #mainProdYn#
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #modId#
+	, CURRENT_TIMESTAMP(0) )
+	</insert>
+
+</sqlMap>

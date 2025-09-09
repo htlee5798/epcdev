@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommonProduct">
+	
+	<typeAlias alias="resultL1Class"	type="com.lottemart.epc.edi.product.model.CommonProductVO" />				<!-- SQLINES DEMO *** 트, 계절년도 전상법 리스트 공통 VO -->
+	
+	<!-- 계절... SQLINES DEMO *** -->
+	<resultMap id="selectNseasonYearMap"		class="resultL1Class">
+		<result property="yearCd"	column="YEAR_CD"	/>
+		<result property="yearNm"	column="YEAR_NM"	/>
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** 증  콤보박스 구성 리스트 조회 Map -->
+	<resultMap id="selectProdAddTemplateListMap" class="resultL1Class">
+	    <result property="orgNm2" column="ORG_NM2" />
+	    <result property="orgCd2" column="ORG_CD2" />
+	    <result property="orgCd"  column="ORG_CD"  />
+	    <result property="orgNm"  column="ORG_NM"  />
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** 증 콤보박스 변경시 조회 List Map -->
+	<resultMap id="selectProdAddTemplateDetailListMap"		class="resultL1Class">
+		<result property="orgNm2"  		column="ORG_NM2" 	/>
+	    <result property="orgCd2" 		column="ORG_CD2" 	/>	    
+	    <result property="orgCd" 		column="ORG_CD" 	/>
+	    <result property="orgNm" 		column="ORG_NM" 	/>
+	    <result property="orgDesc" 		column="ORG_DESC" 	/>
+	    <result property="orderSeq" 	column="ORDER_SEQ" 	/>
+	    <result property="val" 			column="VAL" 				nullValue = ""/>
+	</resultMap>
+	
+	<!-- 팀 ... SQLINES DEMO *** -->
+ 	<resultMap id="selectNteamListMap" 	class="resultL1Class">
+	    <result property="teamCd"  		column="TEAM_CD" 		/>
+	    <result property="teamNm" 		column="TEAM_NM" 	/>	   
+  	</resultMap>
+	
+	<!-- 대분... SQLINES DEMO *** -->
+ 	<resultMap id="selectNgetL1ListMap" 	class="resultL1Class">
+	    <result property="l1Cd"  		column="L1_CD" 	/>
+	    <result property="l1Nm" 		column="L1_NM" 	/>	   
+  	</resultMap>
+  	
+  	<!-- 대분... SQLINES DEMO *** -->
+ 	<resultMap id="selectNgetL2ListMap" 	class="resultL1Class">
+	    <result property="l2Cd"  		column="L2_CD" 	/>
+	    <result property="l2Nm" 		column="L2_NM" 	/>	   
+  	</resultMap>
+  	
+  	<!-- 소분... SQLINES DEMO *** -->
+ 	<resultMap id="selectNgetL3ListMap" 	class="resultL1Class">	    	   
+	    <result property="l3Cd"  		column="L3_CD" 		/>
+	    <result property="l3Nm" 		column="L3_NM" 		/>	   	    
+  	</resultMap>
+  	
+   	<!-- 소분... SQLINES DEMO *** -->
+ 	<resultMap id="selectNgetGrpL3ListMap" 	class="resultL1Class">	    	   
+	    <result property="grpL3Cd"  		column="GRP_CD" 		/>
+	    <result property="grpL3Nm" 			column="GRP_NM" 		/>	 
+	</resultMap>
+  	
+  	<!-- 계절... SQLINES DEMO *** -->
+  	<resultMap id="selectNseasonListMap" 	class="resultL1Class">
+	    <result property="styleCd"  		column="STYLE_CD"	/>
+	    <result property="styleNm" 			column="STYLE_NM" 	/>	    	     
+  	</resultMap>
+  	
+	<!-- 판매코드 조회 -->
+  	<resultMap id="selectSellCdListMap" 	class="resultL1Class">
+	    <result property="rnum"  			column="RNUM"	/>
+	    <result property="srcmkCd"  		column="SRCMK_CD"	/>
+	    <result property="prodCd" 			column="PROD_CD" 	/>	    	     
+	    <result property="prodNm" 			column="PROD_NM" 	/>	    	     
+	    <result property="venCd" 			column="VEN_CD" 	/>	    	     
+	    <result property="prodPatFg" 		column="PROD_PAT_FG" 	/>	    	     
+	    <result property="prodTypFg" 		column="PROD_TYP_FG" 	/>	     
+	    <result property="freshMeatFg" 		column="FRESH_MEAT_FG" 	/>	    	     
+	    <result property="freshOrdFg" 		column="FRESH_ORD_FG" 	/>	    	     
+	    <result property="dispUnit" 		column="DISP_UNIT" 	/>	     
+	    <result property="ordUnit"	 		column="ORD_UNIT" 	/>	     
+	    <result property="taxFg" 			column="TAX_FG" 	/>	     
+	    <result property="taxFgNm" 			column="TAX_FG_NM" 	/>	     
+	    <result property="orgCost" 			column="ORG_COST" 	/>	    
+	    <result property="orgCostTit"		column="ORG_COST_TIT" 	/>	    
+	    <result property="orgCostKr02" 		column="ORG_COST_KR02" 	/>	    
+	    <result property="orgCostKr03" 		column="ORG_COST_KR03" 	/>	    
+	    <result property="orgCostKr04" 		column="ORG_COST_KR04" 	/>	    
+	    <result property="orgCostKr09" 		column="ORG_COST_KR09" 	/>	    
+	    <result property="freshStdYn" 		column="FRESH_STD_YN" 	/>	     
+	    <result property="l1Cd" 			column="L1_CD" 	/>	    	     
+	    <result property="l1Nm" 			column="L1_NM" 	/>
+	    <result property="l2Cd" 			column="L2_CD" 	/>	    	     
+	    <result property="l2Nm" 			column="L2_NM" 	/>
+	    <result property="l3Cd" 			column="L3_CD" 	/>	    	     
+	    <result property="l3Nm" 			column="L3_NM" 	/>	    	     
+	    <result property="teamCd" 			column="TEAM_CD" 	/>	    	     
+	    <result property="teamNm" 			column="TEAM_NM" 	/>	    	     
+  	</resultMap>
+  	
+  	<!-- 점포코드 조회 -->
+  	<resultMap id="storeListMap" class="resultL1Class">
+		<result column="STR_CD"				property="strCd" 		/>	<!--점포코드  -->
+		<result column="STR_NM"				property="strNm" 		/>	<!--점포명  -->
+		<result column="BMAN_NO"			property="bmanNo" 		/>	<!--사업자번호  -->
+		<result column="COM_NM"				property="comNm" 		/>	<!--상호명  -->
+	</resultMap>
+
+	<!-- 팀정보 및 대분류 맵핑 조회 -->
+	<resultMap id="teamL1CdMap" 	class="resultL1Class">
+		<result property="teamCd" 			column="TEAM_CD" 	/>	    	     
+	    <result property="teamNm" 			column="TEAM_NM" 	/>	    	   
+		<result property="l1Cd" 			column="L1_CD" 	/>	    	     
+	    <result property="l1Nm" 			column="L1_NM" 	/>
+	</resultMap>
+	
+	<!-- 공통코드 값 한번에 조회  -->
+	<resultMap id="commonCodeMap" 	class="java.util.HashMap">
+		<result property="CODE_ID" 				column="CODE_ID" 	/>	    	     
+	    <result property="CODE_NAME" 			column="CODE_NAME" 	/>	    	   
+		<result property="LET_1_REF" 			column="LET_1_REF" 	/>	    	     
+	    <result property="LET_4_REF" 			column="LET_4_REF" 	/>
+	</resultMap>
+	
+	<!-- 수신 담당자 조회 -->
+	<resultMap id="selectEcsReceiverListMap" 	class="java.util.HashMap">
+		<result property="rnum" 	 			column="RNUM"				/>
+<!-- 		<result property="fullGroupId" 			column="FULL_GROUP_ID" 		/>	    	      -->
+<!-- 	    <result property="fullGroupNm" 			column="FULL_GROUP_NM" 		/>	    	    -->
+		<result property="teamCd" 				column="TEAM_CD" 			/>	    	     
+	    <result property="teamNm" 				column="TEAM_NM" 			/>
+	    <result property="managerNm" 			column="MANAGER_NM" 		/>
+	    <result property="empNo" 				column="EMP_NO" 			/>
+	</resultMap>
+	
+	<!-- 통화구분 키값 조회 -->
+	<resultMap id="waersCdMap" class="resultL1Class">
+		<result property="subDtlCd" 			column="subDtlCd" 	/>
+		<result property="subDtlNm" 			column="subDtlNm" 	/>
+	</resultMap>
+
+
+	<!-- 신상... SQLINES DEMO *** -->
+	<select id="selectNcheckCountVendorNewPromoFg"		parameterClass="java.util.Map"		resultClass="Integer">
+		/* SQLINES DEMO *** electNcheckCountVendorNewPromoFg */
+		<![CDATA[		
+		SELECT COUNT(1)	AS CNT
+		FROM HQ_VEN
+		WHERE VEN_CD = #selectedVendor#							/* parameter : 협력업체코드 */
+		AND   NEW_PROMO_FG = 'X'		/* 신상품장려금대상 값이 X이면 대상 */
+		]]>
+	</select>
+	
+	<!-- 거래... SQLINES DEMO *** -->
+	<select id="selectNcheckCountVendorStopTrading"		parameterClass="java.util.Map"		resultClass="Integer">
+		/* SQLINES DEMO *** electNcheckCountVendorStopTrading */
+		<![CDATA[		
+		SELECT COUNT(1)	AS CNT
+		FROM HQ_VEN
+		WHERE VEN_CD = #selectedVendor#							/* parameter : 협력업체코드 */
+		AND   TRD_END_DY < TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')			/* 거래종료일이 현재일자 보다 작으면 거래종료업체로 판단 */
+		]]>
+	</select>
+	<resultMap id="selectNVendorTradeTypeMap"	class="java.util.HashMap">
+		<result property="TRD_TYP_FG"	column="TRD_TYP_FG"	/>
+		<result property="PROMO_AMT_RT"	column="PROMO_AMT_RT"	/>
+	</resultMap>
+	<!-- 거래... SQLINES DEMO *** -->
+	<select id="selectNVendorTradeType"		parameterClass="java.util.Map"	resultMap="selectNVendorTradeTypeMap">
+		/* SQLINES DEMO *** electNVendorTradeType */
+		SELECT 	A.TRD_TYP_FG
+			,	''  	AS PROMO_AMT_RT							/* SQLINES DEMO *** 가져온다 */
+		FROM HQ_VEN A
+		WHERE A.VEN_CD = #selectedVendor#						/* SQLINES DEMO *** 체코드 */			 
+	</select>
+	
+	<!-- 협력... SQLINES DEMO *** -->
+	<select id="selectNVendorTaxType"		parameterClass="java.util.Map"		resultClass="String">
+		/* SQLINES DEMO *** electNVendorTaxType */
+		SELECT  BMAN_TYP_FG
+		FROM HQ_VEN A
+		WHERE A.VEN_CD = #selectedVendor#						/* SQLINES DEMO *** 체코드 */	
+	</select>
+	
+	<!-- 팀 ... SQLINES DEMO *** -->
+	<select id="selectNteamList"			parameterClass="java.util.Map"		resultMap="selectNteamListMap">
+		/* SQLINES DEMO *** electNteamList */   		
+   		SELECT 	TEAM_CD
+			,	TEAM_NM
+		FROM TPC_L1_CD
+		GROUP BY TEAM_CD, TEAM_NM
+		ORDER BY 2	
+	</select>
+	
+	<!-- ECS 사업자별 팀정보 조회 -->
+	<select id="selectEcsNteamList"			parameterClass="java.util.Map"		resultMap="selectNteamListMap">
+	  /* SQLINES DEMO *** selectEcsNteamList */   		
+   	  SELECT TEAM_CD
+			,TEAM_NM
+	  FROM 	TPC_ECS_TEAM_INFO
+	  WHERE TENANT_CD = #purDept#
+	</select>
+	
+	
+	<!-- 해당... SQLINES DEMO *** -->
+	<select id="selectNgetL1list"			parameterClass="java.util.Map"		resultMap="selectNgetL1ListMap">
+		/* SQLINES DEMO *** electNgetL1list */   
+		SELECT  L1_CD
+			,	L1_NM
+		FROM TPC_L1_CD
+		WHERE TEAM_CD = #groupCode#	
+		GROUP BY L1_CD, L1_NM
+		ORDER BY 2		
+	</select>
+	
+	<!-- 대분류의 중분류 조회 -->
+	<select id="selectNgetL2list"			parameterClass="java.util.Map"		resultMap="selectNgetL2ListMap">
+		/* CommonProduct.selectNgetL2list */ 
+		SELECT 	L2_CD
+			,	L2_NM
+		FROM TPC_L1_CD
+		WHERE TEAM_CD = #groupCode#
+		AND L1_CD = #l1Cd#
+		GROUP BY L2_CD, L2_NM
+		ORDER BY 2		
+	</select>
+	
+	<!-- 대분류의 중분류 조회(팀 X) -->
+	<select id="NselectNoTeamL2List"			parameterClass="java.util.Map"		resultMap="selectNgetL2ListMap">
+		/* CommonProduct.NselectNoTeamL2List */ 
+		SELECT 	L2_CD
+			,	L2_NM
+		FROM TPC_L1_CD
+		WHERE 
+		 L1_CD = #l1Cd#
+		GROUP BY L2_CD, L2_NM
+		ORDER BY 2		
+	</select>
+	
+	
+	<!-- 중분류의 소분류 조회 -->
+	<select id="selectNgetL3list"			parameterClass="java.util.Map"		resultMap="selectNgetL3ListMap">
+		/* SQLINES DEMO *** electNgetL3list */   		   	   		
+   		SELECT 	L3_CD
+			,	L3_NM
+		FROM TPC_L1_CD
+		WHERE TEAM_CD = #groupCode#
+		AND L1_CD = #l1Cd#
+		AND L2_CD = #l2Cd#
+		ORDER BY 2
+  	</select>
+  	
+  	<!-- 중분류의 소분류 조회(팀 X) -->
+	<select id="selectNgetNoTeamL3List"			parameterClass="java.util.Map"		resultMap="selectNgetL3ListMap">
+		/* CommonProduct.selectNgetNoTeamL3List */ 
+		SELECT 	L3_CD
+			,	L3_NM
+		FROM TPC_L1_CD
+		WHERE L1_CD = #l1Cd#
+		AND L2_CD = #l2Cd#
+		ORDER BY 2
+	</select>
+	
+  		<!-- 중분... SQLINES DEMO *** -->
+	<select id="selectNgetGrplist"			parameterClass="java.util.Map"		resultMap="selectNgetGrpL3ListMap">
+		/* SQLINES DEMO *** electNgetGrpL3list */  
+			select GRP_CD,GRP_NM 
+			from GRP_L3_GRPCST_PUR_ATT
+			where L3_CD=#l3Cd#
+			and GRP_CD <![CDATA[<>]]>'999999'
+			AND COALESCE(LOEKZ, ' ') <![CDATA[<>]]> 'X'
+			group by GRP_CD,GRP_NM
+	</select>  
+  	
+	
+	<!-- 계절... SQLINES DEMO *** -->
+	<select id="selectNseasonYear"		parameterClass="java.util.Map"			resultMap = "selectNseasonYearMap">
+		/* SQLINES DEMO *** electNseasonYear */
+		SELECT 	STYLE_YR		AS YEAR_CD
+			,	MIN(STYLE_YR)	AS YEAR_NM
+		FROM STYLE
+		WHERE STYLE_CD NOT IN ('0002','0005')
+		GROUP BY STYLE_YR
+	</select>	
+	
+	<!-- 해당... SQLINES DEMO *** -->
+	<select id="selectNseasonList"		parameterClass="java.util.Map"			resultMap="selectNseasonListMap">
+		/* SQLINES DEMO *** electNseasonList */
+		SELECT 	STYLE_CD
+			,	STYLE_NM
+		FROM STYLE
+		WHERE STYLE_YR = #sesnYearCd#		/* 해당년도의 것만 조회 */
+			  AND STYLE_CD NOT IN ('0002','0005')
+	</select>	
+	
+	<!-- SQLINES DEMO ***  변경시 조회 -->
+	<select id="selectProdAddTemplateDetailList" resultMap="selectProdAddTemplateDetailListMap" 		parameterClass="java.util.Map">
+		/* SQLINES DEMO *** electProdAddTemplateDetailList */
+   	<![CDATA[	
+   		SELECT  (SELECT MST.INFO_GRP_NM FROM TPR_PROD_ADD_INFO_MST MST WHERE  MST.INFO_GRP_CD=DET.INFO_GRP_CD LIMIT 1) AS ORG_NM2
+		   ,	DET.INFO_GRP_CD 		AS ORG_CD2
+		   ,	DET.INFO_COL_CD 		AS ORG_CD
+		   ,	DET.INFO_COL_NM 		AS ORG_NM
+		   ,	DET.INFO_COL_DESC 		AS ORG_DESC
+		   ,	DET.ORDER_SEQ  
+		   ,	(SELECT COL_VAL FROM TPR_PROD_ADD_INFO_VAL WHERE INFO_GRP_CD = DET.INFO_GRP_CD AND NEW_PROD_CD = #pgmId# AND INFO_COL_CD = DET.INFO_COL_CD LIMIT 1)	AS VAL
+		FROM  TPR_PROD_ADD_INFO_DET DET
+		WHERE 1=1 AND DET.USE_YN='Y'
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND DET.INFO_GRP_CD = #infoGrpCd# 
+      </isNotEmpty>
+	<![CDATA[
+		ORDER BY DET.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 		 
+   	]]>
+  </select>
+  
+  <!-- SQLINES DEMO *** 경시 조회 -->
+  <select id="selectProdCertTemplateDetailList" resultMap="selectProdAddTemplateDetailListMap" 	parameterClass="java.util.Map">
+  	/* SQLINES DEMO *** electProdCertTemplateDetailList */
+   	<![CDATA[	   	  	
+   		SELECT  (SELECT MST.INFO_GRP_NM FROM TPR_PROD_ADD_INFO_MST MST WHERE  MST.INFO_GRP_CD=DET.INFO_GRP_CD LIMIT 1) AS ORG_NM2
+		   ,	DET.INFO_GRP_CD AS ORG_CD2
+		   ,	DET.INFO_COL_CD AS ORG_CD
+		   ,	DET.INFO_COL_NM AS ORG_NM
+		   ,	DET.INFO_COL_DESC AS ORG_DESC
+		   ,	DET.ORDER_SEQ 
+		   ,	(SELECT COL_VAL FROM TPR_PROD_CERT_INFO_VAL WHERE INFO_GRP_CD = DET.INFO_GRP_CD AND NEW_PROD_CD = #pgmId# AND INFO_COL_CD = DET.INFO_COL_CD LIMIT 1)	AS VAL 
+		FROM  TPR_PROD_CERT_INFO_DET DET
+		WHERE 1=1 AND DET.USE_YN='Y'
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  <!-- 코드... SQLINES DEMO *** -->
+      	AND DET.INFO_GRP_CD = #infoGrpCd# 
+      </isNotEmpty>
+	<![CDATA[
+		ORDER BY DET.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 
+		 
+   	]]>
+  </select>  
+  
+  
+  <!-- SQLINES DEMO ***  리스트 조회 -->
+  <select id="selectProdAddTemplateList" resultMap="selectProdAddTemplateListMap" parameterClass="java.util.Map">
+  	/* SQLINES DEMO *** electProdAddTemplateList */
+   	<![CDATA[	
+   		SELECT  MST.INFO_GRP_NM AS ORG_NM2
+			,	MST.INFO_GRP_CD AS ORG_CD2
+			,	DET.INFO_COL_CD AS ORG_CD
+			,	DET.INFO_COL_NM AS ORG_NM
+		FROM  TPR_PROD_ADD_INFO_MST MST 
+		 	, TPR_PROD_ADD_INFO_DET DET
+		WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+	]]>
+	  <isNotEmpty property="infoGrpCd" >  			<!-- 코드... SQLINES DEMO *** -->
+      	AND MST.INFO_GRP_CD = #infoGrpCd#
+      </isNotEmpty>
+      <isEqual property="flag" compareValue="2">
+      	AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY WHERE CAT_CD = #catCd#)
+      </isEqual>
+      
+      <isEqual property="flag" compareValue="1">
+      	<isNotEmpty property="catCd" >  <!-- 코드... SQLINES DEMO *** -->
+      		AND MST.CAT_CD = #catCd#
+      	</isNotEmpty>
+      </isEqual>
+      
+	<![CDATA[
+		   AND MST.USE_YN = 'Y'
+		   AND DET.USE_YN = 'Y'
+		 ORDER BY MST.INFO_GRP_CD ASC ,DET.ORDER_SEQ ASC 
+   	]]>
+  </select>  
+  
+  <!-- SQLINES DEMO ***  조회 -->
+  <select id="selectProdCertTemplateList" resultMap="selectProdAddTemplateListMap" parameterClass="java.util.Map">
+  	/* SQLINES DEMO *** electProdCertTemplateList */
+   	<![CDATA[	
+   		SELECT  MST.INFO_GRP_NM AS ORG_NM2
+		   ,	MST.INFO_GRP_CD AS ORG_CD2
+		   ,	DET.INFO_COL_CD AS ORG_CD
+		   ,	DET.INFO_COL_NM AS ORG_NM
+		FROM  TPR_PROD_CERT_INFO_MST MST 
+		  	, TPR_PROD_CERT_INFO_DET DET
+		WHERE MST.INFO_GRP_CD = DET.INFO_GRP_CD
+	]]>
+	  <!-- SQLINES DEMO *** erty="infoGrpCd" >  
+      	AND MST.INFO_GRP_CD = #infoGrpCd#
+      </isNotEmpty>-->
+      <isEqual property="flag" compareValue="2">
+      	AND MST.CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY WHERE CAT_CD = #catCd#)
+      </isEqual>
+      
+      <isEqual property="flag" compareValue="1">
+      	<isNotEmpty property="catCd" >  <!-- 코드... SQLINES DEMO *** -->
+      		AND MST.CAT_CD = #catCd#
+      	</isNotEmpty>
+      </isEqual>
+      
+	<![CDATA[
+		   AND MST.USE_YN = 'Y'
+		   AND DET.USE_YN = 'Y'
+		 ORDER BY org_cd2 ASC
+   	]]>
+  </select>
+  
+  <!-- SQLINES DEMO ***  조회 -->
+  <select id="selectL3CdVarAttCnt"		parameterClass="java.util.Map"		resultClass="Integer">
+  	/* SQLINES DEMO *** electL3CdVarAttCnt */
+  	SELECT COUNT(1) AS CNT
+	FROM
+	(
+		SELECT ATT_GRP_CD FROM PROD_ATT_CD WHERE PROD_RANGE = #l3Cd# GROUP BY ATT_GRP_CD
+	)A
+  </select>
+  
+	<!-- 소분류에 매핑된 변형속성 카운트 조회 2016.08.29 -->
+	<select id="selectVarAttCnt001"		parameterClass="java.util.Map"		resultClass="Integer">
+		/* CommonProduct.selectVarAttCnt001 */
+		SELECT COUNT(1) AS CNT
+		FROM
+		(
+			SELECT B.PGM_ID
+			FROM TPC_NEW_PROD_REG A
+			INNER JOIN TPC_VAR_ATT B ON A.PGM_ID = B.PGM_ID
+			AND A.PGM_ID = #oldPgmId#
+			AND  A.PROD_ATT_TYP_FG='01'
+			AND  B.VARIANT='001'
+		)T
+  </select>
+  
+    
+  <!-- 판매코드 팝업 조회 조건 -->
+  <sql id="selectSrcmkCdList_Where">
+  	/* CommonProduct.selectSrcmkCdList_Where */
+  	<isNotEmpty property="srchProdCd">
+        AND A.PROD_CD LIKE '%' || #srchProdCd# || '%'
+    </isNotEmpty>
+     <isNotEmpty property="srchSellCd">
+        <!-- AND B.SRCMK_CD LIKE '%' || #srchSellCd# || '%' -->
+        AND SM.SRCMK_CD LIKE '%' || #srchSellCd# || '%'
+    </isNotEmpty>
+     <isNotEmpty property="srchProdNm">
+        AND A.PROD_NM LIKE '%' || #srchProdNm# || '%'
+    </isNotEmpty>
+     <!-- <isNotEmpty property="srchOrderPossible">
+        AND A.FRESH_ORD_FG = #srchOrderPossible#
+    </isNotEmpty>
+     <isNotEmpty property="srchFresh">
+        AND A.FRESH_MEAT_FG = #srchFresh#
+    </isNotEmpty> -->
+    <isNotEmpty property="srchEntpCd">
+        AND A.VEN_CD = #srchEntpCd#
+    </isNotEmpty> 
+    <isNotEmpty property="srchTeamCd">
+        AND TM.TEAM_CD = #srchTeamCd#
+    </isNotEmpty> 
+    <isNotEmpty property="srchL1Cd">
+        AND B.L1_CD = #srchL1Cd#
+    </isNotEmpty> 
+    <isNotEmpty property="srchL2Cd">
+        AND B.L2_CD = #srchL2Cd#
+    </isNotEmpty> 
+    <isNotEmpty property="srchL3Cd">
+        AND A.L3_CD = #srchL3Cd#
+    </isNotEmpty> 
+    <isNotEmpty property="srchProdPatFg">
+        AND A.PROD_PAT_FG = #srchProdPatFg#
+    </isNotEmpty> 
+    <isNotEmpty property="srchL3Cd">
+        AND A.TAX_FG = #srchTaxFg#
+    </isNotEmpty>
+    <isEmpty  property="srchEntpCd"  prepend="AND">	<!-- 파트너사 코드 미선택 시, 본인이 속한 회사의 모든 데이터 조회 --> 
+		<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+			#venCds[]# 
+		</iterate>
+  	</isEmpty>
+  	<isNotEmpty property="srchFreshStdYn">
+  		AND (C.L3_CD IS NOT NULL AND C.L3_CD <![CDATA[<>]]> '')
+  	</isNotEmpty>
+  	<isNotEmpty property="srchChgOrgCostYn">	<!-- 원가변경요청 가능한 상품군 -->
+  		<isEqual property="srchChgOrgCostYn" compareValue="Y">
+  		AND A.PROD_PAT_FG <![CDATA[<>]]> '0'	/* 신선비규격 제외 */
+  		AND (A.PAT_EXC_FG IS NULL OR A.PAT_EXC_FG = '' OR A.PRC_APPR_FG IS NULL OR A.PRC_APPR_FG = '')	/* 패턴예외상품제외 - 두컬럼모두 X일 경우 예외상품임 */
+  		<!-- AND (
+  				A.PROD_PAT_FG <![CDATA[<>]]> '0'	/* 신선비규격 제외 */
+  				OR (A.PROD_PAT_FG = '1' AND (A.PAT_EXC_FG IS NULL OR A.PAT_EXC_FG = '' OR A.PRC_APPR_FG IS NULL OR A.PRC_APPR_FG = ''))	/* 규격상품 중, 패턴예외상품제외 - 두컬럼모두 X일 경우 예외상품임 */
+  			) -->
+  		</isEqual>
+  	</isNotEmpty>
+	<isEqual property="srchProdMart"	compareValue="Y">	<!-- 마트상품만 조회 -->
+  		AND A.ZZMKT_FG_1 = 'X'
+  	</isEqual> 
+  	<isEqual property="srchProdMaxx"	compareValue="Y">	<!-- MAXX상품만 조회 -->
+  		AND A.ZZMKT_FG_2 = 'X'
+  	</isEqual> 
+  	<isEqual property="srchProdSuper"	compareValue="Y">	<!-- 슈퍼상품만 조회 -->
+  		AND A.ZZMKT_FG_3 = 'X'
+  	</isEqual> 
+  	<isEqual property="srchProdCfc"		compareValue="Y">	<!-- CFC상품만 조회 -->
+  		AND A.ZZMKT_FG_4 = 'X'
+  	</isEqual> 
+  	<isEqual property="srchProdMtAll"	compareValue="Y">	<!-- 마트전체(마트,MAXX,CFC)상품만 조회 -->
+  		AND (A.ZZMKT_FG_1 = 'X' OR A.ZZMKT_FG_2 = 'X' OR A.ZZMKT_FG_4 = 'X')
+  	</isEqual>
+  </sql>
+  
+  <!-- 판매코드 팝업 조회  -->
+  <select id="selectSrcmkCdList" resultMap="selectSellCdListMap" parameterClass="resultL1Class">
+  	/* CommonProduct.selectSrcmkCdList */
+	SELECT
+		ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD, A.PROD_CD ASC) AS RNUM
+		, SM.SRCMK_CD						/* 판매코드 */
+		, A.PROD_CD							/* 상품코드 */
+		, A.PROD_NM							/* 상품명 */
+		, A.VEN_CD							/* 업체코드 */
+		, A.PROD_PAT_FG						/* 상품패턴구분 */
+		, A.PROD_TYP_FG						/* 상품유형구분 */
+		, A.FRESH_MEAT_FG					/* 신선육류구분 */
+		, A.FRESH_ORD_FG					/* 신선발주구분 */
+		, A.DISP_UNIT						/* 표시단위 */
+		, A.ORD_UNIT						/* 기본단위 */
+		, A.TAX_FG							/* 면과세구분 */
+		, FN_CODE_RTN('PRD06', A.TAX_FG) AS TAX_FG_NM	/* 면과세구분명 */
+		, FN_GET_PROD_ORG_COST(NULLIF(#srchPurDept#,''), A.PROD_CD, A.VEN_CD) AS ORG_COST	/* 상품원가_기본(입력한 값에 맞춰 표시됨) */
+		, FN_GET_PROD_ORG_COST('KR02', A.PROD_CD, A.VEN_CD) AS ORG_COST_KR02	/* 정상원가_마트 */
+		, FN_GET_PROD_ORG_COST('KR03', A.PROD_CD, A.VEN_CD) AS ORG_COST_KR03	/* 정상원가_MAXX */
+		, FN_GET_PROD_ORG_COST('KR04', A.PROD_CD, A.VEN_CD) AS ORG_COST_KR04	/* 정상원가_슈퍼 */
+		, FN_GET_PROD_ORG_COST('KR05', A.PROD_CD, A.VEN_CD) AS ORG_COST_KR09	/* 정상원가_오카도 */
+		, (
+			SELECT STRING_AGG(CONCAT(S1.CD_NM, ': ', TRIM(TO_CHAR(FN_GET_PROD_ORG_COST(S1.MINOR_CD, A.PROD_CD, A.VEN_CD), '999,999,999'))), ' | ')
+			FROM TPC_NEW_CODE S1
+			WHERE S1.MAJOR_CD = 'PURDE'
+			AND S1.LET_1_REF = '1'
+			GROUP BY MAJOR_CD
+		) AS ORG_COST_TIT					/* 상품원가정보 TITLE 표시용 DATA */
+		, CASE WHEN NULLIF(C.L3_CD, '') IS NOT NULL THEN 'Y' ELSE 'N' END FRESH_STD_YN	/* 신선_규격 상품 구분 */
+		, B.L1_CD							/* 대분류 */
+		, FN_GET_CAT_NM(B.L1_CD) AS L1_NM	/* 대분류명 */
+		, B.L2_CD							/* 중분류 */
+		, FN_GET_CAT_NM(B.L2_CD) AS L2_NM	/* 중분류명 */
+		, B.CAT_CD AS L3_CD					/* 소분류코드 */
+		, B.CAT_NM AS L3_NM		 			/* 소분류명 */
+		, TM.TEAM_CD						/* 팀코드 */
+		, TM.TEAM_NM						/* 팀명 */
+	FROM PRODUCT A
+	LEFT OUTER JOIN SALE_MST SM ON A.PROD_CD = SM.PROD_CD AND SM.EAN_TYPE = '1' 
+<!-- 		AND SM.ORD_ABLE_FG = 'X' -->
+	<!-- FROM SALE_MST SM
+	LEFT OUTER JOIN PRODUCT A ON SM.SRCMK_CD = A.SRCMK_CD AND A.PROD_STATUS = '01' -->
+	<isNotEmpty property="srchTeamCd">INNER JOIN</isNotEmpty>
+	<isEmpty property="srchTeamCd">LEFT OUTER JOIN</isEmpty>
+	(
+		SELECT S1.L3_CD
+			, STRING_AGG(S1.TEAM_CD, '|') AS TEAM_CD
+			, STRING_AGG(S1.TEAM_NM, '|') AS TEAM_NM
+		FROM TPC_L1_CD S1
+		WHERE 1=1
+		<isNotEmpty property="srchTeamCd">AND S1.TEAM_CD = #srchTeamCd#</isNotEmpty>
+		GROUP BY S1.L3_CD
+	)TM ON A.L3_CD = TM.L3_CD
+	LEFT OUTER JOIN CATEGORY B ON A.L3_CD = B.CAT_CD AND B.LVL = '3' AND B.CHG_FG <![CDATA[<>]]> 'D'
+	LEFT OUTER JOIN V_FRESH_CATEGORY C ON A.L3_CD = C.L3_CD AND A.PROD_PAT_FG = '1'		/* 신선규격 상품 정보 */
+	<!-- WHERE SM.EAN_TYPE = '1'
+	AND SM.ORD_ABLE_FG = 'X' -->
+	WHERE A.PROD_STATUS = '01'
+	AND (A.ZZMKT_FG_1 <![CDATA[<>]]> '' OR A.ZZMKT_FG_2 <![CDATA[<>]]> '' OR A.ZZMKT_FG_3 <![CDATA[<>]]> '' OR A.ZZMKT_FG_4 <![CDATA[<>]]> '')
+	<include refid="selectSrcmkCdList_Where"/>
+	LIMIT #recordCountPerPage#
+	OFFSET #firstIndex# 
+  </select>
+  <!-- 판매코드 팝업 조회_OLD250703  -->
+  <select id="selectSrcmkCdList_OLD250703" resultMap="selectSellCdListMap" parameterClass="resultL1Class">
+  	/* CommonProduct.selectSrcmkCdList_OLD250703 */
+   SELECT
+			ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD, A.PROD_CD ASC) AS RNUM
+			, A.SRCMK_CD						/* 판매코드 */
+			, A.PROD_CD							/* 상품코드 */
+			, A.PROD_NM							/* 상품명 */
+			, A.VEN_CD							/* 업체코드 */
+			, A.PROD_PAT_FG						/* 상품패턴구분 */
+			, A.PROD_TYP_FG						/* 상품유형구분 */
+			, A.FRESH_MEAT_FG					/* 신선육류구분 */
+			, A.FRESH_ORD_FG					/* 신선발주구분 */
+			, A.DISP_UNIT						/* 표시단위 */
+			, A.ORD_UNIT						/* 기본단위 */
+			, A.TAX_FG							/* 면과세구분 */
+			, FN_CODE_RTN('PRD06', A.TAX_FG) AS TAX_FG_NM	/* 면과세구분명 */
+			, FN_GET_PROD_ORG_COST(COALESCE(NULLIF(#srchPurDept#,''), 'KR02'), A.PROD_CD) AS ORG_COST	/* 상품원가 - 검색조건기준(default:마트기준) */
+			, FN_GET_PROD_ORG_COST('KR02', A.PROD_CD) AS ORG_COST_KR02	/* 정상원가_마트 */
+			, FN_GET_PROD_ORG_COST('KR03', A.PROD_CD) AS ORG_COST_KR03	/* 정상원가_MAXX */
+			, FN_GET_PROD_ORG_COST('KR04', A.PROD_CD) AS ORG_COST_KR04	/* 정상원가_슈퍼 */
+			, FN_GET_PROD_ORG_COST('KR05', A.PROD_CD) AS ORG_COST_KR09	/* 정상원가_오카도 */
+			, (
+				SELECT STRING_AGG(CONCAT(S1.CD_NM, ': ', TRIM(TO_CHAR(FN_GET_PROD_ORG_COST(S1.MINOR_CD, A.PROD_CD), '999,999,999'))), ' | ')
+				FROM TPC_NEW_CODE S1
+				WHERE S1.MAJOR_CD = 'PURDE'
+				AND S1.LET_1_REF = '1'
+				GROUP BY MAJOR_CD
+			) AS ORG_COST_TIT					/* 상품원가정보 TITLE 표시용 DATA */
+<!-- 			, COALESCE(E.ORG_COST, 0) AS ORG_COST	/* 상품원가 */ -->
+			, CASE WHEN NULLIF(C.L3_CD, '') IS NOT NULL THEN 'Y' ELSE 'N' END FRESH_STD_YN	/* 신선_규격 상품 구분 */
+			, B.L1_CD							/* 대분류 */
+			, FN_GET_CAT_NM(B.L1_CD) AS L1_NM	/* 대분류명 */
+			, B.L2_CD							/* 중분류 */
+			, FN_GET_CAT_NM(B.L2_CD) AS L2_NM	/* 중분류명 */
+			, B.CAT_CD AS L3_CD					/* 소분류코드 */
+			, B.CAT_NM AS L3_NM		 			/* 소분류명 */
+			, TM.TEAM_CD						/* 팀코드 */
+			, TM.TEAM_NM						/* 팀명 */
+		FROM PRODUCT A
+		<isNotEmpty property="srchTeamCd">INNER JOIN</isNotEmpty>
+		<isEmpty property="srchTeamCd">LEFT OUTER JOIN</isEmpty>
+		(
+			SELECT S1.L3_CD
+				, STRING_AGG(S1.TEAM_CD, '|') AS TEAM_CD
+				, STRING_AGG(S1.TEAM_NM, '|') AS TEAM_NM
+			FROM TPC_L1_CD S1
+			WHERE 1=1
+			<isNotEmpty property="srchTeamCd">AND S1.TEAM_CD = #srchTeamCd#</isNotEmpty>
+			GROUP BY S1.L3_CD
+		)TM ON A.L3_CD = TM.L3_CD
+		LEFT OUTER JOIN CATEGORY B ON A.L3_CD = B.CAT_CD AND B.LVL = '3' AND B.CHG_FG <![CDATA[<>]]> 'D'
+		LEFT OUTER JOIN V_FRESH_CATEGORY C ON A.L3_CD = C.L3_CD AND A.PROD_PAT_FG = '1'		/* 신선규격 상품 정보 */
+		WHERE 1=1
+		<include refid="selectSrcmkCdList_Where"/>
+		LIMIT #recordCountPerPage#
+		OFFSET #firstIndex# 
+</select>
+  
+  <!-- 판매코드 팝업 카운트 -->
+  <select id="selectSrcmkCdListCount" resultClass="Integer" parameterClass="resultL1Class">
+	   /* CommonProduct.selectSrcmkCdListCount */
+	   	SELECT COUNT(1) AS TOTAL_COUNT
+	   	FROM PRODUCT A
+		LEFT OUTER JOIN SALE_MST SM ON A.PROD_CD = SM.PROD_CD AND SM.EAN_TYPE = '1'
+<!-- 		 AND SM.ORD_ABLE_FG = 'X' -->
+		<!-- FROM SALE_MST SM
+		LEFT OUTER JOIN PRODUCT A ON SM.SRCMK_CD = A.SRCMK_CD AND A.PROD_STATUS = '01' -->
+		<isNotEmpty property="srchTeamCd">INNER JOIN</isNotEmpty>
+		<isEmpty property="srchTeamCd">LEFT OUTER JOIN</isEmpty>
+		(
+			SELECT S1.L3_CD
+				, STRING_AGG(S1.TEAM_CD, '|') AS TEAM_CD
+				, STRING_AGG(S1.TEAM_NM, '|') AS TEAM_NM
+			FROM TPC_L1_CD S1
+			WHERE 1=1
+			<isNotEmpty property="srchTeamCd">AND S1.TEAM_CD = #srchTeamCd#</isNotEmpty>
+			GROUP BY S1.L3_CD
+		)TM ON A.L3_CD = TM.L3_CD
+		LEFT OUTER JOIN CATEGORY B ON A.L3_CD = B.CAT_CD AND B.LVL = '3' AND B.CHG_FG <![CDATA[<>]]> 'D'
+		LEFT OUTER JOIN V_FRESH_CATEGORY C ON A.L3_CD = C.L3_CD AND A.PROD_PAT_FG = '1'		/* 신선규격 상품 정보 */
+		<!-- WHERE SM.EAN_TYPE = '1'
+		AND SM.ORD_ABLE_FG = 'X' -->
+		WHERE A.PROD_STATUS = '01'
+		AND (A.ZZMKT_FG_1 <![CDATA[<>]]> '' OR A.ZZMKT_FG_2 <![CDATA[<>]]> '' OR A.ZZMKT_FG_3 <![CDATA[<>]]> '' OR A.ZZMKT_FG_4 <![CDATA[<>]]> '')
+		<include refid="selectSrcmkCdList_Where"/>
+   </select>
+  
+  <!-- 판매코드 팝업 카운트_OLD250703 -->
+  <select id="selectSrcmkCdListCount_OLD250703" resultClass="Integer" parameterClass="resultL1Class">
+   /* CommonProduct.selectSrcmkCdListCount_OLD250703 */
+  	SELECT COUNT(1) AS TOTAL_COUNT
+    FROM PRODUCT A
+	<isNotEmpty property="srchTeamCd">INNER JOIN</isNotEmpty>
+	<isEmpty property="srchTeamCd">LEFT OUTER JOIN</isEmpty>
+	(
+		SELECT S1.L3_CD
+			, STRING_AGG(S1.TEAM_CD, '|') AS TEAM_CD
+			, STRING_AGG(S1.TEAM_NM, '|') AS TEAM_NM
+		FROM TPC_L1_CD S1
+		WHERE 1=1
+		<isNotEmpty property="srchTeamCd">AND S1.TEAM_CD = #srchTeamCd#</isNotEmpty>
+		GROUP BY S1.L3_CD
+	)TM ON A.L3_CD = TM.L3_CD
+	LEFT OUTER JOIN CATEGORY B ON A.L3_CD = B.CAT_CD AND B.LVL = '3' AND B.CHG_FG <![CDATA[<>]]> 'D'
+	LEFT OUTER JOIN V_FRESH_CATEGORY C ON A.L3_CD = C.L3_CD AND A.PROD_PAT_FG = '1'		/* 신선규격 상품 정보 */
+	WHERE 1=1
+	<include refid="selectSrcmkCdList_Where"/>
+  </select>
+  
+  <!-- ECS 수신 담당자 조회 조건 -->
+  <sql id="selEcsReceiverPopupInfo_Where">
+  	<isNotEmpty property="srchManagerNm">
+		AND T1.USER_NAME LIKE CONCAT('%', #srchManagerNm#, '%')
+	</isNotEmpty>
+	<isNotEmpty property="srchTeamNm">
+		AND T4.GROUP_NAME LIKE CONCAT('%', #srchTeamNm#, '%')
+	</isNotEmpty>
+  </sql>
+  
+  <!-- ECS 수신 담당자 조회 조건_BAK250723 -->
+  <sql id="selEcsReceiverPopupInfo_Where_BAK250723">
+  	<isNotEmpty property="srchManagerNm">
+		AND T3.USER_NAME LIKE CONCAT('%', #srchManagerNm#, '%')
+	</isNotEmpty>
+	<isNotEmpty property="srchTeamNm">
+		AND T1.FULL_GROUP_NM LIKE CONCAT('%', #srchTeamNm#, '%')
+	</isNotEmpty>
+  </sql>
+  
+   <!-- ecs 수신 담당자 조회 -->
+   <select id="selEcsReceiverPopupInfo" resultMap="selectEcsReceiverListMap" parameterClass="resultL1Class">
+		/* CommonProduct."selEcsReceiverPopupInfo" */
+		SELECT
+			ROW_NUMBER() OVER (ORDER BY T4.GROUP_NAME, T1.USER_NAME) AS RNUM
+			, T4.GROUP_ID			AS TEAM_CD		/* 소속부서코드 */
+			, T4.GROUP_NAME			AS TEAM_NM		/* 소속부서명 */
+			, T1.USER_NAME			AS MANAGER_NM	/* 담당자명 */
+			, T2.EMPLOYEE_NO 		AS EMP_NO		/* 사번 */
+		FROM PUBLIC.CHMM_USER_INFO T1
+		INNER JOIN PUBLIC.SRM_USER_INFO_DTL T2 ON T1.TENANT_ID = T2.TENANT_ID AND T1.USER_ID = T2.USER_ID AND T2.EMPLOYEE_NO <![CDATA[<>]]> ''
+		INNER JOIN PUBLIC.CHMM_USER_GROUP_MAP T3 ON T2.TENANT_ID = T3.TENANT_ID AND T2.USER_ID = T3.USER_ID AND T3.USE_YN = '1'
+		INNER JOIN PUBLIC.CHMM_GROUP_INFO T4 ON T4.TENANT_ID = T3.TENANT_ID AND T3.GROUP_ID = T4.GROUP_ID AND T4.USE_YN = '1'
+		WHERE 1=1
+		<include refid="selEcsReceiverPopupInfo_Where"/>
+		LIMIT #recordCountPerPage#
+		OFFSET #firstIndex# 
+   </select>
+   
+   <!-- ECS 수신 담당자 조회 카운트 -->
+	<select id="selEcsReceiverPopupInfoCount" resultClass="Integer" parameterClass="resultL1Class">
+	   /* CommonProduct.selEcsReceiverPopupInfoCount */
+	  	SELECT COUNT(1) AS TOTAL_COUNT
+		FROM PUBLIC.CHMM_USER_INFO T1
+		INNER JOIN PUBLIC.SRM_USER_INFO_DTL T2 ON T1.TENANT_ID = T2.TENANT_ID AND T1.USER_ID = T2.USER_ID AND T2.EMPLOYEE_NO <![CDATA[<>]]> ''
+		INNER JOIN PUBLIC.CHMM_USER_GROUP_MAP T3 ON T2.TENANT_ID = T3.TENANT_ID AND T2.USER_ID = T3.USER_ID AND T3.USE_YN = '1'
+		INNER JOIN PUBLIC.CHMM_GROUP_INFO T4 ON T4.TENANT_ID = T3.TENANT_ID AND T3.GROUP_ID = T4.GROUP_ID AND T4.USE_YN = '1'
+		WHERE 1=1
+		<include refid="selEcsReceiverPopupInfo_Where"/>
+	</select>
+   
+   <!-- ecs 수신 담당자 조회_BAK250723 -->
+   <select id="selEcsReceiverPopupInfo_BAK250723" resultMap="selectEcsReceiverListMap" parameterClass="resultL1Class">
+	  	/* CommonProduct.selEcsReceiverPopupInfo */
+	  	SELECT
+	  		ROW_NUMBER() OVER (ORDER BY T1.FULL_GROUP_NM, T3.USER_NAME) AS RNUM
+			, T1.FULL_GROUP_ID			/* 전체 조직 코드 */
+			, T1.FULL_GROUP_NM 			/* 전체 조직 이름 */
+			, T1.GROUP_ID			AS TEAM_CD		/* 소속부서코드 */
+			, T1.GROUP_NAME			AS TEAM_NM		/* 소속부서명 */
+			, T3.USER_NAME			AS MANAGER_NM	/* 담당자명 */
+			, T4.EMPLOYEE_NO 		AS EMP_NO		/* 사번 */
+		FROM V_DEPT_TREE T1
+		INNER JOIN PUBLIC.CHMM_USER_GROUP_MAP T2 ON T1.TENANT_ID = T2.TENANT_ID AND T1.GROUP_ID = T2.GROUP_ID AND T2.USE_YN = '1'
+		INNER JOIN PUBLIC.CHMM_USER_INFO T3 ON T2.TENANT_ID = T3.TENANT_ID AND T2.USER_ID = T3.USER_ID AND T3.USE_YN = '1'
+		INNER JOIN PUBLIC.SRM_USER_INFO_DTL T4 ON T3.TENANT_ID = T4.TENANT_ID AND T3.USER_ID = T4.USER_ID AND T4.EMPLOYEE_NO <![CDATA[<>]]> ''
+		WHERE 1=1
+		<include refid="selEcsReceiverPopupInfo_Where_BAK250723"/>
+		LIMIT #recordCountPerPage#
+		OFFSET #firstIndex# 
+	</select>
+  
+	<!-- ECS 수신 담당자 조회 카운트_BAK250723 -->
+	<select id="selEcsReceiverPopupInfoCount_BAK250723" resultClass="Integer" parameterClass="resultL1Class">
+	   /* CommonProduct.selEcsReceiverPopupInfoCount */
+	  	SELECT COUNT(1) AS TOTAL_COUNT
+		FROM V_DEPT_TREE T1
+		INNER JOIN PUBLIC.CHMM_USER_GROUP_MAP T2 ON T1.TENANT_ID = T2.TENANT_ID AND T1.GROUP_ID = T2.GROUP_ID AND T2.USE_YN = '1'
+		INNER JOIN PUBLIC.CHMM_USER_INFO T3 ON T2.TENANT_ID = T3.TENANT_ID AND T2.USER_ID = T3.USER_ID AND T3.USE_YN = '1'
+		LEFT OUTER JOIN PUBLIC.SRM_USER_INFO_DTL T4 ON T3.TENANT_ID = T4.TENANT_ID AND T3.USER_ID = T4.USER_ID
+		WHERE 1=1
+		<include refid="selEcsReceiverPopupInfo_Where_BAK250723"/>
+	</select>
+  
+  	<!-- 점포 카운트 조회 -->
+	<select id="selectStrCdListCount" parameterClass="java.util.Map" resultClass="Integer">
+		/* CommonProduct.selectStrCdListCount */
+		SELECT COUNT(1) AS TOTAL_COUNT
+		FROM STORE A
+		WHERE 1=1 
+		<isNotEmpty property="srchStoreCd">
+	        AND A.STR_CD LIKE '%' || #srchStoreCd# || '%'
+	    </isNotEmpty>
+	     <isNotEmpty property="srchStoreNm">
+	        AND A.STR_NM LIKE '%' || #srchStoreNm# || '%'
+	    </isNotEmpty>
+	    <isNotEmpty property="srchBmanNo">
+	        AND A.BMAN_NO LIKE '%' || #srchBmanNo# || '%'
+	    </isNotEmpty>
+	    <isNotEmpty property="srchComNm">
+	        AND A.COM_NM LIKE '%' || #srchComNm# || '%'
+	    </isNotEmpty>
+	</select>
+	
+	<!-- 점포 조회  리스트-->
+	<select id="selectStrCdList" parameterClass="java.util.Map" resultMap="storeListMap">
+		/* CommonProduct.selectStrCdList */
+		SELECT ROW_NUMBER() OVER (ORDER BY T1.REG_DT DESC) 	 			AS RNUM
+				,T1.STR_CD
+				,T1.STR_NM
+				,T1.BMAN_NO
+				,T1.COM_NM
+				,T1.REG_DT
+		FROM (
+			SELECT A.STR_CD
+				   ,A.STR_NM
+				   ,A.BMAN_NO
+				   ,A.COM_NM
+				   ,A.REG_DT
+			FROM STORE A
+			WHERE 1=1 
+			<isNotEmpty property="srchStoreCd">
+		        AND A.STR_CD LIKE '%' || #srchStoreCd# || '%'
+		    </isNotEmpty>
+		     <isNotEmpty property="srchStoreNm">
+		        AND A.STR_NM LIKE '%' || #srchStoreNm# || '%'
+		    </isNotEmpty>
+		    <isNotEmpty property="srchBmanNo">
+		        AND A.BMAN_NO LIKE '%' || #srchBmanNo# || '%'
+		    </isNotEmpty>
+		    <isNotEmpty property="srchComNm">
+		        AND A.COM_NM LIKE '%' || #srchComNm# || '%'
+		    </isNotEmpty>
+		) T1
+		ORDER BY T1.REG_DT ASC
+	    LIMIT #recordCountPerPage#
+	    OFFSET #firstIndex#
+	</select>
+	
+	<!-- 팀정보 및 대분류 맵핑 조회 -->
+	<select id="selectTeamL1CdList" parameterClass="java.util.Map"  resultMap="teamL1CdMap">
+		/* CommonProduct.selectTeamL1CdList */
+		SELECT 	TEAM_CD
+			,	TEAM_NM
+			,	L1_CD
+			,	L1_NM
+		FROM TPC_L1_CD
+	</select>
+	
+	<!-- 통화구분 공통 코드 조회  -->
+	<select id="selectWaersCdList" parameterClass="java.util.Map"  resultMap="waersCdMap">
+		/* CommonProduct.selectWaersCdList */
+		SELECT TC.MINOR_CD  AS subDtlCd
+			, TC.CD_NM		AS subDtlNm
+		FROM TPC_CODE TC 
+		WHERE MAJOR_CD = 'PRD40'
+	</select>
+	
+	<!-- HTML_CODE_TAG 문자대체까지가져오기 -->
+	<select id="selectCodeTagList" parameterClass="java.util.Map" resultMap="commonCodeMap">
+		/* CommonProduct.selectCodeTagList*/
+		SELECT 	MINOR_CD AS CODE_ID
+			,	CASE #parentCodeId#  WHEN 'PRD40' THEN  CONCAT(CD_NM , '(' , MINOR_CD , ')')  WHEN 'PRD17' THEN  CONCAT(CD_NM , '(' , MINOR_CD , ')') ELSE  CD_NM END AS CODE_NAME	/* SQLINES DEMO *** 폐단위는 코드값을 괄호안에 보여주기 DECODE사용 */
+			, COALESCE( LET_1_REF, '') AS LET_1_REF
+			, COALESCE( LET_4_REF, '') AS LET_4_REF
+		FROM 	TPC_NEW_CODE
+		WHERE 	MAJOR_CD = #parentCodeId#
+		 	AND USE_YN = 'Y'
+		 	<isNotEmpty property="childCodeId" removeFirstPrepend="true">  <!-- 코드... SQLINES DEMO *** -->
+		 		AND LET_1_REF = #childCodeId#
+		 	</isNotEmpty>
+		 	<isNotEmpty property="subCodeId" removeFirstPrepend="true">    <!-- 코드... SQLINES DEMO *** -->
+		 		AND LET_4_REF = #subCodeId#
+		 	</isNotEmpty>
+		 	<isEmpty property="orderSeqYn" >
+		 		ORDER BY 2  
+		 	</isEmpty>
+		 	<isNotEmpty property="orderSeqYn" >
+		 		ORDER BY ORDER_SEQ
+		 	</isNotEmpty>
+	</select>
+    
+    <!-- 파트너사 코드별 거래조직 확인 ResultMap -->
+    <resultMap id="vendorZzorgInfo" class="resultL1Class">
+    	<result property="zzorg"		column="ZZORG"			/>		<!-- 거래조직코드 -->
+    	<result property="zzorgNm"		column="ZZORG_NM"		/>		<!-- 거래조직명 -->
+    </resultMap>
+    
+    <!-- 파트너사 코드별 거래조직 확인 -->
+    <select id="selectVendorZzorgInfo" parameterClass="resultL1Class" resultMap="vendorZzorgInfo">
+    	/* CommonProduct.selectVendorZzorgInfo */
+    	SELECT
+			B.VEN_CD
+			, CONCAT_WS(
+				','
+				, CASE WHEN B.ZZORG_M = 'X' THEN 'MT' ELSE NULL END		/* 마트 */
+				, CASE WHEN B.ZZORG_S = 'X' THEN 'SP' ELSE NULL END		/* 슈퍼 */
+				, CASE WHEN B.ZZORG_C = 'X' THEN 'CS' ELSE NULL END		/* CS */
+			) AS ZZORG						/* 거래조직 */
+			, CONCAT_WS(
+				'/'
+				, CASE WHEN B.ZZORG_M = 'X' THEN '마트' ELSE NULL END
+				, CASE WHEN B.ZZORG_S = 'X' THEN '슈퍼' ELSE NULL END
+				, CASE WHEN B.ZZORG_C = 'X' THEN 'CS' ELSE NULL END
+			) AS ZZORG_NM					/* 거래조직명 */
+		FROM TVE_VENDOR A
+		INNER JOIN HQ_VEN B ON A.VENDOR_ID = B.VEN_CD AND CHG_FG <![CDATA[<>]]> 'D'
+		WHERE B.VEN_CD = #venCd#	<!-- 검색조건_업체코드 -->
+		<iterate prepend="AND B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">	<!-- 제한조건_세션에 존재하는 업체코드 -->
+			#venCds[]# 
+		</iterate>
+    </select>
+    
+    <!-- 파트너사가 사용할 수 있는 구매조직 필터링 -->
+    <select id="selectVenPurDeptInfo" parameterClass="resultL1Class" resultClass="String">
+    	/* CommonProduct.selectVenPurDeptInfo */
+    	SELECT S1.MINOR_CD AS PUR_DEPT
+		FROM TPC_NEW_CODE S1
+		WHERE S1.MAJOR_CD = 'PURDE'
+		AND S1.USE_YN = 'Y'
+		<iterate prepend="AND S1.LET_2_REF IN " property="zzorgArr" open="(" close=")" conjunction=",">
+			#zzorgArr[]# 
+		</iterate>
+    </select>
+    
+    <!-- 구매조직별 ECS 수신 계열사 정보 조회 ResultMap -->
+    <resultMap id="selectEcsRecvCompInfoMap" class="resultL1Class">
+    	<result property="ecsRecvCompNum"	column="ECS_RECV_COMP_NUM"	/>
+    	<result property="ecsRecvCompName"	column="ECS_RECV_COMP_NAME"	/>
+    </resultMap>
+    
+    <!-- 구매조직별 ECS 수신 계열사 정보 조회 -->
+    <select id="selectEcsRecvCompInfo" parameterClass="resultL1Class" resultMap="selectEcsRecvCompInfoMap">
+    	/* CommonProduct.selectEcsRecvCompInfo */
+    	<!-- ※ 두 쿼리 조회 컬럼 항상 맞추어야 함!!!! -->
+		<isNotEmpty property="zzorg">	<!-- 계열사 구분으로 조회 DEFAULT -->
+		SELECT
+			B.LET_1_REF 	AS ECS_RECV_COMP_NUM
+			, B.SUB_CD_NM	AS ECS_RECV_COMP_NAME
+		FROM TPC_NEW_CODE B
+		WHERE B.MAJOR_CD = 'MSTGB'
+		AND B.USE_YN = 'Y'
+		AND B.MINOR_CD = #zzorg#
+		</isNotEmpty>
+		<isEmpty property="zzorg">		<!-- 계열사 구분 미입력 시, 구매조직으로 조회 -->
+		SELECT
+			B.LET_1_REF 	AS ECS_RECV_COMP_NUM
+			, B.SUB_CD_NM	AS ECS_RECV_COMP_NAME
+		FROM TPC_NEW_CODE A
+		INNER JOIN TPC_NEW_CODE B ON B.MAJOR_CD = 'MSTGB' AND A.LET_2_REF = B.MINOR_CD AND B.USE_YN = 'Y' 
+		WHERE A.MAJOR_CD = 'PURDE'
+		AND A.USE_YN = 'Y'
+		AND A.MINOR_CD = #purDept#
+		</isEmpty>
+    </select>
+    
+    <!-- ECS 계약/공문 양식정보 result Map -->
+    <resultMap id="ecsDocInfoMap" class="java.util.HashMap">
+		<result property="DC_DOC_NM"	column="DC_DOC_NM"	/>  	<!-- 양식구분명 -->
+		<result property="DEP_CD"		column="DEP_CD"		/>  	<!-- 대분류코드 -->
+		<result property="LIN_CD"		column="LIN_CD"		/>  	<!-- 중분류코드 -->
+		<result property="DC_CD"		column="DC_CD"		/>  	<!-- 계약명코드 -->
+		<result property="DC_NM_CD"		column="DC_NM_CD"	/>		<!-- 계약서코드 -->
+    </resultMap>
+    
+    <!-- ECS 계약/공문 양식정보 조회 -->
+    <select id="selectEcsDocInfo" parameterClass="java.util.HashMap" resultMap="ecsDocInfoMap">
+    	/* CommonProduct.selectEcsDocInfo */
+    	SELECT
+			A.CD_NM			AS DC_DOC_NM	/* 양식구분명 */
+			, A.LET_1_REF	AS DEP_CD		/* 대분류코드 */
+			, A.LET_2_REF	AS LIN_CD		/* 중분류코드 */
+			, A.LET_3_REF	AS DC_CD		/* 계약명코드 */
+			, A.LET_4_REF	AS DC_NM_CD		/* 계약서코드 */
+		FROM TPC_NEW_CODE A
+		WHERE A.MAJOR_CD = 'ECSGB'
+		AND A.MINOR_CD = CONCAT(#WORK_GBN#::VARCHAR, #DOC_GBN#::VARCHAR)
+    </select>
+</sqlMap>	

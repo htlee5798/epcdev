@@ -1,0 +1,2502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO0099">
+	
+	<typeAlias alias="searchProduct" 	type="com.lottemart.epc.edi.product.model.SearchProduct" />
+	<typeAlias alias="pEDMPRO0099VO" 	type="com.lottemart.epc.edi.product.model.PEDMPRO0099VO" />		<!-- SQLINES DEMO *** -->
+	<typeAlias alias="pEDMPRO0098VO" 	type="com.lottemart.epc.edi.product.model.PEDMPRO0098VO" />		<!-- SQLINES DEMO ***  정보 (정보 더 보여주자고자 한다면 해당VO에 추가 가능) -->	
+	<typeAlias alias="pEDMPRO0097VO" 	type="com.lottemart.epc.edi.product.model.PEDMPRO0097VO" />		<!-- 새로... SQLINES DEMO *** -->
+	<typeAlias alias="pEDMPRO0096VO" 	type="com.lottemart.epc.edi.product.model.PEDMPRO0096VO" />		<!-- SQLINES DEMO *** 우 콤보리스트 구성, 그룹분석속성 저장 VO-->
+	<typeAlias alias="pEDMPRO0095VO" 	type="com.lottemart.epc.edi.product.model.PEDMPRO0095VO" />		<!-- 규격... SQLINES DEMO *** -->
+	<typeAlias alias="ediCommonCode" 	type="com.lottemart.epc.edi.comm.model.EdiCommonCode" 	/>		<!-- SQLINES DEMO *** O -->
+	<typeAlias alias="ediCdListCode" 	type="com.lottemart.epc.edi.product.model.EdiCdListCodeVO" 	/>		<!-- SQLINES DEMO *** O -->
+	
+	
+	<!-- 세분... SQLINES DEMO *** -->
+	<resultMap id="l4ListAjaxResultMap" class="ediCommonCode">
+    	<result property="categoryCode"   column="L4_CD"  />
+     	<result property="categoryName"   column="L4_NM"  />
+  	</resultMap>
+	
+	
+	<!-- SQLINES DEMO *** (현재 사용안함)-->
+	<resultMap id="teamListResultMap" class="ediCommonCode">
+	    <result property="teamCode" column="L1_CD" 		columnIndex="1"/>
+	    <result property="teamName" column="CAT_NM"  	columnIndex="2"/>
+	</resultMap>
+	
+	
+	<!-- SQLINES DEMO *** -->
+	<resultMap id="l1CdListResultMap" class="ediCdListCode">
+	    <result property="l1Cd" column="L1_CD" 		columnIndex="1"/>
+	    <result property="l1Nm" column="L1_NM"  	columnIndex="2"/>
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** -->
+	<resultMap id="l4CdListResultMap" class="ediCdListCode">
+	    <result property="l4Cd" column="L4_CD" 		columnIndex="1"/>
+	    <result property="l4Nm" column="L4_NM"  	columnIndex="2"/>
+	</resultMap>
+	
+	
+	<!-- SQLINES DEMO *** ap (상품분석속성관리 일괄에서 사용) -->
+	<resultMap id="wholeProductListMapBatch" 	class="pEDMPRO0099VO">
+		<result property="chk"  				column="CHK" 			/>
+	    <result property="regDate"  			column="REG_DT" 		/>
+	    <result property="sellCode" 			column="SRCMK_CD"   	/>
+	    <result property="productName" 			column="PROD_NM" 	 	/>
+	    <result property="newProductCode"   	column="PROD_CD"  		/>	    	 	
+	    <result property="l4Cd" 				column="L4_CD"  		/>
+	    <result property="venCd" 				column="VEN_CD"  		/>
+	    <result property="attrValTxt" 			column="ATTR_VAL_TXT"  	/>   
+	    <result property="sapL3Cd" 				column="SAP_L3_CD"	/>
+	    <result property="totCnt" 				column="TOT_CNT"	  	/>
+	    <result property="inputCnt" 			column="INPUT_CNT"  	/>
+	    <result property="cfmFg" 				column="CFM_FG"  		/>	 
+	    <result property="hvFg"					column="HV_FG"			/>
+	    <result property="grpCd"				column="GRP_CD"			/>
+	    <result property="x00816Cnt"			column="X00816_CNT"		/>
+	</resultMap>
+	
+	<!-- 규격... SQLINES DEMO *** -->
+	<resultMap id="selectkyekeokListMap" 	class="pEDMPRO0095VO">
+	    <result property="codeId"  				column="CODE_ID" 			/>
+	    <result property="codeNm"  				column="CODE_NAME"	 		/>	    
+	</resultMap>
+	
+	
+	<!-- SQLINES DEMO *** P 소분류 콤보 리스트 조회 Map -->
+	<resultMap id="selectSapMapAttrListMap" 	class="pEDMPRO0099VO">
+	    <result property="sapL3Cd"  				column="SAP_L3_CD" 			/>
+	    <result property="sapL3Nm"  				column="SAP_L3_NM"	 		/>	    
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** Map -->
+	<resultMap id="NewWholeProductAttComboListMap" 	class="pEDMPRO0096VO">
+	    <result property="attId"  				column="ATT_ID" 			/>
+	    <result property="attValId"  			column="ATT_VAL_ID" 		/>
+	    <result property="attValNm"  			column="ATT_VAL_NM" 		/>	    
+	</resultMap>
+		
+	<!-- SQLINES DEMO *** p -->
+	<resultMap id="newWholeProductAttrListMap" 	class="pEDMPRO0097VO">	   
+	    <result property="attNm"  			column="ATT_NM" 	/>
+	    <result property="attTypCd"  		column="ATT_TYP_CD" />
+	    <result property="val"  			column="VAL" 		/>
+	    <result property="attValNm"			column="ATT_VAL_NM"	/>	    
+	</resultMap>
+	
+	
+	
+
+	
+	
+	<!-- SQLINES DEMO *** ap -->
+	<resultMap id="wholeProductListMap" 	class="pEDMPRO0099VO">	   
+	    <result property="regDate" 				column="REG_DT" 	  	/>
+	    <result property="sellCode" 			column="SRCMK_CD"   	/>
+	    <result property="productName" 			column="PROD_NM" 	 	/>
+	    <result property="newProductCode"   	column="PROD_CD"  		/>	    	 
+	    <result property="l4Cd" 				column="L4_CD"  		/>
+	    <result property="venCd" 				column="VEN_CD"  		/>
+	    <result property="attrValTxt" 			column="ATTR_VAL_TXT"  	/>	    
+	    <result property="totCnt" 				column="TOT_CNT"	  	/>	    
+	    <result property="inputCnt" 			column="INPUT_CNT"  	/>
+	    <result property="cfmFg" 				column="CFM_FG"  		/>
+	    <result property="sapL3Cd" 				column="SAP_L3_CD" 		/>
+	    <result property="hvFg"					column="HV_FG"			/>
+	    <result property="grpCd"				column="GRP_CD"			/>
+	    <result property="x00816Cnt"			column="X00816_CNT"		/>
+	    
+	   
+	</resultMap>
+	
+	<!-- SQLINES DEMO ***  정보  Map -->
+	<resultMap id="newWholeProductInfo" 	class="pEDMPRO0098VO">	
+		<result property="teamCd"  			column="TEAM_CD" 	/>
+		<result property="teamNm"  			column="TEAM_NM" 	/>
+		<result property="l1Cd"  			column="L1_CD" 		/>
+		<result property="l1Nm"  			column="L1_NM" 		/>
+		<result property="l4Cd"  			column="L4_CD" 		/>
+		<result property="l4Nm"  			column="L4_NM" 		/>	 
+	</resultMap>
+	
+	
+	<!-- SQLINES DEMO *** MAP -->
+	<resultMap id="newWholeProductAttrListMap2" 	class="pEDMPRO0097VO">
+	    <result property="attId"  			column="ATT_ID" 		/>
+	    <result property="attNm"  			column="ATT_NM" 		/>
+	    <result property="attTypCd"  		column="ATT_TYP_CD" 	/>
+	    <result property="val"  			column="VAL" 			/>
+	    <result property="attValNm"  		column="ATT_VAL_NM" 	/>
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** p -->
+	<resultMap id="selectSellCdListMap"			class="pEDMPRO0099VO">
+		<result property="sellCode"			column="SRCMK_CD"	/>
+	</resultMap>
+	
+	<!-- SQLINES DEMO ***  그룹소분류 List Map -->
+	<resultMap id="selectSrchGrpCdMap"			class="pEDMPRO0099VO">
+		<result property="grpCd"			column="GRP_CD"		/>
+		<result property="grpCdNm"			column="GRP_CD_NM"	/>
+	</resultMap>
+	
+		
+	<!-- 상품... SQLINES DEMO *** -->
+	<select id="selectSrcmkCdList"		parameterClass="String"		resultMap="selectSellCdListMap">
+		/* SQLINES DEMO *** ectSrcmkCdList */
+		SELECT SRCMK_CD FROM SALE_MST@DL_MD_MARTNIS WHERE SRCMK_CD = #srcmkCd#
+	</select>
+	  
+
+	<!-- SQLINES DEMO *** 3.07 이전 버전 -->
+	<select id="selectNewWholeProductCount" resultClass="Integer" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductCount */
+	   	  SELECT COUNT(A.PROD_CD)	AS CNT
+	   	  FROM
+	   	  (
+		   	  SELECT 	B.VEN_CD
+					,	A.PROD_CD
+					,	A.SRCMK_CD
+					,	B.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	A.NEW_CFM_FG									AS CFM_FG				/* 확정여부 */						
+					,	B.REG_DT
+					,	COALESCE((
+							SELECT 	COUNT(DISTINCT T2.ATT_ID)	AS CNT
+							FROM SAP_GRP_CAT_MAP@DL_MD_MARTNIS T1
+								,SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+								,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+							WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+							AND T2.ATT_ID = T3.ATT_ID 
+							AND T1.GRP_CAT = T2.GRP_CAT
+							AND T1.SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY T1.SAP_L3_CD
+						), 0)											AS GRP_ATT_TOT_CNT		/* 입력해야될 분석속성 카운트 */
+					,	COALESCE((
+							SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+								  COUNT(DISTINCT T4.ATT_ID)
+							FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+								,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+							WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+							AND T3.ATT_ID = T4.ATT_ID
+							AND T3.SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY T3.SAP_L3_CD
+					 	), 0)											AS MART_ATT_TOT_CNT		/* SQLINES DEMO *** 트 */
+					,	COALESCE((
+						SELECT COUNT(ATT_ID) COUNT
+						FROM TPC_CAT_ATT_TEMP
+						WHERE PROD_CD = A.PROD_CD
+						AND SRCMK_CD = A.SRCMK_CD
+						AND L4_CD = A.L4_CD
+						AND SAP_L3_CD = A.SAP_L3_CD
+						GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD
+					 	), 0) 											AS INPUT_CNT			/* SQLINES DEMO *** 운트 */
+			FROM SAP_STK_PROD@DL_MD_MARTNIS A
+				,PRODUCT@DL_MD_MARTNIS B 
+			WHERE A.PROD_CD = B.PROD_CD
+			<isEmpty  property="entpCode"  prepend="AND"> 
+	      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        		#venCds[]# 										/* 협력업체 검색조건 */
+	      		</iterate> 
+	    	 </isEmpty>	
+	    	  				    					    	
+	    	 <isNotEmpty	property="entpCode"  prepend="AND">
+	    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+	    	 </isNotEmpty>
+	    	 
+	    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		/* 판매코드 검색조건 */ 
+		     		A.SRCMK_CD =  #srchSellCode#
+		     </isNotEmpty>
+		     
+		     <isNotEmpty	property="srchCompleteGbn"  prepend="AND">
+	    	 	<isEqual property = "srchCompleteGbn" compareValue = "1">		
+					A.NEW_CFM_FG = '1'									/* 확정 */
+				 </isEqual>	
+				 
+				 <isEqual property = "srchCompleteGbn" compareValue = "0">
+					A.NEW_CFM_FG <![CDATA[<>]]> '1' 		/* 미확정 */
+				 </isEqual>							 
+	    	 </isNotEmpty>				
+			AND A.NEED_INPUT = '4'								/* 입력 대상 상품 */ 							
+	   	  )A
+	   	  WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */	   	  
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 3.07 이후 버전 -->
+	  <select id="selectNewWholeProductCount_3" resultMap="wholeProductListMap" 	parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductCount_3 */
+	   	  SELECT 	A.VEN_CD
+				,	A.PROD_CD
+				,	A.SRCMK_CD
+				,	A.PROD_NM
+				,	A.L4_CD
+				,	A.SAP_L3_CD
+				,	A.CFM_FG																	/* 확정여부 */
+				,	A.REG_DT
+				,	A.GRP_CD
+				,	A.HV_FG
+				,	A.GRP_ATT_TOT_CNT + A.MART_ATT_TOT_CNT			AS TOT_CNT					/* 총 입력해야될 속성 카운트 */	
+				,	A.X00816_CNT																/* SQLINES DEMO ***   속성 카운트 */	
+				,	COALESCE(A.GRP_ATT_INPUT_CNT, 0) + COALESCE(A.MART_ATT_INPUT_CNT, 0)	AS INPUT_CNT	/* 입력된 속성 카운트 */			
+				,	A.GRP_ATT_TOT_CNT
+				,	A.MART_ATT_TOT_CNT					
+	   	  FROM
+	   	  ( 
+		   	  SELECT  	B.VEN_CD
+					,	A.PROD_CD
+					,	B.SRCMK_CD
+					,	B.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	'0'				AS CFM_FG					/* 확정여부 */
+					,	B.REG_DT
+					,	A.GRP_CD
+					,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+					,	(
+							SELECT COUNT(T1.ATT_ID)
+							FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+								, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+							WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+							AND T1.ATT_ID = T2.ATT_ID
+							AND T1.GRP_CAT = A.GRP_CD	
+						)								AS GRP_ATT_TOT_CNT			/* 입력해야될 분석속성 카운트 */	
+					,	(
+							SELECT COUNT(T3.ATT_VAL_ID)
+							FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+								, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+								, (
+										SELECT 	PROD_CD
+											,	SRCMK_CD
+											,	L4_CD
+											,	ATT_ID
+											,	MAX(ATT_VAL_ID)	AS ATT_VAL_ID
+											,	MAX(REG_DATE)	AS REG_DATE  
+										FROM TPC_CAT_ATT_TEMP
+										GROUP BY PROD_CD, SRCMK_CD, L4_CD, ATT_ID	
+								  ) T3
+							WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+							AND T1.ATT_ID = T2.ATT_ID
+							AND T1.GRP_CAT = a.grp_cd
+							AND T1.ATT_ID = T3.ATT_ID
+							AND T3.PROD_CD = A.PROD_CD
+							AND T3.SRCMK_CD = B.SRCMK_CD
+							AND T3.L4_CD = A.L4_CD	
+						)								AS GRP_ATT_INPUT_CNT		/* 입력된 분석속성 갯수 */		
+					,	COALESCE((
+							SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+								  COUNT(DISTINCT T4.ATT_ID)
+							FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+								,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+							WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+							AND T3.ATT_ID = T4.ATT_ID
+							AND T3.SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY T3.SAP_L3_CD
+						), 0)							AS MART_ATT_TOT_CNT			/* SQLINES DEMO *** 트 */	
+					,	COALESCE((
+								SELECT COUNT(DISTINCT T4.ATT_ID)
+								FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+									,TPC_CAT_ATT_TEMP T5
+								WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+								AND T3.ATT_ID = T4.ATT_ID
+								AND T3.SAP_L3_CD = A.SAP_L3_CD
+								AND T5.ATT_ID = T3.ATT_ID
+								AND T5.PROD_CD = A.PROD_CD
+								AND T5.SRCMK_CD = B.SRCMK_CD
+								AND T5.L4_CD = A.L4_CD
+								AND T5.SAP_L3_CD = A.SAP_L3_CD 
+								GROUP BY T3.SAP_L3_CD
+							), 0)							AS MART_ATT_INPUT_CNT			/* 입력된 마트단독속성 카운트 */								
+					,	COALESCE((
+							SELECT COUNT(ATT_ID) COUNT
+							FROM TPC_CAT_ATT_TEMP
+							WHERE PROD_CD = A.PROD_CD
+							AND SRCMK_CD = B.SRCMK_CD
+							AND L4_CD = A.L4_CD
+							AND SAP_L3_CD = A.SAP_L3_CD
+							AND ATT_VAL_ID = 'X00816'								/* 해당사항없음으로 입력된 속성 */
+							GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD	
+						), 0) 							AS X00816_CNT				/* SQLINES DEMO ***  중에 해당사항없음 이라고 입력된 속성 갯수 */	
+				FROM  SAP_STK_PROD@DL_MD_MARTNIS A
+					, PRODUCT B
+				WHERE A.PROD_CD = B.PROD_CD
+				AND A.NEED_INPUT = '7'											/* 입력대상 상품 */
+				AND A.SAP_L3_CD = #sapL3Cd#
+				<isEmpty  property="entpCode"  prepend="AND"> 
+		      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		#venCds[]# 										/* 협력업체 검색조건 */
+		      		</iterate> 
+		    	 </isEmpty>	
+		    	  				    					    	
+		    	 <isNotEmpty	property="entpCode"  prepend="AND">
+		    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+		    	 </isNotEmpty>
+		    	 
+		    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+			     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+			     </isNotEmpty>
+			     
+			     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+			     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+				               COALESCE(B.MAT_CD, 1) IN ('1','3')
+				        </isEqual>
+				        
+				        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+				               B.MAT_CD = '2'
+				        </isEqual>			     
+			     </isNotEmpty>
+			)A
+			WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */	      			 	  
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 3.10 이후 버전 -->
+	  <select id="selectNewWholeProductCount_4" resultClass="Integer"	parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductCount_4 */
+	   	  SELECT COUNT(A.PROD_CD) AS CNT
+	   	  FROM
+	   	  (
+	   	  SELECT  	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+						ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+					</isEqual>
+					<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+						ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+					</isEqual>
+					
+					<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+						ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+					</isEqual>
+					<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+						ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+					</isEqual>
+			
+					<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+						ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+					</isEqual>
+					<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+						ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+					</isEqual>
+	   	  		,	 A.VEN_CD 
+				,	 A.PROD_CD
+			    ,    A.SRCMK_CD
+			    ,    A.PROD_NM
+			    ,    A.L4_CD
+			    ,    A.SAP_L3_CD
+				,	 A.CFM_FG
+				,    A.REG_DT
+			    ,    A.GRP_CD
+			    ,    A.HV_FG
+			    ,    COUNT(A.ATT_ID)    AS TOT_CNT
+			    ,    COUNT(A.ATT_VAL_ID)    AS INPUT_CNT
+			    ,    COUNT(A.X00816_VAL_ID)    AS X00816_CNT
+			    ,    WM_CONCAT(Concat('--' , A.ATT_NM , ':' , '[' , COALESCE(A.ATT_VAL_NM, '미입력') , ']') ) AS ATTR_VAL_TXT    /* SQLINES DEMO *** 뭔지 추출하는 컬럼  */
+				FROM
+				(
+			   	  	SELECT 	 A.*
+						,    COALESCE((SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = A.ATT_ID AND ATT_VAL_ID = A.ATT_VAL_ID), '미입력')    AS ATT_VAL_NM    /* SQLINES DEMO ***  명 */	
+					FROM
+					(
+				   	  	SELECT 	/*+ NO_MERGE */
+								A.*
+							,	(SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID
+LIMIT 1 )	AS ATT_VAL_ID
+							,   (SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID AND ATT_VAL_ID = 'X00816'
+LIMIT 1)    AS X00816_VAL_ID 
+						FROM
+						(
+							SELECT 	B.VEN_CD
+								,	A.PROD_CD
+								,	B.SRCMK_CD
+								,	B.PROD_NM
+								,	A.L4_CD
+								,	A.SAP_L3_CD
+								,	'0'	AS CFM_FG
+								,	B.REG_DT
+								,	A.GRP_CD
+								,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+								,	C.ATT_ID
+								,	C.ATT_NM
+							FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+								, PRODUCT@DL_MD_MARTNIS B
+								, (
+										SELECT T1.*
+										FROM
+										(
+											SELECT  B.GRP_CAT
+												,    B.ATT_ID
+												,    C.ATT_NM
+												,    C.ATT_TYP_CD
+											FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+												, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+											WHERE B.ATT_ID = C.ATT_ID  
+											AND C.ATT_TYP_CD IN ('10','30','04')                           
+										)T1	
+								  ) C
+							WHERE A.GRP_CD = C.GRP_CAT 
+							AND A.PROD_CD = B.PROD_CD 
+							<isEmpty  property="entpCode"  prepend="AND"> 
+					      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        		#venCds[]# 										/* 협력업체 검색조건 */
+					      		</iterate> 
+					    	 </isEmpty>	
+					    	  				    					    	
+					    	 <isNotEmpty	property="entpCode"  prepend="AND">
+					    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+					    	 </isNotEmpty>
+					    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+						     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+						     </isNotEmpty>
+						     
+						     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+						     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+							               COALESCE(B.MAT_CD, 1) IN ('1','3')
+							        </isEqual>
+							        
+							        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+							               B.MAT_CD = '2'
+							        </isEqual>			     
+						     </isNotEmpty>
+							AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+							AND A.NEED_INPUT = '7'
+							UNION ALL
+							SELECT 	B.VEN_CD
+								,	A.PROD_CD
+								,	B.SRCMK_CD
+								,	B.PROD_NM
+								,	A.L4_CD
+								,	A.SAP_L3_CD
+								,	'0'	AS CFM_FG
+								,	B.REG_DT
+								,	A.GRP_CD
+								,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+								,	C.ATT_ID
+								,	C.ATT_NM
+							FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+								, PRODUCT@DL_MD_MARTNIS B
+								, (
+										SELECT T1.*
+										FROM
+										(
+											SELECT   B.SAP_L3_CD
+												,    B.ATT_ID
+												,    C.ATT_NM
+												,    C.ATT_TYP_CD
+											FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS B
+												, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+											WHERE B.ATT_ID = C.ATT_ID  
+											AND C.ATT_TYP_CD IN ('10','30','04')                           
+										)T1	
+								  ) C
+							WHERE A.SAP_L3_CD = C.SAP_L3_CD
+							AND A.PROD_CD = B.PROD_CD 
+							<isEmpty  property="entpCode"  prepend="AND"> 
+					      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        		#venCds[]# 										/* 협력업체 검색조건 */
+					      		</iterate> 
+					    	 </isEmpty>	
+					    	  				    					    	
+					    	 <isNotEmpty	property="entpCode"  prepend="AND">
+					    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+					    	 </isNotEmpty>
+					    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+						     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+						     </isNotEmpty>
+						     
+						     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+						     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+							               COALESCE(B.MAT_CD, 1) IN ('1','3')
+							        </isEqual>
+							        
+							        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+							               B.MAT_CD = '2'
+							        </isEqual>			     
+						     </isNotEmpty>
+							AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+							AND A.NEED_INPUT = '7'	
+						)A
+					)A
+				)A					
+				GROUP BY     A.VEN_CD 
+						,	 A.PROD_CD
+						,    A.SRCMK_CD
+						,    A.PROD_NM
+						,    A.L4_CD
+						,    A.SAP_L3_CD
+						,	 A.CFM_FG
+						,    A.REG_DT
+						,    A.GRP_CD
+						,    A.HV_FG
+			)A			
+	  </select>
+	  
+	  
+	  
+	  
+	  
+	  <!-- SQLINES DEMO *** 전 버전 -->
+	  <select id="selectNewWholeProductList" resultMap="wholeProductListMap" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductList */
+	   	  SELECT A.*
+	   	  FROM
+	   	  (	
+		   	  SELECT	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+						</isEqual>
+						
+						<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+						</isEqual>
+				
+						<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+						</isEqual>
+					,	A.VEN_CD
+					,	A.PROD_CD
+					,	A.SRCMK_CD
+					,	A.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	A.CFM_FG																	/* 확정여부 */
+					,	A.REG_DT
+					,	A.GRP_ATT_TOT_CNT + A.MART_ATT_TOT_CNT			AS TOT_CNT					/* 총 입력해야될 속성 카운트 */	
+					,	A.INPUT_CNT																	/* 입력된 속성 카운트 */
+					,	A.GRP_ATT_TOT_CNT
+					,	A.MART_ATT_TOT_CNT
+			 FROM
+			 (					
+			   	  SELECT 	B.VEN_CD
+						,	A.PROD_CD
+						,	A.SRCMK_CD
+						,	B.PROD_NM
+						,	A.L4_CD
+						,	A.SAP_L3_CD
+						,	A.NEW_CFM_FG									AS CFM_FG				/* 확정여부 */
+						,	B.REG_DT	
+						,	COALESCE((
+								SELECT 	COUNT(DISTINCT T2.ATT_ID)	AS CNT
+								FROM SAP_GRP_CAT_MAP@DL_MD_MARTNIS T1
+									,SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+								WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+								AND T2.ATT_ID = T3.ATT_ID 
+								AND T1.GRP_CAT = T2.GRP_CAT
+								AND T1.SAP_L3_CD = A.SAP_L3_CD
+								GROUP BY T1.SAP_L3_CD
+							), 0)											AS GRP_ATT_TOT_CNT		/* 입력해야될 분석속성 카운트 */
+						,	COALESCE((
+								SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+									  COUNT(DISTINCT T4.ATT_ID)
+								FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+								WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+								AND T3.ATT_ID = T4.ATT_ID
+								AND T3.SAP_L3_CD = A.SAP_L3_CD
+								GROUP BY T3.SAP_L3_CD
+						 	), 0)											AS MART_ATT_TOT_CNT		/* SQLINES DEMO *** 트 */
+						,	COALESCE((
+							SELECT COUNT(ATT_ID) COUNT
+							FROM TPC_CAT_ATT_TEMP
+							WHERE PROD_CD = A.PROD_CD
+							AND SRCMK_CD = A.SRCMK_CD
+							AND L4_CD = A.L4_CD
+							AND SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD
+						 	), 0) 											AS INPUT_CNT			/* SQLINES DEMO *** 운트 */
+					FROM SAP_STK_PROD@DL_MD_MARTNIS A
+						,PRODUCT@DL_MD_MARTNIS B 
+					WHERE A.PROD_CD = B.PROD_CD
+					<isEmpty  property="entpCode"  prepend="AND"> 
+			      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        		#venCds[]# 										/* 협력업체 검색조건 */
+			      		</iterate> 
+			    	 </isEmpty>	
+			    	  				    					    	
+			    	 <isNotEmpty	property="entpCode"  prepend="AND">
+			    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+			    	 </isNotEmpty>
+			    	 
+			    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		/* 판매코드 검색조건 */ 
+				     		A.SRCMK_CD =  #srchSellCode#
+				     </isNotEmpty>
+				     
+				     <isNotEmpty	property="srchCompleteGbn"  prepend="AND">
+			    	 	<isEqual property = "srchCompleteGbn" compareValue = "1">		
+							A.NEW_CFM_FG = '1'									/* 확정 */
+						 </isEqual>	
+						 
+						 <isEqual property = "srchCompleteGbn" compareValue = "0">
+							A.NEW_CFM_FG <![CDATA[<>]]> '1' 		/* 미확정 */
+						 </isEqual>							 
+			    	 </isNotEmpty>				
+					AND A.NEED_INPUT = '4'								/* 입력 대상 상품*/
+				)A		
+		   	  	WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */
+		   	)A
+		    <isEmpty  property="downloadFlag" > 
+			     <![CDATA[ 
+					WHERE #firstIndex#+1 <= RN and RN < #lastIndex#+1
+		        ]]> 		        
+          	</isEmpty> 		   	  	
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 후 버전 -->
+	  <select id="selectNewWholeProductList_3" resultMap="wholeProductListMap" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductList_3 */
+	   	  SELECT A.*
+	   	  FROM
+	   	  (	
+		   	  SELECT	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+						</isEqual>
+						
+						<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+						</isEqual>
+				
+						<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+						</isEqual>
+					,	A.VEN_CD
+					,	A.PROD_CD
+					,	A.SRCMK_CD
+					,	A.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	A.CFM_FG																	/* 확정여부 */
+					,	A.REG_DT
+					,	A.GRP_CD
+					,	A.HV_FG
+					,	A.GRP_ATT_TOT_CNT + A.MART_ATT_TOT_CNT			AS TOT_CNT					/* 총 입력해야될 속성 카운트 */	
+					,	COALESCE(A.GRP_ATT_INPUT_CNT, 0) + COALESCE(A.MART_ATT_INPUT_CNT, 0)	AS INPUT_CNT	/* 입력된 속성 카운트 */
+					,	A.X00816_CNT																/* SQLINES DEMO ***  속성 카운트 */
+					,	A.GRP_ATT_TOT_CNT
+					,	A.MART_ATT_TOT_CNT						
+			 FROM
+			 (					
+			   	  SELECT 	B.VEN_CD
+						,	A.PROD_CD
+						,	B.SRCMK_CD
+						,	B.PROD_NM
+						,	A.L4_CD
+						,	A.SAP_L3_CD
+						,	'0'				AS CFM_FG					/* 확정여부 */
+						,	B.REG_DT
+						,	A.GRP_CD
+						,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+						,	(
+								SELECT COUNT(T1.ATT_ID)
+								FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+									, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+								WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+								AND T1.ATT_ID = T2.ATT_ID
+								AND T1.GRP_CAT = A.GRP_CD	
+							)								AS GRP_ATT_TOT_CNT			/* 입력해야될 분석속성 카운트 */	
+						,	(
+								SELECT COUNT(T3.ATT_VAL_ID)
+								FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+									, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+									, (
+											SELECT 	PROD_CD
+												,	SRCMK_CD
+												,	L4_CD
+												,	ATT_ID
+												,	MAX(ATT_VAL_ID)	AS ATT_VAL_ID
+												,	MAX(REG_DATE)	AS REG_DATE  
+											FROM TPC_CAT_ATT_TEMP
+											GROUP BY PROD_CD, SRCMK_CD, L4_CD, ATT_ID	
+									  ) T3
+								WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+								AND T1.ATT_ID = T2.ATT_ID
+								AND T1.GRP_CAT = a.grp_cd
+								AND T1.ATT_ID = T3.ATT_ID
+								AND T3.PROD_CD = A.PROD_CD
+								AND T3.SRCMK_CD = B.SRCMK_CD
+								AND T3.L4_CD = A.L4_CD	
+							)								AS GRP_ATT_INPUT_CNT		/* 입력된 분석속성 갯수 */	
+						,	COALESCE((
+								SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+									  COUNT(DISTINCT T4.ATT_ID)
+								FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+								WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+								AND T3.ATT_ID = T4.ATT_ID
+								AND T3.SAP_L3_CD = A.SAP_L3_CD
+								GROUP BY T3.SAP_L3_CD
+							), 0)							AS MART_ATT_TOT_CNT			/* SQLINES DEMO *** 트 */	
+						,	COALESCE((
+								SELECT COUNT(DISTINCT T4.ATT_ID)
+								FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+									,TPC_CAT_ATT_TEMP T5
+								WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+								AND T3.ATT_ID = T4.ATT_ID
+								AND T3.SAP_L3_CD = A.SAP_L3_CD
+								AND T5.ATT_ID = T3.ATT_ID
+								AND T5.PROD_CD = A.PROD_CD
+								AND T5.SRCMK_CD = B.SRCMK_CD
+								AND T5.L4_CD = A.L4_CD
+								AND T5.SAP_L3_CD = A.SAP_L3_CD 
+								GROUP BY T3.SAP_L3_CD
+							), 0)							AS MART_ATT_INPUT_CNT			/* 입력된 마트단독속성 카운트 */	
+						,	COALESCE((
+								SELECT COUNT(ATT_ID) COUNT
+								FROM TPC_CAT_ATT_TEMP
+								WHERE PROD_CD = A.PROD_CD
+								AND SRCMK_CD = B.SRCMK_CD
+								AND L4_CD = A.L4_CD
+								AND SAP_L3_CD = A.SAP_L3_CD
+								AND ATT_VAL_ID = 'X00816'								/* 해당사항없음으로 입력된 속성 */
+								GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD	
+							), 0) 							AS X00816_CNT				/* SQLINES DEMO ***  중에 해당사항없음 이라고 입력된 속성 갯수 */	
+					FROM SAP_STK_PROD@DL_MD_MARTNIS A
+						,PRODUCT@DL_MD_MARTNIS B 
+					WHERE A.PROD_CD = B.PROD_CD
+					<isEmpty  property="entpCode"  prepend="AND"> 
+			      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        		#venCds[]# 											/* 협력업체 검색조건 */
+			      		</iterate> 
+			    	 </isEmpty>	
+			    	  				    					    	
+			    	 <isNotEmpty	property="entpCode"  prepend="AND">
+			    	  		B.VEN_CD 	= #entpCode#								/* 협력업체 검색조건 */
+			    	 </isNotEmpty>
+			    	 
+			    	 <isNotEmpty  property="srchSellCode"  prepend="AND">			/* 판매코드 검색조건 */ 
+				     		B.SRCMK_CD 	=  #srchSellCode#
+				     </isNotEmpty>
+				     
+				     <isNotEmpty  property="srchProdGbn"	prepend="AND">						/* SQLINES DEMO *** er, 2:Vic] */			     
+			     		<isEqual property="srchProdGbn" compareValue="1">
+				               COALESCE(B.MAT_CD, 1) IN ('1','3')
+				        </isEqual>
+				        
+				        <isEqual property="srchProdGbn" compareValue="2">
+				               B.MAT_CD = '2'
+				        </isEqual>			     
+			     	</isNotEmpty>
+					AND A.NEED_INPUT = '7'											/* 입력 대상 상품*/
+					AND A.SAP_L3_CD = #sapL3Cd#
+				)A		
+		   	  	WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */
+		   	)A
+		    <isEmpty  property="downloadFlag" > 
+			     <![CDATA[ 
+					WHERE #firstIndex#+1 <= RN and RN < #lastIndex#+1
+		        ]]> 		        
+          	</isEmpty> 		   	  	
+	  </select>
+	  
+	  <!-- SQLINES DEMO ***  버전 -->
+	  <select id="selectNewWholeProductList_4" resultMap="wholeProductListMap" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductList_4 */
+	   	  SELECT  A.*
+		  FROM
+		  (		
+		   	  SELECT  	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+						</isEqual>
+						
+						<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+						</isEqual>
+				
+						<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+						</isEqual>
+		   	  		,	 A.VEN_CD 
+					,	 A.PROD_CD
+				    ,    A.SRCMK_CD
+				    ,    A.PROD_NM
+				    ,    A.L4_CD
+				    ,    A.SAP_L3_CD
+					,	 A.CFM_FG
+					,    A.REG_DT
+				    ,    A.GRP_CD
+				    ,    A.HV_FG
+				    ,    COUNT(A.ATT_ID)    AS TOT_CNT
+				    ,    COUNT(A.ATT_VAL_ID)    AS INPUT_CNT
+				    ,    COUNT(A.X00816_VAL_ID)    AS X00816_CNT
+				    ,    WM_CONCAT(Concat('--' , A.ATT_NM , ':' , '[' , COALESCE(A.ATT_VAL_NM, '미입력') , ']') ) AS ATTR_VAL_TXT    /* SQLINES DEMO *** 뭔지 추출하는 컬럼  */
+				FROM
+				(
+			   	  	SELECT 	 A.*
+						,    COALESCE((SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = A.ATT_ID AND ATT_VAL_ID = A.ATT_VAL_ID), '미입력')    AS ATT_VAL_NM    /* SQLINES DEMO ***  명 */	
+					FROM
+					(
+				   	  	SELECT 	/*+ NO_MERGE */
+								A.*
+							,	(SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID
+LIMIT 1 )	AS ATT_VAL_ID
+							,   (SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID AND ATT_VAL_ID = 'X00816'
+LIMIT 1)    AS X00816_VAL_ID 
+						FROM
+						(
+							SELECT 	B.VEN_CD
+								,	A.PROD_CD
+								,	B.SRCMK_CD
+								,	B.PROD_NM
+								,	A.L4_CD
+								,	A.SAP_L3_CD
+								,	'0'	AS CFM_FG
+								,	B.REG_DT
+								,	A.GRP_CD
+								,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+								,	C.ATT_ID
+								,	C.ATT_NM
+							FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+								, PRODUCT@DL_MD_MARTNIS B
+								, (
+										SELECT T1.*
+										FROM
+										(
+											SELECT  B.GRP_CAT
+												,    B.ATT_ID
+												,    C.ATT_NM
+												,    C.ATT_TYP_CD
+											FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+												, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+											WHERE B.ATT_ID = C.ATT_ID  
+											AND C.ATT_TYP_CD IN ('10','30','04')                           
+										)T1	
+								  ) C
+							WHERE A.GRP_CD = C.GRP_CAT 
+							AND A.PROD_CD = B.PROD_CD 
+							<isEmpty  property="entpCode"  prepend="AND"> 
+					      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        		#venCds[]# 										/* 협력업체 검색조건 */
+					      		</iterate> 
+					    	 </isEmpty>	
+					    	  				    					    	
+					    	 <isNotEmpty	property="entpCode"  prepend="AND">
+					    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+					    	 </isNotEmpty>
+					    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+						     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+						     </isNotEmpty>
+						     
+						     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+						     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+							               COALESCE(B.MAT_CD, 1) IN ('1','3')
+							        </isEqual>
+							        
+							        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+							               B.MAT_CD = '2'
+							        </isEqual>			     
+						     </isNotEmpty>
+							AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+							AND A.NEED_INPUT = '7'
+							UNION ALL
+							SELECT 	B.VEN_CD
+								,	A.PROD_CD
+								,	B.SRCMK_CD
+								,	B.PROD_NM
+								,	A.L4_CD
+								,	A.SAP_L3_CD
+								,	'0'	AS CFM_FG
+								,	B.REG_DT
+								,	A.GRP_CD
+								,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+								,	C.ATT_ID
+								,	C.ATT_NM
+							FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+								, PRODUCT@DL_MD_MARTNIS B
+								, (
+										SELECT T1.*
+										FROM
+										(
+											SELECT   B.SAP_L3_CD
+												,    B.ATT_ID
+												,    C.ATT_NM
+												,    C.ATT_TYP_CD
+											FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS B
+												, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+											WHERE B.ATT_ID = C.ATT_ID  
+											AND C.ATT_TYP_CD IN ('10','30','04')                           
+										)T1	
+								  ) C
+							WHERE A.SAP_L3_CD = C.SAP_L3_CD
+							AND A.PROD_CD = B.PROD_CD 
+							<isEmpty  property="entpCode"  prepend="AND"> 
+					      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        		#venCds[]# 										/* 협력업체 검색조건 */
+					      		</iterate> 
+					    	 </isEmpty>	
+					    	  				    					    	
+					    	 <isNotEmpty	property="entpCode"  prepend="AND">
+					    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+					    	 </isNotEmpty>
+					    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+						     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+						     </isNotEmpty>
+						     
+						     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+						     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+							               COALESCE(B.MAT_CD, 1) IN ('1','3')
+							        </isEqual>
+							        
+							        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+							               B.MAT_CD = '2'
+							        </isEqual>			     
+						     </isNotEmpty>
+							AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+							AND A.NEED_INPUT = '7'	
+						)A
+					)A
+				)A					
+				GROUP BY     A.VEN_CD 
+						,	 A.PROD_CD
+						,    A.SRCMK_CD
+						,    A.PROD_NM
+						,    A.L4_CD
+						,    A.SAP_L3_CD
+						,	 A.CFM_FG
+						,    A.REG_DT
+						,    A.GRP_CD
+						,    A.HV_FG
+			)A
+			<isEmpty  property="downloadFlag" > 
+			     <![CDATA[ 
+					WHERE #firstIndex#+1 <= A.RN AND A.RN < #lastIndex#+1
+		        ]]> 		        
+          	</isEmpty>				
+				
+	  </select>
+	  	 
+	  <!-- SQLINES DEMO *** 정보 -->
+	  <select id="selectNewWholeProductOldTeamInfo"		resultMap="newWholeProductInfo"		parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectNewWholeProductOldTeamInfo */		
+			SELECT 	A.TEAM_CD
+				,	A.TEAM_NM
+				,	(SELECT L1_CD FROM SAP_CATEGORY3@DL_MD_MARTNIS WHERE L3_CD = (SELECT SAP_L3_CD FROM SAP_STK_PROD@DL_MD_MARTNIS WHERE PROD_CD = #newProductCode# AND L4_CD = #srchL4Cd#))	AS L1_CD
+				,	(SELECT L1_NM FROM SAP_CATEGORY3@DL_MD_MARTNIS WHERE L3_CD = (SELECT SAP_L3_CD FROM SAP_STK_PROD@DL_MD_MARTNIS WHERE PROD_CD = #newProductCode# AND L4_CD = #srchL4Cd#))	AS L1_NM
+				,	(SELECT L3_CD FROM SAP_CATEGORY3@DL_MD_MARTNIS WHERE L3_CD = (SELECT SAP_L3_CD FROM SAP_STK_PROD@DL_MD_MARTNIS WHERE PROD_CD = #newProductCode# AND L4_CD = #srchL4Cd#))	AS L4_CD
+				,	(SELECT L3_NM FROM SAP_CATEGORY3@DL_MD_MARTNIS WHERE L3_CD = (SELECT SAP_L3_CD FROM SAP_STK_PROD@DL_MD_MARTNIS WHERE PROD_CD = #newProductCode# AND L4_CD = #srchL4Cd#))	AS L4_NM
+			FROM CATEGORY_V4@DL_MD_MARTNIS A
+			WHERE L4_CD = #srchL4Cd#
+	  </select>
+	  
+	  <!-- 입력... SQLINES DEMO *** -->
+	   <select id="selectNewWholeProductAttrList"		resultMap="newWholeProductAttrListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectNewWholeProductAttrList */
+		  	SELECT 	A.ATT_ID			AS ATT_ID
+				,	MIN(A.ATT_NM)		AS ATT_NM
+				,	MIN(A.ATT_TYP_CD)	AS ATT_TYP_CD
+				,	MIN(B.ATT_VAL_ID)	AS VAL
+				,	MIN((
+						CASE WHEN A.ATT_TYP_CD = '50' THEN  (SELECT BRAND_NM FROM TPR_BRAND WHERE BRAND_CD = B.ATT_VAL_ID) 
+							 WHEN A.ATT_TYP_CD = '51' THEN (SELECT MAKER_NM FROM TPR_MAKER WHERE MAKER_CD = B.ATT_VAL_ID)
+							 WHEN A.ATT_TYP_CD = '10' THEN (SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = B.ATT_ID AND ATT_VAL_ID = B.ATT_VAL_ID)
+							 WHEN A.ATT_TYP_CD = '60' THEN CONCAT(SUBSTR(B.ATT_VAL_ID, 0, POSITION('|' IN B.ATT_VAL_ID) - 1) , (SELECT CD_NM FROM TED_CODE WHERE MAJOR_CD = 'PRD17' AND MINOR_CD = SUBSTR(B.ATT_VAL_ID, POSITION('|' IN B.ATT_VAL_ID) + 1, LENGTH(B.ATT_VAL_ID))))
+							 ELSE B.ATT_VAL_ID							/* 30, 40 FREETXT */ 
+						END
+					)) AS ATT_VAL_NM 	
+			FROM
+			(			
+				/* 해당상품의 그룹분석 속성 */
+				SELECT 	B.ATT_ID
+					,	C.ATT_NM
+					,	C.ATT_TYP_CD
+				FROM  SAP_GRP_CAT_MAP@DL_MD_MARTNIS A
+					, SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+					, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C		
+				WHERE B.ATT_ID = C.ATT_ID 
+				AND A.GRP_CAT = B.GRP_CAT 
+				AND A.SAP_L3_CD = #sapL3Cd#
+				GROUP BY B.ATT_ID, C.ATT_NM, C.ATT_TYP_CD	
+				UNION ALL	
+				/* 해다앙품의 마트 단독 속성 */
+				SELECT 	B.ATT_ID
+					,	B.ATT_NM
+					,	B.ATT_TYP_CD
+				FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS A	
+			        , MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS B
+			    WHERE A.ATT_ID = B.ATT_ID 
+				AND A.SAP_L3_CD = #sapL3Cd#
+			) A
+			 LEFT OUTER JOIN TPC_CAT_ATT_TEMP B
+			ON A.ATT_ID = B.ATT_ID
+			AND B.PROD_CD = #newProductCode#
+			AND B.SRCMK_CD = #sellCode#
+			GROUP BY A.ATT_ID
+			ORDER BY A.ATT_ID
+	  </select>
+	  
+	  <!-- SQLINES DEMO *** 콤보박스 구성될 리스트 조회 -->
+	  <select id="selectNewWholeProductAttComboList"	resultMap="NewWholeProductAttComboListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectNewWholeProductAttComboList */
+		  	SELECT 	A.ATT_ID
+				,	A.ATT_VAL_ID
+				,	A.ATT_VAL_NM
+			FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS A
+			WHERE ATT_ID IN
+			(	
+				/* 해당상품의 그룹분석 속성 */
+				SELECT 	B.ATT_ID					
+				FROM  SAP_GRP_CAT_MAP@DL_MD_MARTNIS A
+					, SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+					, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C		
+				WHERE B.ATT_ID = C.ATT_ID 
+				AND A.GRP_CAT = B.GRP_CAT 
+				AND A.SAP_L3_CD = #sapL3Cd#
+				GROUP BY B.ATT_ID, C.ATT_NM, C.ATT_TYP_CD	
+				UNION ALL	
+				/* 해당상품의 마트 단독 속성 */
+				SELECT 	B.ATT_ID
+				FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS A	
+					, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS B
+				WHERE A.ATT_ID = B.ATT_ID 
+				AND A.SAP_L3_CD = #sapL3Cd#
+			)
+			GROUP BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM
+	  </select>	
+	  
+	  <!-- SQLINES DEMO *** 전 카운트 조회 -->
+	  <select id="selectDelWholeProductAttCnt"	resultClass="Integer"	parameterClass="pEDMPRO0096VO">
+	  	/* SQLINES DEMO *** ectDelWholeProductAttCnt */
+	  	SELECT COUNT(1) AS CNT FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = #newProductCode#	AND SRCMK_CD = #sellCode#	AND L4_CD = #srchL4Cd#
+	  </select>
+	  
+	  <!-- SQLINES DEMO *** -->
+	  <delete id="deletetWholeProductAtt"		parameterClass="pEDMPRO0096VO">
+	  	/* SQLINES DEMO *** etetWholeProductAtt */
+	  	DELETE FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = #newProductCode#	AND SRCMK_CD = #sellCode#	AND L4_CD = #srchL4Cd#
+	  </delete>
+	  
+	  <!-- SQLINES DEMO *** -->
+	  <insert id="insertWholeProductAtt"		parameterClass="pEDMPRO0096VO">
+	  	/* SQLINES DEMO *** ertWholeProductAtt */	
+	  	INSERT INTO TPC_CAT_ATT_TEMP
+	  	(
+	  			PROD_CD
+	  		,	SRCMK_CD
+			,	L4_CD
+			,	SAP_L3_CD
+			,	ATT_ID
+			,	ATT_VAL_ID
+			,	ATT_ID_TYP
+			,	REG_DATE
+			,	REG_ID
+	  	)
+	  	VALUES
+	  	(
+	  			#newProductCode#
+	  		,	#sellCode#
+			,	#l4Cd#
+			,	#sapL3Cd#
+			,	#attId#
+			,	#attValId#
+			,	#attIdTyp#
+			,	CURRENT_TIMESTAMP(0)
+			,	#entpCd:VARCHAR#
+	  	)
+	  </insert>
+	  
+	  <!-- SQLINES DEMO *** -->
+	  <select id="selectWholeGrpArrCnt"		resultClass="Integer"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** lectWholeGrpArrCnt */
+	  	SELECT COUNT(SAP_L3_CD) AS CNT FROM SAP_STK_PROD@DL_MD_MARTNIS WHERE L4_CD = #srchL4Cd#	  	
+	  </select>
+	  
+	  <!-- SQLINES DEMO *** AP 소분류 콤보 리스트 조회 (현재 사용안함 사용하기 위해서는 쿼리 변경해야됨)-->
+	  <select id="selectSapMapAttrList"		resultMap="selectSapMapAttrListMap"		parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectSapMapAttrList */
+	  	SELECT 	A.SAP_L3_CD
+			,	A.SAP_L3_NM
+		FROM SAP_CAT_MAP_V1@DL_MD_MARTNIS A
+		WHERE A.L4_CD = #srchL4Cd#
+		<isNotEmpty 	property="l1Cd"		prepend="AND">
+			A.L1_CD = #l1Cd#
+		</isNotEmpty>	
+	  </select>
+	  
+	  <!-- 규격... SQLINES DEMO *** -->
+	  <select id="selectkyekeokList"		resultMap="selectkyekeokListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectkyekeokList */
+	  	SELECT 	MINOR_CD 	AS CODE_ID
+		  		,CD_NM 		AS CODE_NAME
+	  	FROM TED_CODE
+		WHERE MAJOR_CD = #majorCd#
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** t Count 2016.03.07 이전 버전 -->
+	  <select id="selectNewWholeProductCountBatch" resultClass="Integer" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductCountBatch */	
+	   	  SELECT COUNT(A.PROD_CD)	AS CNT
+	   	  FROM
+	   	  (
+		   	  SELECT 	B.VEN_CD
+					,	A.PROD_CD
+					,	A.SRCMK_CD
+					,	B.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	A.NEW_CFM_FG									AS CFM_FG				/* 확정여부 */						
+					,	B.REG_DT
+					,	COALESCE((
+							SELECT 	COUNT(DISTINCT T2.ATT_ID)	AS CNT
+							FROM SAP_GRP_CAT_MAP@DL_MD_MARTNIS T1
+								,SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+								,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+							WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+							AND T2.ATT_ID = T3.ATT_ID 
+							AND T1.GRP_CAT = T2.GRP_CAT
+							AND T1.SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY T1.SAP_L3_CD
+						), 0)											AS GRP_ATT_TOT_CNT		/* 입력해야될 분석속성 카운트 */
+					,	COALESCE((
+							SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+								  COUNT(DISTINCT T4.ATT_ID)
+							FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+								,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+							WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+							AND T3.ATT_ID = T4.ATT_ID
+							AND T3.SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY T3.SAP_L3_CD
+					 	), 0)											AS MART_ATT_TOT_CNT		/* SQLINES DEMO *** 트 */
+					,	COALESCE((
+						SELECT COUNT(ATT_ID) COUNT
+						FROM TPC_CAT_ATT_TEMP
+						WHERE PROD_CD = A.PROD_CD
+						AND SRCMK_CD = A.SRCMK_CD
+						AND L4_CD = A.L4_CD
+						AND SAP_L3_CD = A.SAP_L3_CD
+						GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD
+					 	), 0) 											AS INPUT_CNT			/* SQLINES DEMO *** 운트 */
+			FROM SAP_STK_PROD@DL_MD_MARTNIS A
+				,PRODUCT@DL_MD_MARTNIS B 
+			WHERE A.PROD_CD = B.PROD_CD
+			AND A.SAP_L3_CD = #sapL3Cd#
+			<isEmpty  property="entpCode"  prepend="AND"> 
+	      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        		#venCds[]# 										/* 협력업체 검색조건 */
+	      		</iterate> 
+	    	 </isEmpty>	
+	    	  				    					    	
+	    	 <isNotEmpty	property="entpCode"  prepend="AND">
+	    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+	    	 </isNotEmpty>
+	    	 
+		     <isNotEmpty	property="srchCompleteGbn"  prepend="AND">
+	    	 	<isEqual property = "srchCompleteGbn" compareValue = "1">		
+					A.NEW_CFM_FG = '1'									/* 확정 */
+				 </isEqual>	
+				 
+				 <isEqual property = "srchCompleteGbn" compareValue = "0">
+					A.NEW_CFM_FG <![CDATA[<>]]> '1' 		/* 미확정 */
+				 </isEqual>							 
+	    	 </isNotEmpty>				
+			AND A.NEED_INPUT = '4'								/* 입력 대상 상품*/
+	   	  )A
+	   	  WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */	   	  	   	  
+	  </select>
+	  
+	  
+	   <!-- SQLINES DEMO *** t Count 2016.03.07 이후 버전 -->
+	  <select id="selectNewWholeProductCountBatch_3" resultMap="wholeProductListMapBatch" 	parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductCountBatch_3 */	
+	   	 SELECT 	''	AS CHK
+	   	 		,	A.VEN_CD
+				,	A.PROD_CD
+				,	A.SRCMK_CD
+				,	A.PROD_NM
+				,	A.L4_CD
+				,	A.SAP_L3_CD
+				,	A.CFM_FG																	/* 확정여부 */
+				,	A.REG_DT
+				,	A.GRP_CD
+				,	A.HV_FG
+				,	A.GRP_ATT_TOT_CNT + A.MART_ATT_TOT_CNT			AS TOT_CNT					/* 총 입력해야될 속성 카운트 */	
+				,	COALESCE(A.GRP_ATT_INPUT_CNT, 0) + COALESCE(A.MART_ATT_INPUT_CNT, 0)	AS INPUT_CNT	/* 입력된 속성 카운트 */
+				,	A.X00816_CNT																/* SQLINES DEMO ***   속성 카운트 */				
+				,	A.GRP_ATT_TOT_CNT
+				,	A.MART_ATT_TOT_CNT					
+	   	  FROM
+	   	  ( 
+		   	  SELECT  	B.VEN_CD
+					,	A.PROD_CD
+					,	B.SRCMK_CD
+					,	B.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	'0'				AS CFM_FG					/* 확정여부 */
+					,	B.REG_DT
+					,	A.GRP_CD
+					,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+					,	(
+							SELECT COUNT(T1.ATT_ID)
+							FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+								, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+							WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+							AND T1.ATT_ID = T2.ATT_ID
+							AND T1.GRP_CAT = A.GRP_CD	
+						)								AS GRP_ATT_TOT_CNT			/* 입력해야될 분석속성 카운트 */	
+					,	(
+							SELECT COUNT(T3.ATT_VAL_ID)
+							FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+								, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+								, (
+										SELECT 	PROD_CD
+											,	SRCMK_CD
+											,	L4_CD
+											,	ATT_ID
+											,	MAX(ATT_VAL_ID)	AS ATT_VAL_ID
+											,	MAX(REG_DATE)	AS REG_DATE  
+										FROM TPC_CAT_ATT_TEMP
+										GROUP BY PROD_CD, SRCMK_CD, L4_CD, ATT_ID	
+								  ) T3
+							WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+							AND T1.ATT_ID = T2.ATT_ID
+							AND T1.GRP_CAT = a.grp_cd
+							AND T1.ATT_ID = T3.ATT_ID
+							AND T3.PROD_CD = A.PROD_CD
+							AND T3.SRCMK_CD = B.SRCMK_CD
+							AND T3.L4_CD = A.L4_CD	
+						)								AS GRP_ATT_INPUT_CNT		/* 입력된 분석속성 갯수 */	
+					,	COALESCE((
+							SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+								  COUNT(DISTINCT T4.ATT_ID)
+							FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+								,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+							WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+							AND T3.ATT_ID = T4.ATT_ID
+							AND T3.SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY T3.SAP_L3_CD
+						), 0)							AS MART_ATT_TOT_CNT			/* SQLINES DEMO *** 트 */
+					,	COALESCE((
+								SELECT COUNT(DISTINCT T4.ATT_ID)
+								FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+									,TPC_CAT_ATT_TEMP T5
+								WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+								AND T3.ATT_ID = T4.ATT_ID
+								AND T3.SAP_L3_CD = A.SAP_L3_CD
+								AND T5.ATT_ID = T3.ATT_ID
+								AND T5.PROD_CD = A.PROD_CD
+								AND T5.SRCMK_CD = B.SRCMK_CD
+								AND T5.L4_CD = A.L4_CD
+								AND T5.SAP_L3_CD = A.SAP_L3_CD 
+								GROUP BY T3.SAP_L3_CD
+							), 0)							AS MART_ATT_INPUT_CNT			/* 입력된 마트단독속성 카운트 */													
+					,	COALESCE((
+							SELECT COUNT(ATT_ID) COUNT
+							FROM TPC_CAT_ATT_TEMP
+							WHERE PROD_CD = A.PROD_CD
+							AND SRCMK_CD = B.SRCMK_CD
+							AND L4_CD = A.L4_CD
+							AND SAP_L3_CD = A.SAP_L3_CD
+							AND ATT_VAL_ID = 'X00816'								/* 해당사항없음으로 입력된 속성 */
+							GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD	
+						), 0) 							AS X00816_CNT				/* SQLINES DEMO ***  중에 해당사항없음 이라고 입력된 속성 갯수 */	
+				FROM  SAP_STK_PROD@DL_MD_MARTNIS A
+					, PRODUCT B
+				WHERE A.PROD_CD = B.PROD_CD
+				AND A.NEED_INPUT = '6'											/* 입력대상 상품 */
+				AND A.SAP_L3_CD = #sapL3Cd#	
+				AND A.GRP_CD = #srchGrpCd#				
+				<isEmpty  property="entpCode"  prepend="AND"> 
+		      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        		#venCds[]# 										/* 협력업체 검색조건 */
+		      		</iterate> 
+		    	 </isEmpty>	
+		    	  				    					    	
+		    	 <isNotEmpty	property="entpCode"  prepend="AND">
+		    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+		    	 </isNotEmpty>
+		    	 
+			      <isNotEmpty  property="srchProdGbn"	prepend="AND">						/* SQLINES DEMO *** er, 2:Vic] */			     
+			     		<isEqual property="srchProdGbn" compareValue="1">
+				               COALESCE(B.MAT_CD, 1) IN ('1','3')
+				        </isEqual>
+				        
+				        <isEqual property="srchProdGbn" compareValue="2">
+				               B.MAT_CD = '2'
+				        </isEqual>			     
+			     </isNotEmpty>
+			)A
+			WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */  	   	  
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 6.03.10 이후 버전 -->
+	  <select id="selectNewWholeProductCountBatch_4" resultClass="Integer" 	parameterClass="searchProduct">
+	  	/* SQLINES DEMO *** ectNewWholeProductCountBatch_4 */
+	  		  SELECT COUNT(A.PROD_CD) AS CNT
+		   	  FROM
+		   	  (
+			   	  SELECT  	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+								ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+							</isEqual>
+							<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+								ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+							</isEqual>
+							
+							<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+							</isEqual>
+							<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+							</isEqual>
+					
+							<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+							</isEqual>
+							<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+							</isEqual>
+			   	  		,	 A.VEN_CD 
+						,	 A.PROD_CD
+					    ,    A.SRCMK_CD
+					    ,    A.PROD_NM
+					    ,    A.L4_CD
+					    ,    A.SAP_L3_CD
+						,	 A.CFM_FG
+						,    A.REG_DT
+					    ,    A.GRP_CD
+					    ,    A.HV_FG
+					    ,    COUNT(A.ATT_ID)    AS TOT_CNT
+					    ,    COUNT(A.ATT_VAL_ID)    AS INPUT_CNT
+					    ,    COUNT(A.X00816_VAL_ID)    AS X00816_CNT
+					    ,    WM_CONCAT(Concat('--' , A.ATT_NM , ':' , '[' , COALESCE(A.ATT_VAL_NM, '미입력') , ']') ) AS ATTR_VAL_TXT    /* SQLINES DEMO *** 뭔지 추출하는 컬럼  */
+						FROM
+						(
+					   	  	SELECT 	 A.*
+								,    COALESCE((SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = A.ATT_ID AND ATT_VAL_ID = A.ATT_VAL_ID), '미입력')    AS ATT_VAL_NM    /* SQLINES DEMO ***  명 */	
+							FROM
+							(
+						   	  	SELECT 	/*+ NO_MERGE */
+										A.*
+									,	(SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID
+LIMIT 1 )	AS ATT_VAL_ID
+									,   (SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID AND ATT_VAL_ID = 'X00816'
+LIMIT 1)    AS X00816_VAL_ID 
+								FROM
+								(
+									SELECT 	B.VEN_CD
+										,	A.PROD_CD
+										,	B.SRCMK_CD
+										,	B.PROD_NM
+										,	A.L4_CD
+										,	A.SAP_L3_CD
+										,	'0'	AS CFM_FG
+										,	B.REG_DT
+										,	A.GRP_CD
+										,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+										,	C.ATT_ID
+										,	C.ATT_NM
+									FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+										, PRODUCT@DL_MD_MARTNIS B
+										, (
+												SELECT T1.*
+												FROM
+												(
+													SELECT  B.GRP_CAT
+														,    B.ATT_ID
+														,    C.ATT_NM
+														,    C.ATT_TYP_CD
+													FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+														, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+													WHERE B.ATT_ID = C.ATT_ID  
+													AND C.ATT_TYP_CD IN ('10','30','04')                           
+												)T1	
+										  ) C
+									WHERE A.GRP_CD = C.GRP_CAT 
+									AND A.PROD_CD = B.PROD_CD 
+									<isEmpty  property="entpCode"  prepend="AND"> 
+							      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+							        		#venCds[]# 										/* 협력업체 검색조건 */
+							      		</iterate> 
+							    	 </isEmpty>	
+							    	  				    					    	
+							    	 <isNotEmpty	property="entpCode"  prepend="AND">
+							    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+							    	 </isNotEmpty>
+							    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+								     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+								     </isNotEmpty>
+								     
+								     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+								     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+									               COALESCE(B.MAT_CD, 1) IN ('1','3')
+									        </isEqual>
+									        
+									        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+									               B.MAT_CD = '2'
+									        </isEqual>			     
+								     </isNotEmpty>
+									AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+									AND A.GRP_CD = #srchGrpCd#									/* 그룹소분류 검색조건 */
+									AND A.NEED_INPUT = '7'
+									UNION ALL
+									SELECT 	B.VEN_CD
+										,	A.PROD_CD
+										,	B.SRCMK_CD
+										,	B.PROD_NM
+										,	A.L4_CD
+										,	A.SAP_L3_CD
+										,	'0'	AS CFM_FG
+										,	B.REG_DT
+										,	A.GRP_CD
+										,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+										,	C.ATT_ID
+										,	C.ATT_NM
+									FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+										, PRODUCT@DL_MD_MARTNIS B
+										, (
+												SELECT T1.*
+												FROM
+												(
+													SELECT   B.SAP_L3_CD
+														,    B.ATT_ID
+														,    C.ATT_NM
+														,    C.ATT_TYP_CD
+													FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS B
+														, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+													WHERE B.ATT_ID = C.ATT_ID  
+													AND C.ATT_TYP_CD IN ('10','30','04')                           
+												)T1	
+										  ) C
+									WHERE A.SAP_L3_CD = C.SAP_L3_CD
+									AND A.PROD_CD = B.PROD_CD 
+									<isEmpty  property="entpCode"  prepend="AND"> 
+							      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+							        		#venCds[]# 										/* 협력업체 검색조건 */
+							      		</iterate> 
+							    	 </isEmpty>	
+							    	  				    					    	
+							    	 <isNotEmpty	property="entpCode"  prepend="AND">
+							    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+							    	 </isNotEmpty>
+							    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+								     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+								     </isNotEmpty>
+								     
+								     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+								     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+									               COALESCE(B.MAT_CD, 1) IN ('1','3')
+									        </isEqual>
+									        
+									        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+									               B.MAT_CD = '2'
+									        </isEqual>			     
+								     </isNotEmpty>
+									AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+									AND A.GRP_CD = #srchGrpCd#									/* 그룹소분류 검색조건 */
+									AND A.NEED_INPUT = '7'	
+								)A
+							)A
+						)A					
+						GROUP BY     A.VEN_CD 
+								,	 A.PROD_CD
+								,    A.SRCMK_CD
+								,    A.PROD_NM
+								,    A.L4_CD
+								,    A.SAP_L3_CD
+								,	 A.CFM_FG
+								,    A.REG_DT
+								,    A.GRP_CD
+								,    A.HV_FG
+				)A			
+	  </select>
+	  
+	  <!-- SQLINES DEMO *** 7 이전 버전-->
+	  <select id="selectNewWholeProductListBatch" resultMap="wholeProductListMapBatch" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductListBatch */
+	   	  	SELECT 	''	AS CHK
+	   	  		,	A.*
+			FROM
+			(
+				SELECT	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )	AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+						</isEqual>
+						
+						<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD )	AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+						</isEqual>
+				
+						<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM )	AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+						</isEqual>	
+					,	A.VEN_CD
+					,	A.PROD_CD
+					,	A.SRCMK_CD
+					,	A.PROD_NM
+					,	A.L4_CD
+					,	A.SAP_L3_CD
+					,	A.CFM_FG																	/* 확정여부 */
+					,	A.REG_DT
+					,	A.GRP_ATT_TOT_CNT + A.MART_ATT_TOT_CNT			AS TOT_CNT					/* 총 입력해야될 속성 카운트 */	
+					,	A.INPUT_CNT																	/* 입력된 속성 카운트 */
+					,	A.GRP_ATT_TOT_CNT
+					,	A.MART_ATT_TOT_CNT
+			 FROM
+			 (					
+			   	  SELECT 	B.VEN_CD
+						,	A.PROD_CD
+						,	A.SRCMK_CD
+						,	B.PROD_NM
+						,	A.L4_CD
+						,	A.SAP_L3_CD
+						,	'0'									AS CFM_FG				/* 확정여부 */
+						,	B.REG_DT	
+						,	COALESCE((
+								SELECT 	COUNT(DISTINCT T2.ATT_ID)	AS CNT
+								FROM SAP_GRP_CAT_MAP@DL_MD_MARTNIS T1
+									,SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+								WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+								AND T2.ATT_ID = T3.ATT_ID 
+								AND T1.GRP_CAT = T2.GRP_CAT
+								AND T1.SAP_L3_CD = A.SAP_L3_CD
+								GROUP BY T1.SAP_L3_CD
+							), 0)											AS GRP_ATT_TOT_CNT		/* 입력해야될 분석속성 카운트 */
+						,	COALESCE((
+								SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+									  COUNT(DISTINCT T4.ATT_ID)
+								FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+									,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+								WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+								AND T3.ATT_ID = T4.ATT_ID
+								AND T3.SAP_L3_CD = A.SAP_L3_CD
+								GROUP BY T3.SAP_L3_CD
+						 	), 0)											AS MART_ATT_TOT_CNT		/* SQLINES DEMO *** 트 */
+						,	COALESCE((
+							SELECT COUNT(ATT_ID) COUNT
+							FROM TPC_CAT_ATT_TEMP
+							WHERE PROD_CD = A.PROD_CD
+							AND SRCMK_CD = A.SRCMK_CD
+							AND L4_CD = A.L4_CD
+							AND SAP_L3_CD = A.SAP_L3_CD
+							GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD
+						 	), 0) 											AS INPUT_CNT			/* SQLINES DEMO *** 운트 */
+					FROM SAP_STK_PROD@DL_MD_MARTNIS A
+						,PRODUCT@DL_MD_MARTNIS B 
+					WHERE A.PROD_CD = B.PROD_CD
+					AND A.SAP_L3_CD = #sapL3Cd#
+					<isEmpty  property="entpCode"  prepend="AND"> 
+			      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        		#venCds[]# 										/* 협력업체 검색조건 */
+			      		</iterate> 
+			    	 </isEmpty>	
+			    	  				    					    	
+			    	 <isNotEmpty	property="entpCode"  prepend="AND">
+			    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+			    	 </isNotEmpty>
+			    	 
+				     <isNotEmpty	property="srchCompleteGbn"  prepend="AND">
+			    	 	<isEqual property = "srchCompleteGbn" compareValue = "1">		
+							A.NEW_CFM_FG = '1'									/* 확정 */
+						 </isEqual>	
+						 
+						 <isEqual property = "srchCompleteGbn" compareValue = "0">
+							A.NEW_CFM_FG <![CDATA[<>]]> '1' 		/* 미확정 */
+						 </isEqual>							 
+			    	 </isNotEmpty>				
+					AND A.NEED_INPUT = '4' 								/* 입력 대상 상품*/
+				)A		
+		   	  	WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */
+			)A											  		 	   	  	   	 
+	        <isEmpty  property="downloadFlag" > 
+			     <![CDATA[ 
+					WHERE #firstIndex#+1 <= RN and RN < #lastIndex#+1
+		        ]]> 
+           </isEmpty>
+	  </select>
+	  
+	  
+	  
+	  <!-- SQLINES DEMO *** 7 이후 버전-->
+	  <select id="selectNewWholeProductListBatch_3" resultMap="wholeProductListMapBatch" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductListBatch_3 */
+	   	  	  SELECT  ''	AS CHK
+	   	  			, A.*
+		   	  FROM
+		   	  (	
+			   	  SELECT	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+								ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+							</isEqual>
+							<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+								ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+							</isEqual>
+							
+							<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+							</isEqual>
+							<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+							</isEqual>
+					
+							<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+							</isEqual>
+							<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+								ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+							</isEqual>
+						,	A.VEN_CD
+						,	A.PROD_CD
+						,	A.SRCMK_CD
+						,	A.PROD_NM
+						,	A.L4_CD
+						,	A.SAP_L3_CD
+						,	A.CFM_FG																	/* 확정여부 */
+						,	A.REG_DT
+						,	A.GRP_CD
+						,	A.HV_FG
+						,	A.GRP_ATT_TOT_CNT + A.MART_ATT_TOT_CNT			AS TOT_CNT					/* 총 입력해야될 속성 카운트 */	
+						,	A.X00816_CNT																/* SQLINES DEMO ***  속성 카운트 */
+						,	A.GRP_ATT_TOT_CNT
+						,	A.MART_ATT_TOT_CNT	
+						,	COALESCE(A.GRP_ATT_INPUT_CNT, 0) + COALESCE(A.MART_ATT_INPUT_CNT, 0)	AS INPUT_CNT	/* 입력된 속성 카운트 */						
+				 FROM
+				 (					
+				   	  SELECT 	B.VEN_CD
+							,	A.PROD_CD
+							,	B.SRCMK_CD
+							,	B.PROD_NM
+							,	A.L4_CD
+							,	A.SAP_L3_CD
+							,	A.NEW_CFM_FG				AS CFM_FG					/* 확정여부 */
+							,	B.REG_DT
+							,	A.GRP_CD
+							,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+							,	(
+									SELECT COUNT(T1.ATT_ID)
+									FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+										, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+									WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+									AND T1.ATT_ID = T2.ATT_ID
+									AND T1.GRP_CAT = A.GRP_CD	
+								)								AS GRP_ATT_TOT_CNT			/* 입력해야될 분석속성 카운트 */
+							,	(
+									SELECT COUNT(T3.ATT_VAL_ID)
+									FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS T1
+										, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T2
+										, (
+												SELECT 	PROD_CD
+													,	SRCMK_CD
+													,	L4_CD
+													,	ATT_ID
+													,	MAX(ATT_VAL_ID)	AS ATT_VAL_ID
+													,	MAX(REG_DATE)	AS REG_DATE  
+												FROM TPC_CAT_ATT_TEMP
+												GROUP BY PROD_CD, SRCMK_CD, L4_CD, ATT_ID	
+										  ) T3
+									WHERE T2.ATT_TYP_CD IN ('10','30','40')					/* SQLINES DEMO *** EEDIGIT, FREETXT 인것만 */
+									AND T1.ATT_ID = T2.ATT_ID
+									AND T1.GRP_CAT = a.grp_cd
+									AND T1.ATT_ID = T3.ATT_ID
+									AND T3.PROD_CD = A.PROD_CD
+									AND T3.SRCMK_CD = B.SRCMK_CD
+									AND T3.L4_CD = A.L4_CD	
+								)								AS GRP_ATT_INPUT_CNT		/* 입력된 분석속성 갯수 */			
+							,	COALESCE((
+									SELECT /*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */ 
+										  COUNT(DISTINCT T4.ATT_ID)
+									FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+										,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+									WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+									AND T3.ATT_ID = T4.ATT_ID
+									AND T3.SAP_L3_CD = A.SAP_L3_CD
+									GROUP BY T3.SAP_L3_CD
+								), 0)							AS MART_ATT_TOT_CNT			/* SQLINES DEMO *** 트 */	
+							,	COALESCE((
+									SELECT COUNT(DISTINCT T4.ATT_ID)
+									FROM SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+										,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+										,TPC_CAT_ATT_TEMP T5
+									WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+									AND T3.ATT_ID = T4.ATT_ID
+									AND T3.SAP_L3_CD = A.SAP_L3_CD
+									AND T5.ATT_ID = T3.ATT_ID
+									AND T5.PROD_CD = A.PROD_CD
+									AND T5.SRCMK_CD = B.SRCMK_CD
+									AND T5.L4_CD = A.L4_CD
+									AND T5.SAP_L3_CD = A.SAP_L3_CD 
+									GROUP BY T3.SAP_L3_CD
+								), 0)							AS MART_ATT_INPUT_CNT			/* 입력된 마트단독속성 카운트 */									
+							,	COALESCE((
+									SELECT COUNT(ATT_ID) COUNT
+									FROM TPC_CAT_ATT_TEMP
+									WHERE PROD_CD = A.PROD_CD
+									AND SRCMK_CD = B.SRCMK_CD
+									AND L4_CD = A.L4_CD
+									AND SAP_L3_CD = A.SAP_L3_CD
+									AND ATT_VAL_ID = 'X00816'								/* 해당사항없음으로 입력된 속성 */
+									GROUP BY PROD_CD, SRCMK_CD, L4_CD, SAP_L3_CD	
+								), 0) 							AS X00816_CNT				/* SQLINES DEMO ***  중에 해당사항없음 이라고 입력된 속성 갯수 */	
+						FROM SAP_STK_PROD@DL_MD_MARTNIS A
+							,PRODUCT@DL_MD_MARTNIS B 
+						WHERE A.PROD_CD = B.PROD_CD
+						AND A.SAP_L3_CD = #sapL3Cd#
+						AND A.GRP_CD = #srchGrpCd#
+						<isEmpty  property="entpCode"  prepend="AND"> 
+				      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+				        		#venCds[]# 											/* 협력업체 검색조건 */
+				      		</iterate> 
+				    	 </isEmpty>	
+				    	  				    					    	
+				    	 <isNotEmpty	property="entpCode"  prepend="AND">
+				    	  		B.VEN_CD 	= #entpCode#								/* 협력업체 검색조건 */
+				    	 </isNotEmpty>
+				    	 
+					     <isNotEmpty  property="srchProdGbn"	prepend="AND">						/* SQLINES DEMO *** er, 2:Vic] */			     
+					     		<isEqual property="srchProdGbn" compareValue="1">
+						               COALESCE(B.MAT_CD, 1) IN ('1','3')
+						        </isEqual>
+						        
+						        <isEqual property="srchProdGbn" compareValue="2">
+						               B.MAT_CD = '2'
+						        </isEqual>			     
+					     </isNotEmpty>
+						AND A.NEED_INPUT = '7'											/* 입력 대상 상품*/
+					)A		
+			   	  	WHERE COALESCE(A.GRP_ATT_TOT_CNT, 0) + COALESCE(A.MART_ATT_TOT_CNT, 0) > 0	/* SQLINES DEMO *** + 입력해야될 마트단독속성 카운트 > 0보다 큰거 */
+			   	)A
+			    <isEmpty  property="downloadFlag" > 
+				     <![CDATA[ 
+						WHERE #firstIndex#+1 <= RN and RN < #lastIndex#+1
+			        ]]> 		        
+	          	</isEmpty> 		   	  	
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 0이후 버전 -->
+	  <select id="selectNewWholeProductListBatch_4" resultMap="wholeProductListMapBatch" parameterClass="searchProduct">
+	   	  /* SQLINES DEMO *** ectNewWholeProductListBatch_4 */
+	   	  SELECT  	''	AS CHK
+	   	  		,	A.*
+		  FROM
+		  (		
+		   	  SELECT  	<isEqual property = "orderGbn" compareValue = "srcmkCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD )		AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "srcmkCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.SRCMK_CD DESC )	AS RN
+						</isEqual>
+						
+						<isEqual property = "orderGbn" compareValue = "prodCdAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodCdDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_CD DESC )	AS RN
+						</isEqual>
+				
+						<isEqual property = "orderGbn" compareValue = "prodNmAsc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM )			AS RN
+						</isEqual>
+						<isEqual property = "orderGbn" compareValue = "prodNmDesc">
+							ROW_NUMBER() OVER (ORDER BY A.PROD_NM DESC )	AS RN
+						</isEqual>
+		   	  		,	 A.VEN_CD 
+					,	 A.PROD_CD
+				    ,    A.SRCMK_CD
+				    ,    A.PROD_NM
+				    ,    A.L4_CD
+				    ,    A.SAP_L3_CD
+					,	 A.CFM_FG
+					,    A.REG_DT
+				    ,    A.GRP_CD
+				    ,    A.HV_FG
+				    ,    COUNT(A.ATT_ID)    AS TOT_CNT
+				    ,    COUNT(A.ATT_VAL_ID)    AS INPUT_CNT
+				    ,    COUNT(A.X00816_VAL_ID)    AS X00816_CNT
+				    ,    WM_CONCAT(Concat('--' , A.ATT_NM , ':' , '[' , COALESCE(A.ATT_VAL_NM, '미입력') , ']') ) AS ATTR_VAL_TXT    /* SQLINES DEMO *** 뭔지 추출하는 컬럼  */
+				FROM
+				(
+			   	  	SELECT 	 A.*
+						,    COALESCE((SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = A.ATT_ID AND ATT_VAL_ID = A.ATT_VAL_ID), '미입력')    AS ATT_VAL_NM    /* SQLINES DEMO ***  명 */	
+					FROM
+					(
+				   	  	SELECT 	/*+ NO_MERGE */
+								A.*
+							,	(SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID
+LIMIT 1 )	AS ATT_VAL_ID
+							,   (SELECT ATT_VAL_ID FROM TPC_CAT_ATT_TEMP WHERE PROD_CD = A.PROD_CD AND SRCMK_CD = A.SRCMK_CD AND L4_CD = A.L4_CD AND ATT_ID = A.ATT_ID AND ATT_VAL_ID = 'X00816'
+LIMIT 1)    AS X00816_VAL_ID 
+						FROM
+						(
+							SELECT 	B.VEN_CD
+								,	A.PROD_CD
+								,	B.SRCMK_CD
+								,	B.PROD_NM
+								,	A.L4_CD
+								,	A.SAP_L3_CD
+								,	'0'	AS CFM_FG
+								,	B.REG_DT
+								,	A.GRP_CD
+								,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+								,	C.ATT_ID
+								,	C.ATT_NM
+							FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+								, PRODUCT@DL_MD_MARTNIS B
+								, (
+										SELECT T1.*
+										FROM
+										(
+											SELECT  B.GRP_CAT
+												,    B.ATT_ID
+												,    C.ATT_NM
+												,    C.ATT_TYP_CD
+											FROM  SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+												, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+											WHERE B.ATT_ID = C.ATT_ID  
+											AND C.ATT_TYP_CD IN ('10','30','04')                           
+										)T1	
+								  ) C
+							WHERE A.GRP_CD = C.GRP_CAT 
+							AND A.PROD_CD = B.PROD_CD 
+							<isEmpty  property="entpCode"  prepend="AND"> 
+					      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        		#venCds[]# 										/* 협력업체 검색조건 */
+					      		</iterate> 
+					    	 </isEmpty>	
+					    	  				    					    	
+					    	 <isNotEmpty	property="entpCode"  prepend="AND">
+					    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+					    	 </isNotEmpty>
+					    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+						     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+						     </isNotEmpty>
+						     
+						     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+						     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+							               COALESCE(B.MAT_CD, 1) IN ('1','3')
+							        </isEqual>
+							        
+							        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+							               B.MAT_CD = '2'
+							        </isEqual>			     
+						     </isNotEmpty>
+							AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+							AND A.GRP_CD = #srchGrpCd#									/* 그릅소분류 검색조건 */
+							AND A.NEED_INPUT = '7'
+							UNION ALL
+							SELECT 	B.VEN_CD
+								,	A.PROD_CD
+								,	B.SRCMK_CD
+								,	B.PROD_NM
+								,	A.L4_CD
+								,	A.SAP_L3_CD
+								,	'0'	AS CFM_FG
+								,	B.REG_DT
+								,	A.GRP_CD
+								,	CASE COALESCE(B.MAT_CD, '1')  WHEN '1' THEN  'Hyper'  WHEN '2' THEN  'Vic'  WHEN '3' THEN  'Hyper' END AS HV_FG
+								,	C.ATT_ID
+								,	C.ATT_NM
+							FROM  SAP_STK_PROD@DL_MD_MARTNIS A 
+								, PRODUCT@DL_MD_MARTNIS B
+								, (
+										SELECT T1.*
+										FROM
+										(
+											SELECT   B.SAP_L3_CD
+												,    B.ATT_ID
+												,    C.ATT_NM
+												,    C.ATT_TYP_CD
+											FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS B
+												, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C     
+											WHERE B.ATT_ID = C.ATT_ID  
+											AND C.ATT_TYP_CD IN ('10','30','04')                           
+										)T1	
+								  ) C
+							WHERE A.SAP_L3_CD = C.SAP_L3_CD
+							AND A.PROD_CD = B.PROD_CD 
+							<isEmpty  property="entpCode"  prepend="AND"> 
+					      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+					        		#venCds[]# 										/* 협력업체 검색조건 */
+					      		</iterate> 
+					    	 </isEmpty>	
+					    	  				    					    	
+					    	 <isNotEmpty	property="entpCode"  prepend="AND">
+					    	  		B.VEN_CD = #entpCode#								/* 협력업체 검색조건 */
+					    	 </isNotEmpty>
+					    	 <isNotEmpty  property="srchSellCode"  prepend="AND">		 
+						     		B.SRCMK_CD =  #srchSellCode#						/* 판매코드 검색조건 */
+						     </isNotEmpty>
+						     
+						     <isNotEmpty  property="srchProdGbn">						/* SQLINES DEMO *** er, 2:Vic] */			     
+						     		<isEqual property="srchProdGbn" prepend="AND" compareValue="1">
+							               COALESCE(B.MAT_CD, 1) IN ('1','3')
+							        </isEqual>
+							        
+							        <isEqual property="srchProdGbn" prepend="AND" compareValue="2">
+							               B.MAT_CD = '2'
+							        </isEqual>			     
+						     </isNotEmpty>
+							AND A.SAP_L3_CD = #sapL3Cd#									/* 소분류 검색조건 */
+							AND A.GRP_CD = #srchGrpCd#									/* 그릅소분류 검색조건 */
+							AND A.NEED_INPUT = '7'	
+						)A
+					)A
+				)A					
+				GROUP BY     A.VEN_CD 
+						,	 A.PROD_CD
+						,    A.SRCMK_CD
+						,    A.PROD_NM
+						,    A.L4_CD
+						,    A.SAP_L3_CD
+						,	 A.CFM_FG
+						,    A.REG_DT
+						,    A.GRP_CD
+						,    A.HV_FG
+			)A
+			<isEmpty  property="downloadFlag" > 
+			     <![CDATA[ 
+					WHERE #firstIndex#+1 <= A.RN AND A.RN < #lastIndex#+1
+		        ]]> 		        
+          	</isEmpty>				
+				
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 트 구성 조회 (현재 사용안함 사용하기 위해서는 쿼리 변경해야됨)-->
+	  <select id="selectProductBatchL1CdList" resultMap="teamListResultMap" parameterClass="searchProduct">
+	    	/* SQLINES DEMO *** ctProductBatchL1CdList*/
+	   		SELECT 
+	   			DISTINCT L1_CD, CAT_NM
+	   		FROM TED_L1_CD
+		   	WHERE TEAM_CD = #teamCode#
+		   	<isNotEmpty		property="l1Cd"		prepend="AND">
+		   		L1_CD = #l1Cd#
+		   	</isNotEmpty>
+		   	ORDER BY L1_CD
+  	  </select>
+  	  
+  	  <!-- SQLINES DEMO *** (현재 사용안함 사용할려면 쿼리 변경 필요) -->
+  	   <select id="selectProductBatchL4CdList" resultMap="l4ListAjaxResultMap" parameterClass="searchProduct">
+   	 	 /* SQLINES DEMO *** ectProductBatchL4CdList */
+   		SELECT 
+   			 L4_CD,	L4_NM
+   		FROM TED_L1_CD
+	   	WHERE TEAM_CD  = #teamCode#
+	   	 AND  L1_CD    = #l1Cd#
+	   	ORDER BY L4_NM, L4_CD
+  	  </select>
+  	  
+  	   <!-- 상품... SQLINES DEMO *** -->
+	  <delete id="deletetWholeProductAttBatch"		parameterClass="pEDMPRO0096VO">
+	  	/* SQLINES DEMO *** etetWholeProductAttBatch */
+	  	DELETE FROM TPC_CAT_ATT_TEMP
+	  	WHERE PROD_CD = #newProductCode#
+	  	AND SRCMK_CD = #sellCode#
+	  	AND L4_CD = #l4Cd#
+		<isNotEmpty	property="attId"  prepend="AND">
+			ATT_ID = #attId#
+		</isNotEmpty>	  		 
+	  </delete>
+	  
+	  
+	  <!-- SQLINES DEMO *** 속성관리(일괄)페이에서만 사용 (현재 사용안함 jsp에서 해당 url 주석 처리 되어 있음) -->
+	   <select id="selectNewWholeProductAttrListBatch"		resultMap="newWholeProductAttrListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectNewWholeProductAttrListBatch */
+		  	SELECT 	A.L1_CD
+				, 	A.L1_NM
+				,	A.L2_CD
+				,	A.L2_NM
+				,	A.L3_CD
+				,	A.L3_NM
+				,	A.SEQ
+				,	A.ATT_ID
+				,	A.ATT_NM
+				,	MAX(C.ATT_TYP_CD)	AS ATT_TYP_CD
+				,	COALESCE(MAX(B.ATT_VAL_ID), '')	AS VAL
+			FROM  SAP_CAT_ATT_MAP@DL_MD_MARTNIS  A
+ LEFT OUTER JOIN TPC_CAT_ATT_TEMP B ON B.L4_CD = #srchL4Cd#
+			AND A.L3_CD = B.SAP_L3_CD
+			AND A.ATT_ID = B.ATT_ID
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C
+			WHERE A.ATT_ID = C.ATT_ID
+			AND C.GRP_USE_FLAG = '1'
+			AND A.L3_CD = #sapL3Cd#
+			GROUP BY A.L1_CD, 	A.L1_NM,	A.L2_CD,	A.L2_NM,	A.L3_CD,	A.L3_NM,	A.SEQ,	A.ATT_ID,	A.ATT_NM	
+			ORDER BY A.SEQ
+	  </select>
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  <!-- SQLINES DEMO *** 류에 해당하는 상품들의 입력해야될 분석속성&마트단독속성 리스트 2016.03.07 이전 버전 -->
+	  <select id="selectProductBatchGrpAttrList"	resultMap="newWholeProductAttrListMap2"		parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductBatchGrpAttrList */
+	  	SELECT 	A.ATT_ID
+			,	MIN(A.ATT_NM)		AS ATT_NM
+			,	MIN(A.ATT_TYP_CD)	AS ATT_TYP_CD
+			,	''					AS VAL
+			,	''					AS ATT_VAL_NM
+		FROM
+		(	
+			SELECT 	/*+ INDEX (T3 MT_GRP_CST_PUR_ATT_PK) */
+					T2.ATT_ID
+				,	T3.ATT_NM
+				,	T3.ATT_TYP_CD
+			FROM SAP_GRP_CAT_MAP@DL_MD_MARTNIS T1
+				,SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+				,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+			WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+			AND T2.ATT_ID = T3.ATT_ID 
+			AND T1.GRP_CAT = T2.GRP_CAT
+			AND T1.SAP_L3_CD = #sapL3Cd#
+			UNION ALL
+			SELECT 	/*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */
+					T4.ATT_ID
+				,	T4.ATT_NM
+				,	T4.ATT_TYP_CD
+			FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+			WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+			AND T3.ATT_ID = T4.ATT_ID
+			AND T3.SAP_L3_CD = #sapL3Cd#
+		)A
+		GROUP BY A.ATT_ID
+		ORDER BY 2		  	  
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 류에 해당하는 상품들의 입력해야될 분석속성&마트단독속성 리스트 2016.03.07 이후 버전 -->
+	  <select id="selectProductBatchGrpAttrList_3"	resultMap="newWholeProductAttrListMap2"		parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductBatchGrpAttrList_3 */
+	  	SELECT 	A.ATT_ID
+			,	MIN(A.ATT_NM)		AS ATT_NM
+			,	MIN(A.ATT_TYP_CD)	AS ATT_TYP_CD
+			,	''					AS VAL
+			,	''					AS ATT_VAL_NM
+		FROM
+		(	
+			SELECT 	T2.ATT_ID
+				,	T3.ATT_NM
+				,	T3.ATT_TYP_CD
+			FROM SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+				,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+			WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+			AND T2.ATT_ID = T3.ATT_ID
+			AND T2.GRP_CAT = #srchGrpCd#
+			UNION ALL
+			SELECT 	/*+ INDEX (T4 MT_GRP_CST_PUR_ATT_PK) */
+					T4.ATT_ID
+				,	T4.ATT_NM
+				,	T4.ATT_TYP_CD
+			FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+			WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+			AND T3.ATT_ID = T4.ATT_ID
+			AND T3.SAP_L3_CD = #sapL3Cd#
+		)A
+		GROUP BY A.ATT_ID
+		ORDER BY 1,2		  	  
+	  </select>
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  <!-- SQLINES DEMO *** 속성 리스트 리스트에서 상품명을 클릭하여 상세페이지로 이동할때 사용 2016.03.07 이전 버전 -->
+	  <select id="selectProductGrpAttrList"		resultMap="newWholeProductAttrListMap2"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductGrpAttrList */	  	
+		SELECT 	A.ATT_ID			AS ATT_ID
+			,	MIN(A.ATT_NM)		AS ATT_NM
+			,	MIN(A.ATT_TYP_CD)	AS ATT_TYP_CD
+			,	MIN(B.ATT_VAL_ID)	AS VAL
+			,	MIN((
+					CASE WHEN A.ATT_TYP_CD = '50' THEN  (SELECT BRAND_NM FROM TPR_BRAND WHERE BRAND_CD = B.ATT_VAL_ID) 
+						 WHEN A.ATT_TYP_CD = '51' THEN (SELECT MAKER_NM FROM TPR_MAKER WHERE MAKER_CD = B.ATT_VAL_ID)
+						 WHEN A.ATT_TYP_CD = '10' THEN (SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = B.ATT_ID AND ATT_VAL_ID = B.ATT_VAL_ID)
+						 WHEN A.ATT_TYP_CD = '60' THEN CONCAT(SUBSTR(B.ATT_VAL_ID, 0, POSITION('|' IN B.ATT_VAL_ID) - 1) , (SELECT CD_NM FROM TED_CODE WHERE MAJOR_CD = 'PRD17' AND MINOR_CD = SUBSTR(B.ATT_VAL_ID, POSITION('|' IN B.ATT_VAL_ID) + 1, LENGTH(B.ATT_VAL_ID))))
+						 ELSE B.ATT_VAL_ID							/* 30, 40 FREETXT */ 
+					END
+				)) AS ATT_VAL_NM 		
+		FROM
+		(				
+			/* 해당상품의 그룹분석 속성 */
+			SELECT     B.ATT_ID
+				   ,    C.ATT_NM
+				   ,    C.ATT_TYP_CD
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS X
+				   , SAP_GRP_CAT_MAP@DL_MD_MARTNIS A
+				   , SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+				   , MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C
+			WHERE 1 = 1
+			AND  X.PROD_CD = #newProductCode#  						
+			AND  X.SAP_L3_CD = A.SAP_L3_CD
+			AND  B.ATT_ID = C.ATT_ID
+			AND A.GRP_CAT = B.GRP_CAT
+			-- SQLINES DEMO *** (SELECT SAP_L3_CD FROM SAP_STK_PROD WHERE AND L4_CD = '18500')
+			GROUP BY B.ATT_ID, C.ATT_NM, C.ATT_TYP_CD
+			UNION ALL
+			/* 해당상품의 마트 단독 속성 */
+			SELECT     B.ATT_ID
+				   ,    B.ATT_NM
+				   ,    B.ATT_TYP_CD
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS X
+				   , SAP_L3_CD_ATT@DL_MD_MARTNIS A
+				   , MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS B
+			WHERE 1 = 1
+			AND  X.PROD_CD = #newProductCode#
+			AND A.ATT_ID = B.ATT_ID
+			AND  A.SAP_L3_CD = X.SAP_L3_CD
+		)A
+		 LEFT OUTER JOIN TPC_CAT_ATT_TEMP B
+		ON A.ATT_ID = B.ATT_ID
+		AND B.PROD_CD = #newProductCode#
+		AND B.SRCMK_CD = #sellCode#
+		GROUP BY A.ATT_ID
+		ORDER BY A.ATT_ID			
+	  </select>
+	  
+	  
+	  <!-- SQLINES DEMO *** 속성 리스트 리스트에서 상품명을 클릭하여 상세페이지로 이동할때 사용 2016.03.07 이후 버전 -->
+	  <select id="selectProductGrpAttrList_3"		resultMap="newWholeProductAttrListMap2"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductGrpAttrList_3 */	  	
+		SELECT 	A.ATT_ID			AS ATT_ID
+			,	MIN(A.ATT_NM)		AS ATT_NM
+			,	MIN(A.ATT_TYP_CD)	AS ATT_TYP_CD
+			,	MIN(B.ATT_VAL_ID)	AS VAL
+			,	MIN((
+					CASE WHEN A.ATT_TYP_CD = '50' THEN  (SELECT BRAND_NM FROM TPR_BRAND WHERE BRAND_CD = B.ATT_VAL_ID) 
+						 WHEN A.ATT_TYP_CD = '51' THEN (SELECT MAKER_NM FROM TPR_MAKER WHERE MAKER_CD = B.ATT_VAL_ID)
+						 WHEN A.ATT_TYP_CD = '10' THEN (SELECT ATT_VAL_NM FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS WHERE ATT_ID = B.ATT_ID AND ATT_VAL_ID = B.ATT_VAL_ID)
+						 WHEN A.ATT_TYP_CD = '60' THEN CONCAT(SUBSTR(B.ATT_VAL_ID, 0, POSITION('|' IN B.ATT_VAL_ID) - 1) , (SELECT CD_NM FROM TED_CODE WHERE MAJOR_CD = 'PRD17' AND MINOR_CD = SUBSTR(B.ATT_VAL_ID, POSITION('|' IN B.ATT_VAL_ID) + 1, LENGTH(B.ATT_VAL_ID))))
+						 ELSE B.ATT_VAL_ID							/* 30, 40 FREETXT */ 
+					END
+				)) AS ATT_VAL_NM 		
+		FROM
+		(				
+			/* 해당상품의 그룹분석 속성 */
+			SELECT 	T1.PROD_CD
+				,	(SELECT SRCMK_CD FROM PRODUCT@DL_MD_MARTNIS WHERE PROD_CD = T1.PROD_CD)	AS SRCMK_CD
+				,	T1.L4_CD
+				,	T1.SAP_L3_CD
+				,	T2.ATT_ID
+				,	T3.ATT_NM
+				,	T3.ATT_TYP_CD
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS T1
+				, SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+			WHERE T2.ATT_ID = T3.ATT_ID 
+			AND T1.GRP_CD = T2.GRP_CAT 
+			AND T1.PROD_CD = #newProductCode#
+			UNION ALL
+			/* 해당상품의 마트 단독 속성 */
+			SELECT	X.PROD_CD
+			   ,	(SELECT SRCMK_CD FROM PRODUCT@DL_MD_MARTNIS WHERE PROD_CD = X.PROD_CD) AS SRCMK_CD
+			   ,	X.L4_CD
+			   ,	X.SAP_L3_CD		
+			   ,    B.ATT_ID
+			   ,    B.ATT_NM
+			   ,    B.ATT_TYP_CD
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS X
+				   , SAP_L3_CD_ATT@DL_MD_MARTNIS A
+				   , MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS B
+			WHERE X.PROD_CD = #newProductCode#
+			AND A.ATT_ID = B.ATT_ID
+			AND  A.SAP_L3_CD = X.SAP_L3_CD	
+		)A
+		 LEFT OUTER JOIN (
+			SELECT 	PROD_CD
+				,	SRCMK_CD
+				,	L4_CD
+				,	ATT_ID
+				,	MAX(ATT_VAL_ID)	AS ATT_VAL_ID
+				,	MAX(REG_DATE)	AS REG_DATE  
+			FROM TPC_CAT_ATT_TEMP 
+			GROUP BY PROD_CD, SRCMK_CD, L4_CD, ATT_ID
+		  ) B
+		ON A.ATT_ID = B.ATT_ID
+		AND A.PROD_CD = B.PROD_CD
+		AND A.SRCMK_CD = B.SRCMK_CD
+		AND A.L4_CD = B.L4_CD
+		AND B.PROD_CD = #newProductCode#
+		AND B.SRCMK_CD = #sellCode#
+		GROUP BY A.ATT_ID
+		ORDER BY A.ATT_ID			
+	  </select>
+	  
+	  
+	  
+	  <!-- SQLINES DEMO ***  콤보박스 구성리스트 조회 2016.03.07 이전 버전 -->
+	  <select id="selectProductGrpAttrComboList"	resultMap="NewWholeProductAttComboListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductGrpAttrComboList  */
+	  	SELECT 	A.ATT_ID
+			,	A.ATT_VAL_ID
+			,	A.ATT_VAL_NM
+		FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS A
+		WHERE ATT_ID IN
+		(	
+			/* 해당상품의 그룹분석 속성 */
+			SELECT 	B.ATT_ID
+			FROM  SAP_GRP_CAT_MAP@DL_MD_MARTNIS A
+				, SAP_GRP_CAT_ATT@DL_MD_MARTNIS B
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS C		
+			WHERE B.ATT_ID = C.ATT_ID 
+			AND A.GRP_CAT = B.GRP_CAT 
+			AND A.SAP_L3_CD = #sapL3Cd#
+			GROUP BY B.ATT_ID, C.ATT_NM, C.ATT_TYP_CD	
+			UNION ALL	
+			/* 해당상품의 마트 단독 속성 */
+			SELECT 	B.ATT_ID
+			FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS A	
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS B
+			WHERE A.ATT_ID = B.ATT_ID 
+			AND A.SAP_L3_CD = #sapL3Cd#
+		)
+		GROUP BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM	
+		ORDER BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM
+	  </select>
+	  
+	  
+	   <!-- SQLINES DEMO ***  콤보박스 구성리스트 조회 2016.03.07 이후 버전 -->
+	  <select id="selectProductGrpAttrComboList_3"	resultMap="NewWholeProductAttComboListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductGrpAttrComboList_3  */
+	  	SELECT 	A.ATT_ID
+			,	A.ATT_VAL_ID
+			,	A.ATT_VAL_NM
+		FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS A
+		WHERE ATT_ID IN
+		(	
+			/* 해당상품의 그룹분석 속성 */
+			SELECT 	T2.ATT_ID
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS T1
+				, SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+			WHERE T2.ATT_ID = T3.ATT_ID 
+			AND T1.GRP_CD = T2.GRP_CAT 
+			AND T1.PROD_CD = #newProductCode#
+			UNION ALL
+			/* 해당상품의 마트 단독 속성 */
+			SELECT     B.ATT_ID
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS X
+				   , SAP_L3_CD_ATT@DL_MD_MARTNIS A
+				   , MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS B
+			WHERE X.PROD_CD = #newProductCode#
+			AND A.ATT_ID = B.ATT_ID
+			AND  A.SAP_L3_CD = X.SAP_L3_CD	
+		)
+		GROUP BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM	
+		ORDER BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM
+	  </select>
+	  
+	  
+	  
+	  
+	  <!-- SQLINES DEMO ***  콤보박스 구성리스트 조회[일괄에서 사용] -->
+	  <select id="selectProductGrpAttrComboListBatch"	resultMap="NewWholeProductAttComboListMap"	parameterClass="pEDMPRO0098VO">
+	  	/* SQLINES DEMO *** ectProductGrpAttrComboListBatch  */
+	  	SELECT 	A.ATT_ID
+			,	A.ATT_VAL_ID
+			,	A.ATT_VAL_NM
+		FROM MT_GRP_CST_PUR_ATT_VAL@DL_MD_MARTNIS A
+		WHERE ATT_ID IN
+		(	
+			/* 해당상품의 그룹분석 속성 */
+			SELECT 	T2.ATT_ID				
+			FROM SAP_GRP_CAT_ATT@DL_MD_MARTNIS T2
+				,MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T3
+			WHERE T3.ATT_TYP_CD IN ('10','30','40') 
+			AND T2.ATT_ID = T3.ATT_ID
+			AND T2.GRP_CAT = #srchGrpCd#
+			UNION ALL
+			/* 해당상품의 마트단독 속성 */
+			SELECT 	T4.ATT_ID			
+			FROM  SAP_L3_CD_ATT@DL_MD_MARTNIS T3
+				, MT_GRP_CST_PUR_ATT@DL_MD_MARTNIS T4
+			WHERE T4.ATT_TYP_CD IN ('10','30','40') 
+			AND T3.ATT_ID = T4.ATT_ID
+			AND T3.SAP_L3_CD = #sapL3Cd#
+		)
+		GROUP BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM	
+		ORDER BY A.ATT_ID, A.ATT_VAL_ID, A.ATT_VAL_NM
+	  </select>
+	  
+	  
+	  
+	  <!-- SQLINES DEMO ***  리스트 조회 2016.03.07 이전 버전 -->
+	  <select id="selectProductL1CdListBatch" resultMap="l1CdListResultMap" parameterClass="searchProduct">
+	  	/* SQLINES DEMO *** ectProductL1CdListBatch	*/
+	  	SELECT  /*+ INDEX (A SAP_STK_PROD_PK)*/
+	  			C.L1_CD
+			,	C.L1_NM
+		FROM  SAP_STK_PROD@DL_MD_MARTNIS A		/* 입력 대상 상품 테이블 */
+			, PRODUCT@DL_MD_MARTNIS B			/* 상품 마스터 테이블 */
+			, SAP_CATEGORY3@DL_MD_MARTNIS C		/*  SAP 으로 분류된 테이블*/			
+		WHERE A.SAP_L3_CD = C.L3_CD
+		AND A.PROD_CD = B.PROD_CD
+		<isEmpty  property="entpCode"  prepend="AND"> 
+      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+        		#venCds[]# 
+      		</iterate> 
+    	 </isEmpty>	
+		<isNotEmpty	property="entpCode"  prepend="AND">
+    		B.VEN_CD = #entpCode#
+    	</isNotEmpty>
+		AND A.NEED_INPUT = '7'	
+		GROUP BY C.L1_CD, C.L1_NM
+		ORDER BY C.L1_NM
+  	  </select>
+  	  
+  	  
+  	   <!-- SQLINES DEMO ***  리스트 조회 2016.03.07 이후 버전 -->
+  	   <select id="selectProductL1CdListBatch_3" resultMap="l1CdListResultMap" parameterClass="searchProduct">
+	  	/* SQLINES DEMO *** ectProductL1CdListBatch_3	*/
+	  	SELECT 	C.L1_CD
+			,	C.L1_NM
+		FROM  SAP_STK_PROD@DL_MD_MARTNIS A
+			, PRODUCT@DL_MD_MARTNIS B
+			, SAP_CATEGORY3@DL_MD_MARTNIS C
+		WHERE A.SAP_L3_CD = C.L3_CD 
+		AND A.PROD_CD = B.PROD_CD 
+		<isEmpty  property="entpCode"  prepend="AND"> 
+      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+        		#venCds[]# 
+      		</iterate> 
+    	 </isEmpty>	
+		<isNotEmpty	property="entpCode"  prepend="AND">
+    		B.VEN_CD = #entpCode#
+    	</isNotEmpty>
+		AND A.NEED_INPUT = '7'
+		GROUP BY C.L1_CD, L1_NM
+		ORDER BY C.L1_NM
+  	  </select>
+  	  
+  	  
+  	  
+  	  
+  	  
+  	  <!-- SQLINES DEMO ***  리스트 조회 2016.03.07 이전 버전 -->
+	  <select id="selectProductL4CdListBatch" resultMap="l4CdListResultMap" parameterClass="searchProduct">
+	  	/* SQLINES DEMO *** ectProductL4CdListBatch	*/		  	
+	  		SELECT /*+ INDEX (A SAP_STK_PROD_PK)*/	  			
+	  				 A.SAP_L3_CD						AS L4_CD
+				,	C.L3_NM								AS L4_NM
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS A		/* 입력 대상 상품 테이블 */
+				, PRODUCT@DL_MD_MARTNIS B			/* 상품 마스터 테이블 */
+				, SAP_CATEGORY3@DL_MD_MARTNIS C		/*  SAP 으로 분류된 테이블*/				
+			WHERE A.SAP_L3_CD = C.L3_CD
+			AND A.PROD_CD = B.PROD_CD			
+			<isEmpty  property="entpCode"  prepend="AND"> 
+	      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        		#venCds[]# 
+	      		</iterate> 
+	    	 </isEmpty>	
+			<isNotEmpty	property="entpCode"  prepend="AND">
+	    		B.VEN_CD = #entpCode#
+	    	</isNotEmpty>
+			AND A.NEED_INPUT = '4'
+			AND C.L1_CD = #l1Cd#
+			GROUP BY	A.SAP_L3_CD,	C.L3_NM  	
+			ORDER BY C.L3_NM
+  	  </select>
+  	  
+  	  
+  	  <!-- SQLINES DEMO ***  리스트 조회 2016.03.07 이후 버전 -->
+	  <select id="selectProductL4CdListBatch_3" resultMap="l4CdListResultMap" parameterClass="searchProduct">
+	  	/* SQLINES DEMO *** ectProductL4CdListBatch_3	*/		  	
+	  		SELECT  A.SAP_L3_CD						AS L4_CD
+				,	C.L3_NM							AS L4_NM
+			FROM  SAP_STK_PROD@DL_MD_MARTNIS A
+				, PRODUCT@DL_MD_MARTNIS B
+				, SAP_CATEGORY3@DL_MD_MARTNIS C
+			WHERE A.SAP_L3_CD = C.L3_CD 
+			AND A.PROD_CD = B.PROD_CD 
+			<isEmpty  property="entpCode"  prepend="AND"> 
+	      		<iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        		#venCds[]# 
+	      		</iterate> 
+	    	 </isEmpty>	
+			<isNotEmpty	property="entpCode"  prepend="AND">
+	    		B.VEN_CD = #entpCode#
+	    	</isNotEmpty>
+			AND A.NEED_INPUT = '7'
+			AND C.L1_CD = #l1Cd#
+			GROUP BY	A.SAP_L3_CD,	C.L3_NM  	
+			ORDER BY C.L3_NM			
+  	  </select>	  
+  	  
+  	  	  
+  	  
+  	  <!-- 상품... SQLINES DEMO *** -->
+  	  <update id="updateCompleteGroupAttrBatch"			parameterClass="pEDMPRO0096VO">
+  	  	/* SQLINES DEMO *** ateCompleteGroupAttrBatch */
+  	  	UPDATE SAP_STK_PROD@DL_MD_MARTNIS SET NEW_CFM_FG = #cfmFg#					-- SQLINES DEMO *** 완료
+  	  	WHERE PROD_CD = #newProductCode#
+  	  </update>
+  	  
+  	  
+  	  <!-- SQLINES DEMO *** -->
+  	   <update id="updateCompleteGroupAttr"				parameterClass="pEDMPRO0096VO">
+  	  	/* SQLINES DEMO *** ateCompleteGroupAttr */
+  	  	UPDATE SAP_STK_PROD@DL_MD_MARTNIS SET NEW_CFM_FG = #cfmFg#					-- SQLINES DEMO *** 완료
+  	  	WHERE PROD_CD = #newProductCode#
+  	  </update>  	
+  	  
+  	  <!-- 저장... SQLINES DEMO *** -->
+  	  <select id="selectProductCompleChk"	parameterClass="pEDMPRO0096VO"	resultClass="Integer">
+  	  	/* SQLINES DEMO *** ectProductCompleChk */	
+  	  	SELECT COUNT(1) AS CNT FROM SAP_STK_PROD@DL_MD_MARTNIS WHERE PROD_CD = #newProductCode#	AND NEW_CFM_FG = '1'
+  	  </select>  
+  	  
+  	  <!-- SQLINES DEMO *** 룹소분류 리스트 호출 -->
+  	  <select id="selectSrchGrpCd"		parameterClass="pEDMPRO0098VO"		resultMap="selectSrchGrpCdMap">
+  	  	/* SQLINES DEMO *** ectSrchGrpCd */
+  	  	SELECT 	A.GRP_CD
+  	  		,	(SELECT L3_NM FROM SAP_GRP_CAT@DL_MD_MARTNIS WHERE L3_CD = A.GRP_CD
+LIMIT 1) 	AS GRP_CD_NM
+  	  	FROM SAP_STK_PROD@DL_MD_MARTNIS A
+  	  	WHERE A.SAP_L3_CD = #sapL3Cd#
+  	  	AND A.NEED_INPUT = '7'
+  	  	AND A.GRP_CD IS NOT NULL
+  	  	GROUP BY A.GRP_CD	
+  	  </select>
+</sqlMap>

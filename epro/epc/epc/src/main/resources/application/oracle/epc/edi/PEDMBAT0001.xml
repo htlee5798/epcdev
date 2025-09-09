@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMBAT0001">
+
+	
+	  <typeAlias alias="fuelsale001VO"  	type="com.lottemart.epc.edi.batch.model.FuelSale001VO" />
+	  <typeAlias alias="tmpFuelSale001VO"  	type="com.lottemart.epc.edi.batch.model.FuelSale001VO" />
+	  
+	  <typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	  <typeAlias alias="paramClass"	     type="lcn.module.common.util.HashBox" />
+	  <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" /> 
+	  
+	   <select id="selectFuesSale001SendDistinctDate" resultClass="dataMap"  parameterClass="map" >
+	   		/*PEDMBAT0001.selectFuesSale001SendDistinctDate*/
+				  	select DY from TET_CALENDAR
+					where DY between to_char(CURRENT_TIMESTAMP(0)-30,'yyyymmdd') and to_char(CURRENT_TIMESTAMP(0)-1,'yyyymmdd')                    
+                    and DY not in 
+	                    (
+	                    select distinct CLOSE_DY from  CLOSE_PGM_LOG@DL_MD_MARTNIS A 
+	                    where  PGM_ID='mc_eraxml_sales' 
+	                    and CLOSE_DY>=to_char(CURRENT_TIMESTAMP(0)-30,'yyyymmdd')                     
+	                    )                    
+					group by DY
+					order by DY	     
+	  </select>
+	  
+	  
+	  
+	  	   <select id="selectFuesSale001SendDistinctDatebak" resultClass="dataMap"  parameterClass="map" >
+	   		/*PEDMBAT0001.selectFuesSale001SendDistinctDatebak*/
+				  	select DY from TET_CALENDAR
+					where DY between #sDateYYYYMMDD# and #eDateYYYYMMDD#
+					group by DY
+					order by DY			     
+	  </select>
+	  
+	  
+	  
+	   <select id="selectFuesSale001SendDistinctBill" resultClass="dataMap" parameterClass="map">
+		   		/*PEDMBAT0001.selectFuesSale001SendDistinctBill*/
+				   select substr(prod_cd,7,4) bill_no  
+				   from REST_AREA_SALE_PROD_V@DL_MD_MARTNIS 
+				   where SALE_DATE=#dateYYYYMMDD#
+	  </select>	  
+	  
+  <resultMap id="tmpFuesSale001Send" class="fuelsale001VO">
+		<result property="sendXmlSrid"			column="SRID"  />
+		<result property="sendXmlRetcd"			column="RETCD"  />
+		<result property="sendXmlTrhdrCnt"		column="TRHDR_CNT"  />
+		<result property="sendXmlTrdtlCnt"		column="TRDTL_CNT"  />
+		<result property="sendXmlTrcshCnt"		column="TRCSH_CNT"  />
+		<result property="sendXmlTrcrdCnt"		column="TRCRD_CNT"  />
+		<result property="sendXmlTrcstCnt"		column="TRCST_CNT"  />
+		<result property="sendXmlTrfodCnt"		column="TRFOD_CNT"  />
+		<result property="sendXmlTrgftCnt"		column="TRGFT_CNT"  />
+		<result property="sendXmlTrjcdCnt"		column="TRJCD_CNT"  />
+		<result property="sendXmlTrwesCnt"		column="TRWES_CNT"  />
+		<result property="sendXmlTrpsqCnt"		column="TRPSQ_CNT"  />
+		<result property="sendXmlTrcsaCnt"		column="TRCSA_CNT"  />
+		<result property="sendXmlTrgfaCnt"		column="TRGFA_CNT"  />
+		<result property="sendXmlTrfoaCnt"		column="TRFOA_CNT"  />
+		<result property="sendXmlTrrfcCnt"		column="TRRFC_CNT"  />
+		<result property="sendXmlRunMode"		column="RUN_MODE"  />
+		<result property="sendXmlShopCd"		column="SHOP_CD"  />    
+		<result property="sendXmlSaleDate"		column="SALE_DATE"  />  
+		<result property="sendXmlPosNo"			column="POS_NO"  />
+		<result property="sendXmlBillNo"		column="BILL_NO"  />
+		<result property="sendXmlRegiSeq"		column="REGI_SEQ"  />
+		<result property="sendXmlSaleYn"		column="SALE_YN"  />
+		<result property="sendXmlTotSaleAmt"	column="TOT_SALE_AMT"  />
+		<result property="sendXmlTotDcAmt"		column="TOT_DC_AMT"  />
+		<result property="sendXmlSvcTipAmt"		column="SVC_TIP_AMT"  />
+		<result property="sendXmlTotEtcAmt"		column="TOT_ETC_AMT"  />
+		<result property="sendXmlDcmSaleAmt"	column="DCM_SALE_AMT"  />
+		<result property="sendXmlVatSaleAmt"	column="VAT_SALE_AMT"  />
+		<result property="sendXmlVatAmt"		column="VAT_AMT"  />
+		<result property="sendXmlNoVatSaleAmt"	column="NO_VAT_SALE_AMT"  />
+		<result property="sendXmlNoTaxSaleAmt"	column="NO_TAX_SALE_AMT"  />
+		<result property="sendXmlExpPayAmt"		column="EXP_PAY_AMT"  />
+		<result property="sendXmlGstPayAmt"		column="GST_PAY_AMT"  />
+		<result property="sendXmlRetPayAmt"		column="RET_PAY_AMT"  />
+		<result property="sendXmlCashAmt"		column="CASH_AMT"  />
+		<result property="sendXmlCrdCardAmt"	column="CRD_CARD_AMT"  />
+		<result property="sendXmlWesAmt"		column="WES_AMT"  />
+		<result property="sendXmlTkGftAmt"		column="TK_GFT_AMT"  />
+		<result property="sendXmlTkFodAmt"		column="TK_FOD_AMT"  />
+		<result property="sendXmlCstPointAmt"	column="CST_POINT_AMT"  />
+		<result property="sendXmlJcdCardAmt"	column="JCD_CARD_AMT"  />
+		<result property="sendXmlDcGenAmt"		column="DC_GEN_AMT"  />
+		<result property="sendXmlDcSvcAmt"		column="DC_SVC_AMT"  />
+		<result property="sendXmlDcPcdAmt"		column="DC_PCD_AMT"  />
+		<result property="sendXmlDcCpnAmt"		column="DC_CPN_AMT"  />
+		<result property="sendXmlDcCstAmt"		column="DC_CST_AMT"  />
+		<result property="sendXmlDcTfdAmt"		column="DC_TFD_AMT"  />
+		<result property="sendXmlDcPrmAmt"		column="DC_PRM_AMT"  />
+		<result property="sendXmlDcCrdAmt"		column="DC_CRD_AMT"  />
+		<result property="sendXmlDcPackAmt"		column="DC_PACK_AMT"  />
+		<result property="sendXmlRepayCashAmt"	column="REPAY_CASH_AMT"  />
+		<result property="sendXmlRepayTkGftAmt"	column="REPAY_TK_GFT_AMT"  />
+		<result property="sendXmlCashBillAmt"	column="CASH_BILL_AMT"  />
+		<result property="sendXmlDlvOrderFg"	column="DLV_ORDER_FG"  />
+		<result property="sendXmlFdTblCd"		column="FD_TBL_CD"  />
+		<result property="sendXmlFdGstCntT"		column="FD_GST_CNT_T"  />
+		<result property="sendXmlFdGstCnt1"		column="FD_GST_CNT_1"  />
+		<result property="sendXmlFdGstCnt2"		column="FD_GST_CNT_2"  />
+		<result property="sendXmlFdGstCnt3"		column="FD_GST_CNT_3"  />
+		<result property="sendXmlFdGstCnt4"		column="FD_GST_CNT_4"  />
+		<result property="sendXmlOrgBillNo"		column="ORG_BILL_NO"  />
+		<result property="sendXmlOrderNo"		column="ORDER_NO"  />
+		<result property="sendXmlInsDt"			column="INS_DT"  />
+		<result property="sendXmlEmpNo"			column="EMP_NO"  />
+		<result property="sendXmlPayOutDt"		column="PAY_OUT_DT"  />
+		<result property="sendXmlCstNm"			column="CST_NM"  />
+		<result property="sendXmlDlvEmpNo"		column="DLV_EMP_NO"  />
+		<result property="sendXmlDlvStartDt"	column="DLV_START_DT"  />
+		<result property="sendXmlDlvPayinEmpNo"	column="DLV_PAYIN_EMP_NO"  />
+		<result property="sendXmlDlvPayinDt"	column="DLV_PAYIN_DT"  />
+		<result property="sendXmlNewDlvAddrYn"	column="NEW_DLV_ADDR_YN"  />
+		<result property="sendXmlDlvAddr"		column="DLV_ADDR"  />
+		<result property="sendXmlDlvAddrDtl"	column="DLV_ADDR_DTL"  />
+		<result property="sendXmlNewDlvTelNoYn"	column="NEW_DLV_TEL_NO_YN"  />
+		<result property="sendXmlDlvTelNo"		column="DLV_TEL_NO"  />
+		<result property="sendXmlDlvClCd"		column="DLV_CL_CD"  />
+		<result property="sendXmlDlvCmCd"		column="DLV_CM_CD"  />
+		<result property="sendXmlTravelCd"		column="TRAVEL_CD"  />
+		<result property="sendXmlRsvNo"			column="RSV_NO"  />
+		<result property="sendXmlPrePayCash"	column="PRE_PAY_CASH"  />
+		<result property="sendXmlPrePayCard"	column="PRE_PAY_CARD"  />
+		<result property="sendXmlRsvUserNm"		column="RSV_USER_NM"  />
+		<result property="sendXmlRsvUserTelNo"	column="RSV_USER_TEL_NO"  />
+		<result property="sendXmlPrepayAmt"		column="PREPAY_AMT"  />
+		<result property="sendXmlComAmt"		column="COM_AMT"  />
+		<result property="sendXmlDtlNo"			column="DTL_NO"  />
+		<result property="sendXmlRegiSeq1"		column="REGI_SEQ1"  />
+		<result property="sendXmlSaleYn1"		column="SALE_YN1"  />
+		<result property="sendXmlProdCd"		column="PROD_CD"  />
+		<result property="sendXmlProdTypeFg"	column="PROD_TYPE_FG"  />
+		<result property="sendXmlCornerCd"		column="CORNER_CD"  />
+		<result property="sendXmlChgBillNo"		column="CHG_BILL_NO"  />
+		<result property="sendXmlTaxYn"			column="TAX_YN"  />
+		<result property="sendXmlDlvPackFg"		column="DLV_PACK_FG"  />
+		<result property="sendXmlOrgSaleMgCd"	column="ORG_SALE_MG_CD"  />
+		<result property="sendXmlOrgSaleUprc"	column="ORG_SALE_UPRC"  />
+		<result property="sendXmlNormalUprc"	column="NORMAL_UPRC"  />
+		<result property="sendXmlSaleMgCd"		column="SALE_MG_CD"  />
+		<result property="sendXmlSaleQty"		column="SALE_QTY"  />
+		<result property="sendXmlSaleUprc"		column="SALE_UPRC"  />
+		<result property="sendXmlSaleAmt"		column="SALE_AMT"  />
+		<result property="sendXmlDcAmt"			column="DC_AMT"  />
+		<result property="sendXmlEtcAmt"		column="ETC_AMT"  />
+		<result property="sendXmlSvcTipAmt"		column="SVC_TIP_AMT"  />
+		<result property="sendXmlDcmSaleAmt1"	column="DCM_SALE_AMT1"  />
+		<result property="sendXmlVatAmt1"		column="VAT_AMT1"  />
+		<result property="sendXmlSvcCd"			column="SVC_CD"  />
+		<result property="sendXmlTkCpnCd"		column="TK_CPN_CD"  />
+		<result property="sendXmlDcAmtGen"		column="DC_AMT_GEN"  />
+		<result property="sendXmlDcAmtSvc"		column="DC_AMT_SVC"  />
+		<result property="sendXmlDcAmtJcd"		column="DC_AMT_JCD"  />
+		<result property="sendXmlDcAmtCpn"		column="DC_AMT_CPN"  />
+		<result property="sendXmlDcAmtCst"		column="DC_AMT_CST"  />
+		<result property="sendXmlDcAmtFod"		column="DC_AMT_FOD"  />
+		<result property="sendXmlDcAmtPrm"		column="DC_AMT_PRM"  />
+		<result property="sendXmlDcAmtCrd"		column="DC_AMT_CRD"  />
+		<result property="sendXmlDcAmtPack"		column="DC_AMT_PACK"  />
+		<result property="sendXmlCstSalePoint"	column="CST_SALE_POINT"  />
+		<result property="sendXmlCstUsePoint"	column="CST_USE_POINT"  />
+		<result property="sendXmlPrmProcYn"		column="PRM_PROC_YN"  />
+		<result property="sendXmlPrmCd"			column="PRM_CD"  />
+		<result property="sendXmlPrmSeq"		column="PRM_SEQ"  />
+		<result property="sendXmlSdaCd"			column="SDA_CD"  />
+		<result property="sendXmlSdsOrgDtlNo"	column="SDS_ORG_DTL_NO"  />
+		<result property="sendXmlInsDtT"			column="INS_DT_T"  />
+		<result property="sendXmlEmpNoT"			column="EMP_NO_T"  />
+		<result property="sendXmlPrepayAmtT"		column="PREPAY_AMT_T"  />
+		<result property="sendXmlComAmtT"		column="COM_AMT_T"  />
+  
+  </resultMap>
+  
+  
+  
+ 	  <select id="selectFuesSale001Send" resultMap="tmpFuesSale001Send" parameterClass="map"  >
+	   /*PEDMBAT0001.selectFuesSale001Send*/
+	 select SRID,            RETCD,            	TRHDR_CNT,         	TRDTL_CNT,
+            TRCSH_CNT,       TRCRD_CNT,         TRCST_CNT,         	TRFOD_CNT,
+            TRGFT_CNT,       TRJCD_CNT,         TRWES_CNT,          TRPSQ_CNT,
+            TRCSA_CNT,       TRGFA_CNT,         TRFOA_CNT,          TRRFC_CNT,
+            RUN_MODE,        SHOP_CD,           SALE_DATE,          POS_NO,
+            BILL_NO,         REGI_SEQ,          SALE_YN,            TOT_SALE_AMT,
+            TOT_DC_AMT,      SVC_TIP_AMT,       TOT_ETC_AMT,        DCM_SALE_AMT,
+            VAT_SALE_AMT,    VAT_AMT,           NO_VAT_SALE_AMT,    NO_TAX_SALE_AMT,
+            EXP_PAY_AMT,     GST_PAY_AMT,       RET_PAY_AMT,        CASH_AMT,
+            CRD_CARD_AMT,    WES_AMT,           TK_GFT_AMT,         TK_FOD_AMT,
+            CST_POINT_AMT,   JCD_CARD_AMT,      DC_GEN_AMT,         DC_SVC_AMT,
+            DC_PCD_AMT,      DC_CPN_AMT,        DC_CST_AMT,         DC_TFD_AMT,
+            DC_PRM_AMT,      DC_CRD_AMT,        DC_PACK_AMT,        REPAY_CASH_AMT,
+            REPAY_TK_GFT_AMT,CASH_BILL_AMT,     DLV_ORDER_FG,       FD_TBL_CD,
+            FD_GST_CNT_T,    FD_GST_CNT_1,      FD_GST_CNT_2,       FD_GST_CNT_3,
+            FD_GST_CNT_4,    ORG_BILL_NO,       ORDER_NO,           INS_DT,
+            EMP_NO,          PAY_OUT_DT,        CST_NM,            	DLV_EMP_NO,
+            DLV_START_DT,    DLV_PAYIN_EMP_NO,  DLV_PAYIN_DT,       NEW_DLV_ADDR_YN,
+            DLV_ADDR,        DLV_ADDR_DTL,      NEW_DLV_TEL_NO_YN,  DLV_TEL_NO,
+            DLV_CL_CD,       DLV_CM_CD,         TRAVEL_CD,          RSV_NO,
+            PRE_PAY_CASH,    PRE_PAY_CARD,      RSV_USER_NM,        RSV_USER_TEL_NO,
+            PREPAY_AMT,      COM_AMT,           DTL_NO,            	REGI_SEQ1,
+            SALE_YN1,        PROD_CD,           PROD_TYPE_FG,       CORNER_CD,
+            CHG_BILL_NO,     TAX_YN,            DLV_PACK_FG,        ORG_SALE_MG_CD,
+            ORG_SALE_UPRC,   NORMAL_UPRC,       SALE_MG_CD,         SALE_QTY,
+            SALE_UPRC,       SALE_AMT,          DC_AMT,            	ETC_AMT,
+            SVC_TIP_AMT1,    DCM_SALE_AMT1,     VAT_AMT1,           SVC_CD,
+            TK_CPN_CD,       DC_AMT_GEN,        DC_AMT_SVC,         DC_AMT_JCD,
+            DC_AMT_CPN,      DC_AMT_CST,        DC_AMT_FOD,         DC_AMT_PRM,
+            DC_AMT_CRD,      DC_AMT_PACK,       CST_SALE_POINT,     CST_USE_POINT,            
+		    PRM_PROC_YN,     PRM_CD,	    	PRM_SEQ,            SDA_CD,
+		    SDS_ORG_DTL_NO,  INS_DT_T,	    	EMP_NO_T,           PREPAY_AMT_T,
+		    COM_AMT_T
+	     from REST_AREA_SALE_PROD_V@DL_MD_MARTNIS 
+		where sale_date = #dateYYYYMMDD#			
+		and bill_no=#billnumber#	   
+	  </select>
+	  
+	 
+	  <insert id="insertFuesSale001log" parameterClass="tmpFuelSale001VO">	  
+    /*PEDMBAT0001.insertFuesSale001log*/
+    MERGE INTO CLOSE_PGM_LOG@DL_MD_MARTNIS A
+        USING DUAL ON (	A.STR_CD='999'
+						AND A.PGM_ID='mc_eraxml_sales'
+						AND A.CLOSE_TYP_FG='06-'||#recvXmlBillCd#
+						AND A.CLOSE_DY=#recvXmlSaleDate#
+        				)        
+        WHEN MATCHED THEN  
+		   		UPDATE 	
+		 		SET 
+		 		UPROC_CMT=#recvXmlRetcd# 	
+		 		,PROC_FG=decode(#recvXmlRetcd#, '0000','1','2') 
+		 		,OPER_ST_DT		=	CURRENT_TIMESTAMP(0)
+				,OPER_END_DT	=	CURRENT_TIMESTAMP(0)	 
+		
+       WHEN NOT MATCHED THEN        	    
+			    INSERT
+		            (   CLOSE_DY										,STR_CD					,CLOSE_TYP_FG,          
+						PGM_ID											,OPER_ST_DT				,OPER_END_DT,
+						PROC_FG											,PROC_CNT				,UPROC_CNT,
+						UPROC_CMT										,REG_DT					,REG_EMP_NO,
+						CFM_DATE_DT										,CFM_HR					)
+		            VALUES 
+		            ( #recvXmlSaleDate#									,'999' 					,'06-'||#recvXmlBillCd#
+		              ,'mc_eraxml_sales' 								,CURRENT_TIMESTAMP(0) 				,CURRENT_TIMESTAMP(0) 		
+			      	  ,decode(#recvXmlRetcd#, '0000','1','2') 			, 0 					, 0 	
+			          ,#recvXmlRetcd# 									,CURRENT_TIMESTAMP(0) 				,'EDIXML_IF' 	
+			          ,'' 												,'' 					)      
+
+ 		</insert>
+	 
+
+	  
+	  <select id="selectFuesSale001Sendbak" resultMap="tmpFuesSale001Send" parameterClass="map"  >
+	   /*PEDMBAT0001.selectFuesSale001Send*/
+	   
+	   SELECT    /*TXJM-FD*/
+		        'SL010'            AS SRID
+		        ,'0000'            AS RETCD
+		        ,'1'               AS TRHDR_CNT
+		        ,'1'               AS TRDTL_CNT
+		        ,'0'               AS TRCSH_CNT
+		        ,'0'               AS TRCRD_CNT
+		        ,'0'               AS TRCST_CNT
+		        ,'0'               AS TRFOD_CNT
+		        ,'0'               AS TRGFT_CNT
+		        ,'0'               AS TRJCD_CNT
+		        ,'0'               AS TRWES_CNT
+		        ,'0'               AS TRPSQ_CNT
+		        ,'0'               AS TRCSA_CNT
+		        ,'0'               AS TRGFA_CNT
+		        ,'0'               AS TRFOA_CNT
+		        ,'0'               AS TRRFC_CNT
+		        ,'T'               AS RUN_MODE --'T'개발,'R'운영    
+		         /*TRHDR*/
+		        -- ,'S00000101'      AS SHOP_CD    
+		         ,'S00000454'      AS SHOP_CD 
+		        ,a.sale_dy         AS SALE_DATE  
+		        ,'01'              AS POS_NO
+		        ,a.bill_no         AS BILL_NO
+		        ,'01'              AS REGI_SEQ
+		        ,'Y'               AS SALE_YN
+		        , a.tot_sale_amt   AS TOT_SALE_AMT
+		        ,'0'                AS TOT_DC_AMT
+		        ,'0'                AS SVC_TIP_AMT
+		        ,'0'                AS TOT_ETC_AMT
+		        , a.tot_sale_amt   AS DCM_SALE_AMT
+		        , a.vat_sale_amt   AS VAT_SALE_AMT
+		        , a.vat_amt        AS VAT_AMT
+		        , a.no_vat_sale_amt AS NO_VAT_SALE_AMT
+		        , a.no_tax_sale_amt AS NO_TAX_SALE_AMT
+		        ,'0'               AS EXP_PAY_AMT
+		        ,'0'               AS GST_PAY_AMT
+		        ,'0'               AS RET_PAY_AMT
+		        ,'0'               AS CASH_AMT
+		        ,'0'               AS CRD_CARD_AMT
+		        ,'0'               AS WES_AMT
+		        ,'0'               AS TK_GFT_AMT
+		        ,'0'               AS TK_FOD_AMT
+		        ,'0'               AS CST_POINT_AMT
+		        ,'0'               AS JCD_CARD_AMT
+		        ,'0'               AS DC_GEN_AMT
+		        ,'0'               AS DC_SVC_AMT
+		        ,'0'               AS DC_PCD_AMT
+		        ,'0'               AS DC_CPN_AMT
+		        ,'0'               AS DC_CST_AMT
+		        ,'0'               AS DC_TFD_AMT
+		        ,'0'               AS DC_PRM_AMT
+		        ,'0'               AS DC_CRD_AMT
+		        ,'0'               AS DC_PACK_AMT
+		        ,'0'               AS REPAY_CASH_AMT
+		        ,'0'               AS REPAY_TK_GFT_AMT
+		        ,'0'               AS CASH_BILL_AMT
+		        ,'0'               AS DLV_ORDER_FG
+		        ,'000'             AS FD_TBL_CD
+		        ,'1'               AS FD_GST_CNT_T
+		        ,'1'               AS FD_GST_CNT_1
+		        ,'0'               AS FD_GST_CNT_2
+		        ,'0'               AS FD_GST_CNT_3
+		        ,'0'               AS FD_GST_CNT_4
+		        ,''                AS ORG_BILL_NO
+		        ,a.bill_no         AS ORDER_NO 
+		        ,to_char(CURRENT_TIMESTAMP(0),'yyyymmddhh24miss')    AS INS_DT
+		        ,'0000'                                 AS EMP_NO
+		        ,to_char(CURRENT_TIMESTAMP(0),'yyyymmddhh24miss')    AS PAY_OUT_DT
+		        ,''                AS CST_NM           
+		        ,''                AS DLV_EMP_NO       
+		        ,''                AS DLV_START_DT     
+		        ,''                AS DLV_PAYIN_EMP_NO 
+		        ,''                AS DLV_PAYIN_DT     
+		        ,''                AS NEW_DLV_ADDR_YN  
+		        ,''                AS DLV_ADDR         
+		        ,''                AS DLV_ADDR_DTL     
+		        ,''                AS NEW_DLV_TEL_NO_YN
+		        ,''                AS DLV_TEL_NO       
+		        ,''                AS DLV_CL_CD        
+		        ,''                AS DLV_CM_CD        
+		        ,''                AS TRAVEL_CD        
+		        ,''                AS RSV_NO   
+		        ,'0'               AS PRE_PAY_CASH
+		        ,'0'               AS PRE_PAY_CARD
+		        ,''                AS RSV_USER_NM
+		        ,''                AS RSV_USER_TEL_NO
+		        ,'0'               AS PREPAY_AMT
+		        ,'0'               AS COM_AMT
+		        /*TRDTL*/
+		        ,'0001'            AS DTL_NO
+		        ,'01'              AS REGI_SEQ1
+		        ,'Y'               AS SALE_YN1
+		        ,a.prod_cd||a.prod_cd    AS PROD_CD
+		        ,'0'               AS PROD_TYPE_FG 
+			--  ,'0001'            AS CORNER_CD
+		        ,'0061'            AS CORNER_CD
+		        ,''                AS CHG_BILL_NO
+		        ,a.tax_yn          AS TAX_YN
+		        ,'0'               AS DLV_PACK_FG
+		        ,'0000'            AS ORG_SALE_MG_CD
+		        ,'0'               AS ORG_SALE_UPRC
+		        ,'1'               AS NORMAL_UPRC
+		        ,'0000'            AS SALE_MG_CD
+		        ,a.tot_sale_amt    AS SALE_QTY
+		        ,'1'               AS SALE_UPRC
+		        ,a.tot_sale_amt    AS SALE_AMT
+		        ,'0'               AS DC_AMT
+		        ,'0'               AS ETC_AMT
+		        ,'0'               AS SVC_TIP_AMT1
+		        ,a.tot_sale_amt    AS DCM_SALE_AMT1
+		        ,a.vat_amt         AS VAT_AMT1
+		        ,''                AS SVC_CD
+		        ,''                AS TK_CPN_CD
+		        ,''                AS DC_AMT_GEN
+		        ,''                AS DC_AMT_SVC
+		        ,''                AS DC_AMT_JCD
+		        ,''                AS DC_AMT_CPN
+		        ,''                AS DC_AMT_CST
+		        ,''                AS DC_AMT_FOD
+		        ,''                AS DC_AMT_PRM
+		        ,''                AS DC_AMT_CRD
+		        ,''                AS DC_AMT_PACK
+		        ,''                AS CST_SALE_POINT
+		        ,''                AS CST_USE_POINT
+		        ,''                AS PRM_PROC_YN
+		        ,''                AS PRM_CD
+		        ,''                AS PRM_SEQ
+		        ,''                AS SDA_CD
+		        ,''                AS SDS_ORG_DTL_NO
+		        ,to_char(CURRENT_TIMESTAMP(0),'yyyymmddhh24miss')    AS INS_DT_T
+		        ,'0001'            AS EMP_NO_T
+		        ,'0'               AS PREPAY_AMT_T
+		        ,'0'               AS COM_AMT_T
+			FROM ( 	
+					SELECT
+						#dateYYYYMMDD# as sale_dy 
+						-- to_char(CURRENT_TIMESTAMP(0)-1,'yyyymmdd') sale_dy
+			            , substr(c.prod_cd,7,4) bill_no
+			            ,c.prod_cd
+			            ,c.srcmk_cd
+			            ,nvl(sum(tot_sale_amt),0) tot_sale_amt
+			            ,nvl(sum(tot_sale_amt - round( tot_sale_amt / decode(a.TAX_FG,'2',1.1,1),0) ),0) vat_amt
+			            ,nvl(sum(tot_sale_amt) - (sum(tot_sale_amt - round( tot_sale_amt / decode(a.TAX_FG,'2',1.1,1),0) )),0) no_tax_sale_amt
+			            ,nvl(sum(decode(a.tax_fg,'2',tot_sale_amt,0)),0) vat_sale_amt
+			            ,nvl(sum(decode(a.tax_fg,'2',0,tot_sale_amt)),0) no_vat_sale_amt
+			            ,decode(max(c.tax_fg),'2','Y','N') tax_yn
+			        from dy_sale@DL_MD_MARTNIS a
+			            ,category@DL_MD_MARTNIS b
+			            ,rest_prod_map@DL_MD_MARTNIS c
+			        where a.str_cd = '472'
+			        and a.sale_dy = #dateYYYYMMDD#
+			     --   and a.sale_dy = to_char(CURRENT_TIMESTAMP(0)-1,'yyyymmdd')
+			        and a.l4_cd = b.cat_cd
+			        and b.l1_cd = c.l1_cd
+			        and decode(a.tax_fg,'2','2','0') = c.tax_fg
+			        group by a.sale_dy,c.prod_cd,c.srcmk_cd    
+			        ) A
+           where 1=1  
+           and bill_no=#billnumber#
+           LIMIT 1
+	  </select>
+	  
+	  
+</sqlMap>

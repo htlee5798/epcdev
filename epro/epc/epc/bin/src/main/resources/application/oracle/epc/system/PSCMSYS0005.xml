@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmsys0005">
+     <typeAlias alias="pscmsys0005VO" type="com.lottemart.epc.system.model.PSCMSYS0005VO" />
+     <typeAlias alias="pscmsys0005DtlVO" type="com.lottemart.epc.system.model.PSCMSYS0005DtlVO" />
+     <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    
+  <!-- 전상법 템플릿 검색 카운트 -->
+  <select id="searchEscTemCnt" resultClass="java.lang.Integer">
+  	/* pscmsys0005.searchEscTemCnt */
+  	
+	SELECT	COUNT(1) AS  COUNT 
+	FROM  TVE_NOR_PROD_TEMPLATE
+	WHERE 1=1
+	 	<isNotEmpty property="useYn">
+			 AND USE_YN =#useYn#
+		 </isNotEmpty>
+		 
+		 <isNotEmpty property="infoGrpCd">
+		 	AND INFO_GRP_CD  =#infoGrpCd#
+		 </isNotEmpty>
+		 
+			AND ( 0 , VENDOR_ID ) IN 	
+		<iterate property="vendorId" open="(" close=")" conjunction=",">
+			/* 협력사 검색*/
+			( 0 , #vendorId[]# ) -- 협력업체코드
+		</iterate>
+  </select>
+  
+  
+  <!-- 전상법 템플릿 검색 -->
+  <select id="searchEscTem" resultClass="pscmsys0005VO">
+  /* pscmsys0005.searchEscTem */
+  
+  SELECT * FROM(
+  		 SELECT  RANK()OVER(ORDER BY NOR_PROD_SEQ ) AS  num,				/* 순번 */
+		  NOR_PROD_SEQ AS norProdSeq,
+		  TITLE AS title, 
+		  INFO_GRP_CD AS infoGrpCd, 
+		  DECODE(USE_YN,'Y','사용','N','미사용' ) AS  useYn ,
+		  VENDOR_ID AS vendorId,
+		  REG_ID AS regId,
+		  REG_DATE AS regDate,
+		  MOD_ID AS modId,
+		  MOD_DATE AS modDate
+	FROM  TVE_NOR_PROD_TEMPLATE
+	WHERE 1=1
+	 	<isNotEmpty property="useYn">
+			 AND USE_YN =#useYn#
+		 </isNotEmpty>
+		 
+		 <isNotEmpty property="infoGrpCd">
+		 	AND INFO_GRP_CD  =#infoGrpCd#
+		 </isNotEmpty>
+		 
+			AND ( 0 , VENDOR_ID ) IN 	
+		<iterate property="vendorId" open="(" close=")" conjunction=",">
+			/* 협력사 검색*/
+			( 0 , #vendorId[]# ) -- 협력업체코드
+		</iterate>
+		)
+		WHERE num BETWEEN #startRow# AND #endRow#
+		
+  </select>
+  
+  <!-- 전상법 템플릿 삭제 -->
+  <delete id="deleteEscTem"  parameterClass="pscmsys0005VO">
+   /* pscmsys0005.deleteEscTem */
+   
+	DELETE TVE_NOR_PROD_TEMPLATE
+	WHERE NOR_PROD_SEQ = #norProdSeq#  
+  </delete>
+  
+  
+  <!-- 전상법SEQ 조회 -->
+  <select id="selectEscTemSql"  resultClass="String">
+   /* pscmsys0005.selectEscTemSql */
+   
+  	select (LPAD(SQ_NOR_PROD_SEQ.nextval, 12, 0))from dual
+  </select>
+  
+  <!-- 전상법 템플릿 등록 -->
+  <insert id="insertMasEscTem" parameterClass="pscmsys0005VO">
+  /* pscmsys0005.insertMasEscTem */
+  
+	INSERT INTO TVE_NOR_PROD_TEMPLATE (
+		NOR_PROD_SEQ,
+		TITLE,
+		USE_YN,
+		VENDOR_ID,
+		REG_ID,
+		REG_DATE,
+		INFO_GRP_CD
+	)VALUES(
+	#norProdSeq#,
+	#title#,
+	#useYn#,
+	#vendorId#,
+	#regId#,
+	CURRENT_TIMESTAMP(0),
+	#infoGrpCd#
+	)
+  </insert>
+  
+  
+  <!-- 전상법 템플릿 상세 등록  -->
+   <insert id="insertSubEscTem" parameterClass="pscmsys0005DtlVO">
+     /* pscmsys0005.insertSubEscTem */
+     
+	  INSERT INTO TVE_NOR_PROD_TEMPLATE_DTL(
+		NOR_PROD_SEQ,
+		INFO_GRP_CD,
+		INFO_COL_CD,
+		<isNotEmpty property="colVal">
+		COL_VAL,
+		</isNotEmpty>
+		REG_ID,
+		REG_DATE
+	)VALUES(
+		#norProdSeq#,
+		#infoGrpCd#,
+		#infoColCd#,
+		<isNotEmpty property="colVal">
+		#colVal#,
+		</isNotEmpty>
+		#regId#,
+		CURRENT_TIMESTAMP(0)
+	)
+  </insert>
+  
+  <!-- 전상법 템플릿 상세 조회-->
+  <select id="dtlEscTem" resultClass="pscmsys0005VO" >
+   /* pscmsys0005.dtlEscTem */
+   
+  	SELECT DISTINCT TNRT.TITLE AS title
+		,TNRT.USE_YN AS useYn
+		,TNRT.INFO_GRP_CD AS infoGrpCd
+  		,TRAIM.INFO_GRP_NM AS infoGrpNm
+	FROM TVE_NOR_PROD_TEMPLATE TNRT
+  				,TPR_PROD_ADD_INFO_MST TRAIM
+	WHERE TNRT.INFO_GRP_CD = TRAIM.INFO_GRP_CD
+  	AND  NOR_PROD_SEQ = #norProdSeq#
+  </select>
+  
+  <!-- 전상법 템플릿 디테일 상세 조회 -->
+  <select id="dtlEscTemDtl"  resultClass="pscmsys0005DtlVO" >
+   	/* pscmsys0005.dtlEscTemDtl */
+   
+	  SELECT
+		TNPTD.INFO_GRP_CD AS infoGrpCd,
+		TNPTD.INFO_COL_CD AS infoColCd,
+		TPAID.INFO_COL_NM AS infoColNm,
+   		TNPTD.COL_VAL AS colVal
+	 FROM TVE_NOR_PROD_TEMPLATE_DTL TNPTD
+     	LEFT OUTER JOIN TPR_PROD_ADD_INFO_DET TRAID ON 
+     		TNPTD.INFO_GRP_CD = TRAID.INFO_GRP_CD(+) AND TNPTD.INFO_COL_CD = TRAID.INFO_COL_CD(+)
+	 WHERE NOR_PROD_SEQ = #norProdSeq# 
+  </select>
+  
+  <!-- IBSHEET 세팅 -->
+  <select id="selectSheet"  resultClass="pscmsys0005DtlVO" >
+ 	 /* pscmsys0005.selectSheet */
+ 	 
+ 	 SELECT 
+	      RANK()OVER(ORDER BY A.INFO_COL_CD DESC) AS  NUM
+	    , A.INFO_COL_CD AS INFOCOLCD
+	    , A.INFO_COL_NM AS INFOCOLNM
+	    , A.INFO_GRP_CD AS INFOGRPCD
+	    , B.COL_VAL AS COLVAL
+	    , A.NOR_PROD_SEQ AS NORPRODSEQ
+	FROM
+	    (SELECT DISTINCT 
+	                     B.NOR_PROD_SEQ
+	                    ,A.INFO_COL_CD
+	                    ,A.INFO_COL_NM 
+	                    ,A.INFO_GRP_CD
+	                    ,A.USE_YN
+	              FROM TPR_PROD_ADD_INFO_DET A,
+	                   TVE_NOR_PROD_TEMPLATE_DTL B 
+	              WHERE A.INFO_GRP_CD = B.INFO_GRP_CD  
+	                AND USE_YN='Y'
+	                AND B.NOR_PROD_SEQ = #norProdSeq#) A
+	    LEFT OUTER JOIN
+	    (SELECT 
+	          A.NOR_PROD_SEQ
+	        , A.INFO_GRP_CD  
+	  	 	, A.INFO_COL_CD 
+	  	 	, A.COL_VAL  
+	        , B.INFO_COL_NM  
+	  	 FROM TVE_NOR_PROD_TEMPLATE_DTL A
+	    	 ,TPR_PROD_ADD_INFO_DET B
+	  	 WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+	     	AND A.INFO_COL_CD = B.INFO_COL_CD
+	    	 AND A.NOR_PROD_SEQ = #norProdSeq#) B 
+	    	 
+	     ON A.INFO_GRP_CD = B.INFO_GRP_CD 
+	     AND A.INFO_COL_CD=B.INFO_COL_CD
+  </select>
+  
+  <!-- 전상법 템플릿 수정 -->
+  <update id="updateMasEscTem"  parameterClass="pscmsys0005VO" >
+  /* pscmsys0005.updateMasEscTem */
+  
+  	UPDATE TVE_NOR_PROD_TEMPLATE
+	SET TITLE = #title#,
+		USE_YN = #useYn#,
+		MOD_ID = #modId#,
+		MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE NOR_PROD_SEQ = #norProdSeq#
+  </update>
+  
+  <!-- 전상법 템플릿 상세 수정 -->
+  <update id="updateSubEscTem"  parameterClass="pscmsys0005DtlVO" >
+ 	 /* pscmsys0005.updateSubEscTem */
+ 	
+ 	 MERGE INTO TVE_NOR_PROD_TEMPLATE_DTL
+            USING DUAL
+            ON (INFO_COL_CD= #infoColCd# AND INFO_GRP_CD= #infoGrpCd# AND NOR_PROD_SEQ = #norProdSeq#)
+            WHEN MATCHED THEN
+                      UPDATE SET
+                        COL_VAL = #colVal#,
+                        MOD_ID = #modId#,
+                        MOD_DATE = CURRENT_TIMESTAMP(0)
+                      WHERE NOR_PROD_SEQ = #norProdSeq#
+                        AND INFO_COL_CD= #infoColCd#
+                        AND INFO_GRP_CD= #infoGrpCd#
+            WHEN NOT MATCHED THEN
+                      INSERT (NOR_PROD_SEQ,
+                              INFO_GRP_CD,
+                              INFO_COL_CD,
+                              COL_VAL,
+                              REG_ID,
+                              REG_DATE 
+                              )VALUES(
+                              #norProdSeq#,
+                              #infoGrpCd#,
+                              #infoColCd#,
+                              #colVal#,
+                              #modId#,
+                              CURRENT_TIMESTAMP(0)
+                            )
+ 	
+ 	 
+  	<!-- 	UPDATE TVE_NOR_PROD_TEMPLATE_DTL
+		SET COL_VAL =#colVal#,
+			MOD_ID = #modId#,
+			MOD_DATE = CURRENT_TIMESTAMP(0)
+		WHERE NOR_PROD_SEQ = #norProdSeq#
+		AND INFO_COL_CD=#infoColCd#
+		AND INFO_GRP_CD=#infoGrpCd# -->
+	</update>
+  
+</sqlMap>

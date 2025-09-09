@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="Scheduled">
+	<typeAlias alias="scheduledVO"    	type="com.lottemart.epc.edi.comm.model.ScheduledVO" />		<!-- 스케줄러 VO -->
+
+	<!-- 행사정보 등록내역 조회 Map -->	
+	<resultMap id="selectProEventAppDetailMap"		class="scheduledVO">
+		<result column="VKORG_GBN"					property="vkorgGbn" 		/>	<!-- 계열사 구분 -->
+		<result column="REQ_OFRCD"					property="reqOfrcd" 		/>	<!-- 파트너사행사번호 -->
+		<result column="IF_CD"						property="ifCd" 			/>	<!-- ecs 연계 코드 -->
+		<result column="DC_CNT"						property="dcCnt" 			/>	<!-- 계약순번 -->
+		<result column="DC_STAT"					property="dcStat" 			/>	<!-- 진행상태 -->
+		<result column="DC_NUM"						property="dcNum" 			/>	<!-- 계약번호 -->
+		<result column="VKORG"						property="vkorg" 			/>	<!-- 계열사 -->
+		<result column="APPR_STATUS"				property="apprStatus" 		/>	<!-- 행사 진행상태 -->
+	</resultMap>
+    
+    <resultMap id="rfcCallDataMap"	class="java.util.HashMap">
+		<result property="REQ_OFFER"				nullValue=""		/>	<!-- 파트너사행사번호 -->
+		<result property="APPR_STATUS"				nullValue=""		/>	<!-- 승인여부 -->
+		<result property="DOC_NO1"					nullValue=""		/>	<!-- 전자계약번호1 -->
+		<result property="DOC_NO2"					nullValue=""		/>	<!-- 전자계약번호2 -->
+		<result property="DOC_NO3"					nullValue=""		/>	<!-- 전자계약번호3 -->
+	</resultMap>
+	
+    <!-- 계약 진행상태 상세 조회 -->
+    <select id="selectProEventIfStsList" parameterClass="scheduledVO" resultMap="selectProEventAppDetailMap" >
+    /* Scheduled.selectProEventIfStsList */
+		 SELECT
+				A.VKORG_GBN
+			,	A.REQ_OFRCD
+			,	A.IF_CD
+			,	A.DC_CNT
+			,	A.DC_STAT
+			,	A.DC_NUM
+			,	A.VKORG
+			,	A.APPR_STATUS
+		FROM
+		(
+			 /* 마트, 슈퍼 */
+			 SELECT                                     
+					'1' AS VKORG_GBN
+				,	A.REQ_OFRCD				 /* 파트너사행사번호 	*/
+				,	B.IF_CD
+				,	MAX(B.SEQ) AS DC_CNT
+				,	CASE WHEN B.DC_STAT IN ('99', '44', '98') THEN B.DC_STAT
+						 WHEN B.DC_STAT IN ('10') THEN '05'
+						 WHEN B.DC_STAT IN ('90') THEN '07'
+					ELSE 'N' END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				, C.DC_NUM
+				, A.VKORG
+				, A.APPR_STATUS
+			FROM TPC_PROD_EVNT A
+			INNER JOIN IF_RETURN B ON A.CONT_CODE = B.CONT_CODE
+			INNER JOIN IF_ECS_DETAIL_EPC C ON A.CONT_CODE  = C.CONT_CODE
+			WHERE A.APPR_STATUS IN ('03', '05') 
+			AND B.DC_STAT IN ('10', '90', '99', '44', '98') 
+			AND COALESCE(B.SEND_FG, '0') = '0'
+			GROUP BY A.REQ_OFRCD, B.IF_CD, B.DC_STAT, C.DC_NUM, A.VKORG, A.APPR_STATUS
+			
+			UNION ALL
+			/* CS유통 */
+			SELECT                                     
+					'2' AS VKORG_GBN
+				,	A.REQ_OFRCD				 /* 파트너사행사번호 	*/
+				,	B.IF_CD
+				,	MAX(B.SEQ) AS DC_CNT
+				,	CASE WHEN B.DC_STAT IN ('99', '44', '98') THEN B.DC_STAT
+						 WHEN B.DC_STAT IN ('10') THEN '05'
+						 WHEN B.DC_STAT IN ('90') THEN '07'
+					ELSE 'N' END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				, C.DC_NUM
+				, A.VKORG
+				, A.APPR_STATUS
+			FROM TPC_PROD_EVNT A
+			INNER JOIN IF_RETURN B ON A.CONT_CODE2 = B.CONT_CODE
+			INNER JOIN IF_ECS_DETAIL_EPC C ON A.CONT_CODE2  = C.CONT_CODE
+			WHERE A.APPR_STATUS IN ('03', '05') 
+			AND B.DC_STAT IN ('10', '90', '99', '44', '98') 
+			AND COALESCE(B.SEND_FG, '0') = '0'
+			GROUP BY A.REQ_OFRCD, B.IF_CD, B.DC_STAT, C.DC_NUM, A.APPR_STATUS
+		)A
+		WHERE A.DC_STAT != A.APPR_STATUS
+		
+    </select>
+	
+	<!-- 행사 마스터 진행상태 update -->
+	<update id="updateProdEvnt" parameterClass="scheduledVO">
+	/* Scheduled.updateProdEvnt */
+	UPDATE TPC_PROD_EVNT
+	SET APPR_STATUS = #dcStat#
+	,	MOD_DATE = NOW()
+	,	MOD_ID = #workId#
+	<isEqual property="dcStat" compareValue="07">
+		<isNotEqual property="docNo1" compareValue="">
+		,	DOC_NO1 = #docNo1#	
+		</isNotEqual>
+	
+		<isNotEqual property="docNo2" compareValue="">
+		,	DOC_NO2 = #docNo2#	
+		</isNotEqual>
+	
+		<isNotEqual property="docNo3" compareValue="">
+		,	DOC_NO3 = #docNo3#	
+		</isNotEqual>
+	</isEqual>
+	WHERE REQ_OFRCD = #reqOfrcd#
+	</update>
+	
+	<!-- if_return 상태값 update -->
+	<update id="updateIfReturn" parameterClass="scheduledVO">
+	/* Scheduled.updateIfReturn */
+	UPDATE IF_RETURN
+	SET SEND_FG = '1'
+	WHERE IF_CD = CAST(#ifCd# AS NUMERIC)
+	AND SEQ = CAST(#dcCnt# AS NUMERIC)
+	</update>
+
+	
+	<!-- RFC 호출 정보 조회 -->
+	<select id="selectEvntRfcCallData" parameterClass="scheduledVO" resultMap="rfcCallDataMap">
+		/* Scheduled.selectEvntRfcCallData */
+		SELECT                                     
+			  REQ_OFRCD	AS REQ_OFFER	/* 파트너사행사번호 	*/ 
+			, APPR_STATUS	/* 파트너사코드 	*/  
+			, DOC_NO1		/* 전자계약번호1	*/
+			, DOC_NO2		/* 전자계약번호2	*/
+			, DOC_NO3		/* 전자계약번호3	*/
+			FROM TPC_PROD_EVNT A
+			WHERE A.REQ_OFRCD = #reqOfrcd#
+			AND A.DEL_YN = 'N'
+	</select>
+	
+	
+	
+	
+	
+</sqlMap>	

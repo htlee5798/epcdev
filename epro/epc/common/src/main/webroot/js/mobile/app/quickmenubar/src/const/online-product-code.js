@@ -1,0 +1,10 @@
+export const ONLINE_PROD_TYPE_CD_NORMAL= '01';
+export const ONLINE_PROD_TYPE_CD_MAKE = '02';
+export const ONLINE_PROD_TYPE_CD_INST = '03';
+export const ONLINE_PROD_TYPE_CD_CHOICE = '04';
+export const ONLINE_PROD_TYPE_CD_DEAL = '05';
+export const ONLINE_PROD_TYPE_CD_ADD = '06';
+export const ONLINE_PROD_TYPE_CD_RESERVE = '07';
+export const ONLINE_PROD_TYPE_CD_ETC = '08';
+export const ONLINE_PROD_TYPE_CD_OVERSEA = '09';
+export const ONLINE_PROD_TYPE_CD_PROXY = '09';

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO0005">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	 
+	 
+	 
+	 
+	  <select id="selectBarcodeList20120530bak" parameterClass="map" resultClass="resultClass">
+	   	/* SQLINES DEMO *** ectBarcodeList20120530bak */
+	   	 SELECT	
+	   	 	 TO_CHAR(A.REG_DT, 'yyyymmdd')  AS REG_DT
+	   	 	,A.SRCMK_CD 	AS SRCMK_CD
+	   	 	,C.SHORT_NM 	AS PROD_NM
+	   	 	,A.LOGI_BCD 	AS LOGI_BCD
+	   	 	,B.WIDTH 		AS WIDTH
+	   	 	,B.LENGTH 		AS LENGTH 
+	   	 	,B.HEIGHT 		AS HEIGHT
+	   	 	,B.WG     		AS WG 
+	   	 	,B.SORTER_FG 	AS SORTER_FG
+	   	 	,B.LOGI_CFM_FG  AS LOGI_CFM_FG  
+	   	 	,A.W_USE_FG     AS W_USE_FG
+		 FROM  NEW_SALE_LOGI_EDI@DL_MD_MARTNIS A, 	  
+		 	   NEW_LOGI_CD_EDI@DL_MD_MARTNIS   B, 
+		 	   PRODUCT C
+		 WHERE	A.PGM_ID	=	B.PGM_ID
+		  AND	A.SEQ		=	B.SEQ 
+		  AND	A.LOGI_BCD	=	B.LOGI_BCD
+		  AND	A.PROD_CD	=	C.PROD_CD 
+		  AND	TO_CHAR(A.REG_DT ,'YYYY-MM-DD') BETWEEN  #startDate#  AND #endDate#
+		 
+		 
+		 <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		  </isNotEmpty>
+		 
+		 <isNotEmpty  property="venCd"  prepend="AND"> 
+		 	 A.VEN_CD  	=	#venCd#
+		 </isNotEmpty>
+		 
+		  <isNotEmpty  property="srcmk_cd"  prepend="AND"> 
+		     A.SRCMK_CD =  #srcmk_cd#
+		  </isNotEmpty>
+		  
+		  <isEqual property="logi_cfm" compareValue="01" prepend="AND">
+		  	b.LOGI_CFM_FG in (  '01' ,'04' ) 
+		  </isEqual>
+		  <isEqual property="logi_cfm" compareValue="02" prepend="AND">
+		  	b.LOGI_CFM_FG in (  '02' ,'00' ) 
+		  </isEqual>
+		  <isEqual property="logi_cfm" compareValue="03" prepend="AND">
+		  	b.LOGI_CFM_FG = '03' 
+		  </isEqual>
+		  <isEqual property="logi_cfm" compareValue="09" prepend="AND">
+		  	b.LOGI_CFM_FG = '09' 
+		  </isEqual>
+		  
+		  ORDER BY REG_DT
+	  </select>
+	 
+	 
+	 
+	  <select id="selectBarcodeList" parameterClass="map" resultClass="resultClass">
+	   	/* SQLINES DEMO *** ectBarcodeList */
+	   	 SELECT	
+	   	 	 TO_CHAR(A.REG_DT, 'yyyymmdd')  AS REG_DT
+	   	 	,A.SRCMK_CD 	AS SRCMK_CD
+	   	 	,C.SHORT_NM 	AS PROD_NM
+	   	 	,A.LOGI_BCD 	AS LOGI_BCD
+	   	 	,B.WIDTH 		AS WIDTH
+	   	 	,B.LENGTH 		AS LENGTH 
+	   	 	,B.HEIGHT 		AS HEIGHT
+	   	 	,B.WG     		AS WG 
+	   	 	,B.SORTER_FG 	AS SORTER_FG
+	   	 	,B.LOGI_CFM_FG  AS LOGI_CFM_FG  
+	   	 	,A.W_USE_FG     AS W_USE_FG
+	   	 	,D.USE_FG       AS USE_FG
+		 FROM  NEW_SALE_LOGI_EDI@DL_MD_MARTNIS A 	  
+		 	   LEFT OUTER JOIN LOGI_MST@DL_MD_MARTNIS D ON A.LOGI_BCD = D.LOGI_BCD,
+		 	   NEW_LOGI_CD_EDI@DL_MD_MARTNIS   B, 
+		 	   PRODUCT C  
+		 WHERE	A.PGM_ID	=	B.PGM_ID
+		  AND	A.SEQ		=	B.SEQ 
+		  AND	A.LOGI_BCD	=	B.LOGI_BCD
+	-- SQLINES DEMO *** 	C.PROD_CD 
+		  AND	A.SRCMK_CD	=	C.SRCMK_CD 
+	
+		  AND	TO_CHAR(A.REG_DT ,'YYYY-MM-DD') BETWEEN  #startDate#  AND #endDate#
+		 
+		 <isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]#
+		      </iterate> 
+		  </isNotEmpty>
+		 
+		 <isNotEmpty  property="venCd"  prepend="AND"> 
+		 	 A.VEN_CD  	=	#venCd#
+		 </isNotEmpty>
+		 
+		  <isNotEmpty  property="srcmk_cd"  prepend="AND"> 
+		     A.SRCMK_CD =  #srcmk_cd#
+		  </isNotEmpty>
+		  
+		  <isEqual property="logi_cfm" compareValue="01" prepend="AND">
+		  	b.LOGI_CFM_FG in (  '01' ,'04' ) 
+		  </isEqual>
+		  <isEqual property="logi_cfm" compareValue="02" prepend="AND">
+		  	b.LOGI_CFM_FG in (  '02' ,'00' ) 
+		  </isEqual>
+		  <isEqual property="logi_cfm" compareValue="03" prepend="AND">
+		  	b.LOGI_CFM_FG = '03' 
+		  </isEqual>
+		  <isEqual property="logi_cfm" compareValue="09" prepend="AND">
+		  	b.LOGI_CFM_FG = '09' 
+		  </isEqual>
+		  
+		  ORDER BY REG_DT
+	  </select>
+ 
+ 
+	 
+</sqlMap>

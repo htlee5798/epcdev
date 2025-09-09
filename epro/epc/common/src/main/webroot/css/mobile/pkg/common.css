@@ -1,0 +1,76 @@
+@charset "utf-8"; /*언어타입지정*/
+
+/*
+------------------------------------------------------------
+website : http://
+File Name : common.css
+Maker : UI Factory / IdeuMotion (ideumotion@gmail.com)
+Date : 2010 / February
+explanation : 전체 공통 스타일 정의
+Modify Date: 
+------------------------------------------------------------
+*/
+
+
+/* 기본 스타일 */
+div, ul, ol, form, fieldset, td, th, li, h1, h2, h3, h4, p, dl, dt, dd, address {margin:0px; padding:0px;}
+ul,li,ol,dl,dt,dd {list-style:none; margin:0px; padding:0px;}	
+img.middle {vertical-align:middle; margin-bottom:3px;}
+div.hide, h1.hide, h2.hide, span.hide {display:none;}
+fieldset, img {border:none;}
+
+/* 플로트관련 */
+.fl {float:left;}
+.fr {float:right;}
+
+/* 포지션관련 */
+.relative {position:relative;}
+.absolute {position:absolute;}
+
+/* 클리어 */
+.clear {clear:both;}
+
+/* 컨텐츠정렬관련 */
+.al {text-align:left;}
+.ac {text-align:center;}
+.ar {text-align:right;}
+.at {vertical-align:top;}
+.am {vertical-align:middle;}
+.ab {vertical-align:bottom;}
+
+/* 이미지정렬관련 */
+img.middle {vertical-align:middle;}
+
+/* ie6전용 png 투명처리관련 */
+.png24 {tmp:expression(setPng24(this));}
+
+/* 파이어폭스용 센터 정렬관련 */
+.marginAuto {margin:0px auto;}
+
+/* 글꼴 관련 */
+.normal {font-weight:normal;} /* normal */
+.b {font-weight:bold;} /* 볼드체 */
+.ul {text-decoration:underline;} /* 언더라인 */
+.ws-2p {word-spacing:2px;} /* 단어사이조정 */
+.ls-_1p {letter-spacing:-1px;} /* 글자사이조정 */
+
+/* div blank style */
+div.vSpace {width:1px; line-height:0px; font-size:1px;}
+div.vSpace10 {width:1px; height:10px; line-height:0px; font-size:1px;}
+div.vSpace20 {width:1px; height:20px; line-height:0px; font-size:1px;}
+div.vSpace30 {width:1px; height:30px; line-height:0px; font-size:1px;}
+div.vSpace40 {width:1px; height:40px; line-height:0px; font-size:1px;}
+
+/* padding style */
+.ip10 {padding:10px;}
+.ipT10 {padding-top:10px;}
+.ipR10 {padding-right:10px;}
+.ipB10 {padding-bottom:10px;}
+.ipL10 {padding-left:10px;}
+
+/* margin style */
+.im10 {margin:10px;}
+.imT10 {margin-top:10px;}
+.imR10 {margin-right:10px;}
+.imB10 {margin-bottom:10px;}
+.imL10 {margin-left:10px;}

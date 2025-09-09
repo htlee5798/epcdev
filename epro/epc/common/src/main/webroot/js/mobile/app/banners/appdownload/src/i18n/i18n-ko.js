@@ -1,0 +1,1 @@
+export const BANNER_ALT = '더욱 편리한 롯데마트몰 APP으로 만나세요';

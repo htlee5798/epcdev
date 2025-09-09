@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0220">
+	<typeAlias alias="resultClass"			type="lcn.module.common.util.HashBox" />						<!-- SQLINES DEMO *** 한 기본 정보 조회  -->
+	<typeAlias alias="nEDMPRO0220VO"		type="com.lottemart.epc.edi.product.model.NEDMPRO0220VO" />		<!-- 뮬류... SQLINES DEMO ***  -->
+	
+	<!-- SQLINES DEMO *** Map -->
+	<resultMap id="selectImsiProdInfoToRFCMap"	class="java.util.HashMap">
+		<result property="SRCMK_CD"				nullValue=""	/>			<!-- 판매... SQLINES DEMO ***  -->
+		<result property="PLT_HEIGHT_QTY"		nullValue=""	/>			<!-- 높이... SQLINES DEMO ***  -->
+		<result property="LOGI_CFM_FG"			nullValue=""	/>		  	<!-- 확정... SQLINES DEMO ***  -->
+		<result property="INNER_IPSU"			nullValue=""	/>		  <!-- 가로... SQLINES DEMO ***  -->
+		<result property="WG"					nullValue=""	/>		  <!-- 총중... SQLINES DEMO ***  -->
+		<result property="HEIGHT"				nullValue=""	/>			<!-- 높이... SQLINES DEMO ***  -->
+		<result property="SEQ"					nullValue=""	/>			<!-- 순번... SQLINES DEMO ***  -->
+		<result property="W_USE_FG"				nullValue=""	/>		  	<!-- 빅마... SQLINES DEMO ***  -->
+		<result property="PLT_LAYER_QTY"		nullValue=""	/>		  <!-- 세로... SQLINES DEMO ***  -->
+		<result property="WIDTH"				nullValue=""	/>		  <!-- 가로... SQLINES DEMO ***  -->
+		<result property="SIZE_UNIT"			nullValue=""	/>			<!-- 사이... SQLINES DEMO ***  -->
+		<result property="WG_UNIT"				nullValue=""	/>			<!-- 무게... SQLINES DEMO ***  -->
+		<result property="LOGI_BCD"				nullValue=""	/>		  	<!-- 물류... SQLINES DEMO ***  -->
+		<result property="SORTER_FG"			nullValue=""	/>		  <!-- 소터... SQLINES DEMO ***  -->
+		<result property="W_INNER_IPSU"			nullValue=""	/>		  <!-- 빅마... SQLINES DEMO ***  -->
+		<result property="CFG_FG"				nullValue=""	/>			<!-- 수정... SQLINES DEMO ***  -->
+		<result property="CRSDK_FG"				nullValue=""	/>			<!-- 크로... SQLINES DEMO ***  -->
+		<result property="PGM_ID"				nullValue=""	/>		  	<!-- 상품... SQLINES DEMO ***  -->
+		<result property="LENGTH"				nullValue=""	/>		  <!-- 세로... SQLINES DEMO ***  -->
+		<result property="CONVEY_FG"			nullValue=""	/>		  <!-- 소터... SQLINES DEMO ***  -->
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** 업 속성별 물류바코드 조회 Map] -->
+	<resultMap id="selectImsiProdClassToLogiBcdInfoMap"		class="nEDMPRO0220VO">
+		<result column="PGM_ID"				property="pgmId" 		/>	<!-- 신규... SQLINES DEMO ***  -->
+		<result column="SEQ"				property="seq" 			/>	<!-- SE... SQLINES DEMO ***  -->
+		<result column="LOGI_BCD"			property="logiBcd" 		/>	<!-- 물류... SQLINES DEMO ***  -->
+		<result column="VARIANT"			property="variant" 		/>	<!-- 변형... SQLINES DEMO ***  -->
+		<result column="MIX_PROD_FG"		property="mixProdFg" 	/>	<!-- 혼재... SQLINES DEMO ***  -->
+		<result column="LOGI_BOX_IPSU"		property="logiBoxIpsu" 	/>	<!-- 물류... SQLINES DEMO ***  -->
+		<result column="WG"					property="wg" 			/>	<!-- 중량... SQLINES DEMO ***  -->
+		<result column="WIDTH"				property="width" 		/>	<!-- 가로... SQLINES DEMO ***  -->
+		<result column="LENGTH"				property="length" 		/>	<!-- 세로... SQLINES DEMO ***  -->
+		<result column="HEIGHT"				property="height" 		/>	<!-- 높이... SQLINES DEMO ***  -->
+		<result column="SIZE_UNIT"			property="sizeUnit" 	/>	<!-- SQLINES DEMO *** 수) -->
+		<result column="WG_UNIT"			property="wgUnit" 		/>	<!-- 무게... SQLINES DEMO ***  -->
+		<result column="CONVEY_FG"			property="conveyFg" 	/>	<!-- 소터... SQLINES DEMO ***  -->
+		<result column="SORTER_FG"			property="sorterFg" 	/>	<!-- 소터... SQLINES DEMO ***  -->
+		<result column="INNER_IPSU"			property="innerIpsu" 	/>	<!-- IN... SQLINES DEMO ***  -->
+		<result column="PLT_LAYER_QTY"		property="pltLayerQty" 	/>	<!-- 레이... SQLINES DEMO ***  -->
+		<result column="PLT_HEIGHT_QTY"		property="pltHeightQty" />	<!-- 높이... SQLINES DEMO ***  -->
+		<result column="CRSDK_FG"			property="crsdkFg" 		/>	<!-- 크로... SQLINES DEMO ***  -->
+		<result column="W_USE_FG"			property="wUseFg" 		/>	<!-- 빅마... SQLINES DEMO ***  -->
+		<result column="W_INNER_IPSU"		property="wInnerIpsu" 	/>	<!-- 빅마... SQLINES DEMO ***  -->
+		<result column="USE_FG"				property="useFg" 		/>	<!-- 사용... SQLINES DEMO ***  -->
+		<result column="PROD_CD"			property="prodCd" 		/>	<!--  상... SQLINES DEMO ***  -->
+		<result column="L1_CD"				property="l1Cd" 		/>	<!-- 대분... SQLINES DEMO ***  -->
+		<result column="VEN_CD"				property="venCd" 		/>	<!-- EX... SQLINES DEMO ***  -->
+		<result column="REG_DATE"			property="regDate" 		/>	<!-- 등록... SQLINES DEMO ***  -->
+		<result column="REG_ID"				property="regId" 		/>	<!-- 등록... SQLINES DEMO ***  -->
+		<result column="MOD_DATE"			property="modDate" 		/>	<!-- 변경... SQLINES DEMO ***  -->
+		<result column="MOD_ID"				property="modId" 		/>	<!-- 변경... SQLINES DEMO ***  -->
+		<result column="LOGI_CFM_FG"		property="logiCfmFg" 	/>	<!-- SQLINES DEMO *** 료, 00:심사중] -->
+		<result column="TOTAL_BOX"			property="totalBox" 	/>	<!-- 총 ... SQLINES DEMO ***  -->
+	</resultMap>
+	
+	<!-- SQLINES DEMO ***  물류바코드 등록을 위한 기본 정보 조회 Map -->
+	<resultMap id="selectLogiProdBasicInfoMap"	class="nEDMPRO0220VO">
+		<result column="PGM_ID"				property="pgmId" 		/>	<!-- 신규... SQLINES DEMO ***  -->
+		<result column="VARIANT"			property="variant" 		/>	<!-- 변형... SQLINES DEMO ***  -->
+		<result column="PROD_CD"			property="prodCd"		/>	<!-- 상품... SQLINES DEMO ***  -->
+		<result column="SRCMK_CD"			property="srcmkCd"		/>	<!-- 판매... SQLINES DEMO ***  -->
+		<result column="PROD_NM"			property="prodNm"		/>	<!-- 상품... SQLINES DEMO ***  -->
+		<result column="REG_DT"				property="regDt"		/>	<!-- 상품... SQLINES DEMO ***  -->
+		<result column="L1_CD"				property="l1Cd"			/>	<!-- 대분... SQLINES DEMO ***  -->
+		<result column="ORD_IPSU"			property="ordIpsu"		/>	<!-- 발주... SQLINES DEMO ***  -->
+		<result column="VEN_CD"				property="venCd"		/>	<!-- 협력... SQLINES DEMO ***  -->
+	</resultMap>
+	
+	
+	<!-- SQLINES DEMO ***  물류바코드 등록을 위한 기본 정보 조회 (현재 사용안함 속성별로 등록하기 때문에 해당 쿼리사용이 불가능 주석처리 2016.02.17 by song min kyo)-->
+	<select id="selectNewBarcodeRegistTmp" parameterClass="java.util.Map" resultClass="resultClass">
+		/* SQLINES DEMO *** ectNewBarcodeRegistTmp */
+	 	SELECT  TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DT
+			, 	''			 					AS PROD_CD
+			, 	PROD_NM							AS PROD_NM
+			, 	L1_CD							AS L1_CD	 
+			, 	PUR_INRCNT_QTY 					AS ORD_IPSU
+			, 	ENTP_CD							AS VEN_CD
+		FROM TPC_NEW_PROD_REG 
+		WHERE PGM_ID = #pgmId#
+	</select>
+	
+	
+	<!-- SQLINES DEMO *** 업] 상품에 등록된 속성 카운트 -->
+	<select id="selectImsiProdClassListCnt"	parameterClass="String"		resultClass="Integer">
+		/* SQLINES DEMO *** ectImsiProdClassListCnt */
+		SELECT COUNT(1) AS CNT
+		FROM 
+		(
+			SELECT A.VARIANT
+			FROM TPC_VAR_ATT A
+			WHERE A.PGM_ID = #pgmId#
+			GROUP BY A.VARIANT
+		)A
+	</select>
+	
+	<!-- SQLINES DEMO *** 업] 상품에 등록된 속성별 물류바코드 조회 -->
+	<select id="selectImsiProdClassToLogiBcdInfo"	parameterClass="java.util.Map"	resultMap="selectImsiProdClassToLogiBcdInfoMap">
+		/* SQLINES DEMO *** ectImsiProdClassToLogiBcdInfo */
+		SELECT	A.PGM_ID				/*  프로그램 ID  */							   
+			,	A.SEQ					/*  순번  */									  
+			,	A.LOGI_BCD				/*  물류바코드  */								
+			,	A.VARIANT				/*  변형구분  */								  
+			,	A.MIX_PROD_FG			/*  혼재여부  */								  
+			,	A.LOGI_BOX_IPSU			/*	*/										  
+			,	A.WG					/*  총중량  */									
+			,	A.WIDTH		 			/*  가로  */									  
+			,	A.LENGTH		 		/*  세로  */									  
+			,	A.HEIGHT		 		/*  높이  */									  
+			,	A.SIZE_UNIT		 		/*  사이즈단위  */								
+			,	A.WG_UNIT		 		/*  무게단위  */								  
+			,	A.CONVEY_FG		 		/*  소터에러 구분  */							 
+			,	A.SORTER_FG		 		/*  소터구분  */								  
+			,	A.INNER_IPSU			/*  가로박스  */								  
+			,	A.PLT_LAYER_QTY			/*  세로박스  */								  
+			,	A.PLT_HEIGHT_QTY		/*  높이박스 수  */							   
+			,	A.CRSDK_FG		 		/*  크로스독구분  */							  
+			,	A.W_USE_FG		 		/*  빅마켓 취급구분  */						   
+			,	A.W_INNER_IPSU			/*  빅마켓 박스수  */							 
+			,	A.USE_FG		 		/*  사용구분  */								  
+			,	A.PROD_CD		 		/*  상품코드  */								  
+			,	A.L1_CD					/*  대분류코드  */								
+			,	A.VEN_CD		 		/*  협력업체코드  */							  
+			,	TO_CHAR(A.REG_DATE, 'YYYY-MM-DD')	AS REG_DATE	 		/*  등록일시  */								  
+			,	A.REG_ID		 		/*  등록자  */									
+			,	A.MOD_DATE	 			/*  수정일시  */								  
+			,	A.MOD_ID				/*  수정자  */ 
+			,	CASE   WHEN B.LOGI_CFM_FG IS NULL THEN  '02' ELSE B.LOGI_CFM_FG END			AS LOGI_CFM_FG	/* SQLINES DEMO *** 9:완료] */   
+			,	A.INNER_IPSU * A.PLT_LAYER_QTY * A.PLT_HEIGHT_QTY			AS TOTAL_BOX	/*  총 박스수  */								 
+		FROM  TPC_LOGI_BCD A
+			 LEFT OUTER JOIN TPC_LOGI_BCD_SAP B
+		ON A.PGM_ID = B.PGM_ID 
+		WHERE A.PGM_ID = #pgmId#
+		AND A.VEN_CD = #venCd#	
+		<isNotEmpty property="seq">
+			AND A.SEQ = #seq#						
+		</isNotEmpty>												
+		<isNotEmpty property="variant">			
+			AND A.VARIANT = #variant#			
+		</isNotEmpty>	   		
+	</select>
+
+	<!-- SQLINES DEMO *** 구한다. -->
+	<select id="selectLogiBcdSeqInfo"	parameterClass="String"		resultClass="String">
+		/* SQLINES DEMO *** ectLogiBcdSeqInfo */
+		SELECT COALESCE(MAX(SEQ), '0') + 1 FROM  TPC_LOGI_BCD WHERE PGM_ID = #pgmId#
+	</select>
+	
+	<!-- SQLINES DEMO *** 복체크 -->
+	<select id="selectLogiBcdDuplChkCnt"	parameterClass="nEDMPRO0220VO"	resultClass="Integer">
+		/* SQLINES DEMO *** ectLogiBcdDuplChkCnt */
+		SELECT COUNT(A.LOGI_BCD) AS CNT
+		FROM
+		(
+			SELECT LOGI_BCD FROM TPC_LOGI_BCD WHERE LOGI_BCD = #logiBcd#
+			UNION ALL
+			SELECT LOGI_BCD FROM TPC_LOGI_BCD_SAP WHERE LOGI_BCD = #logiBcd#
+		)A					
+	</select>
+	
+	<!-- SQLINES DEMO *** 코드 등록 팝업 저장 -->
+	<insert id="insertImsiProdLogiBcd"		parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** ertImsiProdLogiBcd */
+		INSERT INTO TPC_LOGI_BCD
+		(
+			  	PGM_ID
+		  	,	VARIANT
+			,	SEQ
+			,	LOGI_BCD
+			,	MIX_PROD_FG
+			,	LOGI_BOX_IPSU
+			,	WG		   
+			,	WIDTH		
+			,	LENGTH	   
+			,	HEIGHT	   
+			,	SIZE_UNIT	
+			,	WG_UNIT	  
+			,	CONVEY_FG	
+			,	SORTER_FG	
+			,	INNER_IPSU   
+			,	PLT_LAYER_QTY  
+			,	PLT_HEIGHT_QTY 
+			,	CRSDK_FG	   
+			,	W_USE_FG	   
+			,	W_INNER_IPSU  
+			,	USE_FG 
+			,	PROD_CD		
+			,	L1_CD		  
+			,	VEN_CD		 
+			,	REG_DATE	   
+			,	REG_ID		 			
+			,	LOGI_CFM_FG	
+			,	SRCMK_CD	 
+		)
+		VALUES
+		(
+			  	#pgmId#
+		  	,	#variant#
+			,	#seq#
+			,	#logiBcd# 
+			,	#mixProdFg#
+			,	cast(nullif(#logiBoxIpsu# ,'') as integer)
+			,	cast(nullif(#wg#	,'') as integer)	 
+			,	cast(nullif(#width#	,'') as integer)  
+			,	cast(nullif(#length#	,'') as integer)   
+			,	cast(nullif(#height#	,'') as integer)   
+			,	'MM' 
+			,	'KG'	  
+			,	#conveyFg#
+			,	#sorterFg#
+			,	cast(nullif(#innerIpsu# ,'') as integer)
+			,	cast(nullif(#pltLayerQty#  ,'') as integer)
+			,	cast(nullif(#pltHeightQty#,'') as integer)
+			,	#crsdkFg#	  
+			,	#wUseFg#	   
+			,	cast(nullif(#wInnerIpsu#,'') as integer)  
+			,	#useFg#
+			,	#prodCd#		
+			,	#l1Cd#		 
+			,	#venCd#	   
+			,	CURRENT_TIMESTAMP(0)	   
+			,	#regId#		 		
+			,	#logiCfmFg#	 
+			,	#srcmkCd#
+		)
+	</insert>
+	
+	<!-- SQLINES DEMO ***  임시보관함] -->
+	<delete id="deleteImsiProdLogiBcd"	parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** eteImsiProdLogiBcd */
+		DELETE FROM TPC_LOGI_BCD WHERE PGM_ID = #pgmId# AND SEQ = #seq# AND VARIANT = #variant#
+	</delete>
+	
+	<!-- SQLINES DEMO *** 관함] -->
+	<update id="updateImsiProdLogiBcd"	parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** ateImsiProdLogiBcd */
+		UPDATE TPC_LOGI_BCD	SET 	LOGI_BCD		=	#logiBcd#
+								,	MIX_PROD_FG		=	#mixProdFg#
+								,	LOGI_BOX_IPSU	=	#logiBoxIpsu#	
+								,	WG		   		=	#wg#
+								,	WIDTH			=	#width#	
+								,	LENGTH	   		=	#length#
+								,	HEIGHT	   		=	#height#
+								,	SIZE_UNIT		=	'MM'
+								,	WG_UNIT	  		=	'KG'
+								,	CONVEY_FG		=	#conveyFg#
+								,	SORTER_FG		=	#sorterFg#
+								,	INNER_IPSU   	=	#innerIpsu#
+								,	PLT_LAYER_QTY  	=	#pltLayerQty#
+								,	PLT_HEIGHT_QTY 	=	#pltHeightQty#
+								,	CRSDK_FG	   	=	#crsdkFg#
+								,	W_USE_FG	   	=	#wUseFg#
+								,	W_INNER_IPSU  	=	#wInnerIpsu#
+								,	USE_FG 			=	#useFg#										
+								,	MOD_DATE	   	=	CURRENT_TIMESTAMP(0)
+								,	MOD_ID		 	=	#regId#		
+								,	LOGI_CFM_FG		=	#logiCfmFg#		 			
+	  	WHERE PGM_ID	= #pgmId#					
+		AND SEQ			= #seq#
+		AND VARIANT		= #variant#		
+		AND VEN_CD		= #venCd#					
+	</update>
+	
+	<!-- SQLINES DEMO *** 회에서 물류바코드 수정을 하게 되면 SAP테이블의 확정상태를 심사중으로 수정해준다.]  -->
+	<update id="updateImsiProdLogiBcdSAP"	parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** ateImsiProdLogiBcdSAP */
+		UPDATE TPC_LOGI_BCD_SAP	SET 	LOGI_CFM_FG		=	#logiCfmFg#		 			
+	  	WHERE PGM_ID	= #pgmId#					
+		AND SEQ			= #seq#					
+	</update>
+	
+	
+
+	<select id="selectImsiProdInfoToRFC"	parameterClass="nEDMPRO0220VO"		resultMap="selectImsiProdInfoToRFCMap">
+		/* SQLINES DEMO *** ectImsiProdInfoToRFC  */
+		SELECT 	CASE WHEN B.ONOFF_DIVN_CD = '0' AND B.PROD_ATT_TYP_FG = '01' THEN (SELECT SELL_CD FROM TPC_VAR_ATT WHERE PGM_ID = #pgmId#		AND VARIANT = #variant# 
+LIMIT 1)	/* SQLINES DEMO *** 속성테이블에서 판매코드를 */
+					 WHEN B.ONOFF_DIVN_CD = '0' AND B.PROD_ATT_TYP_FG = '00' THEN B.SELL_CD	/* SQLINES DEMO *** 상품 MASTER 테이블에서 판매코드를 */
+					 ELSE B.SELL_CD	/* SQLINES DEMO ***  테이블에서 판매코드를 */
+				END 									AS SRCMK_CD				/* 판매코드 */ 	
+			,	A.PLT_HEIGHT_QTY						AS PLT_HEIGHT_QTY		/* 높이 박스 수*/
+			,	'02'									AS LOGI_CFM_FG			/* 확정구분 */		
+			,	A.INNER_IPSU							AS INNER_IPSU			/* 가로박스 */
+			,	A.WG									AS WG					/* 총중량 */
+			,	A.HEIGHT								AS HEIGHT				/* 높이 */
+			,	A.VARIANT								AS SEQ					/* SQLINES DEMO *** 등록이 되므로 변형속성값을 SEQ로 준다) */
+			,	A.W_USE_FG								AS W_USE_FG				/* 빅마켓 취급구분 */
+			,	A.PLT_LAYER_QTY							AS PLT_LAYER_QTY		/* 세로박스 */
+			,	A.WIDTH									AS WIDTH				/* 가로 */
+			,	A.SIZE_UNIT								AS SIZE_UNIT			/* 사이즈단위 */
+			,	A.WG_UNIT								AS WG_UNIT				/* 무게단위 */
+			,	A.LOGI_BCD								AS LOGI_BCD				/* 물류바코드 */
+			,	A.SORTER_FG								AS SORTER_FG			/* 소터구분 */
+			,	A.W_INNER_IPSU							AS W_INNER_IPSU			/* 빅마켓 박스수 */
+			,	#cfgFg#									AS CFG_FG			/* 수정구분자 */
+			,	A.CRSDK_FG								AS CRSDK_FG				/* 크로스독 구분 */
+			,	A.PGM_ID								AS PGM_ID				/* 상품코드 */
+			,	A.LENGTH								AS LENGTH				/* 세로 */
+			,	A.CONVEY_FG								AS CONVEY_FG			/* 소터에러구분 */
+		FROM  TPC_LOGI_BCD A	
+			, TPC_NEW_PROD_REG B		
+		WHERE A.PGM_ID = B.PGM_ID 
+		AND A.PGM_ID = #pgmId#
+		AND A.VEN_CD = #venCd#
+		AND A.SEQ = #seq#					   
+		<isNotEmpty property="variant">			
+			AND A.VARIANT = #variant#			
+		</isNotEmpty>	
+	</select>
+	
+	<!-- SQLINES DEMO ***  등록 팝업화면의 기본정보를 보여주기 위해 사용 (규격상품이면서 단일상품일경우)] -->
+	<select id="selectLogiProdBasicInfo_1"	parameterClass="java.util.Map"		resultMap="selectLogiProdBasicInfoMap">
+		/* SQLINES DEMO *** ectLogiProdBasicInfo_1 */
+		SELECT 	A.PGM_ID
+			,	'000'													AS VARIANT		/* SQLINES DEMO *** 변형속성이 없기 때문에 '000' */
+			,	B.PROD_CD
+			,	CASE COALESCE(B.SRCMK_CD, '')   WHEN '' THEN  A.SELL_CD ELSE B.SRCMK_CD END	AS SRCMK_CD
+			,	A.PROD_NM
+			,	TO_CHAR(A.REG_DATE, 'yyyy-mm-dd')						AS REG_DT	
+			,	A.L1_CD													AS L1_CD	 
+			, 	A.PUR_INRCNT_QTY 										AS ORD_IPSU
+			, 	A.ENTP_CD												AS VEN_CD	
+		FROM  TPC_NEW_PROD_REG A
+			 LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B
+		ON A.PGM_ID = B.PGM_ID 
+		WHERE A.PGM_ID = #pgmId#
+		AND A.ENTP_CD = #venCd#
+	</select>
+	
+	
+	<!-- SQLINES DEMO ***  등록 팝업화면의 기본정보를 보여주기 위해 사용 (규격상품이면서 묶음상품일경우)] -->
+	<select id="selectLogiProdBasicInfo_2"	parameterClass="java.util.Map"		resultMap="selectLogiProdBasicInfoMap">
+		/* SQLINES DEMO *** ectLogiProdBasicInfo_2 */
+		SELECT 	T1.PGM_ID
+			,	T1.VARIANT
+			,	T2.PROD_CD
+			,	CASE COALESCE(T2.SRCMK_CD, '')  WHEN '' THEN   T1.SELL_CD ELSE T2.SRCMK_CD END	AS SRCMK_CD	/* SQLINES DEMO *** 에서 판매코드를 확정되기 이전이면 VAR_ATT테이블에서 판매코드를 가져온다. */
+			,	T3.PROD_NM
+			,	T3.REG_DT
+			,	T3.L1_CD
+			,	T3.ORD_IPSU
+			,	T3.VEN_CD
+		FROM  TPC_VAR_ATT T1
+ LEFT OUTER JOIN TPC_VAR_ATT_SAP T2 ON T1.PGM_ID = T2.PGM_ID
+			, (
+					SELECT 	TO_CHAR(A.REG_DATE, 'YYYY-MM-DD')	AS REG_DT		
+						,	A.PROD_NM
+						,	A.L1_CD								AS L1_CD	 
+						, 	A.PUR_INRCNT_QTY 					AS ORD_IPSU
+						, 	A.ENTP_CD							AS VEN_CD
+						,	A.PGM_ID
+					FROM  TPC_NEW_PROD_REG A
+						 LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP B
+					ON A.PGM_ID = B.PGM_ID 
+					WHERE A.PGM_ID = #pgmId#
+					AND A.ENTP_CD = #venCd#
+			  ) T3
+		WHERE T1.PGM_ID = T3.PGM_ID 
+		AND T1.PGM_ID = #pgmId#
+		AND T1.ENTP_CD = #venCd#
+		AND T1.VARIANT = #variant#
+	</select>
+	
+	<!-- SQLINES DEMO *** ss -->
+	<typeAlias alias="NEDMPRO0221VO"	type="com.lottemart.epc.edi.product.model.NEDMPRO0221VO" />
+	<typeAlias alias="NEDMPRO0222VO"   type="com.lottemart.epc.edi.product.model.NEDMPRO0222VO" />
+
+
+<resultMap id="selectBarcodeProductInfoMap"	class="resultClass">
+		<result column="REG_DT"				property="REG_DT" 		/>	<!-- 신규... SQLINES DEMO ***  -->
+		<result column="SRCMK_CD"				property="SRCMK_CD" 			/>	<!-- SE... SQLINES DEMO ***  -->
+		<result column="PROD_CD"			property="PROD_CD" 		/>	<!-- 물류... SQLINES DEMO ***  -->
+		<result column="SHORT_NM"			property="SHORT_NM" 		/>	<!-- 변형... SQLINES DEMO ***  -->
+		<result column="ORD_IPSU"		property="ORD_IPSU" 	/>	<!-- 혼재... SQLINES DEMO ***  -->
+		<result column="L1_CD"		property="L1_CD" 	/>	<!-- 물류... SQLINES DEMO ***  -->
+		<result column="VEN_CD"					property="VEN_CD" 			/>	<!-- 중량... SQLINES DEMO ***  -->
+		<result column="REG_DT_NOW"				property="REG_DT_NOW" 		/>	<!-- 가로... SQLINES DEMO ***  -->
+		<result column="PGM_ID"				property="PGM_ID" 		/>	<!-- 세로... SQLINES DEMO ***  -->
+		<result column="MAX_SEQ"				property="MAX_SEQ" 		/>	<!-- 높이... SQLINES DEMO ***  -->
+	</resultMap>
+	
+	  <select id="selectBarcodeProductInfo" parameterClass="NEDMPRO0221VO" resultMap="selectBarcodeProductInfoMap">
+			/* SQLINES DEMO *** ectBarcodeProductInfo */
+			SELECT 	TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+				,	B.SRCMK_CD
+				,	A.PROD_CD
+				,	B.SHORT_NM
+				,	A.ORD_IPSU
+				,	C.L1_CD
+				,	B.VEN_CD
+				,	TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS REG_DT_NOW
+				,	D.PGM_ID
+				,	LPAD(  cast(cast(COALESCE(D.MAX_SEQ,'0') as numeric)+1 as character varying),3,'0')    AS MAX_SEQ
+			FROM  	SALE_MST	A
+				,	PRODUCT		B
+					LEFT OUTER JOIN (
+										SELECT 	/*+ INDEX(B TPC_LOGI_BCD_SAP_PK) */
+												MAX(A.PGM_ID) AS PGM_ID
+											,	A.VEN_CD
+											,	B.SRCMK_CD
+											,	MAX(A.SEQ) AS MAX_SEQ
+										FROM 	TPC_LOGI_BCD 		A
+											 LEFT OUTER JOIN	TPC_LOGI_BCD_SAP 	B ON A.PGM_ID 	= B.PGM_ID AND	A.SEQ 		= B.SEQ AND	A.LOGI_BCD 	= B.LOGI_BCD
+										WHERE 	1 = 1
+											AND B.SRCMK_CD 	= #searchSrcmkCd#
+											AND A.VEN_CD 	= #searchVenCd#											
+										GROUP BY A.VEN_CD, B.SRCMK_CD
+					) D ON B.SRCMK_CD = D.SRCMK_CD AND B.VEN_CD = D.VEN_CD
+				,	CATEGORY C
+			WHERE 	A.SRCMK_CD 		= B.SRCMK_CD
+				AND B.L3_CD  		= C.CAT_CD
+				AND C.LVL 			= '3'
+				AND A.ORD_ABLE_FG 	= 'X'		/* SQLINES DEMO *** 로 들어 오기 떄문에 'X'로 change by SONG MIN KYO 2016.01.11 */
+				AND B.SRCMK_CD 		= #searchSrcmkCd#
+				AND B.VEN_CD   		= #searchVenCd#
+		</select>
+	   
+	  <!-- SQLINES DEMO *** 회 -->
+	  <select id="selectBarcodeList" parameterClass="NEDMPRO0221VO" resultClass="resultClass">
+		/* SQLINES DEMO *** ectBarcodeList */
+		SELECT	B.*
+		FROM	PRODUCT		A
+			,	(
+					SELECT		-- SQLINES DEMO *** 준 인덱스 사용.
+							COALESCE(B.LOGI_CFM_FG, '02')							AS LOGI_CFM_FG
+						,	CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SRCMK_CD ELSE B.SRCMK_CD END 	AS SRCMK_CD
+						,	A.LOGI_BCD					AS LOGI_BCD
+						,	A.LOGI_BOX_IPSU				AS LOGI_BOX_IPSU
+						,	TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DT
+						,	A.USE_FG				AS USE_FG
+						,	A.WIDTH					AS WIDTH
+						,	A.LENGTH				AS LENGTH
+						,	A.HEIGHT				AS HEIGHT
+						,	A.WG					AS WG
+						,	A.MIX_PROD_FG			AS MIX_PROD_FG
+						,	A.CONVEY_FG				AS CONVEY_FG
+						,	A.SORTER_FG				AS SORTER_FG
+						,	A.INNER_IPSU			AS INNER_IPSU
+						,	A.PLT_LAYER_QTY 		AS PLT_LAYER_QTY
+						,	A.PLT_HEIGHT_QTY 		AS PLT_HEIGHT_QTY
+						,	A.INNER_IPSU * A.PLT_LAYER_QTY * A.PLT_HEIGHT_QTY AS TOTAL_BOX
+						,	A.SEQ 					AS SEQ
+						,	A.PGM_ID
+						,	A.CRSDK_FG
+						,	A.W_USE_FG
+						,	A.W_INNER_IPSU
+						,	A.SIZE_UNIT
+						,	(
+								SELECT	CD_NM AS CODE_NAME
+								FROM 	TPC_CODE
+								WHERE 	MAJOR_CD = 'PRD42'
+									AND MINOR_CD = A.SIZE_UNIT
+							) AS SIZE_UNIT_NAME
+						,	A.WG_UNIT
+						,	(
+								SELECT 	CD_NM AS CODE_NAME
+								FROM 	TPC_CODE
+								WHERE 	MAJOR_CD = 'PRD41'
+									AND MINOR_CD = A.WG_UNIT
+							) AS WG_UNIT_NAME
+						,	A.REG_DATE
+					FROM	TPC_LOGI_BCD 		A
+						 LEFT OUTER JOIN	TPC_LOGI_BCD_SAP	B
+					ON 	A.PGM_ID 		= B.PGM_ID
+						AND A.SEQ 			= B.SEQ
+						AND A.LOGI_BCD		= B.LOGI_BCD
+						WHERE A.VEN_CD		= #searchVenCd# --'04... SQLINES DEMO ***
+						
+				) B
+		WHERE	A.SRCMK_CD		= B.SRCMK_CD
+			AND A.VEN_CD		= #searchVenCd# --'04... SQLINES DEMO ***
+			AND A.SRCMK_CD		= #searchSrcmkCd# --'88... SQLINES DEMO ***
+			
+			AND B.PGM_ID 		NOT IN	(
+									SELECT 	BB.PGM_ID
+									FROM	TPC_NEW_PROD_REG 		AA
+										 LEFT OUTER JOIN	TPC_NEW_PROD_REG_SAP	BB
+									ON	AA.PGM_ID = BB.PGM_ID
+										WHERE AA.PGM_ID = B.PGM_ID
+										AND (BB.CFM_FG <![CDATA[<>]]> '3' OR BB.CFM_FG IS NULL)
+								)
+		ORDER BY B.REG_DT DESC
+	</select>
+	
+	<!-- SQLINES DEMO *** 생성해야함. -->
+	<select id="selectPgmId"  resultClass="String">
+		/* SQLINES DEMO *** ectPgmId */
+		SELECT CONCAT(TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),LPAD(NEXTVAL('SQ_NEW_PROD_CD')::text, 11 ,0::text)) 
+	</select>
+	
+
+	<!-- SQLINES DEMO *** tNewBarcode" parameterClass="NEDMPRO0222VO"> -->
+	<insert id="insertNewBarcode" parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** ertNewBarcode */
+		INSERT INTO TPC_LOGI_BCD
+		(
+				PGM_ID
+			,	SEQ
+			,	LOGI_BCD
+			,	MIX_PROD_FG
+			,	LOGI_BOX_IPSU
+			,	WG
+			,	WIDTH
+			,	LENGTH
+			,	HEIGHT
+			,	SIZE_UNIT
+			,	WG_UNIT
+			,	CONVEY_FG
+			,	SORTER_FG
+			,	INNER_IPSU
+			,	PLT_LAYER_QTY
+			,	PLT_HEIGHT_QTY
+			,	CRSDK_FG
+			,	W_USE_FG
+			,	W_INNER_IPSU
+			,	USE_FG
+			,	PROD_CD
+			,	L1_CD
+			,	VEN_CD
+			,	REG_DATE
+			,	REG_ID
+			,	SRCMK_CD
+		)
+		VALUES
+		(		
+			  	#pgmId#
+			,	#seq#
+			,	#logiBcd#
+			,	#mixProdFg#
+			,	cast(nullif(#logiBoxIpsu# ,'') as integer)
+			,	cast(nullif(#wg# ,'') as integer)	 
+			,	cast(nullif(#width#  ,'') as integer)	 
+			,	cast(nullif(#length# ,'') as integer)	 
+			,	cast(nullif(#height# ,'') as integer)	 
+			,	'MM'
+			,	'KG'
+			,	#conveyFg#
+			,	#sorterFg#
+			,	cast(nullif(#innerIpsu# ,'') as integer)	 
+			,	cast(nullif(#pltLayerQty# ,'') as integer)
+			,	cast(nullif(#pltHeightQty# ,'') as integer)
+			,	#crsdkFg#
+			,	#wUseFg#
+			,	cast(nullif(#wInnerIpsu# ,'') as integer)	 
+			,	#useFg#
+			,	#prodCd#
+			,	#l1Cd#
+			,	#venCd#
+			,	CURRENT_TIMESTAMP(0)
+			,	#regId#
+			, 	#srcmkCd#
+		)	
+	</insert>
+	
+
+	<!-- SQLINES DEMO *** eNewBarcode" parameterClass="NEDMPRO0222VO"> -->
+	<update id="updateNewBarcode" parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** ateNewBarcode */
+		UPDATE 	TPC_LOGI_BCD
+		SET		MIX_PROD_FG 		= #mixProdFg#
+			,	LOGI_BCD 			= #logiBcd#
+			,	LOGI_BOX_IPSU 		= #logiBoxIpsu#
+			,	WG 					= #wg#
+			,	WIDTH 				= #width#
+			,	LENGTH 				= #length#
+			,	HEIGHT 				= #height#
+			,	SIZE_UNIT 			= 'mm'
+			,	WG_UNIT 			= 'KG'
+			,	CONVEY_FG 			= #conveyFg#
+			,	SORTER_FG 			= #sorterFg#
+			,	INNER_IPSU 			= #innerIpsu#
+			,	PLT_LAYER_QTY 		= #pltLayerQty#
+			,	PLT_HEIGHT_QTY 		= #pltHeightQty#
+			,	CRSDK_FG 			= #crsdkFg#
+			,	W_USE_FG 			= #wUseFg#
+			,	W_INNER_IPSU 		= #wInnerIpsu#
+			,	USE_FG 				= #useFg#
+			,	PROD_CD 			= #prodCd#
+			,	L1_CD 				= #l1Cd#
+			,	VEN_CD 				= #venCd#
+			,	MOD_DATE 			= CURRENT_TIMESTAMP(0)
+			,	MOD_ID 				= #regId#
+			,	SRCMK_CD 			= #srcmkCd#
+		WHERE 	PGM_ID 				= #pgmId#
+			AND SEQ 				= #seq#
+			AND LOGI_BCD			= #logiBcd#
+	</update>
+	
+
+	<!-- SQLINES DEMO *** eNewBarcodeSap" parameterClass="NEDMPRO0222VO"> -->
+	<update id="updateNewBarcodeSap" parameterClass="nEDMPRO0220VO">
+		/* SQLINES DEMO *** ateNewBarcodeSap */
+		UPDATE 	TPC_LOGI_BCD_SAP
+		SET		LOGI_CFM_FG = '02'
+		WHERE 	PGM_ID 		= #pgmId#
+			AND SEQ 		= #seq#
+			AND LOGI_BCD	= #logiBcd#
+	</update>
+	
+
+	<!-- SQLINES DEMO *** tProdInfoToRFC"	parameterClass="NEDMPRO0221VO"		resultClass="resultClass"> -->
+	<select id="selectProdInfoToRFC"	parameterClass="nEDMPRO0220VO"		resultClass="resultClass">
+		/* SQLINES DEMO *** ectProdInfoToRFC */
+		SELECT	/*+ INDEX(A TPC_LOGI_BCD_PK) */
+					A.PLT_HEIGHT_QTY						AS PLT_HEIGHT_QTY		/* 높이 박스 수*/
+				,	'02'									AS LOGI_CFM_FG			/* 확정구분 */
+				,	A.INNER_IPSU							AS INNER_IPSU			/* 가로박스 */
+				,	A.WG									AS WG					/* 총중량 */
+				,	A.HEIGHT								AS HEIGHT				/* 높이 */
+				,	A.SEQ									AS SEQ					/* 순번(기존상품은 000 고정) */
+				,	A.W_USE_FG								AS W_USE_FG				/* 빅마켓 취급구분 */
+				,	A.PLT_LAYER_QTY							AS PLT_LAYER_QTY		/* 세로박스 */
+				,	A.WIDTH									AS WIDTH				/* 가로 */
+				,	A.SIZE_UNIT								AS SIZE_UNIT			/* 사이즈단위 */
+				,	A.WG_UNIT								AS WG_UNIT				/* 무게단위 */
+				,	A.LOGI_BCD								AS LOGI_BCD				/* 물류바코드 */
+				,	A.SORTER_FG								AS SORTER_FG			/* 소터구분 */
+				,	A.W_INNER_IPSU							AS W_INNER_IPSU			/* 빅마켓 박스수 */
+				,	CASE  WHEN A.MOD_ID IS NULL THEN 'I' ELSE 'U' END			AS CFG_FG				/* 수정구분자 */
+				,	A.CRSDK_FG								AS CRSDK_FG				/* 크로스독 구분 */
+				,	A.PGM_ID								AS PGM_ID				/* 상품코드 */
+				,	A.LENGTH								AS LENGTH				/* 세로 */
+				,	A.CONVEY_FG								AS CONVEY_FG			/* 소터에러구분 */
+				,	CASE   WHEN B.SRCMK_CD IS NULL THEN  A.SRCMK_CD ELSE B.SRCMK_CD END AS SRCMK_CD	/* 판매코드 */
+			FROM	TPC_LOGI_BCD 		A
+				 LEFT OUTER JOIN	TPC_LOGI_BCD_SAP	B
+			ON 	A.PGM_ID 	= B.PGM_ID
+				AND A.SEQ 		= B.SEQ
+				AND A.LOGI_BCD	= B.LOGI_BCD
+				WHERE A.PGM_ID	= #pgmId#
+				AND A.SEQ		= #seq#
+				AND A.LOGI_BCD	= #logiBcd#
+				<!-- SQLINES DEMO *** venCd#
+				AND A.SRCMK_CD	= #srcmkCd#
+				AND A.LOGI_BCD	= #logiBcd# -->
+				AND A.SRCMK_CD 	!= '8801051215465'
+	</select>
+	
+	<!-- SQLINES DEMO *** 형속성의 명칭을 가져오기 위해 추가 2016.05.09 by song min kyo -->
+	<select id="selectVarAttNmInfo"		parameterClass="java.util.Map"		resultClass="String">
+		/* SQLINES DEMO *** ectVarAttNmInfo */	
+		SELECT 	STRING_AGG(CONCAT(B.ATT_GRP_NM , ':' , '[' , B.ATT_DETAIL_NM , ']'),',' ORDER BY B.ATT_GRP_NM) AS ATT_NM							
+		FROM TPC_VAR_ATT A
+			 LEFT OUTER JOIN PROD_ATT_CD B
+		ON A.L3_CD = B.PROD_RANGE
+		AND A.ATT_CD = B.ATT_GRP_CD
+		AND A.ATT_VALUE = B.ATT_DETAIL_CD
+		AND A.CLASS = B.CLASS
+		WHERE A.PGM_ID = #pgmId#
+		AND A.VARIANT = #variant#
+		GROUP BY A.PGM_ID, A.VARIANT	
+	</select>  
+</sqlMap>	

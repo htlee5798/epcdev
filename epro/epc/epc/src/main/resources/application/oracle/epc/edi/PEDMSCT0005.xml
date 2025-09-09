@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0005">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<typeAlias alias="stringClass"	type="String" />
+
+
+<!-- 협력업체코드 조회 -->
+<select id="TSC_VENDOR-SELECT01" parameterClass="map"  resultClass="resultClass">
+	SELECT VENDOR_ID
+	
+	FROM TVE_VENDOR
+	
+	WHERE CONO=#ajax_bman#
+</select>
+
+<!-- 협력업체코드 CKD-->
+<select id="TSC_VENDOR-SELECT02" parameterClass="map"  resultClass="resultClass">
+	SELECT VENDOR_ID
+	
+	FROM TED_SUB_SERVICE_USER
+	
+	WHERE BMAN_NO=#ajax_bman#
+	  AND SVC_SEQ=#ajax_seq#
+	  AND ANX_INFO_CD = #ajax_up_anx#
+</select>
+
+<!-- 알리미 페이지 조회 -->
+<select id="TSC_ALERT_PAGE-SELECT01" parameterClass="map"  resultClass="resultClass">
+/* PEDMSCT0005.TSC_ALERT_PAGE-SELECT01 */
+	SELECT  ANX_INFO_CD, 
+			BMAN_NO,
+			SVC_SEQ,
+			RTRIM(SUBSTR(TELNO,1,4))||'-'||RTRIM(SUBSTR(TELNO,5,4))||'-'||SUBSTR(TELNO,9) AS TELNO_NM,
+			TELNO,
+			EMAIL,
+			REG_DATE
+ 
+ 	FROM  TED_ID_SUB_SERVICE
+ 	
+ 	WHERE 
+
+	<isNotEqual property="sele_bman" compareValue="all">
+		<isNotEmpty  property="sele_bman"  prepend=""> 
+		    	BMAN_NO = #sele_bman#
+	    </isNotEmpty>
+	</isNotEqual>
+    
+     <isEqual property="sele_bman"  compareValue="all"> 
+	   <isNotEmpty  property="bmans"> 
+	      <iterate prepend="BMAN_NO IN " property="bmans" open="(" close=")" conjunction=","> 
+	        #bmans[]# 
+	      </iterate> 
+       </isNotEmpty>
+    </isEqual>
+ 	
+ 	<isNotNull property="sele_service_main">
+		<isNotEqual property="sele_service_main" compareValue="all" prepend="AND">	
+		     	ANX_INFO_CD = #sele_service_main#
+		</isNotEqual>
+ 	</isNotNull>
+  	ORDER BY REG_DATE DESC
+</select>
+
+<!-- 이메일 등록 유/무 -->
+<select id="TSC_EMAIL_CK_AJAX-SELECT01" resultClass="integer" parameterClass="map">
+	SELECT COUNT(*)   FROM TED_ID_SUB_SERVICE
+	WHERE ANX_INFO_CD = #ajax_service#
+	  AND BMAN_NO = #ajax_bman_no#
+	  AND EMAIL = #ajax_email#
+</select>
+
+<!-- 이메일 수정   유/무  -->
+<select id="TSC_EMAIL_CK_AJAX-SELECT02" resultClass="integer" parameterClass="map">
+	SELECT COUNT(*)   FROM TED_ID_SUB_SERVICE
+	WHERE ANX_INFO_CD = #ajax_service#
+	  AND BMAN_NO = #ajax_bman#
+	  AND EMAIL = #ajax_email#
+	  AND EMAIL NOT IN(#ajax_ck_email#)
+	  AND ANX_INFO_CD = #ajax_up_anx#
+</select>
+
+<!-- 핸드폰 등록 유/무 -->
+<select id="TSC_CELL_CK_AJAX-SELECT01" resultClass="integer" parameterClass="map">
+	SELECT COUNT(*)   FROM TED_ID_SUB_SERVICE
+	WHERE TELNO = rpad(#ajax_cell1#,4,' ')||rpad(#ajax_cell2#,4,' ')||rpad(#ajax_cell3#,4,' ')
+	  AND BMAN_NO = #ajax_bman_no#
+	  AND ANX_INFO_CD = #ajax_service#
+</select>
+
+<!-- 핸드폰 수정 유/무 -->
+<select id="TSC_CELL_CK_AJAX-SELECT02" resultClass="integer" parameterClass="map">
+	SELECT COUNT(*)   FROM TED_ID_SUB_SERVICE
+	WHERE TELNO = rpad(#ajax_cell1#,4,' ')||rpad(#ajax_cell2#,4,' ')||rpad(#ajax_cell3#,4,' ')
+	  AND TELNO NOT IN (rpad(#ajax_ck_cell1#,4,' ')||rpad(#ajax_ck_cell2#,4,' ')||rpad(#ajax_ck_cell3#,4,' '))
+	  AND ANX_INFO_CD = #ajax_up_anx#
+</select>
+
+
+<!-- 알리미 서비스 ID 등록 -->
+<insert id="TSC_ALERT_PAGE_ID-INSERT01" parameterClass="map">
+ 	 INSERT INTO TED_ID_SUB_SERVICE 
+ 	 (
+ 	 	ANX_INFO_CD,
+ 	 	BMAN_NO,
+ 	 	SVC_SEQ,
+ 	 	TELNO,
+ 	 	EMAIL,
+ 	 	START_DATE,
+ 	 	END_DT,
+ 	 	BSIS_AMT_INFO_CONTENT,
+ 	 	SEND_DATE1,
+ 	 	SEND_DATE2,
+ 	 	SEND_DATE3,
+ 	 	REG_ID,
+ 	 	REG_DATE,
+ 	 	MOD_ID,
+ 	 	MOD_DATE
+ 	 )
+ 	 VALUES
+ 	 (
+ 	 	#sele_service#,
+ 	 	#sele_bman#,
+ 	 	#seq#,
+ 	 	rpad(#cell1#,4,' ')||rpad(#cell2#,4,' ')||rpad(#cell3#,4,' '),
+ 	 	#email#,
+ 	 	TO_CHAR(CURRENT_TIMESTAMP(0),'yyyyMMdd'),
+ 	 	NULL,
+ 	 	(select BSIS_AMT_INFO_CONTENT FROM TED_SUB_SERVICE_MAST WHERE ANX_INFO_CD = #sele_service#),
+ 	 	'15',
+ 	 	'15',
+ 	 	'15',
+ 	 	#loginId#,
+ 	 	CURRENT_TIMESTAMP(0),
+ 	 	'',
+ 	 	''
+	)
+</insert>
+
+<!-- Max Seq -->
+<select id="ALERT_ID_SEQ-SELECT01" resultClass="String" parameterClass="map">
+	SELECT NVL(MAX(SVC_SEQ),0)+1 AS SVC_SEQ   FROM TED_ID_SUB_SERVICE
+	WHERE ANX_INFO_CD = #sele_service#
+	  AND BMAN_NO = #sele_bman#
+</select>
+
+<!-- 알리미 서비스 USER 등록 -->
+<insert id="TSC_ALERT_PAGE_USER-INSERT01" parameterClass="map">
+ 	 INSERT INTO TED_SUB_SERVICE_USER 
+ 	 (
+ 	 	ANX_INFO_CD,
+ 	 	BMAN_NO,
+ 	 	SVC_SEQ,
+ 	 	VENDOR_ID,
+ 	 	REG_DIVN_CD,
+ 	 	REG_ID,
+ 	 	REG_DATE,
+ 	 	MOD_ID,
+ 	 	MOD_DATE
+ 	 )
+ 	 VALUES
+ 	 (
+ 	 	#sele_service#,
+ 	 	#sele_bman#,
+ 	 	#seq#,
+ 	 	#ven#,
+ 	 	'L', -- Session Value
+ 	 	#loginId#,
+ 	 	TO_CHAR(CURRENT_TIMESTAMP(0),'yyyyMMdd'),
+ 	 	'',
+ 	 	''
+ 	 )
+</insert>
+
+<!-- 알리미 수정 조회 -->
+<select id="TSC_ALERT_UPDATE_PAGE-SELECT01" parameterClass="map"  resultClass="resultClass">
+	SELECT   BMAN_NO
+			,ANX_INFO_CD
+			,EMAIL
+			,SVC_SEQ
+			,RTRIM(SUBSTR(TELNO,1,4)) AS TEL_NO1
+            ,RTRIM(SUBSTR(TELNO,5,4)) AS TEL_NO2
+            ,SUBSTR(TELNO,9)  AS TEL_NO3
+            ,TELNO
+	
+	FROM    TED_ID_SUB_SERVICE
+	
+	WHERE 	BMAN_NO=#up_bman#
+      AND	SVC_SEQ=#seq_no#
+      AND   ANX_INFO_CD=#up_anx#
+</select>
+
+<!-- 알리미 서비스 ID 수정 -->
+<update id="TSC_ALERT_PAGE_ID-UPDATE01" parameterClass="map">
+	 UPDATE TED_ID_SUB_SERVICE
+	    SET ANX_INFO_CD = #sele_service#, 
+	    	BMAN_NO = #sele_bman#,
+	    	TELNO = rpad(#cell1#,4,' ')||rpad(#cell2#,4,' ')||rpad(#cell3#,4,' '),
+	    	EMAIL = #email#,
+	    	MOD_ID = #loginId#,
+	    	MOD_DATE = CURRENT_TIMESTAMP(0),
+	    	BSIS_AMT_INFO_CONTENT = (SELECT BSIS_AMT_INFO_CONTENT FROM TED_SUB_SERVICE_MAST WHERE ANX_INFO_CD=#sele_service#)
+	 WHERE  SVC_SEQ = #seq_no#
+	   AND 	BMAN_NO = #up_bman#
+	   AND  ANX_INFO_CD = #up_anx#
+</update>
+
+<delete id="TSC_ALERT_PAGE_ID-DELETE01" parameterClass="map">
+	DELETE FROM TED_ID_SUB_SERVICE
+	WHERE  SVC_SEQ = #seq_no#
+  	  AND  BMAN_NO = #up_bman#
+ 	  AND  ANX_INFO_CD = #up_anx#
+</delete>
+
+<delete id="TSC_ALERT_PAGE_USER-DELETE01" parameterClass="map">
+	DELETE FROM TED_SUB_SERVICE_USER
+	WHERE  SVC_SEQ = #seq_no#
+	  AND  BMAN_NO = #up_bman#
+	  AND  ANX_INFO_CD = #up_anx#
+</delete>
+
+
+</sqlMap>

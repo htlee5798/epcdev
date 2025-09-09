@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscpbrd0009">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="pscpbrd0009SearchVO" type="com.lottemart.epc.board.model.PSCPBRD0009SaveVO"/>
+
+	<!-- 게시글 리스트  -->
+	<insert id="insertCallCenterPopupp">
+	<![CDATA[
+        /* pscpbrd0009.insertCallCenterPopupp */
+        INSERT INTO TOR_COUNSEL 
+        (
+            COUNSEL_SEQ
+          , UP_COUNSEL_SEQ
+          , LIST_SEQ
+          , TITLE
+          , CONTENT
+          , MEMO
+          
+          , SCRP_KIND_CD
+          , WRTR_DIVN_CD
+          , MEMBER_NO
+          , MEMBER_NM
+          , DEL_YN
+          , ORDER_ID
+          
+          , CLM_LGRP_CD
+          , CLM_MGRP_CD
+          , BOARD_PRGS_STS_CD
+          , TEL_NO
+          , CELL_NO
+          , EMAIL
+          
+          , SMS_DSP_YN
+          , ANS_SMS_RECV_YN
+          , WRT_DY
+          , PBL_YN
+          , EMAIL_SND_YN
+          , ANS_EMAIL_RECV_YN
+          
+          , QSTN_OBJECT_CD_STR_CD
+          , ACCEPT_LOCA_CD
+          , ACCEPT_ID
+          , DICMF_DECLARE_YN
+          
+          , REG_DATE
+          , REG_ID
+          , MOD_DATE
+          , MOD_ID
+        )
+        VALUES
+        (
+            LPAD(SQ_COUNSEL_SEQ_SEQ.NEXTVAL, 12, 0)
+          , LPAD(SQ_COUNSEL_SEQ_SEQ.CURRVAL, 12, 0)
+          , LPAD(SQ_COUNSEL_SEQ_SEQ.CURRVAL, 12, 0)|| '~'
+          , #title#
+          , #content#
+          , ''
+          
+          , 'Q'
+          , '02'
+          , '' --customerID
+          , '' --customerName                                      
+          , 'N'
+          , #orderId#
+          
+          , #typeBig# --counselMainCode
+          , #typeSmall# --counselSubCode
+          , '1'
+          , ''
+          , #cellNo#
+          , #email#
+          
+          , ''
+          , #smsDspYn#
+          , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+          , 'Y'
+          , 'Y'
+          , 'Y'
+          
+          , '981' --storeCode
+          , '5'
+          , (SELECT ADMIN_ID FROM TAD_ADMIN WHERE LOGIN_ID = 'scmagent')
+          , 'Y'
+          
+          , CURRENT_TIMESTAMP(0)
+          , #vendorId#
+          , CURRENT_TIMESTAMP(0)
+          , #vendorId#
+        )
+	]]>
+	</insert>
+	
+</sqlMap>

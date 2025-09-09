@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMORD0002">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmord0002VO" type="com.lottemart.epc.order.model.PSCMORD0002VO"/>
+
+	<sql id="pre-page-frag">
+	SELECT * 
+	  FROM ( SELECT SELECT_BOS.* 
+	              , CEIL( ROWNUM / #rowsPerPage# ) PAGEINDEX
+	              , COUNT(1) OVER() TOTAL_COUNT 
+	           FROM ( 
+	</sql>
+	<sql id="post-page-frag">
+	                 ) SELECT_BOS
+	        ) 
+	 WHERE PAGEINDEX = #currentPage#
+	</sql>
+
+	<select id="selectProductSaleSumList" resultClass="dataMap" parameterClass="pscmord0002VO">
+	<include refid="pre-page-frag"/> 
+	/* PSCMORD0002.selectProductSaleSumList */
+	SELECT X.PROD_CD, X.PROD_NM
+	     , SUM(X.LOCAL_ORDER)LOCAL_CNT
+	     , SUM(X.HOLI_ORDER)HOLI_CNT
+	     , SUM(X.LOCAL_AMT)LOCAL_AMT
+	     , SUM(X.HOLI_AMT)HOLI_AMT
+	     , D.L1_NM
+	     , D.L2_NM
+	     , X.REP_PROD_CD
+	  FROM (SELECT $sqlVal$
+	               A.MOD_DATE,A.CATEGORY_ID, B.PROD_CD, B.PROD_NM, A.TOT_SELL_AMT, B.VENDOR_ID, A.ORDER_ID
+	             , DECODE(O.ORD_RTN_DIVN_CD,'10',A.ORD_QTY,0)LOCAL_ORDER
+	             , DECODE(O.ORD_RTN_DIVN_CD,'11',A.ORD_QTY,0)HOLI_ORDER
+	             , DECODE(O.ORD_RTN_DIVN_CD,'10',A.TOT_SELL_AMT,0)LOCAL_AMT
+	             , DECODE(O.ORD_RTN_DIVN_CD,'11',A.TOT_SELL_AMT,0)HOLI_AMT
+	             , B.CAT_CD
+	             , B.REP_PROD_CD
+	          FROM TOR_ORDER O, TOR_ORDER_ITEM A, TPR_PRODUCT B
+	         WHERE O.ORDER_ID = A.ORDER_ID
+	           AND A.PROD_CD = B.PROD_CD
+	        <isNotEmpty property="prodCd">
+	            <isEqual property="prodFlag" compareValue="1"> <!-- 인터넷상품코드 -->
+	           AND B.PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+	            </isEqual>
+	            <isEqual property="prodFlag" compareValue="2"> <!-- 상품코드 -->
+	           AND B.MD_PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+	            </isEqual>
+	            <isEqual property="prodFlag" compareValue="3"> <!-- 판매코드 -->
+	           AND B.MD_SRCMK_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+	            </isEqual>
+	            <isEqual property="prodFlag" compareValue="4"> <!-- 상품명 -->
+	           AND B.PROD_NM LIKE '%' || #prodCd# || '%'
+	            </isEqual>
+	        </isNotEmpty>
+	        <isNotEmpty property="categoryId">
+	           AND EXISTS (SELECT PROD_CD
+	                         FROM TCA_CATEGORY_ASSIGN
+	                        WHERE CATEGORY_ID like #categoryId#||'%'
+	                          AND PROD_CD = A.PROD_CD )
+	         </isNotEmpty>
+	            <isNotEmpty property="vendorId">
+	           AND (0, B.VENDOR_ID) <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0, #vendorId[]# ) </iterate>
+	            </isNotEmpty>
+	           AND O.ORD_STS_CD = '11'
+	           AND O.LST_SALE_CFM_DATE BETWEEN #fromDate#||'000000' AND #toDate#||'235959'
+	           ) X, V_CA_MD_CATEGORY D
+	    WHERE X.CAT_CD = D.L3_CD
+	    GROUP BY X.PROD_CD, X.PROD_NM,D.L1_NM,D.L2_NM,X.REP_PROD_CD
+	    ORDER BY D.L1_NM,D.L2_NM
+	<include refid="post-page-frag" />
+	</select>
+
+	<select id="selectProductSaleSumListExcel" resultClass="dataMap" parameterClass="pscmord0002VO">
+	/* PSCMORD0002.selectProductSaleSumListExcel */
+	SELECT X.PROD_CD, X.PROD_NM
+	     , SUM(X.LOCAL_ORDER)LOCAL_CNT
+	     , SUM(X.HOLI_ORDER)HOLI_CNT
+	     , SUM(X.LOCAL_AMT)LOCAL_AMT
+	     , SUM(X.HOLI_AMT)HOLI_AMT
+	     , D.L1_NM
+	     , D.L2_NM
+	     , X.REP_PROD_CD
+	  FROM (SELECT $sqlVal$
+	               A.MOD_DATE,A.CATEGORY_ID, B.PROD_CD, B.PROD_NM, A.TOT_SELL_AMT, B.VENDOR_ID, A.ORDER_ID
+	             , DECODE(O.ORD_RTN_DIVN_CD,'10',A.ORD_QTY,0)LOCAL_ORDER
+	             , DECODE(O.ORD_RTN_DIVN_CD,'11',A.ORD_QTY,0)HOLI_ORDER
+	             , DECODE(O.ORD_RTN_DIVN_CD,'10',A.TOT_SELL_AMT,0)LOCAL_AMT
+	             , DECODE(O.ORD_RTN_DIVN_CD,'11',A.TOT_SELL_AMT,0)HOLI_AMT
+	             , B.CAT_CD
+	             , B.REP_PROD_CD
+	          FROM TOR_ORDER O, TOR_ORDER_ITEM A, TPR_PRODUCT B
+	         WHERE O.ORDER_ID = A.ORDER_ID
+	           AND A.PROD_CD = B.PROD_CD
+	        <isNotEmpty property="prodCd">
+	            <isEqual property="prodFlag" compareValue="1"> <!-- 인터넷상품코드 -->
+	           AND B.PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+	            </isEqual>
+	            <isEqual property="prodFlag" compareValue="2"> <!-- 상품코드 -->
+	           AND B.MD_PROD_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+	            </isEqual>
+	            <isEqual property="prodFlag" compareValue="3"> <!-- 판매코드 -->
+	           AND B.MD_SRCMK_CD <iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> #prodCdArr[]# </iterate>
+	            </isEqual>
+	            <isEqual property="prodFlag" compareValue="4"> <!-- 상품명 -->
+	           AND B.PROD_NM LIKE '%' || #prodCd# || '%'
+	            </isEqual>
+	        </isNotEmpty>
+	        <isNotEmpty property="categoryId">
+	           AND EXISTS ( SELECT  PROD_CD 
+	                          FROM TCA_CATEGORY_ASSIGN
+	                         WHERE CATEGORY_ID like #categoryId#||'%'
+	                           AND PROD_CD = A.PROD_CD )
+	        </isNotEmpty>
+	        <isNotEmpty property="vendorId">
+	           AND (0, B.VENDOR_ID) <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0, #vendorId[]# ) </iterate>
+	        </isNotEmpty>
+	           AND O.ORD_STS_CD = '11'
+	           AND O.LST_SALE_CFM_DATE BETWEEN #fromDate#||'000000' AND #toDate#||'235959'
+	           ) X,  V_CA_MD_CATEGORY D
+	    WHERE X.CAT_CD = D.L3_CD 
+	    GROUP BY  X.PROD_CD, X.PROD_NM,D.L1_NM,D.L2_NM,X.REP_PROD_CD
+	    ORDER BY D.L1_NM,D.L2_NM
+	</select>
+</sqlMap>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0180">
+	<typeAlias alias="nedmpro0180vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0180VO" />
+
+	<resultMap id="pbProdReportFile" class="NEDMPRO0180vo">
+		<result column="PROD_CD"			property="prodCd"				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="SRC_FILE_NM"		property="srcFileNm" 			/>	<!-- 저장... SQLINES DEMO *** -->
+		<result column="UPLOAD_DT"			property="uploadDt" 			/>	<!-- 업로... SQLINES DEMO *** -->
+		<result column="EXPIRE_DT"			property="expireDt" 			/>	<!-- 만료... SQLINES DEMO *** -->
+		<result column="SEQ"	    		property="seq" 					/>	<!-- 순번... SQLINES DEMO *** -->
+		<result column="REG_DT"				property="regDt" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="REG_ID"				property="regId" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="MOD_DT"				property="modDt" 				/>	<!-- 수정... SQLINES DEMO *** -->
+		<result column="MOD_ID"				property="modId" 				/>	<!-- 수정... SQLINES DEMO *** -->
+	</resultMap>	
+	
+	<resultMap id="pbProdReportSeq" class="NEDMPRO0180vo">
+		<result column="PROD_CD"			property="prodCd"				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="SEQ"		  	    property="seq" 				    />	<!-- 상품... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<resultMap id="pbProdReportInfoForList" class="NEDMPRO0180vo">
+		<result column="PROD_CD"			property="prodCd"				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_NM"			property="prodNm" 				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="UPLOAD_DT"			property="uploadDt" 			/>	<!-- 업로... SQLINES DEMO *** -->
+		<result column="EXPIRE_DT"			property="expireDt" 			/>	<!-- 만료... SQLINES DEMO *** -->
+		<result column="SEQ"				property="seq" 					/>	<!-- 순번... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<resultMap id="pbProdReportInfo" class="NEDMPRO0180vo">
+		<result column="PROD_CD"			property="prodCd"				/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="SRC_FILE_NM"		property="srcFileNm" 			/>	<!-- 저장... SQLINES DEMO *** -->
+		<result column="SERVER_FILE_NM"		property="serverFileNm" 		/>	<!-- 서버... SQLINES DEMO *** -->
+		<result column="UPLOAD_DT"			property="uploadDt" 			/>	<!-- 업로... SQLINES DEMO *** -->
+		<result column="EXPIRE_DT"			property="expireDt" 			/>	<!-- 만료... SQLINES DEMO *** -->
+		<result column="PROD_TYPE"			property="prodType" 			/>	<!-- 업로... SQLINES DEMO *** -->
+		<result column="PROD_TYPE_NAME"	    property="prodTypeName" 		/>	<!-- 만료... SQLINES DEMO *** -->
+		<result column="SEQ"	    		property="seq" 					/>	<!-- 순번... SQLINES DEMO *** -->
+		<result column="REG_DT"				property="regDt" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="REG_ID"				property="regId" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="MOD_DT"				property="modDt" 				/>	<!-- 수정... SQLINES DEMO *** -->
+		<result column="MOD_ID"				property="modId" 				/>	<!-- 수정... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<resultMap id="entpCdNotValidReport" class="java.util.HashMap">
+		<result column="ENTP_CD"			 property="entpCd"				/>	<!-- 협력... SQLINES DEMO *** -->
+		<result column="ENTP_NM"			 property="entpNm"				/>	<!-- 협력... SQLINES DEMO *** -->
+		<result column="CNT_NOTVALID_REPORT" property="cntNotValidReport"   />	<!-- 유효... SQLINES DEMO *** -->
+		<result column="CNT_TOTAL_REPORT"    property="cntTotalReport"      />	<!-- 총 ... SQLINES DEMO *** -->
+		<result column="CNT_VALID_REPORT"    property="cntValidReport"      />	<!-- 유효... SQLINES DEMO *** -->
+		<result column="LAST_REG_DT"         property="lastRegDt"           />	<!-- 마지... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- PB... SQLINES DEMO *** -->
+	<select id="selectPbProdList" resultMap="pbProdReportInfoForList" parameterClass="nedmpro0180vo">
+		/* SQLINES DEMO *** ectPbProdList */
+		SELECT 
+		    PRD.PROD_CD
+		  , PRD.PROD_NM
+		  , TRP.UPLOAD_DT
+		  , TRP.EXPIRE_DT
+	      , TRP.SEQ
+		FROM 
+		    PRODUCT PRD 
+		    INNER JOIN (
+		        SELECT L3_CD
+		        FROM 
+		            TPC_L1_CD
+		        WHERE 
+		            TEAM_CD IN (
+		                SELECT 
+		                    TEAM_CD
+		                FROM 
+		                    TPC_REPORT_PBPROD_TEAM
+		                WHERE
+		                    TEAM_NM NOT LIKE '%ADMIN%' 
+		            )
+		        GROUP BY L3_CD
+		    ) L1CD
+		        ON PRD.PROD_TYP_FG = '2' 
+		        AND PRD.PROD_STATUS = '01' 
+		        AND PRD.L3_CD = L1CD.L3_CD 
+		    LEFT OUTER JOIN ( 
+		        SELECT *
+			    FROM 
+			        TPC_REPORT_PBPROD
+		        WHERE 
+		            (PROD_CD,SEQ) IN (
+		                SELECT 
+			                PROD_CD, MAX(CAST(SEQ AS FLOAT))
+			            FROM 
+			                TPC_REPORT_PBPROD
+			            GROUP BY 
+			                PROD_CD
+			       )
+			    AND CHG_FG != 'D'
+		    ) TRP
+		        ON PRD.PROD_CD = TRP.PROD_CD
+		WHERE 
+		<isEmpty property="entpCd">
+	      <isNotEmpty property="entpCds" >
+	        <iterate prepend="PRD.VEN_CD IN " property="entpCds" open="(" close=")" conjunction=",">
+	           #entpCds[]#
+		    </iterate>
+		  </isNotEmpty>
+		</isEmpty>
+		<isNotEmpty  property="entpCd" >
+		  PRD.VEN_CD = #entpCd#
+		</isNotEmpty>
+		ORDER BY PRD.PROD_CD
+	</select>
+	
+	<!-- SQLINES DEMO ***  -->
+	<select id="selectAdminDeptPbReport" resultClass="String" parameterClass="String">
+	    SELECT
+	        DEPT_CD 
+	    FROM
+	        TPC_REPORT_PBPROD_TEAM TRPT
+	        INNER JOIN
+	        TAD_ADMIN TA
+	            ON TA.LOGIN_ID = #adminId#
+	           AND TA.DEPT_CD = TRPT.TEAM_CD
+	    WHERE 
+	        TRPT.TEAM_NM LIKE '%ADMIN%'
+	</select>
+	
+	<!-- PB... SQLINES DEMO *** -->
+	<select id="selectPbProdReportInfo" resultMap="pbProdReportInfo" parameterClass="nedmpro0180vo">
+		/* SQLINES DEMO *** ectPbProdReportInfo */
+		SELECT 
+		    PROD_CD
+		  , SRC_FILE_NM
+		  , SERVER_FILE_NM
+		  , UPLOAD_DT
+		  , EXPIRE_DT
+		  , PROD_TYPE
+		  , PROD_TYPE_NAME
+		  , REG_DT
+		  , REG_ID
+		  , MOD_DT
+		  , MOD_ID
+		  , SEQ
+	    FROM 
+	        TPC_REPORT_PBPROD
+		WHERE 
+		    PROD_CD = #prodCd# 
+		AND SEQ = #seq# 
+		AND CHG_FG != 'D'
+	</select>
+	
+	<!-- SQLINES DEMO *** -->
+	<insert id="updateReportFile"  parameterClass = "nedmpro0180vo">
+		/* SQLINES DEMO *** teReportFile*/
+		MERGE INTO TPC_REPORT_PBPROD A 
+		USING (
+		SELECT 
+		    #prodCd# AS PROD_CD
+		  , #srcFileNm# AS SRC_FILE_NM
+		  , #serverFileNm# AS SERVER_FILE_NM
+		  , #fileSize# AS FILE_SIZE
+		  , #regId# AS REG_ID
+		  , #uploadDt# AS UPLOAD_DT
+		  , #expireDt# AS EXPIRE_DT
+		  , #prodType# AS PROD_TYPE
+		  , #prodTypeName# AS PROD_TYPE_NAME
+		  , #seq# AS SEQ
+		) B 
+		ON (A.PROD_CD = B.PROD_CD AND A.SEQ = B.SEQ)
+		WHEN MATCHED
+		THEN
+		    UPDATE
+		    SET 
+		        SRC_FILE_NM    = B.SRC_FILE_NM
+			  , SERVER_FILE_NM = B.SERVER_FILE_NM
+			  , FILE_SIZE      = B.FILE_SIZE
+			  , UPLOAD_DT      = B.UPLOAD_DT
+			  , EXPIRE_DT      = B.EXPIRE_DT
+			  , MOD_DT         = CURRENT_TIMESTAMP(0)
+			  , MOD_ID         = B.REG_ID
+			  , CHG_FG         = 'U'
+			  , PROD_TYPE      = B.PROD_TYPE
+			  , PROD_TYPE_NAME = B.PROD_TYPE_NAME
+	    WHEN NOT MATCHED 
+	    THEN 
+		    INSERT
+		    (
+		        PROD_CD
+		      , SRC_FILE_NM
+		      , SERVER_FILE_NM
+		      , FILE_SIZE
+		      , UPLOAD_DT
+		      , EXPIRE_DT
+		      , REG_ID
+		      , REG_DT
+		      , CHG_FG
+		      , PROD_TYPE
+		      , PROD_TYPE_NAME
+		      , SEQ
+		    )	  
+		    VALUES
+		    (
+		        B.PROD_CD
+		      , B.SRC_FILE_NM
+		      , B.SERVER_FILE_NM
+		      , B.FILE_SIZE
+		      , B.UPLOAD_DT
+		      , B.EXPIRE_DT
+		      , B.REG_ID
+		      , CURRENT_TIMESTAMP(0)
+		      , 'I'
+		      , B.PROD_TYPE
+		      , B.PROD_TYPE_NAME
+		      , B.SEQ
+		    )     
+	</insert>
+	
+	<!-- PB... SQLINES DEMO *** -->
+	<update id="deleteReportFile"  parameterClass="nedmpro0180vo">
+	/* SQLINES DEMO *** teReportFile*/
+		UPDATE 
+		    TPC_REPORT_PBPROD
+		SET 
+		    MOD_DT = CURRENT_TIMESTAMP(0)
+		  , MOD_ID = #regId#
+		  , CHG_FG = 'D'
+		WHERE 
+		    PROD_CD = #prodCd# 
+		AND SEQ = #seq#
+	</update>
+	
+	<!-- SQLINES DEMO *** 래된 정보  -->
+	<select id="selectOldSeqReportFile"  resultMap="pbProdReportSeq" parameterClass="nedmpro0180vo">
+	/* SQLINES DEMO *** ctOldSeqReportFile*/
+	    SELECT 
+	        PROD_CD
+	      , MIN(CAST(SEQ AS FLOAT)) AS SEQ
+	    FROM 
+	        TPC_REPORT_PBPROD
+	    WHERE 
+	        PROD_CD = #prodCd#
+	    AND CHG_FG !='D'
+	    GROUP BY 
+	        PROD_CD
+	</select>
+	
+	<!-- 저장... SQLINES DEMO *** -->
+	<select id="selectSeqRecentReportFile"  resultMap="pbProdReportSeq" parameterClass="nedmpro0180vo">
+	/* SQLINES DEMO *** ctSeqRecentReportFile*/
+	    SELECT 
+	        PROD_CD
+	      , NVL2(MAX(CAST(SEQ AS FLOAT)),MAX(CAST(SEQ AS FLOAT)),0) AS SEQ
+	    FROM 
+	        TPC_REPORT_PBPROD
+	    WHERE 
+	        PROD_CD = #prodCd#
+	    GROUP BY
+	        PROD_CD
+	</select>
+	
+	<!-- SQLINES DEMO *** 적서 파일 개수  -->
+	<select id="countReportFileForAProd"  resultClass="Integer"  parameterClass="nedmpro0180vo">
+	/* SQLINES DEMO *** tReportFileForAProd*/
+		SELECT
+		    COUNT(*)
+		FROM
+		    TPC_REPORT_PBPROD 
+		WHERE 
+		    PROD_CD = #prodCd# 
+		AND CHG_FG != 'D'
+	</select>
+	
+	<!-- SQLINES DEMO *** 스트  -->
+	<select id="selectReportFileListForAProd"  resultMap="pbProdReportFile"  parameterClass="String">
+	/* SQLINES DEMO *** ctReportFileListForAProd*/
+		SELECT 
+		    PROD_CD
+	      , SRC_FILE_NM
+		  , UPLOAD_DT
+		  , EXPIRE_DT
+		  , SEQ
+		  , REG_DT
+		  , REG_ID
+		  , MOD_DT
+		  , MOD_ID
+		FROM 
+		    TPC_REPORT_PBPROD 
+		WHERE 
+		    PROD_CD = #prodCd#  
+		AND CHG_FG != 'D'
+		ORDER BY 
+		    REG_DT DESC
+	</select>
+	
+	<!-- SQLINES DEMO ***   -->
+	<select id="countNotValidPbProdReport" resultClass="Integer" parameterClass="nedmpro0180vo">
+	/* SQLINES DEMO *** ctNotValidPbProdReport*/
+		SELECT 
+		    COUNT(*)
+		FROM 
+		    PRODUCT PRD 
+		    INNER JOIN (
+		        SELECT L3_CD
+		        FROM TPC_L1_CD
+		        WHERE TEAM_CD IN
+		            (
+		                SELECT 
+		                    TEAM_CD
+		                FROM 
+		                    TPC_REPORT_PBPROD_TEAM
+		            )
+		        GROUP BY L3_CD
+		    ) L1CD
+		        ON PRD.PROD_TYP_FG = '2'
+		       AND PRD.PROD_STATUS = '01' 
+		       AND PRD.L3_CD = L1CD.L3_CD 
+		    LEFT OUTER JOIN ( 
+		        SELECT *
+			    FROM 
+			        TPC_REPORT_PBPROD
+		        WHERE 
+		            (PROD_CD,SEQ) IN (
+		                SELECT 
+			                PROD_CD, MAX(CAST(SEQ AS FLOAT))
+			            FROM 
+			                TPC_REPORT_PBPROD
+			            GROUP BY 
+			                PROD_CD
+			       )
+		    ) TRP
+		        ON PRD.PROD_CD = TRP.PROD_CD
+		WHERE 
+		     (TRP.CHG_FG = 'D' OR TRP.EXPIRE_DT IS NULL OR (TRP.EXPIRE_DT IS NOT NULL AND TRP.EXPIRE_DT <![CDATA[<]]> CURRENT_TIMESTAMP(0)))
+		<isEmpty property="entpCd">
+	      <isNotEmpty property="entpCds" prepend="AND">
+	        <iterate prepend="PRD.VEN_CD IN " property="entpCds" open="(" close=")" conjunction=",">
+	           #entpCds[]#
+		    </iterate>
+		  </isNotEmpty>
+		</isEmpty>
+	</select>
+	
+	<!-- 업체... SQLINES DEMO *** -->
+	<select id="selectEntpCdForNotValidReport" resultMap="entpCdNotValidReport" parameterClass="String">
+	/* SQLINES DEMO *** ctEntpCdForNotValidReport*/
+		SELECT 
+		    PRD.VEN_CD                              AS ENTP_CD
+		  , VEN.VENDOR_NM                           AS ENTP_NM
+		  , COUNT(PRD.VEN_CD) - COUNT(TRP.IS_VALID) AS CNT_NOTVALID_REPORT
+		  , COUNT(PRD.VEN_CD)                       AS CNT_TOTAL_REPORT
+		  , COUNT(TRP.IS_VALID)                     AS CNT_VALID_REPORT
+		  , MAX(COALESCE(LAST_REG_DT,'-'))               AS LAST_REG_DT
+		FROM 
+		    TVE_VENDOR VEN
+		    INNER JOIN 
+		    PRODUCT PRD
+		        ON VEN.VENDOR_ID = PRD.VEN_CD  
+		    INNER JOIN (
+		        SELECT L3_CD
+		        FROM TPC_L1_CD
+		        WHERE TEAM_CD IN
+		            (
+		                SELECT 
+		                    TEAM_CD
+		                FROM 
+		                    TPC_REPORT_PBPROD_TEAM
+		            )
+		        GROUP BY L3_CD
+		    ) L1CD
+		        ON PRD.PROD_TYP_FG = '2'
+		       AND PRD.PROD_STATUS = '01' 
+		       AND PRD.L3_CD = L1CD.L3_CD 
+		    LEFT OUTER JOIN ( 
+		        SELECT
+		            PROD_CD
+                  , COALESCE(TO_CHAR(MOD_DT,'YYYYMMDD'),TO_CHAR(REG_DT,'YYYYMMDD')) AS LAST_REG_DT
+                  , CASE 
+                        WHEN EXPIRE_DT > CURRENT_TIMESTAMP(0) THEN 'Y'
+                        ELSE ''
+                    END AS IS_VALID
+			    FROM 
+			        TPC_REPORT_PBPROD
+		        WHERE 
+		            (PROD_CD,SEQ) IN (
+		                SELECT 
+			                PROD_CD, MAX(CAST(SEQ AS FLOAT))
+			            FROM 
+			                TPC_REPORT_PBPROD
+			            GROUP BY 
+			                PROD_CD
+			        )
+			    AND CHG_FG != 'D' 
+		    ) TRP
+		        ON PRD.PROD_CD = TRP.PROD_CD
+		WHERE 'T' = #admFg#
+	    GROUP BY 
+	        VEN_CD, VENDOR_NM
+	    ORDER BY CNT_NOTVALID_REPORT DESC, ENTP_CD ASC
+	</select>
+	
+</sqlMap>

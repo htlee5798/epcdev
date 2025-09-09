@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0016">
+    <typeAlias alias="pscpprd0016VO" type="com.lottemart.epc.product.model.PSCPPRD0016VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectPrdPresentList" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0016.selectPrdPresentList */
+        SELECT ROW_NUMBER() OVER(ORDER BY A.STR_NM) AS RNUM
+	    	 , NVL(B.PEST_DESC, '-') 		AS prest    /* 증정품 		  */
+	         , NVL(B.PEST_START_DY, '-') 	AS PEST_START_DY 	/* 증정기간(시작) */
+	         , NVL(B.PEST_END_DY, '-') 		AS PEST_END_DY   	/* 증정기간(종료) */
+	         , A.STR_CD 					AS strCd     	/* 점포코드       */
+	         , DECODE(A.FEDAY_MALL_REP_STR_YN, 'Y', A.STR_NM || '(명절대표몰)', A.STR_NM) AS strNm  /* 점포명 */
+	         , DECODE(B.PEST_TYPE, '001', '증정', '002', '1+1', '003', '상품권', '004', '덤', '-') as prestType
+	         , B.PROD_CD AS prodCd  
+	      FROM TST_STORE  A
+             , (SELECT IP.PROD_CD, IP.ITEM_CD, IP.STR_CD, PG.PEST_TYPE, PG.PEST_DESC, PG.PEST_START_DY, PG.PEST_END_DY
+	              FROM TPR_STORE_ITEM_PRICE IP 
+	              LEFT OUTER JOIN TPR_PEST_GOODS PG ON IP.PROD_CD = PG.PROD_CD
+	              AND IP.STR_CD  	= PG.STR_CD
+	              AND IP.ITEM_CD 	= PG.ITEM_CD
+	              AND AND PG.USE_YN = 'Y'
+	             WHERE       
+                   AND IP.PROD_CD   = #prodCd#
+                   AND IP.ITEM_CD   = '001'                  
+	           )   B
+	     WHERE A.STR_CD    =  B.STR_CD
+	       AND A.ONLINE_YN = 'Y'
+    ]]>
+    </select>
+    
+    <select id="selectPrdPresentChek" resultClass="Integer">
+    <![CDATA[
+	/* pscpprd0016.selectPrdPresentChek */
+		SELECT COUNT(*) FROM TPR_PEST_GOODS
+		 WHERE PROD_CD = #prodCd#  	
+		   AND STR_CD  = #strCd#
+    ]]>
+    </select>
+    
+    <insert id="insertPrdPresent">
+    <![CDATA[
+    /* pscpprd0016.insertPrdPresent */
+    	INSERT INTO TPR_PEST_GOODS
+    			   (
+    			    PROD_CD
+    			   ,STR_CD
+    			   ,ITEM_CD
+    			   ,PEST_SEQ
+    			   ,PEST_EXTRA_CD
+    			   ,PEST_DESC
+    			   ,PEST_TYPE
+    			   ,PEST_START_DY
+    			   ,PEST_END_DY
+    			   ,USE_YN
+    			   )
+    	SELECT PROD_CD
+    	      ,STR_CD
+    	      ,ITEM_CD
+    	      ,LPAD(SQ_PEST_SEQ.NEXTVAL,18,0)
+    	      ,DECODE(#prestType#, '001', '9999999999999', '002', '9999999999998')
+    	      ,#prest#
+    	      ,#prestType#
+    	      ,TO_CHAR(TO_DATE(#prestStartDy#,'YYYY-MM-DD'),'YYYYMMDD')
+    	      ,TO_CHAR(TO_DATE(#prestEndDy#,'YYYY-MM-DD'),'YYYYMMDD')
+    	      ,'Y'
+    	  FROM TPR_STORE_ITEM_PRICE
+    	 WHERE PROD_CD = #prodCd# 
+    	   AND STR_CD  = #strCd#
+    ]]>
+    </insert>
+
+    <update id="updatePrdPresent">
+    <![CDATA[
+    /* pscpprd0016.updatePrdPresent */
+        UPDATE TPR_PEST_GOODS
+        SET     PEST_DESC     = #prest#
+        	   ,PEST_TYPE     = #prestType#
+               ,PEST_START_DY = TO_CHAR(TO_DATE(#prestStartDy#,'YYYY-MM-DD'),'YYYYMMDD')
+               ,PEST_END_DY   = TO_CHAR(TO_DATE(#prestEndDy#,'YYYY-MM-DD'),'YYYYMMDD')
+               ,MOD_DATE      = CURRENT_TIMESTAMP(0)
+               ,MOD_ID        = #regId#
+        WHERE  PROD_CD = #prodCd#
+        AND    STR_CD  = #strCd#
+    ]]>
+    </update>
+
+    <update id="updatePrdPresentNull">
+    <![CDATA[
+    /* pscpprd0016.updatePrdPresentNull */
+        UPDATE TPR_STORE_ITEM_PRICE
+        SET     PREST          = NULL
+        	   ,PREST_TYPE     = NULL
+               ,PREST_START_DY = NULL
+               ,PREST_END_DY   = NULL
+               ,MOD_DATE       = CURRENT_TIMESTAMP(0)
+               ,MOD_ID         = #regId#
+        WHERE  PROD_CD = #prodCd#
+        AND    STR_CD  = #strCd#
+    ]]>
+    </update> 
+
+    <update id="updatePrdPresentIcon">
+    <![CDATA[
+    /* pscpprd0016.updatePrdPresentIcon */
+        MERGE INTO TPR_PRODUCT_ICON A
+        USING DUAL ON (A.PROD_CD = #prodCd# and A.STR_CD  = #strCd#)
+        
+        WHEN MATCHED THEN
+            UPDATE 
+            SET     ICON_6   = CASE WHEN #icon6# > 0 and  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') BETWEEN replace(#prestStartDy#,'-' ,'') AND replace(#prestEndDy#,'-' ,'') THEN 1 ELSE 0 END
+                   ,MOD_DATE = CURRENT_TIMESTAMP(0)
+                   ,MOD_ID   = #regId#
+            WHERE  PROD_CD = #prodCd#
+            AND    STR_CD  = #strCd#
+        WHEN NOT MATCHED THEN
+            INSERT
+            (PROD_CD,STR_CD,ICON_PATH,
+            ICON_1,ICON_2,ICON_3,ICON_4,ICON_5,ICON_6,ICON_7,ICON_8,ICON_9,ICON_10,
+            ICON_11,ICON_12,ICON_13,ICON_14,ICON_15,ICON_16,ICON_17,
+            DEL_YN,REG_DATE,REG_ID,MOD_DATE,MOD_ID)
+            VALUES 
+            (#prodCd#,#strCd#,' ',
+            '0','0','0','0','0',(CASE WHEN #icon6# > 0 and  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') BETWEEN replace(#prestStartDy#,'-' ,'') AND replace(#prestEndDy#,'-' ,'') THEN 1 ELSE 0 END),'0','0','0','0',
+            '0','0','0','0','0','0','0',
+            'N',CURRENT_TIMESTAMP(0),#regId#,CURRENT_TIMESTAMP(0),#regId#)            
+    ]]>
+    </update>
+
+	<delete id="deletePrdPresent">
+	<![CDATA[
+    /* pscpprd0016.deletePrdPresent */
+    	DELETE FROM TPR_PEST_GOODS
+    	 WHERE PROD_CD = #prodCd#
+    	   AND STR_CD  = #strCd#
+	]]>
+	</delete>
+</sqlMap>

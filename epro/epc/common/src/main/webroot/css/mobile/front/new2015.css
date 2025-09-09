@@ -1,0 +1,1516 @@
+@charset 'utf-8';
+
+/*** pre-load ***/
+body {overflow-x:hidden;}
+body:after {display:none; content:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png?v1') url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png')/* url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/thema.png') url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/lnbcategory.png') url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bestgoods.png')*/;}
+.document-wrap {overflow:hidden;}
+
+
+
+/*** Common Styles ***/
+@font-face{
+	font-family:'LTMHappy-B';
+	src:local('12LotteMartHappyBold'),
+		url('/font/LTMHappy-B.woff') format('woff'),
+		url('/font/LTMHappy-B.ttf') format('truetype');
+}
+
+em, i {font-style:normal;}
+strong {font-weight:bold;}
+h1, h2, h3, h4 {text-stroke-width:0; -webkit-text-stroke-width:0;}
+
+[class|='floatingnav'][class*='btm'] {position:fixed; bottom:116px; right:17px; z-index:11; transition:transform .3s ease-out; -webkit-transition:-webkit-transform .3s ease-out; transform:translateY(100%); -webkit-transform:translateY(100%);}
+[class|='floatingnav'][class*='btm'].active {transform:translateY(0); -webkit-transform:translateY(0);}
+[class|='floatingnav'][class*='btm'] a {display:inline-block; width:78px; height:78px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -173px no-repeat; font:0/0 a; color:transparent;}
+
+.contents .price {font-size:50px; font-family:'LTMHappy-B', sans-serif; color:#f31c3f; line-height:1; letter-spacing:-2px; white-space:nowrap;}
+.contents .price .rules {font-size:.6em; color:#666; font-family:sans-serif; vertical-align:4px;}
+
+.score-wrap, .score-wrap .score {display:inline-block; height:24px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') -357px -66px no-repeat;}
+.score-wrap {position:relative; width:146px;}
+.score-wrap:after {content:attr(data-score); display:inline-block; position:absolute; top:4px; left:150px; font-size:18px; color:#555;}
+.score-wrap .score {background-position:-357px -91px; vertical-align:top; font:0/0 a; color:transparent;}
+.score-wrap select {position:absolute; top:0; left:0; z-index:2; width:100%; height:16px; background:none; border:0 none; font:0/0 a; color:transparent;}
+
+.sect-moreview {display:block; padding:15px 0; font-size:26px; font-weight:bold; color:#888; border-top:2px solid #ccc; border-bottom:2px solid #ccc; background-color:#fafafa; text-align:center; vertical-align:middle;}
+.goods-list + .sect-moreview {border-top:0 none;}
+
+[class|='desc'][class*='conts'] {font-size:22px; color:#888; padding:0 18px; margin-top:6px;}
+
+
+/* sprite image */
+[class|='spicon'] {position:relative; display:inline-block; border:0 none; vertical-align:middle; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png?v1') 0 0 no-repeat; font:0/0 a; color:transparent;}
+[class|='spicon'][class*='menu'] {width:43px; height:34px; background-position:0 0;}
+[class|='spicon'][class*='moveshop'] {width:43px; height:34px; background-position:-43px 0;}
+[class|='spicon'][class*='quick0'] {width:44px; height:40px; margin-left:4px; background-position:-306px 0;}
+[class|='spicon'][class*='quick1'] {width:46px; height:40px; margin-left:4px; background-position:-95px 0;}
+[class|='spicon'][class*='quick2'] {width:39px; height:40px; margin-left:4px; background-position:-151px 0;}
+[class|='spicon'][class*='quick3'] {width:52px; height:40px; background-position:-200px 0;}
+[class|='spicon'][class*='quick4'] {width:34px; height:40px; margin-left:4px; background-position:-262px 0;}
+[class|='spicon'][class*='close'] {width:62px; height:62px; background-position:-360px 0;}
+[class|='spicon'][class*='setting'] {width:62px; height:62px; background-position:-432px 0;}
+[class|='spicon'][class*='users'] {width:24px; height:30px; background-position:0 -50px;}
+[class|='spicon'][class*='login'] {width:22px; height:28px; background-position:-34px -50px;}
+[class|='spicon'][class*='plus'] {width:21px; height:21px; background-position:-34px -90px;}
+[class|='spicon'][class*='minus'] {width:21px; height:4px; background-position:-34px -99px;}
+[class|='spicon'][class*='trash'] {width:44px; height:40px; background-position:-300px -90px;}
+[class|='spicon'][class*='basket'] {width:45px; height:32px; background-position:-543px 0;}
+[class|='spicon'][class*='close1'] {width:27px; height:27px; background-position:-598px 0;}
+[class|='spicon'][class*='close2'] {width:27px; height:27px; background-position:-516px -156px;}
+[class|='spicon-footer'] {width:54px; height:53px; margin-right:15px;}
+[class|='spicon-footer'][class*='list1'] {background-position:-66px -50px;}
+[class|='spicon-footer'][class*='list2'] {background-position:-130px -50px;}
+[class|='spicon-footer'][class*='list3'] {background-position:-194px -50px;}
+[class|='spicon-footer'][class*='list4'] {background-position:-66px -110px;}
+[class|='spicon-footer'][class*='list5'] {background-position:-130px -110px;}
+[class|='spicon-footer'][class*='list6'] {background-position:-194px -110px;}
+[class|='spicon-arrow'] {width:26px; height:17px; background-position:0 -90px;}
+[class|='spicon-arrow'][class*='right'] {transform:rotate(-90deg); -webkit-transform:rotate(-90deg);}
+[class|='spicon-arrow'][class*='left'] {transform:rotate(90deg); -webkit-transform:rotate(90deg);}
+[class|='spicon-arrow-small'] {width:20px; height:13px; margin-top:-4px; background-size:500px auto; background-position:0 -70px;}
+[class|='spicon-arrow-type2'] {width:42px; height:36px; margin-top:-8px; background-position:-270px -134px;}
+[class|='spicon-bigthema'] {position:static; width:145px; height:146px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/thema.png?v1') 0 0 no-repeat;}
+[class|='spicon-bigthema'][class*='toy'] {background-position:0 0;}
+[class|='spicon-bigthema'][class*='dig'] {background-position:-150px 0;}
+[class|='spicon-bigthema'][class*='pet'] {background-position:-300px 0;}
+[class|='spicon-bigthema'][class*='more'] {background-position:-300px -450px;}
+[class|='spicon-bigthema'][class*='brml1'] {background-position:-450px 0;}
+[class|='spicon-bigthema'][class*='brml2'] {background-position:0 -150px;}
+[class|='spicon-bigthema'][class*='brml3'] {background-position:-150px -150px;}
+[class|='spicon-bigthema'][class*='brml4'] {background-position:-300px -150px;}
+[class|='spicon-bigthema'][class*='brml5'] {background-position:-450px -150px;}
+[class|='spicon-bigthema'][class*='brml6'] {background-position:0 -300px;}
+[class|='spicon-bigthema'][class*='brml7'] {background-position:-150px -300px;}
+[class|='spicon-bigthema'][class*='brml8'] {background-position:-300px -300px;}
+[class|='spicon-bigthema'][class*='brml9'] {background-position:-450px -300px;}
+[class|='spicon-bigthema'][class*='brml10'] {background-position:0 -450px;}
+[class|='spicon-bigthema'][class*='brml11'] {background-position:-150px -450px;}
+[class|='spicon-smallthema'] {position:static; width:78px; height:78px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/thema.png?v1') 0 0 no-repeat;}
+[class|='spicon-smallthema'][class*='tmml1'] {background-position:0 -600px;}
+[class|='spicon-smallthema'][class*='tmml2'] {background-position:-80px -600px;}
+[class|='spicon-smallthema'][class*='tmml3'] {background-position:-160px -600px;}
+[class|='spicon-smallthema'][class*='tmml4'] {background-position:-240px -600px;}
+[class|='spicon-smallthema'][class*='tmml5'] {background-position:-320px -600px;}
+[class|='spicon-smallthema'][class*='tmml6'] {background-position:-400px -600px;}
+[class|='spicon-goodssort'] {width:32px; height:31px;}
+[class|='spicon-goodssort'][class*='type1'] {background-position:-510px -220px;}
+[class|='spicon-goodssort'][class*='type2'] {background-position:-552px -220px;}
+[class|='spicon-goodssort'][class*='type3'] {background-position:-594px -220px;}
+[class|='chk'] {display:inline-block; border:0 none; background:none; appearance:none; -webkit-appearance:none; -moz-appearance:none; vertical-align:-3px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') -260px -50px no-repeat;}
+[class|='chk'][class*='star'] {width:41px; height:39px; background-position:-260px -50px;}
+[class|='chk'][class*='star']:checked {background-position:-302px -50px;}
+[class|='chk'][class*='default'] {width:41px; height:41px; background-position:-260px -90px; background-color:#fff; border-width:4px; border-style:solid; border-color:#c6c6c6; border-radius:50%;}
+[class|='chk'][class*='default']:checked {border-color:#f51e41; background-color:#f51e41;}
+[class|='chk'][class*='form'] {width:34px; height:34px; background-color:#fff; border:2px solid #cdc8c8; border-radius:5px; background-position:0 10em; vertical-align:-8px;}
+[class|='chk'][class*='form']:checked {background-position:2px -136px;}
+[class|='lnbicon']:before {width:70px; height:70px; background:#fff url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/lnbcategory.png') 0 0 no-repeat; border-radius:50%;}
+[class|='lnbicon'][class*='C0010011']:before {background-position:0 0;}
+[class|='lnbicon'][class*='C0010046']:before {background-position:-70px 0;}
+[class|='lnbicon'][class*='C0010013']:before {background-position:-140px 0;}
+[class|='lnbicon'][class*='C0010012']:before {background-position:-210px 0;}
+[class|='lnbicon'][class*='C0010014']:before {background-position:-280px 0;}
+[class|='lnbicon'][class*='C0010015']:before {background-position:-350px 0;}
+[class|='lnbicon'][class*='C0010016']:before {background-position:-420px 0;}
+[class|='lnbicon'][class*='C0010040']:before {background-position:-490px 0;}
+[class|='lnbicon'][class*='C0010017']:before {background-position:-560px 0;}
+[class|='lnbicon'][class*='C0010018']:before {background-position:0 -70px;}
+[class|='lnbicon'][class*='C0010038']:before {background-position:-70px -70px;}
+[class|='lnbicon'][class*='C0010021']:before {background-position:0 -140px;}
+[class|='lnbicon'][class*='C0010022']:before {background-position:-70px -140px;}
+[class|='lnbicon'][class*='C0010023']:before {background-position:-140px -140px;}
+[class|='lnbicon'][class*='C0010024']:before {background-position:-210px -140px;}
+[class|='lnbicon'][class*='C0010025']:before {background-position:-280px -140px;}
+[class|='lnbicon'][class*='C0010026']:before {background-position:-350px -140px;}
+[class|='lnbicon'][class*='C0010027']:before {background-position:-420px -140px;}
+[class|='lnbicon'][class*='C0010028']:before {background-position:-490px -140px;}
+[class|='lnbicon'][class*='C0010029']:before {background-position:-560px -140px;}
+[class|='lnbicon'][class*='C0010030']:before {background-position:0 -210px;}
+[class|='lnbicon'][class*='C0010034']:before {background-position:-70px -210px;}
+[class|='spbg'] {display:inline-block; text-align:center; font-size:22px; color:#333; line-height:1.5;}
+[class|='spbg']:before {content:''; display:block; width:140px; height:140px; margin:0 auto; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bestgoods.png') 0 0 no-repeat;}
+[class|='spbg'][class*='more']:before {background-position:0 0;}
+[class|='spbg'][class*='best']:before {background-position:-280px 0;}
+.active > [class|='spbg'][class*='best']:before {background-position:-420px 0;}
+[class|='spbg'][class*='code1']:before {background-position:0 -140px;}
+.active > [class|='spbg'][class*='code1']:before {background-position:-140px -140px;}
+[class|='spbg'][class*='code2']:before {background-position:-280px -140px;}
+.active > [class|='spbg'][class*='code2']:before {background-position:-420px -140px;}
+[class|='spbg'][class*='code3']:before {background-position:0 -280px;}
+.active > [class|='spbg'][class*='code3']:before {background-position:-140px -280px;}
+[class|='spbg'][class*='code4']:before {background-position:-280px -280px;}
+.active > [class|='spbg'][class*='code4']:before {background-position:-420px -280px;}
+[class|='spbg'][class*='code5']:before {background-position:0 -420px;}
+.active > [class|='spbg'][class*='code5']:before {background-position:-140px -420px;}
+[class|='spbg'][class*='code6']:before {background-position:-280px -420px;}
+.active > [class|='spbg'][class*='code6']:before {background-position:-420px -420px;}
+[class|='spbg'][class*='code7']:before {background-position:0 -560px;}
+.active > [class|='spbg'][class*='code7']:before {background-position:-140px -560px;}
+[class|='spbg'][class*='code8']:before {background-position:-280px -560px;}
+.active > [class|='spbg'][class*='code8']:before {background-position:-420px -560px;}
+[class|='spbg'][class*='code9']:before {background-position:0 -700px;}
+.active > [class|='spbg'][class*='code9']:before {background-position:-140px -700px;}
+[class|='spbg'][class*='code10']:before {background-position:-280px -700px;}
+.active > [class|='spbg'][class*='code10']:before {background-position:-420px -700px;}
+[class|='spbg'][class*='code11']:before {background-position:-560px 0;}
+.active > [class|='spbg'][class*='code11']:before {background-position:-700px 0;}
+[class|='spbg'][class*='code12']:before {background-position:-840px 0;}
+.active > [class|='spbg'][class*='code12']:before {background-position:-980px 0;}
+[class|='spbg'][class*='code13']:before {background-position:-560px -140px;}
+.active > [class|='spbg'][class*='code13']:before {background-position:-700px -140px;}
+[class|='spbg'][class*='code14']:before {background-position:-840px -140px;}
+.active > [class|='spbg'][class*='code14']:before {background-position:-980px -140px;}
+[class|='spbg'][class*='code15']:before {background-position:-560px -280px;}
+.active > [class|='spbg'][class*='code15']:before {background-position:-700px -280px;}
+[class|='spbg'][class*='code16']:before {background-position:-840px -280px;}
+.active > [class|='spbg'][class*='code16']:before {background-position:-980px -280px;}
+[class|='spbg'][class*='code17']:before {background-position:-560px -420px;}
+.active > [class|='spbg'][class*='code17']:before {background-position:-700px -420px;}
+[class|='spbg'][class*='code18']:before {background-position:-840px -420px;}
+.active > [class|='spbg'][class*='code18']:before {background-position:-980px -420px;}
+[class|='spbg'][class*='code19']:before {background-position:-560px -560px;}
+.active > [class|='spbg'][class*='code19']:before {background-position:-700px -560px;}
+[class|='spbg'][class*='code20']:before {background-position:-840px -560px;}
+.active > [class|='spbg'][class*='code20']:before {background-position:-980px -560px;}
+[class|='spbg'][class*='code21']:before {background-position:-560px -700px;}
+.active > [class|='spbg'][class*='code21']:before {background-position:-700px -700px;}
+[class|='spbg'][class*='code22']:before {background-position:-840px -700px;}
+.active > [class|='spbg'][class*='code22']:before {background-position:-980px -700px;}
+[class|='spbg'][class*='code23']:before {background-position:0 -840px;}
+.active > [class|='spbg'][class*='code23']:before {background-position:-140px -840px;}
+[class|='spbg'][class*='code24']:before {background-position:-280px -840px;}
+.active > [class|='spbg'][class*='code24']:before {background-position:-420px -840px;}
+[class|='spbg'][class*='code25']:before {background-position:-560px -840px;}
+.active > [class|='spbg'][class*='code25']:before {background-position:-700px -840px;}
+[class|='spbg'][class*='code26']:before {background-position:-840px -840px;}
+.active > [class|='spbg'][class*='code26']:before {background-position:-980px -840px;}
+[class|='spicon-etc'] {width:120px; height:120px; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png');}
+[class|='spicon-etc'][class*='toysrus'] {background-position:0 -85px;}
+[class|='spicon-etc'][class*='smartcoupon'] {background-position:-130px -85px;}
+[class|='spicon-etc'][class*='ltmcoupon'] {background-position:-171px -721px;}
+[class|='spicon-etc'][class*='dadungi'] {background-position:0 -215px;}
+[class|='spicon-etc'][class*='lottemart'] {background-position:-130px -215px;}
+[class|='spicon-etc'][class*='barocoupon'] {background-position:0 -510px;}
+[class|='spicon-etc-small'] {width:84px; height:84px; background-size:446px auto;}
+[class|='spicon-etc-small'][class*='toysrus'] {background-position:0 -58.5px;}
+[class|='spicon-etc-small'][class*='smartcoupon'] {background-position:-90.5px -58.5px;}
+[class|='spicon-etc-small'][class*='ltmcoupon'] {background-position:-119.5px -502.5px;}
+[class|='spicon-etc-small'][class*='dadungi'] {background-position:0 -149.5px;}
+[class|='spicon-etc-small'][class*='lottemart'] {background-position:-90.5px -149.5px;}
+[class|='spicon'][class*='social'] {width:48px; height:36px; background-position:-361px -125px;}
+[class|='spicon'][class*='share'] {width:110px; height:110px; background-position:-88px -313px;}
+[class|='spicon-share'][class*='katalk'] {background-position:0 -313px;}
+[class|='spicon-share'][class*='facebook'] {background-position:-120px -313px;}
+[class|='spicon-share'][class*='twiter'] {background-position:-240px -313px;}
+[class|='spicon-share'][class*='URLshare'] {background-position:-360px -313px;}
+[class|='spicon'][class*='magn_glass'] {width:28px; height:28px; margin-top:-4px; background-position:-418px -125px;}
+[class|='spicon'][class*='ballon'] {width:49px; height:38px; background-position:0 -259px;}
+
+/* 20150417 */
+[class|='sptxt']{font-size:0;line-height:0;background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/special.png') no-repeat;}
+[class|='sptxt'][class*='title']{width:249px;height:30px;margin:0 0 0 3.125%;background-position:0 0;}
+[class|='sptxt'][class*='code1']{background-position:0px -45px;}
+[class|='sptxt'][class*='code2']{background-position:-176px -45px;}
+[class|='sptxt'][class*='code3']{background-position:-353px -45px;}
+[class|='sptxt'][class*='more']{display:inline-block;width:185px;height:35px;padding:8px 0 0;font-size:20px;color:#666;background-position:-455px 0;}
+[class|='spicon-plus'][class*='close']{transform:rotate(45deg);-webkit-transform:rotate(45deg);}
+[class|='spicon-arrow'][class*='light']{float:right;width:13px;height:25px;background-position:-253px 0;background-size:320px;}
+
+
+/* button */
+[class|='sabtn'] {box-sizing:border-box; -webkit-box-sizing:border-box; position:relative; display:inline-block; text-align:center; vertical-align:middle; white-space:nowrap; text-decoration:none; border-radius:8px;}
+
+[class|='sabtn'][class*='default'] {height:50px; line-height:50px; padding:0 10px; font-size:22px; letter-spacing:-2px; border:2px solid #cdc8c8;}
+[class|='sabtn'][class*='goodsdetails'] {height:80px; line-height:80px; padding:0 10px; font-size:36px; letter-spacing:-2px; border:2px solid #cdc8c8;}
+
+[class|='sabtn'][class*='red'] {background-color:#f31c3f; border-color:#f31c3f; color:#fff;}
+[class|='sabtn'][class*='gray'] {background-color:#969090; border-color:#969090; color:#fff;}
+[class|='sabtn'][class*='white'] {background-color:#fff; color:#666;}
+
+[class|='sabtn'][class*='gray'] [class*='spicon'] {filter:contrast(500%); -webkit-filter:contrast(500%);}
+
+
+/* window action bar */
+.window-action-bar {position:fixed; right:0; bottom:0; left:0; z-index:40; height:98px; border-top:2px solid #f5f6f8; background-color:#fff; text-align:center; box-shadow:-3px 0 6px 1px rgba(0,0,0,.3); transition:transform .3s ease-out; -webkit-transition:-webkit-transform .3s ease-out;}
+.window-action-bar.inactive {transform:translateY(100%); -webkit-transform:translateY(100%);}
+.window-action-bar ul {display:table; width:100%; height:100%; table-layout:fixed;}
+.window-action-bar ul li {display:table-cell; border-left:2px solid #f5f6f8; vertical-align:top;}
+.window-action-bar ul li:first-child {border-left:0 none;}
+.window-action-bar ul li a {position:relative; display:block; width:100%; height:74px; padding-bottom:25px; text-align:center;}
+.window-action-bar ul li a:after {content:''; display:inline-block; height:100%; vertical-align:middle;}
+.window-action-bar ul li em {position:absolute; right:0; bottom:10px; left:0; color:#000; font-size:18px;}
+.window-action-bar ul li.active, .window-action-bar ul li.active + li {border-left:0 none;}
+.window-action-bar ul li.active {width:130px;}
+.window-action-bar ul li.active a {padding-top:16px; margin-top:-16px; background-color:#f31c3f; border-radius:50% 50% 0 0;}
+.window-action-bar ul li.active em {color:#fff;}
+.window-action-bar ul li a.disabled {opacity:.4;}
+
+.window-action-bar .goodsdetails-action-wrap {display:-webkit-box; -webkit-box-orient:horizontal; padding:9px 10px 0 0;}
+.window-action-bar .goodsdetails-action-wrap [class|='sabtn'] {display:block; box-flex:1; -webkit-box-flex:1; margin-left:10px;}
+.window-action-bar .goodsdetails-action-wrap [class|='sabtn']:first-child {max-width:90px;}
+.window-action-bar .goodsdetails-action-wrap [class|='sabtn']:nth-child(3) {width:35%;}
+
+
+/* goods */
+[class|='gic'] {box-sizing:border-box; -webkit-box-sizing:border-box; display:inline-block; font-size:18px; height:30px; line-height:30px; text-align:center; vertical-align:middle; white-space:nowrap; font-weight:bold;}
+[class|='gic-delivery'] {min-width:92px; color:#fff; background-color:#877d7d;}
+[class|='gic-delivery'][class*='type1'] {background-color:#877d7d;}
+[class|='gic-delivery'][class*='type2'] {background-color:#69a0cd;}
+[class|='gic-delivery'][class*='type3'] {background-color:#6ea56e;}
+[class|='gic-delivery'][class*='type4'] {background-color:#af73c8;}
+[class|='gic-promotion'], [class|='gic-etc'] {max-width:120px; padding:0 9px; border:1px solid #dcdcdc; background-color:#fff; color:#888;}
+[class|='gic-promotion'][class*='type1'] {color:#f01e41;}
+[class|='gic-promotion'][class*='type2'] {color:#3cc33c;}
+[class|='gic-promotion'][class*='type3'] {color:#239bcd;}
+[class|='gic-promotion'][class*='type4'] {color:#ff821e;}
+[class|='gic-promotion'][class*='type5'] {color:#cb34b7;}
+[class|='gic-promotion'][class*='type6'] {color:#ff821c;}
+[class|='gic-etc'][class*='type1'] {color:#1679cc;}
+[class|='gic-etc'][class*='type2'] {color:#f82627;}
+[class|='gic-etc'][class*='type3'] {color:#ff811d;}
+
+[class|='item-empty'] {width:100%; height:600px; background-color:#f2f2f2; text-align:center;}
+[class|='item-empty']:before {content:''; display:inline-block; height:100%; vertical-align:middle;}
+[class|='item-empty'] em {position:relative; display:inline-block; vertical-align:middle; padding-top:240px; font-size:30px; color:#d2d2d2;}
+[class|='item-empty'] em:after {content:''; position:absolute; top:0; left:50%; display:inline-block; width:204px; height:204px; margin-left:-102px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') -437px -482px no-repeat;}
+[class|='item-empty'][class*='typestar'] em:after {width:230px; height:218px; margin-left:-115px; background-position:-198px -480px;}
+
+.goods .thumbnail {overflow:hidden; background:#f2f2f2 url('//image.lottemart.com/images/mobile/front/common/reform2015/etc/goods-blank.png') 50% 50% no-repeat;}
+.goods .thumbnail a {display:inline-block;}
+.goods .thumbnail img {width:100%;}
+
+[class^='goods-'] {overflow:hidden; background-color:#f0f0f0; box-shadow:0 2px 2px 0 rgba(0,0,0,.2);}
+[class^='goods-'] > li {box-sizing:border-box; position:relative; margin-top:10px; padding:20px; line-height:1.2; box-shadow:0 2px 2px 0 rgba(0,0,0,.2); background-color:#fff;}
+[class^='goods-'] > li:first-child {margin-top:0;}
+[class^='goods-'] .goods .info .title {overflow:hidden; text-overflow:ellipsis; height:60px; font-size:26px; margin-top:-2px; font-weight:bold;}
+[class^='goods-'] .goods .info .title a {display:inline-block; color:#666;}
+[class^='goods-'] .goods .thumbnail {border:2px solid #f2f2f2;}
+[class^='goods-'] .goods .thumbnail img {top:0; right:0; bottom:0; left:0;}
+[class^='goods-'] .goods .info .price {font-size:46px; color:#333;}
+[class^='goods-'] .goods .info .price-benefit {font-size:18px; color:#f31c3f; white-space:nowrap; font-weight:bold;}
+[class^='goods-'] .goods .info .price-benefit .price {margin-right:0; font-size:24px; color:#f31c3f; font-weight:normal; vertical-align:-3px;}
+[class^='goods-'] .goods .info .action-group {position:absolute; z-index:3;}
+[class^='goods-'] .goods .info .action-group .goods-qty, [class^='goods-'] .goods .info .action-group .btn-basket {box-sizing:border-box; -webkit-box-sizing:border-box; display:inline-block; width:100%; border:2px solid #f31c3f; background-color:#fff; text-align:center; border-radius:0;}
+[class^='goods-'] .goods .info .action-group .goods-qty {font-size:45px; color:#c3c3c3; line-height:1; letter-spacing:-2px; white-space:nowrap;}
+[class^='goods-'] .goods .info .action-group .btn-basket {background-color:#f31c3f;}
+[class^='goods-'] .goods .icon-groups [class|='group'] {position:absolute; z-index:3;}
+[class^='goods-'] .goods .icon-groups .group-pos3 {max-width:100%; overflow-y:hidden; overflow-x:auto; white-space:nowrap;}
+[class^='goods-'] + .sect-moreview {box-shadow:inset 0 2px 2px 0 rgba(0,0,0,.2);}
+
+.goods-list > li {min-height:280px;}
+.goods-list .goods .thumbnail {position:absolute; top:20px; left:20px; width:236px; height:236px;}
+.goods-list .goods .thumbnail a {width:100%;}
+.goods-list .goods .info {padding:0 100px 0 255px;}
+.goods-list .goods .info .title {max-width:230px;}
+.goods-list .goods .info .price {margin:22px 0 5px -2px;}
+.goods-list .goods .info .score-wrap {margin-top:38px;}
+.goods-list .goods .info .price-benefit + .score-wrap {margin-top:15px;}
+.goods-list .goods .info .action-group {top:20px; right:20px; width:92px;}
+.goods-list .goods .info .action-group .goods-qty {height:88px;}
+.goods-list .goods .info .action-group .btn-basket {height:84px;}
+.goods-list .goods .icon-groups [class|='group'] {position:absolute; z-index:3;}
+.goods-list .goods .icon-groups .group-pos1 {top:20px; left:20px;}
+.goods-list .goods .icon-groups .group-pos2 {bottom:20px; left:20px;}
+.goods-list .goods .icon-groups .group-pos3 {bottom:20px; right:20px; left:275px;}
+.bestgoods .goods:after {content:attr(data-bestnum); position:absolute; top:20px; left:20px; z-index:5; width:52px; height:52px; background-color:rgba(0,0,0,.2); font-family:'LTMHappy-B', sans-serif; color:#fff; line-height:54px; font-size:36px; text-align:center;}
+
+.goods-gallery > li {float:left; width:50%; border-right:1px solid #ebebeb; border-left:1px solid #ebebeb;}
+.goods-gallery > li:nth-child(odd) {clear:left;}
+.goods-gallery > li:nth-child(2) {margin-top:0;}
+.goods-gallery .goods .thumbnail, .goods-galthumb .goods .thumbnail {position:relative; width:100%; margin-bottom:20px; padding-top:100%;}
+.goods-gallery .goods .thumbnail .swiper-wrapper, .goods-gallery .goods .thumbnail a, .goods-galthumb .goods .thumbnail .swiper-wrapper, .goods-galthumb .goods .thumbnail a {position:absolute; top:0; right:0; bottom:0; left:0;}
+.goods-gallery .goods .info {height:278px;}
+.goods-gallery .goods .info .title {max-width:200px; padding-right:0;}
+.goods-gallery .goods .info .price {font-size:40px; margin-top:13px;}
+.goods-gallery .goods .info .score-wrap {margin-top:70px;}
+.goods-gallery .goods .info .price-benefit {margin-top:7px;}
+.goods-gallery .goods .info .price-benefit .price:before {content:'\a'; white-space:pre;}
+.goods-gallery .goods .info .price-benefit + .score-wrap {margin-top:13px;}
+.goods-gallery .goods .info .action-group {bottom:86px; right:20px; width:72px;}
+.goods-gallery .goods .info .action-group .goods-qty {height:72px;}
+.goods-gallery .goods .info .action-group .btn-basket {height:66px;}
+.goods-gallery .goods .icon-groups .group-pos1 {top:20px; left:20px;}
+.goods-gallery .goods .icon-groups .group-pos2 {bottom:316px; left:20px;}
+.goods-gallery .goods .icon-groups .group-pos3 {bottom:40px; right:20px; left:20px;}
+
+.goods-galthumb > li {margin:20px; padding-bottom:25px;}
+.goods-galthumb .goods .thumbnail {overflow:visible;}
+.goods-galthumb .goods .thumbnail .swiper-lazy-preloader {position:absolute; top:0; right:0; bottom:0; left:0; background:#f2f2f2 url('//image.lottemart.com/images/mobile/front/common/reform2015/etc/goods-blank.png') 50% 50% no-repeat;}
+.goods-galthumb .goods .thumbnail li {box-shadow:0 2px 4px 0 rgba(0,0,0,.2);}
+.goods-galthumb .goods .info {height:135px;}
+.goods-galthumb .goods .info .action-group {bottom:20px; right:20px; width:72px;}
+.goods-galthumb .goods .info .action-group .goods-qty {height:72px;}
+.goods-galthumb .goods .info .action-group .btn-basket {height:66px;}
+.goods-galthumb .goods .info .title {max-width:80%; height:30px; margin-bottom:20px;}
+.goods-galthumb .goods .info .title a {display:block; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.goods-galthumb .goods .info .score-wrap {display:block; margin-top:14px;}
+.goods-galthumb .goods .info .price, .goods-galthumb .goods .info .price-benefit {display:inline-block; margin-right:15px;}
+.goods-galthumb .goods .icon-groups .group-pos3 {bottom:20px; right:100px; left:230px;}
+.goods-galthumb .goods .icon-groups .group-pos2 {bottom:178px; right:20px; left:20px;}
+.goods-list .goods .thumbnail ul, .goods-list .goods .thumbnail li, .goods-gallery .goods .thumbnail ul, .goods-gallery .goods .thumbnail li {width:100% !important; height:100% !important; transform:translate3d(0, 0, 0) !important; -webkit-transform: translate3d(0, 0, 0) !important;}
+
+.wrap-goodsinfo {background-color:#e6eff3; border-bottom:2px solid #dae2e6;}
+.wrap-goodsinfo .nav-select {padding-bottom:10px;}
+.loc-goodsinfo {overflow:hidden; padding:25px 20px; font-size:26px;}
+.loc-goodsinfo a, .loc-goodsinfo strong {position:relative; box-sizing:border-box; overflow:hidden; float:left; max-width:50%; padding-right:30px; text-overflow:ellipsis; white-space:nowrap; color:#666;}
+.loc-goodsinfo a:last-child, .loc-goodsinfo strong {font-weight:bold; color:#333;}
+.loc-goodsinfo a:last-child {text-decoration:underline;}
+.loc-goodsinfo [class|='spicon-arrow'] {position:absolute; top:50%; margin-top:-6px; right:6px; opacity:.5;}
+.sorting-bar {position:relative;}
+.paging-goods {text-align:center; padding-top:20px; box-shadow:inset 0 2px 2px 0 rgba(0,0,0,.2);}
+.paging-goods a, .paging-goods .page {display:inline-block; vertical-align:middle;}
+.paging-goods [class|='nav'] {border:2px solid #dcdee0; border-radius:6px; width:56px; height:36px; padding-top:20px; background-color:#fff;}
+.paging-goods [class|='nav'] [class|='spicon-arrow'] {vertical-align:top;}
+.paging-goods [class|='nav'].disabled [class|='spicon-arrow'] {opacity:.3;}
+.paging-goods .page {margin:0 6px;}
+.paging-goods .page a {width:49px; height:38px; margin:0 6px; padding-top:11px; color:#999; font-size:32px; border-radius:5px; font-weight:bold;}
+.paging-goods .page .active, .paging-goods .page a:hover {background-color:#e8e9ea;}
+.select-default {box-sizing:border-box; height:60px; margin-top:-4px; padding:0 50px 0 10px; border:2px solid #cdc8c8; border-radius:6px; font-size:24px; color:#666; letter-spacing:-2px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/etc/select-default.png') 100% 50% no-repeat;}
+.type-change-goods {overflow:hidden; padding:9px 20px 8px; background-color:#f2f0f0; border-top:2px solid #e2e0e0; border-bottom:2px solid #e2e0e0;}
+.type-change-goods .left {float:left;}
+.type-change-goods .right {float:right;}
+.type-change-goods .text-info {padding:9px 0; font-size:24px; color:#666;}
+.type-change-goods .sorting-sum {font-size:24px; color:#333; font-weight:bold; padding-top:5px;}
+.type-change-goods .sorting-sum .point {color:#f31c3f; font-size:30px; vertical-align:-2px;}
+.wrap-cng-control {overflow:hidden; border:2px solid #c8c8c8; border-radius:5px;}
+.wrap-cng-control button {float:left; width:66px; height:56px; background-color:#fff;}
+.wrap-cng-control button [class|='spicon-goodssort'] {opacity:.5;}
+.wrap-cng-control button ~ button {border-left:2px solid #c8c8c8;}
+.wrap-cng-control button.active {background-color:#e6e3e3;}
+.wrap-cng-control button.active [class|='spicon-goodssort'] {opacity:1;}
+
+
+/* swiper */
+.swiper-container {position:relative; overflow:hidden; z-index:1; margin:0 auto;}
+.swiper-container-no-flexbox .swiper-slide {float:left;}
+.swiper-container-vertical > .swiper-wrapper {-webkit-box-orient:vertical; -moz-box-orient:vertical; -ms-flex-direction:column; -webkit-flex-direction:column; flex-direction:column;}
+.swiper-wrapper, .spot-swiper .swiper-wrap {position:relative; width:100%; height:100%; z-index:1; display:-webkit-box; display:-moz-box; display:-ms-flexbox; display:-webkit-flex; display:flex; -webkit-transform-style:preserve-3d; -moz-transform-style:preserve-3d; -ms-transform-style:preserve-3d; transform-style:preserve-3d; -webkit-transition-property:-webkit-transform; -moz-transition-property:-moz-transform; -o-transition-property:-o-transform; -ms-transition-property:-ms-transform; transition-property:transform; -webkit-box-sizing:content-box; -moz-box-sizing:content-box; box-sizing:content-box;}
+.swiper-container-android .swiper-slide, .swiper-wrapper, .spot-swiper .swiper-wrap, .spot-swiper .slide {-webkit-transform:translate3d(0,0,0); -moz-transform:translate3d(0,0,0); -o-transform:translate(0,0); -ms-transform:translate3d(0,0,0); transform:translate3d(0,0,0);}
+.swiper-container-multirow > .swiper-wrapper {-webkit-box-lines:multiple; -moz-box-lines:multiple; -ms-fles-wrap:wrap; -webkit-flex-wrap:wrap; flex-wrap:wrap;}
+.swiper-container-free-mode > .swiper-wrapper {-webkit-transition-timing-function:ease-out; -moz-transition-timing-function:ease-out; -ms-transition-timing-function:ease-out; -o-transition-timing-function:ease-out; transition-timing-function:ease-out; margin:0 auto;}
+.swiper-slide, .spot-swiper .slide {-webkit-transform-style:preserve-3d; -moz-transform-style:preserve-3d; -ms-transform-style:preserve-3d; transform-style:preserve-3d; -webkit-flex-shrink:0; -ms-flex:0 0 auto; flex-shrink:0; width:100%; height:100%; position:relative;}
+.swiper-wp8-horizontal {-ms-touch-action:pan-y; touch-action:pan-y;}
+.swiper-wp8-vertical {-ms-touch-action:pan-x; touch-action:pan-x;}
+
+
+
+/*** Layout Group ***/
+.mask {position:relative; overflow:hidden; height:100%;}
+/*body:after {content:''; display:block; position:absolute; top:0; right:0; bottom:0; left:0; z-index:-1; background-color:#333; -webkit-transition:opacity .4s ease-in; -webkit-transform:translateZ(0); opacity:0;}
+body.mask:after {opacity:1; z-index:50;}*/
+
+
+/* header */
+#header {position:relative; z-index:30; background-color:#f31c3f; text-align:center;}
+#header .title {position:static; display:inline-block; width:272px; height:93px; padding-top:18px;}
+#header .title a {display:inline-block; width:100%; height:75px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') 0 0 no-repeat; font:0/0 a; color:transparent; vertical-align:top;}
+#header .menu-wrap [class^='pos'] {position:absolute; top:0; display:inline-block; width:80px; height:83px; padding-top:28px; font-size:20px; color:#fff; text-align:center; line-height:1.4; -webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color:transparent;}
+#header .menu-wrap [class^='pos'] em {display:block;}
+#header .menu-wrap [class^='pos'][class*='left'] {left:0;}
+#header .menu-wrap [class^='pos'][class*='right'] {right:0;}
+#header .menu-wrap [class^='pos'][class*='right'].active {background-color:rgba(0,0,0,.15);}
+
+
+/* footer */
+#footer {margin-top:20px; padding-bottom:100px; border-top:3px solid #888; background-color:#ebebeb; font-size:22px; line-height:1.4; letter-spacing:-3px;}
+#footer.trucommon {padding-bottom:0;}
+#footer .action-list {display:table; table-layout:fixed; table-layout:fixed; width:100%; border-bottom:2px solid #b9b9b9; font-size:24px;}
+#footer .action-list a {display:table-cell; height:68px; color:#333; font-weight:bold; text-align:center; vertical-align:middle; background-color:#f3f3f3; border-left:1px solid #cdcdcd;}
+#footer .action-list a:first-child {border-left:0 none;}
+#footer .sub-action-list a {color:#333; font-weight:bold; vertical-align:middle; font-size:24px; letter-spacing:-4px;}
+#footer .sub-action-list a:before {content:''; display:inline-block; width:2px; height:20px; margin:-2px 13px 0 14px; background-color:#aaa; vertical-align:middle;}
+#footer .sub-action-list a:first-child:before {display:none;}
+.foot-companyinfo-wrap {padding:28px 20px 28px 40px;}
+.foot-companyinfo-list {overflow:hidden; margin-top:18px; color:#666;}
+.foot-companyinfo-list dt, .foot-companyinfo-list dd {float:left;}
+.foot-companyinfo-list dt {clear:left; margin-right:5px;}
+.foot-companyinfo-list dd a {color:#666; text-decoration:underline;}
+.foot-companyinfo-wrap .desc {margin:25px 0 20px; line-height:1.1;}
+.foot-companyinfo-wrap .copy {letter-spacing:-1px;}
+#footer .relation-site {border-top:2px solid #a6a6a6; background-color:#c1c1c1;}
+#footer .relation-site ul {display:table; width:100%; table-layout:fixed;}
+#footer .relation-site ul li {display:table-cell; vertical-align:middle;}
+#footer .relation-site ul li a {position:relative; font:0/0 a; text-align:center; display:block; height:63px;}
+#footer .relation-site ul li a:before {content:''; display:inline-block; position:absolute; top:50%; left:0; width:2px; height:24px; margin-top:-12px; background-color:#929292; vertical-align:middle;}
+#footer .relation-site ul li:first-child a:before {display:none;}
+#footer .relation-site ul li a:after {content:''; display:inline-block; vertical-align:middle; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png');}
+#footer .relation-site ul li:nth-child(1) a:after {width:82px; height:34px; margin-top:8px; background-position:-285px 0;}
+#footer .relation-site ul li:nth-child(2) a:after {width:150px; height:19px; margin-top:21px; background-position:-378px 0;}
+#footer .relation-site ul li:nth-child(3) a:after {width:90px; height:24px; margin-top:18px; background-position:-538px 0;}
+
+
+/* globalMenu */
+#globalMenu {position:fixed; top:0; right:130%; bottom:0; left:-100%; z-index:51; background-color:#fff; -webkit-backface-visibility:hidden; -webkit-transition:all .5s cubic-bezier(.215, .610, .355, 1);}
+#globalMenu * {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color:transparent;}
+.scroll-wrap {position:relative; height:100%; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;}
+#globalMenu.active {right:0; left:0;}
+#globalMenu .close {position:absolute; top:20px; right:10px;}
+
+.gm-header {height:110px; padding-right:82px; background-color:#5a5555; font-size:28px; color:#fff; font-weight:bold;}
+.gm-header .userinfo {position:relative; padding:26px 0 0 10px;}
+.gm-header .userinfo .btn-point {display:inline-block; height:50px; line-height:50px; padding:0 14px; background-color:#f51e41; border-radius:8px; box-shadow:0 2px 0 1px rgba(0,0,0,.3); color:#fff; font-size:24px;}
+.gm-header .userinfo .btn-point [class|='spicon'][class*='login'] {margin-top:-4px;}
+.gm-header .userinfo p {display:inline-block; vertical-align:middle; margin-left:4px;}
+.gm-header .userinfo .appsetting {position:absolute; top:20px; right:0;}
+
+.gm-tabmenu {height:80px; font-size:30px; background-color:#413c3c; letter-spacing:-2px; line-height:1;}
+.gm-tabmenu a {float:left; min-width:29%; height:90px; margin-top:-10px; padding:0 7px 0 10px; color:#fff; font-weight:bold;}
+.gm-tabmenu a:nth-child(2) {width:31%;}
+.gm-tabmenu a .active-wrap {position:relative; display:block; width:100%; height:90.5px; border-radius:10px 10px 0 0; text-align:center;}
+.gm-tabmenu a i {transition:all .15s linear; -webkit-transition:all .15s linear; position:relative; z-index:2; display:inline-block; padding:34px 3px 0 1px;}
+.gm-tabmenu a .active-wrap:before, .gm-tabmenu a .active-wrap:after {content:''; display:block; position:absolute;}
+.gm-tabmenu a .active-wrap:before {width:3px; height:28px; bottom:26px; left:-9px; background-color:#555;}
+.gm-tabmenu a:first-child .active-wrap:before, .gm-tabmenu a.active + a .active-wrap:before {opacity:0;}
+.gm-tabmenu a.active .active-wrap:before, .gm-tabmenu a.active .active-wrap:after {background:transparent url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') 0 0 no-repeat;}
+.gm-tabmenu a.active .active-wrap {background-color:#fff; color:#f51e41;}
+.gm-tabmenu a.active .active-wrap:before {width:6px; height:6px; bottom:0; left:-6px; background-position:-279px -128px; opacity:1;}
+.gm-tabmenu a.active .active-wrap:after {width:40px; height:90px; top:0; right:-30px; background-position:-285px -44px;}
+.gm-tabmenu a.active i {padding-top:26px; padding-bottom:8px; border-bottom:4px solid #f51e41;}
+
+.gm-footer .linked-wrap a {box-sizing:border-box; float:left; width:50%; height:100px; padding:24px 0 0 24px; font-size:26px; color:#666; background-color:#dedddd; border-top:1px solid #d0cece; border-left:1px solid #d0cece;}
+.gm-footer .linked-wrap a:nth-child(1), .gm-footer .linked-wrap a:nth-child(2) {border-top:0 none;}
+.gm-footer .linked-wrap a:nth-child(2n+1) {border-left:0 none;}
+
+#globalMenu .tab-container {min-height:51%; background-color:#fff;}
+.tab-container [class*='tabcontents'] {display:none;}
+.tab-container [class*='tabcontents'].active {display:block;}
+
+.thumbnail-list li {position:relative; overflow:hidden; border-bottom:2px solid #ececec;}
+.thumbnail-list li:after {content:''; display:block; width:26px; height:17px; position:absolute; top:50%; right:35px; margin-top:-9px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -90px no-repeat; transform:rotate(-90deg); -webkit-transform:rotate(-90deg);}
+.thumbnail-list li a {display:block; padding:25px 0;}
+.thumbnail-list .thumbnail, .thumbnail-list .conts {display:inline-block; vertical-align:middle;}
+.thumbnail-list .thumbnail {width:25%; text-align:center;}
+.thumbnail-list .thumbnail img {border-radius:30px;}
+.thumbnail-list .conts {width:80%; padding:0 4%;}
+.thumbnail-list .thumbnail + .conts {width:57%; padding:0;}
+.thumbnail-list .conts .title {padding-bottom:2px; font-size:30px; color:#333;}
+
+.gm-hotcategory {padding:44px 20px 0; line-height:1.3; letter-spacing:-2px;}
+.gm-hotcategory .title {display:none; padding-bottom:5px; font-size:30px; color:#333; font-weight:bold;}
+.gm-hotcategory .title .point {color:#f31c3f;}
+.gm-hotcategory li {margin-top:10px;}
+.gm-hotcategory li:first-child {margin-top:0px;}
+.gm-hotcategory li a {display:block; padding:15px 20px; background-color:#f2f2f2; border-radius:10px; color:#666; font-size:26px; font-weight:bold;}
+.gm-hotcategory li em {display:inline-block;width:75px;height:32px;margin:-2px 5px 0 0;background:url("//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png") no-repeat;text-indent:-9999px;overflow:hidden;white-space:nowrap;vertical-align:middle;}
+.gm-hotcategory li .icon-st01 {background-position:-565px -156px;}
+
+.gm-tabmenu-inner {box-sizing:border-box; display:table; table-layout:fixed; width:80%; margin:50px 10% 40px; border:2px solid #a39c9c; border-radius:10px; text-align:center; font-size:30px; font-weight:bold;}
+.gm-tabmenu-inner a {display:table-cell; height:66px; vertical-align:middle; background-color:#fff; color:#999; border-radius:6px;}
+.gm-tabmenu-inner a.active {background-color:#969090; color:#fff;}
+
+.themalist {overflow:hidden; padding:20px 7% 0; background-color:#f2f2f2;}
+.themalist li {position:relative; float:left; width:33.33%; padding-bottom:20px; text-align:center;}
+#innerBrandMall .themalist li {margin-bottom:35px;}
+#innerBrandMall .themalist li a:after {content:attr(title); display:block; position:absolute; right:0; bottom:0; left:0; font-size:24px; color:#666; letter-spacing:-2px;}
+
+.gm-linkedlist {position:relative; line-height:1.3; margin-top:40px; padding-top:44px;}
+.gm-linkedlist .title {position:absolute; top:0; left:0; z-index:2; display:inline-block; min-width:35%; height:44px; padding:0 20px; border-bottom:4px solid #f31c3f; font-size:32px; color:#333;}
+.gm-linkedlist ul {border-top:4px solid #9d9d9d;}
+.gm-linkedlist li {position:relative; border-bottom:2px solid #ececec; letter-spacing:-2px;}
+.gm-linkedlist li:after {content:''; display:block; width:26px; height:17px; position:absolute; top:50%; right:35px; margin-top:-9px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -90px no-repeat; transform:rotate(-90deg); -webkit-transform:rotate(-90deg);}
+.gm-linkedlist li a {display:block; padding:12px 20px; font-size:28px; color:#666; font-weight:bold;}
+.gm-linkedlist li a sub {margin-left:5px; font-size:.75em; vertical-align:sub; color:#aaa; font-weight:normal;}
+.gm-linkedlist li a [class|='spicon-smallthema'] {margin-right:10px;}
+.gm-linkedlist .more {position:absolute; top:7px; right:15px; font-size:24px; color:#666; letter-spacing:-2px;}
+.gm-linkedlist .more [class|='spicon'] {margin-top:-4px;}
+
+.gm-catelist {border-top:2px solid #e0e0e0; line-height:1.1; letter-spacing:-1px;}
+.gm-catelist .title {padding:10px 0; border-bottom:2px solid #e0e0e0; background-color:#edebeb; font-size:32px; text-align:center;}
+.gm-catelist.food .title {color:#54c964;}
+.gm-catelist.life .title {color:#f51e41;}
+.gm-catelist li, .gm-catelist li p, .gm-catelist li a {display:block; position:relative; font-size:30px; color:#666; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; z-index:3;}
+.gm-catelist li p:before, .gm-catelist li p:after, .gm-catelist li a:before, .gm-catelist li a:after {content:''; display:inline-block; vertical-align:middle;}
+.gm-catelist .depth1 ul {height:0; /*display:none;*/ transform-origin:50% 0%; -webkit-transform-origin:50% 0%; transition:transform ease-in .15s; -webkit-transition:-webkit-transform ease-in .15s; transform:translateY(-100%) scaleY(0); -webkit-transform:translateY(-100%) scaleY(0);}
+.gm-catelist .depth1 > li {border-top:2px solid #ececec;}
+#innerCategory .gm-catelist li:first-child {border-top:0 none;}
+.gm-catelist .depth1 > li > p {padding:10px 20px; background-color:#fff; font-weight:bold;}
+.gm-catelist .depth2 > li {background-color:#f3f3f3; border-top:2px solid #fff;}
+.gm-catelist .depth2 > li > p, .gm-catelist .depth2 > li > a {padding:22px 140px 22px 20px; background-color:#f3f3f3;}
+.gm-catelist .depth2 > li > a {padding-left:106px;}
+.gm-catelist .depth2 > li p:before {width:21px; height:21px; margin:-4px 40px 0 25px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') -34px -90px no-repeat;}
+.gm-catelist .depth2 > li a.morego {position:absolute; top:18px; right:20px; display:inline-block; height:41px; line-height:41px; background-color:#a39c9c; border-radius:10px; color:#fff; font-size:22px; padding:0 12px;}
+.gm-catelist .depth3 {background-color:#c5c5c5; border-top:2px solid #8c8b8b;}
+.gm-catelist .depth3 > li {border-bottom:2px dashed #d9d9d9;}
+.gm-catelist .depth3 > li a {padding:20px 10px 20px 50px; margin-right:100px; color:#666;}
+.gm-catelist .depth3 > li a:before {content:''; display:inline-block; width:16px; height:23px; margin:-4px 40px 0 0; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -110px no-repeat;}
+.gm-catelist .depth3 > li input[type='checkbox'].chk-star {position:absolute; top:50%; right:47px; margin-top:-20px;}
+.gm-catelist li.active > ul {height:auto; /*display:block;*/ transform:translateY(0) scaleY(1); -webkit-transform:translateY(0) scaleY(1);}
+.gm-catelist .depth1 > li.active + li {border-top:0 none;}
+.gm-catelist .depth1 > li.active [class|='lnbicon'] {color:#fff; background-color:#538d5b;}
+.gm-catelist.life .depth1 > li.active [class|='lnbicon'] {background-color:#ff685f;}
+.gm-catelist .depth1 > li.active [class|='lnbicon']:after {filter:contrast(500%); -webkit-filter:contrast(500%); transform:rotate(180deg); -webkit-transform:rotate(180deg);}
+.gm-catelist .depth2 > li.active {background-color:#dbdbdb;}
+.gm-catelist .depth2 > li.active p:before {width:21px; height:4px; background-position:-34px -99px; filter:contrast(30%); -webkit-filter:contrast(30%);}
+.gm-catelist li [class|='lnbicon']:after {width:26px; height:17px; position:absolute; top:50%; right:20px; margin-top:-9px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -90px no-repeat; transition:transform .15s linear; -webkit-transition:-webkit-transform .15s linear;}
+.gm-catelist li [class|='lnbicon']:before {margin-right:16px;}
+.gm-catelist li [class|='sptips'] {box-sizing:border-box; max-width:84%; position:relative; display:inline-block; padding-right:80px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.gm-catelist li [class|='sptips'] .tips {position:absolute; bottom:2px; right:0; display:inline-block; padding:0 13px 0 2px; margin:-4px 0 0 10px; height:30px; line-height:30px; border-radius:0 5px 5px 0; font-size:22px; box-shadow:1px 1px 1px 0 rgba(0,0,0,.3); color:#fff; font-style:italic; vertical-align:middle;}
+.gm-catelist li [class|='sptips'] .tips:before {content:''; display:block; width:0; height:0; font:0/0 a; position:absolute; top:0; left:-24px; border-width:15px 12px; border-style:solid; border-color:transparent;}
+.gm-catelist li [class|='sptips'][class*='hot'] {padding-right:76px; color:#f51e41;}
+.gm-catelist li [class|='sptips'][class*='hot'] .tips {background-color:#f51e41;}
+.gm-catelist li [class|='sptips'][class*='hot'] .tips:before {border-right-color:#f51e41;}
+.gm-catelist li [class|='sptips'][class*='mdfick'] {padding-right:111px; color:#0c7eba;}
+.gm-catelist li [class|='sptips'][class*='mdfick'] .tips {background-color:#0c7eba;}
+.gm-catelist li [class|='sptips'][class*='mdfick'] .tips:before {border-right-color:#0c7eba;}
+.gm-catelist li [class|='sptips'][class*='new'] {padding-right:86px; color:#2ca30f;}
+.gm-catelist li [class|='sptips'][class*='new'] .tips {background-color:#2ca30f;}
+.gm-catelist li [class|='sptips'][class*='new'] .tips:before {border-right-color:#2ca30f;}
+
+.bookmark-list {font-size:30px; color:#666; line-height:1.5;}
+.bookmark-list [class|='chk'] {position:absolute; top:50%; left:33px; margin-top:-21px;}
+.bookmark-list [class|='chk']:after {content:''; display:block; position:absolute; top:-28px; bottom:-28px; left:-35px; width:100px;}
+.bookmark-list [class|='chk']:checked + a {background-color:#f2f2f2;}
+.bookmark-list .selectall {position:relative; border-top:2px solid #e2e0e0; border-bottom:4px solid #b2acac; background-color:#edebeb;}
+.bookmark-list ul li {position:relative; border-bottom:2px solid #ececec;}
+.bookmark-list .selectall label, .bookmark-list ul li a {display:block; padding:22px 20px 23px 100px; color:#666;}
+.bookmark-list .selectall label {display:inline-block; color:#333; font-weight:bold;}
+.bookmark-list .selectall [class*='trash'] {position:absolute; top:50%; right:28px; margin-top:-20px;}
+
+
+/* search area */
+#header .srch_area {overflow:hidden; padding:0 10px 19px 10px; background-color:transparent; border-bottom:0 none;}
+#header .srch_area > div {background-color:#fff; border-radius:8px;}
+#header .srch_area .srch_txt {height:60px; padding:0 65px 0 10px; border:0 none; box-shadow:inset 0 0 0 rgba(0,0,0,0);}
+#header .srch_area .srch_qr, #header .srch_area .srch_voice {width:58px; height:60px; margin-left:10px; padding:0; background-color:#fff; border-radius:8px;}
+#header .srch_area .srch_qr:after, #header .srch_area .srch_voice:after {top:50%; left:50%; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 0 no-repeat;}
+#header .srch_area .srch_qr:after {width:30px; height:30px; margin:-15px 0 0 -15px; background-position:-537px -50px;}
+#header .srch_area .srch_voice:after {width:23px; height:32px; margin:-16px 0 0 -11px; background-position:-504px -50px;}
+#header .srch_area .srch_voice:before {display:none;}
+#header .srch_area .srch_qr {width:126px;}
+#header .srch_area .srch_qr:before {content:'QR코드'; display:inline-block; position:absolute; top:15px; left:10px; font-size:22px; color:#666;}
+#header .srch_area .srch_qr:after {left:100px;}
+#header .srch_area .srch_voice + .srch_qr {width:58px;}
+#header .srch_area .srch_voice + .srch_qr:before {display:none;}
+#header .srch_area .srch_voice + .srch_qr:after {left:50%;}
+#header .srch_area .srch_btn, #header .srch_area .srch_del {top:0; bottom:0; height:auto; background-color:tomato; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 0 no-repeat;}
+#header .srch_area .srch_btn {width:60px; right:0px; background-position:-577px -50px;}
+#header .srch_area .srch_del {width:48px; right:60px; background-position:-504px -90px;}
+#header .srch_area .delivery-link {width:129px; height:60px; margin-right:10px; padding:0; background:#fff; border-radius:8px; letter-spacing:-2px;}
+#header .srch_area .delivery-link:after {display:none;}
+#header .srch_area .delivery-link > em {position:relative; overflow:hidden; white-space:nowrap; display:inline-block; margin-top:15px; padding-right:26px; font-size:22px; color:#666;}
+#header .srch_area .delivery-link > em:after {position:absolute; top:50%; right:0; content:''; display:inline-block; width:24px; height:30px; margin-top:-15px; background:#fff url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') -577px -110px no-repeat; vertical-align:middle;}
+#search_menu, #search_list {background-color:#fff; text-align:left;}
+
+
+/* moveShopMenu */
+#moveShopMenu {overflow-y:hidden; overflow-x:auto; -webkit-overflow-scrolling:touch; height:0; background-color:#edebeb; transition:height ease .3s; -webkit-transition:height ease .3s;}
+.document-wrap.moveShopMenu #moveShopMenu {height:150px;}
+#moveShopMenu ul {margin-top:20px; white-space:nowrap;}
+#moveShopMenu li {display:inline-block; position:relative; width:32.5%; text-align:center; border-left:1px solid #cdcdcd; box-shadow:-1px 0 0 0 #fff;}
+#moveShopMenu li:first-child {border-left:0 none; box-shadow:0 0 0 0 transparent;}
+#moveShopMenu li a {position:static;}
+#moveShopMenu li a:after {content:attr(title); display:inline-block; position:absolute; right:0; bottom:-20px; left:0; font-size:22px; color:#666;}
+
+
+
+/*** Main Pages ***/
+.main-wrap .notice {position:relative; bottom:-20px; border-top:2px solid #888; letter-spacing:-2px; font-size:26px;}
+.main-wrap .notice:after {content:''; display:block; width:20px; height:13px; position:absolute; top:50%; right:20px; margin-top:-6px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') 0 -70px no-repeat; background-size:500px auto; transform:rotate(-90deg); -webkit-transform:rotate(-90deg);}
+.main-wrap .notice .title {position:absolute; top:2px; bottom:0; left:0; width:150px; font-weight:bold; font-size:26px; color:#333; text-align:center; vertical-align:middle;}
+.main-wrap .notice .title:after {content:''; display:inline-block; height:100%; vertical-align:middle;}
+.main-wrap .notice a {display:block; padding:18px 80px 20px 160px; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+.pagenav-main {overflow:hidden; position:relative; top:0; z-index:15; display:table; width:100%; background-color:rgba(255,255,255,.9); font-family:'LTMHappy-B', sans-serif;}
+.pagenav-main .pagenav-main-scrollwrap {width:100%; overflow-y:hidden; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+.pagenav-main a, .pagenav-main span {display:table-cell; height:80px; padding:2px 5px 6px; text-align:center; vertical-align:middle; border-bottom:2px solid #d4d4d4; font-size:30px; color:#333; transition:all linear .15s; -webkit-transition:all linear .15s;}
+/*.pagenav-main .swiper-pagination-bullet {display:inline-block; height:56px; padding:26px 3% 6px; vertical-align:bottom;}*/
+.pagenav-main a:first-child {width:11%;}
+.pagenav-main [class*='active'] {padding-bottom:0; border-bottom:8px solid #f31c3f; color:#f31c3f;}
+.pagenav-main.sticky {position:fixed;}
+.pagenav-main.sticky + * {padding-top:90px;}
+
+.spot-swiper {position:relative; overflow:hidden; min-height:300px;}
+.spot-swiper li {float:left; text-align:center;}
+.spot-swiper li a {display:block; width:100%;}
+.spot-swiper li img {width:100%;}
+.spot-swiper * {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color:transparent;}
+.spot-swiper .pagenum {position:absolute; right:145px; bottom:5px; z-index:5; font-size:26px; color:#999; opacity:.8; font-family:'LTMHappy-B', sans-serif; letter-spacing:-1px;}
+.spot-swiper .pagenum .current {color:#333;}
+.spot-swiper [class|='arrow'] {position:absolute; top:0; bottom:0; z-index:2; width:55px; font:0/0 a; color:transparent; text-align:center; vertical-align:middle;}
+.spot-swiper [class|='arrow']:after {content:''; display:inline-block; width:29px; height:50px; vertical-align:middle; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') -504px 0 no-repeat;}
+.spot-swiper [class|='arrow']:before {content:''; display:inline-block; height:100%; vertical-align:middle;}
+.spot-swiper .arrow-prev {left:0;}
+.spot-swiper .arrow-prev:after {transform:rotate(180deg); -webkit-transform:rotate(180deg);}
+.spot-swiper .arrow-next {right:0;}
+.spot-swiper .slide-allview {position:absolute; right:0; bottom:0; z-index:3; padding:6px 11px; background-color:rgba(125,125,125,.8); color:#fff; font-size:24px; letter-spacing:-2px; line-height:1.3;}
+.spot-swiper .slide-allview [class|='spicon'] {margin-top:-4px; -webkit-filter:contrast(500%);}
+.allview-box {display:none; overflow:hidden; position:fixed; top:0; right:0; bottom:100px; padding:80px 0 0; left:0; z-index:31; background-color:rgba(0,0,0,.8);}
+.allview-box.active {display:block;}
+.allview-box .title {position:absolute; top:0; right:0; left:0; z-index:5; height:80px; line-height:80px; padding-left:30px; color:#fff; font-size:36px; font-weight:bold; background-color:#f31c3f;}
+.allview-box .btn-close {position:absolute; top:0; right:0; width:100px; height:80px; z-index:5;}
+.allview-box .scroll-wrap {box-sizing:border-box;}
+.allview-box#allItemsView .scroll-wrap img {margin-bottom:2px; width:100%;}
+.allview-box#bestgoodsAllView {background-color:#edebeb;}
+.allview-box#bestgoodsAllView .scroll-wrap {padding:20px 20px 60px;}
+.allview-box#bestgoodsAllView [class|='spbg'] {display:inline-block; width:25%;}
+
+.title-depth {position:relative; padding:0 20px; font-size:32px; color:#333; font-weight:bold;}
+.title-depth:before, .title-depth:after {content:''; display:inline-block; vertical-align:middle;}
+.title-depth:before {width:6px; height:30px; margin-top:-3px; background-color:#f31c3f; border-radius:3px;}
+.title-depth:after {position:absolute; top:50%; left:50px; right:20px; z-index:0; height:1px; background-color:#cdcdcd; border-bottom:1px solid #fff;}
+.title-depth em {position:relative; display:inline-block; padding:0 9px; z-index:3; background-color:#fff;}
+
+.bestgoods-list {white-space:nowrap; padding:5px 0 15px; text-align:center;}
+.bestgoods-list li {display:inline-block; width:24.4%;}
+.bestgoods-list li [class|='spbg'] {width:140px; color:#666;}
+.bestgoods-list li.active [class|='spbg'] {color:#333; font-weight:bold;}
+
+[class|='bestgoods-wrap'] {position:relative; padding:20px 0 0; background-color:#edebeb; margin-bottom:40px;}
+[class|='bestgoods-wrap'][class*='hswiper'] {padding:17px 0 8px; margin-bottom:70px;}
+[class|='bestgoods-wrap'][class*='hswiper'] .bestgoods-list {overflow-y:hidden; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.bestgoods-wrap .title-depth em {background-color:#edebeb; font-size:30px;}
+.bestgoods-wrap .bestgoods-list li {display:inline-block; width:19%;}
+.bestgoods-wrap .bestgoods-list li [class|='spbg'] {width:115px;}
+.bestgoods-wrap [class|='spbg']:before {width:115px; height:115px; margin:0 auto; background-size:1075px}
+.bestgoods-wrap [class|='spbg'][class*='more']:before {background-position:-2px -2px;}
+.bestgoods-wrap [class|='spbg'][class*='best']:before {background-position:-237px -2px;}
+.bestgoods-wrap [class|='spbg'][class*='code1']:before {background-position:-2px -120px;}
+.bestgoods-wrap [class|='spbg'][class*='code2']:before {background-position:-237px -120px;}
+.bestgoods-wrap [class|='spbg'][class*='code3']:before {background-position:-2px -237px;}
+.bestgoods-wrap [class|='spbg'][class*='code4']:before {background-position:-237px -237px;}
+.bestgoods-wrap [class|='spbg'][class*='code5']:before {background-position:-2px -355px;}
+.bestgoods-wrap [class|='spbg'][class*='code6']:before {background-position:-237px -355px;}
+.bestgoods-wrap [class|='spbg'][class*='code7']:before {background-position:-2px -473px;}
+.bestgoods-wrap [class|='spbg'][class*='code8']:before {background-position:-237px -473px;}
+.bestgoods-wrap [class|='spbg'][class*='code9']:before {background-position:-2px -590px;}
+.bestgoods-wrap [class|='spbg'][class*='code10']:before {background-position:-237px -590px;}
+.bestgoods-wrap [class|='spbg'][class*='code11']:before {background-position:-473px -2px;}
+.bestgoods-wrap [class|='spbg'][class*='code12']:before {background-position:-707px -2px;}
+.bestgoods-wrap [class|='spbg'][class*='code13']:before {background-position:-473px -120px;}
+.bestgoods-wrap [class|='spbg'][class*='code14']:before {background-position:-707px -120px;}
+.bestgoods-wrap [class|='spbg'][class*='code15']:before {background-position:-473px -237px;}
+.bestgoods-wrap [class|='spbg'][class*='code16']:before {background-position:-707px -237px;}
+.bestgoods-wrap [class|='spbg'][class*='code17']:before {background-position:-473px -355px;}
+.bestgoods-wrap [class|='spbg'][class*='code18']:before {background-position:-707px -355px;}
+.bestgoods-wrap [class|='spbg'][class*='code19']:before {background-position:-473px -473px;}
+.bestgoods-wrap [class|='spbg'][class*='code20']:before {background-position:-707px -473px;}
+.bestgoods-wrap [class|='spbg'][class*='code21']:before {background-position:-473px -590px;}
+.bestgoods-wrap [class|='spbg'][class*='code22']:before {background-position:-707px -590px;}
+.bestgoods-wrap [class|='spbg'][class*='code23']:before {background-position:-2px -707px;}
+.bestgoods-wrap [class|='spbg'][class*='code24']:before {background-position:-237px -707px;}
+.bestgoods-wrap [class|='spbg'][class*='code25']:before {background-position:-473px -707px;}
+.bestgoods-wrap [class|='spbg'][class*='code26']:before {background-position:-707px -707px;}
+
+.btm-banner-wrap {margin-top:40px; text-align:center;}
+.btm-banner-wrap > div ~ div {margin-top:10px;}
+
+.bestgoods-wrap-hswiper .more {position:absolute; bottom:-39px; left:50%; z-index:3; width:20%; height:39px; margin-left:-10%; line-height:36px; font-size:20px; color:#666; text-align:center; background-color:#edebeb;}
+.bestgoods-wrap-hswiper .more:before, .bestgoods-wrap-hswiper .more:after {position:absolute; top:0; bottom:0; content:''; display:block; width:27px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') -327px -44px no-repeat;}
+.bestgoods-wrap-hswiper .more:before {left:-27px;}
+.bestgoods-wrap-hswiper .more:after {right:-27px; background-position:-354px -44px;}
+.bestgoods-wrap-hswiper .more [class|='spicon'] {margin:-4px 0 0 4px;}
+
+
+/* floating popup */
+[class|='floating-popup'] {opacity:0; position:fixed; right:0; bottom:100px; left:0; text-align:center; z-index:-1; -webkit-transition:all .2s ease;}
+[class|='floating-popup'] a {display:block;}
+[class|='floating-popup'].active {opacity:1; z-index:30; transform:translate(0,0); -webkit-transform:translate(0,0);}
+[class|='floating-popup'] .close {position:absolute;}
+.floating-popup-btm {transform:translateY(100%); -webkit-transform:translateY(100%);}
+.floating-popup-btm .close {top:-70px; right:14px;}
+.floating-popup-full .close {top:0; right:0; bottom:0; width:80px; text-align:center;}
+.floating-popup-full {top:0; padding-top:86px; background-color:rgba(0,0,0,.8);}
+.floating-popup-full .popheader {position:absolute; top:0; right:0; left:0; z-index:3; padding:23px 30px; border-top:2px solid #d0d0d0; border-bottom:2px solid #d0d0d0; background-color:#edebeb; text-align:left;}
+.floating-popup-full img {width:100%;}
+
+
+
+/*** Sub Pages ***/
+.title-img {text-align:center; margin-bottom:20px;}
+.title-img.myprecious {border-bottom:2px solid #cee2e4; background-color:#dcf0f2;}
+.title-bar {position:relative; margin-top:20px; padding-right:20px; border-bottom:4px solid #9d9d9d;}
+.title-bar:after {content:''; display:block; clear:both;}
+.title-bar .title {position:relative; float:left; bottom:-4px; z-index:2; display:inline-block; min-width:35%; max-width:80%; height:50px; line-height:50px; padding:0 20px 10px; border-bottom:4px solid #f31c3f; font-size:32px; color:#333; font-weight:bold; letter-spacing:-2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.title-bar .sorting-sum {position:relative; float:left; bottom:-4px; z-index:2; display:inline-block; min-width:35%; max-width:80%; height:50px; line-height:50px; padding:0 20px 10px; border-bottom:4px solid #f31c3f; font-size:24px; color:#333; font-weight:bold;}
+.title-bar .sorting-sum .point {color:#f31c3f; font-size:30px; font-weight:bold; vertical-align:-2px;}
+.title-bar > .right-group,
+.title-bar > [class|='sabtn'],
+.title-bar > [class|='spicon'] {float:right;}
+.title-bar [class|='spicon'][class*='social'] {margin-top:7px;}
+.mask .title-bar [class|='spicon'][class*='social'] {display:none;}
+.title-bar .more {display:inline-block; padding:15px 0; font-size:24px; color:#666;}
+.title-bar .more .spicon-plus {margin-top:-4px;}
+.article-product-list .title-bar {margin-right:-20px; margin-left:-20px;}
+.article-product-list .title-bar .title {padding-top:0; font-size:32px; color:#333;}
+
+.sub-location-nav {display:table; width:100%; table-layout:fixed; border-top:2px solid #e2e0e0; border-bottom:4px solid #cacaca; background-color:#edebeb; font-size:28px; color:#666;}
+.sub-location-nav > * {display:table-cell; padding:18px 0; vertical-align:middle; text-align:center;}
+.sub-location-nav > :first-child ~ * {border-left:2px solid #cacaca;}
+
+.share-wrap {display:none; position:fixed; top:0; right:-100%; bottom:0; left:130%; z-index:35; background-color:rgba(0,0,0,.8); -webkit-transition:all .25s ease; text-align:center;}
+.share-wrap:after {content:''; display:inline-block; vertical-align:middle; height:100%;}
+.share-wrap .share {display:inline-block; vertical-align:middle; white-space:nowrap;}
+.share-wrap .share [class|='spicon'] ~ [class|='spicon'] {margin-left:30px;}
+.share-wrap [class*='close'] {position:absolute; top:15px; right:15px;}
+.share-wrap.active {display:block; right:0; left:0;}
+
+
+/* login page */
+.login_con > header, .login_con .total_login_tab > h3, .login_con .txtusMb, .login_con .total_login legend {display:none;}
+.login_con input {-webkit-appearance:none;}
+.login_con {padding-bottom:100px;}
+.login_con > h2 {height:88px; line-height:88px; font-size:40px; color:#fff; background-color:#f31c3f; text-align:center;}
+.login_con .total_login_tab {padding:60px 30px 0;}
+.login_con #ulLoginTab {display:table; table-layout:fixed; width:100%;}
+.login_con #ulLoginTab > li {display:table-cell; text-align:center; font:0/0 a; color:transparent;}
+.login_con #ulLoginTab > li a {box-sizing:border-box; display:block; width:100%; height:72px; border-style:solid; border-width:2px 0 2px 2px; border-color:#e5e5e5 #e5e5e5 #666 #e5e5e5; background-color:#f9f9f9;}
+.login_con #ulLoginTab > li a:after {content:''; display:inline-block; background:url('//simage.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') 0 0 no-repeat; vertical-align:top;}
+.login_con #ulLoginTab > li:first-child a:after {width:161px; height:38px; margin-top:13px; background-position:0px -761px;}
+.login_con #ulLoginTab > li:last-child a:after {width:174px; height:21px; margin-top:24px; background-position:-390px -139px;}
+.login_con #ulLoginTab > li:first-child.on a:after {background-position:0px -721px;}
+.login_con #ulLoginTab > li:last-child a:after {width:174px; height:21px; margin-top:24px; background-position:-390px -118px;}
+.login_con #ulLoginTab > li:first-child ~ li a {border-right-width:2px;}
+.login_con #ulLoginTab > li.on a {border-color:#666; border-bottom-color:#fff; background-color:#fff;}
+.login_con #ulLoginTab > li.on + li a {border-left-color:#666;}
+.login_con .total_login ul {position:relative; padding:0 30px; letter-spacing:-2px;}
+.login_con .total_login ul li:first-child {padding-right:176px;}
+.login_con .total_login ul li:last-child {position:absolute; top:0; right:30px; bottom:0; width:160px;}
+.login_con .total_login #btnLogin {display:inline-block; width:100%; height:100%; font-size:32px; color:#fff; border:0 none; background-color:#f31c3f; border-radius:10px;}
+.login_con .total_login input[type='text'], .login_con .total_login input[type='password'] {box-sizing:border-box; height:66px; padding:20px 15px; font-size:26px; border:2px solid #dcdee0; border-radius:10px;}
+.login_con .total_login input[type='password'] {margin-top:12px;}
+.login_con .total_login p {display:inline-block; font-size:24px; color:#666; margin:20px 0 50px 30px;}
+.checkbox {border:0 none; background-image:url("//simage.lottemart.com/images/mobile/front/common/input-check-radio.png");}
+.checkbox:checked {background-position:100% 0;}
+.login_con .loginbtm-desc {position:relative; display:block; padding:27px 30px; background-color:#f1efef; text-align:center; color:#666; font-size:24px; line-height:1.3;}
+.login_con .loginbtm-desc:after {content:''; display:block; position:absolute; right:30px; bottom:-2px; left:30px; height:1px; border-top:1px solid #cdcdcd; background-color:#fff;}
+.login_con .loginButton {box-sizing:border-box; display:table; table-layout:fixed; width:100%; padding:24px 20px 30px; background-color:#f1efef;}
+.login_con .loginButton > span {display:table-cell; text-align:center; padding:0 10px;}
+.login_con .loginButton a {display:block; height:46px; line-height:46px; background-color:#fff; border:2px solid #c8c8c8; border-radius:8px;}
+.login_con .keyboardviewer {margin:20px 0 20px; text-align:right;}
+.login_con .keyboardviewer .textbtn {margin-right:30px; font-size:24px; color:#666; font-weight:bold;}
+.login_con .keyboardviewer .textbtn.active [class|='spicon'] {transform:rotate(180deg); -webkit-transform:rotate(180deg);}
+.login_con .keyboardviewer #keyboard {display:none; background-color:#dbdee0; margin-top:20px; padding:12px 10px; text-align:center;}
+.login_con .keyboardviewer .active + #keyboard {display:block;}
+
+
+/* usage guide */
+.ltm-usage-wrap {margin-top:30px;}
+.ltm-usage-conts {padding:40px 20px 0;}
+.ltm-usage-conts dl {margin:0 -20px; padding:20px; border-top:2px solid #e6e6e6;}
+.ltm-usage-conts dl:first-child {padding-top:0; border-top:0;}
+.ltm-usage-conts dl:last-child {padding-bottom:0;}
+.ltm-usage-conts dt {display:block; font-size:28px; color:#000;}
+.ltm-usage-conts dd {margin-top:16px;}
+.ltm-usage-conts .btn.gray.download {display:block; width:auto; height:50px; margin-top:16px; padding-top:12px; font-size:26px; text-align:center; background-color:#666; border-radius:6px; box-shadow:1px 1px 2px rgba(0,0,0,.9), inset -2px -4px 8px 0 rgba(0,0,0,.15); border:0 none;}
+.table-02.faq tr td.title {padding-right:40px;}
+.table-02.faq tr td.title p {height:auto;}
+.table-02.faq tr td:first-child {padding-left:10px; vertical-align:top;}
+.table-02.faq tr td:first-child:before {content:""; display:inline-block; width:37px; height:33px; background:url('//image.lottemart.com/images/mobile/front/common/ico-set-01.png') no-repeat left -660px; vertical-align:-10px;}
+.table-02.faq tr.appraisal td {padding-right:30px; padding-left:30px; color:#333; border-top:1px solid #d8d8d8;}
+.table-02.faq tr.appraisal td:before {display:none;}
+.table-02.faq tr.appraisal {display:none;}
+.table-02.faq tr.on + .appraisal {display:table-row !important;}
+
+.poster-wrap {position:fixed; top:0; right:0; bottom:100px; left:0;}
+.poster-wrap .poster-layer {background-color:#333;}
+
+
+/* category */
+.category-title-wrap {padding:25px 20px; border-top:2px solid #dae2e6; border-bottom:4px solid #dae2e6; background-color:#e6eff3; letter-spacing:0;}
+.category-title-wrap .title {font-size:32px; font-weight:bold; color:#333;}
+.category-select-wrap {padding:22px 37px; border-bottom:2px solid #e6e6e6;}
+.category-select-wrap select.btn.default {width:100%; height:46px; padding:0 0 0 4px; font-size:24px; -webkit-border-radius:5px; -webkit-appearance: none; -webkit-border-image:none; border-width:2px 80px 2px 5px;-webkit-border-image: url('//image.lottemart.com/images/mobile/front/common/btn-select_red.png') 2 80 2 5 repeat stretch;}
+
+
+/* mymart */
+.user-info {position:relative; padding:27px 10px 27px 210px; background-color:#e5e5e5; font-size:30px; line-height:1.3; color:#666; letter-spacing:-2px;}
+.user-info .username {color:#333;}
+.user-info .userrank {color:#0e8dd2; text-decoration:underline;}
+.user-info .userrank.rank4 {color:#f31c3f;}
+.user-info .userrank:before {content:''; display:inline;}
+.user-info .userrank.rank4:before {content:'VIP';}
+.user-info .userrank.rank3:before {content:'최우수';}
+.user-info .userrank.rank2:before {content:'우수';}
+.user-info .userrank.rank1:before {content:'일반';}
+.user-info .userrank:after {content:''; position:absolute; top:50%; left:20px; display:inline-block; width:161px; height:146px; margin-top:-73px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') -260px -170px no-repeat; font:0/0 a; color:transparent;}
+.user-info .userrank.rank4:after {background-position:-260px -170px;}
+.user-info .userrank.rank3:after {background-position:-431px -170px;}
+.user-info .userrank.rank2:after {background-position:-260px -326px;}
+.user-info .userrank.rank1:after {background-position:-431px -326px;}
+.user-info .action-wrap {margin-top:10px;}
+.user-info .floating-group {position:absolute; top:16px; right:20px; font-size:10px;}
+.user-info .floating-group img {width:77px;}
+
+.mymart-info-wrap {margin:40px 20px 5px;}
+.mymart-info-wrap > .title {margin-bottom:15px; font-size:32px; font-weight:bold; color:#666;}
+.mymart-info-wrap .inner-box {border:2px solid #b4b4b4; border-radius:10px; box-shadow:0 1px 0 1px rgba(0,0,0,.1); font-size:28px; color:#888; line-height:1.3;}
+.mymart-info-wrap .inner-box .title {color:#333;}
+.mymart-info-wrap ul.inner-box li {overflow:hidden;}
+.mymart-info-wrap ul.inner-box li:first-child ~ li {border-top:2px solid #f2f2f2;}
+.mymart-info-wrap ul.inner-box .title, .mymart-info-wrap ul.inner-box .conts-wrap {float:left; padding:20px 0;}
+.mymart-info-wrap ul.inner-box .title {width:26%; text-align:center;}
+.mymart-info-wrap ul.inner-box .conts-wrap {width:74%; position:relative;}
+.mymart-info-wrap ul.inner-box .conts-wrap .conts {padding-right:20px;}
+.mymart-info-wrap ul.inner-box .conts-wrap .btn-wrap {position:absolute; top:50%; right:20px; margin-top:-25px;}
+.mymart-info-wrap nav.inner-box {display:table; width:100%; table-layout:fixed;}
+.mymart-info-wrap nav.inner-box > a {display:table-cell; padding:15px 0; text-align:center; vertical-align:middle; font-size:22px;}
+.mymart-info-wrap nav.inner-box > a:first-child ~ a {border-left:2px solid #f2f2f2;}
+.mymart-info-wrap [class|='mymart'] {display:inline-block; width:100%;}
+.mymart-info-wrap [class|='mymart']:before {content:''; display:block; height:46px; margin:0 auto 10px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png') 0 -345px no-repeat;}
+.mymart-info-wrap [class|='mymart'][class*='phase1']:before {width:51px; background-position:0 -345px;}
+.mymart-info-wrap [class|='mymart'][class*='phase2']:before {width:44px; background-position:-61px -345px;}
+.mymart-info-wrap [class|='mymart'][class*='phase3']:before {width:42px; background-position:-115px -345px;}
+.mymart-info-wrap [class|='mymart'][class*='phase4']:before {width:47px; background-position:-167px -345px;}
+.mymart-info-wrap .columns2 [class|='mymart'] {font-size:28px;}
+.mymart-info-wrap .columns2 [class|='mymart']:before {display:inline-block; margin-right:16px; vertical-align:middle;}
+.mymart-info-wrap .inner-box.flexbox {position:relative; border:0 none;}
+.mymart-info-wrap .inner-box.flexbox:after {content:''; display:block; clear:both;}
+.mymart-info-wrap .inner-box.flexbox .suppl {text-align:right; font-size:26px; color:#888;}
+.mymart-info-wrap .inner-box.flexbox > * {box-sizing:border-box; position:relative; float:left; width:50%; padding:15px 17px; border:2px dotted #b2cedd; border-bottom:0 none;}
+.mymart-info-wrap .inner-box.flexbox > :nth-child(odd) {border-left:2px solid #8abad3;}
+.mymart-info-wrap .inner-box.flexbox > :nth-child(even) {border-right:2px solid #8abad3; border-left:0 none;}
+.mymart-info-wrap .inner-box.flexbox > a:nth-child(1) {border-top:2px solid #8abad3; border-right:2px solid #8abad3; border-radius:10px 0 0 0;}
+.mymart-info-wrap .inner-box.flexbox > a:nth-child(2) {display:none;}
+.mymart-info-wrap .inner-box.flexbox > a {background-color:#eaf7fd;}
+.mymart-info-wrap .inner-box.flexbox .totalsum {width:100%; padding-top:20px; padding-bottom:20px; border-radius:0 0 10px 10px; background-color:#c5e6f6; border-right:2px solid #8abad3; border-bottom:2px solid #8abad3;}
+.mymart-info-wrap .inner-box.flexbox .totalsum [class|='mymart'] {margin:0; float:left; width:auto;}
+.mymart-info-wrap .inner-box.flexbox .totalsum [class|='mymart']:before {display:none;}
+.mymart-info-wrap .inner-box.flexbox .totalsum [class|='mymart'] sub {color:#999; vertical-align:baseline;}
+.mymart-info-wrap .inner-box.flexbox .totalsum .suppl {float:right;}
+.mymart-info-wrap .inner-box.flexbox .price {font-size:36px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'] {margin-bottom:25px; color:#333;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart']:before {position:absolute; bottom:15px; left:15px; width:46px; height:46px; margin:0;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene1']:before {background-position:0 -401px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene2']:before {background-position:-112px -457px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene3']:before {background-position:-112px -401px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene4']:before {background-position:-168px -401px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene5']:before {background-position:0 -457px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene6']:before {background-position:-56px -457px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] {float:none;width:100%;min-height:170px;background:url("//image.lottemart.com/images/mobile/common/icon/icon_mybenefit_diagram.png") no-repeat right top;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl {position:relative;display:block;float:none;padding:10px 200px 0 0;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl:nth-child(2) {margin-top:40px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl:after {content:" ";display:block;clear:both;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl:before {content:" ";display:block;position:absolute;left:0px;top:50%;width:14px;height:14px;margin-top:-2px;background-color:#f01e41;border-radius:7px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl:nth-child(odd):before {background-color:#4b96fa;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl .title {float:left;margin-left:20px;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl .price {float:right;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl .price i {margin-left:10px;font-family:sans-serif;font-size:26px;font-weight:normal;color:#888;}
+.mymart-info-wrap .inner-box.flexbox [class|='mymart'][class*='bene7'] .suppl:nth-child(odd) .price {color:#4b96fa;}
+.mymart-info-wrap .inner-box.flexbox:not(.coupontype) > a:nth-child(1) {width:100%; border-radius:10px 10px 0 0; padding-top:20px; padding-bottom:20px;}
+.mymart-info-wrap .inner-box.flexbox:not(.coupontype) > a:nth-child(1) [class|='mymart'] {margin-bottom:0;}
+.mymart-info-wrap .inner-box.flexbox:not(.coupontype) > a:nth-child(1) .suppl {margin-top:-36px;}
+.mymart-info-wrap .inner-box.flexbox:not(.coupontype) > a:nth-child(1) [class|='mymart']:before {display:none;}
+.mymart-info-wrap .inner-box.flexbox.coupontype > a:nth-child(3) {clear:left;}
+.mymart-info-wrap .inner-box.flexbox.coupontype > a:nth-child(4) {border-top:2px solid #8abad3;}
+.mymart-info-wrap .inner-box.flexbox.coupontype > a:nth-child(2) {display:block; position:absolute; top:0; right:0; z-index:3; border-radius:0 10px 0 0; border:0 none; background-color:#fff; box-shadow:inset 0 0 0 2px #b4b4b4; border-left:6px solid #fff; border-bottom:6px solid #fff; padding-top:13px; padding-bottom:13px;}
+
+[class|="notice-wrap"][class*="mymart"]{margin-top:20px;padding:0 20px;}
+[class|="notice-wrap"] ul {border-radius:10px;background:#d8ecf7 url("//image.lottemart.com/images/mobile/common/layout/bg_mymart_notice.png") no-repeat right top;}
+[class|="notice-wrap"] ul li {padding:30px;}
+[class|="notice-wrap"] ul li img {width:100%;max-width:540px;}
+
+
+/* common header */
+.common-header {position:relative; height:88px; background-color:#9c9c9c;}
+.common-header > h1 {position:static; text-align:center;}
+.common-header > h1 > em {font-size:40px; font-weight:bold; color:#fff; line-height:88px;}
+.common-header [class|="btn-common-view"] {display:block; position:absolute; top:0; bottom:0; padding:0 25px; font:0/0 a; text-align:left;}
+.common-header [class|="btn-common-view"]:before {content:''; display:inline-block; height:100%; vertical-align:middle;}
+.common-header [class|="btn-common-view"]:after {content:''; display:inline-block; background:url("//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png") 0 0 no-repeat; vertical-align:middle;}
+.common-header .btn-common-view-cate {left:0;}
+.common-header .btn-common-view-menu {right:0;}
+.common-header .btn-common-view-cate:after {width:21px; height:34px; background-position:-569px -44px;}
+.common-header .btn-common-view-menu:after {width:40px; height:39px; background-position:-569px -87px;}
+
+.common-menu-extend {position:fixed; top:0; bottom:0; left:0; right:0; background-color:#fff; z-index:60; transform:translateX(100%); -webkit-transform:translateX(100%); transition:transform ease-in-out .25s; -webkit-transition:-webkit-transform ease-in-out .25s;}
+.common-menu-extend.active {transform:translateX(0); -webkit-transform:translateX(0);}
+.common-heading {background-color:#9c9c9c;}
+.common-heading > h2 {text-align:center; font-size:40px; font-weight:bold; color:#fff; line-height:88px;}
+.common-menu h3 {height:80px; padding-left:20px; background-color:#fff;}
+.common-menu h3 a {display:inline-block; margin-top:17px; background-image:url("//image.lottemart.com/images/mobile/front/common/reform2014/logo_top_common.png"); font:0/0 a; vertical-align:top;}
+.common-menu-lottemart {border-bottom:4px solid #df2028;}
+.common-menu-lottemart a {width:177px; height:45px; background-position:0 0;}
+.common-menu-toysrus {border-bottom:4px solid #3a69bf;}
+.common-menu-toysrus a {width:177px; height:45px; background-position:0 -60px;}
+.common-menu {overflow-y:auto; overflow-x:hidden; max-height:70%;}
+.common-menu nav {background-color:#ebebeb;}
+.common-menu nav > ul > li {border-bottom:2px solid #d9d9d9;}
+.common-menu nav > ul > li > a {display:block; position:relative; padding:20px 43px 24px; font-size:30px; line-height:1;}
+.common-menu nav > ul > li > a:after {display:inline-block; content:""; position:absolute; top:50%; right:30px; width:14px; height:25px; margin-top:-12px; background-image:url("//image.lottemart.com/images/mobile/front/common/reform2014/logo_top_common.png"); background-position:-295px 0;}
+.btn-common-menu-close {display:block; position:absolute; top:0; right:0; width:88px; height:88px; border:0 none; background:none; font:0/0 a; text-align:center;}
+.common-header [class|="btn-common-view"]:before {content:''; display:inline-block; height:100%; vertical-align:middle;}
+.btn-common-menu-close:after {content:''; display:inline-block; width:27px; height:27px; background:url("//image.lottemart.com/images/mobile/front/common/reform2015/sprite/etc.png") -601px -44px no-repeat; vertical-align:middle;}
+.push_fileBox .title-bar h3 {text-align:left; background-color:transparent; font-weight:normal;}
+.push_fileBox .article-error .err-01 h3 {background-color:transparent;}
+
+/*** special Pages ***/
+.swiper-pager{position:absolute;right:20px;bottom:20px;z-index:2;}
+.swiper-pager span{display:inline-block;width:20px;height:20px;margin:0 4px;font-size:0;line-height:0;background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png') no-repeat -513px -193px;}
+.swiper-pager [class*='active']{background-position:-539px -193px}
+.topband-wrap{background:#edebeb;}
+.topband-wrap > a{display:block;text-align:center;background:linear-gradient(180deg, #118ccf 0%, #1391d1 100%);background:-webkit-linear-gradient(180deg, #118ccf 0%, #1391d1 100%);}
+.topband-wrap img{max-width:100%;}
+.band-link{padding:17px 0 0;background:#c3ecff url('//image.lottemart.com/images/mobile/front/common/reform2015/etc/bg-band-link.png') repeat;}
+.band-link > div{display:table;width:100%;padding:15px 0;box-shadow:0 2px 2px rgba(1,1,1,.1);}
+.band-link > div > a{display:table-cell;width:33%;height:164px;}
+.band-link > div > a em{display:block;width:177px;height:154px;margin:5px auto 0;vertical-align:top;background-size:598px;}
+.box-category{padding:20px 0;background:#edebeb}
+.box-category > div, .bandslide-wrap > div{padding:30px 0 20px;box-shadow:0 2px 2px rgba(1,1,1,.1);background:#fff;}
+.box-category h3:after, .bandslide-wrap h3:after{background:none;}
+.box-category > div > ul:after{content:'';display:block;clear:both;}
+.box-category > div > ul{position:relative;margin:20px 0 0;}
+.box-category > div > ul > li{float:left;width:25%;margin:-1px 0 0;}
+.box-category > div > ul > li > a{display:block;height:109px;border:1px solid #e4e3e3;border-left:0;font-size:0;line-height:0;}
+.box-category > div > ul > li > a:before{content:'';display:block;height:77px;margin:20px auto 0;background-repeat:no-repeat;}
+.box-category > div > ul > li:active > a, .box-category > div > ul > li.on > a{background-color:#c4d2ec;}
+.box-category > div > ul > li:nth-child(1) > a:before{width:48px;background-position:0 -4px}
+.box-category > div > ul > li:nth-child(1) > a:before, .box-category > div > ul > li:nth-child(1) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category01.png');}
+.box-category > div > ul > li:nth-child(2) > a:before{width:34px;}
+.box-category > div > ul > li:nth-child(2) > a:before, .box-category > div > ul > li:nth-child(2) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category02.png');}
+.box-category > div > ul > li:nth-child(3) > a:before{width:59px;background-position:0 -4px}
+.box-category > div > ul > li:nth-child(3) > a:before, .box-category > div > ul > li:nth-child(3) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category03.png');}
+.box-category > div > ul > li:nth-child(4) > a:before{width:39px;background-position:0 -4px}
+.box-category > div > ul > li:nth-child(4) > a:before, .box-category > div > ul > li:nth-child(4) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category04.png');}
+.box-category > div > ul > li:nth-child(5) > a:before{width:77px;height:84px;margin:13px auto 0;background-position:0 1px}
+.box-category > div > ul > li:nth-child(5) > a:before, .box-category > div > ul > li:nth-child(5) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category05.png');}
+.box-category > div > ul > li:nth-child(6) > a:before{width:53px;height:81px;margin:16px auto 0;background-position:0 -2px}
+.box-category > div > ul > li:nth-child(6) > a:before, .box-category > div > ul > li:nth-child(6) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category06.png');}
+.box-category > div > ul > li:nth-child(7) > a:before{width:53px;height:78px;margin:19px auto 0;background-position:0 -5px}
+.box-category > div > ul > li:nth-child(7) > a:before, .box-category > div > ul > li:nth-child(7) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category07.png');}
+.box-category > div > ul > li:nth-child(8) > a:before{width:57px;height:81px;margin:16px auto 0;background-position:0 -1px}
+.box-category > div > ul > li:nth-child(8) > a:before, .box-category > div > ul > li:nth-child(8) li a:before{background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/bg-box-category08.png');}
+.box-category > div > ul > li:nth-child(1):active > a:before, .box-category > div > ul > li.on:nth-child(1) > a:before{background-position:-49px -4px}
+.box-category > div > ul > li:nth-child(2):active > a:before, .box-category > div > ul > li.on:nth-child(2) > a:before{background-position:-35px 0}
+.box-category > div > ul > li:nth-child(3):active > a:before, .box-category > div > ul > li.on:nth-child(3) > a:before{background-position:-59px -4px}
+.box-category > div > ul > li:nth-child(4):active > a:before, .box-category > div > ul > li.on:nth-child(4) > a:before{background-position:-39px -4px}
+.box-category > div > ul > li:nth-child(5):active > a:before, .box-category > div > ul > li.on:nth-child(5) > a:before{background-position:-77px 1px}
+.box-category > div > ul > li:nth-child(6):active > a:before, .box-category > div > ul > li.on:nth-child(6) > a:before{background-position:-53px -2px}
+.box-category > div > ul > li:nth-child(7):active > a:before, .box-category > div > ul > li.on:nth-child(7) > a:before{background-position:-53px -5px}
+.box-category > div > ul > li:nth-child(8):active > a:before, .box-category > div > ul > li.on:nth-child(8) > a:before{background-position:-57px -1px}
+.box-category > div > ul ul{position:absolute;left:0px;top:0px;overflow:hidden;width:97.65625%;height:0px;padding:0px 1.171875%;box-shadow:inset 0 2px 2px rgba(1,1,1,.1);background:#edebeb;}
+.box-category > div > ul ul:after{content:'';display:block;clear:both;}
+.box-category > div > ul ul li{float:left;width:20%;height:130px;margin:30px 0 0;}
+.box-category > div > ul ul li a{font-size:0;line-height:0;vertical-align:top;}
+.box-category > div > ul ul li a:before{content:'';display:block;width:98px;height:130px;margin:0 auto;background-repeat:no-repeat;}
+.box-category > div > ul ul li:nth-child(1) a:before{background-position:-1px -94px}
+.box-category > div > ul ul li:nth-child(2) a:before{background-position:-125px -94px}
+.box-category > div > ul ul li:nth-child(3) a:before{background-position:-250px -94px}
+.box-category > div > ul ul li:nth-child(4) a:before{background-position:-374px -94px}
+.box-category > div > ul ul li:nth-child(5) a:before{background-position:-497px -94px}
+.bandslide-wrap{padding:20px 0 60px;background:#edebeb;}
+.bandslide-wrap .slide{margin:20px 0 0;}
+.bandslide-wrap > div{position:relative;}
+.bandslide-wrap .swiper-slide img {width:100%;}
+.bandslide-wrap .more-wrap{position:absolute;bottom:-42px;width:100%;text-align:center;}
+.bandslide-wrap .more-wrap i{margin:0 0 0 5px;}
+.bandslide-wrap .list{height:0px;overflow:hidden;margin:0 3.125%;}
+.bandslide-wrap .list li a{display:block;padding:20px 0;font-size:26px;color:#666;border-top:1px solid #ebebeb;}
+.bandslide-wrap .list li:first-child a{border:0;}
+.bandslide-wrap .swiper-wrapper {margin:20px auto 0; text-align:center;}
+.bandslide-wrap .swiper-pager {top:40px; bottom:99%;}
+
+/*** WEB ***/
+.web #globalMenu {right:0; left:0; transform:translateX(-100%); -webkit-transform:translateX(-100%);}
+.web #globalMenu a {-webkit-tap-highlight-color:rgba(0,0,0,.15);}
+.web #globalMenu.active {transform:translateX(0); -webkit-transform:translateX(0);}
+.web .share-wrap {right:0; left:0; -webkit-transform:translateX(100%);}
+.web .share-wrap.active {-webkit-transform:translateX(0);}
+.web #footer.trucommon {padding-bottom:45px;}
+
+/* information page */
+[class|="infor-page"] .wrap {position:relative;box-sizing:border-box;padding:102px 0 228px;text-align:center;}
+[class|="infor-page"] .wrap img {height:100%;}
+[class|="infor-page"] .wrap .btn {position:absolute;left:50%;display:block;font:0/0 a;color:transparent;}
+[class|="infor-page"][class*="mcoupon"] {background:#f9f9f9 url("//image.lottemart.com/images/mobile/common/layout/bg_body_mcoupon.png") repeat left top;}
+[class|="infor-page"][class*="mcoupon"] .btn {bottom:210px;width:72.4%;height:14.3%;margin-left:-36.2%;}
+
+/* 기획전 */
+.category-fold {position:relative;}
+.category-fold:before, .category-fold:after, .category-boxtype:before, .category-boxtype:after {position:absolute; top:0; bottom:0; content:''; display:block; border-left:1px solid #d4d4d4; z-index:1;}
+.category-fold:before {left:60%;}
+.category-fold:after {left:80%;}
+.category-boxtype:before {left:20%;}
+.category-boxtype:after {left:40%;}
+.category-fold .js-toggle {position:absolute; right:0; bottom:-43px; z-index:1; width:130px; height:44px; font:0/0 a; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/couponicon.png') 0 0 no-repeat;}
+.category-fold .js-toggle:after {position:absolute; right:29px; top:8px; content:''; display:block; width:21px; height:20px;background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/couponicon.png') -130px 0 no-repeat; -webkit-transform:rotateZ(0); transform:rotateZ(0); -webkit-transition:-webkit-transform 0.3s ease; transition:transform 0.3s ease;}
+.category-fold .js-toggle.active:after {-webkit-transform:rotateZ(45deg); transform:rotateZ(45deg); -webkit-transition:-webkit-transform 0.3s ease; transition:transform 0.3s ease;}
+.category-fold .js-toggle span {display:block;}
+.category-fold .js-toggle span:after {content:'더보기'; font-size:18px; color:#666; padding-right:25px;}
+.category-fold .js-toggle.active span:after {content:'닫기';}
+.category-boxtype {max-height:120px; position:relative; overflow:hidden; background-color:#faf8f9; border-bottom:1px solid #d4d4d4; -webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,0.2); box-shadow:0 1px 1px 0 rgba(0,0,0,0.2); -webkit-transition:max-height 0.3s ease; transition:max-height 0.3s ease;}
+.category-fold .js-toggle.active + .category-boxtype {max-height:400px;}
+.category-boxtype li {position:relative; float:left; width:20%; border-bottom:1px solid #d4d4d4; text-align:center; margin-bottom:-1px;}
+.category-boxtype li a {display:block; color:#333; box-sizing:border-box; height:120px; padding-top:75px; font-size:18px; color:#333;}
+.category-boxtype li.active a {color:#fb4e47;}
+
+.icon-category:after {content:''; display:block; position:absolute; left:50%; top:50%; width:100px; height:100px; margin-left:-50px; margin-top:-65px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/category_icon.png') 0 0 no-repeat; pointer-events:none;}
+.icon-category.best:after {background-position:0 0; margin-top:-60px;}
+.icon-category.half:after {background-position:-200px 0; margin-top:-60px;}
+.icon-category.fresh:after {background-position:-400px 0; margin-top:-62px;}
+.icon-category.retort:after {background-position:0 -100px;}
+.icon-category.supplies:after {background-position:-200px -100px; margin-top:-60px;}
+.icon-category.beauty:after {background-position:-400px -100px;}
+.icon-category.fashion:after {background-position:0 -200px; margin-top:-60px;}
+.icon-category.baby:after {background-position:-200px -200px;}
+.icon-category.sport:after {background-position:-400px -200px; margin-top:-62px;}
+.icon-category.digital:after {background-position:0 -300px;}
+.icon-category.kitchen:after {background-position:-200px -300px;}
+.icon-category.week-handbill:after {background-position:-400px -300px; margin-top:-61px;}
+.icon-category.etc:after {background-position:0 -400px;}
+.icon-category.best.active:after {background-position:-100px 0;}
+.icon-category.half.active:after {background-position:-300px 0;}
+.icon-category.fresh.active:after {background-position:-500px 0;}
+.icon-category.retort.active:after {background-position:-100px -100px;}
+.icon-category.supplies.active:after {background-position:-300px -100px;}
+.icon-category.beauty.active:after {background-position:-500px -100px;}
+.icon-category.fashion.active:after {background-position:-100px -200px;}
+.icon-category.baby.active:after {background-position:-300px -200px;}
+.icon-category.sport.active:after {background-position:-500px -200px;}
+.icon-category.digital.active:after {background-position:-100px -300px;}
+.icon-category.kitchen.active:after {background-position:-300px -300px;}
+.icon-category.week-handbill.active:after {background-position:-500px -300px;}
+.icon-category.etc.active:after {background-position:-100px -400px;}
+
+.title-bar.center {text-align:center; padding-right:0; border-bottom:4px solid #f31c3e;}
+.title-bar.left {border-bottom:4px solid #f31c3e; padding-left:20px;}
+.title-bar.left h3 {float:left;}
+.list-submain .title-bar h3 {font-size:32px; font-weight:bold; color:#333; padding-bottom:20px;}
+.list-submain .title-bar.left .more {padding:12px 0;}
+
+.list-event {background-color:#edebec;}
+.list-event li {-webkit-box-shadow:0 2px 2px 0 rgba(0,0,0,0.2); box-shadow:0 2px 2px 0 rgba(0,0,0,0.2);}
+.list-event li + li {margin-top:20px;}
+.list-event li a {display:block;}
+.list-event li a img {width:100%;}
+
+.list-submain .list {background-color:#edebec;}
+.list-submain .list a {display:block; margin-top:20px; box-shadow:0 2px 2px 0 rgba(0,0,0,0.2);}
+.list-submain .list a:first-child {margin-top:0;}
+.list-submain .list a img {width:100%;}
+
+.wrap-btn {padding:20px 20px 0 20px; text-align:center; box-shadow:inset 0 2px 2px rgba(0,0,0,0.2);}
+.wrap-btn a {display:inline-block; width:100%; padding:20px; border-radius:10px; font-size:28px; box-sizing:border-box;}
+.wrap-btn .btn-type01 {background-color:#969090; color:#fff;}
+.wrap-btn .btn-type01:after {content:''; display:inline-block; width:26px; height:17px; margin-left:10px; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon.png'); background-position:0 -90px; background-repeat:no-repeat; transform:rotate(-90deg); -webkit-transform:rotate(-90deg); filter:contrast(500%); -webkit-filter:contrast(500%);}
+.wrap-category-spot {margin-bottom:36px;}
+.wrap-category-spot img {width:100%;}
+
+/* 쿠폰존 */
+.wrap-couponzone {padding:0; padding-top:20px;}
+.wrap-couponzone .title-bar h3 {padding-bottom: 20px; font-size: 32px; font-weight:bold; color:#333333;}
+.wrap-couponzone h1 {position:static; color:#333; font-size:32px; font-weight:bold; letter-spacing:-2px;}
+.sect-couponzone-register {position:relative; box-sizing:border-box; padding:20px; background-color:#f0f0f0;}
+.sect-couponzone-register .box-input {position:relative; margin-top:15px; padding-right:150px;}
+.sect-couponzone-register .box-input input[type='text'] {box-sizing:border-box; height:70px; padding:0 20px; border:2px solid #c0c0c0; border-radius:10px 10px 10px 10px; background-color:#fff; color:#999; font-size:26px ;}
+.sect-couponzone-register .box-input .btn {position:absolute; right:0; bottom:0; width:140px; height:70px; border-radius:10px 10px 10px 10px; -webkit-border-image:none; background-color:#ec0e0f;  font-size:28px; letter-spacing:-1px;}
+.sect-couponzone-register .mycoupon{position:absolute; right:20px; top:-63px;}
+.sect-couponzone-coupondown {margin-top:40px; padding:0 30px;}
+.sect-couponzone-coupondown h1 {display:inline-block; padding-right:15px;}
+.sect-couponzone-coupondown .description {display:inline-block; color:#666; font-size:21px; font-weight:bold; letter-spacing:-2px; vertical-align:bottom;}
+.sect-couponzone-coupondown .description strong {color:#333;}
+.sect-couponzone-coupondown ul > li {margin-top:19px;}
+.sect-couponzone-coupondown ul > li a {display:block;}
+.sect-couponzone-coupondown .list-couponzone-limit .tmp-coupon {background-color:#ff8328;}
+.sect-couponzone-coupondown .list-couponzone-special .tmp-coupon {background-color:#4db043;}
+.sect-couponzone-coupondown .allcoupon {display:block; width:100%; height:70px; margin:40px auto 0; font-size:34px;letter-spacing:-1px;}
+.sect-couponzone-coupondown .specialcoupon-empty img {width:100%;}
+.sect-couponzone-app {margin-top:30px;}
+.sect-couponzone-app img {width:100%;}
+.specialcoupon-empty {padding-top:35px;}
+.paging-goods + .wrap-btn {box-shadow:none;}
+.sect-eventwinner {padding:40px 20px 0;}
+.tmp-coupon{position:relative; display:table; box-sizing:border-box; width:100%; padding:6px 6px 44.8275% 6px; box-shadow:inset 0 0 0 1px rgba(255,255,255,1); overflow:hidden;}
+.tmp-coupon:before {content:'COUPON'; position:absolute; left:-31px; top:26px; width:140px; background-color:inherit; color:#ffffff; font-size:18px; font-weight:300; text-align:center; letter-spacing:0; z-index:1; pointer-events:none;
+transform:rotate(-45deg); -webkit-transform:rotate(-45deg);}
+.tmp-coupon .box-contents {position:absolute; display:block; width:72.4%; top:6px; bottom:6px; background-color:#ffffff; text-align:center; color:#222222; letter-spacing:-2px; line-height:1.2;
+display: -webkit-box; display:-webkit-flex; display: flex; -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center; -webkit-align-content: center;}
+.tmp-coupon .box-contents .title {display:block; max-width:400px; margin:0 auto; font-size:26px; font-size:3.93vw; font-weight:bold; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+.tmp-coupon .box-contents .discount {display:block; font-family:'LTMHappy-B', sans-serif; font-size:90px; font-size:13.58vw;}
+.tmp-coupon .box-contents .discount .unit {font-size:45px; font-family:sans-serif; font-weight:bold; vertical-align:10px;}
+.tmp-coupon .box-contents .terms {font-size:24px; font-size:3.63vw; font-weight:bold;}
+.tmp-coupon .box-contents .usetime {display:inline-block; width:260px; height:28px; margin:10px auto 0; padding:1px 10px; border-radius:14px 14px 14px 14px; background-color:#e6e6e6; color:#666666; font-size:22px; line-height:28px; letter-spacing:0;}
+.tmp-coupon .requesttime {position:absolute; right:0; bottom:40px; display:block; width:27.6%; color:#ffffff; font-size:20px; font-weight:normal; text-align:center; letter-spacing:0;}
+.tmp-coupon .box-download {position:absolute; right:0; top:0; display:block; width:27.6%; height:100%;
+display: -webkit-box; display:-webkit-flex; display: flex; -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center; -webkit-align-content: center;}
+.tmp-coupon .ico-coupondown {position:relative; display:block; width:114px; height:114px; margin:0 auto; border:2px solid #ffffff; border-radius:50% 50% 50% 50%;}
+.tmp-coupon .ico-coupondown:after {content:''; position:absolute; left:50%; bottom:27px; display:block; width:70px; margin-left:-35px; height:4px; border-radius:2px 2px 2px 2px; background-color:#ffffff;}
+.tmp-coupon .ico-coupondown > span {position:relative; display:block; width:10px; height:56px; margin:20px auto 0; border-radius:5px 5px 5px 5px; background-color:#ffffff;}
+.tmp-coupon .ico-coupondown > span:before,
+.tmp-coupon .ico-coupondown > span:after {content:''; position:absolute; left:50%; bottom:1px; display:block; width:10px; height:42px; border-radius:5px 5px 5px 5px; background-color:inherit; transform-origin:50% 100%; -webkit-transform-origin:50% 100%}
+.tmp-coupon .ico-coupondown > span:before {margin-left:-8px; transform:rotate(45deg); -webkit-transform:rotate(45deg);}
+.tmp-coupon .ico-coupondown > span:after{margin-left:-2px; transform:rotate(-45deg); -webkit-transform:rotate(-45deg);}
+.tmp-coupon .ico-coupondown > span {animation:coupondown 3s linear 0s infinite ;-webkit-animation:coupondown 3s linear 0s infinite ;}
+@keyframes coupondown{
+	0% {transform:translateY(0);}
+	10% {transform:translateY(5px);}
+	20% {transform:translateY(0);}
+	30% {transform:translateY(5px);}
+	40% {transform:translateY(0);}
+	50% {transform:translateY(5px);}
+	60% {transform:translateY(0);}
+	100% {transform:translateY(0);}
+}
+@-webkit-keyframes coupondown{
+	0% {-webkit-transform:translateY(0);}
+	10% {-webkit-transform:translateY(5px);}
+	20% {-webkit-transform:translateY(0);}
+	30% {-webkit-transform:translateY(5px);}
+	40% {-webkit-transform:translateY(0);}
+	50% {-webkit-transform:translateY(5px);}
+	60% {-webkit-transform:translateY(0);}
+	100% {-webkit-transform:translateY(0);}
+}
+.coupon-remnants {display:block; margin-top:25px; color:#222222; font-size:18px; font-weight:bold; text-align:center; letter-spacing:-2px;}
+.coupon-remnants > span {display:block; font-size:2.8vw; line-height:1.5;}
+.coupon-remnants strong {display:inline-block; min-width:100px; height:32px; margin-top:3px; padding:0 10px; border-radius:15px 15px 15px 15px; background-color:#5d1c1c; color:#ffe328; font-size:24px; font-family:'LTMHappy-B', sans-serif; line-height:32px; letter-spacing:0;}
+.coupon-remnants strong > span {color:#ffffff; font-size:18px; font-family:sans-serif; letter-spacing:-2px; vertical-align:3px;}
+.list-submain {position:relative;}
+.list-submain .sabtn-default {position:absolute; right:20px; top:-5px;}
+
+/* 소용량 - 전문관 */
+.littleshop .imgwrap img {width:100%;}
+.littleshop .category-fold {border-top:2px solid #8d715c;}
+.littleshop .category-boxtype {max-height:240px; background-color:#fff; box-shadow:none;}
+.littleshop .category-boxtype li {width:25%; border-left:1px solid #d2d2d2; border-bottom:1px solid #d2d2d2; box-sizing:border-box;}
+.littleshop .category-boxtype li.active {background-color:#ffb400; border-bottom:1px solid #ffb400;}
+.littleshop .category-boxtype li a {font-size:20px; color:#666; font-weight:bold; letter-spacing:-1px;}
+.littleshop .category-boxtype li.active a{color:#fff;}
+.littleshop .category-fold:before, .littleshop .category-fold:after, .littleshop .category-boxtype:before, .littleshop .category-boxtype:after {content:none;}
+.littleshop .category-boxtype li:first-child,
+.littleshop .category-boxtype li:nth-child(5n) {border-left:none;}
+.littleshop .title-bar {border-bottom:4px solid #9d9d9d;}
+.littleshop .title-bar:before {position:absolute; bottom:-4px; content:''; display:block; min-width: 35%; max-width: 80%; border-bottom:4px solid #f31c3e; z-index:1;}
+.document-wrap .header-list .littleshop .category-boxtype {height:auto; padding:0; border-top:0 none; background-color:none;}
+.document-wrap .header-list .littleshop .category-boxtype li {margin-right:0;}
+
+.icon-littleshop:after {content:''; display:block; position:absolute; left:50%; top:50%; width:60px; height:50px; margin-left:-30px; margin-top:-37px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon_littleshop.png') 0 0 no-repeat; pointer-events:none;}
+.icon-littleshop.fresh:after {background-position:0 0; margin-left:-22px;}
+.icon-littleshop.pack:after {background-position:-60px 0px; margin-left:-19px;}
+.icon-littleshop.abowl:after {background-position:-120px 0px; margin-left:-22px;}
+.icon-littleshop.hygienic:after {background-position:-180px 0px; margin-left:-23px;}
+.icon-littleshop.animal:after {background-position:-240px 0px; margin-left:-29px;}
+.icon-littleshop.beauty:after {background-position:-300px 0px; margin-left:-21px; width:59px;}
+.icon-littleshop.clean:after {background-position:-360px 0px; margin-left:-22px;}
+.icon-littleshop.kitchen:after {background-position:-420px 0px; margin-left:-21px;}
+.icon-littleshop.fresh.active:after {background-position:0 -50px;}
+.icon-littleshop.pack.active:after {background-position:-60px -50px;}
+.icon-littleshop.abowl.active:after {background-position:-120px -50px;}
+.icon-littleshop.hygienic.active:after {background-position:-180px -50px;}
+.icon-littleshop.animal.active:after {background-position:-240px -50px;}
+.icon-littleshop.beauty.active:after {background-position:-300px -50px;}
+.icon-littleshop.clean.active:after {background-position:-360px -50px;}
+.icon-littleshop.kitchen.active:after {background-position:-420px -50px;}
+
+.nav-select select {position:relative; padding:14px 20px; font-size:26px; font-weight:bold; color:#666; width:100%; border:2px solid #c3c8c8; border-radius:8px; box-sizing:border-box; -webkit-box-shadow:0 2px 0 0 rgba(0,0,0,0.1); box-shadow:0 2px 0 0 rgba(0,0,0,0.1); background-color:#fff;}
+.nav-select {position:relative; padding:0 20px 20px;}
+.nav-select:after {position:absolute; right:45px; top:28px; content:''; display:block; width:22px; height:13px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/couponicon.png') -170px 0 no-repeat;}
+
+/* 펫가든 - 전문관 */
+.tmp-category.grid {border-top:1px solid #edebeb; overflow:hidden;}
+.tmp-category.grid[data-cols='3'] > ul > li {width:33.3%}
+.tmp-category.grid[data-cols='4'] > ul > li {width:25%}
+.tmp-category.grid[data-cols='5'] > ul > li {width:20%}
+.tmp-category.grid[data-cols='3'] > ul > li:nth-child(3n+1),
+.tmp-category.grid[data-cols='4'] > ul > li:nth-child(4n+1),
+.tmp-category.grid[data-cols='5'] > ul > li:nth-child(5n+1) {clear:both;}
+.tmp-category a {display:block; text-align:center;}
+.tmp-category ul {margin-left:-1px; background-color:#edebeb;}
+.tmp-category ul:after {content:''; clear:both; display:block;}
+.tmp-category ul > .item {position:relative; float:left; box-sizing:border-box; border-left:1px solid #edebeb; border-bottom:1px solid #edebeb; z-index:0;}
+.tmp-category ul > .item.active {z-index:1;}
+.tmp-category .sub-list {width:100%; width:100vw; margin-bottom:-1px; box-shadow:inset 0 3px 3px rgba(1,1,1,0.2); -webkit-box-shadow:inset 0 3px 3px rgba(1,1,1,0.2); background-color:#edebeb; overflow:hidden;}
+.tmp-category .sub-list > li {width:20%; height:179px; border:none;}
+.tmp-category .sub-list {max-height:0; transition:max-height 0.2s ease 0s;}
+.tmp-category .active .sub-list {max-height:1000px; transition:max-height 0.4s ease 0s;}
+.wrap-petgarden .title-depth:after {display:none;}
+.sect-petgarden-recommend:after {content:''; display:block; height:20px; background-color:#e5e5e5;}
+.sect-petgarden-popular {margin:30px 0 0; padding-bottom:20px;}
+.sect-petgarden-popular .tmp-category {margin-top:20px}
+.icon-petgarden {position:relative; background-color:#fafafa;}
+.icon-petgarden:before {content:''; position:absolute; left:50%; top:10px; display:block; width:100px; height:60px; margin-left:-50px; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon_petgargen.png'); background-repeat:no-repeat; background-size:600px 200px; pointer-events:none;}
+.icon-petgarden > a {box-sizing:border-box; padding:64px 0 10px; color:#333333; font-size:20px; font-weight:bold; letter-spacing:-2px;}
+.icon-petgarden.dog-food:before {background-position:0px 0px;}
+.icon-petgarden.dog-snack:before {background-position:-100px 0px;}
+.icon-petgarden.dog-product:before {background-position:-200px 0px;}
+.icon-petgarden.cat-food:before {background-position:-300px 0px;}
+.icon-petgarden.cat-snack:before {background-position:-400px 0px;}
+.icon-petgarden.cat-product:before {background-position:-500px 0px;}
+.active.icon-petgarden {background-color:#c4d2ec;}
+.active.icon-petgarden > a {color:#ffffff;}
+.active.icon-petgarden.dog-food:before {background-position:0px -100px;}
+.active.icon-petgarden.dog-snack:before {background-position:-100px -100px;}
+.active.icon-petgarden.dog-product:before {background-position:-200px -100px;}
+.active.icon-petgarden.cat-food:before {background-position:-300px -100px;}
+.active.icon-petgarden.cat-snack:before {background-position:-400px -100px;}
+.active.icon-petgarden.cat-product:before {background-position:-500px -100px;}
+.icon-petgardensub {position:relative; padding-top:24px}
+.icon-petgardensub:before{content:''; position:absolute; left:50%; top:24px; display:block; width:120px; height:120px; margin-left:-60px; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/icon_petgargensub.png'); background-repeat:no-repeat; background-size:600px 720px; pointer-events:none; z-index:1}
+.icon-petgardensub:after {content:''; position:absolute; left:50%; top:34px; display:block; width:98px; height:98px; margin:0px 0 0 -50px; border-radius:50% 50% 50% 50%; border:1px solid #ffffff;pointer-events:none;}
+.icon-petgardensub a {box-sizing:border-box; height:auto; padding-top:108px; color:#333333; font-size:20px; font-weight:bold; letter-spacing:-2px;}
+.icon-petgardensub.dog-all:before {background-position:0px 0px;}
+.icon-petgardensub.dog-oneunder:before {background-position:-120px 0px;}
+.icon-petgardensub.dog-oneover:before {background-position:-240px 0px;}
+.icon-petgardensub.dog-sevenover:before {background-position:-360px 0px;}
+.icon-petgardensub.dog-functionality:before {background-position:-480px 0px;}
+.icon-petgardensub.dog-gum:before {background-position:0px -120px;}
+.icon-petgardensub.dog-can:before {background-position:-120px -120px;}
+.icon-petgardensub.dog-sashimi:before {background-position:-240px -120px;}
+.icon-petgardensub.dog-jerky:before {background-position:-360px -120px;}
+.icon-petgardensub.dog-biscuit:before {background-position:-480px -120px;}
+.icon-petgardensub.dog-bath:before {background-position:0px -240px;}
+.icon-petgardensub.dog-beauty:before {background-position:-120px -240px;}
+.icon-petgardensub.dog-bog:before {background-position:-240px -240px;}
+.icon-petgardensub.dog-rope:before {background-position:-360px -240px;}
+.icon-petgardensub.dog-toy:before {background-position:-480px -240px;}
+.icon-petgardensub.cat-all:before {background-position:0px -360px;}
+.icon-petgardensub.cat-oneunder:before {background-position:-120px -360px;}
+.icon-petgardensub.cat-oneover:before {background-position:-240px -360px;}
+.icon-petgardensub.cat-sevenover:before {background-position:-360px -360px;}
+.icon-petgardensub.cat-functionality:before {background-position:-480px -360px;}
+.icon-petgardensub.cat-can:before {background-position:0px -480px;}
+.icon-petgardensub.cat-pouch:before {background-position:-120px -480px;}
+.icon-petgardensub.cat-dryfish:before {background-position:-240px -480px;}
+.icon-petgardensub.cat-drops:before {background-position:-360px -480px;}
+.icon-petgardensub.cat-jerky:before {background-position:-480px -480px;}
+.icon-petgardensub.cat-sand:before {background-position:0px -600px;}
+.icon-petgardensub.cat-toilet:before {background-position:-120px -600px;}
+.icon-petgardensub.cat-toy:before {background-position:-240px -600px;}
+.icon-petgardensub.cat-scratcher:before {background-position:-360px -600px;}
+.icon-petgardensub.cat-bath:before {background-position:-480px -600px;}
+.icon-petgardensub.cat-scratcher a {letter-spacing:-4px}
+.icon-petgarden{transition:background-color 0.3s ease 0s}
+.active.icon-petgarden{transition:background-color 0.3s ease 0s}
+.sect-petgarden-specialsell {box-shadow:inset 0 2px 2px rgba(0,0,0,0.2)}
+
+/* 버튼 공통 */
+.btn-color {min-width:150px; height:50px; line-height:50px; margin:0 5px; padding:0 10px; border-radius:8px; border:2px solid #000; background-color:#fff; color:#000; font-size:22px; font-weight:bold; letter-spacing:-1px;}
+.btn-color.white {border-color:#cdc8c8; background-color:#fff; color:#666;}
+.btn-color.gray {border-color:#a39c9c; background-color:#a39c9c; color:#fff;}
+.btn-color.darkgray {border-color:#969090; background-color:#969090; color:#ffffff}
+/* swiper-navigation 공통 */
+.swiper-navigation .swiper-pagination-bullet {display:inline-block; width:20px; height:20px; margin:0 4px; border-radius:50%; box-shadow:inset 1px 1px 1px 0 rgba(0,0,0,0.5); background-color:rgba(237,235,235,0.8);}
+.swiper-navigation .swiper-pagination-bullet.swiper-pagination-bullet-active {background-color:rgba(147,138,138,0.8);}
+/* hr 스타일 공통 */
+.fance-gray {height:20px; margin:0; padding:0; border:none; box-shadow:inset 0 1px 2px rgba(0,0,0,0.2); background-color:#edebeb;}
+/* 순위 리스트 */
+.list-rank {counter-reset:li; padding:0 20px; border-top:2px solid #e4e3e3; border-bottom:2px solid #e4e3e3; background-color:#faf9f9;}
+.list-rank > li {position:relative; border-top:2px solid #ebebeb;}
+.list-rank > li:before {content:counter(li);counter-increment:li; position:absolute; left:0; top:50%; display:block; width:36px; height:26px; margin-top:-18px; background-color:#bfc7d0; color:#fff; font-size:26px; font-family:'LTMHappy-B', sans-serif; text-align:center; text-indent:-2px; pointer-events:none;}
+.list-rank > li:after {content:''; position:absolute; top:50%; left:0; margin-top:8px; border-top:12px solid #bfc7d0; border-right:18px solid transparent; border-left:18px solid transparent; pointer-events:none;}
+.list-rank > li:first-child {border-top:none;}
+.list-rank > li a {position:relative; display:block; box-sizing:border-box; width:100%; padding:19px 0 19px 54px; color:#333333; font-size:28px; font-weight:bold; letter-spacing:-2px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+
+/* 검색결과 */
+.head-searchresult {position:relative; padding-bottom:94px;}
+.tit-searchresult {width:100%; padding:30px 5px; color:#333333; font-size:30px; font-weight:bold; text-align:center; letter-spacing:-2px;}
+.tit-searchresult mark {color:#f31c3f; font-weight:bold; background-color:transparent;}
+.tit-searchresult mark:before {content:open-quote;}
+.tit-searchresult mark:after {content:close-quote;}
+.tit-searchresult em {color:#666; font-size:26px;}
+.head-searchresult .tit-searchresult {position:absolute; left:0; bottom:0;}
+.head-searchresult.no-result {padding:0;}
+.head-searchresult.no-result .tit-searchresult {position:static; padding:60px 0; line-height:1.3;}
+/*.head-searchresult.no-result .tit-searchresult:before {content:''; display:block; width:292px; height:220px; margin:30px auto 5px; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/etc/no_searchresult.gif'); background-position:0 0; background-repeat:no-repeat; background-size:292px 220px;}*/
+.info-noresult {padding:20px; background-color:#edebeb; box-shadow:inset 0 2px 2px rgba(0,0,0,0.2)}
+.info-noresult > li {color:#666; font-size:20px; font-weight:bold; line-height:1.2; letter-spacing:-3px;}
+.categorysearch {position:relative; font-size:26px;}
+.categorysearch .tit-categorysearch {position:relative; display:block; box-sizing:border-box; width:100%; padding:20px 73px 20px 20px; border-top:none; border-bottom:3px solid #c3c8c8; box-shadow:0 2px 0 rgba(108,108,108,0.1); background-color:#fff;white-space:nowrap; text-overflow:ellipsis; cursor:pointer; overflow:hidden;}
+.categorysearch .tit-categorysearch:after {content:''; position:absolute; right:0; top:0; display:block; width:72px; height:72px; border-left:2px solid #ebeded; pointer-events:none;}
+.categorysearch .tit-categorysearch:before {content:''; position:absolute; right:24px; top:50%; display:block; width:22px; height:13px; margin:-8px 0 0 0; background-image:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/couponicon.png'); background-position:-170px 0; background-repeat:no-repeat; pointer-events:none; transform:rotate(0deg); -webkit-transform:rotate(0deg); transition:transform 0.2s linear 0s; -webkit-transition:transform 0.2s linear 0s;}
+.categorysearch ul {box-sizing:border-box; max-height:0; margin-top:-2px; padding:0 20px; border-bottom:2px solid #dae2e6; background-color:#eaf7fd; overflow:hidden; transition:max-height 0.3s ease 0.1s; -webkit-transition:max-height 0.3s ease 0.1s;}
+.categorysearch ul li {border-top:2px solid #dae2e6;}
+.categorysearch ul li a {display:block; width:100%; padding:18px 0; color:#666; font-weight:bold; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+.categorysearch ul li a {opacity:0.3; transition:opacity 0.3s ease 0s; -webkit-transition:opacity 0.3s ease 0s;}
+.categorysearch.active .tit-categorysearch:before {transform:rotate(-180deg); -webkit-transform:rotate(-180deg); transition:transform 0.2s linear 0s; -webkit-transition:transform 0.2s linear 0s;}
+.categorysearch.active ul {max-height:372px; overflow-y:auto; -webkit-overflow-scrolling:touch; transition:max-height 0.3s ease 0.1s; -webkit-transition:max-height 0.3s ease 0.1s;}
+.categorysearch.active ul li a {opacity:1; transition:opacity 0.3s ease 0.2s; -webkit-transition:opacity 0.3s ease 0.2s;}
+.nav-tabmenu {position:relative; display:table; table-layout:fixed; width:100%;}
+.nav-tabmenu > .tabitem {position:relative; display:table-cell; padding:22px 0 18px; background-color:#efefef; box-shadow:inset 0 -1px 2px rgba(0,0,0,0.2); color:#666666; font-size:26px; font-weight:bold; letter-spacing:-2px; text-align:center; overflow:hidden;}
+.nav-tabmenu > .tabitem:before,
+.nav-tabmenu > .tabitem:after {content:''; position:absolute; top:0px; display:block; width:100%; height:4px;}
+.nav-tabmenu > .tabitem:before {background-color:transparent; z-index:1;}
+.nav-tabmenu > .tabitem:after {background-color:#bfbfbf;}
+.nav-tabmenu > .tabitem span {font-size:22px;}
+.nav-tabmenu > .tabitem.active{background-color:#ffffff; box-shadow:none; color:#333333;}
+.nav-tabmenu > .tabitem.active:before {background-color:#f31c3f;}
+.nav-tabmenu > .tabitem.active.active-next,
+.nav-tabmenu > .tabitem.active.active-prev {background-color:#efefef; box-shadow:inset 0 -1px 2px rgba(0,0,0,0.2); color:#666666;}
+.nav-tabmenu > .tabitem.active.active-next:before,
+.nav-tabmenu > .tabitem.active.active-prev:before{background-color:#f31c3f;}
+.nav-tabmenu > .tabitem.active.tab-transition {background-color:#ffffff; box-shadow:none; color:#333333;}
+.nav-tabmenu > .tabitem:before {transform:translateX(0); -webkit-transform:translateX(0); transition:transform 0.2s ease-in 0s; -webkit-transition:-webkit-transform 0.2s ease-in 0s;}
+.nav-tabmenu > .tabitem.active-next:before {transform:translateX(-100%); -webkit-transform:translateX(-100%);}
+.nav-tabmenu > .tabitem.active-prev:before {transform:translateX(100%); -webkit-transform:translateX(100%);}
+.nav-tabmenu > .tabitem.tab-transition:before {transform:translateX(0);-webkit-transform:translateX(0); transition:transform 0.2s ease-out 0s;  -webkit-transition:-webkit-transform 0.2s ease-out 0s;}
+.nav-tabmenu > .tabitem.tab-transition-this:before {animation:againclick 0.2s ease-out 0s 1; -webkit-animation:againclick 0.2s ease-out 0s 1; animation-fill-mode: none; -webkit-animation-fill-mode: none;}
+@keyframes againclick{
+	0% {transform:scaleX(0)}
+	100% {transform:scaleX(1)}
+}
+@-webkit-keyframes againclick{
+	0% {-webkit-transform:scaleX(0)}
+	100% {-webkit-transform:scaleX(1)}
+}
+.box-searchoption .searchoption {padding:20px 8px 10px; text-align:center;}
+.box-searchoption .searchoption .select-default {width:47.4%; margin:0 6px; text-align:left; vertical-align:top;}
+.box-searchoption .searchoption .btn-benefit {position:relative; padding:0 10px; background:none;}
+.box-searchoption .searchoption .btn-benefit:after {content:''; position:absolute; right:15px; top:21px; display:block; width:22px; height:14px; background-color:red; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/etc/select-default.png') 0 0 no-repeat; transition:transform 0.2s linear 0s; -webkit-transition:transform 0.2s linear 0s;}
+.box-searchoption .searchoption .btn-benefit.active {background-color:#e6e3e3;}
+.box-searchoption .searchoption .btn-benefit.active:after {transform:rotate(-180deg); -webkit-transform:rotate(-180deg); transition:transform 0.2s linear 0s; -webkit-transition:transform 0.2s linear 0s;}
+.box-searchoption .benefitoption {max-height:0; padding:0 20px; background-color:#eaf7fd; box-shadow:inset 0 2px 2px rgba(0,0,0,0.2); opacity:0.3; overflow:hidden; transition:max-height 0.5s ease 0.1s, opacity 0.3s ease 0.1s; -webkit-transition:max-height 0.5s ease 0.1s, opacity 0.3s ease 0.1s;}
+.box-searchoption .benefitoption .box-input {display:block; padding:20px 0; text-align:center;}
+.box-searchoption .benefitoption .box-input:after {content:''; display:block; clear:both;}
+.box-searchoption .benefitoption .box-input label {display:inline-block; margin-left:5%;}
+.box-searchoption .benefitoption .box-input label:first-child {margin-left:0;}
+.box-searchoption .benefitoption .box-btn {display:block; padding:20px 0 25px; border-top:2px solid #dae2e6; text-align:center;}
+.box-searchoption .benefitoption.active {max-height:500px; opacity:1; transition:max-height 0.5s ease 0.1s, opacity 0.3s ease 0.1s; -webkit-transition:max-height 0.5s ease 0.1s, opacity 0.3s ease 0.1s;}
+.sect-searchlist, .sect-searchplan {display:none;}
+.sect-searchlist.active,
+.sect-searchplan.active {display:block;}
+.sect-searchplan.bandslide-wrap {padding:0 20px; background-color:#fff;}
+.sect-searchplan.bandslide-wrap .list {height:auto; margin:0;}
+.sect-hotproduct .title-depth:after,
+.sect-searchword .title-depth:after {display:none;}
+.sect-hotproduct {position:relative; margin-top:20px;}
+.sect-hotproduct .goods-gallery .goods .info {height:auto;}
+.sect-hotproduct .goods-gallery .goods .info .action-group {bottom:0;}
+.sect-hotproduct .bestgoods .goods:after {top:0;}
+.sect-hotproduct [class^='goods-'] {padding:20px 0; background-color:transparent; box-shadow:none; overflow:visible;}
+.sect-hotproduct [class^='goods-'] > li {float:left; margin:0; padding:0 20px; border:none; box-shadow:none;}
+.sect-hotproduct [class^='goods-'] > li:nth-child(odd) {clear:none; border-right:2px solid #ebebeb;}
+.sect-hotproduct [class^='goods-'] .goods .thumbnail {box-sizing:border-box; background-color:transparent;}
+.sect-hotproduct [class^='goods-'] .goods .info .title {box-sizing:border-box; width:100%; max-width:none; padding-right:80px;}
+.sect-hotproduct [class^='goods-'] .goods .info .title a {height:100%;overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-wrap:break-word;}
+.sect-hotproduct .swiper-navigation {position:absolute; right:16px; top:10px;}
+.sect-searchword {margin-top:20px;}
+.sect-searchword .list-rank {margin-top:15px;}
+
+/* 상품상세 */
+.wrap-goods-detail .worry-bar {position:relative; height:100px; overflow:hidden; background-color:#ffd12b;}
+.wrap-goods-detail .worry-bar h1 {left:20px; top:9px; font:0/0 a; width:161px; height:90px; background-color:#fff; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') -180px -100px no-repeat;}
+.wrap-goods-detail .worry-bar dl {margin-left:220px; padding-top:16px; font-size:24px; color:#471111; line-height:25px; font-weight:bold;}
+.wrap-goods-detail .worry-bar dl:after {content:''; display:block; clear:both;}
+.wrap-goods-detail .worry-bar dt {float:left; width:40%;}
+.wrap-goods-detail .worry-bar dd {float:left; font-size:27px;}
+.wrap-goods-detail .worry-bar dl small {font-size:19px; font-weight:normal;}
+.wrap-goods-detail {background-color:#edebeb;}
+.wrap-goods-detail .product_box [class|='gic-delivery'] {position:absolute; left:40px; top:10px; height:44px; padding:9px 20px 0; font-size:24px; z-index:2;}
+.wrap-goods-detail .product_box {background-color:#fff; padding:10px 40px; box-sizing:border-box;}
+.wrap-goods-detail .product_box .swiper-pager {left:20px; text-align:center;}
+.wrap-goods-detail .title-bar {padding:13px 18px 17px; border-top:2px solid #ebebeb; border-bottom:0 none; background-color:#fff; margin-top:0;}
+.wrap-goods-detail .title-bar .goodstitle {position:static; padding-bottom:0; font-size:40px; color:#333; line-height:1.3;}
+.wrap-goods-detail [class*='price-point'] {font-size:36px; vertical-align:-3px; color:#333;}
+.wrap-goods-detail [class*='price-sale'] {font-size:30px; color:#333; vertical-align:-2px;}
+.wrap-goods-detail [class*='point-red'] {color:#f12531;}
+.wrap-goods-detail [class|='btn-apply'] {display:inline-block; position:relative;}
+.wrap-goods-detail [class|='btn-apply']:after {content:''; display:block; position:absolute; right:13px; top:10px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') 0 -100px no-repeat;}
+.wrap-goods-detail [class|='btn-apply'] a, .wrap-goods-detail [class|='btn-apply'] span {display:inline-block; height:41px; padding:5px 35px 0 10px;  border-radius:5px; vertical-align:middle; box-sizing:border-box;}
+.wrap-goods-detail [class|='btn-apply'][class*='before']:after {width:16px; height:20px;}
+.wrap-goods-detail [class|='btn-apply'][class*='before'] a {color:#fff; background-color:#a39c9c;}
+.wrap-goods-detail [class|='btn-apply'][class*='after']:after {width:19px; height:18px; right:10px; top:11px; background-position:-150px -100px;}
+.wrap-goods-detail [class|='btn-apply'][class*='after'] a, .wrap-goods-detail [class|='btn-apply'][class*='after'] span {color:#999; background-color:#fff; border:2px solid #e8e6e7;}
+.select-option {position:relative;}
+.select-option:after {position:absolute; right:24px; top:21px; content:''; display:block; width:14px; height:23px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') -20px -100px no-repeat; -webkit-transform:rotate(90deg); transform:rotate(90deg);}
+.select-option select {width:100%; padding:14px 20px; font-size:29px; font-weight:normal; color:#c3c3c3; border:2px solid #d0cccc; border-radius:5px; box-sizing:border-box; -webkit-box-shadow:0 2px 0 0 rgba(0,0,0,0.1); box-shadow:0 2px 0 0 rgba(0,0,0,0.1); background-color:#fff;}
+.wrap-goodsdetail .article-count {border:2px solid #d0cccc; border-radius:5px; width:294px; height:60px; -webkit-box-shadow:0 2px 0 0 rgba(0,0,0,0.1); box-shadow:0 2px 0 0 rgba(0,0,0,0.1);}
+.wrap-goodsdetail .article-count span:first-child {width:156px; height:50px; background-image:none; border-left:1px solid #d0cccc; border-right:1px solid #d0cccc;}
+.wrap-goodsdetail .article-count span:first-child input {font-size:36px; color:#c3c3c3;}
+.wrap-goodsdetail .article-count button {position:absolute; width:68px; height:60px;}
+.wrap-goodsdetail .article-count button:nth-child(2) {background-image:none;}
+.wrap-goodsdetail .article-count button:last-child {background-image:none;}
+.wrap-goodsdetail .article-count .minus:after {position:absolute; left:20px; top:28px; content:''; display:block; width:25px; height:5px; background-color:#999;}
+.wrap-goodsdetail .article-count .plus:after {position:absolute; left:20px; top:28px; content:''; display:block; width:25px; height:5px; background-color:#999;}
+.wrap-goodsdetail .article-count .plus:before {position:absolute; left:30px; top:18px; content:''; display:block; width:5px; height:25px; background-color:#999;}
+.product-price {border-top:2px solid #d7d7d7; border-bottom:2px solid #d7d7d7; padding:0 20px; font-size:24px; color:#666; background-color:#fff;}
+.product-price th,
+.product-price td {vertical-align:middle; border-top:2px solid #efefef; text-align:left; box-sizing:border-box;}
+.product-price th {padding:15px 20px 15px 40px; font-size:24px; color:#666;}
+.product-price td {padding:15px 20px 15px; font-size:24px; color:#444;}
+.product-price td b {font-size:26px; font-weight:normal;}
+.product-price td small {font-size:22px; color:#999;}
+.product-price tfoot {border-top:3px solid #d7d7d7;}
+.product-price .price-benefit td {padding:0 20px; border:none;}
+.product-price .price-benefit td div {padding:0 20px; background-color:#eef5f8; border:2px solid #e4ebef;}
+.product-price .price-benefit td small {font-size:20px;}
+.product-price .price-benefit table th,
+.product-price .price-benefit table td {min-height:68px; padding:15px 0 10px; margin:0 -20px; border-top:2px dotted #dce4e8; text-align:left; box-sizing:border-box;}
+.product-price tr:first-child th,
+.product-price tr:first-child td {border-top:none;}
+.product-price .price-benefit th em {position:relative; display:inline-block; padding-left:22px;}
+.product-price .price-benefit th em:before {position:absolute; left:0; top:16px; content:''; display:block; width:14px; height:2px; background-color:#666;}
+.product-price .price-benefit th em:after {position:absolute; left:0; top:5px; content:''; display:block; width:2px; height:12px; background-color:#666;}
+.product-price .price-benefit + tr th,
+.product-price .price-benefit + tr td {border-top:none;}
+.final-price th {padding-left:20px; border-top:3px solid #d7d7d7; font-weight:bold; font-size:26px; color:#444;}
+.final-price td {text-align:right; border-top:3px solid #d7d7d7; line-height:1.1; font-size:30px; color:#f12531; vertical-align:middle;}
+.final-price td .price {font-weight:normal; font-size:50px; color:#f12531; vertical-align:middle;}
+.final-price td b {font-weight:bold; font-size:32px; vertical-align:-6px;}
+.product-btnbox {position:relative; display:-webkit-flex; display:flex; width:100%; padding:10px; background-color:#fff; box-shadow:0 2px 1px 0 rgba(0,0,0,.2); box-sizing:border-box;}
+.product-btnbox a {display:block; padding:23px 20px; height:80px; margin-left:6px; border:2px solid #cdc8c8; border-radius:5px; box-sizing:border-box; text-align:center; margin-left:6px; border-radius:5px; font-size:24px; color:#666; box-sizing:border-box;}
+.product-btnbox a:first-child {margin-left:0;}
+a.btn-buy {font-size:34px; -webkit-flex:1; flex:1; color:#fff; background-color:#969090; border:none; padding:26px 20px 0;}
+a.btn-cart {font-size:34px; -webkit-flex:1; flex:1; color:#fff; background-color:#f31c3f; border:none; padding:26px 20px 0;}
+a.btn-clip {position:relative; font:0/0 a; width:74px;}
+a.btn-clip:after {content:''; display:block; position:absolute; left:12px; top:19px; width:47px; height:41px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') 0 -130px no-repeat;}
+.product-btnbox .soldout {position:absolute; left:0; right:0; top:0; text-align:center; height:100px; background-color:rgba(40,40,40,.9);}
+.product-btnbox .soldout p {position:relative; display:inline-block; height:100px; padding:15px 0 0 197px; margin:0 auto; font-size:25px; line-height:1.3; text-align:left; color:#fff;  box-sizing:border-box;}
+.product-btnbox .soldout p em {font-size:30px;}
+.product-btnbox .soldout p:after {position:absolute; left:0; bottom:0; content:''; display:block; width:163px; height:95px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') 0 -185px no-repeat;}
+.product-snsbox {position:relative; background-color:#fff; padding:20px; box-shadow:0 2px 1px 0 rgba(0,0,0,.2); text-align:center;}
+.snsbox li {display:inline-block; margin:0 3%;}
+.snsbox li a {display:inline-block; width:92px; height:92px; font:0/0 a; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') 0 0 no-repeat; vertical-align:top;}
+.snsbox .facebook a {background-position:-100px 0;}
+.snsbox .twiter a {background-position:-200px 0;}
+.snsbox .copyurl a {background-position:-300px 0;}
+.product-occasion {padding:40px 20px; background-color:#f8f8f8; font-size:22px; color:#666;}
+.product-occasion small {font-size:20px; color:#999;}
+.occasion-box {background-color:#fff; border:2px solid #e0d0d0; padding:13px 19px; margin-top:10px;}
+.occasion-box:first-child {margin-top:0;}
+.table-occasion {border-top:2px solid #bebebe; border-bottom:2px solid #bebebe; line-height:1.3;}
+.occasion-box + .table-occasion {margin-top:20px;}
+.table-occasion tbody th, .table-occasion tbody td {padding:14px 20px; text-align:left; font-size:22px; border-top:2px dotted #c4c4c4; vertical-align:top;}
+.table-occasion tbody tr:first-child th, .table-occasion tbody tr:first-child td {border-top:0 none;}
+.card-favor li {margin-top:10px;}
+.card-favor li:first-child {margin-top:0;}
+.table-occasion [class|='gic-delivery'] {border:1px solid #867d7d; background-color:#fff;}
+.table-occasion [class|='gic-delivery'][class*='type1'] {border-color:#867d7d; color:#867d7d;}
+.table-occasion [class|='gic-delivery'][class*='type2'] {border-color:#52a2d0; color:#52a2d0;}
+.table-occasion [class|='gic-delivery'][class*='type3'] {border-color:#6ea56e; color:#6ea56e;}
+.table-occasion [class|='gic-delivery'][class*='type4'] {border-color:#af73c8; color:#af73c8;}
+.wrap-goodsdetail .section-dview {padding:0; margin:0; background-color:#edebeb; border:none;}
+.wrap-goodsdetail .section-dview .table-noline {padding:30px; line-height:1.3; background-color:#fff;}
+.wrap-goodsdetail .section-dview .wrap-btn {padding:0 30px 30px; background-color:#fff; box-shadow:0 2px 2px rgba(0,0,0,0.2);}
+.table-noline th {text-align:left; font-size:22px; color:#999; padding:5px 0;}
+.table-noline td {font-size:24px; color:#666; padding:5px 10px;}
+.wrap-detail .detail {display:none;}
+.wrap-detail .detail.active {display:block;}
+.bullet-type01:before {content:''; display:inline-block; width:10px; height:10px; margin-right:10px; border:7px solid #343535; border-radius:50%; vertical-align:0;}
+.notice-cont + .bullet-type01 {padding-top:40px; margin-top:20px; border-top:2px solid #d4d4d4;}
+.btn-type02 {position:relative; display:inline-block; height:41px; background-color:#a39c9c; color:#fff; padding:8px 30px 0 10px; border-radius:5px; box-sizing:border-box;}
+.btn-type02:after {content:''; display:block; position:absolute; right:10px; top:12px; width:10px; height:16px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') -90px -100px no-repeat;}
+.notice-cont .warn:before {content:''; display:inline-block; width:30px; height:30px; margin-right:10px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') -110px -100px no-repeat; vertical-align:middle;}
+.notice-shipping {padding:30px; line-height:1.3; background-color:#fff;}
+.notice-shipping h2.bullet-type01 {font-size:32px; color:#333;}
+.notice-shipping p {font-size:22px; color:#666; margin-top:10px;}
+.notice-shipping .deep {font-size:22px; color:#333; background-color:transparent;}
+.notice-cont h3 {font-size:24px; color:#666; text-align:center; height:64px; padding:16px 10px; margin-top:20px; border-top:2px solid #d4d4d4; border-bottom:2px solid #d4d4d4; background-color:#f0f0f0; box-sizing:border-box;}
+.notice-cont strong {color:#444;}
+.notice-cont small {font-size:20px; color:#999;}
+.detail-aside {padding-top:10px; margin-top:20px; background-color:#fff; box-shadow:0px 2px 1px 0px rgba(0,0,0,.2);}
+.detail-aside .title-depth {margin-top:20px; font-size:30px; color:#333;}
+.detail-aside .title-depth:after {content:none;}
+.detail-aside .sect-hotproduct {margin:0;}
+.aside-list {position:relative; margin-top:20px; padding:0 20px 20px; border-top:1px solid #e4e3e3;}
+.aside-list:after {content:''; display:block; position:absolute; left:0; right:0; bottom:20px; border-bottom:1px solid #e4e3e3;}
+.aside-list li a {position:relative; display:block; padding:16px 20px 14px 0; border-top:2px solid #ebebeb; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;}
+.aside-list li a:after {content:''; display:block; position:absolute; right:0; top:19px; width:13px; height:23px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') -40px -100px no-repeat;}
+.aside-list li:first-child a {border-top:0 none;}
+.product-info {position:relative; margin-top:20px; background-color:#fff; border-bottom:2px solid #efefef;}
+.product-info:after {content:''; display:block; width:14px; height:22px; position:absolute; right:20px; top:50%; margin-top:-11px; background:url('//image.lottemart.com/images/mobile/front/common/reform2015/sprite/product_detail.png') -20px -100px no-repeat;}
+.product-info a {display:table; table-layout:fixed; width:100%; height:88px;}
+.product-info [class^='item'] {display:table-cell; box-sizing:border-box; height:100%; padding-top:6px; font-size:24px; color:#666; vertical-align:middle; text-align:center; border-left:2px solid #e5e5e5;}
+.product-info .item3 {font-size:26px;}
+.product-info .point {color:#f31c3f;}
+.product-info .grade_length {font-size:40px; font-weight:bold; font-family:'LTMHappy-B', sans-serif; letter-spacing:-2px; color:#444; vertical-align:middle; font-weight:normal;}
+.product-info .score-wrap {text-align:left; margin-left:60px; filter: saturate(30); -webkit-filter: saturate(30);}
+.product-info .score-wrap:after {top:-2px; left:-55px; width:55px; text-align:center; font-size:40px; color:#f31c3f; font-family:'LTMHappy-B', sans-serif; letter-spacing:-2px;}
+
+.tmp-layeralert {position:fixed; left:0; right:0; top:0; bottom:0; display:none; background-color:rgba(0,0,0,0.6); z-index:50; opacity:0; pointer-events:none; display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-direction: normal;-webkit-box-orient: horizontal;-webkit-flex-direction: row;flex-direction: row;-webkit-flex-wrap: nowrap;flex-wrap: nowrap;-webkit-box-pack: center;-webkit-justify-content: center;justify-content: center;-webkit-align-content: center;align-content: center;-webkit-box-align: center;-webkit-align-items: center;align-items: center;}
+.tmp-layeralert .sect-layeralert {min-width:440px; margin:0 10%; padding:15px 12px; border-radius:15px 15px 15px 15px; box-shadow:0 0 5px rgba(0,0,0,0.4);-webkit-box-shadow:0 0 5px rgba(0,0,0,0.4); background-color:#ffffff; opacity:0.5; transform:translateY(20%); -webkit-transform:translateY(20%);}
+.tmp-layeralert .sect-layeralert .contents {box-sizing:border-box; min-height:200px; padding:15px; display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-direction: normal;-webkit-box-orient: horizontal;-webkit-flex-direction: row;flex-direction: row;-webkit-flex-wrap: nowrap;flex-wrap: nowrap;-webkit-box-pack: center;-webkit-justify-content: center;justify-content: center;-webkit-align-content: center;align-content: center;-webkit-box-align: center;-webkit-align-items: center;align-items: center;}
+.tmp-layeralert .sect-layeralert .box-btn {display:table; table-layout:fixed; box-sizing:border-box; width:100%;}
+.tmp-layeralert .sect-layeralert .box-btn .box-btnitem {display:table-cell; padding:0 5px; text-align:center;}
+.tmp-layeralert .sect-layeralert .box-btn .box-btnitem .btn-color {display:block; height:70px; line-height:70px; font-size:30px; min-width:0; box-sizing:border-box; width:100%; margin:0;}
+.tmp-layeralert.active {opacity:1; pointer-events:auto;}
+.tmp-layeralert .text-notice {color:#666666; font-size:36px; font-weight:bold; letter-spacing:-2px; line-height:1.4; text-align:center;}
+.tmp-layeralert.active {transition:opacity 0.2s ease-in 0s; -webkit-transition:opacity 0.2s ease-in 0s;}
+.tmp-layeralert.active .sect-layeralert {opacity:1; transform:translateY(0); -webkit-transform:translateY(0); transition:transform 0.2s ease-in-out 0.1s, opacity 0.1s ease-in-out 0.1s; -webkit-transition:-webkit-transform 0.2s ease-in-out 0.1s, opacity 0.1s ease-in-out 0.1s}

@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMVEN0010">
+
+	<typeAlias alias="srmven0010Vo"	type="com.lottemart.epc.edi.srm.model.SRMVEN0010VO" />
+	
+	<!-- 파트너사 정보 List Map -->
+	<resultMap id="vendorListMap" 	class="srmven0010Vo">
+		<result column="VEN_CD"						property="venCd" 			/>	<!-- 협력업체코드 -->
+		<result column="VEN_NM"						property="venNm" 			/>	<!-- 협력업체명 -->
+		<result column="BMAN_NO"					property="bmanNo" 			/>	<!-- 사업자번호 -->
+		<result column="PRESID_NM"					property="presidNm"		 	/>	<!-- 대표자명 -->
+		<result column="PRESID_EMAIL"				property="presidEmail"		/>	<!-- 대표자 이메일 -->
+		<result column="REP_TEL_NO"					property="repTelNo" 		/>	<!-- 대표전화번호 -->
+		<result column="DUTY_INF"					property="dutyInf" 			/>	<!-- 담당자정보 -->
+		<result column="HP_NO1"						property="hpNo1" 			/>	<!-- 핸드폰번호1 -->
+		<result column="EMAIL"						property="email" 			/>	<!-- EMAIL -->
+		<result column="FAX_NO"						property="faxNo" 			/>	<!-- 팩스번호 -->
+		<result column="ZIP"						property="zip" 				/>	<!-- 우편번호 -->
+		<result column="ADDR"						property="addr" 			/>	<!-- 주소1 -->
+		<result column="ADDR2"						property="addr2" 			/>	<!-- 주소2 -->
+		<result column="QC_FG01"					property="qcFg01" 			/>	<!-- HACCP -->
+		<result column="QC_FG02"					property="qcFg02" 			/>	<!-- FSSC22000 -->
+		<result column="QC_FG03"					property="qcFg03" 			/>	<!-- ISO22000 -->
+		<result column="QC_FG04"					property="qcFg04" 			/>	<!-- GMP인증 -->
+		<result column="QC_FG05"					property="qcFg05" 			/>	<!-- KS인증 -->
+		<result column="QC_FG06"					property="qcFg06" 			/>	<!-- 우수농산물GAP인증 -->
+		<result column="QC_FG07"					property="qcFg07" 			/>	<!-- 유기가공식품인증 -->
+		<result column="QC_FG08"					property="qcFg08" 			/>	<!-- 전통식품품질인증 -->
+		<result column="QC_FG09"					property="qcFg09" 			/>	<!-- ISO_9001 -->
+		<result column="QC_FG10"					property="qcFg10" 			/>	<!-- 수산물품질인증 -->
+		<result column="QC_FG11"					property="qcFg11" 			/>	<!-- PAS_220 -->
+		<result column="QC_FG12"					property="qcFg12" 			/>	<!-- 기타품질인증텍스트 -->
+		<result column="MOD_PRESID_NM"				property="modPresidNm"	 	/>	<!-- 대표자명 -->
+		<result column="MOD_PRESID_EMAIL"			property="modPresidEmail"	/>	<!-- 대표자 이메일 -->
+		<result column="MOD_REP_TEL_NO"				property="modRepTelNo" 		/>	<!-- 대표전화번호 -->
+		<result column="MOD_DUTY_INF"				property="modDutyInf" 		/>	<!-- 담당자정보 -->
+		<result column="MOD_HP_NO1"					property="modHpNo1" 		/>	<!-- 핸드폰번호1 -->
+		<result column="MOD_EMAIL"					property="modEmail" 		/>	<!-- EMAIL -->
+		<result column="MOD_FAX_NO"					property="modFaxNo" 		/>	<!-- 팩스번호 -->
+		<result column="MOD_ZIP"					property="modZip" 			/>	<!-- 우편번호 -->
+		<result column="MOD_ADDR"					property="modAddr" 			/>	<!-- 주소1 -->
+		<result column="MOD_ADDR2"					property="modAddr2" 		/>	<!-- 주소2 -->
+		<result column="ZZQC_FG1"					property="zzqcFg1" 			/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"					property="zzqcFg2" 			/>	<!-- FSSC22000 -->
+		<result column="ZZQC_FG3"					property="zzqcFg3" 			/>	<!-- ISO22000 -->
+		<result column="ZZQC_FG4"					property="zzqcFg4" 			/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"					property="zzqcFg5" 			/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"					property="zzqcFg6" 			/>	<!-- 우수농산물GAP인증 -->
+		<result column="ZZQC_FG7"					property="zzqcFg7" 			/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"					property="zzqcFg8" 			/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"					property="zzqcFg9" 			/>	<!-- ISO_9001 -->
+		<result column="ZZQC_FG10"					property="zzqcFg10" 		/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"					property="zzqcFg11" 		/>	<!-- PAS_220 -->
+		<result column="ZZQC_FG12"					property="zzqcFg12" 		/>	<!-- 기타품질인증텍스트 -->
+		<result column="MD_EMAIL"					property="mdEmail" 			/>	<!-- MD EMAIL -->
+		<result column="SEQ"						property="seq" 				/>	<!-- 순번 -->
+		<result column="STATUS"						property="status" 			/>	<!-- 상태값 -->
+		<result column="IF_DT"						property="ifDt" 			/>	<!-- 처리일자 -->
+	</resultMap>
+	
+	<!-- 파트너사 수정정보 List Map -->
+	<resultMap id="modVendorListMap" 	class="srmven0010Vo">
+		<result column="VEN_CD"						property="venCd" 			/>	<!-- 협력업체코드 -->
+		<result column="MOD_PRESID_NM"				property="modPresidNm"	 	/>	<!-- 대표자명 -->
+		<result column="MOD_PRESID_EMAIL"			property="modPresidEmail"	/>	<!-- 대표자 이메일 -->
+		<result column="MOD_REP_TEL_NO"				property="modRepTelNo" 		/>	<!-- 대표전화번호 -->
+		<result column="MOD_DUTY_INF"				property="modDutyInf" 		/>	<!-- 담당자정보 -->
+		<result column="MOD_HP_NO1"					property="modHpNo1" 		/>	<!-- 핸드폰번호1 -->
+		<result column="MOD_EMAIL"					property="modEmail" 		/>	<!-- EMAIL -->
+		<result column="MOD_FAX_NO"					property="modFaxNo" 		/>	<!-- 팩스번호 -->
+		<result column="MOD_ZIP"					property="modZip" 			/>	<!-- 우편번호 -->
+		<result column="MOD_ADDR"					property="modAddr" 			/>	<!-- 주소1 -->
+		<result column="MOD_ADDR2"					property="modAddr2" 		/>	<!-- 주소2 -->
+		<result column="ZZQC_FG1"					property="zzqcFg1" 			/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"					property="zzqcFg2" 			/>	<!-- FSSC22000 -->
+		<result column="ZZQC_FG3"					property="zzqcFg3" 			/>	<!-- ISO22000 -->
+		<result column="ZZQC_FG4"					property="zzqcFg4" 			/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"					property="zzqcFg5" 			/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"					property="zzqcFg6" 			/>	<!-- 우수농산물GAP인증 -->
+		<result column="ZZQC_FG7"					property="zzqcFg7" 			/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"					property="zzqcFg8" 			/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"					property="zzqcFg9" 			/>	<!-- ISO_9001 -->
+		<result column="ZZQC_FG10"					property="zzqcFg10" 		/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"					property="zzqcFg11" 		/>	<!-- PAS_220 -->
+		<result column="ZZQC_FG12"					property="zzqcFg12" 		/>	<!-- 기타품질인증텍스트 -->
+		<result column="SEQ"						property="seq" 				/>	<!-- 순번 -->
+		<result column="STATUS"						property="status" 			/>	<!-- 상태값 -->
+		<result column="IF_DT"						property="ifDt" 			/>	<!-- 처리일자 -->
+	</resultMap>
+	
+	<!-- 파트너사 수정정보 확정대상 List Map -->
+	<resultMap id="venInfoConfirmListMap" 	class="srmven0010Vo">
+		<result column="VEN_CD"						property="venCd" 			/>	<!-- 협력업체코드 -->
+		<result column="SEQ"						property="seq" 				/>	<!-- 순번 -->
+		<result column="PRESID_NM"					property="presidNm"	 		/>	<!-- 대표자명 -->
+		<result column="PRESID_EMAIL"				property="presidEmail"		/>	<!-- 대표자 이메일 -->
+		<result column="REP_TEL_NO"					property="repTelNo" 		/>	<!-- 대표전화번호 -->
+		<result column="DUTY_INF"					property="dutyInf" 			/>	<!-- 담당자정보 -->
+		<result column="HP_NO1"						property="hpNo1" 			/>	<!-- 핸드폰번호1 -->
+		<result column="EMAIL"						property="email" 			/>	<!-- EMAIL -->
+		<result column="FAX_NO"						property="faxNo" 			/>	<!-- 팩스번호 -->
+		<result column="ZIP"						property="zip" 				/>	<!-- 우편번호 -->
+		<result column="ADDR"						property="addr" 			/>	<!-- 주소1 -->
+		<result column="ADDR2"						property="addr2" 			/>	<!-- 주소2 -->
+		<result column="ZZQC_FG1"					property="zzqcFg1" 			/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"					property="zzqcFg2" 			/>	<!-- FSSC22000 -->
+		<result column="ZZQC_FG3"					property="zzqcFg3" 			/>	<!-- ISO22000 -->
+		<result column="ZZQC_FG4"					property="zzqcFg4" 			/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"					property="zzqcFg5" 			/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"					property="zzqcFg6" 			/>	<!-- 우수농산물GAP인증 -->
+		<result column="ZZQC_FG7"					property="zzqcFg7" 			/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"					property="zzqcFg8" 			/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"					property="zzqcFg9" 			/>	<!-- ISO_9001 -->
+		<result column="ZZQC_FG10"					property="zzqcFg10" 		/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"					property="zzqcFg11" 		/>	<!-- PAS_220 -->
+	</resultMap>
+	
+	<!-- 선택한 파트너사 정보 List Map -->
+	<resultMap id="srmVenListMap" 	class="srmven0010Vo">
+		<result column="VEN_CD"			property="venCd" 		/>	<!-- 협력업체 -->
+		<result column="SEQ"			property="seq" 			/>	<!-- 순번 -->
+		<result column="PRESID_NM"		property="presidNm" 	/>	<!-- 대표자명 -->
+		<result column="PRESID_EMAIL"	property="presidEmail" 	/>	<!-- 대표자 이메일 -->
+		<result column="REP_TEL_NO"		property="repTelNo" 	/>	<!-- 대표전화 -->
+		<result column="DUTY_INF"		property="dutyInf" 		/>	<!-- 담당자명 -->
+		<result column="HP_NO1"			property="hpNo1" 		/>	<!-- 휴대전화 -->
+		<result column="EMAIL"			property="email" 		/>	<!-- 이메일 -->
+		<result column="MD_EMAIL"		property="mdEmail" 		/>	<!-- MD이메일 -->
+		<result column="FAX_NO"			property="faxNo" 		/>	<!-- 팩스번호 -->
+		<result column="ZIP"			property="zip" 			/>	<!-- 우편번호 -->
+		<result column="ADDR"			property="addr" 		/>	<!-- 주소1 -->
+		<result column="ADDR2"			property="addr2" 		/>	<!-- 주소2 -->
+		<result column="ZZQC_FG1"		property="zzqcFg1" 		/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"		property="zzqcFg2" 		/>	<!-- FSSC22000 -->
+		<result column="ZZQC_FG3"		property="zzqcFg3" 		/>	<!-- ISO22000 -->
+		<result column="ZZQC_FG4"		property="zzqcFg4" 		/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"		property="zzqcFg5" 		/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"		property="zzqcFg6" 		/>	<!-- 우수농산물GAP인증 -->
+		<result column="ZZQC_FG7"		property="zzqcFg7" 		/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"		property="zzqcFg8" 		/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"		property="zzqcFg9" 		/>	<!-- ISO_9001 -->
+		<result column="ZZQC_FG10"		property="zzqcFg10" 	/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"		property="zzqcFg11" 	/>	<!-- PAS_220 -->
+		<result column="STATUS"			property="status" 		/>	<!-- 상태값(0:등록, 1:요청, 2:확정, 9:반려) -->
+		<result column="REG_DATE"		property="regDate" 		/>	<!-- 등록일시 -->
+		<result column="REG_ID"			property="regId" 		/>	<!-- 등록자 -->
+		<result column="MOD_DATE"		property="modDate" 		/>	<!-- 수정일시 -->
+		<result column="MOD_ID"			property="modId" 		/>	<!-- 수정자 -->
+		<result column="IF_DT"			property="ifDt" 		/>	<!-- 인터페이스일시 -->
+	</resultMap>
+	
+	<!-- 변경요청 List MAP -->
+	<resultMap id="selectVenInfoConfirmListMap"	class="java.util.HashMap">
+		<result column="VEN_TYPE"			property="VEN_TYPE"			nullValue=""	/>	<!-- 신규/수정구분(C:신규, U:수정) -->
+		<result column="VEN_CD"				property="VEN_CD"			nullValue=""	/>	<!-- 협력업체코드 -->
+		<result column="SEQ"				property="SEQ"				nullValue=""	/>	<!-- 순번 -->
+		<result column="CHANGE_FLAG"		property="CHANGE_FLAG"		nullValue=""	/>	<!-- 변경구분(B:변경정, A:변경후) -->
+		<result column="PRESID_NM"			property="PRESID_NM"		nullValue=""	/>	<!-- 대표자명 -->
+		<result column="PRESID_EMAIL"		property="PRESID_EMAIL"		nullValue=""	/>	<!-- 대표자이메일 -->
+		<result column="REP_TEL_NO"			property="REP_TEL_NO"		nullValue=""	/>	<!-- 대표전화 -->
+		<result column="DUTY_INF"			property="DUTY_INF"			nullValue=""	/>	<!-- 담당자명 -->
+		<result column="HP_NO1"				property="HP_NO1"			nullValue=""	/>	<!-- 휴대전화 -->
+		<result column="EMAIL"				property="EMAIL"			nullValue=""	/>	<!-- 이메일 -->
+		<result column="FAX_NO"				property="FAX_NO"			nullValue=""	/>	<!-- FAX -->
+		<result column="ZIP"				property="ZIP"				nullValue=""	/>	<!-- 우편번호 -->
+		<result column="ADDR"				property="ADDR"				nullValue=""	/>	<!-- 주소 -->
+		<result column="ADDR2"				property="ADDR2"			nullValue=""	/>	<!-- 주소2 -->
+		<result column="ZZQC_FG1"			property="ZZQC_FG1"			nullValue=""	/>	<!-- HACCP -->
+		<result column="ZZQC_FG2"			property="ZZQC_FG2"			nullValue=""	/>	<!-- FSSC22000 -->
+		<result column="ZZQC_FG3"			property="ZZQC_FG3"			nullValue=""	/>	<!-- ISO220000 -->
+		<result column="ZZQC_FG4"			property="ZZQC_FG4"			nullValue=""	/>	<!-- GMP인증 -->
+		<result column="ZZQC_FG5"			property="ZZQC_FG5"			nullValue=""	/>	<!-- KS인증 -->
+		<result column="ZZQC_FG6"			property="ZZQC_FG6"			nullValue=""	/>	<!-- 우수농산물GAP인증 -->
+		<result column="ZZQC_FG7"			property="ZZQC_FG7"			nullValue=""	/>	<!-- 유기가공식품인증 -->
+		<result column="ZZQC_FG8"			property="ZZQC_FG8"			nullValue=""	/>	<!-- 전통식품품질인증 -->
+		<result column="ZZQC_FG9"			property="ZZQC_FG9"			nullValue=""	/>	<!-- ISO_9001 -->
+		<result column="ZZQC_FG10"			property="ZZQC_FG10"		nullValue=""	/>	<!-- 수산물품질인증 -->
+		<result column="ZZQC_FG11"			property="ZZQC_FG11"		nullValue=""	/>	<!-- PAS_220 -->
+		<result column="STATUS"				property="STATUS"			nullValue=""	/>	<!-- 상태값(0:승인요청, 1:승인완료, 2:반려, 9:임시저장) -->
+	</resultMap>
+
+	<!-- 변경요청 List MAP -->
+	<resultMap id="selectVenInfoConfirmMDEmailListResultMap"	class="srmven0010Vo">
+		<result column="MD_NAME"				property="mdName" 		/>	<!-- MD 명 -->
+		<result column="MD_EMAIL"				property="mdEmail" 		/>	<!-- MD이메일 -->
+		<result column="SELLER_NAME_LOC"		property="venNm" 		/>	<!-- 파트너사명 -->
+	</resultMap>
+	
+	<!-- 협력업체정보 조회  -->
+	<select id="selectVendorList" parameterClass="srmven0010Vo" resultMap="vendorListMap">
+		/* SRMVEN0010.selectVendorList */
+		SELECT	*
+		FROM
+		(
+			SELECT	A.SELLER_CODE 		AS VEN_CD
+				, 	A.SELLER_NAME_LOC 	AS VEN_NM
+				,	A.IRS_NO			AS BMAN_NO
+				,	A.SELLER_CEO_NAME	AS PRESID_NM
+				,	'' AS PRESID_EMAIL
+				, 	A.REP_TEL_NO
+				, 	A.DUTY_INF
+				, 	A.EMAIL
+				, 	A.HP_NO1
+				, 	A.FAX_NO
+				,	A.ZIPCODE			AS ZIP
+				, 	A.ADDRESS1			AS ADDR
+				, 	A.ADDRESS2			AS ADDR2
+				,	A.ZZQC_FG1			AS QC_FG01
+				, 	A.ZZQC_FG2			AS QC_FG02
+				, 	A.ZZQC_FG3			AS QC_FG03
+				, 	A.ZZQC_FG4			AS QC_FG04
+				, 	A.ZZQC_FG5			AS QC_FG05
+				, 	A.ZZQC_FG6			AS QC_FG06
+				, 	A.ZZQC_FG7			AS QC_FG07
+				, 	A.ZZQC_FG8			AS QC_FG08
+				, 	A.ZZQC_FG9			AS QC_FG09
+				, 	A.ZZQC_FG10			AS QC_FG10
+				, 	A.ZZQC_FG11			AS QC_FG11
+				, 	A.ZZQC_FG12			AS QC_FG12
+				,	B.MOD_PRESID_NM
+				,	B.MOD_PRESID_EMAIL
+				, 	B.MOD_REP_TEL_NO
+				, 	B.MOD_DUTY_INF
+				, 	B.MOD_EMAIL
+				, 	B.MOD_HP_NO1
+				, 	B.MOD_FAX_NO
+				,	B.MOD_ZIP
+				, 	B.MOD_ADDR
+				, 	B.MOD_ADDR2
+				,	B.ZZQC_FG1
+				, 	B.ZZQC_FG2
+				, 	B.ZZQC_FG3
+				, 	B.ZZQC_FG4
+				, 	B.ZZQC_FG5
+				, 	B.ZZQC_FG6
+				, 	B.ZZQC_FG7
+				, 	B.ZZQC_FG8
+				, 	B.ZZQC_FG9
+				, 	B.ZZQC_FG10
+				, 	B.ZZQC_FG11
+				, 	B.ZZQC_FG12
+				,	B.MD_EMAIL
+				,	B.STATUS
+				,	B.SEQ
+				,	B.IF_DT
+			FROM	SSUGL_PARTNER A
+				,	(
+						SELECT	VEN_CD
+							,	SEQ
+							,	PRESID_NM			AS MOD_PRESID_NM
+							,	PRESID_EMAIL		AS MOD_PRESID_EMAIL
+							, 	REP_TEL_NO			AS MOD_REP_TEL_NO
+							, 	DUTY_INF			AS MOD_DUTY_INF
+							, 	EMAIL				AS MOD_EMAIL
+							, 	HP_NO1				AS MOD_HP_NO1
+							, 	FAX_NO				AS MOD_FAX_NO
+							,	ZIP					AS MOD_ZIP
+							, 	ADDR				AS MOD_ADDR
+							, 	ADDR2				AS MOD_ADDR2
+							,	ZZQC_FG1
+							, 	ZZQC_FG2
+							, 	ZZQC_FG3
+							, 	ZZQC_FG4
+							, 	ZZQC_FG5
+							, 	ZZQC_FG6
+							, 	ZZQC_FG7
+							, 	ZZQC_FG8
+							, 	ZZQC_FG9
+							, 	ZZQC_FG10
+							, 	ZZQC_FG11
+							, 	ZZQC_FG12
+							,	MD_EMAIL
+							,	STATUS
+							,	TO_CHAR(IF_DT, 'YYYY-MM-DD') AS IF_DT
+						FROM	SSUGL_PARTNER_H
+						WHERE	(VEN_CD, SEQ) IN 	(
+														SELECT	VEN_CD
+															,	LPAD(MAX(TO_NUMBER(SEQ)), 5, '0') AS SEQ
+														FROM	SSUGL_PARTNER_H
+														WHERE	1 = 1
+														
+															<isEmpty property="srchVenCd">
+																<isNotEmpty property="venCds" prepend="AND">
+																	<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+																		#venCds[]#
+																	</iterate>
+																</isNotEmpty>
+															</isEmpty>
+															
+															<isNotEmpty property="srchVenCd" prepend="AND">
+																VEN_CD = #srchVenCd#
+															</isNotEmpty>
+														GROUP BY VEN_CD
+													)
+					) B
+			WHERE	1 = 1
+				AND A.SELLER_CODE = B.VEN_CD(+)
+				
+				<isEmpty property="srchVenCd">
+					<isNotEmpty property="venCds" prepend="AND">
+						<iterate prepend="A.SELLER_CODE IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				
+				<isNotEmpty property="srchVenCd" prepend="AND">
+					A.SELLER_CODE = #srchVenCd#
+				</isNotEmpty>
+		)
+		WHERE 	1 = 1
+			
+			<isNotEmpty property="srchStatus" prepend="AND">
+				STATUS = #srchStatus#
+			</isNotEmpty>
+			 
+		ORDER BY VEN_CD
+	</select>
+	
+	<!-- 파트너사 수정정보 Insert -->
+	<insert id="insertVenInfo" parameterClass="srmven0010Vo">
+		/* SRMVEN0010.insertVenInfo */
+		INSERT INTO SSUGL_PARTNER_H
+		(
+				VEN_CD
+			, 	SEQ
+			, 	PRESID_NM
+			, 	PRESID_EMAIL
+			, 	REP_TEL_NO
+			, 	DUTY_INF
+			, 	HP_NO1
+			, 	EMAIL
+			, 	FAX_NO
+			, 	ZIP
+			, 	ADDR
+			, 	ADDR2
+			, 	ZZQC_FG1
+			, 	ZZQC_FG2
+			, 	ZZQC_FG3
+			, 	ZZQC_FG4
+			, 	ZZQC_FG5
+			, 	ZZQC_FG6
+			, 	ZZQC_FG7
+			, 	ZZQC_FG8
+			, 	ZZQC_FG9
+			, 	ZZQC_FG10
+			, 	ZZQC_FG11
+			, 	ZZQC_FG12
+			, 	STATUS
+			,	MD_EMAIL
+			, 	REG_DATE
+			, 	REG_ID
+		)
+		VALUES
+		(
+				#venCd#
+			, 	(SELECT LPAD(NVL(MAX(TO_NUMBER(SEQ)), 0) + 1, 5, '0') FROM SSUGL_PARTNER_H WHERE VEN_CD = #venCd#)
+			, 	#modPresidNm#
+			, 	#modPresidEmail#
+			, 	#modRepTelNo#
+			, 	#modDutyInf#
+			, 	#modHpNo1#
+			, 	#modEmail#
+			, 	#modFaxNo#
+			, 	#modZip#
+			, 	#modAddr#
+			, 	#modAddr2#
+			, 	#zzqcFg1#
+			, 	#zzqcFg2#
+			, 	#zzqcFg3#
+			, 	#zzqcFg4#
+			, 	#zzqcFg5#
+			, 	#zzqcFg6#
+			, 	#zzqcFg7#
+			, 	#zzqcFg8#
+			, 	#zzqcFg9#
+			, 	#zzqcFg10#
+			, 	#zzqcFg11#
+			, 	#zzqcFg12#
+			, 	#status#
+			,	#mdEmail#
+			, 	CURRENT_TIMESTAMP(0)
+			, 	#regId#
+		)
+	</insert>
+	
+	<!-- 파트너사 수정정보 Update -->
+	<update id="updateVenInfo" parameterClass="srmven0010Vo">
+		/* SRMVEN0010.updateVenInfo */
+		UPDATE 	SSUGL_PARTNER_H
+		SET 	PRESID_NM 		= #modPresidNm#
+			, 	PRESID_EMAIL 	= #modPresidEmail#
+			, 	REP_TEL_NO 		= #modRepTelNo#
+			, 	DUTY_INF 		= #modDutyInf#
+			, 	HP_NO1 			= #modHpNo1#
+			, 	EMAIL 			= #modEmail#
+			, 	FAX_NO 			= #modFaxNo#
+			, 	ZIP 			= #modZip#
+			, 	ADDR 			= #modAddr#
+			, 	ADDR2 			= #modAddr2#
+			, 	ZZQC_FG1 		= #zzqcFg1#
+			, 	ZZQC_FG2 		= #zzqcFg2#
+			, 	ZZQC_FG3 		= #zzqcFg3#
+			, 	ZZQC_FG4 		= #zzqcFg4#
+			, 	ZZQC_FG5 		= #zzqcFg5#
+			, 	ZZQC_FG6 		= #zzqcFg6#
+			, 	ZZQC_FG7 		= #zzqcFg7#
+			, 	ZZQC_FG8 		= #zzqcFg8#
+			, 	ZZQC_FG9 		= #zzqcFg9#
+			, 	ZZQC_FG10 		= #zzqcFg10#
+			, 	ZZQC_FG11 		= #zzqcFg11#
+			, 	ZZQC_FG12 		= #zzqcFg12#
+			,	MD_EMAIL		= #mdEmail#
+			, 	MOD_DATE 		= CURRENT_TIMESTAMP(0)
+			, 	MOD_ID 			= #regId#
+		WHERE	VEN_CD 			= #venCd#
+			AND SEQ 			= #seq#
+	</update>
+	
+	<!-- 파트너사 수정정보 확정요청 -->
+	<delete id="updateVenInfoConfirm" parameterClass="srmven0010Vo">
+		/* SRMVEN0010.updateVenInfoConfirm */
+		UPDATE 	SSUGL_PARTNER_H
+		SET		STATUS 	= #status#
+		WHERE	VEN_CD 	= #venCd#
+			AND SEQ 	= #seq#
+	</delete>
+	
+	<!-- 파트너사 수정정보 Delete -->
+	<delete id="deleteVenInfo" parameterClass="srmven0010Vo">
+		/* SRMVEN0010.deleteVenInfo */
+		DELETE FROM SSUGL_PARTNER_H
+		WHERE	VEN_CD 		= #venCd#
+			AND SEQ 		= #seq#
+	</delete>
+	
+	
+	<!-- 협력업체정보 리스트 조회  -->
+	<select id="selectSrmVenList" parameterClass="srmven0010Vo" resultMap="srmVenListMap">
+		/* SRMVEN001001.selectSrmVenList */
+		SELECT * 
+		FROM (	SELECT	VEN_CD
+					,	SEQ
+					,	PRESID_NM
+					,	PRESID_EMAIL
+					,	REP_TEL_NO
+					,	DUTY_INF
+					,	HP_NO1
+					,	EMAIL
+					,	MD_EMAIL
+					,	FAX_NO
+					,	ZIP
+					,	ADDR
+					,	ADDR2
+					,	ZZQC_FG1
+					,	ZZQC_FG2
+					,	ZZQC_FG3
+					,	ZZQC_FG4
+					,	ZZQC_FG5
+					,	ZZQC_FG6
+					,	ZZQC_FG7
+					,	ZZQC_FG8
+					,	ZZQC_FG9
+					,	ZZQC_FG10
+					,	ZZQC_FG11
+					,	STATUS
+					,	REG_DATE
+					,	REG_ID
+					,	MOD_DATE
+					,	MOD_ID
+					,	IF_DT
+				FROM	SSUGL_PARTNER_H
+			    WHERE	VEN_CD = #venCd#
+			    											
+			    UNION ALL
+			    
+			    SELECT	SELLER_CODE AS VEN_CD
+					,	'99999' AS SEQ
+					,	SELLER_CEO_NAME AS PRESID_NM 
+					,	'' AS PRESID_EMAIL
+					,	REP_TEL_NO
+					,	DUTY_INF
+					,	HP_NO1
+					,	EMAIL
+					,	'' AS MD_EMAIL
+					,	FAX_NO
+					,	ZIPCODE AS ZIP
+					,	ADDRESS1 AS ADDR
+					,	ADDRESS2 AS ADDR2
+					,	ZZQC_FG1
+					,	ZZQC_FG2
+					,	ZZQC_FG3
+					,	ZZQC_FG4
+					,	ZZQC_FG5
+					,	ZZQC_FG6
+					,	ZZQC_FG7
+					,	ZZQC_FG8
+					,	ZZQC_FG9
+					,	ZZQC_FG10
+					,	ZZQC_FG11
+					,	'3' AS STATUS
+					,	CURRENT_TIMESTAMP(0) AS REG_DATE
+					,	'' AS REG_ID
+					,	CURRENT_TIMESTAMP(0) AS MOD_DATE
+					,	'' AS MOD_ID
+					,	CURRENT_TIMESTAMP(0) AS IF_DT
+				FROM	SSUGL_PARTNER
+			    WHERE	SELLER_CODE = #venCd#
+			 )
+			 ORDER BY SEQ DESC
+	</select>
+	
+	<!-- 파트너사 수정정보 확정대상 List -->
+	<select id="selectVenInfoConfirmList" parameterClass="srmven0010Vo" resultMap="selectVenInfoConfirmListMap">
+		/* SRMVEN0010.selectVenInfoConfirmList */
+		SELECT	VEN_TYPE			/* 신규/수정구분(C:신규, U:수정) */
+			,	VEN_CD				/* 협력업체코드 */
+			,	SEQ					/* 순번 */
+			,	CHANGE_FLAG			/* 변경구분(B:변경정, A:변경후) */
+			,	PRESID_NM			/* 대표자명 */
+			,	PRESID_EMAIL		/* 대표자이메일 */
+			,	REP_TEL_NO			/* 대표전화 */
+			,	DUTY_INF			/* 담당자명 */
+			,	HP_NO1				/* 휴대전화 */
+			,	EMAIL				/* 이메일 */
+			,	FAX_NO				/* FAX */
+			,	ZIP					/* 우편번호 */
+			,	ADDR				/* 주소 */
+			,	ADDR2				/* 주소2 */
+			,	ZZQC_FG1			/* HACCP */
+			,	ZZQC_FG2			/* FSSC22000 */
+			,	ZZQC_FG3			/* ISO220000 */
+			,	ZZQC_FG4			/* GMP인증 */
+			,	ZZQC_FG5			/* KS인증 */
+			,	ZZQC_FG6			/* 우수농산물GAP인증 */
+			,	ZZQC_FG7			/* 유기가공식품인증 */
+			,	ZZQC_FG8			/* 전통식품품질인증 */
+			,	ZZQC_FG9			/* ISO_9001 */
+			,	ZZQC_FG10			/* 수산물품질인증 */
+			,	ZZQC_FG11			/* PAS_220 */
+			,	'0' AS STATUS		/* 상태값(0:승인요청, 1:승인완료, 2:반려, 9:임시저장) */
+		FROM
+		(
+			SELECT	'U' AS VEN_TYPE
+				,	VEN_CD
+				,	SEQ
+				,	'A' AS CHANGE_FLAG
+				--,	PRESID_NM
+				, 	NVL(T1.PRESID_NM,   (SELECT T2.SELLER_CEO_NAME FROM	SSUGL_PARTNER T2 WHERE	T2.SELLER_CODE = T1.VEN_CD)) AS PRESID_NM
+				,	PRESID_EMAIL
+				,	REP_TEL_NO
+				,	DUTY_INF
+				,	HP_NO1
+				,	EMAIL
+				,	FAX_NO
+				,	ZIP
+				,	ADDR
+				,	ADDR2
+				,	ZZQC_FG1
+				,	ZZQC_FG2
+				,	ZZQC_FG3
+				,	ZZQC_FG4
+				,	ZZQC_FG5
+				,	ZZQC_FG6
+				,	ZZQC_FG7
+				,	ZZQC_FG8
+				,	ZZQC_FG9
+				,	ZZQC_FG10
+				,	ZZQC_FG11
+			FROM	SSUGL_PARTNER_H T1
+			WHERE	1 = 1
+				
+				<isNotEmpty  property="alVenCdSeq"  prepend="AND">
+					<iterate prepend="(VEN_CD || SEQ) IN " property="alVenCdSeq" open="(" close=")" conjunction=",">
+						#alVenCdSeq[]#
+					</iterate>
+				</isNotEmpty>
+			
+			UNION ALL
+			SELECT	'U' AS VEN_TYPE
+				,	A.VEN_CD
+				,	A.SEQ
+				,	'B' AS CHANGE_FLAG
+				,	B.SELLER_CEO_NAME
+				,	'' AS PRESID_EMAIL
+				,	B.REP_TEL_NO
+				,	B.DUTY_INF
+				,	B.HP_NO1
+				,	B.EMAIL
+				,	B.FAX_NO
+				,	B.ZIPCODE
+				,	B.ADDRESS1
+				,	B.ADDRESS2
+				,	B.ZZQC_FG1
+				,	B.ZZQC_FG2
+				,	B.ZZQC_FG3
+				,	B.ZZQC_FG4
+				,	B.ZZQC_FG5
+				,	B.ZZQC_FG6
+				,	B.ZZQC_FG7
+				,	B.ZZQC_FG8
+				,	B.ZZQC_FG9
+				,	B.ZZQC_FG10
+				,	B.ZZQC_FG11
+			FROM	(
+						SELECT	VEN_CD
+							,	SEQ
+						FROM	SSUGL_PARTNER_H
+						WHERE	1 = 1
+							
+							<isNotEmpty  property="alVenCdSeq"  prepend="AND">
+								<iterate prepend="(VEN_CD || SEQ) IN " property="alVenCdSeq" open="(" close=")" conjunction=",">
+									#alVenCdSeq[]#
+								</iterate>
+							</isNotEmpty>
+					) A
+				,	SSUGL_PARTNER B
+			WHERE 	A.VEN_CD = B.SELLER_CODE
+		)
+		ORDER BY VEN_CD, SEQ, CHANGE_FLAG
+	</select>
+
+	<!--파트너사 정보 수정 내역 담당MD에게 EMAIL 보내기-->
+	<select id="selectVenInfoConfirmMDEmailList" parameterClass="srmven0010Vo" resultMap="selectVenInfoConfirmMDEmailListResultMap">
+		/* SRMVEN0010.selectVenInfoConfirmMDEmailList */
+		SELECT
+				B.USER_NAME_LOC AS MD_NAME
+				, A.MD_EMAIL
+				, C.SELLER_NAME_LOC
+		FROM
+				SSUGL_PARTNER_H A
+				, SUSMT B
+				, SSUGL_PARTNER C
+		WHERE
+				CHANGESPECIALWORD(A.MD_EMAIL) = B.EMAIL(+)
+			AND A.VEN_CD = C.SELLER_CODE(+)
+				<isNotEmpty  property="alVenCdSeq"  prepend="AND">
+					<iterate prepend="(A.VEN_CD || A.SEQ) IN " property="alVenCdSeq" open="(" close=")" conjunction=",">
+						#alVenCdSeq[]#
+					</iterate>
+				</isNotEmpty>
+	</select>
+	
+</sqlMap>

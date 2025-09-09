@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCPPRD0010">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscpprd0010VO" type="com.lottemart.epc.product.model.PSCPPRD0010VO" />
+	
+	<select id="selectProductPopupCount" resultClass="dataMap">
+	/*	PSCPPRD0010.selectProductPopupCount	*/
+	SELECT COUNT(P.PROD_CD) TOTAL_COUNT
+	  FROM TPR_PRODUCT P
+	    WHERE 	P.REP_PROD_CD_YN = 'N'
+		AND     P.APRV_YN = 'Y'
+		AND     P.PROD_DIVN_CD = '02'
+		AND     P.ONLINE_PROD_TYPE_CD <![CDATA[<>]]> '05' /*딜상품 제외*/
+        <isNotEmpty prepend="AND" property="cmbnMallSellPsbtYn"> P.CMBN_MALL_SELL_PSBT_YN = #cmbnMallSellPsbtYn#</isNotEmpty>
+		<isNotEmpty prepend="AND" property="categoryId"> P.CATEGORY_ID = #categoryId#</isNotEmpty>
+		<isNotEmpty prepend="AND" property="dispYn"> P.DISP_YN = #dispYn#</isNotEmpty>
+		<isNotEmpty prepend="AND" property="prodDivnCd"> P.PROD_DIVN_CD = #prodDivnCd#</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchWord">
+		<isEqual property="searchCondition" compareValue="01"> P.PROD_CD LIKE #searchWord#||'%'</isEqual>
+		<isEqual property="searchCondition" compareValue="02"> P.MD_PROD_CD LIKE #searchWord#||'%'</isEqual>
+		<isEqual property="searchCondition" compareValue="03"> P.MD_SRCMK_CD LIKE #searchWord#||'%'</isEqual>
+		<isEqual property="searchCondition" compareValue="04"> P.PROD_NM LIKE '%'||#searchWord#||'%'</isEqual>
+		</isNotEmpty>
+		<isEqual prepend="AND" property="searchDateYn" compareValue="Y">
+		(CASE WHEN #searchDateType# = '01' THEN P.REG_DATE
+			  WHEN #searchDateType# = '02' THEN P.APRV_DATE
+			  WHEN #searchDateType# = '03' THEN P.MD_REG_DATE
+		 END) BETWEEN TO_DATE(NVL(#startDate#,'1800-01-01')||'000000','YYYY-MM-DDHH24MISS')
+	              AND TO_DATE(NVL(#endDate#,'9999-12-31')||'235959','YYYY-MM-DDHH24MISS')
+		</isEqual>
+		<isNotEmpty prepend="AND" property="vendorId" >
+			VENDOR_ID
+			<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+				#vendorId[]#
+			</iterate>
+		</isNotEmpty>
+	</select>
+	
+	<select id="selectProductPopupList" resultClass="pscpprd0010VO">
+	/*	PSCPPRD0010.selectProductPopupList	*/
+	SELECT ROW_SEQ as rowSeq, PROD_CD as prodCd, MD_PROD_CD as mdProdCd, MD_SRCMK_CD as mdSrcmkCd, PROD_NM as prodNm
+      ,CATEGORY_ID as categoryId, CATEGORY_NM as categoryNm, DISP_YN as dispYn, ABSENCE_YN as absenceYn
+	FROM (
+	    SELECT ROWNUM as ROW_SEQ,INNER_TABLE.*
+	    FROM (
+	        SELECT P.PROD_CD, P.MD_PROD_CD, P.MD_SRCMK_CD, P.PROD_NM,
+	               CATEGORY_ID, (SELECT SUB.CATEGORY_NM FROM TCA_CATEGORY SUB WHERE SUB.CATEGORY_ID = P.CATEGORY_ID) CATEGORY_NM,
+	               DISP_YN, 
+	               (SELECT MIN(SOUT_YN) FROM TPR_STORE_ITEM_PRICE A, TST_STORE B
+	                WHERE A.STR_CD = B.STR_CD AND (B.FEDAY_MALL_REP_STR_YN = 'Y' OR B.ONLINE_YN = 'Y' OR B.HODEV_MALL_STR_YN = 'Y')
+	                AND P.PROD_CD = A.PROD_CD
+	               ) ABSENCE_YN
+	        FROM TPR_PRODUCT P
+	       WHERE 	P.REP_PROD_CD_YN = 'N'
+			AND     P.APRV_YN = 'Y'
+			AND     P.PROD_DIVN_CD = '02'
+			AND     P.ONLINE_PROD_TYPE_CD <![CDATA[<>]]> '05' /*딜상품 제외*/
+	        <isNotEmpty prepend="AND" property="cmbnMallSellPsbtYn"> P.CMBN_MALL_SELL_PSBT_YN = #cmbnMallSellPsbtYn#</isNotEmpty>
+			<isNotEmpty prepend="AND" property="categoryId"> P.CATEGORY_ID = #categoryId#</isNotEmpty>
+			<isNotEmpty prepend="AND" property="dispYn"> P.DISP_YN = #dispYn#</isNotEmpty>
+			<isNotEmpty prepend="AND" property="prodDivnCd"> P.PROD_DIVN_CD = #prodDivnCd#</isNotEmpty>
+			<isNotEmpty prepend="AND" property="searchWord">
+			<isEqual property="searchCondition" compareValue="01"> P.PROD_CD LIKE #searchWord#||'%'</isEqual>
+			<isEqual property="searchCondition" compareValue="02"> P.MD_PROD_CD LIKE #searchWord#||'%'</isEqual>
+			<isEqual property="searchCondition" compareValue="03"> P.MD_SRCMK_CD LIKE #searchWord#||'%'</isEqual>
+			<isEqual property="searchCondition" compareValue="04"> P.PROD_NM LIKE '%'||#searchWord#||'%'</isEqual>
+			</isNotEmpty>
+			<isEqual prepend="AND" property="searchDateYn" compareValue="Y">
+			(CASE WHEN #searchDateType# = '01' THEN P.REG_DATE
+				  WHEN #searchDateType# = '02' THEN P.APRV_DATE
+				  WHEN #searchDateType# = '03' THEN P.MD_REG_DATE
+			 END) BETWEEN TO_DATE(NVL(#startDate#,'1800-01-01')||'000000','YYYY-MM-DDHH24MISS')
+		              AND TO_DATE(NVL(#endDate#,'9999-12-31')||'235959','YYYY-MM-DDHH24MISS')
+			</isEqual>
+			<isNotEmpty prepend="AND" property="vendorId" >
+			VENDOR_ID
+			<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+				#vendorId[]#
+			</iterate>
+			</isNotEmpty>
+	    ) INNER_TABLE
+	<![CDATA[
+	    WHERE ROWNUM <= #endRecord# )
+	WHERE ROW_SEQ >= #startRecord#
+	]]>
+	</select>
+	
+	<select id="selectProductArrayPopupList" resultClass="pscpprd0010VO">
+	/*	PSCPPRD0010.selectProductArrayPopupList	*/
+	SELECT * FROM (
+	    SELECT ROWNUM as ROW_SEQ,
+	    		    INNER_TABLE.PROD_CD AS prodCd,
+	    		    INNER_TABLE.MD_SRCMK_CD AS mdSrcmkCd, 
+	    		    INNER_TABLE.MD_PROD_CD AS mdProdCd, 
+	    		    INNER_TABLE.PROD_NM AS prodNm, 
+	    		    INNER_TABLE.CATEGORY_ID AS categoryId,
+      				INNER_TABLE.CATEGORY_NM AS categoryNm, 
+      				INNER_TABLE.DISP_YN AS dispYn, 
+      				INNER_TABLE.ABSENCE_YN AS absenceYn
+	    FROM (
+	        SELECT P.PROD_CD, P.MD_PROD_CD, P.MD_SRCMK_CD, P.PROD_NM,
+	               CATEGORY_ID, (SELECT SUB.CATEGORY_NM FROM TCA_CATEGORY SUB WHERE SUB.CATEGORY_ID = P.CATEGORY_ID) CATEGORY_NM,
+	               DISP_YN, 
+	               (SELECT MIN(SOUT_YN) FROM TPR_STORE_ITEM_PRICE A, TST_STORE B
+	                WHERE A.STR_CD = B.STR_CD AND (B.FEDAY_MALL_REP_STR_YN = 'Y' OR B.ONLINE_YN = 'Y' OR B.HODEV_MALL_STR_YN = 'Y')
+	                AND P.PROD_CD = A.PROD_CD
+	               ) ABSENCE_YN
+	        FROM TPR_PRODUCT P
+	       WHERE 	P.REP_PROD_CD_YN = 'N'
+			 AND    P.APRV_YN = 'Y'
+			 AND    P.PROD_DIVN_CD = '02'
+	         AND    P.PROD_CD  
+	       <iterate prepend="IN" property="prodCdList" open="(" close=")" conjunction=",">
+				#prodCdList[]#
+		   </iterate>
+		     AND VENDOR_ID
+		     <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+				#vendorId[]#
+			 </iterate> 
+		) INNER_TABLE
+	<![CDATA[
+	    WHERE ROWNUM <= #endRecord# )
+	WHERE ROW_SEQ >= #startRecord#
+	]]>
+	</select>
+	
+	<select id="selectProdDivnCdList" resultClass="dataMap">
+	/*	PSCPPRD0010.selectProdDivnCdList	*/
+	SELECT MINOR_CD, CD_NM
+	FROM TET_CODE
+	WHERE MAJOR_CD = 'PRD30'
+	</select>
+	
+	<select id="selectCategoryList" resultClass="dataMap">
+	/*	PSCPPRD0010.selectCategoryList	*/
+	SELECT L1_CD, L1_NM 
+	FROM V_CA_MD_CATEGORY 
+	GROUP BY L1_CD, L1_NM ORDER BY L1_NM
+	</select>
+	
+	<select id="selectMiddleCategoryList" resultClass="dataMap">
+	/*	PSCPPRD0010.selectMiddleCategoryList	*/
+	SELECT L2_CD CAT_CD, L2_NM CAT_NM 
+	FROM V_CA_MD_CATEGORY
+	WHERE L1_CD = #category# 
+	GROUP BY L2_CD, L2_NM ORDER BY L2_NM
+	</select>
+	
+	
+	<!-- 2015.10.30 by kmlee 카테고리 체계 변경으로  주석처리  
+	<select id="selectSubCategoryList" resultClass="dataMap">
+	/*	PSCPPRD0010.selectSubCategoryList	*/
+	SELECT L3_CD CAT_CD, L3_NM CAT_NM 
+	FROM V_CA_MD_CATEGORY 
+	WHERE L1_CD = #category# 
+	AND L2_CD = #middleCategory#
+	GROUP BY L3_CD, L3_NM ORDER BY L3_NM
+	</select>
+	
+	
+	<select id="selectDetailCategoryList" resultClass="dataMap">
+    /*	PSCPPRD0010.selectDetailCategoryList	*/
+	SELECT L4_CD CAT_CD, L4_NM CAT_NM 
+	FROM V_CA_MD_CATEGORY 
+	WHERE L1_CD = #category#
+	AND L2_CD = #middleCategory#
+	AND L3_CD = #subCategory#
+	ORDER BY L4_NM
+	</select>
+	 -->
+	
+
+	<select id="selectSubCategoryList" resultClass="dataMap">
+	/*	PSCPPRD0010.selectSubCategoryList	*/
+	SELECT  L3_CD CAT_CD, 
+	        L3_NM CAT_NM 
+	FROM    V_CA_MD_CATEGORY 
+	WHERE   L1_CD = #category# 
+	AND     L2_CD = #middleCategory#
+	GROUP BY L3_CD, L3_NM ORDER BY L3_NM
+	</select>
+	
+</sqlMap>

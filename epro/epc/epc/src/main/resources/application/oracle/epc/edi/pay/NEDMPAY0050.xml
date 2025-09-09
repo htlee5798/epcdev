@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0050">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<!-- 물류비 정보 -->
+	<typeAlias alias="NEDMPAY0050VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0050VO" />
+	
+	<resultMap id="NEDMPAY0050VOMap" class="NEDMPAY0050VO">
+		<result property="subMm" 			column="SUB_MM" />
+		<result property="strNm" 			column="STR_NM" />
+		<result property="strSplyAmt" 			column="STR_SPLY_AMT" />
+		<result property="subAmt" 			column="SUB_AMT" />
+		<result property="vat" 			column="VAT" />
+		<result property="subSum" 			column="SUB_SUM" />
+		<result property="rate" 			column="RATE" />
+	</resultMap>
+	
+	<select id="TSC_LOGI_AMT-SELECT01" resultMap="NEDMPAY0050VOMap" parameterClass="NEDMPAY0050VO">
+		/* NEDMPAY0050.TSC_LOGI_AMT-SELECT01 */
+		SELECT	A.SUB_MM
+			,	B.STR_NM
+			,	NVL(SUM(A.STR_SPLY_AMT), 0) AS STR_SPLY_AMT
+			,	NVL(SUM(A.SUB_AMT), 0) AS SUB_AMT
+			,	NVL(SUM(A.VAT), 0) AS VAT
+			,	NVL(SUM(A.SUB_AMT), 0) + NVL(SUM(A.VAT), 0) AS SUB_SUM
+			--,	NVL(TRUNC(DECODE(SUM(A.STR_SPLY_AMT),'0','0',(SUM(A.SUB_AMT) / SUM(A.STR_SPLY_AMT) * 100 )),1), 0) AS RATE
+			,	NVL(ROUND(DECODE(SUM(A.STR_SPLY_AMT),'0','0',(SUM(A.SUB_AMT) / SUM(A.STR_SPLY_AMT) * 100 )),2), 0) AS RATE
+		FROM  	TPC_SUB_AGG A INNER JOIN STORE B ON A.STR_CD = B.STR_CD
+		WHERE 	A.SUB_MM BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')
+			AND A.ACCT_CD IN ('25','39')
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchStoreAl">
+				<iterate prepend="B.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchEntpCd">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+		
+		GROUP BY A.SUB_MM, B.STR_NM
+		ORDER BY A.SUB_MM, B.STR_NM
+	</select>
+
+</sqlMap>

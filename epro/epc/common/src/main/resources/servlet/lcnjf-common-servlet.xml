@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	- DispatcherServlet application context for Application's web tier.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+	
+	
+	<!-- 
+		##########################################################################################
+		### command ArgumentResolvers
+		##########################################################################################
+	-->
+	
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"
+		p:synchronizeOnSession="true" >
+		<property name="webBindingInitializer">
+			<bean class="lcn.module.framework.springmvc.bind.BindingInitializer"/>
+		</property>
+		<property name="customArgumentResolvers">
+			<list>
+				<bean class="lcn.module.framework.springmvc.bind.CommandMapArgumentResolver"/>
+			</list>
+		</property>
+	</bean>
+	
+		
+	<!-- 
+		##########################################################################################
+		### Exception 
+		##########################################################################################
+	-->
+	
+	<!-- <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="common/error/Error"/>
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.dao.DataAccessException">common/error/dataAccessFailure</prop>
+				<prop key="org.springframework.transaction.TransactionException">common/error/dataAccessFailure</prop>
+				<prop key="lcn.module.common.exception.BizException">common/error/BizException</prop>
+				<prop key="org.springframework.web.HttpSessionRequiredException">common/error/HttpSessionException.jsp</prop>
+			</props>
+		</property>
+	</bean> -->
+	
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="common/error/defaultError"/>
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.dao.DataAccessException">common/error/defaultError</prop>
+				<prop key="org.springframework.transaction.TransactionException">common/error/defaultError</prop>
+				<prop key="lcn.module.common.exception.BizException">common/error/defaultError</prop>
+				<prop key="org.springframework.web.HttpSessionRequiredException">common/error/defaultError</prop>
+				<prop key="com.lottemart.common.exception">common/AccessDeniedError</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	<!-- 
+		##########################################################################################
+		### View Resolver
+		##########################################################################################
+	-->
+		
+
+	
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" 
+		p:order="1" 
+		p:viewClass="org.springframework.web.servlet.view.JstlView" 
+		p:prefix="/WEB-INF/jsp/" 
+		p:suffix=".jsp"/>
+
+	<!-- 파일 다운로드 셋팅 -->	
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0"/>
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:viewClass="org.springframework.web.servlet.view.JstlView"
+		p:prefix="/WEB-INF/jsp/"
+		p:suffix=".jsp"
+		p:cache="false"
+		p:order="1"/>
+		
+	<!-- 
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+			p:basename="messages"/>
+	
+	
+		##########################################################################################
+		### Custom View
+		##########################################################################################
+	-->
+			
+	<!-- 업무별 사용 custom view -->
+    <bean id="excelExportView" class="lcn.module.common.views.ExcelExportView"/>
+	<bean id="downloadView" class="lcn.module.common.views.FileDownloadView" />
+	<bean id="autoSearchCompleteView" class="lcn.module.common.views.AutoSearchCompleteView" />
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="209715200"/>
+    </bean>
+   
+  <!-- For Pagination Tag -->
+    <bean id="imageRenderer" class="lcn.module.common.paging.ImagePaginationRenderer"/>
+
+    <bean id="paginationManager" class="lcn.module.common.paging.DefaultPaginationManager">
+        <property name="rendererType">
+            <map>
+                <entry key="image" value-ref="imageRenderer"/>
+            </map>
+        </property>
+    </bean>
+<!-- /For Pagination Tag -->  	
+    				
+</beans>

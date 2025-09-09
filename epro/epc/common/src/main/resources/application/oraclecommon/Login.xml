@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Login">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="NoticeVO" type="com.lottemart.common.notice.model.NoticeVO"/>
+	
+	<!-- 현재시간 조회 -->
+	<select id="getNowDate" resultClass="dataMap">
+	<![CDATA[
+		/* Login.getNowDate */
+		SELECT 
+			   TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') NOW_DATE
+             , TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS') NOW_TIME 
+        FROM DUAL
+	]]>
+	</select>
+	
+	<sql id="selectAdminInfo">
+		SELECT
+			LOGIN_ID
+			, ADMIN_ID
+			, ADMIN_NM
+			, PWD
+			, LMART_EMP_NO
+			, ADMIN_TYPE_CD
+			, EMAIL
+			, STR_CD
+			, DECODE(PWD_SETUP_DATE, null, ROUND(REG_DATE-CURRENT_TIMESTAMP(0), 0), ROUND(PWD_SETUP_DATE-CURRENT_TIMESTAMP(0), 0)) PWD_CHANGE_DATE
+			, ACTIVE_YN
+			, IDNO_READ_YN
+			, CARD_NO_READ_YN
+			, VACCNT_NO_READ_YN
+			, REPLY_DIVN_CD
+			, TO_CHAR (CELL_AUTH_DATE, 'YYYYMMDDHH24MI') CELL_AUTH_DATE
+			, TO_CHAR (CELL_AUTH_DATE, 'YYYYMMDD') AUTH_DATE
+			, CASE
+				WHEN TO_CHAR(CELL_AUTH_DATE, 'YYYYMMDD') <![CDATA[ < ]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') THEN -2
+				ELSE NVL((TO_CHAR(CELL_AUTH_DATE, 'HH24')*60+TO_CHAR(CELL_AUTH_DATE, 'MI'))- (TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24')*60+TO_CHAR(CURRENT_TIMESTAMP(0), 'MI')),-2)
+			END AS AUTH_AFTER_TIME
+			, PWD_ERROR_DY
+			, PWD_ERROR_CNT
+			, PICKER_ORDER_SEQ
+			, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS TO_DATE
+			, NVL2((
+				SELECT NVL2(AR.ROLE_ID, 'Y','N')
+				FROM	TAD_ADMIN_ROLE_ASSIGN	AR
+				WHERE	AR.ADMIN_ID	= AD.ADMIN_ID
+					AND	AR.ROLE_ID	= 'P00000012'
+					AND	ROWNUM		= 1
+			),'Y','N') AS PICKER_YN
+			, (CASE
+				WHEN (SELECT COUNT(AR.ROLE_ID) FROM TAD_ADMIN_ROLE_ASSIGN AR WHERE AR.ADMIN_ID = AD.ADMIN_ID AND AR.ROLE_ID IN ('P00000013')) <![CDATA[ >= ]]> 1 THEN '10'
+				WHEN (SELECT COUNT(AR.ROLE_ID) FROM TAD_ADMIN_ROLE_ASSIGN AR WHERE AR.ADMIN_ID = AD.ADMIN_ID AND AR.ROLE_ID IN ('P00000012')) <![CDATA[ >= ]]> 1 THEN '20'
+				ELSE '00'
+			END) AS QPS_PICKER_TYPE		/*피커구분, 10:바로배송, 20:예약, 00:피커가 아님*/
+			, CELL_NO
+			, DEPT_CD
+			, UUID
+			, TO_CHAR(LAST_LOGIN_DATE, 'YYYYMMDDHH24MISS') AS LAST_LOGIN_DATE
+			, (CASE
+				WHEN QPS_PICKER_WORK_YN = 'Y' AND LAST_LOGIN_DATE IS NOT NULL AND TRUNC(LAST_LOGIN_DATE) = TRUNC(CURRENT_TIMESTAMP(0)) THEN 'Y'
+				ELSE 'N'
+			END) AS QPS_PICKER_WORK_YN
+	</sql>
+	
+	<!-- 관리자로그인정보 조회 -->
+	<select id="getAdminLogin" resultClass="dataMap">
+	/* Login.getAdminLogin */
+		<include refid="selectAdminInfo"/>
+		FROM   TAD_ADMIN AD
+		WHERE  LOGIN_ID = #loginId#
+	</select>
+	
+	<!-- 메뉴조회: 관리자 메인화면 -->
+	<select id="getAdminTopMenuList" resultClass="dataMap">
+		/* Login.getAdminTopMenuList */
+		SELECT DISTINCT ME.MENU_ID,ME.MENU_NM,ORDER_SEQ
+		FROM   TAD_ADMIN_ROLE_ASSIGN RA,
+		       TAD_ADMIN_ROLE RO,
+		       TAD_ADMIN_MENU_ASSIGN MA,
+		       TAD_ADMIN_MENU ME
+		WHERE  RA.ROLE_ID     = RO.ROLE_ID
+		AND    RA.ROLE_ID     = MA.ROLE_ID
+		AND    MA.MENU_ID     = ME.MENU_ID
+		AND    RA.ADMIN_ID    = #adminId#
+		AND    RO.SYS_DIVN_CD = #sysDivnCd#
+		AND    RO.ACTIVE_YN   = 'Y'
+		AND    MA.ACTIVE_YN   = 'Y'
+		AND    ME.ACTIVE_YN   = 'Y'
+		AND    ME.MENU_DEPTH  = 1
+		ORDER BY ORDER_SEQ
+	</select>
+	
+	
+	<!-- Mobile 메뉴조회: 관리자 메인화면 로그인 id로 메뉴 pc와 연결되 메뉴, ROLE을 확인하고 모바일 메뉴를 가져오기 2016.8.25 -->
+	<select id="getAdminTopMenuListMobile" resultClass="dataMap">
+		/* Login.getAdminTopMenuListMobile */
+SELECT DISTINCT A.MENU_ID
+		        ,A.MENU_NM
+		        ,A.URL
+		        ,NVL(A.PARAM,'') AS PARAM
+		        ,A.LEAF_MENU_YN
+		        ,A.MENU_DEPTH
+		        ,A.UP_MENU_ID
+		        ,A.MOBILE_MENU_CSS
+		        ,A.REG_VIEW_DIVN_CD
+		        ,A.ORDER_SEQ
+  FROM TAD_ADMIN_MENU A
+ WHERE A.ACTIVE_YN = 'Y'
+ START WITH A.MENU_ID IN
+            (SELECT AMO.MENU_ID
+               FROM TAD_ADMIN_MENU_ASSIGN MA, TAD_ADMIN_MENU AMO
+              WHERE MA.ROLE_ID IN
+                    (SELECT ROLE_ID
+                       FROM TAD_ADMIN_ROLE_ASSIGN ra
+                     /* 유저id 가 가지고 있는 모든 role 중에서 (M 시작 role 제외 ) */
+                      WHERE RA.ADMIN_ID IN
+                            (SELECT A.ADMIN_ID
+                               FROM TAD_ADMIN A
+                              WHERE A.LOGIN_ID = #loginId# ) <!-- 'lottemart006') -->
+                        and SUBSTR(RA.ROLE_ID, 1, 1) != 'M')
+                AND MA.ACTIVE_YN = 'Y'
+                   /* 모바일과 연결된 모든 메뉴를 가져온다.*/
+                AND MA.MENU_ID = AMO.REF_MENU_ID
+                AND AMO.MENU_ID LIKE 'M%'
+                AND AMO.REF_MENU_ID IS NOT NULL)
+CONNECT BY PRIOR A.UP_MENU_ID = A.MENU_ID
+ ORDER SIBLINGS BY A.ORDER_SEQ
+
+	</select>	
+	
+	<!-- 서브메뉴조회: 관리자 메인화면 2016.8.10 ljh up_menu_id, mobile_menu_css, reg_view_divn_cd 추가 -->
+	<select id="getAdminSubMenuList" resultClass="dataMap">
+		/* Login.getAdminSubMenuList */
+		SELECT   A.MENU_ID
+		        ,A.MENU_NM
+		        ,A.URL
+		        ,NVL(A.PARAM,'') AS PARAM
+		        ,A.LEAF_MENU_YN
+		        ,A.MENU_DEPTH
+		        ,A.UP_MENU_ID
+		        ,A.MOBILE_MENU_CSS
+		        ,A.REG_VIEW_DIVN_CD		        
+                ,(SELECT DECODE(COUNT(1), 0, 'N', 'Y') 
+                      FROM TAD_ADMIN_MENU 
+                     WHERE MENU_YN = 'Y'
+                       AND MENU_DEPTH = 3
+                       AND LEAF_MENU_YN = 'N'
+                       AND ACTIVE_YN = 'Y'
+                       AND UP_MENU_ID = A.MENU_ID) AS DEPTH4_YN
+		FROM   TAD_ADMIN_MENU A
+		WHERE  A.MENU_ID IN(  SELECT MA.MENU_ID
+		                    FROM   TAD_ADMIN_ROLE_ASSIGN RA,
+		                           TAD_ADMIN_ROLE RO,
+		                           TAD_ADMIN_MENU_ASSIGN MA
+		                    WHERE  RA.ROLE_ID     = RO.ROLE_ID
+		                    AND    RA.ROLE_ID     = MA.ROLE_ID
+		                    AND    RA.ADMIN_ID    = #adminId#
+		                    AND    RO.SYS_DIVN_CD = #sysDivnCd#
+		                    AND    RO.ACTIVE_YN   = 'Y'
+		                    AND    MA.ACTIVE_YN   = 'Y'
+		                  )
+		AND    A.MENU_YN    = 'Y'
+		AND    A.ACTIVE_YN  = 'Y'
+		<!-- 모바일BOS 는 전체메뉴를 가져옴 -->
+		<isEqual property="sysDivnCd" compareValue="07">
+		START WITH A.MENU_ID    = 'MO0000001'
+		</isEqual>
+		<isNotEqual property="sysDivnCd" compareValue="07">
+		START WITH A.MENU_ID    = #menuId#
+		</isNotEqual>
+		CONNECT BY PRIOR A.MENU_ID = A.UP_MENU_ID
+		ORDER SIBLINGS BY A.ORDER_SEQ
+	</select>
+	
+	
+	<!-- Mobile 서브메뉴조회: 메인화면 (sso 인 경우 로그인유저로 메뉴 가져오도록 함)-->
+	<select id="getAdminSubMenuListMobile" resultClass="dataMap">
+		/* Login.getAdminSubMenuListMobile */
+		SELECT   MENU_ID
+		        ,MENU_NM
+		        ,URL
+		        ,NVL(PARAM,'') AS PARAM
+		        ,LEAF_MENU_YN
+		        ,MENU_DEPTH
+		        ,UP_MENU_ID
+		        ,MOBILE_MENU_CSS
+		        ,REG_VIEW_DIVN_CD
+		FROM   TAD_ADMIN_MENU
+		WHERE  MENU_ID IN(  SELECT DISTINCT MA.MENU_ID
+		                    FROM   TAD_ADMIN_ROLE_ASSIGN RA,
+		                           TAD_ADMIN_ROLE RO,
+		                           TAD_ADMIN_MENU_ASSIGN MA
+		                    WHERE  RA.ROLE_ID     = RO.ROLE_ID
+		                    AND    RA.ROLE_ID     = MA.ROLE_ID
+		                    AND    RA.ADMIN_ID    = (select a.admin_id from TAD_ADMIN a where a.login_id = #loginId#)
+		                    AND    RO.SYS_DIVN_CD = #sysDivnCd#
+		                    AND    RO.ACTIVE_YN   = 'Y'
+		                    AND    MA.ACTIVE_YN   = 'Y'
+		                  )
+		AND    MENU_YN    = 'Y'
+		AND    ACTIVE_YN  = 'Y'
+		START WITH UP_MENU_ID = 'MO0000001'
+		CONNECT BY PRIOR MENU_ID = UP_MENU_ID
+		ORDER SIBLINGS BY ORDER_SEQ
+	</select>
+	
+	<!-- 관리자로그인정보 조회 - 롯데임직원용 -->
+	<select id="getAdminLoginLotte" resultClass="dataMap">
+	/* Login.getAdminLoginLotte */
+		<include refid="selectAdminInfo"/>
+		FROM   TAD_ADMIN AD
+		WHERE  LMART_EMP_NO  = #lmartEmpNo#
+<isNotEmpty property="SSOTime">
+		AND    TO_DATE(#SSOTime#,'YYYYMMDDHH24MISS') BETWEEN CURRENT_TIMESTAMP(0)-(1/24/60/60*600) AND CURRENT_TIMESTAMP(0)+(1/24/60/60*600) --30초
+</isNotEmpty>
+	<!-- 한명이어야 하지만 테스트용으로 개발서버에서 데이터변경시 여러건의 사번이 존재한경우를 제외시킴 2016.9.13 ljh - 롯데임직원용 -->
+		AND    LIMIT 1 
+	</select>
+
+	<!-- 로그인 오류횟수 갱신 -->
+	<update id="updateLoginErrorCnt">
+		UPDATE TAD_ADMIN
+	      SET PWD_ERROR_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'), 
+	          PWD_ERROR_CNT = #errorCnt#,
+	          ACTIVE_YN = #activeYn#,
+	          MOD_ID = 'pwError'||#errorCnt#,
+	          MOD_DATE = CURRENT_TIMESTAMP(0)
+	      WHERE ADMIN_ID = #adminId# 
+	</update>
+	
+	<!-- 로그인 오류횟수 초기화 -->
+	<update id="initPwdErrorCount">
+	/* Login.initPwdErrorCount */
+		UPDATE TAD_ADMIN
+	      SET PWD_ERROR_CNT = #errorCnt#
+	     ,MOD_ID = 'pwErrReset'
+	     ,MOD_DATE = CURRENT_TIMESTAMP(0)
+	      WHERE ADMIN_ID = #adminId# 
+	</update>
+	
+	<!-- 관리자 휴대폰정보 조회 -->
+	<select id="getAdminCellNoInfo" resultClass="dataMap"> 
+		/* Login.getAdminCellNoInfo */
+		 SELECT CELL_NO 
+		 FROM TAD_ADMIN
+		 WHERE ADMIN_ID = #adminId#
+	</select>
+	
+	
+	<!-- 관리자 휴대폰정보 조회 -->
+	<select id="getAdMobileInfo" resultClass="dataMap">
+		/* Login.getAdMobileInfo */
+		 SELECT CELL_NO 
+		   FROM TAD_ADMIN
+		  WHERE ADMIN_ID IN('M1854', #adminId#)
+	</select>
+	
+	<!-- 오늘날짜 조회 -->
+	<select id="getToDate" resultClass="dataMap">
+	<![CDATA[
+	/* Login.getToDate */
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')TO_DATE FROM DUAL
+	]]>
+	</select>
+	
+	
+	<!-- 관리자정보 조회 -->
+	<select id="getAdminPwdInfo" resultClass="dataMap">
+	<![CDATA[
+	    /* Login.getAdminPwdInfo */
+	    SELECT 
+		       PWD, ADMIN_ID, LOGIN_ID, LMART_EMP_NO, PHONE_EX_NO
+		     , CASE WHEN LENGTH(REPLACE(CELL_NO,' ',''))=10 THEN DECODE(TRIM(CELL_NO),NULL,NULL,SUBSTR(REPLACE(CELL_NO,' ',''),1,3)||'-'||SUBSTR(REPLACE(CELL_NO,' ',''),4,3)||'-'||SUBSTR(REPLACE(CELL_NO,' ',''),7))
+		       ELSE DECODE(TRIM(CELL_NO),NULL,NULL,SUBSTR(REPLACE(CELL_NO,' ',''),1,3)||'-'||SUBSTR(REPLACE(CELL_NO,' ',''),4,4)||'-'||SUBSTR(REPLACE(CELL_NO,' ',''),8))
+		       END AS CELL_NO
+		     , DECODE(CELL_AUTH_NO,'','X',CELL_AUTH_NO) CELL_AUTH_NO
+		     , TO_CHAR(CELL_AUTH_DATE,'YYYYMMDD') CELL_AUTH_DATE
+		     , CASE WHEN TO_CHAR(CELL_AUTH_DATE, 'YYYYMMDD') < TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') THEN -2
+		            ELSE NVL((TO_CHAR(CELL_AUTH_DATE, 'HH24')*60+TO_CHAR(CELL_AUTH_DATE, 'MI'))- (TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24')*60+TO_CHAR(CURRENT_TIMESTAMP(0), 'MI')),-2)
+		        END AS AUTH_AFTER_TIME
+		     , (SELECT DECODE(COUNT(*),0,'N','Y')  FROM TAD_ADMIN_TYPE WHERE ADMIN_ID = A.ADMIN_ID AND ADMIN_TYPE = '05' ) AS ADMIN_TYPE_CD
+		FROM TAD_ADMIN A
+		WHERE ADMIN_ID = #adminId#
+	]]> 
+	</select>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="updateAdminPwd">
+	<![CDATA[
+		/* Login.updateAdminPwd */
+		UPDATE TAD_ADMIN 
+		   SET PWD = #pwd#
+		     , PWD_ERROR_CNT = 0
+		     , CELL_AUTH_NO = null
+		     , CELL_AUTH_DATE = null
+		     , PWD_SETUP_DATE = CURRENT_TIMESTAMP(0)
+		     , MOD_DATE = CURRENT_TIMESTAMP(0)
+		 WHERE ADMIN_ID = #adminId#
+	]]>
+	</update>
+	
+	<!-- 관리자 정보 수정(비밀번호변경인증 처리) -->
+	<update id="updateAdminInfo">
+	<![CDATA[
+		/* Login.updateAdminInfo */
+		UPDATE TAD_ADMIN 
+		   SET PWD = #pwd#
+		     , PWD_ERROR_CNT = 0
+		     , CELL_AUTH_NO = null
+		     , CELL_AUTH_DATE = null
+		     , PWD_SETUP_DATE = CURRENT_TIMESTAMP(0)
+		     , ACTIVE_YN = 'Y'
+		     , MOD_DATE = CURRENT_TIMESTAMP(0)
+		 WHERE ADMIN_ID = #adminId#
+	]]>
+	</update>
+	
+	<!-- 고객로그인여부 수정 -->
+	<update id="updateCustLoginYn" >
+	/* Login.updateCustLoginYn */
+	UPDATE TAD_ADMIN
+	   SET CUST_LOGIN_YN = #custLoginYn#
+	 WHERE ADMIN_ID = #adminId#
+	</update>
+
+	<!-- 관리자 세션로그 중복 기록 방지 -->
+	<select id="getLoginSessionChk" resultClass="int">
+	    /* Login.getLoginSessionChk */
+		SELECT COUNT(1) FROM TAD_ADMIN_SESSION_LOG
+  		WHERE LOGIN_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+  		AND SESSION_NO = #sessionNo#
+	</select>
+	
+	<!-- 관리자 세션로그 기록 (로그인)-->
+	<insert id="insertLoginSessionLog" >
+	     /* Login.insertLoginSessionLog */
+	     MERGE INTO TAD_ADMIN_SESSION_LOG TL
+	    	USING DUAL
+	    		ON ( TL.SESSION_NO = #sessionNo# AND TL.LOGIN_DATE =TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS') )
+	    	WHEN NOT MATCHED THEN
+	    		INSERT (
+				    SESSION_NO, ADMIN_ID, ADMIN_IP
+				    , LOGIN_DATE, REG_DATE, REG_ID, MOD_DATE
+				    , MOD_ID , AFFILIATE , MSG_LOG, UUID
+				) VALUES (
+				    #sessionNo#, #adminId#, #adminIp#
+				    , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS'), CURRENT_TIMESTAMP(0), #adminId#, CURRENT_TIMESTAMP(0)
+				    , #adminId# , #affiliate# , SUBSTRB(#msg_log#, 1, 200), #uuid#
+				)
+	</insert>
+	
+	<!-- 관리자 세션로그 기록 (로그아웃)-->
+	<update id="updateLogoutSessionLog" >
+	/* Login.updateLogoutSessionLog */
+		UPDATE TAD_ADMIN_SESSION_LOG
+           SET LOGOUT_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+         WHERE SESSION_NO = #sessionNo#
+	</update>
+
+	<insert id="insertAdminWorkLog" >
+		INSERT 
+		  INTO TET_ADMIN_WORK_LOG
+		       (MENU_ID, ADMIN_ID, EXE_DY, EXE_TM, WORK_IP, URL, PARAM, REG_DATE, REG_ID)
+		SELECT MENU_ID
+		      ,#adminId#
+		      ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		      ,TO_CHAR(CURRENT_TIMESTAMP(0),'HH24MISS')
+		      ,#workIP#
+		      ,#url#
+		      ,SUBSTRB(#param#,0,4000)
+		      ,CURRENT_TIMESTAMP(0)
+		      ,#adminId#
+		FROM   TAD_ADMIN_MENU
+		WHERE  URL            = #url#
+		<isNotEmpty property="menuId">
+	            AND    MENU_ID = #menuId# /* 세션의 시스템구분 	 */
+		</isNotEmpty>
+		AND    ROWNUM         = 1
+	</insert>
+
+	<!-- 공지사항 목록 조회 -->
+	<select id="selectNoticeList" resultClass="dataMap">
+	<![CDATA[
+	/* Login.selectNoticeList */
+    SELECT
+           TITLE, REG_DATE, NEW_FLAG, BOARD_SEQ, ATCH_FILE_ID, ICON_YN
+    FROM   (SELECT 
+                   TITLE
+                  ,TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+                  ,CASE WHEN TRUNC(CURRENT_TIMESTAMP(0)) - TRUNC(REG_DATE) >= 0
+                         AND TRUNC(CURRENT_TIMESTAMP(0)) - TRUNC(REG_DATE) <= 7 THEN 1
+                    ELSE 0
+                   END AS NEW_FLAG
+                  ,BOARD_SEQ
+                  ,ATCH_FILE_ID
+                  ,DECODE(NVL(LET_2_REF,'N'),'Y',1,0) AS ICON_YN
+            FROM   TBO_BOARD BO
+            WHERE  BO.BOARD_DIVN_CD = '100'
+            AND    BO.DEL_YN        = 'N'
+            AND    BO.PBL_YN        = 'Y'
+            AND  NTCE_START_DY  <=  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH')  
+            AND  NTCE_END_DY    >=  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH')
+            AND    NVL(LET_3_REF,'99') IN('99',#sysDivnCd#)
+            AND  ( (#strCd#  = '999')
+                OR (#strCd# != '999' AND EXISTS(SELECT '1' FROM TBO_BOARD_CATEGORY BC1
+                                                   WHERE BC1.BOARD_SEQ   = BO.BOARD_SEQ
+                                                   AND   BC1.CATEGORY_ID = #strCd#
+                                                   UNION ALL
+                                                   SELECT '1' FROM DUAL
+                                                   WHERE 'TRUE' = (SELECT DECODE(COUNT(*),0,'TRUE','FALSE') AS CHK
+                                                                   FROM   TBO_BOARD_CATEGORY BC2
+                                                                   WHERE  BC2.BOARD_SEQ   = BO.BOARD_SEQ)
+                                                   )
+                   ))
+            ORDER BY DECODE(NVL(LET_2_REF,'N'),'Y',1,0) DESC, BOARD_SEQ DESC
+           ) V
+    WHERE ROWNUM <= 10
+    ]]>
+	</select>
+
+    <!-- 팝업공지 목록 조회 -->
+	<select id="selectPopupNoticeList" resultClass="NoticeVo">
+	<![CDATA[
+	/* Login.selectPopupNoticeList */
+	SELECT
+           TITLE AS title, CONTENT AS content
+    FROM   (SELECT 
+                   TITLE
+                  ,CONTENT
+            FROM   TBO_BOARD BO
+            WHERE  BO.BOARD_DIVN_CD = '100'
+            AND    BO.DEL_YN        = 'N'
+            AND    BO.PBL_YN        = 'Y'
+            AND    NTCE_START_DY  <=  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH')  
+            AND    NTCE_END_DY    >=  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH')
+            AND    NVL(LET_1_REF,'N' ) = 'Y'
+            AND    NVL(LET_3_REF,'99') IN('99',#sysDivnCd#) 
+            AND  ( (#strCd#  = '999')
+                OR (#strCd# != '999' AND EXISTS(SELECT '1' FROM TBO_BOARD_CATEGORY BC1
+                                                   WHERE BC1.BOARD_SEQ   = BO.BOARD_SEQ
+                                                   AND   BC1.CATEGORY_ID = #strCd#
+                                                   UNION ALL
+                                                   SELECT '1' FROM DUAL
+                                                   WHERE 'TRUE' = (SELECT DECODE(COUNT(*),0,'TRUE','FALSE') AS CHK
+                                                                   FROM   TBO_BOARD_CATEGORY BC2
+                                                                   WHERE  BC2.BOARD_SEQ   = BO.BOARD_SEQ)
+                                                   )
+                   ))
+            ORDER BY BOARD_SEQ DESC
+           ) V
+    WHERE ROWNUM <= 3
+    ]]>
+	</select>
+
+	<!-- 실행권한 체크 -->
+	<select id="authCheck" resultClass="dataMap">
+		<![CDATA[
+		/* Login.authCheck */
+		SELECT 
+              max( CASE WHEN URL_AUTH.REG_VIEW_DIVN_CD = '00003'  /* 프로그램 승인 */
+                     AND AUT_AUTH.REG_VIEW_DIVN_CD <> '00003'  /* 권한: 승인    */                     
+                    THEN '0'    /* 해당 프로그램 권한 없음 */
+                    WHEN URL_AUTH.REG_VIEW_DIVN_CD = '00001'  /* 프로그램 등록 */
+                     AND AUT_AUTH.REG_VIEW_DIVN_CD = '00002'  /* 권한: 조회    */
+                    THEN '0'    /* 해당 프로그램 권한 없음 */   
+                    WHEN AUT_AUTH.REG_VIEW_DIVN_CD IS NULL  /* 권한 */
+                    THEN '0'
+               ELSE '1'         /* 권한 있음*/
+               END) AS AUTH_CHK,
+               max(URL_AUTH.REG_VIEW_DIVN_CD) AS URL_AUTH_DIVN_CD,
+               max(AUT_AUTH.REG_VIEW_DIVN_CD) AS AUT_AUTH_DIVN_CD                               
+        FROM   (SELECT
+		               MENU_ID, REG_VIEW_DIVN_CD
+		        FROM   (SELECT MENU_ID, MENU_YN, LEAF_MENU_YN, REG_VIEW_DIVN_CD
+		        		FROM   TAD_ADMIN_MENU
+		                WHERE  ACTIVE_YN = 'Y'
+		                START WITH URL = #url#      /* EXEC URL */
+		                CONNECT BY PRIOR UP_MENU_ID = MENU_ID ) V
+		        WHERE MENU_YN      = 'Y'
+		        AND   LEAF_MENU_YN = 'Y'
+		       ) URL_AUTH
+              ,(SELECT MA.MENU_ID, DECODE(MAX(MA.REG_VIEW_DIVN_CD),'00003',MAX(MA.REG_VIEW_DIVN_CD),MIN(MA.REG_VIEW_DIVN_CD)) AS REG_VIEW_DIVN_CD
+                FROM   TAD_ADMIN_ROLE_ASSIGN RA,
+                       TAD_ADMIN_ROLE RO,
+                       TAD_ADMIN_MENU_ASSIGN MA
+                WHERE  RA.ROLE_ID     = RO.ROLE_ID
+                AND    RA.ROLE_ID     = MA.ROLE_ID
+                AND    RA.ADMIN_ID    = #adminId#   /* 세션의 ADMIN_ID    */
+                AND    RO.SYS_DIVN_CD = #sysDivnCd# /* 세션의 시스템구분 */
+                AND    RO.ACTIVE_YN   = 'Y'
+                AND    MA.ACTIVE_YN   = 'Y'
+                GROUP BY MA.MENU_ID    
+              ) AUT_AUTH
+        WHERE  URL_AUTH.MENU_ID = AUT_AUTH.MENU_ID
+       ]]>
+	</select>
+
+
+
+	<!-- 실행권한 체크 -->
+	<select id="getAdminMenuAssign" resultClass="dataMap">
+		SELECT a.menu_id, a.active_yn
+		  FROM ad_admin_menu a, ad_admin_menu_assign b
+		 WHERE a.menu_id = b.menu_id
+		   AND a.scenario = #scenario#
+		   AND b.role_id = #roleId#
+		   LIMIT 1
+	</select>
+	
+	<!-- SSO 패스 체크 -->
+	<select id="selectSsoPassInfo" resultClass="dataMap">
+		SELECT
+		    LET_1_REF
+		FROM TET_CODE 
+		WHERE MAJOR_CD = 'EMR01'
+	</select>
+
+<!--  TEST  -->
+ 	<select id="getTestMenu" resultClass="dataMap">
+		/* Login.getTestMenu */
+		SELECT /* Authority.getMenuTree */ MENU_ID, UP_MENU_ID,DEPTH, NAME,
+				SCENARIO, START_NODE, MENU_LEAF_YN, LINK_LEAF_YN, MENU_YN, ACTIVE_YN
+				FROM   AD_ADMIN_MENU
+				WHERE MENU_YN = 'Y'
+				  
+				CONNECT BY PRIOR  MENU_ID = UP_MENU_ID
+				START WITH MENU_ID = #menuVal#
+	</select>
+	
+	<!-- 사용자가 해당 메뉴에 대한 사용권한이 있는지 체크 -->
+	<select id="menuAuthCheck" resultClass="dataMap">
+	/* Login.menuAuthCheck */
+	SELECT DECODE(MIN(MENU_ID), NULL, 'FALSE','TRUE') AS AUTH_CHECK
+	FROM
+	    (
+	    SELECT DISTINCT MA.MENU_ID
+	            FROM   TAD_ADMIN_ROLE_ASSIGN RA,
+	                   TAD_ADMIN_ROLE RO,
+	                   TAD_ADMIN_MENU_ASSIGN MA
+	            WHERE  RA.ROLE_ID     = RO.ROLE_ID
+	            AND    RA.ROLE_ID     = MA.ROLE_ID
+	            AND    RA.ADMIN_ID    = #adminId#   /* 세션의 ADMIN_ID */
+<isNotEmpty property="sysDivnCd">
+	            AND    RO.SYS_DIVN_CD = #sysDivnCd# /* 세션의 시스템구분 	 */
+</isNotEmpty>
+	            AND    RO.ACTIVE_YN   = 'Y'
+	            AND    MA.ACTIVE_YN   = 'Y'
+	            GROUP BY MA.MENU_ID    
+	    ) AA
+	WHERE AA.MENU_ID = #menuId#
+	</select>
+	
+	<insert id="insertAdminWorkLogSCM" >
+	INSERT INTO TET_ADMIN_WORK_LOG (
+		MENU_ID, ADMIN_ID, EXE_DY, EXE_TM, WORK_IP, URL, PARAM, REG_DATE, REG_ID
+	) values (
+		#menuId#
+		,#adminId#
+	    ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	    ,TO_CHAR(CURRENT_TIMESTAMP(0),'HH24MISS')
+	    ,#workIP#
+	    ,#url#
+		,#param#
+		,CURRENT_TIMESTAMP(0)
+		,#adminId#
+	)
+	</insert>
+	
+	<!-- 비밀번호 조회 -->
+	<select id="selectPwdHist"  resultClass="dataMap">
+	<![CDATA[
+	SELECT /* Login.selectPwdHist */
+		   (SELECT COUNT(ADMIN_ID) FROM TAD_ADMIN_PWD_HIST H
+		     WHERE H.ADMIN_ID = A.ADMIN_ID
+		       AND PWD        = #pwd#) as CNT
+		  ,LOGIN_ID
+		  ,LMART_EMP_NO 
+		  ,SUBSTR(CELL_NO,-4,4) AS CELL_NO
+	  FROM TAD_ADMIN A
+ 	 WHERE ADMIN_ID = #adminId#
+ 	   
+ 	]]>
+	</select>
+	
+	<!-- 비밀번호 조회 -->
+	<select id="selectPwdHist05"  resultClass="dataMap">
+	<![CDATA[
+	SELECT	/* pbomadm0018.selectPwdHist05 */
+			(SELECT COUNT(ADMIN_ID)
+		   	 FROM 	TAD_ADMIN_PWD_HIST H
+		     WHERE 	H.ADMIN_ID = A.ADMIN_ID
+			   AND PWD = (
+								SELECT DECODE(PWD, #pwd#, PWD, '')
+								FROM
+                                (
+                                        SELECT 	ROWNUM, A.* 
+                                        FROM 	TAD_ADMIN_PWD_HIST A
+                                        WHERE 	ADMIN_ID = #adminId#
+                                        ORDER BY REG_DATE DESC
+                                )
+                                WHERE LIMIT 1
+                    )				
+			) as CNT
+		  , LOGIN_ID
+		  , LMART_EMP_NO 
+		  , SUBSTR(CELL_NO,-4,4) AS CELL_NO
+	  FROM TAD_ADMIN A
+	 WHERE ADMIN_ID = #adminId#
+	 ]]>
+	</select>
+	
+	<insert id="insertPwdHist">
+	<![CDATA[
+	INSERT /* pbomadm0018.insertPwdHist */ 
+	  INTO TAD_ADMIN_PWD_HIST 		
+  		   (
+  		    ADMIN_ID,PWD,ADMIN_IP,REG_DATE, MEMO
+  		   )
+    VALUES (
+  		    #adminId#, #pwd#, #adminIP#,CURRENT_TIMESTAMP(0),#memo# 	     
+  		   )
+	]]>
+	</insert>
+	
+	<!-- 관리자 정보 조회 -->
+	<select id="selectPwd" resultClass="dataMap">
+	<![CDATA[
+	SELECT /* Login.selectPwd */
+		   LOGIN_ID, PHONE_EX_NO, ADMIN_ID, PWD 
+		 , DECODE(TRIM(CELL_NO),NULL,NULL,TRIM(SUBSTR(CELL_NO,1,4))||'-'||TRIM(SUBSTR(CELL_NO,5,4))||'-'||TRIM(SUBSTR(CELL_NO,9))) AS CELL_NO
+		 , CELL_NO AS SMS_CELL_NO
+		 , ADMIN_NM
+		 , CASE WHEN TO_CHAR(CELL_AUTH_DATE, 'YYYYMMDD') < TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') THEN -2
+                ELSE NVL((TO_CHAR(CELL_AUTH_DATE, 'HH24')*60+TO_CHAR(CELL_AUTH_DATE, 'MI'))- (TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24')*60+TO_CHAR(CURRENT_TIMESTAMP(0), 'MI')),-2)
+            END AS AUTH_AFTER_TIME         
+		 , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM032' AND MINOR_CD = A.ADMIN_TYPE_CD) AS ADMIN_TYPE
+  	  FROM TAD_ADMIN A
+ 	 WHERE ADMIN_ID = #adminId#
+ 	]]>
+	</select>
+	
+	<!-- 비밀번호 직접 초기화 -->
+	<update id="updateSmsSendInit">
+	UPDATE /* Login.updateSmsSendInit */ 
+	       TAD_ADMIN 
+	   SET CELL_AUTH_NO = #cellAuthNo# 
+	     , CELL_AUTH_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE ADMIN_ID = #adminId#
+	</update>
+	
+	<!-- 비밀번호 초기화시 나가는 관리자 번호 -->
+	<select id="getSMSAdminList" resultClass="dataMap">
+	<![CDATA[
+	/* Login.getSMSAdminList */
+	SELECT B.CELL_NO
+	      ,B.ADMIN_NM
+	  FROM TET_CODE A, TAD_ADMIN B
+	 WHERE A.MAJOR_CD = 'SM144'
+	   AND A.LET_1_REF = 'LOGIN'
+	   AND A.USE_YN = 'Y'
+	   AND A.LET_2_REF = B.ADMIN_ID
+	]]>
+	</select>
+	
+	<select id="selectAdminRoleAssign" resultClass="String">
+	/* Login.selectAdminRoleAssign */
+	SELECT DECODE(MAX(R.ROLE_ID),NULL,'N','Y') AS AUTH_CHECK
+	 FROM TAD_ADMIN_ROLE R, TAD_ADMIN_ROLE_ASSIGN RA
+	WHERE R.ROLE_ID = RA.ROLE_ID
+	  AND R.ROLE_ID = #roleId#
+	   AND ADMIN_ID = #adminId#
+	  AND R.ACTIVE_YN = 'Y'
+	</select>
+	
+	<!-- 실행권한 체크 -->
+	<select id="authCheckForCC" resultClass="dataMap">
+		<![CDATA[
+		/* Login.authCheckForCCandPP */
+		SELECT 
+               CASE WHEN URL_AUTH.REG_VIEW_DIVN_CD = '00003'  /* 프로그램 승인 */
+                     AND AUT_AUTH.REG_VIEW_DIVN_CD <> '00003'  /* 권한: 승인    */                     
+                    THEN '0'    /* 해당 프로그램 권한 없음 */
+                    WHEN URL_AUTH.REG_VIEW_DIVN_CD = '00001'  /* 프로그램 등록 */
+                     AND AUT_AUTH.REG_VIEW_DIVN_CD = '00002'  /* 권한: 조회    */
+                    THEN '0'    /* 해당 프로그램 권한 없음 */   
+                    WHEN AUT_AUTH.REG_VIEW_DIVN_CD IS NULL  /* 권한 */
+                    THEN '0'
+               ELSE '1'         /* 권한 있음*/
+               END AS AUTH_CHK,
+               URL_AUTH.REG_VIEW_DIVN_CD AS URL_AUTH_DIVN_CD,
+               AUT_AUTH.REG_VIEW_DIVN_CD AS AUT_AUTH_DIVN_CD                              
+        FROM   (SELECT
+		               MENU_ID, (SELECT REG_VIEW_DIVN_CD
+		   		                 FROM   TAD_ADMIN_MENU
+                      			 WHERE  URL = #url#
+		                         AND    LIMIT 1) AS REG_VIEW_DIVN_CD
+		        FROM   (SELECT MENU_ID, MENU_YN, LEAF_MENU_YN, REG_VIEW_DIVN_CD
+		        		FROM   TAD_ADMIN_MENU
+		                WHERE  ACTIVE_YN = 'Y'
+		                START WITH URL = #url#      /* EXEC URL */
+		                CONNECT BY PRIOR UP_MENU_ID = MENU_ID ) V
+		        WHERE MENU_YN      = 'Y'
+		        AND   LEAF_MENU_YN = 'Y'
+		        AND   ROWNUM       = 1
+		       ) URL_AUTH
+              ,(SELECT MA.MENU_ID, DECODE(MAX(MA.REG_VIEW_DIVN_CD),'00003',MAX(MA.REG_VIEW_DIVN_CD),MIN(MA.REG_VIEW_DIVN_CD)) AS REG_VIEW_DIVN_CD
+                FROM   TAD_ADMIN_ROLE_ASSIGN RA,
+                       TAD_ADMIN_ROLE RO,
+                       TAD_ADMIN_MENU_ASSIGN MA
+                WHERE  RA.ROLE_ID     = RO.ROLE_ID
+                AND    RA.ROLE_ID     = MA.ROLE_ID
+                AND    RA.ADMIN_ID    = #adminId#   /* 세션의 ADMIN_ID    */
+                AND    RO.SYS_DIVN_CD = #sysDivnCd# /* 세션의 시스템구분 */
+                AND    RO.ACTIVE_YN   = 'Y'
+                AND    MA.ACTIVE_YN   = 'Y'
+                GROUP BY MA.MENU_ID    
+              ) AUT_AUTH
+        WHERE  URL_AUTH.MENU_ID = AUT_AUTH.MENU_ID(+)
+       ]]>
+	</select>
+	
+	<select id="selectOnceDayChk" resultClass="String">
+	/* Login.selectOnceDayChk */
+    SELECT
+		CASE WHEN COUNT(1) > 1 THEN 'Y'
+		ELSE 'N' END AS AUTH 
+	FROM TAD_ADMIN_SESSION_LOG
+	WHERE TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')||'000000' <![CDATA[<]]> LOGIN_DATE
+	AND ADMIN_ID = #adminId#
+	</select>
+	
+	<select id="selectUnanswerCnt" resultClass="String">
+	/* Login.selectUnanswerCnt */
+    SELECT COUNT(*) FROM TBO_CSR
+    WHERE DEL_YN != 'Y'
+    AND PROGRESS_CD = '00001'
+    AND WORK_TYPE_CD IN ('00013', '00014', '00015', '00016', '00017', '00018', '00019')
+	</select>
+	
+	<!-- 피커 정보 업데이트 -->
+	<update id="updatePickerInfo" >
+	/* Login.updatePickerInfo */
+	UPDATE TAD_ADMIN
+	SET
+		MOD_DATE = CURRENT_TIMESTAMP(0)
+	<isEqual property="lastLoginYn" compareValue="Y">
+		, LAST_LOGIN_DATE = CURRENT_TIMESTAMP(0)
+	</isEqual>
+	<isEqual property="lastLoginYn" compareValue="N">
+		, LAST_LOGIN_DATE = NULL
+	</isEqual>
+	<isNotNull property="uuid">
+		, UUID = #uuid#
+	</isNotNull>
+	<isNotEmpty property="qpsPickerWorkYn">
+		, QPS_PICKER_WORK_YN = #qpsPickerWorkYn#
+	</isNotEmpty>
+	WHERE LOGIN_ID = #loginId#
+	</update>
+	
+	<select id="getAdminInfoByAdminId" resultClass="dataMap">
+	/* Login.getAdminInfoByAdminId */
+		<include refid="selectAdminInfo"/>
+		FROM TAD_ADMIN AD
+		WHERE ADMIN_ID = #adminId#
+	</select>
+
+	<select id="getSemidarkYn" resultClass="String">
+		/* Login.getSemidarkYn */
+		SELECT
+		   CASE
+				WHEN COUNT(1) = 1 THEN 'Y'
+				ELSE 'N'
+		   END AS SEMIDART_YN
+		FROM TST_STORE_SEMIDARK
+		WHERE 1=1
+		AND STR_CD = #strCd#
+		AND USE_YN = 'Y'
+	</select>
+	
+</sqlMap>

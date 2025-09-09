@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscmbrd0008">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="pscmbrd0008SearchVO" type="com.lottemart.epc.board.model.PSCMBRD0008SearchVO"/>
+
+	<!-- 게시글 리스트  -->
+	<select id="selectCallCenterList" resultClass="dataMap">
+	<![CDATA[
+        /* pscmbrd0008.selectCallCenterList */
+        SELECT
+            *
+        FROM
+        (
+            SELECT
+                ROWNUM AS NUM
+              , CEIL(ROWNUM / #recordCountPerPage#) AS PAGE
+              , COUNT(*) OVER()                     AS TOTAL_COUNT
+              , SUB.*
+            FROM
+            (
+                SELECT
+                    A.SCRP_KIND_CD                                                      AS SCRP_KIND_CD         --글종류코드(Q:질문/ A:답변)
+                  , A.COUNSEL_SEQ                                                       AS COUNSEL_SEQ          --순번
+                  , A.UP_COUNSEL_SEQ
+                  , PG_UTIL.FN_GET_CD_NM('QA001', A.CLM_LGRP_CD)                        AS CLM_LGRP_CD_NM       --문의유형(대)명칭(QA001)
+                  , (
+                      SELECT T.CD_NM FROM TET_CODE T WHERE T.MINOR_CD = A.CLM_MGRP_CD AND T.LET_4_REF IN('QAH01', 'QA001')
+                    )                                                                   AS CLM_MGRP_CD_NM       --문의유형(소)명칭(QA100, (QA999))
+                  , CASE WHEN A.COUNSEL_SEQ <> A.UP_COUNSEL_SEQ 
+                              THEN FN_GET_DEPTH(A.TITLE, 2)
+                         ELSE A.TITLE
+                    END                                                                 AS TITLE                --문의제목
+                  , A.CELL_NO                                                           AS CELL_NO              --연락처(HP)
+                  , A.EMAIL                                                             AS EMAIL                --이메일
+                  , A.ANS_SMS_RECV_YN                                                   AS ANS_SMS_RECV_YN      --문자수신여부
+                  , PG_UTIL.FN_GET_CD_NM('QA004', A.BOARD_PRGS_STS_CD)                  AS BOARD_PRGS_STS_CD_NM --처리상태(QA004)
+                  , (SELECT T.ADMIN_NM FROM TAD_ADMIN T WHERE T.ADMIN_ID = A.ACCEPT_ID) AS ACCEPT_ID            --접수자
+                  , NVL(AD.ADMIN_NM, A.REG_ID)                                          AS REG_ID               --등록자
+                  , TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MI:SS')                        AS REG_DATE             --접수일시
+                FROM
+                    TOR_COUNSEL A
+                  , TOR_COUNSEL B
+                  , TAD_ADMIN   AD
+                WHERE 1=1
+                AND A.UP_COUNSEL_SEQ = B.UP_COUNSEL_SEQ
+                AND A.REG_ID         = AD.ADMIN_ID(+)
+                AND B.WRT_DY BETWEEN #startDate# AND #endDate#
+                AND B.REG_ID IN
+    ]]>
+    <iterate property="vendorId" open="(" close=")" conjunction=",">
+                    #vendorId[]#
+    </iterate>
+    <![CDATA[
+                ORDER BY
+                    A.UP_COUNSEL_SEQ DESC
+                  , A.COUNSEL_SEQ
+            ) SUB
+        )
+        WHERE PAGE = #pageIndex#
+	]]>
+	</select>
+	
+</sqlMap>

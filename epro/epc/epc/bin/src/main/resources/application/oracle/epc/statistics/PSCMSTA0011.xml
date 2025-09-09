@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0011">
+	
+	<select id="selectOrderProdItemList" resultClass="dataMap">
+    
+    /* PSCMSTA0011.selectOrderProdItemList - 구매상품 정보 목록 */
+        SELECT
+		         ROW_NUMBER () OVER (ORDER BY OI.DELIVERY_ID ,OI.ORDER_ITEM_SEQ) AS NUM
+		        ,OI.ORDER_ID
+		        ,OI.ORDER_ITEM_SEQ
+		        ,OI.DELIVERY_ID
+		        ,OI.CATEGORY_ID
+		        -- TODO ,NVL (DE.DELIVERY_AMT_CD, 'AA') DELIVERY_AMT_CD
+		        ,DE.PRST_MALL_DELI_TYPE_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('DE012', DE.PRST_MALL_DELI_TYPE_CD)
+		                                                    AS PRST_MALL_DELI_TYPE_NM
+		        ,OI.ORD_RTN_DIVN_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('OR001', OI.ORD_RTN_DIVN_CD) ASORD_RTN_DIVN_NM
+		        ,OI.ORD_ITEM_DIVN_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('OR013', OI.ORD_ITEM_DIVN_CD)
+		                                                          AS ORD_ITEM_DIVN_NM
+		        ,OI.PROD_CD
+		        ,OI.ITEM_CD
+		        ,OI.ORD_QTY
+		        ,OI.EXTRA_QTY
+		        ,OI.NOPROD_DIVN_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('PRD07', OI.NOPROD_DIVN_CD) AS NOPROD_DIVN_NM
+		        ,OI.ENTP_DELI_DIVN_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('PRD18', OI.ENTP_DELI_DIVN_CD)
+		                                                         AS ENTP_DELI_DIVN_NM
+		        ,OI.TAXAT_DIVN_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('PRD06', OI.TAXAT_DIVN_CD) AS TAXAT_DIVN_NM
+		        ,OI.PRC_ISSUE_DIVN_CD
+		        ,OI.BUY_PRC
+		        ,OI.SELL_PRC
+		        ,OI.CURR_SELL_PRC
+		        ,OI.ORD_AMT
+		        ,OI.PKFE
+		        ,OI.CNVSN
+		        ,OI.EMBTL_AMT
+		        ,NVL (OI.DC_AMT, 0) AS DC_AMT
+		        ,NVL (OI.COUPON_DC_AMT, 0) AS COUPON_DC_AMT
+		        ,NVL (OI.STAFF_DC_AMT, 0) AS STAFF_DC_AMT
+		        ,NVL (OI.CMS_COUPON_DC_AMT, 0) AS CMS_COUPON_DC_AMT
+		        ,NVL (OI.ONE_COUPON_DC_AMT, 0) AS ONE_COUPON_DC_AMT
+		        ,CASE
+		             WHEN NVL (OI.ORD_AMT, 0) - NVL (OI.DC_AMT, 0) >
+		                            TRUNC (NVL (OI.ORD_AMT, 0) - NVL (OI.DC_AMT, -1)
+		                                  ,0)
+		                 THEN TRUNC (NVL (OI.ORD_AMT, 0) - NVL (OI.DC_AMT, 0), -1)
+		                      + 10
+		             ELSE NVL (OI.ORD_AMT, 0) - NVL (OI.DC_AMT, 0)
+		         END AS LOSS_AVG_TOTAL_SALE_AMT
+		        ,OI.TOT_SELL_AMT AS TOT_SELL_AMT
+		        ,NVL (OI.ADD_SAVU_POINT, 0) AS ADD_SAVU_POINT
+		        ,NVL (OI.PRFT_AMT, 0) AS PRFT_AMT
+		        ,OI.STD_BUY_PRC
+		        ,OI.STD_SELL_PRC
+		        ,OI.NFOML_VARIATION
+		        ,OI.NO_INT_YN
+		        ,OI.CARDCO_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('CAP02', OI.CARDCO_CD) AS CARDCO_NM
+		        ,OI.DIV_TERM
+		        ,OI.PREST
+		        ,OI.PRVS_CMPL_CD
+		        ,OI.PRVS_COUPON_NO
+		        ,NVL (OI.ACCEPT_QTY, 0) AS ACCEPT_QTY
+		        ,NVL (OI.EXCH_RTN_PROC_QTY, 0) AS EXCH_RTN_PROC_QTY
+		        ,NVL (OI.EXCH_RTN_AMT, 0) AS EXCH_RTN_AMT
+		        ,OI.ORD_CANCEL_REASON_CD
+		        ,DECODE (OI.ORD_RTN_DIVN_CD
+		                ,'20', PG_UTIL.FN_GET_CD_NM ('OR004', OI.ORD_RTN_DIVN_CD)
+		                ,                                             -- 20 : 취소주문
+		                 '30', PG_UTIL.FN_GET_CD_NM ('DE010', OI.ORD_RTN_DIVN_CD)
+		                ,                                             -- 30 : 결품주문
+		                 '40', PG_UTIL.FN_GET_CD_NM ('OR006', OI.ORD_RTN_DIVN_CD)
+		                ,                                             -- 40 : 반품주문
+		                 '50', PG_UTIL.FN_GET_CD_NM ('OR007', OI.ORD_RTN_DIVN_CD)
+		                ,                                             -- 50 : 교환주문
+		                 ''
+		                ) AS ORD_RTN_DIVN_NM
+		        ,OI.UP_ORDER_ID
+		        ,OI.UP_DELIVERY_ID
+		        ,OI.UP_ORDER_ITEM_SEQ
+		        ,OI.FIRST_ORDER_ID
+		        ,OI.FIRST_DELIVERY_ID
+		        ,OI.FIRST_ORDER_ITEM_SEQ
+		        ,OI.ORD_STS_CD
+		        ,OI.STR_CD AS ITEM_STR_CD		        
+		        ,PG_UTIL.FN_GET_CD_NM ('OR002', OI.ORD_STS_CD) AS ORD_STS_NM
+		                                                               -- 주문진행현황
+		        ,OI.SALE_STS_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('OR003', OI.SALE_STS_CD) AS SALE_STS_NM
+		                                                                   -- 매출상태
+		        ,OI.DELI_STATUS_CD
+		        ,PG_UTIL.FN_GET_CD_NM ('DE002', OI.DELI_STATUS_CD) AS DELI_STATUS_NM
+		                                                                   -- 배송상태
+		        ,NVL (OI.ORD_QTY + OI.EXTRA_QTY - DI.PKN_QTY, 0) AS PICK_SHORT_QTY
+		                                                               -- 결품발생수량
+		        ,NVL (DI.PKN_QTY, 0) AS PKN_QTY
+		        ,OI.STR_VENDOR_ID
+		        ,OI.EXCH_RTN_FNSH_RMK
+		        ,OI.DC_TYPE_CD
+		        ,DECODE (OI.DC_TYPE_CD, '01', '정률', '02', '정액', '') AS DC_TYPE_NM
+		        ,OI.DC_RATE
+		        ,NVL (OI.TMP_DELI_QTY, 0) AS TMP_DELI_QTY
+		        ,NVL (OI.CASH_RTN_QTY, 0) AS CASH_RTN_QTY
+		        ,NVL (OI.PART_CANCEL_QTY, 0) AS PART_CANCEL_QTY
+		        ,DECODE (PP.FEDAY_MALL_PROD_DIVN_CD
+		                ,'6', OI.PROD_NM
+		                  || '['
+		                  || PG_UTIL.FN_GET_CD_NM ('PRD25'
+		                                          ,PP.FEDAY_MALL_PROD_DIVN_CD)
+		                  || ']'
+		                ,'7', OI.PROD_NM
+		                  || '['
+		                  || PG_UTIL.FN_GET_CD_NM ('PRD25'
+		                                          ,PP.FEDAY_MALL_PROD_DIVN_CD)
+		                  || ']'
+		                ,OI.PROD_NM
+		                ) PROD_NM
+		        ,SUBSTR (DECODE (PP.FEDAY_MALL_PROD_DIVN_CD
+		                        ,'6', OI.PROD_NM
+		                          || '['
+		                          || PG_UTIL.FN_GET_CD_NM ('PRD25'
+		                                                  ,PP.FEDAY_MALL_PROD_DIVN_CD
+		                                                  )
+		                          || ']'
+		                        ,'7', OI.PROD_NM
+		                          || '['
+		                          || PG_UTIL.FN_GET_CD_NM ('PRD25'
+		                                                  ,PP.FEDAY_MALL_PROD_DIVN_CD
+		                                                  )
+		                          || ']'
+		                        ,OI.PROD_NM
+		                        )
+		                ,1
+		                ,20
+		                ) PROD_NM_STR
+		        , OI.ORD_QTY - NVL (OI.CASH_RTN_QTY, 0) - NVL (OI.PART_CANCEL_QTY, 0) AS CURR_ORDER_QTY
+		        , OI.ORD_QTY AS ORG_ORD_QTY
+		        ,PI.MD_PROD_CD
+		        ,PP.CAT_CD
+		        ,DECODE (PP.VARIATION_YN
+		                ,'Y', PG_UTIL.FN_GET_VARIATION_NM (OI.PROD_CD, OI.ITEM_CD)
+		                ,'N', OI.NFOML_VARIATION
+		                ) AS VARIATION_NM
+		        ,PG_UTIL.FN_GET_CD_NM ('PRD25', PP.FEDAY_MALL_PROD_DIVN_CD)
+		                                                   AS FEDAY_MALL_PROD_DIVN_NM
+		        ,FN_GET_STR_CD(OI.PROD_CD, OI.ITEM_CD, DE.ZIP_SEQ, OI.CATEGORY_ID, DECODE(OM.BSKET_TYPE_CD, '41', 'Y', 'N')) AS STR_CD
+		        ,OI.VEN_DELI_STATUS_CD
+				,(SELECT
+		              CASE WHEN P.NOPROD_DIVN_CD = '00' AND P.PRC_ISSUE_DIVN_CD <![CDATA[ <> ]]> '9' THEN
+		                        DECODE(P.STAFF_DC_RATE,null,5,0,5,P.STAFF_DC_RATE)/100
+		                   ELSE 0
+		              END AS CALC_STAFF_DC_RATE
+				 FROM TPR_PRODUCT P
+				 WHERE P.PROD_CD = OI.PROD_CD) AS CALC_STAFF_DC_RATE -- 상품 임직원할인율
+				,DE.ZIP_SEQ
+				,(SELECT DP.DELI_NO
+				  FROM TDP_DELI_PLAN_RSLT DP
+				      ,TDE_DELI_MST DM
+				 WHERE DP.DELI_NO = DM.DELI_NO
+				   AND DM.INVOICE_STATUS_CD = '10'
+				   AND DM.DELI_DIVN_CD = '10'
+				   AND DM.DELI_DIVN_DTL_CD = '11'
+				   AND DM.ORDER_ID = OM.ORDER_ID
+				   LIMIT 1
+				) AS DELI_NO
+				, NVL (OIE.EVNT_APPLY_QTY, 0) AS CUSTCLUBQTY
+                , NVL (OIE.EVNT_APPLY_AMT, 0) AS CUSTCLUBAMT
+                , NVL (OIE.EVNT_APPLY_AMT, 0) * NVL (OIE.EVNT_APPLY_QTY, 0) AS CUSTCLUBAPPLYAMT
+                , NVL ((SELECT NVL(EVNT_APPLY_QTY,0) 
+                             FROM TOR_ORDER_ITEM_EVENT TOIE 
+                           WHERE TOIE.ORDER_ID = OI.ORDER_ID 
+                                AND OI.ORDER_ITEM_SEQ = TOIE.ORDER_ITEM_SEQ 
+                                AND PROMO_KIND_CD = '03' 
+                                AND PROMO_CL_TYP_CD = '16'), 0
+                        ) AS CUSTCLUBPOINTQTY
+                , NVL ((SELECT NVL(EVNT_APPLY_AMT,0) 
+                             FROM TOR_ORDER_ITEM_EVENT TOIE 
+                           WHERE TOIE.ORDER_ID = OI.ORDER_ID 
+                                AND OI.ORDER_ITEM_SEQ = TOIE.ORDER_ITEM_SEQ 
+                                AND PROMO_KIND_CD = '03' 
+                                AND PROMO_CL_TYP_CD = '16'), 0
+                      ) AS CUSTCLUBPOINTAMT
+                , NVL ((SELECT  NVL(EVNT_APPLY_QTY,0) *NVL(EVNT_APPLY_AMT,0) 
+                             FROM TOR_ORDER_ITEM_EVENT TOIE 
+                           WHERE TOIE.ORDER_ID = OI.ORDER_ID 
+                                AND OI.ORDER_ITEM_SEQ = TOIE.ORDER_ITEM_SEQ 
+                                AND PROMO_KIND_CD = '03' 
+                                AND PROMO_CL_TYP_CD = '16'), 0
+                      ) AS CUSTCLUBPOINTAPPLYAMT
+                      
+                , (
+                	SELECT DECODE(MAX(OI.ORDER_ID), NULL, 'N','Y') AS COUPON_09_YN
+					FROM   TOR_ORDER_ITEM_EVENT OI
+					WHERE  OI.ORDER_ID 			= OM.ORDER_ID
+					AND    OI.ORDER_ITEM_SEQ  	= OI.ORDER_ITEM_SEQ
+					AND    OI.PROMO_KIND_CD    	= '02'   --쿠폰
+					AND    OI.PROMO_CL_TYP_CD  	= '09'   --카드상품할인쿠폰
+					AND    LIMIT 1
+                  ) AS COUPON_09_YN -- 카드상품할인쿠폰 사용유무
+                 , OI.BSKET_TYPE_CD AS ITEM_BSKET_TYPE_CD
+				 , OI.DELI_TYPE_CD  AS ITEM_DELI_TYPE_CD
+				 , OM.DELI_TYPE_CD
+				 , OI.STR_CD        AS ITEM_STR_CD
+				 , PP.MALL_DIVN_CD  AS MALL_DIVN_CD --몰구분코드
+		    FROM TOR_ORDER_ITEM OI
+		        ,TOR_ORDER OM
+		        ,TPR_PRODUCT PP
+		        ,TPR_ITEM PI
+		        ,TDE_ORDER_DELIVERY DE
+                ,(SELECT DI2.ORDER_ID, DI2.ORDER_ITEM_SEQ, DI2.PKN_QTY
+                    FROM TDE_DELI_MST DM
+                         ,TDE_DELI_ITEM DI2
+                   WHERE DM.ORDER_ID = #orderId#
+                     AND DI2.DELI_NO = DM.DELI_NO
+                     AND DM.INVOICE_STATUS_CD(+) = '10'
+                     AND DM.DELI_DIVN_CD(+) = '10'
+                     AND DM.DELI_DIVN_DTL_CD(+) = '11') DI
+                  , TOR_ORDER_ITEM_EVENT OIE
+		   WHERE OI.ORDER_ID = #orderId#
+		     AND OM.ORDER_ID = OI.ORDER_ID
+		     AND PP.PROD_CD = OI.PROD_CD
+		     AND PI.PROD_CD(+) = OI.PROD_CD  /* TODO 배송비 단품 데이터 보완 후 EQUI JOIN으로 수정 */
+		     AND PI.ITEM_CD(+) = OI.ITEM_CD
+		     AND OI.ORDER_ID = DE.ORDER_ID
+		     AND OI.DELIVERY_ID = DE.DELIVERY_ID
+		     AND DI.ORDER_ID(+) = OI.ORDER_ID
+		     AND DI.ORDER_ITEM_SEQ(+) = OI.ORDER_ITEM_SEQ
+		     AND OI.ORDER_ID = OIE.ORDER_ID(+)
+		     AND OI.ORDER_ITEM_SEQ = OIE.ORDER_ITEM_SEQ(+)
+             AND OIE.PROMO_KIND_CD(+) = '02'
+             AND OIE.PROMO_CL_TYP_CD(+) = '12'
+		     <isNotEmpty property="ordItemDivnCd">
+		     AND OI.ORD_ITEM_DIVN_CD = #ordItemDivnCd#
+		     </isNotEmpty>
+		ORDER BY DELIVERY_ID /* ORD_ITEM_DIVN_CD */
+		        ,ORDER_ITEM_SEQ
+    
+    </select>
+	
+</sqlMap>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA Sample</title>
+</head>
+<body>
+<div id="userInfo"></div>
+<hr>
+<div id="LogoutLink"></div>
+<br>
+<div id="SessionCheckButton"></div>
+<hr>
+<div id="errorMessages"></div>
+
+<!-- nsso spa 모듈 -->
+<script type="text/javascript" src="./nsso_spa_v9.1.js"></script>
+<script type="text/javascript">
+    function loginUser(user) {
+        if (!user || !user.id)
+            return;
+
+        // userInfo div를 선택
+        const userInfoDiv = document.getElementById('userInfo');
+        userInfoDiv.innerHTML = ''; // 기존 내용을 초기화
+
+        // 사용자 ID 표시
+        const idPara = document.createElement('p');
+        idPara.textContent = `ID: ${user.id}`;
+        userInfoDiv.appendChild(idPara);
+
+        // 사용자 토큰 정보 표시
+        if (user.token) {
+            const tokenPara = document.createElement('p');
+            tokenPara.textContent = `Token: ${user.token}`;
+            userInfoDiv.appendChild(tokenPara);
+        }
+
+        // 사용자 속성 정보 표시
+        const attrsDiv = document.createElement('div');
+        attrsDiv.textContent = 'Attributes:';
+        console.log(user.attrs)
+        Object.entries(user.attrs).forEach(([key, value]) => {
+            const attrPara = document.createElement('p');
+            attrPara.textContent = `${key}: ${value}`;
+            attrsDiv.appendChild(attrPara);
+        });
+        userInfoDiv.appendChild(attrsDiv);
+
+        setSessionCheckButton(user)
+
+        location.href = setReturnURL(window.location.href);
+    }
+
+    function setLogoutLink(url) {
+        const returnURL = setReturnURL(window.location.href);
+        const logoutTag = document.createElement('a');
+        logoutTag.href = `${url}&${NSSO_PARAM.returnURL}=${encodeURIComponent(returnURL)}`;
+        logoutTag.textContent = 'Logout';
+        document.getElementById('LogoutLink').appendChild(logoutTag);
+    }
+
+    function setSessionCheckButton(user) {
+        // 앱 등록 시 발급된 Secret Key
+        const secret = 'VHhxM3J5em5laXVDdEFicVl0NWlGMEstYlNlTHl0VHJhQWtITG9QZzE5VXFxVTFZNThfN0pBQ1Fsb2RBZi1jbldKNk15cklpWE5IWl80N3RBek9IUHc=';
+        const sessionCheckButton = document.createElement('button');
+        sessionCheckButton.textContent = 'Session Check';
+        sessionCheckButton.addEventListener("click", async function () {
+            if (user) {
+                //NssoManager('SSO URL', 'AppCode::AgentCode')
+                await new NssoManager('https://sso.nets.co.kr:9443/sso/', 'SPA::SPA')
+                    .userinfo(user, secret)
+                    .then(loginUser)
+                    .catch(errorCallback);
+            }
+            else {
+                console.log('User information does not exist.')
+            }
+        });
+
+        const sessionCheckButtonContainer = document.getElementById('SessionCheckButton');
+        // 기존 버튼이 있으면 삭제
+        while (sessionCheckButtonContainer.firstChild) {
+            sessionCheckButtonContainer.removeChild(sessionCheckButtonContainer.firstChild);
+        }
+        sessionCheckButtonContainer.appendChild(sessionCheckButton);
+    }
+
+    function errorCallback(error) {
+        console.error(`Error handling authn response: ${error.message}, Code: ${error.code}`);
+        document.getElementById('errorMessages').textContent = `Error: ${error.message}, Code: ${error.code}`;
+    }
+
+    function setReturnURL(url) {
+        if (!url.includes('artifact'))
+            return url + '#';
+        let returnURL = url.split('#')[0];
+        const fragment = url.split('#')[1];
+        const params = fragment.split('?')[1];
+        if (params)
+            returnURL = returnURL + '#?' + params;
+        return returnURL;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        //NssoManager('SSO URL', 'AppCode::AgentCode')
+        const nssoManager = new NssoManager('https://sso.nets.co.kr:9443/sso/', 'SPA::SPA');
+        nssoManager
+            .authn(errorCallback)
+            .then(loginUser)
+            .catch(errorCallback);
+        setLogoutLink(nssoManager.logoutServiceUrl);
+    });
+</script>
+</body>
+</html>

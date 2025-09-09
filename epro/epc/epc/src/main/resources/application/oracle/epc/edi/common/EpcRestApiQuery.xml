@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="epcRestApiQuery">
+
+	<!-- [BOS] 신상품등록 > 상태확인 Map -->
+	<resultMap id="selectNewProdRegStsMap" class="java.util.HashMap">
+		<result column="PGM_ID" 				property="PGM_ID"				/>		<!-- 신규상품코드 -->
+		<result column="MD_SEND_DIVN_CD" 		property="MD_SEND_DIVN_CD"		/>		<!-- MD전송구분코드 -->
+		<result column="TRD_TYPE_DIVN_CD" 		property="TRD_TYPE_DIVN_CD"		/>		<!-- 거래유형코드 -->
+		<result column="CHAN_CD" 				property="CHAN_CD"				/>		<!-- 채널코드 -->
+		<result column="BOS_TG_YN" 				property="BOS_TG_YN"			/>		<!-- BOS 승인대상여부 -->
+		<result column="BOS_SEND_DY" 			property="BOS_SEND_DY"			/>		<!-- BOS 전송일자 -->
+		<result column="BOS_CFRM_END_DY" 		property="BOS_CFRM_END_DY"		/>		<!-- 승인마감일자 -->
+		<result column="BOS_CFRM_DY_AVAIL_YN" 	property="BOS_CFRM_DY_AVAIL_YN"	/>		<!-- BOS 승인처리기간 유효여부 -->
+		<result column="PRGS_STS" 				property="PRGS_STS"				/>		<!-- 승인진행상태 -->
+		<result column="BOS_CFRM_YN" 			property="BOS_CFRM_YN"			/>		<!-- BOS 승인여부 -->
+		<result column="CFM_FG" 				property="CFM_FG"				/>		<!-- 확정구분 -->
+		<result column="AUTO_SEND_FG" 			property="AUTO_SEND_FG"			/>		<!-- ERP 자동발송여부 -->
+		<result column="AUTO_SEND_DY" 			property="AUTO_SEND_DY"			/>		<!-- ERP 자동발송일자 -->
+	</resultMap>
+
+	<!-- [BOS] 신상품등록 > 상태확인 -->
+	<select id="selectNewProdRegSts" parameterClass="java.util.HashMap" resultMap="selectNewProdRegStsMap">
+		/* epcRestApiQuery.selectNewProdRegSts */
+		SELECT
+			A.PGM_ID				/* 신규상품코드 */
+			, A.MD_SEND_DIVN_CD		/* MD전송구분코드 */
+			, A.TRD_TYPE_DIVN_CD	/* 거래유형코드 */
+			, A.CHAN_CD				/* 채널코드 */
+			, CASE
+				WHEN A.TRD_TYPE_DIVN_CD != '1' THEN 'N'											/* 직매입이 아닐 시 */
+				WHEN A.CHAN_CD = 'KR03' AND NULLIF(A.VIC_ONLINE_CD, '') IS NULL THEN 'N'		/* 직매입, MAXX 단일, 온라인미적용시 */
+				WHEN A.CHAN_CD = 'KR04'	THEN 'N'												/* 직매입, SUPER 단일일 경우 */
+				ELSE 'Y' 
+			END AS BOS_TG_YN		/* BOS 승인대상여부 */
+			, A.BOS_SEND_DY			/* BOS 전송일자 */
+			, A.BOS_CFRM_END_DY		/* BOS 승인마감일자 */
+			, CASE WHEN A.BOS_CFRM_END_DY <![CDATA[<]]> TO_CHAR(NOW(), 'YYYYMMDD') THEN 'N' ELSE 'Y' END AS BOS_CFRM_DY_AVAIL_YN	/* BOS 승인처리기간 유효여부 */
+			, B.PRGS_STS			/* BOS 승인진행상태 */
+			, CASE WHEN NULLIF(B.PRGS_STS, '') IN ('81', '90') THEN 'Y' ELSE 'N' END AS BOS_CFRM_YN	/* BOS 승인여부 */
+			, C.CFM_FG				/* 확정구분 */
+			, A.AUTO_SEND_FG 		/* ERP 자동발송여부 */
+			, TO_CHAR(A.AUTO_SEND_DT, 'YYYYMMDD') AS AUTO_SEND_DY	/* ERP 자동발송일자 */
+		FROM TPC_NEW_PROD_REG A
+		LEFT OUTER JOIN TPC_NEW_PROD_STS B ON A.PGM_ID = B.PGM_ID
+		LEFT OUTER JOIN TPC_NEW_PROD_REG_SAP C ON A.PGM_ID = C.PGM_ID 
+		WHERE A.PGM_ID = #PGM_ID#
+	</select>
+
+	<!-- [BOS] 신상품등록 > BOS 승인상태 UPDATE -->
+	<update id="updateNewProdSts" parameterClass="java.util.HashMap">
+		/* epcRestApiQuery.updateNewProdSts */
+		MERGE INTO TPC_NEW_PROD_STS A
+		USING (
+			SELECT
+				#PGM_ID#			AS PGM_ID
+				, #PRGS_STS# 		AS PRGS_STS
+				, #PROD_CD# 		AS PROD_CD
+				, #RETN_REASON#		AS RETN_REASON
+				, TO_TIMESTAMP(#MOD_DATE#, 'YYYYMMDDHH24MISS') AS MOD_DATE
+				, #MOD_ID#			AS MOD_ID
+				, TO_TIMESTAMP(#REG_DATE#, 'YYYYMMDDHH24MISS') AS REG_DATE
+				, #REG_ID#			AS REG_ID
+				, TO_TIMESTAMP(#OFF_CFM_DT#, 'YYYYMMDDHH24MISS') AS OFF_CFM_DT
+				, TO_TIMESTAMP(#ON_CFM_DT#, 'YYYYMMDDHH24MISS') AS ON_CFM_DT
+				, #PRE_APRV_YN#		AS PRE_APRV_YN
+				, #BAN_WORD#		AS BAN_WORD
+				, #BAN_YN#			AS BAN_YN
+		)B ON A.PGM_ID = B.PGM_ID
+		WHEN MATCHED THEN 
+			UPDATE SET
+				PRGS_STS	= B.PRGS_STS
+				, PROD_CD	= B.PROD_CD
+				, RETN_REASON = B.RETN_REASON
+				, MOD_DATE	= B.MOD_DATE
+				, MOD_ID	= B.MOD_ID
+				<isNotEmpty property="OFF_CFM_DT">
+				, OFF_CFM_DT = B.OFF_CFM_DT
+				</isNotEmpty>
+				<isNotEmpty property="ON_CFM_DT">
+				, ON_CFM_DT = B.ON_CFM_DT
+				</isNotEmpty>
+				, PRE_APRV_YN = B.PRE_APRV_YN
+				, BAN_WORD = B.BAN_WORD
+				, BAN_YN = B.BAN_YN
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				PGM_ID
+				, PROD_CD
+				, PRGS_STS
+				, RETN_REASON
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				, OFF_CFM_DT
+				, ON_CFM_DT
+				, PRE_APRV_YN
+				, BAN_WORD
+				, BAN_YN
+			)
+			VALUES
+			(
+				B.PGM_ID
+				, B.PROD_CD
+				, B.PRGS_STS
+				, B.RETN_REASON
+				, B.REG_DATE
+				, B.REG_ID
+				, B.MOD_DATE
+				, B.MOD_ID
+				, B.OFF_CFM_DT
+				, B.ON_CFM_DT
+				, B.PRE_APRV_YN
+				, B.BAN_WORD
+				, B.BAN_YN
+			);
+	</update>
+	
+	<!-- [BOS] 신상품등록 > MD 전송구분 UPDATE -->
+	<update id="updateNewProdMdSendDivnCd" parameterClass="java.util.HashMap">
+		/* epcRestApiQuery.updateNewProdMdSendDivnCd */
+		UPDATE TPC_NEW_PROD_REG
+		SET MD_SEND_DIVN_CD = #MD_SEND_DIVN_CD#
+			, MOD_DATE = TO_TIMESTAMP(#MOD_DATE#, 'YYYYMMDDHH24MISS')
+			, MOD_ID = #MOD_ID#
+		WHERE PGM_ID = #PGM_ID#
+	</update>
+	
+	<!-- [BOS] 신상품등록 > 소분류 매칭되지 않는 그룹분석속성 제거 -->
+	<delete id="deleteNewProdGrpAtt" parameterClass="java.util.HashMap">
+		/* epcRestApiQuery.deleteNewProdGrpAtt */
+		DELETE FROM TPC_GRP_ATT
+		WHERE PGM_ID = #PGM_ID#
+		AND ATT_ID NOT IN (
+			SELECT DISTINCT ATT_ID
+			FROM GRP_L3_GRPCST_PUR_ATT
+			WHERE L3_CD = (SELECT L3_CD FROM TPC_NEW_PROD_REG WHERE PGM_ID = #PGM_ID#)
+			AND COALESCE(LOEKZ, ' ') <![CDATA[<>]]> 'X'
+		)
+	</delete>
+	
+	<!-- [BOS] 신상품등록 > 전상법 온라인상품코드 UPDATE -->
+	<update id="updateNewProdAddInfoVal" parameterClass="java.util.HashMap">
+		/* epcRestApiQuery.updateNewProdAddInfoVal */
+		<!-- UPDATE TPR_PROD_ADD_INFO_VAL
+		SET PROD_CD = #PROD_CD#
+		WHERE NEW_PROD_CD = #PGM_ID# -->
+		UPDATE TPR_PROD_ADD_INFO_VAL A
+			SET PROD_CD = #PROD_CD#
+		FROM TPC_NEW_PROD_REG B
+		WHERE A.NEW_PROD_CD = B.PGM_ID
+		AND B.SELL_CD <![CDATA[<>]]> ''		/* 신상품 등록시 판매코드 있는 상품일 경우에만 UPDATE */
+		AND A.NEW_PROD_CD = #PGM_ID#
+	</update>
+	
+	<!-- [BOS] 신상품등록 > KC인증 온라인상품코드 UPDATE -->
+	<update id="updateNewProdCertInfoVal" parameterClass="java.util.HashMap">
+		/* epcRestApiQuery.updateNewProdCertInfoVal */
+		<!-- UPDATE TPR_PROD_CERT_INFO_VAL
+		SET PROD_CD = #PROD_CD#
+		WHERE NEW_PROD_CD = #PGM_ID# -->
+		UPDATE TPR_PROD_CERT_INFO_VAL A
+			SET PROD_CD = #PROD_CD#
+		FROM TPC_NEW_PROD_REG B
+		WHERE A.NEW_PROD_CD = B.PGM_ID
+		AND B.SELL_CD <![CDATA[<>]]> ''		/* 신상품 등록시 판매코드 있는 상품일 경우에만 UPDATE */
+		AND A.NEW_PROD_CD = #PGM_ID#
+	</update>
+	
+	<!-- [BOS] 신상품등록 > 오카도 전시카테고리 대표여부 UPDATE -->
+	<update id="updateTecOspCatProdMapping" parameterClass="java.util.HashMap">
+		/* epcRestApiQuery.updateTecOspCatProdMapping */
+		UPDATE TEC_OSP_CAT_PROD_MAPPING
+		SET OSP_DP_YN = #OSP_DP_YN#
+			, MOD_ID = #MOD_ID#
+			, MOD_DATE = NOW()
+		WHERE PGM_ID = #PGM_ID#
+	</update>
+	
+	<!-- [협력사로그인] 협력사 로그인 KEY 등록 -->
+    <update id="updateMakeVendorLoginKey" parameterClass="java.util.HashMap">
+    	/* epcRestApiQuery.updateMakeVendorLoginKey */
+    	MERGE INTO TPC_VEN_LOGIN_KEY A
+		USING
+		(
+			SELECT
+				#BMAN_NO#::VARCHAR		AS BMAN_NO		/* 사업자변호 */
+				, #LOGIN_KEY#::VARCHAR	AS LOGIN_KEY	/* LOGIN KEY */
+		)B ON A.BMAN_NO = B.BMAN_NO
+		WHEN MATCHED THEN
+			UPDATE SET
+				BMAN_NO = B.BMAN_NO
+				, LOGIN_KEY = B.LOGIN_KEY
+				, ISSUED_AT = CURRENT_TIMESTAMP(0)
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				BMAN_NO
+				, LOGIN_KEY
+				, ISSUED_AT
+			)
+			VALUES
+			(
+				B.BMAN_NO
+				, B.LOGIN_KEY
+				, CURRENT_TIMESTAMP(0)
+			);
+    </update>
+    
+    <!-- [협력사로그인] 협력사 마스터에 존재하는 업체인치 확인 (로그인 가능 업체 체크) -->
+    <select id="selectChkVendorInHqVen" parameterClass="java.util.HashMap" resultClass="Integer">
+    	/* epcRestApiQuery.selectChkVendorInHqVen */
+    	SELECT COUNT(1) AS CNT
+    	FROM HQ_VEN A
+		WHERE ((A.BMAN_NO <![CDATA[<>]]> '' AND A.TRD_TYP_FG <![CDATA[<>]]> '') OR A.VEN_KIND_FG = 'KM04')
+		AND (A.ZZORG_M = 'X' OR A.ZZORG_S = 'X' OR A.ZZORG_C = 'X')	/* 거래조직이 1개이상 있을 경우에만 조회 */
+		AND A.CHG_FG <![CDATA[<>]]> 'D'	/* 삭제되지않은업체만 조회 */
+    	AND A.BMAN_NO = #BMAN_NO#
+    	AND A.VEN_CD = #VEN_CD#
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,909 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMRST0020">
+	
+	<typeAlias alias="srmSessionVo"	type="com.lottemart.epc.edi.srm.model.SRMSessionVO" />
+	<typeAlias alias="srmRst0020Vo"	type="com.lottemart.epc.edi.srm.model.SRMRST0020VO" />
+	<typeAlias alias="SRMRST002001VO"	type="com.lottemart.epc.edi.srm.model.SRMRST002001VO" />
+	<typeAlias alias="SRMRST002002VO"	type="com.lottemart.epc.edi.srm.model.SRMRST002002VO" />
+	<typeAlias alias="SRMRST002003VO"	type="com.lottemart.epc.edi.srm.model.SRMRST002003VO" />
+	<typeAlias alias="SRMRST002004VO"	type="com.lottemart.epc.edi.srm.model.SRMRST002004VO" />
+	<typeAlias alias="SRMRST002005VO"	type="com.lottemart.epc.edi.srm.model.SRMRST002005VO" />
+	<typeAlias alias="SRMRST0020051VO"	type="com.lottemart.epc.edi.srm.model.SRMRST0020051VO" />
+	<typeAlias alias="SRMRST002008VO"	type="com.lottemart.epc.edi.srm.model.SRMRST002008VO" />
+	<typeAlias alias="SRMJON0043VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0043VO" />
+
+
+
+
+	<!-- 파트너사 상세 정보 Map -->
+	<resultMap id="srmRst0020VoMap1" 	class="srmRst0020Vo">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"		property="sellerCode" 		/>	<!-- 업체코드 -->
+		<result column="SELLER_NAME_LOC"	property="sellerNameLoc" 	/>	<!-- 업체명{한글} -->
+		<result column="SELLER_NAME_ENG"	property="sellerNameEng" 	/>	<!-- 업체명{영문} -->
+		<result column="IRS_NO"				property="irsNo" 			/>	<!-- 사업자등록번호 -->
+		<result column="SELLER_CEO_NAME"	property="sellerCeoName" 	/>	<!-- BDC 필드 추가필요 - 대표자명 -->
+		<result column="V_MAIN_NAME"		property="vMainName" 		/>	<!-- 업체마트 담당자(이름) -->
+		<result column="V_EMAIL"			property="vEmail" 			/>	<!-- BDC EMAIL CHECK 필요 -->
+		<result column="V_PHONE1"			property="vPhone1" 			/>	<!-- 등록자 유선 전화번호 -->
+		<result column="V_MOBILE_PHONE"		property="vMobilePhone" 	/>	<!-- 모바일(이동전화) -->
+		<result column="ADDRESS1"			property="address1" 		/>	<!-- 주소1 -->
+		<result column="ADDRESS2"			property="address2" 		/>	<!-- 주소2 -->
+		<result column="ZIPCODE"			property="zipcode" 			/>	<!-- 우편번호 -->
+		<result column="INDUSTRY_TYPE"		property="industryType" 	/>	<!-- 업종 -->
+		<result column="BUSINESS_TYPE"		property="businessType" 	/>	<!-- 업태 -->
+	</resultMap>
+
+	<!-- 입점상담 내역별 상태 조회 Map -->
+	<resultMap id="srmRst0020VoMap2" 	class="srmRst0020Vo">
+		<result column="ROW_SPAN"				property="rowSpan"			/>	<!-- RowSpan -->
+		<result column="RNUM"					property="rnum"				/>	<!-- 순번 -->
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"			property="sellerCode" 		/>	<!-- 업체코드 -->
+		<result column="SEQ"					property="seq" 				/>	<!-- 순번 -->
+		<result column="CAT_LV1_CODE"			property="catLv1Code" 		/>	<!-- 대분류코드 -->
+		<result column="CAT_LV1_CODE_NAME"		property="catLv1CodeNm" 	/>	<!-- 대분류코드 이름 -->
+		<result column="CHANNEL_CODE"			property="channelCode" 		/>	<!-- 채널코드 -->
+		<result column="CHANNEL_CODE_NAME"		property="channelCodeNm" 	/>	<!-- 채널코드 이름 -->
+		<result column="RECEIPT_DATE"			property="receiptDate" 		/>	<!-- 신청일자 -->
+		<result column="REMARK"					property="remark" 			/>	<!-- 진행사유 -->
+		<result column="STATUS"					property="status" 			/>	<!-- 상태 -->
+		<result column="PROCESS_STATUS"			property="processStatus" 	/>	<!-- 진행상태 -->
+		<result column="PROCESS_STATUS_NAME"	property="processStatusNm" 	/>	<!-- 진행상태 이름 -->
+		<result column="EVAL_A_STATUS"			property="evalAStatus" 		/>	<!-- 평가 A상태 	( 상담요청 ) -->
+		<result column="EVAL_A_STATUS_NAME"		property="evalAStatusNm" 	/>	<!-- 평가 A상태 이름 ( 상담요청 ) -->
+		<result column="EVAL_B_STATUS"			property="evalBStatus" 		/>	<!-- 평가 B상태 	( 품평회요청 ) -->
+		<result column="EVAL_B_STATUS_NAME"		property="evalBStatusNm" 	/>	<!-- 평가 B상태 이름 ( 품평회요청 ) -->
+		<result column="EVAL_C_STATUS"			property="evalCStatus" 		/>	<!-- 평가 C상태 	( 이행보증보험 ) -->
+		<result column="EVAL_C_STATUS_NAME"		property="evalCStatusNm" 	/>	<!-- 평가 C상태  이름( 이행보증보험 ) -->
+		<result column="EVAL_D_STATUS"			property="evalDStatus" 		/>	<!-- 평가 D상태 	( 품질경영평가 ) -->
+		<result column="EVAL_D_STATUS_NAME"		property="evalDStatusNm" 	/>	<!-- 평가 D상태 이름 ( 품질경영평가 ) -->
+		<result column="REQUEST_DATE"			property="requestDate" 		/>	<!-- 접수일자 -->
+		<result column="OWNER_MD"				property="ownerMd" 			/>	<!-- 담당MD -->
+		<result column="EVAL_NO_RESULT"			property="evalNoResult" 	/>	<!-- 평가결과번호 -->
+		<result column="IMP_CNT"				property="impCnt" 			/>	<!-- 시정조치 완료 수 -->
+		<result column="TOT_IMP_CNT"			property="totImpCnt" 		/>	<!-- 시정조치 전체 수 -->
+		<result column="EVAL_SELLER_CODE"		property="evalSellerCode" 	/>	<!-- 평가기관 코드 -->
+		<result column="VISIT_SEQ"				property="visitSeq" 		/>	<!-- 평가요청 순번 -->
+		<result column="USER_NAME"				property="userName" 		/>	<!-- 담당자명 -->
+	</resultMap>
+
+	<!--상담 조회 resultMap-->
+	<resultMap id="selectCompCounselInfoMap" class="SRMRST002001VO">
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"			property="sellerCode"	 	/>	<!-- 업체코드 -->
+		<result column="SEQ"					property="seq" 				/>	<!-- 순번 -->
+		<result column="EXPECTED_DATE"			property="expectedDate" 	/>	<!-- 상담예정일 -->
+		<result column="EXPECTED_TIME"			property="expectedTime" 	/>	<!-- 상담예정시간 -->
+		<result column="EXPECTED_PLACE"			property="expectedPlace" 	/>	<!-- 장소 -->
+		<result column="EXPECTED_REMARK"		property="expectedRemark" 	/>	<!-- 요청내용 -->
+		<result column="REJECT_REASON"			property="rejectReason" 	/>	<!-- 입점거절사유 -->
+		<result column="ATTACH_NO"				property="attachNo" 		/>	<!-- 요청첨부 -->
+		<result column="COUNSEL_STATUS"			property="counselStatus" 	/>	<!-- 상태 -->
+		<result column="COUNSEL_STATUS_NAME"	property="counselStatusName"/>	<!-- 상태 -->
+		<result column="CHANGE_DATE"			property="changeDate" 		/>	<!-- 수정일자 -->
+		<result column="OWNER_MD"				property="ownerMd" 			/>	<!-- 담당MD -->
+		<result column="PHONE"					property="phone" 			/>	<!-- 담당MD 연락처 -->
+	</resultMap>
+
+	<!--상담 조회 resultMap-->
+	<resultMap id="selectCompFairInfoMap" class="SRMRST002002VO">
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"			property="sellerCode"	 	/>	<!-- 업체코드 -->
+		<result column="SEQ"					property="seq" 				/>	<!-- 순번 -->
+		<result column="FAIR_DATE"				property="fairDate" 		/>	<!-- 상담예정일자 -->
+		<result column="FAIR_TIME"				property="fairTime" 		/>	<!-- 상담예정시간 -->
+		<result column="FAIR_PLACE"				property="fairPlace" 		/>	<!-- 상담장소 -->
+		<result column="FAIR_REMARK"			property="fairRemark" 		/>	<!-- 요청내용 -->
+		<result column="REJECT_REASON"			property="rejectReason" 	/>	<!-- 입점거절사유 -->
+		<result column="ATTACH_NO"				property="attachNo" 		/>	<!-- 요청내용 -->
+		<result column="FAIR_STATUS"			property="fairStatus" 		/>	<!-- 상담진행상태 -->
+		<result column="FAIR_STATUS_NAME"		property="fairStatusName" 	/>	<!-- 상담진행상태 -->
+		<result column="CHANGE_DATE"			property="changeDate" 		/>	<!-- 수정일자 -->
+		<result column="OWNER_MD"				property="ownerMd" 			/>	<!-- 담당MD -->
+		<result column="PHONE"					property="phone" 			/>	<!-- 담당MD 연락처 -->
+	</resultMap>
+
+	<!-- 파일정보조회 resultMap -->
+	<resultMap id="selectCompCounselFileListResultMap" class="CommonFileVO">
+		<result column="DOC_NO"						property="fileId" 					/>	<!-- 파일ID -->
+		<result column="DOC_SEQ"					property="fileSeq" 					/>	<!-- 순번 -->
+		<result column="DES_FILE_NAME"				property="tempFileName" 			/>	<!-- 서버저장파일명 -->
+		<result column="SRC_FILE_NAME"				property="fileNmae" 				/>	<!-- 원본파일명 -->
+	</resultMap>
+
+	<!--이행보증증권 조회 resultMap-->
+	<resultMap id="selectCompInsResultMap" class="SRMRST002003VO">
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"			property="sellerCode"	 	/>	<!-- 업체코드 -->
+		<result column="SEQ"					property="seq" 				/>	<!-- 순번 -->
+		<result column="INS_REQ_DATE"			property="insReqDate" 		/>	<!-- 요청일자 -->
+		<result column="INS_REQ_REMARK"			property="insReqRemark" 	/>	<!-- 요청내용 -->
+		<result column="REQ_STATUS"				property="reqStatus" 		/>	<!-- 상태 -->
+		<result column="INS_COMPANY_NAME"		property="insCompanyName" 	/>	<!-- 보증보험사명 -->
+		<result column="INS_NO"					property="insNo" 			/>	<!-- 보증보험번호 -->
+		<result column="INS_ATTACH_NO"			property="insAttachNo" 		/>	<!-- 보증보험서 첨부 -->
+		<result column="INS_ATTACH_NO_NAME"		property="insAttachNoName" 	/>	<!-- 보증보험서 첨부 -->
+	</resultMap>
+
+	<!--조치내역 조회 resultMap-->
+	<resultMap id="selectCompSiteVisitCover3ListResultMap" class="SRMRST002004VO">
+		<result column="HOUSE_CODE"					property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="EV_NO"						property="evNo"	 			/>	<!-- 평가번호 -->
+		<result column="SEQ"						property="seq" 				/>	<!-- 평가요청번호 -->
+		<result column="EV_ITEM_TYPE1_CODE"			property="evItemType1Code" 	/>	<!-- 평가관점 -->
+		<result column="EV_ITEM_TYPE1_CODE_NAME"	property="evItemType1CodeName" 	/>	<!-- 평가관점 -->
+		<result column="IMP_SEQ"					property="impSeq" 			/>	<!-- 시정조치순번 -->
+		<result column="IMP_REQ_REMARK"				property="impReqRemark" 	/>	<!-- 시정조치요청내용 -->
+		<result column="IMP_STATUS"					property="impStatus" 		/>	<!-- 시정조치 상태값 -->
+	</resultMap>
+
+	<!--조치내역 상세 조회 resultMap-->
+	<resultMap id="selectCompSiteVisitCover3DetailResultMap" class="SRMRST002004VO">
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="EV_NO"					property="evNo"	 			/>	<!-- 평가번호 -->
+		<result column="SEQ"					property="seq" 				/>	<!-- 평가요청번호 -->
+		<result column="IMP_SEQ"				property="impSeq" 			/>	<!-- 시정조치순번 -->
+		<result column="IMP_STATUS"				property="impStatus" 		/>	<!-- 시정조치 상태값 -->
+		<result column="IMP_RES_REMARK"			property="impResRemark" 	/>	<!-- 시정조치 조치내용 -->
+		<result column="IMP_ATTACH_FILE_NO"		property="impAttachFileNo" 	/>	<!-- 시정조치 첨부파일ID -->
+		<result column="IMP_RES_DATE"			property="impResDate" 		/>	<!-- 시정조치 조치일 -->
+	</resultMap>
+
+	<!--품질경영평가 평가기관 정보 resultMap-->
+	<resultMap id="selectCompSiteVisitCompResultMap" class="SRMRST002005VO">
+		<result column="SELLER_NAME_LOC"			property="sellerNameLoc" 		/>	<!-- 업체명-->
+		<result column="EV_CTRL_NAME"				property="evCtrlName"	 		/>	<!-- 담당자명-->
+		<result column="EV_CTRL_PHONE"				property="evCtrlPhone" 			/>	<!-- 전화번호 -->
+		<result column="CHECK_DATE"					property="checkDate" 			/>	<!-- 전화번호 -->
+		<result column="CHECK_TIME"					property="checkTime" 			/>	<!-- 전화번호 -->
+	</resultMap>
+
+	<!--이행보증증권 경리팀 조회 resultMap-->
+	<resultMap id="selectCompInsInfoDeptResultMap" class="SRMRST002003VO">
+		<result column="USER_NAME_LOC"				property="userNameLoc" 		/>
+		<result column="EMAIL"						property="email"	 		/>
+		<result column="SELLER_NAME_LOC"			property="sellerNameLoc"	 		/>
+	</resultMap>
+
+	<!--이행보증증권 경리팀 조회 resultMap-->
+	<resultMap id="selectCompInsInfoMDResultMap" class="SRMRST002003VO">
+		<result column="USER_NAME_LOC"				property="userNameLoc" 		/>
+		<result column="EMAIL"						property="email"	 		/>
+		<result column="SELLER_NAME_LOC"			property="sellerNameLoc"	 		/>
+	</resultMap>
+
+
+	<!--이행보증증권 경리팀 조회 resultMap-->
+	<resultMap id="selectCatLv1CodeInfoResultMap" class="SRMJON0043VO">
+		<result column="CAT_LV1_CODE"				property="catLv1Code" 		/>
+		<result column="CHANNEL_CODE"				property="channelCode"	 		/>
+		<result column="ONLINE_MAIL_TARGET"				property="onlineMailTarget" 	/>	<!--온라인몰 메일발송 대상-->
+		<result column="LOCAL_FOOD_YN"					property="localFoodYn" 			/>	<!--로컬푸드여부-->
+	</resultMap>
+	
+	<!--MD거절 사유 조회 resultMap-->
+	<resultMap id="selectRejectReasonInfoMap" class="SRMRST002008VO">
+		<result column="HOUSE_CODE"				property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="VENDOR_CODE"			property="sellerCode"	 	/>	<!-- 업체코드 -->
+		<result column="REQ_SEQ"				property="seq" 				/>	<!-- 순번 -->
+		<result column="RECEIPT_DATE"			property="receiptDate" 		/>	<!-- 접수일자 -->
+		<result column="CHANGE_DATE"			property="changeDate" 		/>	<!-- 수정일자 -->
+		<result column="PROCESS_STATUS"			property="processStatus" 	/>	<!-- 진행상태 -->
+		<result column="PROCESS_STATUS_NAME"	property="processStatusName"/>	<!-- 진행상태이름 -->
+		<result column="OWNER_MD"				property="ownerMd" 			/>	<!-- 담당MD -->
+		<result column="PHONE"					property="phone" 			/>	<!-- 담당MD 연락처 -->
+		<result column="REJECT_REASON"			property="rejectReason" 	/>	<!-- 입점거절사유 -->
+	</resultMap>
+	
+	<!--품질경영평가 업체 리스트 조회 -->
+	<resultMap id="selectCompListResultMap" class="SRMRST002005VO">
+		<result column="SELLER_NAME_LOC" property="sellerNameLoc" />   <!-- 평가기관명 -->
+		<result column="SELLER_CODE"     property="evalSellerCode"/>   <!-- 평가기관업체코드 -->
+		<result column="USER_NAME_LOC"   property="evCtrlName"   />   <!-- 사원명 -->
+		<result column="MOBILE" 	     property="evCtrlPhone"        />   <!-- 핸드폰 번호 -->
+		
+	</resultMap>
+	
+	<!--입점 담당 MD 이메일, 모바일, 아이디, 이름 등 조회 -->
+	<resultMap id ="selectChargeMdInfoResultMap" class="SRMRST0020051VO">
+		<result column="USER_NAME_LOC" property="userNameLoc"/>
+		<result column="MOBILE" property="mobile"/>
+		<result column="EMAIL" property="email"/>	
+		<result column="SELLER_NAME_LOC" property="sellerNameLoc"/>	
+	</resultMap>
+	
+	
+	<!-- 파트너사 상세 정보 -->
+	<select id="selectPartnerInfo" parameterClass="srmSessionVo" resultMap="srmRst0020VoMap1">
+		/* SRMRST0020.selectPartnerInfo */
+		SELECT 	HOUSE_CODE
+			,	SELLER_CODE
+			,	SELLER_NAME_LOC
+			,	SELLER_NAME_ENG
+			,	IRS_NO
+			,	SELLER_CEO_NAME
+			,	V_MAIN_NAME
+			,	V_PHONE1
+			,	V_MOBILE_PHONE
+			,	V_EMAIL
+			,	ADDRESS1
+			,	ADDRESS2
+			,	ZIPCODE
+			,	INDUSTRY_TYPE
+			,	BUSINESS_TYPE
+		FROM 	SSUGL
+		WHERE 	HOUSE_CODE		= #houseCode#
+			AND IRS_NO 			= #irsNo#
+	</select>
+	
+	<!-- 입점상담 내역별 상태 조회 Count -->
+	<select id="selectStatusListCount" parameterClass="srmRst0020Vo" resultClass="Integer">
+		/* SRMRST0020.selectStatusListCount */
+		SELECT  COUNT(*)
+		FROM  	SINRQ A
+		    , 	SSUGL_PROCESS_MAIN B
+			,   SSUGL_PROCESS_SITEVISIT C
+			,	SUSMT D
+			,	SSUPI E
+		WHERE 	A.HOUSE_CODE	= B.HOUSE_CODE(+)
+			AND A.VENDOR_CODE	= B.SELLER_CODE(+)
+			AND A.REQ_SEQ		= B.SEQ(+)
+			AND A.HOUSE_CODE 	= C.HOUSE_CODE(+)
+			AND A.VENDOR_CODE 	= C.SELLER_CODE(+)
+			AND A.REQ_SEQ 		= C.SEQ(+)
+			AND A.HOUSE_CODE    = D.HOUSE_CODE(+)
+			AND A.OWNER_MD 		= D.USER_ID(+)
+			AND A.HOUSE_CODE    = E.HOUSE_CODE(+)
+			AND A.VENDOR_CODE    = E.SELLER_CODE(+)
+			AND A.REQ_SEQ        = E.SEQ(+)
+			AND A.STATUS 		IS NOT NULL
+			AND A.HOUSE_CODE 	= #houseCode#
+			AND A.VENDOR_CODE	= #sellerCode#
+	</select>
+
+	<!-- 입점상담 내역별 상태 조회 -->
+	<select id="selectStatusList" parameterClass="srmRst0020Vo" resultMap="srmRst0020VoMap2">
+		/* SRMRST0020.selectStatusList */
+		SELECT	COUNT(1) OVER(PARTITION BY SEQ ORDER BY TO_NUMBER(SEQ) DESC) AS ROW_SPAN
+			,	AA.*
+		FROM
+		(
+			SELECT	*
+			FROM
+			(
+				SELECT  ROW_NUMBER() OVER(ORDER BY A.REQUEST_DATE DESC, TO_NUMBER(C.VISIT_SEQ) DESC) AS RNUM
+					,	A.HOUSE_CODE
+					,   A.VENDOR_CODE 	AS SELLER_CODE
+					,   A.REQ_SEQ 		AS SEQ
+					,   A.CAT_LV1_CODE
+					,	GETSGCLASS('000', UPPER(#locale#), '1', A.CAT_LV1_CODE) AS CAT_LV1_CODE_NAME
+					,   A.CHANNEL_CODE
+					,   GETCODETEXT1('SRM053',A.CHANNEL_CODE,UPPER(#locale#)) AS CHANNEL_CODE_NAME
+					,   TO_CHAR(A.RECEIPT_DATE,'RRRR-MM-DD') AS RECEIPT_DATE
+					,   B.REMARK
+					,	A.STATUS
+					,   B.PROCESS_STATUS
+					,   GETCODETEXT1('SRM900',B.PROCESS_STATUS,UPPER(#locale#)) AS PROCESS_STATUS_NAME
+					,   B.EVAL_A_STATUS
+					,   GETCODETEXT1('SRM900',B.EVAL_A_STATUS,UPPER(#locale#)) AS EVAL_A_STATUS_NAME
+					,   B.EVAL_B_STATUS
+					,   GETCODETEXT1('SRM900',B.EVAL_B_STATUS,UPPER(#locale#)) AS EVAL_B_STATUS_NAME
+					,   B.EVAL_C_STATUS
+					,   GETCODETEXT1('SRM900',B.EVAL_C_STATUS,UPPER(#locale#)) AS EVAL_C_STATUS_NAME
+					,   C.STATUS AS EVAL_D_STATUS
+					,   GETCODETEXT1('SRM900',C.STATUS,UPPER(#locale#)) AS EVAL_D_STATUS_NAME
+					,   B.DEL_FLAG
+					,   TO_CHAR(A.REQUEST_DATE,'RRRR-MM-DD') AS REQUEST_DATE 
+					<!--,   B.OWNER_MD-->
+					<isEqual property="locale" compareValue="KO">
+						,	D.USER_NAME_LOC AS OWNER_MD
+					</isEqual>
+					<isEqual property="locale" compareValue="ko">
+						,	D.USER_NAME_LOC AS OWNER_MD
+					</isEqual>
+					<isNotEqual property="locale" compareValue="KO">
+						<isNotEqual property="locale" compareValue="ko">
+							,	D.USER_NAME_ENG AS OWNER_MD
+						</isNotEqual>
+					</isNotEqual>
+					,	C.EVAL_NO_RESULT
+					,	(SELECT COUNT(IMP_SEQ) FROM SSUGL_PROCESS_SITEVISIT_COVER3 WHERE HOUSE_CODE = C.HOUSE_CODE AND EV_NO = C.EVAL_NO_RESULT AND VISIT_SEQ = C.VISIT_SEQ AND IMP_STATUS='3') IMP_CNT
+					,	(SELECT COUNT(IMP_SEQ) FROM SSUGL_PROCESS_SITEVISIT_COVER3 WHERE HOUSE_CODE = C.HOUSE_CODE AND EV_NO = C.EVAL_NO_RESULT AND VISIT_SEQ = C.VISIT_SEQ) TOT_IMP_CNT
+					,	EVAL_SELLER_CODE
+					, 	VISIT_SEQ
+					,	E.USER_NAME
+				FROM  	SINRQ A
+				    , 	SSUGL_PROCESS_MAIN B
+				    ,	SSUGL_PROCESS_SITEVISIT C
+					,	SUSMT D
+					,	SSUPI E
+				WHERE 	A.HOUSE_CODE	= B.HOUSE_CODE(+)
+					AND A.VENDOR_CODE	= B.SELLER_CODE(+)
+					AND A.REQ_SEQ		= B.SEQ(+)
+					AND A.HOUSE_CODE 	= C.HOUSE_CODE(+)
+					AND A.VENDOR_CODE 	= C.SELLER_CODE(+)
+					AND A.REQ_SEQ 		= C.SEQ(+)
+					AND A.HOUSE_CODE    = D.HOUSE_CODE(+)
+					AND A.OWNER_MD 		= D.USER_ID(+)
+					AND A.HOUSE_CODE    = E.HOUSE_CODE(+)
+					AND A.VENDOR_CODE    = E.SELLER_CODE(+)
+					AND A.REQ_SEQ        = E.SEQ(+)
+					AND A.STATUS 		IS NOT NULL
+					AND A.HOUSE_CODE 	= #houseCode#
+					AND A.VENDOR_CODE	= #sellerCode#
+			)
+			WHERE RNUM BETWEEN #firstIndex#+1 AND #lastIndex#
+		) AA
+		ORDER BY RNUM
+	</select>
+
+	<!--상담 조회-->
+	<select id="selectCompCounselInfo" parameterClass="SRMRST002001VO" resultMap="selectCompCounselInfoMap">
+		/*SRMRST0020.selectCompCounselInfo*/
+		SELECT
+				B.HOUSE_CODE
+				,B.SELLER_CODE
+				,B.SEQ
+				,B.EXPECTED_DATE
+				,B.EXPECTED_TIME
+				,B.EXPECTED_PLACE
+				,B.EXPECTED_REMARK
+				,B.REJECT_REASON
+				,B.ATTACH_NO
+				,B.COUNSEL_STATUS
+				,GETCODETEXT1('SRM900', B.COUNSEL_STATUS, UPPER(#locale#)) AS COUNSEL_STATUS_NAME
+				,CASE WHEN B.CHANGE_DATE IS NULL THEN B.ADD_DATE ELSE B.CHANGE_DATE END AS CHANGE_DATE
+				<!--,A.OWNER_MD-->
+				<isEqual property="locale" compareValue="KO">
+					,	C.USER_NAME_LOC AS OWNER_MD
+				</isEqual>
+				<isEqual property="locale" compareValue="ko">
+					,	C.USER_NAME_LOC AS OWNER_MD
+				</isEqual>
+				<isNotEqual property="locale" compareValue="KO">
+					<isNotEqual property="locale" compareValue="ko">
+						,	C.USER_NAME_ENG AS OWNER_MD
+					</isNotEqual>
+				</isNotEqual>
+				,C.OFFICE_TEL_NO AS PHONE
+		FROM
+				SINRQ A
+				,SSUGL_PROCESS_COUNSEL B
+				,SUSMT C
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE
+			AND A.VENDOR_CODE = B.SELLER_CODE
+			AND A.REQ_SEQ= B.SEQ
+			AND A.HOUSE_CODE = C.HOUSE_CODE
+			AND A.OWNER_MD = C.USER_ID
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.VENDOR_CODE = #sellerCode#
+			AND A.REQ_SEQ = #seq#
+	</select>
+
+	<!--품평회 조회-->
+	<select id="selectCompFairInfo" parameterClass="SRMRST002002VO" resultMap="selectCompFairInfoMap">
+		/*SRMRST0020.selectCompFairInfo*/
+		SELECT
+				B.HOUSE_CODE
+				,B.SELLER_CODE
+				,B.SEQ
+				,B.FAIR_DATE
+				,B.FAIR_TIME
+				,B.FAIR_PLACE
+				,B.FAIR_REMARK
+				,B.REJECT_REASON
+				,B.ATTACH_NO
+				,B.FAIR_STATUS
+				,GETCODETEXT1('SRM900', B.FAIR_STATUS, UPPER(#locale#)) AS FAIR_STATUS_NAME
+				,CASE WHEN B.CHANGE_DATE IS NULL THEN B.ADD_DATE ELSE B.CHANGE_DATE END AS CHANGE_DATE
+				<!--,A.OWNER_MD-->
+				<isEqual property="locale" compareValue="KO">
+					,	C.USER_NAME_LOC AS OWNER_MD
+				</isEqual>
+				<isEqual property="locale" compareValue="ko">
+					,	C.USER_NAME_LOC AS OWNER_MD
+				</isEqual>
+				<isNotEqual property="locale" compareValue="KO">
+					<isNotEqual property="locale" compareValue="ko">
+						,	C.USER_NAME_ENG AS OWNER_MD
+					</isNotEqual>
+				</isNotEqual>
+				,C.OFFICE_TEL_NO AS PHONE
+		FROM
+				SINRQ A
+				,SSUGL_PROCESS_FAIR B
+				,SUSMT C
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE
+			AND A.VENDOR_CODE = B.SELLER_CODE
+			AND A.REQ_SEQ= B.SEQ
+			AND A.HOUSE_CODE = C.HOUSE_CODE
+			AND A.OWNER_MD = C.USER_ID
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.VENDOR_CODE = #sellerCode#
+			AND A.REQ_SEQ = #seq#
+	</select>
+	<!--파일 정보 조회-->
+	<select id="selectCompCounselFileList" parameterClass="String" resultMap="selectCompCounselFileListResultMap">
+		/*SRMRST0020.selectCompCounselFileList*/
+		SELECT
+				DOC_NO
+				, DOC_SEQ
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+		FROM
+				SFILE
+		WHERE
+				DOC_NO = #fileId#
+	</select>
+
+	<!--이행보증증권 조회-->
+	<select id="selectCompInsInfo" parameterClass="SRMRST002003VO" resultMap="selectCompInsResultMap">
+		/*SRMRST0020.selectCompInsInfo*/
+		SELECT
+				A.HOUSE_CODE
+				,A.SELLER_CODE
+				,A.SEQ
+				,A.INS_REQ_DATE
+				,A.INS_REQ_REMARK
+				,A.REQ_STATUS
+				,A.INS_NO
+				,A.INS_COMPANY_NAME
+				,A.INS_ATTACH_NO
+				,B.SRC_FILE_NAME AS INS_ATTACH_NO_NAME
+		FROM
+				SSUGL_PROCESS_INS A
+				,SFILE B
+		WHERE
+				A.INS_ATTACH_NO = B.DOC_NO(+)
+			AND	A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND A.SEQ = #seq#
+	</select>
+
+
+
+	<!--이행보증증권 등록-->
+	<update id="updateCompInsInfo" parameterClass="SRMRST002003VO">
+		/*SRMRST0020.updateCompInsInfo*/
+		UPDATE SSUGL_PROCESS_INS
+		SET
+				INS_NO 					= #insNo#
+				, INS_COMPANY_NAME		= #insCompanyName#
+				, INS_ATTACH_NO			= #insAttachNo#
+				<isEqual property="tempYn" compareValue="Y">
+					, REQ_STATUS 			= 'F02'
+					, INS_RECEIPT_DATE		= CURRENT_TIMESTAMP(0)
+				</isEqual>
+				, CHANGE_DATE 			= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID 		= #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #seq#
+	</update>
+
+
+
+	<!--파일 정보 조회(INS_ATTACH_NO)-->
+	<select id="selectCompInsAttachNoFileId" parameterClass="SRMRST002003VO" resultClass="String">
+		/*SRMRST0020.selectCompInsAttachNoFileId*/
+		SELECT
+				INS_ATTACH_NO
+		FROM
+				SSUGL_PROCESS_INS
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #seq#
+
+	</select>
+
+
+	<!--이행보증증권 등록 상태값 수정(SSUGL_PROCESS_MAIN) -->
+	<update id="updateCompInsInfoMainStatus" parameterClass="SRMRST002003VO">
+		/*SRMRST0020.updateCompInsInfoMainStatus*/
+		UPDATE 	SSUGL_PROCESS_MAIN
+		SET 	PROCESS_STATUS 			= 'F02'
+				, EVAL_C_STATUS 		= 'F02'
+				, CHANGE_DATE 			= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID 		= #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #seq#
+	</update>
+	
+	<!-- 선택한 입점상담 내역 삭제 -->
+	<delete id="deleteCounselInfo" parameterClass="srmRst0020Vo">
+		/* SRMRST0020.deleteCounselInfo */
+		DELETE	
+		FROM	SINRQ
+		WHERE	
+				HOUSE_CODE = #houseCode#
+		  AND	VENDOR_CODE = #sellerCode#
+		  AND	REQ_SEQ = #seq#
+	</delete>
+	
+	<!-- 잠재엄체 삭제 여부 확인 -->
+	<select id="selectAllCounselInfo" parameterClass="srmRst0020Vo" resultClass="java.lang.Integer">
+		/* SRMRST0020.selectAllCounselInfo */
+		SELECT 	COUNT(*)
+		FROM 	SINRQ
+		WHERE 
+				HOUSE_CODE = #houseCode#
+		  AND	VENDOR_CODE = #sellerCode#
+	</select>
+	
+	<!-- 잠재업체 삭제 -->
+	<delete id="deleteHiddenCompInfo" parameterClass="srmRst0020Vo">
+		/* SRMRST0020.deleteHiddenCompInfo */
+		DELETE	
+		FROM	SSUGL
+		WHERE	
+				HOUSE_CODE = #houseCode#
+		  AND	SELLER_CODE = #sellerCode#
+	</delete>
+	
+
+
+	<!--시정 조치 내역 조회-->
+	<select id="selectCompSiteVisitCover3List" parameterClass="SRMRST002004VO" resultMap="selectCompSiteVisitCover3ListResultMap">
+		/*SRMRST0020.selectCompSiteVisitCover3List*/
+		SELECT
+				HOUSE_CODE
+				,EV_NO
+				,VISIT_SEQ AS SEQ
+				,EV_ITEM_TYPE1_CODE
+				,IMP_SEQ
+				,GETCODETEXT1(
+						CASE (	SELECT
+								EV_ITEM_KIND_CODE
+						FROM
+								SEVTD A
+								, SEVIM B
+						WHERE 	A.HOUSE_CODE = B.HOUSE_CODE
+							AND A.EV_ITEM_NO = B.EV_ITEM_NO
+							AND EV_TPL_NO IN (
+												SELECT
+														EV_TPL_NO
+												FROM
+														SEVEE
+												WHERE 	EV_NO = #evNo#
+												GROUP BY EV_TPL_NO
+												)
+							AND EV_ITEM_TYPE1_CODE = A.EV_ITEM_TYPE1_CODE
+						GROUP BY EV_ITEM_KIND_CODE
+						)
+				WHEN 'STA' THEN 'SRM010'
+				WHEN 'RET' THEN 'SRM011'
+				WHEN 'QBE' THEN 'SRM027'
+				ELSE ''
+				END, EV_ITEM_TYPE1_CODE, UPPER(#locale#)
+				) AS EV_ITEM_TYPE1_CODE_NAME
+				,IMP_REQ_REMARK
+				,IMP_STATUS
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER3 A
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #seq#
+		ORDER BY IMP_SEQ
+	</select>
+
+
+	<!--시정 조치 내역 조회-->
+	<select id="selectCompSiteVisitCover3Detail" parameterClass="SRMRST002004VO" resultMap="selectCompSiteVisitCover3DetailResultMap">
+		/*SRMRST0020.selectCompSiteVisitCover3Detail*/
+		SELECT
+				HOUSE_CODE
+				,EV_NO
+				,VISIT_SEQ AS SEQ
+				,IMP_SEQ
+				,IMP_STATUS
+				,IMP_RES_REMARK
+				,IMP_ATTACH_FILE_NO
+				,IMP_RES_DATE
+		FROM
+				SSUGL_PROCESS_SITEVISIT_COVER3
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #seq#
+			AND IMP_SEQ = #impSeq#
+	</select>
+
+
+
+	<!--시정 조치 내역 수정-->
+	<update id="updateCompSiteVisitCover3Detail" parameterClass="SRMRST002004VO">
+		/*SRMRST0020.updateCompSiteVisitCover3Detail*/
+		UPDATE 	SSUGL_PROCESS_SITEVISIT_COVER3
+		SET
+				IMP_STATUS 				= #impStatus#
+				,IMP_RES_REMARK			= #impResRemark#
+				,IMP_ATTACH_FILE_NO		= #impAttachFileNo#
+				,IMP_RES_DATE 			= #impResDate#
+				,CHANGE_DATE 			= CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID 		= #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #seq#
+			AND IMP_SEQ = #impSeq#
+	</update>
+
+
+
+	<!--시정 조치 내역 삭제-->
+	<update id="updateCompSiteVisitCover3Detaildel" parameterClass="SRMRST002004VO">
+		/*SRMRST0020.updateCompSiteVisitCover3Detaildel*/
+		UPDATE 	SSUGL_PROCESS_SITEVISIT_COVER3
+		SET
+				IMP_RES_REMARK			= ''
+				,IMP_ATTACH_FILE_NO		= ''
+				,IMP_RES_DATE 			= ''
+				,IMP_STATUS 			= '1'
+				,CHANGE_DATE 			= CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID 		= #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND EV_NO = #evNo#
+			AND VISIT_SEQ = #seq#
+			AND IMP_SEQ = #impSeq#
+	</update>
+
+
+	<!--품질경영평가 평가기관 정보-->
+	<select id="selectCompSiteVisitComp" parameterClass="SRMRST002005VO" resultMap="selectCompSiteVisitCompResultMap">
+		/*SRMRST0020.selectCompSiteVisitComp*/
+		SELECT
+				<isEqual property="locale" compareValue="KO">
+					B.SELLER_NAME_LOC
+					,(CASE WHEN D.EV_CTRL_NAME IS NULL THEN C.USER_NAME_LOC ELSE D.EV_CTRL_NAME END) AS EV_CTRL_NAME				<!--SUSMT-->
+					,(CASE WHEN D.EV_CTRL_PHONE IS NULL THEN C.OFFICE_TEL_NO ELSE D.EV_CTRL_PHONE END) AS EV_CTRL_PHONE				<!--SUSMT-->
+					<!--,(CASE WHEN A.EV_CTRL_NAME IS NULL THEN B.V_MAIN_NAME ELSE A.EV_CTRL_NAME END) AS EV_CTRL_NAME-->				<!--SSUGL-->
+					<!--,(CASE WHEN A.EV_CTRL_PHONE IS NULL THEN B.V_PHONE1 ELSE A.EV_CTRL_PHONE END) AS EV_CTRL_PHONE-->				<!--SSUGL-->
+				</isEqual>
+				<isEqual property="locale" compareValue="ko">
+					B.SELLER_NAME_LOC
+					,(CASE WHEN D.EV_CTRL_NAME IS NULL THEN C.USER_NAME_LOC ELSE D.EV_CTRL_NAME END) AS EV_CTRL_NAME				<!--SUSMT-->
+					,(CASE WHEN D.EV_CTRL_PHONE IS NULL THEN C.OFFICE_TEL_NO ELSE D.EV_CTRL_PHONE END) AS EV_CTRL_PHONE				<!--SUSMT-->
+					<!--,(CASE WHEN A.EV_CTRL_NAME IS NULL THEN B.V_MAIN_NAME ELSE A.EV_CTRL_NAME END) AS EV_CTRL_NAME-->				<!--SSUGL-->
+					<!--,(CASE WHEN A.EV_CTRL_PHONE IS NULL THEN B.V_PHONE1 ELSE A.EV_CTRL_PHONE END) AS EV_CTRL_PHONE-->				<!--SSUGL-->
+				</isEqual>
+				<isNotEqual property="locale" compareValue="KO">
+					<isNotEqual property="locale" compareValue="ko">
+						B.SELLER_NAME_ENG
+						,(CASE WHEN D.EV_CTRL_NAME IS NULL THEN C.USER_NAME_ENG ELSE D.EV_CTRL_NAME END) AS EV_CTRL_NAME				<!--SUSMT-->
+						,(CASE WHEN D.EV_CTRL_PHONE IS NULL THEN C.OFFICE_TEL_NO ELSE D.EV_CTRL_PHONE END) AS EV_CTRL_PHONE				<!--SUSMT-->
+						<!--,(CASE WHEN A.EV_CTRL_NAME IS NULL THEN B.V_MAIN_NAME ELSE A.EV_CTRL_NAME END) AS EV_CTRL_NAME-->				<!--SSUGL-->
+						<!--,(CASE WHEN A.EV_CTRL_PHONE IS NULL THEN B.V_PHONE1 ELSE A.EV_CTRL_PHONE END) AS EV_CTRL_PHONE-->				<!--SSUGL-->
+					</isNotEqual>
+				</isNotEqual>
+				,CHECK_DATE
+				,CHECK_TIME
+		FROM
+				SEVEU A
+				,SSUGL B
+				,SUSMT C
+				,SSUGL_PROCESS_SITEVISIT_COVER1 D
+				,SSUGL_PROCESS_SITEVISIT E
+		WHERE
+				<!--A.EV_USER_ID = B.SELLER_CODE-->
+			<!--AND -->
+				B.SELLER_CODE = C.USER_ID
+			AND A.EV_NO = E.EVAL_NO_RESULT
+			AND E.EVAL_NO_RESULT = D.EV_NO(+)
+			AND E.VISIT_SEQ = D.VISIT_SEQ(+)
+			AND B.SELLER_CODE = #evalSellerCode#
+			AND E.EVAL_NO_RESULT = #evNo#
+			AND E.VISIT_SEQ= #seq#
+	</select>
+
+
+	<!-- 선택한 입점상담 내역 임시저장상태로 되돌림 -->
+	<delete id="updateCounselInfoCancel" parameterClass="srmRst0020Vo">
+		/* SRMRST0020.updateCounselInfoCancel */
+		UPDATE	SINRQ
+		SET
+				STATUS = ''
+				,REQUEST_DATE = ''
+				,CHANGE_DATE = CURRENT_TIMESTAMP(0)
+				,CHANGE_USER_ID = #sellerCode#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND	VENDOR_CODE = #sellerCode#
+			AND	REQ_SEQ = #seq#
+	</delete>
+
+	<!--이행보증증권 경리팀 조회-->
+	<select id="selectCompInsInfoDept" parameterClass="SRMRST002003VO" resultMap="selectCompInsInfoDeptResultMap">
+		/* SRMRST0020.selectCompInsInfoDept */
+		SELECT
+			<!--<isEqual property="locale" compareValue="KO">-->
+				<!--USER_NAME_LOC-->
+			<!--</isEqual>-->
+			<!--<isEqual property="locale" compareValue="ko">-->
+				<!--USER_NAME_LOC-->
+			<!--</isEqual>-->
+			<!--<isNotEqual property="locale" compareValue="KO">-->
+				<!--<isNotEqual property="locale" compareValue="ko">-->
+					<!--USER_NAME_ENG-->
+				<!--</isNotEqual>-->
+			<!--</isNotEqual>-->
+				USER_NAME_LOC
+				, EMAIL
+			,(
+				SELECT
+						SELLER_NAME_LOC
+				FROM
+						SSUGL
+				WHERE
+						SELLER_CODE = #sellerCode#
+			) AS SELLER_NAME_LOC
+		FROM
+				SUSMT
+		WHERE
+				DEPT = #deptCd#
+	</select>
+
+
+	<!--이행보증증권 담당MD 이메일-->
+	<select id="selectCompInsInfoMD" parameterClass="SRMRST002003VO" resultMap="selectCompInsInfoMDResultMap">
+		/* SRMRST0020.selectCompInsInfoMD */
+		SELECT
+				USER_NAME_LOC
+				, EMAIL
+				,(
+				SELECT
+						SELLER_NAME_LOC
+				FROM
+						SSUGL
+				WHERE
+						SELLER_CODE = #sellerCode#
+				) AS SELLER_NAME_LOC
+		FROM
+				SSUGL_PROCESS_MAIN A
+		 		,SUSMT B
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE
+			AND A.OWNER_MD = B.USER_ID
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.seller_code = #sellerCode#
+			AND A.SEQ = #seq#
+	</select>
+
+	<!--대분류코드조회-->
+	<select id="selectCatLv1CodeInfo" parameterClass="srmRst0020Vo" resultMap="selectCatLv1CodeInfoResultMap">
+		/* SRMRST0020.selectCatLv1CodeInfo */
+			SELECT
+					CAT_LV1_CODE
+					,CHANNEL_CODE
+					,NVL(ONLINE_MAIL_TARGET, 'MMD') AS ONLINE_MAIL_TARGET
+					,NVL(LOCAL_FOOD_YN, 'N') AS LOCAL_FOOD_YN
+			FROM
+					SINRQ
+			WHERE
+					HOUSE_CODE = #houseCode#
+				AND VENDOR_CODE = #sellerCode#
+				AND REQ_SEQ = #seq#
+	</select>
+	
+	<!--MD거절 사유 조회-->
+	<select id="selectRejectReasonInfo" parameterClass="SRMRST002008VO" resultMap="selectRejectReasonInfoMap">
+		/*SRMRST0020.selectRejectReasonInfo*/
+		SELECT
+				A.HOUSE_CODE
+				,A.VENDOR_CODE
+				,A.REQ_SEQ
+				,TO_CHAR(A.RECEIPT_DATE,'YYYY-MM-DD') AS RECEIPT_DATE
+				,TO_CHAR(A.CHANGE_DATE,'YYYY-MM-DD') AS CHANGE_DATE
+				,B.PROCESS_STATUS
+				,GETCODETEXT1('SRM900', B.PROCESS_STATUS, UPPER(#locale#)) AS PROCESS_STATUS_NAME
+		        ,A.REJECT_REASON
+		        ,C.USER_ID AS OWNER_MD
+		        ,C.OFFICE_TEL_NO AS PHONE
+		FROM
+				SINRQ A
+				,SSUGL_PROCESS_MAIN B
+				,SUSMT C
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE
+			AND A.VENDOR_CODE = B.SELLER_CODE
+			AND A.REQ_SEQ= B.SEQ
+			AND A.HOUSE_CODE = C.HOUSE_CODE
+			AND A.OWNER_MD = C.USER_ID
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.VENDOR_CODE = #sellerCode#
+			AND A.REQ_SEQ = #seq#
+	</select>
+	
+	<!--평가 기관 전체 업체 리스트 조회 -->
+	<select id="selectCompSiteVisitCompList" parameterClass="SRMRST002005VO" resultMap="selectCompListResultMap">
+		/*SRMRST0020.selectCompSiteVisitCompList*/
+		SELECT SUGL.SELLER_NAME_LOC AS SELLER_NAME_LOC 
+			  , SUGL.SELLER_CODE
+       		  , USMT.USER_NAME_LOC
+       		  , USMT.MOBILE AS MOBILE
+		FROM SSUGL SUGL 
+			INNER JOIN SUSMT USMT 
+				ON SUGL.HOUSE_CODE = USMT.HOUSE_CODE
+				   AND SUGL.SELLER_CODE = USMT.USER_ID
+				   AND NVL(SUGL.DEL_FLAG, 'N') = 'N'
+				   AND NVL(USMT.DEL_FLAG, 'N') = 'N'
+		WHERE 
+				SUGL.HOUSE_CODE =  #houseCode#
+			 AND SUGL.INOUT_KIND = #inOutKind#
+			 AND USMT.USER_TYPE = 'S'
+			 AND NVL(SUGL.EV_DEL_FLAG, '0')='0'   -- 0이 아닌 경우 선택 제외 대상, 현재 운영기 적용안된상태
+		ORDER BY SUGL.SELLER_CODE, SUGL.IRS_NO
+	</select>
+	
+	
+	<!--평가 기관 전체 업체 리스트 업데이트-->
+	<update id="UpdateCompSiteVisitComp" parameterClass="SRMRST002005VO" >
+		/*SRMRST0020.UpdateCompSiteVisitComp*/
+		UPDATE SSUGL_PROCESS_SITEVISIT 
+		SET EVAL_SELLER_CODE = #evalSellerCode#, --평가할 업체의 코드
+			STATUS = 'G12', -- G12 :품질경영평가업체 등록완료
+			CHANGE_DATE = CURRENT_TIMESTAMP(0),
+			CHANGE_USER_ID = #sellerCode#  -- 로그인 한 아이디
+		WHERE 1 = 1
+		AND HOUSE_CODE = #houseCode# 	 -- 세션 '000'
+		AND SELLER_CODE = #sellerCode#   -- 해당 업체 코드
+		AND SEQ= #reqSeq#                -- 업체 넘버링
+	</update>
+	
+	<!--품질경영평가업체 등록 완료  SSUGL_PROCESS_MAIN 업데이트-->
+	<update id="UpdateCompProcessMainComp" parameterClass="SRMRST002005VO" >
+		/*SRMRST0020.UpdateCompProcessMainComp*/
+		UPDATE SSUGL_PROCESS_MAIN 
+		SET PROCESS_STATUS = 'G12', -- G12 :품질경영평가업체 등록완료
+			EVAL_D_STATUS = 'G12',
+			CHANGE_DATE = CURRENT_TIMESTAMP(0),
+			CHANGE_USER_ID = #sellerCode#  -- 로그인 한 아이디
+		WHERE 1 = 1
+		AND HOUSE_CODE = #houseCode# 	 -- 세션 '000'
+		AND SELLER_CODE = #sellerCode#   -- 해당 업체 코드
+		AND SEQ= #reqSeq#                -- 업체 넘버링
+	</update>
+	
+	
+	<!-- 업체가 선택한 평가기관 조회 -->
+	<select id="selectedEvalSellerCode" parameterClass="SRMRST002005VO" resultClass="String">
+		/*SRMRST0020.selectedEvalSellerCode*/
+		SELECT EVAL_SELLER_CODE 
+		FROM SSUGL_PROCESS_SITEVISIT
+		WHERE 1=1
+		AND HOUSE_CODE = #houseCode# 	 -- 세션 '000'
+		AND SELLER_CODE = #sellerCode#   -- 해당 업체 코드
+		AND SEQ= #reqSeq# 				 -- 업체 넘버링
+	</select>
+	
+	<!-- 품질경영평가 업체 선택 후 저장 시 담당 MD 정보 가져오기 -->
+	<select id="SelectChargeMdInfo" parameterClass="SRMRST002005VO" resultMap = "selectChargeMdInfoResultMap">
+		/*SRMRST0020.SelectChargeMdInfo*/		
+		SELECT  B.EMAIL,
+				B.MOBILE,
+				B.USER_NAME_LOC,
+		(
+			SELECT	SELLER_NAME_LOC
+			FROM	SSUGL
+			WHERE	SELLER_CODE = #sellerCode#
+		) AS SELLER_NAME_LOC
+		FROM 	 SSUGL_PROCESS_MAIN A
+		 		,SUSMT B
+		WHERE	A.OWNER_MD = B.USER_ID(+)
+		AND		A.HOUSE_CODE = B.HOUSE_CODE(+)
+		AND		A.HOUSE_CODE = #houseCode#
+		AND		A.seller_code = #sellerCode#
+		AND 	A.SEQ = #reqSeq#
+	</select>
+	
+</sqlMap>

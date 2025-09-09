@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0030">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	
+	<select id="selectNewOnlineDeliveryList" resultClass="dataMap">
+		/* SQLINES DEMO *** ectNewOnlineDeliveryList */
+		SELECT PGM_ID
+				 , DELIVERY_KIND_CD
+				 , SEQ
+				 , DELIVERY_AMT
+				 , DELI_BASE_MIN_QTY
+				 , DELI_BASE_MAX_QTY
+				 , DELI_COND_AMT
+	      FROM TPC_GOODCL_VEN_DELIVERY_AMT
+	    WHERE PGM_ID = #pgmId#
+	</select>
+	
+	<select id="selectAddrMgrList" resultClass="dataMap">
+		/* SQLINES DEMO *** ectAddrMgrList */
+		SELECT PGM_ID
+				  , SEQ
+				  , VENDOR_ID
+				  , ADDR_SEQ
+	      FROM TPC_VEN_ADDR_MGR
+	    WHERE PGM_ID = #pgmId#
+	</select>
+	
+	<!-- SQLINES DEMO ***  데이터 -->
+	<select id="selectNorProdTempList" resultClass="dataMap">
+		/* SQLINES DEMO *** ectNorProdTempList */
+		SELECT NOR_PROD_SEQ
+		          , TITLE
+		          , INFO_GRP_CD
+		  FROM TVE_NOR_PROD_TEMPLATE
+		WHERE COALESCE(USE_YN,'N') = 'Y'
+		    AND INFO_GRP_CD = #infoGrpCd#
+		    AND VENDOR_ID = #vendorId#
+	</select>
+	
+	<!-- 전상... SQLINES DEMO *** -->
+	<select id="selectNorProdTempValList" resultClass="dataMap">
+		/* SQLINES DEMO *** ectNorProdTempValList */
+		SELECT NOR_PROD_SEQ
+		          , INFO_GRP_CD
+		          , INFO_COL_CD
+		          , COL_VAL
+		  FROM TVE_NOR_PROD_TEMPLATE_DTL
+		WHERE NOR_PROD_SEQ = #norProdSeq#
+	</select>
+		
+	<!-- 공통... SQLINES DEMO *** -->
+	<select id="selectVendorDlvInfo" resultClass="dataMap">
+		/* SQLINES DEMO *** ectVendorDlvInfo */
+		SELECT BASE_DLV_AMT
+                  , RTN_AMT
+                  , EXCH_AMT
+                  , ADD_DELI_AMT1
+                  , ADD_DELI_AMT2
+		  FROM TVE_VENDOR
+		WHERE VENDOR_ID = #vendorId#
+	</select>
+		
+	<!-- 공통... SQLINES DEMO *** -->
+	<select id="selectVendorDeliInfo" resultClass="dataMap">
+		/* SQLINES DEMO *** ectVendorDeliInfo */
+		 SELECT  DELI_BASE_MIN_AMT
+		        , DELI_BASE_MAX_AMT
+		        , APPLY_START_DY
+		        , APPLY_END_DY 
+		        , DELI_DIVN_CD 
+		        , DELIVERY_AMT
+		  FROM TVE_VENDOR_DELI_BASE 
+		 WHERE VENDOR_ID = #vendorId#
+		   AND DELI_DIVN_CD IN ('10','20')
+		   AND TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') BETWEEN  APPLY_START_DY AND APPLY_END_DY
+		 ORDER BY DELI_DIVN_CD
+	</select>
+	
+	<!-- 업체... SQLINES DEMO *** -->
+	<select id="selecttrdTypFgSel" resultClass="dataMap">
+		/* SQLINES DEMO *** ecttrdTypFgSel */
+		SELECT A.TRD_TYP_FG
+		          , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SRR02' AND MINOR_CD = A.TRD_TYP_FG) AS TRD_TYP_FG_NM
+		          , VENDOR_ID
+		  FROM TVE_VENDOR A
+		<iterate prepend="WHERE CONO IN" property="cono" open="(" close=")" conjunction=",">
+			#cono[]#
+		</iterate>
+	</select>
+	
+	<!-- SQLINES DEMO ***  -->
+	<delete id="deleteAddrMgr">
+		/* SQLINES DEMO *** eteAddrMgr */
+		DELETE FROM TPC_VEN_ADDR_MGR 
+		WHERE PGM_ID = #pgmId#	
+	</delete>
+		
+	<!-- 배송... SQLINES DEMO *** -->
+	<delete id="deleteDeliveryAmt">
+		/* SQLINES DEMO *** eteDeliveryAmt */
+		DELETE FROM TPC_GOODCL_VEN_DELIVERY_AMT 
+		WHERE PGM_ID = #pgmId#	
+	</delete>
+	
+	<!-- 업체... SQLINES DEMO *** -->
+	<insert id="insertAddrMgr">
+		/* SQLINES DEMO *** ertAddrMgr */
+		INSERT INTO TPC_VEN_ADDR_MGR
+		(  
+		    PGM_ID
+		 ,  SEQ
+		 ,  VENDOR_ID
+		 ,  ADDR_SEQ
+		 ,  REG_DATE
+		 ,  REG_ID
+		 ,  MOD_DATE
+		 ,  MOD_ID		
+		)
+		VALUES
+		(
+		 	#pgmId#
+		,   (SELECT (COALESCE(MAX(SEQ),0)+1)::text FROM TPC_VEN_ADDR_MGR WHERE PGM_ID = #pgmId#)
+		,   #entpCd#
+		,   #addrSeq#
+		, 	CURRENT_TIMESTAMP(0)
+		, 	#entpCd#
+		, 	CURRENT_TIMESTAMP(0)
+		, 	#entpCd#		
+		)
+	</insert>
+	
+	<!-- 배송... SQLINES DEMO *** -->
+	<insert id="insertDeliveryAmt">
+		/* SQLINES DEMO *** ertDeliveryAmt */
+		INSERT INTO TPC_GOODCL_VEN_DELIVERY_AMT
+		(  
+		    PGM_ID
+		 ,	DELIVERY_KIND_CD
+		 ,  SEQ
+		 ,  DELIVERY_AMT
+		 ,  DELI_BASE_MIN_QTY
+		 ,  DELI_BASE_MAX_QTY
+		 ,  DELI_COND_AMT
+		 ,  APPLY_START_DY
+		 ,  APPLY_END_DY
+		 ,  REG_DATE
+		 ,  REG_ID
+		 ,  MOD_DATE
+		 ,  MOD_ID		
+		)
+		VALUES
+		(
+		 	#pgmId#
+		,   #deliKindCd#
+		,   (SELECT (COALESCE(MAX(SEQ),0)+1)::text FROM TPC_GOODCL_VEN_DELIVERY_AMT WHERE PGM_ID = #pgmId# AND DELIVERY_KIND_CD = #deliKindCd#)
+		,   #deliAmt#
+		,   #minSetQty#
+		,   #maxSetQty#
+		,   #deliCondAmt#
+		,   TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		,   '99991231'
+		, 	CURRENT_TIMESTAMP(0)
+		, 	#entpCd#
+		, 	CURRENT_TIMESTAMP(0)
+		, 	#entpCd#		
+		)
+	</insert>
+	
+	<!-- SQLINES DEMO ***  -->
+	<update id="updateNewProdReg">
+		/* SQLINES DEMO *** ateNewProdReg */
+		UPDATE TPC_NEW_PROD_REG
+		      SET BDL_DELI_YN = #bdlDeliYn#
+		           ,ENTP_COND_USE_YN = #condUseYn#
+		           ,DELI_PSBT_REGN_CD = #psbtRegnCd#
+		           ,MOD_ID = #modId#
+		           ,MOD_DATE = CURRENT_TIMESTAMP(0)
+		 WHERE PGM_ID = #pgmId#
+	</update>
+	
+	<!-- 온라... SQLINES DEMO *** -->
+	<insert id="insertCopyProduct">
+		/* SQLINES DEMO *** ertCopyProduct */
+		INSERT INTO TPC_NEW_PROD_REG
+				  (
+				  	PGM_ID
+					,TEAM_CD
+					,L1_CD
+					,L3_CD
+					,PROD_NM
+					,PROD_EN_NM
+					,PROD_SHORT_NM
+					,ONOFF_DIVN_CD
+					,ENTP_CD
+					,SELL_CD
+					,ONLINE_PROD_NM
+					,ONLINE_REP_PROD_CD
+					,PROD_DIVN_CD
+					,PROD_STANDARD_NM
+					,DP_TOT_QTY
+					,DP_BASE_QTY
+					,NOR_PROD_PCOST
+					,NOR_PROD_CURR
+					,NOR_PROD_SALE_PRC
+					,NOR_PROD_SALE_CURR
+					,DP_UNIT_CD
+					,EVT_PROD_SELL_PRC
+					,EVT_PROD_SELL_CURR
+					,SELL_PRC
+					,SELL_CURR
+					,TAXAT_DIVN_CD
+					,PROD_TYPE_DIVN_CD
+					,CTR_TYPE_DIVN_CD
+					,PRC_ISSUE_DIVN_CD
+					,PROD_HRZN_LENG
+					,PROD_VTCL_LENG
+					,PROD_HIGT
+					,PROD_DESC
+					,ISP_DTL_DESC
+					,HOME_CD
+					,PUR_INRCNT_QTY
+					,PRFT_RATE
+					,PUR_UNIT_CD
+					,PROMO_AMT_DIVN_CD
+					,NEW_PROD_FIRST_PUR_DIVN_CD
+					,NPUR_BUY_PSBT_DIVN_CD
+					,SESN_YEAR_CD
+					,SESN_DIVN_CD
+					,PROTECT_TAG_DIVN_CD
+					,PROTECT_TAG_TYPE_CD
+					,NEW_PROD_GEN_DIVN_CD
+					,TRD_TYPE_DIVN_CD
+					,BARCD_VERIFY_DOC_TF
+					,MIX_YN
+					,STGE_PSBT_DD
+					,PICK_PSBT_DD
+					,TMPRT_DIVN_CD
+					,FLOW_DD_MGR_CD
+					,QTY_WEGT_DIVN_CD
+					,MAX_KEEP_DD_CNT
+					,BRAND_CD
+					,BRAND_NM
+					,MAKER_CD
+					,MAKER_NM
+					,MIN_ORD_PSBT_QTY
+					,MAX_ORD_PSBT_QTY
+					,MD_SEND_DIVN_CD
+					,TOT_INSP_YN
+					,PRODUCT_DY
+					,PROD_IMG_ID
+					,NFOML_VARIATION_DESC
+					,REG_DATE
+					,REG_ID
+					,MOD_DATE
+					,MOD_ID
+					,CATEGORY_ID
+					,SOCIAL_PROD_DELI_CD
+					,KAN_PROD_CD
+					,UNSPSC_CD
+					,GTIN_CD
+					,IMG_NCNT
+					,WNOR_PROD_PCOST
+					,WNOR_PROD_CURR
+					,WNOR_PROD_SALE_PRC
+					,WNOR_PROD_SALE_CURR
+					,WPRFT_RATE
+					,MAT_CD
+					,MD_VALI_SELL_CD
+					,NEW_PROD_PROMO_FG
+					,NEW_PROD_ST_DY
+					,OVER_PROMO_FG
+					,MODEL_NM
+					,ECO_YN
+					,ECO_NM
+					,DLV_GA
+					,DLV_DT
+					,INS_CO
+					,SIZE_UNIT
+					,L2_CD
+					,NOPROD_FG
+					,PROD_ATT_TYP_FG
+					,TOT_WEIGHT
+					,WEIGHT_UNIT
+					,PIECE_QTY
+					,PIECE_UNIT
+					,WASTE_FG
+					,PLASTIC_WEIGHT
+					,RECYCLE_FG1
+					,RECYCLE_FG2
+					,RECYCLE_FG3
+					,RECYCLE_WEIGHT1
+					,RECYCLE_WEIGHT2
+					,RECYCLE_WEIGHT3
+					,FLOW_DD
+					,ZZNEWPROD_FG
+					,RSERV_ORD_PSBT_START_DY
+					,RSERV_ORD_PSBT_END_DY
+					,RSERV_PROD_PICK_IDCT_DY
+					,ONLINE_PROD_TYPE_CD
+					,OPTN_LOAD_SET_QTY
+					,OPTN_LOAD_CONTENT
+					,HOPE_DELI_PSBT_DD
+					,DEAL_REP_PROD_YN
+					,OPTN_PROD_PRC_MGR_YN
+					,CTPD_YN
+					,CTPD_DEAL_YN
+					,PERI_DELI_YN
+					,BDL_DELI_YN
+					,STAFF_MALL_SELL_PSBT_YN
+					,STAFF_DC_AMT
+					,DELI_PSBT_REGN_CD
+					,ENTP_COND_USE_YN
+					,ENTP_IN_PROD_CD
+					,SELL_START_DY
+					,SELL_END_DY
+					,NOR_PROD_INFO_GRP_CD
+					,KC_INFO_GRP_CD
+					,DEAL_PROD_DIVN_CD
+					,PROD_OPTION_DESC
+					,ADM_FG
+					,EXPR_PROD_YN
+					,SELLER_RECOMM
+					,ADL_YN
+				)
+				SELECT  #newPgmId# AS PGM_ID
+							,TEAM_CD
+							,L1_CD
+							,L3_CD
+							,PROD_NM
+							,PROD_EN_NM
+							,PROD_SHORT_NM
+							,ONOFF_DIVN_CD
+							,ENTP_CD
+							,SELL_CD
+							,ONLINE_PROD_NM
+							,ONLINE_REP_PROD_CD
+							,PROD_DIVN_CD
+							,PROD_STANDARD_NM
+							,DP_TOT_QTY
+							,DP_BASE_QTY
+							,NOR_PROD_PCOST
+							,NOR_PROD_CURR
+							,NOR_PROD_SALE_PRC
+							,NOR_PROD_SALE_CURR
+							,DP_UNIT_CD
+							,EVT_PROD_SELL_PRC
+							,EVT_PROD_SELL_CURR
+							,SELL_PRC
+							,SELL_CURR
+							,TAXAT_DIVN_CD
+							,PROD_TYPE_DIVN_CD
+							,CTR_TYPE_DIVN_CD
+							,PRC_ISSUE_DIVN_CD
+							,PROD_HRZN_LENG
+							,PROD_VTCL_LENG
+							,PROD_HIGT
+							,PROD_DESC
+							,ISP_DTL_DESC
+							,HOME_CD
+							,PUR_INRCNT_QTY
+							,PRFT_RATE
+							,PUR_UNIT_CD
+							,PROMO_AMT_DIVN_CD
+							,NEW_PROD_FIRST_PUR_DIVN_CD
+							,NPUR_BUY_PSBT_DIVN_CD
+							,SESN_YEAR_CD
+							,SESN_DIVN_CD
+							,PROTECT_TAG_DIVN_CD
+							,PROTECT_TAG_TYPE_CD
+							,NEW_PROD_GEN_DIVN_CD
+							,TRD_TYPE_DIVN_CD
+							,BARCD_VERIFY_DOC_TF
+							,MIX_YN
+							,STGE_PSBT_DD
+							,PICK_PSBT_DD
+							,TMPRT_DIVN_CD
+							,FLOW_DD_MGR_CD
+							,QTY_WEGT_DIVN_CD
+							,MAX_KEEP_DD_CNT
+							,BRAND_CD
+							,BRAND_NM
+							,MAKER_CD
+							,MAKER_NM
+							,MIN_ORD_PSBT_QTY
+							,MAX_ORD_PSBT_QTY
+							,'' AS MD_SEND_DIVN_CD
+							,TOT_INSP_YN
+							,PRODUCT_DY
+							,PROD_IMG_ID
+							,NFOML_VARIATION_DESC
+							,CURRENT_TIMESTAMP(0) AS REG_DATE
+							,REG_ID
+							,CURRENT_TIMESTAMP(0) AS MOD_DATE
+							,MOD_ID
+							,CATEGORY_ID
+							,SOCIAL_PROD_DELI_CD
+							,KAN_PROD_CD
+							,UNSPSC_CD
+							,GTIN_CD
+							,IMG_NCNT
+							,WNOR_PROD_PCOST
+							,WNOR_PROD_CURR
+							,WNOR_PROD_SALE_PRC
+							,WNOR_PROD_SALE_CURR
+							,WPRFT_RATE
+							,MAT_CD
+							,MD_VALI_SELL_CD
+							,NEW_PROD_PROMO_FG
+							,NEW_PROD_ST_DY
+							,OVER_PROMO_FG
+							,MODEL_NM
+							,ECO_YN
+							,ECO_NM
+							,DLV_GA
+							,DLV_DT
+							,INS_CO
+							,SIZE_UNIT
+							,L2_CD
+							,NOPROD_FG
+							,PROD_ATT_TYP_FG
+							,TOT_WEIGHT
+							,WEIGHT_UNIT
+							,PIECE_QTY
+							,PIECE_UNIT
+							,WASTE_FG
+							,PLASTIC_WEIGHT
+							,RECYCLE_FG1
+							,RECYCLE_FG2
+							,RECYCLE_FG3
+							,RECYCLE_WEIGHT1
+							,RECYCLE_WEIGHT2
+							,RECYCLE_WEIGHT3
+							,FLOW_DD
+							,ZZNEWPROD_FG
+							,RSERV_ORD_PSBT_START_DY
+							,RSERV_ORD_PSBT_END_DY
+							,RSERV_PROD_PICK_IDCT_DY
+							,ONLINE_PROD_TYPE_CD
+							,OPTN_LOAD_SET_QTY
+							,OPTN_LOAD_CONTENT
+							,HOPE_DELI_PSBT_DD
+							,DEAL_REP_PROD_YN
+							,OPTN_PROD_PRC_MGR_YN
+							,CTPD_YN
+							,CTPD_DEAL_YN
+							,PERI_DELI_YN
+							,BDL_DELI_YN
+							,STAFF_MALL_SELL_PSBT_YN
+							,STAFF_DC_AMT
+							,DELI_PSBT_REGN_CD
+							,ENTP_COND_USE_YN
+							,ENTP_IN_PROD_CD
+							,SELL_START_DY
+							,SELL_END_DY
+							,NOR_PROD_INFO_GRP_CD
+							,KC_INFO_GRP_CD
+							,DEAL_PROD_DIVN_CD
+							,PROD_OPTION_DESC
+							,ADM_FG
+							,EXPR_PROD_YN
+							,SELLER_RECOMM
+							,ADL_YN
+				  FROM TPC_NEW_PROD_REG A
+			    WHERE PGM_ID = #pgmId# 
+	</insert>
+
+
+	<resultMap id="selectEcStandardCategoryMap"	class="dataMap">
+		<result column="CAT_CD"	 	property="CAT_CD"	nullValue="" /> 
+		<result column="CAT_NM" 	property="CAT_NM"	nullValue="" />
+		<result column="DEPTH"	property="DEPTH"		nullValue="" /> 
+	</resultMap>
+	
+	
+	<!-- EC... SQLINES DEMO *** -->
+	 <select id="selectEcStandardCategory" resultMap="selectEcStandardCategoryMap">
+		/* SQLINES DEMO *** ectEcStandardCategory */
+		SELECT CAT_CD
+			 , CAT_NM
+			 , #depth# AS DEPTH
+		  FROM (
+			SELECT 
+				<isNotEmpty property="smlStdCatCd">
+					TSC.SUB_STD_CAT_CD AS CAT_CD, TSC.SUB_STD_CAT_NM AS CAT_NM
+				</isNotEmpty>
+				<isEmpty property="smlStdCatCd">
+					<isNotEmpty property="midStdCatCd">
+						TSC.SML_STD_CAT_CD AS CAT_CD, TSC.SML_STD_CAT_NM AS CAT_NM
+					</isNotEmpty>
+					<isEmpty property="midStdCatCd">
+						<isNotEmpty property="lrgStdCatCd">
+							TSC.MID_STD_CAT_CD AS CAT_CD, TSC.MID_STD_CAT_NM AS CAT_NM
+						</isNotEmpty>
+						<isEmpty property="lrgStdCatCd">
+							TSC.LRG_STD_CAT_CD AS CAT_CD, TSC.LRG_STD_CAT_NM AS CAT_NM
+						</isEmpty>
+					</isEmpty>
+				</isEmpty>
+			  FROM TEC_STD_CATEGORY TSC
+			     , TEC_STD_DISP_MAPPING TSDM
+			     , TEC_DISP_CATEGORY TDC
+			 WHERE TSC.STD_CAT_CD = TSDM.STD_CAT_CD
+			   AND TSDM.DISP_CAT_CD = TDC.DISP_CAT_CD
+			   AND TDC.MALL_CD = 'LTON'
+			   AND TSC.DISP_YN = 'Y'
+			   AND TSC.USE_YN = 'Y'
+			   AND TSDM.USE_YN = 'Y'
+			   AND TDC.USE_YN = 'Y'
+			<isNotEmpty property="lrgStdCatCd" prepend="AND">
+				TSC.LRG_STD_CAT_CD = #lrgStdCatCd#
+				AND TSC.MID_STD_CAT_CD IS NOT NULL
+			</isNotEmpty>
+			<isNotEmpty property="midStdCatCd" prepend="AND">
+				TSC.MID_STD_CAT_CD = #midStdCatCd#
+				AND TSC.SML_STD_CAT_CD IS NOT NULL
+			</isNotEmpty>
+			<isNotEmpty property="smlStdCatCd" prepend="AND">
+				TSC.SML_STD_CAT_CD = #smlStdCatCd#
+				AND TSC.SUB_STD_CAT_CD IS NOT NULL
+			</isNotEmpty>
+			INTERSECT
+			SELECT 
+				<isNotEmpty property="smlStdCatCd">
+					TSC.SUB_STD_CAT_CD AS CAT_CD, TSC.SUB_STD_CAT_NM AS CAT_NM
+				</isNotEmpty>
+				<isEmpty property="smlStdCatCd">
+					<isNotEmpty property="midStdCatCd">
+						TSC.SML_STD_CAT_CD AS CAT_CD, TSC.SML_STD_CAT_NM AS CAT_NM
+					</isNotEmpty>
+					<isEmpty property="midStdCatCd">
+						<isNotEmpty property="lrgStdCatCd">
+							TSC.MID_STD_CAT_CD AS CAT_CD, TSC.MID_STD_CAT_NM AS CAT_NM
+						</isNotEmpty>
+						<isEmpty property="lrgStdCatCd">
+							TSC.LRG_STD_CAT_CD AS CAT_CD, TSC.LRG_STD_CAT_NM AS CAT_NM
+						</isEmpty>
+					</isEmpty>
+				</isEmpty>
+			  FROM TEC_STD_CATEGORY TSC
+			     , TEC_STD_DISP_MAPPING TSDM
+			     , TEC_DISP_CATEGORY TDC
+			 WHERE TSC.STD_CAT_CD = TSDM.STD_CAT_CD
+			   AND TSDM.DISP_CAT_CD = TDC.DISP_CAT_CD
+			   AND TDC.MALL_CD IN ('LTMT','TOYS')
+			   AND TSC.DISP_YN = 'Y'
+			   AND TSC.USE_YN = 'Y'
+			   AND TSDM.USE_YN = 'Y'
+			   AND TDC.USE_YN = 'Y'
+			<isNotEmpty property="lrgStdCatCd" prepend="AND">
+				TSC.LRG_STD_CAT_CD = #lrgStdCatCd#
+				AND TSC.MID_STD_CAT_CD IS NOT NULL
+			</isNotEmpty>
+			<isNotEmpty property="midStdCatCd" prepend="AND">
+				TSC.MID_STD_CAT_CD = #midStdCatCd#
+				AND TSC.SML_STD_CAT_CD IS NOT NULL
+			</isNotEmpty>
+			<isNotEmpty property="smlStdCatCd" prepend="AND">
+				TSC.SML_STD_CAT_CD = #smlStdCatCd#
+				AND TSC.SUB_STD_CAT_CD IS NOT NULL
+			</isNotEmpty>
+			) A
+		 GROUP BY CAT_CD, CAT_NM
+		 ORDER BY CAT_CD
+	</select>
+	
+	<!-- SQLINES DEMO ***  20250414-->
+	<resultMap id="selectEcCategoryByProductMap" 	class="dataMap">
+		<result column="STD_CAT_CD" property="STD_CAT_CD" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="STD_CAT_NM" property="STD_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="LRG_STD_CAT_CD" property="LRG_STD_CAT_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="LRG_STD_CAT_NM" property="LRG_STD_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="MID_STD_CAT_CD" property="MID_STD_CAT_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="MID_STD_CAT_NM" property="MID_STD_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="SML_STD_CAT_CD" property="SML_STD_CAT_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="SML_STD_CAT_NM" property="SML_STD_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="SUB_STD_CAT_CD" property="SUB_STD_CAT_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="SUB_STD_CAT_NM" property="SUB_STD_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="DEPTH" property="DEPTH" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="DISP_CAT_CD" property="DISP_CAT_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="MALL_CD" property="MALL_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="DISP_CAT_NM" property="DISP_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="DISP_YN" property="DISP_YN" /> <!-- 변형... SQLINES DEMO *** -->
+	</resultMap>
+	<!-- SQLINES DEMO ***  -->
+	<select id="selectEcCategoryByProduct" resultMap="selectEcCategoryByProductMap">
+		/* SQLINES DEMO *** ectEcCategoryByProduct */
+	    SELECT TSC.STD_CAT_CD
+	         , TSC.STD_CAT_NM
+	         , TSC.LRG_STD_CAT_CD
+	         , TSC.LRG_STD_CAT_NM
+	         , TSC.MID_STD_CAT_CD
+	         , TSC.MID_STD_CAT_NM
+	         , TSC.SML_STD_CAT_CD
+	         , TSC.SML_STD_CAT_NM
+	         , TSC.SUB_STD_CAT_CD
+	         , TSC.SUB_STD_CAT_NM
+	         , TSC.DEPTH
+	         , TDC.DISP_CAT_CD
+	         , TDC.MALL_CD
+	         , CASE WHEN NULLIF(SUB_DISP_CAT_NM,'') IS NULL THEN
+	                CASE WHEN NULLIF(SML_DISP_CAT_NM,'') IS NULL THEN
+	                     CASE WHEN NULLIF(MID_DISP_CAT_NM,'') IS NULL THEN LRG_DISP_CAT_NM
+	                          ELSE MID_DISP_CAT_NM END
+	                     ELSE SML_DISP_CAT_NM END
+	                ELSE SUB_DISP_CAT_NM END DISP_CAT_NM
+	         , TDC.DISP_YN
+	      FROM TEC_CAT_PROD_MAPPING TCPM
+	         , TEC_STD_CATEGORY TSC
+	         , TEC_DISP_CATEGORY TDC
+	     WHERE TCPM.PGM_ID = #pgmId#
+	       AND TCPM.STD_CAT_CD = TSC.STD_CAT_CD
+	       AND TCPM.DISP_CAT_CD = TDC.DISP_CAT_CD
+	 </select>
+ 	<resultMap id="selectEcStandardCategoryMappingMap" 	class="dataMap">
+		<result column="STD_CAT_CD" property="STD_CAT_CD" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="STD_CAT_NM" property="STD_CAT_NM" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="LRG_STD_CAT_CD" property="LRG_STD_CAT_CD" /> <!-- 이미... SQLINES DEMO *** -->
+		<result column="LRG_STD_CAT_NM" property="LRG_STD_CAT_NM" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="MID_STD_CAT_CD" property="MID_STD_CAT_CD" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="MID_STD_CAT_NM" property="MID_STD_CAT_NM" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="SML_STD_CAT_CD" property="SML_STD_CAT_CD" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="SML_STD_CAT_NM" property="SML_STD_CAT_NM" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="SUB_STD_CAT_CD" property="SUB_STD_CAT_CD" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="SUB_STD_CAT_NM" property="SUB_STD_CAT_NM" /> <!-- 등록... SQLINES DEMO *** -->
+		<result column="DEPTH" property="DEPTH" /> <!-- 등록... SQLINES DEMO *** -->										
+	</resultMap>
+	 
+	<!-- SQLINES DEMO *** ) -->
+	<select id="selectEcStandardCategoryMapping" resultMap="selectEcStandardCategoryMappingMap">
+		/* SQLINES DEMO *** ectEcStandardCategoryMapping */
+	    SELECT TSC.STD_CAT_CD
+	         , TSC.STD_CAT_NM
+	         , TSC.LRG_STD_CAT_CD
+	         , TSC.LRG_STD_CAT_NM
+	         , TSC.MID_STD_CAT_CD
+	         , TSC.MID_STD_CAT_NM
+	         , TSC.SML_STD_CAT_CD
+	         , TSC.SML_STD_CAT_NM
+	         , TSC.SUB_STD_CAT_CD
+	         , TSC.SUB_STD_CAT_NM
+	         , TSC.DEPTH
+	      FROM TEC_STD_CAT_MAPPING TSCM
+	         , TEC_STD_CATEGORY TSC
+	     WHERE TSCM.MART_CAT_CD = #martCatCd#
+	       AND TSCM.STD_CAT_CD = TSC.STD_CAT_CD
+	 </select>
+		<!-- SQLINES DEMO *** p -->
+		
+	<resultMap id="selectEcDisplayCategoryMap" 	class="dataMap">
+		<result column="STD_CAT_CD" property="STD_CAT_CD" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="DISP_CAT_CD" property="DISP_CAT_CD" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="DISP_CAT_NM" property="DISP_CAT_NM" /> <!-- 이미... SQLINES DEMO *** -->
+		<result column="DISP_YN" property="DISP_YN" /> <!-- 등록... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- EC 롯데온 전시카테고리 팝업  -->
+	<select id="selectEcDisplayCategory" resultMap="selectEcDisplayCategoryMap">
+		/* NEDMPRO0030.selectEcDisplayCategory */
+		SELECT TSDM.STD_CAT_CD
+			 , TDC.DISP_CAT_CD
+		     , CASE WHEN NULLIF(SUB_DISP_CAT_NM,'') IS NULL THEN
+		            CASE WHEN NULLIF(SML_DISP_CAT_NM,'') IS NULL THEN
+		                 CASE WHEN NULLIF(MID_DISP_CAT_NM,'') IS NULL THEN LRG_DISP_CAT_NM
+		                      ELSE MID_DISP_CAT_NM END
+		                 ELSE SML_DISP_CAT_NM END
+		            ELSE SUB_DISP_CAT_NM END DISP_CAT_NM
+			<isEmpty property="pgmId">
+			 , TDC.DISP_YN
+			</isEmpty>	     
+			<isNotEmpty property="pgmId">
+			 , CASE TDC.DISP_YN WHEN 'Y' THEN '전시' WHEN 'N' THEN '미전시' ELSE TDC.DISP_YN END AS DISP_YN
+			</isNotEmpty>
+		  FROM TEC_STD_DISP_MAPPING TSDM
+		     , TEC_DISP_CATEGORY TDC
+		 WHERE TSDM.STD_CAT_CD = #stdCatCd#
+		   AND TDC.DISP_CAT_CD = TSDM.DISP_CAT_CD
+		   AND TSDM.USE_YN = 'Y'
+		   AND TDC.USE_YN = 'Y'
+		   AND TDC.LEAF_YN = 'Y'
+		<isNotEmpty property="mallCds" prepend="AND">
+			<iterate prepend="TDC.MALL_CD IN " property="mallCds" open="(" close=")" conjunction=","> #mallCds[]# </iterate>
+		</isNotEmpty>
+		<isNotEmpty property="pgmId" prepend="AND">
+			TDC.DISP_CAT_CD IN (SELECT DISP_CAT_CD FROM TEC_CAT_PROD_MAPPING WHERE PGM_ID = #pgmId#)
+		</isNotEmpty>
+	</select>
+
+
+	<!-- EC 상품 속성 ResultMap -->
+	<resultMap id="selectEcProductAttrMap" 	class="dataMap">
+		<result column="NUM" property="NUM" />			<!-- 행번호 -->
+		<result column="ATTR_ID" property="ATTR_ID" />	<!-- EC속성아이디 -->
+		<result column="ATTR_NM" property="ATTR_NM" />	<!-- EC속성명 -->
+		<result column="ATTR_VAL_ID" property="ATTR_VAL_ID" /> <!-- EC속성값아이디 -->
+		<result column="ATTR_VAL_NM" property="ATTR_VAL_NM" /> <!-- EC속성값명 -->
+	</resultMap>
+	
+	<!-- EC 상품 속성 -->
+	<select id="selectEcProductAttr" resultMap="selectEcProductAttrMap">
+		/* NEDMPRO0030.selectEcProductAttr */
+		SELECT ROW_NUMBER() OVER (PARTITION BY TAC.ATTR_ID ORDER BY TAC.ATTR_ID) AS NUM
+			, TAC.ATTR_ID
+			, TAC.ATTR_NM
+			, TAV.ATTR_VAL_ID
+			, TAV.ATTR_VAL_NM
+		FROM TEC_ATTR_CAT_MAPPING TACM
+		INNER JOIN TEC_ATTR_CD TAC ON TACM.ATTR_ID = TAC.ATTR_ID AND TAC.USE_YN = 'Y' AND TAC.ATTR_PI_TYPE = #attrPiType#
+		INNER JOIN TEC_ATTR_VAL TAV ON TAC.ATTR_ID = TAV.ATTR_ID AND TAV.USE_YN = 'Y'
+		WHERE TACM.STD_CAT_CD = #stdCatCd#
+		AND TACM.USE_YN = 'Y'
+	</select>
+	 
+	<!-- EC... SQLINES DEMO *** -->
+	<select id="selectEcProductAttrByItemCd" resultClass="dataMap">
+		/* SQLINES DEMO *** ectEcProductAttrByItemCd */
+		SELECT TAPM.PROD_CD
+		     , TAPM.STD_CAT_CD
+		     , TAPM.ITEM_CD
+		     , TAC.ATTR_PI_TYPE
+		     , TAPM.ATTR_ID
+		     , TAPM.ATTR_VAL_ID
+		     , TAV.ATTR_VAL_NM
+		  FROM TEC_ATTR_PROD_MAPPING TAPM
+		     , TEC_ATTR_VAL TAV
+		     , TEC_ATTR_CD TAC
+		 WHERE TAPM.PROD_CD = #pgmId#
+		   AND TAPM.ITEM_CD = #itemCd#
+		   AND TAPM.ATTR_ID = TAV.ATTR_ID
+		   AND TAV.ATTR_ID = TAC.ATTR_ID
+		   AND TAPM.ATTR_VAL_ID = TAV.ATTR_VAL_ID
+	 </select>
+	 
+     <select id="selectCountDispLton" resultClass="int">
+     <![CDATA[
+        /* NEDMPRO0030.selectCountDispLton */
+    	SELECT COUNT(1)
+		  FROM TEC_STD_CATEGORY TSC
+		     , TEC_STD_DISP_MAPPING TSDM
+		     , TEC_DISP_CATEGORY TDC
+		 WHERE TSC.STD_CAT_CD = TSDM.STD_CAT_CD
+		   AND TSDM.DISP_CAT_CD = TDC.DISP_CAT_CD
+		   AND TDC.MALL_CD = 'LTON'
+		   AND TSC.DISP_YN = 'Y'
+		   AND TSC.LEAF_YN = 'Y'
+		   AND TSDM.USE_YN = 'Y'
+		   AND TDC.USE_YN = 'Y'
+		   AND TDC.LEAF_YN = 'Y'
+		   AND TSDM.STD_CAT_CD = #stdCatCd#
+           AND TSDM.DISP_CAT_CD = #dispCatCd#
+     ]]>
+     </select>
+     
+     <select id="selectCountDispMart" resultClass="int">
+     <![CDATA[
+        /* NEDMPRO0030.selectCountDispMart */
+    	SELECT COUNT(1)
+		  FROM TEC_STD_CATEGORY TSC
+		     , TEC_STD_DISP_MAPPING TSDM
+		     , TEC_DISP_CATEGORY TDC
+		 WHERE TSC.STD_CAT_CD = TSDM.STD_CAT_CD
+		   AND TSDM.DISP_CAT_CD = TDC.DISP_CAT_CD
+		   AND TDC.MALL_CD IN ('LTMT','TOYS')
+		   AND TSC.DISP_YN = 'Y'
+		   AND TSC.LEAF_YN = 'Y'
+		   AND TSDM.USE_YN = 'Y'
+		   AND TDC.USE_YN = 'Y'
+		   AND TDC.LEAF_YN = 'Y'
+		   AND TSDM.STD_CAT_CD = #stdCatCd#
+           AND TSDM.DISP_CAT_CD = #dispCatCd#
+     ]]>
+     </select>
+     
+	<select id="selectCountEcProductAttrId" resultClass="int">
+	/* SQLINES DEMO *** ctCountEcProductAttrId */
+	SELECT COUNT(1)
+	  FROM (SELECT TACM.ATTR_ID
+			  FROM TEC_ATTR_CAT_MAPPING TACM
+			     , TEC_ATTR_CD TAC
+			     , TEC_ATTR_VAL TAV
+			 WHERE TACM.STD_CAT_CD = #STD_CAT_CD#
+			   AND TAC.ATTR_PI_TYPE = #ATTR_PI_TYPE#
+			   AND TACM.ATTR_ID = TAC.ATTR_ID
+			   AND TAC.ATTR_ID = TAV.ATTR_ID
+			   AND TACM.USE_YN = 'Y'
+			   AND TAC.USE_YN = 'Y'
+			   AND TAV.USE_YN = 'Y'
+	           GROUP BY TACM.ATTR_ID
+	        )
+	</select>
+	
+     <select id="selectCountEcProductAttrValId" resultClass="int">
+	/* SQLINES DEMO *** ectCountEcProductAttrValId */
+	SELECT COUNT(1)
+	  FROM TEC_ATTR_CAT_MAPPING TACM
+	     , TEC_ATTR_CD TAC
+	     , TEC_ATTR_VAL TAV
+	 WHERE TACM.STD_CAT_CD = #STD_CAT_CD#
+	   AND TAC.ATTR_PI_TYPE = #ATTR_PI_TYPE#
+	   AND TACM.ATTR_ID = TAC.ATTR_ID
+	   AND TAC.ATTR_ID = TAV.ATTR_ID
+	   AND TACM.USE_YN = 'Y'
+	   AND TAC.USE_YN = 'Y'
+	   AND TAV.USE_YN = 'Y'
+	   AND TACM.ATTR_ID = #ATTR_ID#
+       <isNotEmpty property="ATTR_VAL_ID">
+	   AND TAV.ATTR_VAL_ID = #ATTR_VAL_ID#
+       </isNotEmpty>
+	</select>
+  
+</sqlMap>	

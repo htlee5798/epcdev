@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CsrEmp">
+	
+	<typeAlias  alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias  alias="csrEmpSerarchVO" type="com.lottemart.epc.csr.model.CsrEmpDefaultVO"/>
+	<typeAlias  alias="csrSearchParam" type="com.lottemart.epc.csr.model.CsrSearchParam"/>
+	
+	
+	
+	
+	<resultMap id="csrEmp" class="com.lottemart.epc.csr.model.CsrEmpVO">
+		<result property="empNo" column="EMP_NO" columnIndex="1"/>
+		<result property="empNm" column="EMP_NM" columnIndex="2"/>
+		<result property="positionCd" column="POSITION_CD" columnIndex="3"/>
+		<result property="positionNm" column="POSITION_NM" columnIndex="4"/>
+		<result property="hpNo" column="HP_NO" columnIndex="5"/>
+		<result property="email" column="EMAIL" columnIndex="6"/>
+		<result property="retireFg" column="RETIRE_FG" columnIndex="7"/>
+		<result property="regDt" column="REG_DT" columnIndex="8"/>
+		<result property="modDt" column="MOD_DT" columnIndex="9"/>
+	</resultMap>
+	
+	<resultMap id="csrEmpList" class="com.lottemart.epc.csr.model.CsrEmpAllListVO">
+		<result property="empNo" column="EMP_NO" columnIndex="1"/>
+		<result property="empNm" column="EMP_NM" columnIndex="2"/>
+		<result property="positionCd" column="POSITION_CD" columnIndex="3"/>
+		<result property="positionNm" column="POSITION_NM" columnIndex="4"/>
+		<result property="hpNo" column="HP_NO" columnIndex="5"/>
+		<result property="email" column="EMAIL" columnIndex="6"/>
+		<result property="retireFg" column="RETIRE_FG" columnIndex="7"/>
+		<result property="regDt" column="REG_DT" columnIndex="8"/>
+		<result property="modDt" column="MOD_DT" columnIndex="9"/>
+	</resultMap>
+	
+
+	
+	
+	<insert id="csrEmpDAO.insertCsrEmp_S">
+		<![CDATA[
+			INSERT INTO CSR_EMP 
+				( EMP_NO
+				  , EMP_NM
+				  , POSITION_CD
+				  , POSITION_NM
+				  , HP_NO
+				  , EMAIL
+				  , RETIRE_FG
+				  , REG_DT
+				  , MOD_DT )
+			VALUES ( #empNo#
+				  , #empNm#
+				  , #positionCd#
+				  , #positionNm#
+				  , #hpNo#
+				  , #email#
+				  , #retireFg#
+				  , #regDt#
+				  , #modDt# )
+		]]>
+	</insert>
+	
+	<update id="csrEmpDAO.updateCsrEmp_S">
+		<![CDATA[
+			UPDATE CSR_EMP
+			SET EMP_NO=#empNo#
+				, EMP_NM=#empNm#
+				, POSITION_CD=#positionCd#
+				, POSITION_NM=#positionNm#
+				, HP_NO=#hpNo#
+				, EMAIL=#email#
+				, RETIRE_FG=#retireFg#
+				, REG_DT=#regDt#
+				, MOD_DT=#modDt#
+			]]>
+	</update>
+	
+	<delete id="csrEmpDAO.deleteCsrEmp_S">
+		<![CDATA[
+			DELETE FROM CSR_EMP 
+			]]>
+	</delete>
+	
+	
+	<select id="csrEmpDAO.selectCsrEmp" resultMap="csrEmp" parameterClass="csrSearchParam">
+		<![CDATA[
+		/* csrEmpDAO.selectCsrEmp */
+			SELECT
+				EMP_NO
+				, EMP_NM
+				, POSITION_CD
+				, POSITION_NM
+				, HP_NO
+				, EMAIL
+				, RETIRE_FG
+				, REG_DT
+				, MOD_DT
+			FROM CSR_EMP
+			where EMP_NO = #sEmpNo# 
+
+			]]>
+	</select>
+	
+	
+	
+	<select id="csrEmpDAO.selectCsrEmpAllList" resultMap="csrEmpList" parameterClass="csrSearchParam">
+	
+		<![CDATA[
+		/* csrEmpDAO.selectCsrEmpAllList */
+			SELECT
+				EMP_NO
+				, EMP_NM
+				, POSITION_CD
+				, POSITION_NM
+				, HP_NO
+				, EMAIL
+				, RETIRE_FG
+				, REG_DT
+				, MOD_DT
+			FROM CSR_EMP
+			
+	
+				   
+
+			]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="csrEmpDAO.selectCsrEmp_S" resultMap="csrEmp">
+		<![CDATA[
+			SELECT
+				EMP_NO
+				, EMP_NM
+				, POSITION_CD
+				, POSITION_NM
+				, HP_NO
+				, EMAIL
+				, RETIRE_FG
+				, REG_DT
+				, MOD_DT
+			FROM CSR_EMP
+			]]>
+	</select>
+	
+
+	
+	
+	
+	<select id="csrEmpDAO.selectCsrEmpList_D" parameterClass="csrEmpSerarchVO" resultClass="dataMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								EMP_NO
+								, EMP_NM
+								, POSITION_CD
+								, POSITION_NM
+								, HP_NO
+								, EMAIL
+								, RETIRE_FG
+								, REG_DT
+								, MOD_DT
+						FROM CSR_EMP
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					EMP_NO = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					EMP_NM LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+	
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="csrEmpDAO.selectCsrEmpListTotCnt_S" parameterClass="csrEmpSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM CSR_EMP
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				EMP_NO = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				EMP_NM LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>

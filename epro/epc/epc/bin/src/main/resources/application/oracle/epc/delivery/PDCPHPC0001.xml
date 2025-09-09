@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PDCPHPC0001">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+ 
+	<select id="selectHpCallRegiInfo" resultClass="dataMap">
+	/* PDCMHPC0001.selectHpCallRegiInfo 해피콜등록을 위한 정보 조회 */
+    SELECT  ST.STR_NM AS SALE_STR_NM		--판매점포명
+	      , CASE WHEN ST2.STR_NM IS NULL
+	        THEN PG_UTIL.FN_GET_CD_NM('HO20', IA.DELI_STR_CD) 
+	        ELSE ST2.STR_NM
+	        END  AS DELI_STR_NM --배송점포명
+	      , IA.DELI_STR_CD      --배송점포코드
+	      , SUBSTR(IA.ACCEPT_DATE, 1, 4)||'-'||
+	        SUBSTR(IA.ACCEPT_DATE, 5, 2)||'-'||
+	        SUBSTR(IA.ACCEPT_DATE, 7, 2) AS ACCEPT_DATE -- 접수일자    
+	      , IA.ACCEPT_NO                    --접수번호
+	      , IA.HODECO_INVOICE_NO            --택배사운송장번호
+	      , DECODE(IA.INVOICE_PRT_DATE,'','',
+	               SUBSTR(IA.INVOICE_PRT_DATE,1,4)||'-'||
+	               SUBSTR(IA.INVOICE_PRT_DATE,5,2)||'-'||
+	               SUBSTR(IA.INVOICE_PRT_DATE,7,2)||' '||
+	               SUBSTR(IA.INVOICE_PRT_DATE,9,2)||':'||
+	               SUBSTR(IA.INVOICE_PRT_DATE,11,2)) AS INVOICE_PRT_DATE --운송장 출력일시
+	      , IA.INVOICE_PRT_YN
+	      , PG_UTIL.FN_GET_CD_NM('HO04', IA.DELI_PRGS_STEP_CD) AS DELI_PRGS_STEP_NM         -- 배송진행상태
+	      , PG_UTIL.FN_GET_CD_NM('HO05', IA.DELI_PRGS_STEP_STS_CD) AS DELI_PRGS_STEP_STS_NM -- 배송진행단계상태
+	      , IA.DELI_PRGS_STEP_CD
+	      , IA.DELI_PRGS_STEP_STS_CD
+	      , IA.DELI_MSG
+	      , IA.HPCL_RSLT_CD                 --해피콜상태       
+	      , PG_UTIL.FN_GET_CD_NM('HO19', IA.HPCL_RSLT_CD) AS HPCL_RSLT_NM           
+	      , REPLACE(IC.SEND_PSN_NM,'"','') AS SEND_PSN_NM --전송인 성명
+	      , NVL(REGEXP_REPLACE(IC.SEND_PSN_CELL_NO,'(.{3})(.+)(.{4})', '\1-\2-\3'),'') AS SEND_PSN_CELL_NO  --전송인 휴대폰
+	      , NVL(REGEXP_REPLACE(IC.SEND_PSN_TEL_NO,'(02|.{3})(.+)(.{4})', '\1-\2-\3'),'') AS SEND_PSN_TEL_NO    --전송인 전화번호
+	      , IC.SEND_PSN_ZIP_NO              --전송인 우편번호
+	      , REPLACE(IC.SEND_PSN_ZIP_ADDR,'"','') AS SEND_PSN_ZIP_ADDR --전송인 주소
+	      , REPLACE(IC.SEND_PSN_ADDR,'"','') AS SEND_PSN_ADDR 
+	      , IC.SEND_PSN_ZIP_NO_SEQ      
+	      , REPLACE(IC.RECV_PSN_NM,'"','') AS RECV_PSN_NM --수신인 성명	
+	      , NVL(DECODE(REGEXP_REPLACE(IC.RECV_PSN_CELL_NO,'(.{3})(.+)(.{4})', '\1-\2-\3')
+				, NULL
+				, REGEXP_REPLACE((SELECT CELL_NO FROM TDE_ORDER_DELIVERY OD WHERE OD.ORDER_ID = DM.ORDER_ID AND OD.DELIVERY_ID = DM.DELIVERY_ID ),'(.{3})(.+)(.{4})', '\1-\2-\3')
+				, REGEXP_REPLACE(IC.RECV_PSN_CELL_NO,'(.{3})(.+)(.{4})', '\1-\2-\3'))
+			, '')  AS RECV_PSN_CELL_NO   --수신인 휴대폰
+	      , NVL(REGEXP_REPLACE(IC.RECV_PSN_TEL_NO,'(02|.{3})(.+)(.{4})', '\1-\2-\3'),'') AS RECV_PSN_TEL_NO    --수신인 전화번호  
+	      , IC.RECV_PSN_ZIP_NO				--수신인 우편번호
+	      , REPLACE(IC.RECV_PSN_ZIP_ADDR,'"','') AS RECV_PSN_ZIP_ADDR --수신인 주소
+	      , REPLACE(IC.RECV_PSN_ADDR,'"','') AS RECV_PSN_ADDR		
+	      , IC.RECV_PSN_ZIP_NO_SEQ			--수신인 우편번호 순번
+	      , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') AS TODAY
+	      , (SELECT PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD AS FEDAY_MALL_PROD_DIVN_CD
+	           FROM TPR_PRODUCT PR
+	              , THO_INVOICE_PROD IP 
+	              , TPR_PRODUCT_EXT PE
+	          WHERE PR.MD_PROD_CD = IP.PROD_CD
+	            AND IP.INVOICE_NO = IA.INVOICE_NO
+	            AND PR.PROD_CD = PE.PROD_CD
+	            AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능*/
+	            AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+	            LIMIT 1
+	        ) AS FEDAY_MALL_PROD_DIVN_CD /* 명절몰 상품유형코드  2021.07.27 추가*/
+	      , (SELECT DECODE(PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD,'4','냉장','9','냉동','') 
+	           FROM TPR_PRODUCT PR
+	              , THO_INVOICE_PROD IP
+	              , TPR_PRODUCT_EXT PE 
+	          WHERE PR.MD_PROD_CD = IP.PROD_CD
+	            AND IP.INVOICE_NO = IA.INVOICE_NO
+	            AND PR.PROD_CD = PE.PROD_CD
+	            AND PR.FEDAY_MALL_SELL_PSBT_YN = 'Y' /* 명절몰 판매가능여부 Y-가능 */
+	            AND PR.FEDAY_MALL_PROD_DIVN_CD = '9' /* 명절몰상품구분코드-9: 냉동(명정몰상품 냉장/냉동 모두 냉동으로 등록됨- 냉장/냉동 구분은 PE.HAPPY_FEDAY_MALL_PROD_DIVN_CD 컬럼 확인 ) */
+	            LIMIT 1
+	        ) AS FEDAY_MALL_PROD_DIVN_NM /* 명절몰 상품유형명 2021.07.27 추가 */
+	      , CASE WHEN IA.DELI_ORDER_DY IS NULL THEN ''
+	             ELSE SUBSTR(IA.DELI_ORDER_DY, 1, 4)||'-'||SUBSTR(IA.DELI_ORDER_DY, 5, 2)||'-'||SUBSTR(IA.DELI_ORDER_DY, 7, 2) 
+	        END AS DELI_ORDER_DY /* 출고일 2021.07.27 추가 */ 
+	      , IA.ORDER_APPLY_YN /* 발주반영여부 2021.07.27 추가 */   
+	FROM    THO_INVOICE_ACCEPT     IA	--송장접수
+	      , THO_INVOICE_CUST       IC   --송장-고객
+	      , TDE_HODECO_INFO        HI   --택배정보		/* 수신인 휴대폰 기존모바일 번호로 변경 2022.01.12 */
+	      , TDE_DELI_MST           DM   --마트송장		/* 수신인 휴대폰 기존모바일 번호로 변경 2022.01.12 */
+	      , THO_STR_MST            SM   --점포마스터
+	      , STORE                  ST
+	      , STORE                  ST2
+	WHERE	IA.INVOICE_NO = IC.INVOICE_NO
+	AND     IA.HODECO_INVOICE_NO = HI.HODECO_INVOICE_NO(+)
+	AND     HI.DELI_NO = DM.DELI_NO(+)
+	AND     IA.HPCL_RSLT_CD IS NOT NULL
+	AND     IA.DELI_TYPE_CD = '20'  --센터배송
+	AND     IA.SALE_STR_CD = SM.STR_CD
+	AND     IA.DELI_STR_CD = ST2.STR_CD(+)
+	AND     SM.STR_CD = ST.STR_CD
+	AND		IA.INVOICE_NO = #invoiceNo#
+	AND		LIMIT 1
+	</select>
+	
+	<select id="selectProdInfo" resultClass="dataMap">
+	/* PDCMHPC0001.selectProdInfo 상품정보조회 */
+	SELECT PROD_NM, DELI_QTY 
+	FROM   THO_INVOICE_PROD 
+	WHERE  INVOICE_NO=#invoiceNo#
+	</select>
+	
+	<select id="selectHpcInfo" resultClass="dataMap">
+	/* PDCMHPC0001.selectHpcInfo 해피콜목록조회 */
+	SELECT	(SELECT X.ADMIN_NM FROM TAD_ADMIN X WHERE X.ADMIN_ID = THP.CNSR_ID)    CNSR_NM	--상담원ID											
+		  , PG_UTIL.FN_GET_CD_NM('HO19', THP.HPCL_RSLT_CD) AS HPCL_RSLT_NM					--해피콜상태
+		  , THP.HPCL_CONTENT    								--해피콜메시지
+		  , TO_CHAR(THP.MOD_DATE, 'YYYY-MM-DD HH24:MI')	MOD_DATE--등록일시
+	FROM	THO_HPCL_RSLT THP
+	WHERE	THP.INVOICE_NO = #invoiceNo#
+	ORDER BY THP.MOD_DATE DESC	
+	</select>
+
+
+	<select id="getAdminId" resultClass="String">
+	/* PDCMHPC0001.getAdminId LoginId로 AdminId조회 */
+	SELECT	ADMIN_ID
+	FROM	TAD_ADMIN
+	WHERE	LOGIN_ID = #loginId#
+	</select>
+	
+	
+	<insert id="insertHappycall">
+	/* PDCMHPC0001.insertHappycall 해피콜등록 */
+	MERGE INTO THO_HPCL_RSLT HR 
+		USING DUAL 
+			ON (HR.INVOICE_NO = #invoiceNo# AND HPCL_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS'))
+		WHEN MATCHED THEN
+	UPDATE 	SET 
+			CNSR_ID = #regId#
+     	  , HPCL_CONTENT = #hpclContent#
+     	  , HPCL_RSLT_CD = #hpclRsltCd#
+     	  , MOD_DATE = CURRENT_TIMESTAMP(0)
+     	  , MOD_ID 	= #modId#
+		WHEN NOT MATCHED THEN
+	INSERT (
+			INVOICE_NO
+     	  , HPCL_DATE
+     	  , CNSR_ID
+     	  , HPCL_CONTENT
+     	  , HPCL_RSLT_CD
+     	  , REG_DATE
+     	  , REG_ID
+     	  , MOD_DATE
+     	  , MOD_ID )
+	VALUES(
+			#invoiceNo#
+		  , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+		  , #regId#
+		  , #hpclContent#
+		  , #hpclRsltCd#
+		  , CURRENT_TIMESTAMP(0)
+		  , #regId#
+		  , CURRENT_TIMESTAMP(0)
+		  , #modId# )
+	</insert>
+	
+	<update id="updateInvoiceAcceptHappycall">
+	/* PDCMHPC0001.updateInvoiceAcceptHappycall 해피콜 등록에 따른 송장접수정보수정 */
+	UPDATE	THO_INVOICE_ACCEPT
+	SET		HPCL_RSLT_CD	= #hpclRsltCd#
+	      , DELI_STR_CD     = #deliStrCd#
+	      , DELI_MSG		= #deliMsg#
+	      , DELI_ORDER_DY	= #deliOrderDy#
+		  , MOD_ID			= #modId#
+		  , MOD_DATE		= CURRENT_TIMESTAMP(0)
+	WHERE	INVOICE_NO		= #invoiceNo#
+	</update>
+	
+	<update id="updateSendInfo">
+	/* PDCMHPC0001.updateRecvInfo 해피콜 등록에 따른 보내신분 정보 수정 */
+	UPDATE	THO_INVOICE_CUST
+	SET		SEND_PSN_NM			= #sendNm#
+		  , SEND_PSN_ZIP_NO		= #sendPsnZipNo#
+		  , SEND_PSN_ZIP_NO_SEQ	= #sendPsnZipNoSeq#
+		  , SEND_PSN_ZIP_ADDR	= #sendPsnZipAddr#
+		  , SEND_PSN_ADDR		= #sendPsnAddr#
+		  , SEND_PSN_CELL_NO    = #sendPsnCellNo#
+		  , SEND_PSN_TEL_NO    = #sendPsnTelNo#
+		  , MOD_ID			= #modId#
+		  , MOD_DATE		= CURRENT_TIMESTAMP(0)
+	WHERE	INVOICE_NO		= #invoiceNo#
+	</update>
+	
+	<update id="updateRecvInfo">
+	/* PDCMHPC0001.updateRecvInfo 해피콜 등록에 따른 받으실분 정보 수정 */
+	UPDATE	THO_INVOICE_CUST
+	SET		RECV_PSN_NM			= #recvNm#
+		  , RECV_PSN_ZIP_NO		= #recvPsnZipNo#
+		  , RECV_PSN_ZIP_NO_SEQ	= #recvPsnZipNoSeq#
+		  , RECV_PSN_ZIP_ADDR	= #recvPsnZipAddr#
+		  , RECV_PSN_ADDR		= #recvPsnAddr#
+		  , RECV_PSN_CELL_NO    = #recvPsnCellNo#
+		  , RECV_PSN_TEL_NO     = #recvPsnTelNo#
+		  , MOD_ID			= #modId#
+		  , MOD_DATE		= CURRENT_TIMESTAMP(0)
+	WHERE	INVOICE_NO		= #invoiceNo#
+	</update>
+	
+	<select id="selectPostList" resultClass="dataMap">
+	/* PDCMHPC0001.getPostList 우편번호 검색 */
+		SELECT * 
+		  FROM ( 
+		    SELECT S.*
+                 , TO_CHAR(LAST_VALUE(ROWNUM) OVER(ORDER BY ROWNUM ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING)) AS TOTAL_COUNT
+                 , TO_CHAR(ROWNUM) NUM 
+		     FROM (
+				SELECT ZIP_SEQ SEQC
+                      ,ZIP_CD POST_NO
+                      ,ADDR_NM0_1 POST_ADDR
+                      ,'' DTL_ADDR 
+                      ,TRIM(ADDR_NM0||' '||ADDR_NM1) ALL_ADDR
+                      ,DECODE(NVL((SELECT TRAF_DELI_USE_YN FROM THO_STR_MST S1 WHERE S1.STR_CD = V1.STR_CD),'N'),'N','000',V1.STR_CD) STR_CD
+                      ,DECODE(NVL((SELECT TRAF_DELI_USE_YN FROM THO_STR_MST S1 WHERE S1.STR_CD = V1.STR_CD),'N'),'N','배송불가지역',V1.STR_NM) STR_NM
+                      ,STR_CD ONLINE_STR_CD
+                  FROM (
+                    SELECT /*+ORDERED USE_NL(A B) INDEX(A, IX_ET_ZIP_CODE_02) */
+                           A.ZIP_SEQ
+                         , A.ADDR_SYST_DIVN_CD
+                         , A.ZIP_CD
+                         , A.CITY_NM||' '||A.GU_NM||' '||A.DONG_NM||DECODE(A.RI_NM, NULL, '', ' '||A.RI_NM)||DECODE(A.ISLND_NM, NULL, '', ' '||A.ISLND_NM)||DECODE(A.APART_NM, NULL, '', ' '||A.APART_NM) ADDR_NM0
+                         , A.CITY_NM||' '||A.GU_NM||' '||A.DONG_NM||DECODE(A.RI_NM, NULL, '', ' '||A.RI_NM)||DECODE(A.ISLND_NM, NULL, '', ' '||A.ISLND_NM)
+                           ||NVL(CASE WHEN INSTR(A.APART_NM, ' ') > 0 THEN ' '||SUBSTR(A.APART_NM, 0, INSTR(A.APART_NM, ' ')-1) ELSE ' '||A.APART_NM END ,'') ADDR_NM0_1
+                         , DECODE(A.START_BUNGI, NULL, '', A.START_BUNGI||'~'||A.END_BUNGI) ADDR_NM1
+                         , DECODE(NVL(B.CMBN_MALL_REP_STR_YN,'N'), 'N', DECODE(NVL(B.ONLINE_YN,'N'), 'N', 'N','Y','Y','N'),'Y','Y','N') MALL_CHECK_YN
+                         , NVL(C.POST_NO_DIVN_CD,'000') STR_CD
+                         , B.STR_NM
+                    FROM  TET_ZIP_CODE A
+                        , TST_STORE B   
+                        , THO_HJ_POST_MST C 
+                    WHERE A.ADDR_SYST_DIVN_CD = '01'
+                    <isNotEmpty property="searchKey">
+                      AND A.DONG_NM LIKE #searchKey#||'%'
+                    </isNotEmpty>
+                      AND A.USE_YN = 'Y'
+                      AND A.STDIST_MALL_STR_CD = B.STR_CD(+)
+                      AND A.ZIP_CD = C.POST_NO
+                    UNION ALL
+                    SELECT /*+ORDERED USE_NL(A B) INDEX(A, IX_ET_ZIP_CODE_07) */
+                           A.ZIP_SEQ
+                         , A.ADDR_SYST_DIVN_CD
+                         , A.ZIP_CD
+                         , A.CITY_NM||' '||A.GU_NM||DECODE(A.TOWN_NM, NULL, '', ' '||A.TOWN_NM)||' '||A.STREET_NM||' '||DECODE(A.SUB_YN, '1', '산')||A.BIDNG_MAIN_NO||DECODE(A.BIDNG_SUB_NO, NULL, '', '-'||A.BIDNG_SUB_NO)
+                         , A.CITY_NM||' '||A.GU_NM||DECODE(A.TOWN_NM, NULL, '', ' '||A.TOWN_NM)||' '||A.STREET_NM||' '||DECODE(A.SUB_YN, '1', '산')||A.BIDNG_MAIN_NO||DECODE(A.BIDNG_SUB_NO, NULL, '', '-'||A.BIDNG_SUB_NO)
+                         , CASE WHEN A.DONG_NM||A.APART_NM IS NULL THEN ''
+                            ELSE '('||A.DONG_NM||DECODE(A.APART_NM, NULL, '', ', '||A.APART_NM)||')'
+                           END
+                         , DECODE(NVL(B.CMBN_MALL_REP_STR_YN,'N'), 'N', DECODE(NVL(B.ONLINE_YN,'N'), 'N', 'N','Y','Y','N'),'Y','Y','N') MALL_CHECK_YN
+                         , NVL(C.POST_NO_DIVN_CD,'000') STR_CD
+                         , B.STR_NM
+                    FROM  TET_ZIP_CODE A
+                        , TST_STORE B
+                        , THO_HJ_POST_MST C
+                    WHERE A.ADDR_SYST_DIVN_CD = '02'
+                      AND A.STREET_NM = REGEXP_SUBSTR(#searchKey#, '[^-+ ]+', 1, 1)                      
+                      AND A.USE_YN = 'Y' 
+                      AND A.STDIST_MALL_STR_CD = B.STR_CD(+)
+                      AND A.ZIP_CD = C.POST_NO
+                ) V1
+		     ) S 
+		  ) 
+		 WHERE NUM BETWEEN (( #currentPage# - 1) * #rowsPerPage#) + 1 
+		   AND (( #currentPage# - 1 ) + 1) * #rowsPerPage#
+	</select>
+	
+	<!-- 구 조회 -->
+	<select id="selectNewZipCodeSigunguList" resultClass="dataMap">
+	/* PDCMHPC0001.selectNewZipCodeSigunguList 구 조회 */
+    	SELECT DISTINCT GU_NM FROM TET_ZIP_CODE
+		WHERE ADDR_SYST_DIVN_CD = '01'
+		<isEmpty property="sido">
+        AND 1=2
+        </isEmpty>
+		AND CITY_NM = #sido#
+		ORDER BY 1
+    </select>
+    
+    <select id="selectPostList_JIBUN" resultClass="dataMap">
+	/* PDCMHPC0001.selectZipCodeList_JIBUN */
+	SELECT                                        
+		/*+ORDERED USE_NL(A B) INDEX(A, IX_ET_ZIP_CODE_06) */
+		MIN(A.ZIP_SEQ) AS ZIP_SEQ,                /*우편번호순번*/                                              
+	    A.ADDR_SYST_DIVN_CD,      /*주소체계구분코드*/
+	    MIN(A.ZIP_CD) AS ZIP_CD,                 /*우편번호*/
+	    A.CITY_NM||' '||A.GU_NM||' '||A.DONG_NM||DECODE(A.RI_NM, NULL, '', ' '||A.RI_NM)||DECODE(A.ISLND_NM, NULL, '', ' '||A.ISLND_NM)||NVL(CASE WHEN INSTR(A.APART_NM, ' ') > 0 THEN ' '||SUBSTR(A.APART_NM, 0, INSTR(A.APART_NM, ' ')-1) ELSE ' '||A.APART_NM END ,'') ADDR_NM0,
+	    TRIM(DECODE(A.START_BUNGI, NULL, '', A.START_BUNGI||'~'||A.END_BUNGI||' ')||NVL(CASE WHEN INSTR(A.APART_NM, ' ') > 1 THEN SUBSTR(A.APART_NM, INSTR(A.APART_NM, ' ')+1, LENGTH(A.APART_NM)) END ,'')) ADDR_NM1, /*주소1*/
+	    NVL(C.POST_NO_DIVN_CD,'000') ONLINE_STR_CD,
+	    B.STR_CD ON_STR_CD,
+	    A.PRST_MALL_STR_CD,
+	    A.REFGT_DIRDEL_STR_CD                     
+	  FROM TET_ZIP_CODE A,
+		   TST_STORE B,
+		   THO_HJ_POST_MST C
+     WHERE A.ADDR_SYST_DIVN_CD = '01'
+     <isNotEmpty property="dongNm">
+	   AND A.DONG_NM LIKE #dongNm# || '%'
+	 </isNotEmpty>
+	   AND A.USE_YN = 'Y'
+	   AND A.SEARCH_YN = 'Y'
+	   AND A.STDIST_MALL_STR_CD = B.STR_CD(+)
+	   AND A.ZIP_CD = C.POST_NO
+	 GROUP BY A.ADDR_SYST_DIVN_CD, A.CITY_NM, A.GU_NM, A.DONG_NM, A.RI_NM, A.ISLND_NM, A.APART_NM, A.START_BUNGI, A.END_BUNGI
+	         ,C.POST_NO_DIVN_CD, B.STR_CD, A.PRST_MALL_STR_CD, A.REFGT_DIRDEL_STR_CD 
+	 ORDER BY MIN(A.ZIP_CD)
+	</select>
+	
+
+	<select id="selectPostList_ROAD" resultClass="dataMap">
+	/* PDCMHPC0001.selectZipCodeList_DORO */
+	 SELECT /*+ORDERED USE_NL(A B) INDEX(A, IX_ET_ZIP_CODE_07) */
+               A.ZIP_SEQ
+             , A.ADDR_SYST_DIVN_CD
+             , A.ZIP_CD
+             , A.CITY_NM||' '||A.GU_NM||DECODE(A.TOWN_NM, NULL, '', ' '||A.TOWN_NM)||' '||A.STREET_NM 
+               AS ADDR_NM0
+             , DECODE(A.SUB_YN, '1', '지하 ')||A.BIDNG_MAIN_NO||DECODE(A.BIDNG_SUB_NO, NULL, '', '-'||A.BIDNG_SUB_NO) 
+               AS ADDR_NM1 
+             , NVL(C.POST_NO_DIVN_CD,'000') ONLINE_STR_CD
+			 , B.STR_CD ON_STR_CD
+			 , A.PRST_MALL_STR_CD
+			 , A.REFGT_DIRDEL_STR_CD
+        FROM  TET_ZIP_CODE A
+            , TST_STORE B
+            , THO_HJ_POST_MST C
+        WHERE A.ADDR_SYST_DIVN_CD = '02'
+          AND A.CITY_NM = #sido#
+          AND A.GU_NM = #gungu#
+          <isNotEmpty property="road">
+          AND A.STREET_NM LIKE #road#||'%'
+          </isNotEmpty>
+          AND A.SEARCH_YN='Y'
+          <isNotEmpty property="buildNum">
+          AND A.BIDNG_MAIN_NO = REGEXP_SUBSTR(#buildNum#, '[^-+ ]+', 1, 1)
+          AND A.BIDNG_SUB_NO = REGEXP_SUBSTR(#buildNum#, '[^-+ ]+', 1, 2)
+          </isNotEmpty>
+          <isNotEmpty property="buildName">
+          AND A.APART_NM LIKE '%'||#buildName#||'%'
+          </isNotEmpty>
+          AND A.STDIST_MALL_STR_CD = B.STR_CD(+)
+          AND A.ZIP_CD = C.POST_NO
+        ORDER BY A.ZIP_CD
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<!-- 공통 콤보박스 -->
+<sqlMap namespace="CommonCodeHelperDao">
+    
+<typeAlias alias="paramClass"	     type="lcn.module.common.util.HashBox" />
+
+<resultMap id="commonCodeResult" class="com.lottemart.epc.common.model.OptionTagVO">
+    <result property="code" column="MINOR_CD"/>
+    <result property="name" column="CD_NM"/>
+</resultMap> 
+
+<select id="selectCommonCodeList" resultMap="commonCodeResult">
+/* CommonCodeDao.selectCommonCodeList */
+SELECT 
+       MINOR_CD
+      ,CD_NM 
+FROM   
+       TET_CODE 
+WHERE  
+       MAJOR_CD = #selectedCode#
+   AND USE_YN = 'Y'
+ORDER BY ORDER_SEQ ASC
+</select>
+
+<select id="getCommonCodeColumn" resultClass="String">
+/* CommonCodeDao.getCommonCodeColumn */
+SELECT 
+       $columnNM$
+FROM   
+       TET_CODE 
+WHERE  
+       MAJOR_CD = #majorCD#
+   AND MINOR_CD = #minorCD#
+   AND USE_YN = 'Y'
+</select>
+
+<select id="storeSelectList" resultMap="commonCodeResult">
+/* CommonCodeDao.storeSelectList */
+SELECT  
+		STR_CD AS MINOR_CD
+ 	   ,STR_NM AS CD_NM
+  FROM 
+  		STORE 
+ WHERE 
+ 		AREA_FG = #selectedCode#
+  AND CHG_FG <![CDATA[<>]]>  'D'
+ ORDER BY STR_NM
+</select>
+
+
+<select id="excelUploadInfoList" resultMap="commonCodeResult">
+/* CommonCodeDao.excelUploadInfoList */
+SELECT  PACK_DIVN_CD AS MINOR_CD
+ 	    ,'['||LPAD(FILE_GRP_CD, 2, '0')||']'||PACK_FILE_NM AS CD_NM 
+  FROM ( SELECT PACK_DIVN_CD , FILE_GRP_CD, PACK_FILE_NM
+           FROM TPC_PO_ORD_PACK 
+          WHERE VEN_CD = #selectedCode#
+            AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+          GROUP BY PACK_DIVN_CD, FILE_GRP_CD, PACK_FILE_NM
+        )
+  ORDER BY PACK_DIVN_CD
+</select>
+
+<select id="excelRtnUploadInfoList" resultMap="commonCodeResult">
+/* CommonCodeDao.excelRtnUploadInfoList */
+SELECT  PACK_DIVN_CD AS MINOR_CD
+ 	    ,'['||LPAD(FILE_GRP_CD, 2, '0')||']'||PACK_FILE_NM AS CD_NM 
+  FROM ( SELECT PACK_DIVN_CD , FILE_GRP_CD, PACK_FILE_NM
+           FROM TPC_PO_RRL_PACK 
+          WHERE VEN_CD = #selectedCode#
+            AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+          GROUP BY PACK_DIVN_CD, FILE_GRP_CD, PACK_FILE_NM
+        )
+  ORDER BY PACK_DIVN_CD
+</select>
+
+
+<!-- AS-IS -->
+<select id="venStoreSelectList" resultMap="commonCodeResult" parameterClass="paramClass" >
+/* CommonCodeDao.venStoreSelectList */
+    SELECT T1.STR_CD AS MINOR_CD
+ 	       ,'['||T3.DETAIL_NM||'] '||T1.STR_NM AS CD_NM
+  FROM STORE T1 INNER JOIN TED_VENDOR T2 
+                        ON T1.STR_CD = T2.STR_CD
+                INNER JOIN ALL_CD@DL_MD_MARTNIS     T3 
+                        ON T3.GRP_CD = 'STR04' 
+                       AND T3.DETAIL_CD NOT IN('10', '90')
+                       AND T1.AREA_FG = T3.DETAIL_CD
+  WHERE  T2.VEN_CD = #selectedCode#
+   	<isNotEmpty property="selectViewCode" >
+        AND EXISTS(  SELECT STR_CD FROM EDI_RTN_PROD_V1@DL_MD_MARTNIS T3
+                       WHERE T3.VEN_CD  = #selectedCode#
+                         AND T3.PROD_CD = #selectViewCode#
+                         AND T3.VEN_CD  = T2.VEN_CD
+                         AND T3.STR_CD  = T2.STR_CD 
+                  )	
+   	</isNotEmpty>
+ ORDER BY T1.AREA_FG, T1.STR_NM
+</select> 
+
+<!-- AS-IS -->
+<select id="venOrdStoreSelectList" resultMap="commonCodeResult" parameterClass="paramClass" >
+	/*CommonCodeDao.venOrdStoreSelectList*/
+	  SELECT  T0.STR_CD AS MINOR_CD
+              ,'['||T2.DETAIL_NM||'] '||T1.STR_NM AS CD_NM
+       FROM TED_ORD_SUPP_INFO T0
+          INNER JOIN STORE T1 
+                      ON T0.STR_CD = T1.STR_CD
+          INNER JOIN ALL_CD@DL_MD_MARTNIS T2
+                      ON T2.GRP_CD = 'STR04' 
+                     AND T2.DETAIL_CD NOT IN('10', '90')
+                     AND T1.AREA_FG = T2.DETAIL_CD            
+     WHERE T0.VEN_CD  = #selectedCode#
+            <isNotEmpty property="selectViewCode" >
+	            	AND T0.ORD_DY = #selectViewCode#
+	        </isNotEmpty>  
+	        <isEmpty property="selectViewCode" >
+	          		AND T0.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	        </isEmpty>
+    GROUP BY T0.STR_CD  ,T2.DETAIL_NM, T1.STR_NM, T1.AREA_FG, T1.SORT_ORDER  
+    ORDER BY T1.AREA_FG, T1.SORT_ORDER 
+ </select>
+</sqlMap>

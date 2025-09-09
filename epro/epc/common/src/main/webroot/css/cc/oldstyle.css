@@ -1,0 +1,496 @@
+/*********************************************************************
+ * 프로그램명	:style.css
+ * 설명			:OS 표준 UI CSS
+ * Version		:1.0
+ * 작성일자		:2005/10/01		작성자:백광
+ * 수정일자		:					수정자:
+ * 수정내용		:
+ **********************************************************************/
+
+<style>
+
+/*product*/
+.product_body2{
+	background-color: #F9F7F3;	
+	margin: 0 0 0 0;
+	height: 10;
+	border: 0;
+	text-align: center;
+	width: 98%;
+	}
+	
+/*tree body*/
+.tg_2 {
+	margin-left: 0;
+	margin-top: 0;
+	border: 0;
+	width: 0;
+	height: 0;   
+	font: normal 5px 굴림;
+	background-color: #F9F7F3;
+	}
+	
+/*tree input*/
+.tree_1 {
+	font: normal 5px 굴림;
+	text-decoration:none;
+	border: 0;
+	color: #dcdcdc;
+	}
+
+.table_con4 {
+	background-color:#fffffff;
+	valign:middle;
+	border: solid 1;
+	border-color: black;
+	width:80%;
+	}
+
+.table_con5 {
+	text-align: right;
+	width:960;
+	}
+
+/*  data title*/
+.table_head {
+	font-family:"굴림";
+	height: 15;
+	font-size:9pt;
+	text-align:center;
+	background-color:#EBE5DA;
+	height:20;
+	}
+
+/*  data title -높이 설정 안한 거 */
+.table_head2 {
+	font-family:"굴림";
+	height: 15;
+	font-size:9pt;
+	text-align:center;
+	background-color:#EBE5DA;
+	}
+
+/* board css  배경설정파일 - 가운데정렬*/
+.bg_style {
+	background-color: #F9F7F3;	
+	margin: 0 0 0 0;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: center;
+	width: 960;
+	}
+	
+/* board css  */
+/* 배경설정파일 - 기본정렬 왼쪽여백 20*/
+.bg_style2 {
+	background-color: #F9F7F3;	
+	margin: 0 0 0 20;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	width: 960;
+	}	
+
+/* 배경설정파일 - 기본정렬 왼쪽여백 20*/
+.bg_style3 {
+	background-color: #F9F7F3;	
+	margin: 0 0 0 20;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	}	
+	
+
+/* 배경설정파일 - 기본정렬*/
+.bg_style4 {
+	background-color: #F9F7F3;	
+	margin: 0 0 0 0;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	}	
+	
+/* board css  배경설정파일 - 기본정렬*/
+.bg_style_noalign {
+	background-color: #F9F7F3;
+	margin: 0 0 0 0;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	width: 980;
+	}
+	
+/* board css  배경설정파일 - 기본정렬*/
+.bg_style_tree {
+	background-color: #F9F7F3;
+	margin: 0 0 0 13;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	width: 980;
+	}
+	
+
+/* board css  배경설정파일 - width없음*/
+.bg_style_noalign2 {
+	background-color: #F9F7F3;
+	margin: 0 0 0 0;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	}
+	
+/* board css  topmenu 배경설정파일 - 왼쪽정렬*/
+.bg_style_topmenu {
+	background-color: #F9F7F3;
+	margin: 5 0 0 3;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	width: 960;
+	}
+
+/* board css  topmenu 배경설정파일 - 왼쪽정렬*/
+.bg_style_topmenu2 {
+	background-color: #F9F7F3;
+	margin: 5 0 0 3;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	width: 700;
+	}
+
+/* board css  배경설정파일 - 왼쪽20*/
+.bg_style_noalign3 {
+	background-color: #F9F7F3;
+	margin: 0 0 0 20;
+	height: 10;
+	font-family:"굴림";
+	font-size:9pt;
+	border: 0;
+	text-align: left;
+	width: 980;
+	}
+	
+/* TABLE LINE CONTROL */
+/* 테이블 외곽선 파란줄 */
+.table_control_outline {
+	valign:middle;
+	high:8;
+	border: solid 1;
+	border-color: #ACA59A;
+	width:950;
+	}
+	
+/* 테이블 외곽선 파란줄 폭지정없는것 */
+.table_control_outline2 {
+	margin: 0 0 0 20;
+	valign:middle;
+	high:8;
+	border: solid 1;
+	border-color: #ACA59A;
+	}
+	
+/* 테이블 외곽선 파란줄 폭지정및 왼쪽여백없음*/
+.table_control_outline3{
+	margin: 0 0 0 0;
+	valign:middle;
+	high:8;
+	border: solid 1;
+	border-color: #ACA59A;
+	}
+	
+	
+/* TABLE LINE CONTROL width:960 */
+/* 테이블 외곽선 파란줄 */
+.table_control_outline4 {
+	valign:middle;
+	high:8;
+	border: solid 1;
+	border-color: #ACA59A;
+	width:960;
+	}
+	
+/* 테이블 안쪽선 파란줄 */	
+.table_control_inline {
+	valign:middle;
+	high:8;
+	border: solid 1;
+	border-color: #ACA59A;
+	}
+	
+/* 테이블 제목줄설정*/
+.table_head_control{
+	background-color:#ACA59A;	
+	margin: 0 0 0 0;
+	height: 15;
+	border: 0;
+	font-family:"굴림";
+	font-size:9pt;
+	COLOR:#FFFFFF;
+	text-align: center;
+	width: 960;
+	}
+		
+/* 테이블 제목줄설정*/
+.table_head_control_width{
+	background-color: #96A8B3;	
+	margin: 0 0 0 0;
+	height: 15;
+	border: 0;
+	font-family:"굴림";
+	font-size:9pt;
+	COLOR:#FFFFFF;
+	text-align: center;
+	}
+/* 테이블 summary*/
+.table_summary{
+	valign:middle;
+	high:8;
+	border: solid 1;
+	}
+
+
+/* 테이블 제목줄설정 폭지정 없는것*/
+.table_head_control2{
+	background-color: #ACA59A;	
+	margin: 0 0 0 0;
+	padding:0px
+	height: 15;
+	border: 0
+	font-family:"굴림";
+	font-size:9pt;
+	COLOR:#FFFFFF;
+
+	}
+	
+/* text 입력 */
+.input_text {
+	border:solid 1 #DCDAD3;
+	font-size:9pt;
+	text-align: left;
+	background-color:#FFFFFF;
+	color:#3a3a3a
+	}
+	
+/* text 입력 right*/
+.input_text_right {
+	border:solid 1 #DCDAD3;
+	font-size:9pt;
+	text-align: right;
+	background-color:#ECE8DB;
+	color:#666666;
+	margin:2px
+	}
+	
+/* text 입력 가운데정렬*/
+.input_text_center {
+	border:solid 1 #DCDAD3;
+	font-size:9pt;
+	text-align: center;
+	background-color:#ECE8DB;
+	color:#666666;
+	margin:2px
+	}
+	
+
+/* text 필수입력설정*/
+.input_text_necessary{
+	border:solid 1 #DCDAD3;
+	font-size:9pt;
+	text-align: left;
+	background-color:#FFFFFF;
+	color:#3a3a3a;
+	margin:2px
+	}
+
+/* text 필수입력설정 가운데정렬*/
+.input_text_necessary_center{
+	border:solid 1 #DCDAD3;
+	font-size:9pt;
+	text-align: center;
+	background-color:#FFFFFF;
+	color:#3a3a3a;
+	margin:2px
+	}
+		
+/* select 필수 입력 */
+.input_select_necessary {
+	border:solid 1 #789CB8;
+	font-family:굴림;
+	font-size:8pt;
+	background-color:FFF4E1;
+	}
+select{
+	font-size:9pt;
+	text-align: left;
+	background-color:#FFFFFF;
+	color:#3a3a3a
+}
+
+textarea{
+	border:1px solid #dedede;
+	padding:3px;
+	font-family:굴림;
+	font-size:12px;
+	margin:3px
+
+}
+/* 목록형표 전체 */
+.in_table2 {
+	background-color:#E0E0E0;
+	}
+
+.table_td1 {
+	font-family:"굴림";
+	font-size:9pt;
+	height:18;
+	}
+	
+/* 목록형 표 항목 가운데정렬 아이콘 표 칸 색td */
+.table_td3 {
+	font-family:"굴림";
+	font-size:9pt;
+	background-color:#EDEDED;
+	text-align: center;	
+	height:18;
+	}
+	
+/* 목록형 표 항목 기본정렬td */
+.table_td4 {
+	font-family:"굴림";
+	font-size:9pt;
+	background-color:#FFFFFF;
+	height:18;
+	}
+
+/* 목록형 표 항목 가운데정렬td */
+.table_td5 {
+	font-family:"굴림";
+	font-size:9pt;
+	background-color:#FFFFFF;
+	text-align: center;	
+	height:18;
+	/*padding-left:10px 형석 제거 이것때문에 라인 맞추기가 어렵습니다.*/
+	}
+	
+/* 목록형 표 항목 왼쪽정렬td */
+.table_td6 {
+	font-family:"굴림";
+	font-size:9pt;
+	background-color:#FFFFFF;
+	text-align: left;	
+	height:18;
+	}
+	
+/* 목록형 표 항목 오른쪽 정렬td */
+.table_td7 {
+	font-family:"굴림";
+	font-size:9pt;
+	background-color:#FFFFFF;
+	text-align: right;	
+	height:18;
+	}
+	
+/* 목록형 표 항목 빨강 */
+.table_td8 {
+	font-family:"굴림";
+	color:    #EBEBEB;
+	font-size:9pt;
+	background-color:#FFFFFF;
+	text-align: center;	
+	height:18;
+	}
+	
+/* 목록형 표 항목 기본정렬td */
+.table_detail2 {
+	font-family:"굴림";
+	font-size:9pt;
+	background-color:#F0F0F0;
+	height:20;
+	}
+	
+/* 탭제목 */
+.text_tab {
+	text-decoration: none;
+	font-family:"굴림";
+	font-size:9pt;
+	font-weight:bold;
+	color:#FFFFFF;
+	}
+
+/* 부제목설정 */
+.table_subtitle {
+	font-family:"굴림";
+	font-size:11pt;
+	background-color:#DCDCDC;
+	text-align: 0 0 0 10;	
+	height:18;
+	}
+
+/* 제목*/
+.head_tit{
+	font-family:"굴림";
+	font-size:9pt;
+	color:#FFF;
+	padding: 6 0 3 10;	
+	font-weight:bold;
+	letter-spacing:-0.05em
+}
+.head_tit_eng{
+	font-family:"verdana";
+	font-size:9pt;
+	color:#FFF;
+	padding: 3 0 5 5;	
+	font-weight:bold;
+}
+
+/* Tree 설정 */
+td {
+	font-family:굴림;
+	font-size:9pt;
+	color:444444;
+}
+
+/* tab 설정 */
+div.tabbg{height:27px;padding-left:11px;background:#9D9485;overflow:hidden;}
+a.a01:link,a.a01:visited,a.a01:active
+{float:left;text-align:center;font-weight:bold;color:#FFFFFF;letter-spacing:-0.1em;padding:6px 18px 3px 18px;margin-top:4px;margin-left:2px;background-color:#B5AC9E;}
+a.a01:hover{float:left;font-weight:bold;color:#593D12;letter-spacing:-0.1em;padding:8px 18px 3px 18px;margin-top:2px;margin-left:2px;background-color:#FFFFFF;}
+a.a01on:link,a.a01on:visited,a.a01on:active,a.a01on:hover
+{float:left;font-weight:bold;color: #593D12;letter-spacing:-0.1em;padding:8px 18px 3px 18px;margin-top:2px;margin-left:2px;background-color:#FFFFFF;}
+
+a.a02:link,a.a02:visited,a.a02:active
+{float:left;text-align:center;font-weight:bold;color:#FFFFFF;letter-spacing:-0.1em;padding:6px 11px 3px 11px;margin-top:4px;margin-right:2px;background-color:#B5AC9E;}
+a.a02:hover{float:left;font-weight:bold;color:#593D12;letter-spacing:-0.1em;padding:8px 11px 3px 11px;margin-top:2px;margin-right:2px;background-color:#FFFFFF;}
+a.a02on:link,a.a02on:visited,a.a02on:active,a.a02on:hover
+{float:left;font-weight:bold;color:#593D12;letter-spacing:-0.1em;padding:8px 11px 3px 11px;margin-top:2px;margin-right:2px;background-color:#FFFFFF;}
+
+.topLine{width:100%; height:45px; background-color: #ECE8DB; border-bottom:1px solid #E82D30} /** 탑 (빨강라인) **/
+.topW{width:1024px; height:45px; margin-left:30px} /** 탑 메뉴영역 **/
+.logo{margin:19px 0px 0px 0px; float: left;} /** 로고위치 **/
+
+img{border:0px none}
+
+a:link 		{ color:#0000ff; text-decoration: none; }
+a:visited 	{ color:#0000ff; text-decoration: none; }
+a:active 	{ color:#0000ff; text-decoration: none; }
+a:hover 	{ color:#0000ff; text-decoration: underline; }

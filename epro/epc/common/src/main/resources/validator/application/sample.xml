@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+        <form name="ltsmsVO">
+        	<field property="USER_NM" depends="required">
+        		<arg0 key="title.sample.sms.name" />
+			</field>
+			<field property="DESTCALLNO" depends="required">
+                <arg0 key="title.sample.sms.destcallno" />
+            </field>
+            <field property="CALLBACKNO" depends="required">
+                <arg0 key="title.sample.sms.callbackno" />
+            </field>
+        	<field property="DATA" depends="required">
+        		<arg0 key="title.sample.sms.data" />
+			</field>
+        </form>
+        <form name="lteMailVO">
+        	<field property="RNAME" depends="required">
+        		<arg0 key="title.sample.email.name" />
+			</field>
+			<field property="RMAIL" depends="required">
+                <arg0 key="title.sample.email.raddr" />
+            </field>
+            <!-- 
+			<field property="RID" depends="required">
+        		<arg0 key="title.sample.email.name" />
+			</field>
+			<field property="SNAME" depends="required">
+        		<arg0 key="title.sample.email.data" />
+			</field>
+			<field property="SMAIL" depends="required">
+        		<arg0 key="title.sample.email.data" />
+			</field>
+			<field property="RPOS" depends="required">
+        		<arg0 key="title.sample.email.data" />
+			</field>
+			<field property="CTNPOS" depends="required">
+        		<arg0 key="title.sample.email.data" />
+			</field>
+			<field property="SUBJECT" depends="required">
+        		<arg0 key="title.sample.email.data" />
+			</field>
+			<field property="CONTENTS" depends="required">
+        		<arg0 key="title.sample.email.data" />
+			</field>
+			 -->
+        </form>
+    </formset>
+
+</form-validation>

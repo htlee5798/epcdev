@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMWEB0220">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="nEDMWEB0220VO" type="com.lottemart.epc.edi.weborder.model.NEDMWEB0220VO" />
+
+	<!-- 업체발주전체형환조회  VEND_SELECT01 -->
+	<resultMap id="tedOrdListMap" class="nEDMWEB0220VO">
+		<result property="mdModCd"  			    column="MD_MOD_CD"   	 	/>  <!-- 작업구분  -->
+		<result property="venCd"  				    column="VEN_CD"   		 	/>  <!-- 협력업체코드  -->
+		<result property="venNm" 				    column="VEN_NM"    		 	/>	<!-- 협력업체명  -->
+		<result property="strCd" 				    column="STR_CD"    		 	/>	<!-- 점포코드  -->
+		<result property="strNm" 				    column="STR_NM"    		 	/>	<!-- 점포코드  -->
+		<result property="prodCd" 				    column="PROD_CD"    	 	/>	<!-- 상품코드  -->
+		<result property="prodNm" 				    column="PROD_NM"    	 	/>	<!-- 상품명  -->
+		<result property="srcmkCd" 				    column="SRCMK_CD"    	 	/>	<!-- 판매코드 -->
+		<result property="prodStd" 				    column="PROD_STD"    	 	/>	<!-- 규격 -->
+		<result property="ordIpsu" 				    column="ORD_IPSU"    	 	/>	<!-- 입수  -->
+		<result property="ordUnit" 				    column="ORD_UNIT"    	 	/>	<!-- 단위  -->
+		<result property="ordUnitNm" 				column="ORD_UNIT_NM"     	/>	<!-- 단위명  -->
+		<result property="ordCfmQty" 				column="ORD_CFM_QTY"  		/>  <!-- 단위수량 -->
+		<result property="ordQty" 					column="ORD_QTY"  		 	/>  <!-- 요청수량 -->
+		<result property="eaQty" 					column="EA_QTY"  			/>	<!-- EA  -->
+		<result property="prc" 					    column="PRC"  			 	/>	<!-- 금액  -->
+		<result property="regStsCd"          		column="REG_STS_CD"        	/>	<!-- 일괄등록상태코드	-->   
+		<result property="regStsNm"        			column="REG_STS_CD_NM"     	/>	<!-- 일괄등록상태명칭	-->   
+		<result property="regStsCdDetail"           column="REG_STS_CD_DETAIL"  />	<!-- 일괄등록상태상세	-->
+	</resultMap>
+	
+	<!-- 업체발주전체형환조회 -->
+	<select id="VEND_SELECT01" parameterClass="nEDMWEB0220VO" resultMap="tedOrdListMap">
+		/* PEDMWEB0011.VEND_SELECT01 */
+		SELECT 	A.*
+		FROM
+		(
+			SELECT	ROWNUM RNUM
+				,	A.*
+			FROM
+			(
+				SELECT 	P1.MD_MOD_CD
+					,	M1.VEN_CD
+					,	M1.VEN_NM
+					,	M1.STR_CD
+					,	S.STR_NM
+					,	P1.PROD_CD
+					,	P1.PROD_NM
+					,	P1.SRCMK_CD
+					,	P1.PROD_STD
+					,	P1.ORD_IPSU
+					,	P1.ORD_UNIT
+					,	C.CD_NM AS ORD_UNIT_NM
+					,	P1.ORD_CFM_QTY AS ORD_CFM_QTY
+					,	P1.ORD_QTY AS ORD_QTY
+					,	P1.ORD_IPSU * P1.ORD_CFM_QTY AS EA_QTY
+					,	(P1.ORD_CFM_QTY * P1.ORD_IPSU) * P1.ORD_BUY_PRC AS PRC
+					,	P1.REG_STS_CD
+					,	S2.CD_NM REG_STS_CD_NM
+					,	S2.CD_DESC REG_STS_CD_DETAIL
+				FROM 	TPC_PO_ORD_MST M1
+						INNER JOIN TPC_PO_ORD_PROD P1 ON M1.ORD_DY = P1.ORD_DY AND M1.VEN_CD = P1.VEN_CD AND M1.ORD_REQ_NO =P1.ORD_REQ_NO
+						LEFT OUTER JOIN STORE S ON M1.STR_CD = S.STR_CD
+						LEFT OUTER JOIN  TPC_CODE C ON P1.ORD_UNIT = C.MINOR_CD AND C.MAJOR_CD='CSA01'
+						LEFT OUTER JOIN TPC_CODE S2 ON S2.MAJOR_CD = 'WPO09' AND P1.REG_STS_CD = S2.MINOR_CD
+						INNER JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = M1.VEN_CD
+				WHERE 	M1.ORD_DY BETWEEN #startDate# AND  #endDate#
+					/*AND M1.ORD_PRGS_CD IN ('02','10','19')*/
+					AND M1.VEN_CD = #venCd#
+					
+					<isNotEmpty  property="strCd"  prepend="AND">
+						M1.STR_CD = #strCd#
+					</isNotEmpty>
+					<isNotEmpty property="areaCd" prepend="AND" >
+						S.AREA_FG = #areaCd#
+					</isNotEmpty>
+					<isNotEmpty property="prodCd" prepend="AND" >
+						P1.PROD_CD =#prodCd#
+					</isNotEmpty>
+				
+				ORDER BY M1.ORD_DY DESC ,M1.STR_CD ASC,P1.PROD_CD ASC
+			) A
+		) A
+		WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- 업체발주전체형환조회Count -->
+	<select id="VEND_SELECT_TOT_CNT_01" parameterClass="nEDMWEB0220VO" resultClass="int">
+		/* PEDMWEB0011.VEND_SELECT_TOT_CNT_01 */
+		SELECT 	COUNT(*)
+		FROM
+		(
+			SELECT 	P1.MD_MOD_CD
+				,	M1.VEN_CD
+				,	M1.VEN_NM
+				,	M1.STR_CD
+				,	S.STR_NM
+				,	P1.PROD_CD
+				,	P1.PROD_NM
+				,	P1.PROD_STD
+				,	P1.ORD_IPSU
+				,	P1.ORD_UNIT
+				,	C.CD_NM   AS ORD_UNIT_NM
+				,	P1.ORD_CFM_QTY
+				,	P1.ORD_IPSU * P1.ORD_CFM_QTY  AS EA_QTY
+				,	(P1.ORD_CFM_QTY * P1.ORD_IPSU) * P1.ORD_BUY_PRC  AS PRC
+			FROM 	TPC_PO_ORD_MST M1
+					INNER JOIN TPC_PO_ORD_PROD P1 ON M1.ORD_DY = P1.ORD_DY AND M1.VEN_CD = P1.VEN_CD AND M1.ORD_REQ_NO =P1.ORD_REQ_NO
+					INNER JOIN STORE S ON M1.STR_CD = S.STR_CD
+					LEFT OUTER JOIN  TPC_CODE C ON P1.ORD_UNIT = C.MINOR_CD AND C.MAJOR_CD='CSA01'
+					LEFT OUTER JOIN TPC_CODE S2 ON S2.MAJOR_CD = 'WPO09' AND P1.REG_STS_CD = S2.MINOR_CD
+					INNER JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = M1.VEN_CD
+			WHERE 	M1.ORD_DY BETWEEN #startDate# AND  #endDate#
+				/*AND M1.ORD_PRGS_CD IN ('02','10','19')*/
+				AND M1.VEN_CD = #venCd#
+				
+				<isNotEmpty  property="strCd"  prepend="AND">
+					M1.STR_CD = #strCd#
+				</isNotEmpty>
+				<isNotEmpty property="areaCd" prepend="AND" >
+					S.AREA_FG = #areaCd#
+				</isNotEmpty>
+				<isNotEmpty property="prodCd" prepend="AND" >
+					P1.PROD_CD =#prodCd#
+				</isNotEmpty>
+			
+			ORDER BY M1.ORD_DY DESC ,M1.STR_CD ASC,P1.PROD_CD ASC
+		)
+	</select>
+	
+</sqlMap>

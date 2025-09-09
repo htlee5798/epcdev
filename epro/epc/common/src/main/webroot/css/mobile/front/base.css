@@ -1,0 +1,1199 @@
+@charset "utf-8";
+
+/************************************************************************
+ * filename     : base.css
+ * description  : 기본초기화 CSS
+ * date         : 2011.10.11
+************************************************************************/
+
+* {margin:0; padding:0}
+img {border:0; vertical-align:top;}
+ol, ul {list-style:none;}
+table {width:100%; border-collapse:collapse; border-spacing:0;}
+th {font-weight:normal;}
+button {background:none; border:0; vertical-align:middle; cursor:pointer;}
+input {background:none;}
+select {background:none; border:0; -webkit-appearance:none; font-size:24px; color:#333;}
+textarea {background:none; border:0; -webkit-appearance:none; font-size:24px; color:#666;}
+
+html {height:100%;}
+body {min-height:100%; font-size:24px; line-height:32px; font-family:sans-serif; color:#4c4c4c; letter-spacing:-1px; -webkit-text-size-adjust:none;}
+h1 {position:absolute; left:-999px; top:-999px;}
+a {color:#4c4c4c; text-decoration:none;}
+input.txt {width:100%; border:0; -webkit-appearance:none; font-size:26px; color:#808080;}
+strong {font-weight:normal;}
+em {font-style:normal;}
+button,select,input{font-family:sans-serif;}
+
+.clfix:after {content:""; display: block; height:0; clear:both; visibility: hidden;}
+
+/* form */
+fieldset{border:none;}
+.wrap-input {display:inline-block; height:42px; padding:10px 9px 0 9px; border-width:6px; -webkit-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; font-size:26px; color:#808080;}
+.wrap-input.type02 {height:36px; padding-top:2px; font-size:24px;}
+.wrap-input.type03 {height:36px; padding-top:2px; font-size:24px;}
+.wrap-textarea {display:block; height:48px; padding:11px 7px; border-width:6px; -webkit-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch;}
+.wrap-textarea textarea {width:100%; height:100%;}
+textarea.focus {background:none !important;}
+input.txt,input[type="text"],input[type="tel"] {width:100%; border:0; -webkit-appearance:none;}
+input.txtype{height:50px;border:2px solid;border-color:#A2A2A2 #DEDEDE #DEDEDE #A2A2A2;border-radius:5px;background-color:#fff;font-size:24px;text-indent:10px;}
+input.txtype::-webkit-input-placeholder{color:#767676;font-size:24px;}
+input.txtype.intype01::-webkit-input-placeholder {font-size:25px;font-weight:bold;color:#767676;}
+input.focus {background-image:none !important;}
+.checkbox {display:inline-block; width:36px; height:36px; margin-right:8px; background:url("/images/mobile/front/common/input-check-radio.png") no-repeat left top; vertical-align:-11px;}
+.radio {display:inline-block; width:36px; height:36px; margin-right:9px; overflow: hidden; background: url("/images/mobile/front/common/input-check-radio.png") no-repeat left bottom; vertical-align:-11px;}
+.selected_c {background-position:right top;}
+.selected_r {background-position:right bottom;}
+
+.bg_r_cb .readonly_r_img { }
+.bg_r_cb .readonly_r_text { }
+.bg_r_cb .readonly_r {background-position:0 -40px;}
+.bg_r_cb .label {display:block; float:left; line-height:16px;}
+ :root .bg_r_cb .label {line-height:19px; margin-top:-2px;}
+
+ /* 라디오 선택 폼 */
+.wrap-radio-01 {background-color:#fafafa; border:2px solid #dbdbdb; border-radius:7px;}
+.wrap-radio-01 label {display:block; padding:26px; padding-left:20px; border-top:2px solid #dbdbdb; color:#333;}
+.wrap-radio-01 label:first-child {border-top:0;}
+.wrap-radio-01 .radio {float:right;}
+
+/* font */
+.t-point-white {color:#fff;}
+.t-point-black-0 {color:#000;}
+.t-point-black {color:#333;}
+.t-point-gray {color:#808080;}
+.t-point-gray-0 {color:#4c4c4c;}
+.t-point-addEx {font-size:22px; color:#808080;}
+.t-point-org {color:#f5721b;}
+.t-point-red {color:#ee1c24;}
+.t-point-green {color:#8bbd19;}
+.t-point-blue {color:#2484c6 !important;}
+.t-through {text-decoration:line-through;}
+.t-point-26 {font-size:26px; line-height:28px;}
+.t-bold {font-weight:bold;}
+.t-indent-20 {text-indent:20px;}
+
+/* align */
+.al-center {text-align:center;}
+.al-left {text-align:left !important;}
+.al-right {text-align:right;}
+.al-top {vertical-align:top;}
+.al-middle {vertical-align:middle !important;}
+.al-bottom {vertical-align:bottom;}
+
+/* margin/padding */
+.mt0 {margin-top:0 !important;}
+.mt10 {margin-top:10px;}
+.mt20 {margin-top:20px !important;}
+.mt30 {margin-top:30px;}
+.mt40 {margin-top:40px;}
+.mt-20 {margin-top:-20px;}
+.mb15 {margin-bottom:15px;}
+.mb20 {margin-bottom:20px;}
+.mb30 {margin-bottom:30px;}
+.mb40 {margin-bottom:40px;}
+.ml20 {margin-left:20px;}
+.pt7 {padding-top:7px;}
+.pl10 {padding-left:10px;}
+.pl20 {padding-left:20px !important;}
+.pb0 {padding-bottom:0px !important;}
+
+/* border */
+.border-t-none {border-top:0 !important;}
+.border-b-none {border-bottom:0 !important;;}
+
+/* float//position */
+.fl-l {float:left;}
+.fl-r {float:right;}
+.c-fl {clear:both;}
+
+/* link */
+.link-blue {color:#2484c6; text-decoration:underline;}
+
+/* table-style */
+.table-01 tr {border:2px solid #d3d9db; border-right:0; border-left:0;}
+.table-01 th {padding:22px 20px; padding-right:10px; border-right:2px solid #dbdbdb; background-color:#f5f9fa; color:#333; text-align:left; vertical-align:top;}
+.table-01 td {padding:22px 20px;}
+.table-01 td.form {padding:12px 0; padding-left:20px;}
+.table-01 td.con {padding:30px 25px 0 25px; font-size:26px; color:#333;}
+.table-01 dl dt {float:left; margin-top:17px; margin-right:7px; font-weight:bold; color:#333;}
+.table-01 dl dd {margin-top:17px;}
+.table-01 dl dt:first-child, .table-01 dl dd:nth-child(2) {margin-top:0;}
+.table-02 tr {border:2px solid #d3d9db; border-right:0; border-left:0; cursor:pointer;}
+.table-02 tr.thead {background-color:#f5f9fa; cursor:default;}
+.table-02 th, .table-02 td {padding:25px 0;}
+.table-02 th.line-r, .table-02 td.line-r {border-right:2px solid #dbdbdb;}
+.table-02 td.line-r p {padding-left:20px;}
+.table-02 td.form {padding:12px 0;}
+.table-02 td p {padding-left:10px;}
+.table-02 td.num {color:#808080; text-align:center;}
+.table-02 td.title p {height:34px; overflow:hidden; text-overflow:ellipsis; white-space:pre-line;}
+.table-02 tr.on {border-bottom:0;}
+.table-02 tr.on td.title p {font-weight:bold; color:#333;}
+.table-02 tr.appraisal p {padding:0 30px 0 20px;}
+.table-02 tr.appraisal {border-top:0;}
+.table-02 tr.appraisal td {padding-top:26px; background:#fff8f8 url('/images/mobile/front/common/border-dot-gray.png') repeat-x left top;}
+.table-02 tr.appraisal .header-appraisal {padding:0 30px 20px 20px;}
+.table-02 tr.appraisal .header-appraisal dt, .table-02 tr.appraisal .header-appraisal dd {float:left;}
+.table-02 tr.appraisal .header-appraisal dd {margin-left:10px; color:#808080;}
+.table-02 tr.appraisal .footer-appraisal {width:250px; padding:20px 30px 0 20px;}
+.table-02 tr.appraisal .footer-appraisal dt, .table-02 tr.appraisal .footer-appraisal dd {display:inline-block;}
+/*
+.table-02 tr.appraisal .footer-appraisal {padding:20px 30px 0 20px;}
+.table-02 tr.appraisal .footer-appraisal dt, .table-02 tr.appraisal .footer-appraisal dd {float:left;}
+*/
+.table-02 tr.appraisal .footer-appraisal dd {padding-top:9px;}
+.table-03 {text-align:center;}
+.table-03 thead {background-color:#f5f9fa; color:#000;}
+.table-03 tr {border:2px solid #d3d9db; border-right:0; border-left:0;}
+.table-03 th, .table-03 td {height:64px;}
+.table-03 td.title {padding:0 10px; text-align:left;}
+.table-03 td.title a {color:#333;}
+.table-03 td.date {color:#808080;}
+.table-03 td a {display:block; height:34px; overflow:hidden; text-overflow:ellipsis; white-space:pre-line;}
+.table-04 {background-color:#f5f5f5;}
+.table-04 tr {border:2px solid #d3d9db; border-right:0; border-left:0;}
+.table-04 tr:first-child {border-top:0;}
+.table-04 tr:last-child {border-bottom:0;}
+.table-04 th, .table-04 td {padding:20px;}
+.table-04 th {padding-left:40px; border-right:2px solid #dbdbdb; color:#333; text-align:left;}
+.table-04 td.con {padding:30px 25px 0 25px; font-size:26px; color:#333;}
+
+/* button */
+.btn {border-width:6px;}
+.btn.blue {-webkit-border-image:url('/images/mobile/front/common/btn-blue.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-blue.png') 6 stretch;}
+.btn.default {-webkit-border-image:url('/images/mobile/front/common/btn-default.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-default.png') 6 stretch; color:#333;}
+.btn.gray {-webkit-border-image:url('/images/mobile/front/common/btn-gray.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-gray.png') 6 stretch; color:#fff;}
+.btn.gray-02 {-webkit-border-image:url('/images/mobile/front/common/btn-gray-02.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-gray-02.png') 6 stretch;}
+.btn.orange {-webkit-border-image:url('/images/mobile/front/common/btn-orange.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-orange.png') 6 stretch;}
+.btn.red {-webkit-border-image:url('/images/mobile/front/common/btn-red.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-red.png') 6 stretch; color:#fff;}
+.btn.pink {-webkit-border-image:url('/images/mobile/front/common/btn-pink.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-pink.png') 6 stretch; color:#ee1c24;}
+.wrap-btn-more {padding:0 20px;}
+.btn.default.more {width:100%; height:63px; margin-top:20px; font-size:26px; color:#000;}
+/* [new]btn_guide */
+.btn_wrap_hori{display:-webkit-box;-webkit-box-orient:horizontal;margin-top:25px;}
+.btn_wrap_hori button[type="button"],.btn_wrap_hori a[class*="btntype"]{display:block;-webkit-box-flex:1;text-align:center;}
+[class*="btntype"]{height:65px;border:2px solid;border-radius:5px;line-height:65px;font-size:28px;}
+[class*="btntype"][class*="h35"]{height:35px;line-height:35px;font-size:22px;}
+[class*="btntype"][class*="h50"]{height:50px;line-height:50px;font-size:24px;}
+[class*="btntype_red"],.btntype_red{border-color:#ee1516 #c10707 #c10707 #ee1516;background-color:-moz-linear-gradient(top, #ee0e0f 0%, #e10e0e 100%);background:-webkit-linear-gradient(top, #ee0e0f 0%, #e10e0e 100%);color:#fff;}
+[class*="btntype_white"],.btntype_white{border-color:#bdbdbd #979797 #979797 #bdbdbd;background-color:-moz-linear-gradient(top, #ffffff 0%, #f0f0f0 100%);background:-webkit-linear-gradient(top, #ffffff 0%, #f0f0f0 100%);color:#333;}
+[class*="btntype_gray"]{border-color:#595959;background-color:-moz-linear-gradient(top, #767676 0%, #575757 100%);background:-webkit-linear-gradient(top, #767676 0%, #575757 100%);color:#fff;}
+[class*="btntype_lavender"]{border-color:#8a8ec3 #8a8ec3 #515595 #8a8ec3;border-radius:3px;background-color:#7477aa;box-shadow:0 3px 0 #515595;color:#fff;}
+
+/* paging */
+.footer-paging {position:relative; margin-top:20px; padding:0 132px;}
+.footer-paging a:first-child, .footer-paging a:last-child {display:block; position:absolute; top:0; width:138px; height:46px; padding-top:18px; background-image:url('/images/mobile/front/common/btn-set-01.png'); font-size:26px; color:#333; text-align:center;}
+.footer-paging a:first-child {left:0; background-position:left -528px;}
+.footer-paging a:last-child {right:0; background-position:left -594px;}
+.footer-paging a.none {color:#b2b2b2;}
+/*.wrap-select-paging {display:block; width:100%; height:64px; padding-top:6px; border-width:6px; -webkit-border-image:url('/images/mobile/front/common/btn-default.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-default.png') 6 stretch; font-size:26px; color:#4c4c4c; padding-left:42%;} */
+.wrap-select-paging option { padding-left:34%;}
+
+/* select */
+.wrap-select {display:inline-block; position:relative; width:200px;}
+.wrap-select.autoWidth {width:100%;}
+/* 2013-07-16 주석처리
+.wrap-select:after {content:""; display:block; position:absolute; right:17px; top:15px; width:19px; height:19px; background:url('/images/mobile/front/common/bul-arrow.png') repeat-x left -187px;}
+*/
+@media only screen and (min-width:801px){.wrap-select {width:320px;}}
+.wrap-select select.btn.default {width:100%; height:50px;padding-left:10px}
+.wrap-select select.btn.default {padding-left:10px}
+.wrap-select select.btn.default option {padding-left:10px}
+.wrap-select-02 {display:inline-block; position:relative;}
+.wrap-select-02:after {content:""; display:block; position:absolute; right:0; top:0; width:36px; height:36px; background:url('/images/mobile/front/common/btn-more.png') repeat-x left top; z-index:-100;}
+.wrap-select-02 select {padding-top:6px;}
+.wrap-select-02 select, .wrap-select-02 select option {width:172px; padding-right:48px; text-align:right;}
+@media only screen and (min-width:801px){.wrap-select-02 select, .wrap-select-02 select option {width:292px;}}
+
+/* 주문수량 UI */
+.article-count {display:inline-block; position:relative; width:200px; height:50px; text-align:center;}
+@media only screen and (min-width:801px){.article-count {width:320px;}}
+.article-count.no:after {content:""; display:block; position:absolute; left:0; top:0; width:100%; height:100%; background-color:rgba(255,255,255,0.75);}
+.article-count span:first-child {display:inline-block; width:80px; height:40px; padding-top:10px; background:url('/images/mobile/front/common/bg-count-input.png') repeat-x left top; vertical-align:middle;}
+@media only screen and (min-width:801px){.article-count span:first-child {width:100px;}}
+.article-count span:first-child input {font-size:28px; color:#000; text-align:center;}
+.article-count button {width:60px; height:50px; overflow:hidden; text-indent:-999px;}
+@media only screen and (min-width:801px){.article-count button {width:110px;}}
+.article-count button:nth-child(2) {position:absolute; left:0; top:0; background:url('/images/mobile/front/common/btn-set-01.png') no-repeat left -226px;}
+@media only screen and (min-width:801px){.article-count button:nth-child(2) {background-position:left -332px;}}
+.article-count button:last-child {position:absolute; right:0; top:0; background:url('/images/mobile/front/common/btn-set-01.png') no-repeat left -278px;}
+@media only screen and (min-width:801px){.article-count button:last-child {background-position:left -384px;}}
+
+.article-count-modify {display:inline-block; position:relative; float:left; width:40%; height:50px; text-align:center;}
+.article-count-modify span:first-child {display:inline-block; float:left; width:50%; height:33px; padding-top:5px; border-width:6px; -webkit-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; vertical-align:middle;}
+.article-count-modify span:first-child input {font-size:28px; color:#000; text-align:center;}
+.article-count-modify button {float:left; width:50%; height:50px; margin-left:-12px; border-width:6px; -webkit-border-image:url('/images/mobile/front/common/btn-default-02.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/btn-default-02.png') 6 stretch; font-size:24px; color:#333;}
+
+.article-order-count {display:table; position:relative; float:left; width:40%; height:50px;}
+.article-order-count strong {display:table-cell; padding-right:13px; color:#4c4c4c; vertical-align:middle; white-space:nowrap;}
+.article-order-count span {display:table-cell; height:33px; padding-top:5px; border-width:6px; -webkit-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; -moz-border-image:url('/images/mobile/front/common/bg-txt-input.png') 6 stretch; vertical-align:middle;}
+.article-order-count span input {font-size:28px; color:#000; text-align:center;}
+
+/* 아이콘 */
+.flag_oneplus1 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left top; overflow:hidden; text-indent:-999px;}
+.flag_oneplus2 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -76px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus3 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -152px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus4 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -228px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus5 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -304px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus6 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -380px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus7 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:70px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -456px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus8 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -532px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus9 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -608px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus10 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -684px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus11 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -760px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus12 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -836px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus13 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -912px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus14 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -988px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus15 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1064px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus16 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1140px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus17 {display:inline-block; position:absolute; left:4px; top:4px; width:70px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1216px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus18 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1292px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus19 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1368px; overflow:hidden; text-indent:-999px;}
+.flag_oneplus20 {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1444px; overflow:hidden; text-indent:-999px;}
+.flag_relation_dc {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1520px; overflow:hidden; text-indent:-999px;}
+.flag_bundle {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1596px; overflow:hidden; text-indent:-999px;}
+.flag_member_dc {display:inline-block; position:absolute; left:6px; top:6px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1672px; overflow:hidden; text-indent:-999px;}
+.flag_point_save {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1748px; overflow:hidden; text-indent:-999px;}
+.flag_freebie {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -1824px; overflow:hidden; text-indent:-999px;}
+.flag_deliver {display:inline-block; position:absolute; left:4px; top:4px; width:76px; height:76px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat left -2051px; overflow:hidden; text-indent:-999px;}/* 2013-11-14 추가 */
+
+.flag_m_oneplus1 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px top; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus2 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -76px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus3 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -152px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus4 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -228px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus5 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -304px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus6 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -380px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus7 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -456px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus8 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -532px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus9 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -608px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus10 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -684px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus11 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -760px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus12 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -836px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus13 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -912px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus14 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -988px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus15 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1064px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus16 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1140px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus17 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1216px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus18 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1292px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus19 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1368px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_oneplus20 {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1444px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_relation_dc {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1520px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_bundle {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1596px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_member_dc {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1672px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_point_save {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1748px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_freebie {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -1824px; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+.flag_m_deliver {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico-flag.png') no-repeat -76px -2051px; overflow:hidden; text-indent:-999px; vertical-align:middle;}/* 2013-11-14 추가 */
+
+/* 기타 아이콘 */
+.article-star strong {float:left; line-height:22px; margin:0 20px 0 0;}
+.article-star span {display:inline-block; float:left; width:28px; height:22px; background:url('/images/mobile/front/common/ico-set-01.png') no-repeat -28px -254px; overflow:hidden; text-indent:-999px;}
+.article-star span.on {background-position:left -254px;}
+.article-star-s {padding-left:6px !important; padding-right:20px !important;}
+.article-star-s span {display:inlin-block; float:left; width:20px; height:16px; background:url('/images/mobile/front/common/ico-set-01.png') no-repeat -24px -278px; overflow:hidden; font-size:0; line-height:0; text-indent:-999px}
+.article-star-s span.on {background-position:-4px -278px;}
+span.point {display:inline-block; width:24px; height:24px; background:url('/images/mobile/front/common/ico-set-01.png') repeat-x left -228px; overflow:hidden; text-indent:-999px; vertical-align:-3px;}
+
+/* bullet */
+.noti-star {padding-left:22px; font-size:22px; color:#808080; text-indent:-22px;}
+.noti-star.noIn {padding-left:0px; text-indent:0;}
+.noti-star:before {content:""; display:inline-block; width:22px; height:20px; background:url('/images/mobile/front/common/bul-star-gray.png') no-repeat 5px 5px;}
+.noti-star strong {display:inline !important;}
+.hyphen {display:inline-block; width:20px; height:50px; background:url("/images/mobile/front/common/border-solid-gray.png") no-repeat 50% 50%; overflow:hidden; text-indent:-999px;}
+
+/* list */
+.list-1depth {line-height:32px; font-size:22px; color:#4c4c4c;}
+.list-1depth li {margin-top:16px;}
+.list-1depth li:first-child {margin-top:0;}
+.list-1depth li p.txt {color:#808080;}
+.list-2depth {color:#808080;}
+.list-2depth li {margin-top:0;}
+
+/* search */
+.section-search {min-height:70px; margin:30px 0 30px 0; padding:0 20px;}
+.article-search {position:relative; z-index:250}
+.article-search .input-search {display:block; height:48px; padding:6px 145px 0 22px; border-width:8px; -webkit-border-image:url('/images/mobile/front/common/bg-search.png') 8 stretch; -moz-border-image:url('/images/mobile/front/common/bg-search.png') 8 stretch;}
+.article-search .input-search input {padding-top:5px; font-size:32px; line-height:46px; color:#000;}
+.article-search .input-search input.search {background:url('/images/mobile/front/common/logo-lottemart.png') no-repeat left top;}
+.article-search .btn-search {position:absolute; right:0; top:0; width:83px; height:70px; overflow:hidden; text-indent:-999px; background:url('/images/mobile/front/common/btn-search.png') no-repeat left top;}
+.article-search .btn-auto {position:absolute; right:86px; top:13px; width:40px; height:45px; overflow:hidden; text-indent:-999px; background:url('/images/mobile/front/common/btn-search.png') no-repeat left -80px;}
+.article-search .btn-del-search {position:absolute; right:98px; top:13px; width:40px; height:44px; overflow:hidden; text-indent:-999px; background:url('/images/mobile/front/common/btn-search.png') no-repeat left -135px;}
+/*.wrap-search-word {position:relative; z-index:200; padding:0 288px 0 20px;} /* 2013-09-27 수정 */
+ .wrap-search-word {position:absolute; width:100%; z-index:200;}/*  2013-09-27 풀사이즈에 absolute로 한다면 이렇게  */
+/*.wrap-search-word {position:relative; z-index:200; margin-top:-7px; padding:0 78px 0 2px;}*/
+.wrap-search-word:before {content:""; display:block; height:0; margin:0 2px; background-color:#fff;}
+.article-search-word {background-color:#fff; border:2px solid #ee1c24; border-bottom-right-radius:6px; border-bottom-left-radius:6px;}
+.article-search-word .word-list li {width:100%;height:62px; border-bottom:2px solid #f2f2f2;}
+.article-search-word .word-list li a {display:block; padding:18px; overflow:hidden;}
+.article-search-word .word-list li a span:first-child {float:left; color:#000;}
+.article-search-word .word-list li a span:last-child {float:right; color:#808080;}
+.article-search-word .footer-search-word {height:44px; padding:18px; padding-bottom:0; background-color:#f2f2f2;border-bottom-right-radius:4px; border-bottom-left-radius:4px;}
+.article-search-word .footer-search-word button {float:left; font-size:26px; color:#808080;}
+.article-search-word .footer-search-word button.del:after {content:""; display:inline-block; width:2px; height:24px; margin:0 12px; background-color:#bdbdbd; vertical-align:-2px;}
+.article-search-word .footer-search-word button.close {float:right;}
+.article-search-word .footer-search-word button.close:after {content:""; display:inline-block; width:17px; height:16px; margin-left:6px; background:url('/images/mobile/front/common/bul-arrow.png') no-repeat -10px -472px;}
+
+
+/* login-state */
+.section-login {position:relative; z-index:350; padding:12px 20px; border-bottom:2px solid #cce8f6; background-color:#e5f7ff; font-size:22px; color:#5993b2;}
+.section-login .txt {display:table-cell; float:left; height:32px; margin-top:10px; padding-left:40px; background:url('/images/mobile/front/common/bg-login.png') no-repeat left top;}
+.section-login .txt.branch {margin-left:26px; background-position:left bottom;}
+.section-login .txt strong {color:#263f4c;}
+.section-login .btn.blue {display:inline-block; float:right; width:96px; height:36px; margin-left:10px; padding-top:2px; font-size:22px; color:#5993b2; text-align:center;}
+
+/* gnb */
+.nav-gnb {height:64px; padding:0 12px; background:url('/images/mobile/front/common/bg-header.png') repeat-x left bottom; text-align:center;}
+.nav-gnb ul {display:table; width:100%;}
+.nav-gnb li {display:table-cell; background:url('/images/mobile/front/common/bg-line-gray.png') no-repeat left 50%;}
+.nav-gnb li:first-child {background:none;}
+.nav-gnb li a {font-size:28px; color:#000;}
+
+/* header-title */
+.header-title {position:relative; z-index:150; height:70px; margin-top:16px; padding-top:10px; background:url('/images/mobile/front/common/bg-header.png') repeat-x left bottom; text-align:center;}
+@media only screen and (min-width:801px){.header-title {height:60px;}}
+.header-title .btn-prev {display:inline-block; position:absolute; left:20px; top:0; width:130px; height:44px; padding-top:14px; background:url('/images/mobile/front/common/btn-set-01.png') no-repeat left top;}
+@media only screen and (min-width:801px){.header-title .btn-prev {height:40px; padding-top:10px; background-position:left -58px;}}
+.header-title .btn.default {display:inline-block; position:absolute; right:20px; top:0; width:108px; height:38px; padding-top:8px;}
+@media only screen and (min-width:801px){.header-title .btn.default {height:34px; padding-top:4px;}}
+.header-title .btn-search {display:inline-block; position:absolute; right:20px; top:0; width:66px; height:58px; background:url('/images/mobile/front/common/btn-set-01.png') no-repeat left -113px; text-indent:-999px; overflow:hidden;}
+@media only screen and (min-width:801px){.header-title .btn-search {height:50px; background-position:left -172px;}}
+.header-title h2 {display:inline-block; font-size:32px; line-height:32px; color:#000;}
+
+/* article-title */
+.article-header {margin-bottom:14px;}
+.article-header h2 {float:left; font-weight:normal; font-size:26px; line-height:28px; color:#333;}
+.article-header .more {float:right;}
+.article-header a.more {display:inline-block; width:36px; height:36px; background:url('/images/mobile/front/common/btn-more.png') no-repeat left -38px; overflow:hidden; text-indent:-999px;}
+
+/* flicking banner */
+.aside-banner {margin-bottom:35px;}
+.aside-banner .article-banner {position:relative; width:600px; height:160px; margin:0 auto; overflow:hidden;}
+.aside-banner ul {position:absolute; left:0; top:0;}
+.aside-banner li {float:left;}
+.aside-banner .footer-indicator {margin-top:20px; font-size:0; line-height:0; text-align:center;}
+.aside-banner .footer-indicator span.paging {position:relative; top:10px;}
+.aside-banner .footer-indicator a {display:inline-block; width:15px; height:15px; margin:0 6px; background:url('/images/mobile/front/common/bg-indicator-off.png') no-repeat left top; overflow:hidden; text-indent:-999px;}
+.aside-banner .footer-indicator a.on {background:url('/images/mobile/front/common/bg-indicator-on.png') no-repeat left top;}
+.aside-banner .footer-indicator button {width:60px; height:36px; background-image:url('/images/mobile/front/common/btn-set-01.png'); overflow:hidden; text-indent:-999px; vertical-align:top;}
+.aside-banner .footer-indicator button:first-child {margin-right:17px; background-position:left -487px;}
+.aside-banner .footer-indicator button:last-child {margin-left:17px; background-position:-70px -487px;}
+
+/* login-page */
+.article-login {padding:0 20px;}
+.article-login .wrap-form {position:relative; padding:28px 188px 28px 28px; background-color:#ebf8ff; border:2px solid #cce8f6; border-radius:7px;}
+.article-login .wrap-form .wrap-input {margin-bottom:14px;}
+.article-login .wrap-form .btn.red {display:block; width:146px; height:140px; position:absolute; right:28px; top:28px; font-size:28px; color:#fff;}
+.article-login .wrap-form input.txt.id {background:url('/images/mobile/front/common/bg-input-login.png') no-repeat left 2px;}
+.article-login .wrap-form input.txt.login {background:url('/images/mobile/front/common/bg-input-login.png') no-repeat left -45px;}
+.article-login .wrap-form .wrap-input {display:block;}
+.article-login .wrap-form .wrap-check {padding-top:16px;}
+.article-login .wrap-form .wrap-check:after {content:""; display:block; clear:both; height:0; visibility:hidden;}
+.article-login .wrap-form .wrap-check span.checkbox {float:left;}
+.article-login .wrap-form .wrap-check label {float:left; margin-right:20px;}
+.article-login .wrap-txt {padding-top:38px;}
+.article-login .wrap-txt p.t-point-black {font-size:26px;}
+
+/* footer */
+.footer {padding-top:30px; background-color:transparent;}
+.footer a.btn-top {display:inline-block; float:right; margin:0 20px 30px 0;}
+.footer .footer-copyright {clear:both; padding-bottom:40px; border-top:4px solid #808080; background-color:#f5f5f5; text-align:center;}
+.footer .footer-copyright ul.footer-menu-01 {display:table; width:100%; background:-moz-linear-gradient(top, #fff, #f0f0f0);  background:-webkit-gradient(linear,center top,center bottom,from(#fff),to(#f0f0f0));
+ border-bottom:2px solid #bdbdbd;}
+.footer .footer-copyright ul.footer-menu-01 li {display:table-cell; width:33.3%; height:60px; border-left:2px solid #bdbdbd; text-align:center; vertical-align:middle;}
+.footer .footer-copyright ul.footer-menu-01 li a {display:inline-block; width:100%; color:#333;}
+.footer .footer-copyright ul.footer-menu-01 li:first-child {border:0;}
+.footer .footer-copyright ul.footer-menu-01 li:first-child a {color:#4c4c4c;}
+.footer .footer-copyright ul.footer-menu-01 li:first-child em {display:inline-block; min-width:14px; height:30px; padding:0 8px; background:url('/images/mobile/front/common/bg-basket-01.png') no-repeat -2px top,url('/images/mobile/front/common/bg-basket-02.png') no-repeat right top; background-color:#ee1c24; color:#fff; font-size:26px; line-height:26px; vertical-align:-2px;}
+.footer .footer-copyright ul.footer-menu-02 {display:inline-block; margin:35px 0;}
+.footer .footer-copyright ul.footer-menu-02 li {float:left; height:24px; border-left:2px solid #bdbdbd; line-height:24px; vertical-align:top;}
+.footer .footer-copyright ul.footer-menu-02 li.first {border:0;}
+.footer .footer-copyright ul.footer-menu-02 li a {display:block; padding:0 20px; color:#808080;}
+
+/* footer_하단정렬 */
+.article-error {min-height:100%; margin-top:-292px; margin-bottom:-330px;}
+.article-error:before {content:""; display:block; height:322px;}
+.article-error:after {content:""; display:block; height:330px;}
+
+.article-login {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-login:before {content:""; display:block; height:212px;}
+.article-login:after {content:""; display:block; height:330px;}
+
+.article-cartegory.delivery-depth {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.delivery-depth:before {content:""; display:block; height:172px;}
+.article-cartegory.delivery-depth:after {content:""; display:block; height:330px;}
+
+.article-result-branch {min-height:100%; margin-top:-272px; margin-bottom:-330px;}
+.article-result-branch:before {content:""; display:block; height:272px;}
+.article-result-branch:after {content:""; display:block; height:330px;}
+
+.article-cartegory.group {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.group:before {content:""; display:block; height:202px;}
+.article-cartegory.group:after {content:""; display:block; height:330px;}
+
+.article-cartegory.threeDepth {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.threeDepth:before {content:""; display:block; height:172px;}
+.article-cartegory.threeDepth:after {content:""; display:block; height:330px;}
+
+.article-cartegory.threeDepth.basic {min-height:100%; margin-top:-272px; margin-bottom:-330px;}
+.article-cartegory.threeDepth.basic:before {content:""; display:block; height:272px;}
+.article-cartegory.threeDepth.basic:after {content:""; display:block; height:330px;}
+
+.article-cartegory.theme {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.theme:before {content:""; display:block; height:172px;}
+.article-cartegory.theme:after {content:""; display:block; height:330px;}
+
+.article-cartegory.theme.social {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.theme.social:before {content:""; display:block; height:192px;}
+.article-cartegory.theme.social:after {content:""; display:block; height:330px;}
+
+.article-product-list.theme-product {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-product-list.theme-product:before {content:""; display:block; height:192px;}
+.article-product-list.theme-product:after {content:""; display:block; height:330px;}
+
+.article-cartegory.event {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.event:before {content:""; display:block; height:172px;}
+.article-cartegory.event:after {content:""; display:block; height:330px;}
+
+.article-cartegory.customer.winner {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.customer.winner:before {content:""; display:block; height:192px;}
+.article-cartegory.customer.winner:after {content:""; display:block; height:330px;}
+
+.article-product-list.basket {min-height:100%; margin-top:-260px; margin-bottom:-330px;}
+.article-product-list.basket:before {content:""; display:block; height:260px;}
+.article-product-list.basket:after {content:""; display:block; height:330px;}
+
+.article-cartegory.customer.receive {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.customer.receive:before {content:""; display:block; height:202px;}
+.article-cartegory.customer.receive:after {content:""; display:block; height:330px;}
+
+.article-complete-order {min-height:100%; margin-top:-260px; margin-bottom:-330px;}
+.article-complete-order:before {content:""; display:block; height:290px;}
+.article-complete-order:after {content:""; display:block; height:330px;}
+
+.article-search-order.main {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-search-order.main:before {content:""; display:block; height:192px;}
+.article-search-order.main:after {content:""; display:block; height:330px;}
+
+.article-product-list.basket.favorite {min-height:100%; margin-top:-190px; margin-bottom:-330px;}
+.article-product-list.basket.favorite:before {content:""; display:block; height:190px;}
+.article-product-list.basket.favorite:after {content:""; display:block; height:330px;}
+
+.article-cartegory.mileage {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.mileage:before {content:""; display:block; height:172px;}
+.article-cartegory.mileage:after {content:""; display:block; height:330px;}
+
+.article-coupon-info {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-coupon-info:before {content:""; display:block; height:202px;}
+.article-coupon-info:after {content:""; display:block; height:330px;}
+
+.article-search-order {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-search-order:before {content:""; display:block; height:202px;}
+.article-search-order:after {content:""; display:block; height:330px;}
+
+.article-result-branch {min-height:100%; margin-top:-262px; margin-bottom:-330px;}
+.article-result-branch:before {content:""; display:block; height:262px;}
+.article-result-branch:after {content:""; display:block; height:330px;}
+
+.article-cartegory.customer.info {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-cartegory.customer.info:before {content:""; display:block; height:192px;}
+.article-cartegory.customer.info:after {content:""; display:block; height:330px;}
+
+.article-product-list.search {min-height:100%; margin-top:-292px; margin-bottom:-330px;}
+.article-product-list.search:before {content:""; display:block; height:292px;}
+.article-product-list.search:after {content:""; display:block; height:330px;}
+
+.article-search-no {min-height:100%; margin-top:-292px; margin-bottom:-330px;}
+.article-search-no:before {content:""; display:block; height:322px;}
+.article-search-no:after {content:""; display:block; height:330px;}
+
+.article-branch.view {min-height:100%; margin-top:-172px; margin-bottom:-330px;}
+.article-branch.view:before {content:""; display:block; height:202px;}
+.article-branch.view:after {content:""; display:block; height:330px;}
+
+
+/* 이벤트 이미지 정렬 */
+div.eventdetail{width:600px; margin: 0 auto;}
+
+/*0813 추석추가 */
+/*0821삭제
+div.chuseok_banner {
+	width:640px;
+	margin:0 auto;
+	padding-bottom:26px;
+}
+*/
+/* sub1 */
+#article-h {
+	margin-bottom:20px;
+	border-bottom:2px solid #4c4c4c;
+}
+#article-h h2 {
+	padding-bottom:20px;
+}
+/*0821삭제
+.chuseok_event {
+	width:620px;
+	margin:0 auto;
+	padding-bottom:26px;
+	font-size:0;
+	text-align:center;
+}
+.chuseok_event a.p12 {
+	padding-right:12px;
+}
+*/
+#chuseok-h {
+	border-bottom:2px solid #4c4c4c;
+}
+#chuseok-h h2 {
+	padding-bottom:20px;
+}
+.chuseok_category {
+	margin:0 10px;
+}
+.chuseok_category li {
+	padding:18px 0 25px 40px;
+	border-bottom:1px solid #e7e7e7;
+	background:url('//simage.lottemart.com/images/mobile/front/products/chuseok_lst_bg.gif') no-repeat 0 23px;
+}
+.chuseok_category li.category_lst {
+	padding-top:4px;
+	background:url('//simage.lottemart.com/images/mobile/front/products/chuseok_lst_bg.gif') no-repeat 0 10px;
+}
+
+div.chuseok_info {
+	width:620px;
+	padding-top:25px;
+	margin:0 auto;
+	font-size:0;
+	text-align:center;
+}
+.chuseok_info a.p16 {
+	padding-right:16px;
+}
+
+/*0821 스타일 추가*/
+.chuseok_event {width:100%;padding-bottom:26px;font-size:0;text-align:center;}
+.chuseok_event a {display:inline-block;width:45%;text-align:center;}
+.chuseok_event a.lft {margin-left:20px;margin-right:12px;}
+.chuseok_event a.rt {margin-right:20px;}
+
+.chuseok_banner_wrap {
+	width:94%;
+	margin:0 auto;
+	background:#fdc5a2 url('//simage.lottemart.com/images/mobile/front/products/banner_bg.jpg') no-repeat right top;
+}
+div.chuseok_banner {
+	width:100%;
+	margin-bottom:26px;
+	padding:0;
+	background:url('//simage.lottemart.com/images/mobile/front/products/banner_bg2.jpg') no-repeat left top;
+	text-align:center;
+}
+div.chuseok_banner2 {
+	background:url('//simage.lottemart.com/images/mobile/front/products/banner_bg3.png') repeat-x;
+}
+
+/*********** 2013 설 명절몰 관련 CSS START ***********/
+/* 설명절몰 - 롯데마트 모바일 메인 */
+div.banner_2013seol {position:relative; top:-5px; margin-bottom:6px;}/*20130109수정*/
+div.banner_2013seol img {width:100%;}
+
+
+/* 설명절몰 - 카테고리 */
+div.seol2013 {
+	border-top: 4px solid #EE1C24;
+}
+div.seol2013_info {
+ width: 620px;
+ padding-top: 25px;
+ margin: 0 auto;
+ font-size: 0;
+ text-align: center;
+}
+div.seol2013_info a.p16 {
+ padding-right: 16px;
+}
+a.more_btn {
+	display:block;
+	position:absolute;
+	top:23px;/*0에서 23px로 수정 20130110*/
+	right:20px;
+	width:85px;
+	height:36px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/btns.png') 0 -80px no-repeat;
+	text-indent:-999em;
+}
+
+
+/* 설명절몰 201227*/
+.section-listtype {border-bottom:4px solid #ee1c24;background-color:#f5f5f5;}
+.section-listtype h3.title {
+	color:#000;
+}
+.product-color {background:#fff;}
+.seol_category {margin:0 10px;}
+.seol_category li {
+	padding:18px 0 25px 40px;
+	border-bottom:1px solid #e7e7e7;
+	background:url('//simage.lottemart.com/images/mobile/front/common/seol_lst_bg.gif') no-repeat 0 27px;
+}
+.seol_category li.category_lst {
+	padding-top:4px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/seol_lst_bg.gif') no-repeat 0 13px;
+}
+.seol_copon_box {
+	position:relative;
+	padding:0 10px;
+	margin-top:28px;
+}
+.seol_copon {
+	margin:0 10px;
+	padding-bottom:20px;
+	border-bottom:2px solid #000;
+}
+/*201301수정*/
+.seol_copon h3 {
+	font-weight:bold;
+	-webkit-text-stroke-width:0.02em;
+	font-size:26px;
+	color:#333;
+	line-height:28px;
+}
+/*//201301수정*/
+div.seol_info {
+	padding-top:25px;
+	margin:0 auto;
+	font-size:0;
+	text-align:center;
+}
+div.seol_info a {
+	display:inline-block;
+	width:45%;
+}
+
+/* 설명절몰 하단 인기상품 121228*/
+h3.seol_hot_set, h3.seol_price_set {
+	margin:40px 20px 0 20px;
+	padding-bottom:25px;
+	font-weight:bold;
+	-webkit-text-stroke-width:0.02em;
+	font-size:26px;
+	color:#333;/*20130110 추가*/
+}
+
+#vogue_main {position:relative;}
+#vogue_main .category-title {
+	position:absolute;
+	top:-4px;left:0;
+	width:100%;
+	height:63px;
+	background-color:#FFF;
+	box-shadow: 0px 2px 3px #bfbfbf;
+	z-index:13;
+}
+#vogue_main .category-title>li {
+	float:left;
+	width:25%;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/bg_cate_line.gif') no-repeat 0 50%;
+	text-align:center;
+}
+#vogue_main .category-title>li:first-child {background:none;}
+#vogue_main .category-title>li>a {
+	position:relative;
+	display:block;
+	height:61px;
+	padding-top:2px;
+	color:#333;
+	line-height:59px;
+	z-index:11;
+}
+#vogue_main .category-title>li.active {
+	padding-bottom:10px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/bg_cate_anc.png') 50% 100% no-repeat;
+}
+#vogue_main .category-title>li.active>a {background:url('/images/mobile/front/common/201212/bg_cate_anc.png') 0 100% no-repeat;background-image: linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -o-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -moz-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -webkit-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -ms-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#636363), to(#767676));
+color:#fff;text-shadow:0px 0px 3px #333;}
+
+.cate-product2 {
+	position:relative;
+	margin-top:60px;
+	padding-bottom:94px;
+	background-color:#f5f5f5;
+	-moz-box-shadow: inset 0 -2px 3px 0 #d8d8d8;
+	-webkit-box-shadow: inset 0 -2px 3px 0 #d8d8d8;
+	box-shadow: inset 0 -2px 3px 0 #d8d8d8;
+}
+.cate-product2 .product-wrap ul {
+	overflow:hidden;
+	width:100%;
+	padding-top:30px;
+	min-height:314px;
+}
+.cate-product2 .product-wrap ul li {
+	float:left;
+	width:33.3%;
+}
+.cate-product2 .product-wrap ul li div {
+	!important;
+	width: 100%
+	min-height:314px;
+	text-align:center;
+}
+.cate-product2 .product-wrap ul li div a {
+	position:relative;
+	display:block;
+	width:188px;
+	height:188px;
+	margin:0 auto;
+}
+.cate-product2 .product-wrap ul li div a span {
+	position:absolute;
+	top:5px;left:5px;
+	display:block;
+	width:76px;
+	height:76px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/icon_product.png') 0 0 no-repeat;
+	text-indent:-999em;
+}
+.cate-product2 .product-wrap ul li div a span.present {background-position:0 0;}
+.cate-product2 .product-wrap ul li div a span.members {background-position:-80px 0;}
+.cate-product2 .product-wrap ul li div a span.point {background-position:-160px 0;}
+.cate-product2 .product-wrap ul li div a span.discount {
+	width:77px;
+	height:64px;
+	padding-top:8px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/bg_discount.png') 0 0 no-repeat;
+	font-size:22px;
+	line-height:24px;
+	color:#fff;
+	text-align:center;
+	text-indent:0;
+}
+.cate-product2 .product-wrap ul li div img {
+	width:184px;
+	height:184px;
+	border:2px solid #e6e6e6;
+}
+.cate-product2 .product-wrap ul li div p {
+	width:190px;
+	margin:0 auto;
+	color:#333;
+}
+.cate-product2  .product-wrap ul li div p:nth-child(3) {color:#808080;}
+
+div.seol_info2 {
+	position:relative;
+	padding-bottom:30px;
+	margin-top:-95px;
+	text-align:center;
+}
+div.seol_info2 a {
+	display:inline-block;
+	width:48%;
+}
+
+div.article-header p {
+	float:right;
+	padding:15px 10px 0 0;
+}
+
+/*가격대별 인기상품 121228*/
+#price_main {position:relative;}
+#price_main .price-title {
+	position:absolute;
+	top:-4px;left:0;
+	width:100%;
+	height:63px;
+	background-color:#FFF;
+	box-shadow: 0px 2px 3px #bfbfbf;
+	z-index:13;
+}
+#price_main .price-title>li {
+	float:left;
+	width:20%;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/bg_cate_line.gif') no-repeat 0 50%;
+	text-align:center;
+}
+#price_main .price-title>li:first-child {background:none;}
+#price_main .price-title>li>a {
+	position:relative;
+	display:block;
+	height:61px;
+	padding-top:2px;
+	color:#333;
+	line-height:59px;
+	z-index:11;
+}
+#price_main .price-title>li.active {
+	padding-bottom:10px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/bg_cate_anc.png') 50% 100% no-repeat;
+}
+#price_main .price-title>li.active>a {background:url('/images/mobile/front/common/201212/bg_cate_anc.png') 0 100% no-repeat;background-image: linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -o-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -moz-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -webkit-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -ms-linear-gradient(bottom, #636363 0%, #767676 100%);
+background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#636363), to(#767676));
+color:#fff;text-shadow:0px 0px 3px #333;}
+
+.price-product {
+	position:relative;
+	margin-top:60px;
+	background-color:#f5f5f5;
+	-moz-box-shadow: inset 0 -2px 3px 0 #d8d8d8;
+	-webkit-box-shadow: inset 0 -2px 3px 0 #d8d8d8;
+	box-shadow: inset 0 -2px 3px 0 #d8d8d8;
+}
+.price-product .product-wrap ul {
+	overflow:hidden;
+	width:100%;
+	padding-top:30px;
+	min-height:314px;
+}
+.price-product .product-wrap ul li {
+	float:left;
+	width:33.3%;
+}
+.price-product .product-wrap ul li div {
+	!important;
+	width: 100%
+	min-height:314px;
+	text-align:center;
+}
+.price-product .product-wrap ul li div a {
+	position:relative;
+	display:block;
+	width:188px;
+	height:188px;
+	margin:0 auto;
+}
+.price-product .product-wrap ul li div a span {
+	position:absolute;
+	top:5px;left:5px;
+	display:block;
+	width:76px;
+	height:76px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/icon_product.png') 0 0 no-repeat;
+	text-indent:-999em;
+}
+.price-product .product-wrap ul li div a span.present {background-position:0 0;}
+.price-product .product-wrap ul li div a span.members {background-position:-80px 0;}
+.price-product .product-wrap ul li div a span.point {background-position:-160px 0;}
+.price-product .product-wrap ul li div a span.discount {
+	width:77px;
+	height:64px;
+	padding-top:8px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201212/bg_discount.png') 0 0 no-repeat;
+	font-size:22px;
+	line-height:24px;
+	color:#fff;
+	text-align:center;
+	text-indent:0;
+}
+.price-product .product-wrap ul li div img {
+	width:184px;
+	height:184px;
+	border:2px solid #e6e6e6;
+}
+.price-product .product-wrap ul li div p {
+	width:190px;
+	margin:0 auto;
+	color:#333;
+}
+.price-product  .product-wrap ul li div p:nth-child(3) {color:#808080;}
+
+.price-product .product-wrap ul li div.price img {
+	width:187px;
+	height:284px;
+	border:0;
+}
+
+/*20130109 추가*/
+div.seol0108 {
+	border-top:2px solid #d0d0d0;
+}
+
+/*설 선물세트 안내 20130109*/
+div.section-listtype h3.seol-order {color:#111;}
+div.article-cartegory {
+	/*border-top:2px solid #ccc;*/
+}
+div.article-cartegory ul.low {
+	padding:0 20px;
+}
+div.article-cartegory ul.low.cList {
+	padding:10px 0 50px;
+}
+div.article-cartegory ul.low.cList li {
+	margin:20px 0 0 46px;
+	text-indent:-46px;
+}
+div.article-cartegory ul.low.cList li.lst_blue span {
+	color:#0943ae;
+}
+div.article-cartegory ul.low.cList li img {
+	display:inline-block;
+	margin-top:5px;
+	vertical-align:top;
+}
+div.article-cartegory ul.low.cList li .stxt-point {
+	display:inline-block;
+	height:30px;
+	padding:0 5px;
+	-webkit-border-image:url('//simage.lottemart.com/images/mobile/common/bg_txtBox.gif') 6 stretch; -moz-border-image:url('//simage.lottemart.com/images/mobile/common/bg_txtBox.gif') 6 stretch;
+	color:#fff;
+	text-align:center;
+	text-indent:0;
+	line-height:26px;
+	vertical-align:top;
+}
+
+table.mobileBoard {
+	table-layout:fixed;
+	width:100%;
+	margin:40px 0;
+	border-collapse:collapse;
+	border-spacing:0;
+	border-bottom:1px solid #d0d6d6;
+}
+table.mobileBoard th,
+table.mobileBoard td {
+	padding:25px 0;
+	border-top:1px solid #d0d6d6;
+	border-left:1px solid #d0d6d6;
+}
+table.mobileBoard th.sta,
+table.mobileBoard td.sta {
+	padding-left:0;
+	border-left:0;
+	text-align:center;
+}
+table.mobileBoard td.sta {
+	vertical-align:top;
+}
+table.mobileBoard th.lft {background:#f5f9fa;}
+table.mobileBoard th.rt {background:#d6edf3;}
+table.mobileBoard td {padding-left:20px;}
+table.mobileBoard td span {color:#777;}
+table.mobileBoard td p.example {margin:7px 0 0 17px; color:#828282;}
+
+ul.infor-lst li {
+	padding:0 0 35px 31px;
+	background:url('//simage.lottemart.com/images/mobile/front/common/201301_seol/seol_order_bg.gif') no-repeat 8px 16px;
+}
+ul.infor-lst li img {padding:13px 0 5px 0;}
+
+/*2013-01-10*/
+#seol_wrap {padding-bottom:0;}
+div.cate-product div.product-wrap div.seol_product {
+	min-height:285px;
+}
+div.seol_copon_box a.set_btn {top:0;}
+
+/*********** 2013 설 명절몰 관련 CSS END ***********/
+
+
+/* 2013-05-21 푸터 수정 */
+div.add-box {padding:15px 23px 23px 23px; border-bottom:2px solid #9a9a9a; background:#d0d0d0; font-size:20px; font-weight:bold; letter-spacing:-1px;}/* 2013-06-24 수정 */
+div.add-box div {overflow:hidden; height:28px;}
+div.add-box div h2 {float:left;padding:0; background:none; font-size:20px; font-weight:bold; color:#000; cursor:text;}
+div.add-box div h2:before {background:none;}
+div.add-box div h2:after {background:none;}
+div.add-box div p {float:left; padding-left:13px;}
+div.add-box address {height:25px; font-style:normal;}
+div.add-box ul li {height:25px;}
+div.add-box span {font-weight:normal;}
+
+div.section-info {padding:20px 0;}
+div.section-info footer {margin-top:20px;}
+
+/* 2013-05-23 기획전 리스트페이지 개선 */
+select.p-lft {padding-left:16px;}
+ul.plan-lst li {padding:10px 0; border-bottom:2px solid #ccc;}
+ul.plan-lst li img {display:block; width:600px; margin:0 auto;}
+
+/* 2013-06-07 돈워리 아이콘 (돈워리) */
+#dw-product-list .wrap .photo strong.hot span.dw-txt {font-size:35px;}
+
+/* 2013-06-10 기획전 상세페이지 개선 */
+div.article-product-list .h-auto {height:auto;}
+div.article-product-list .h-auto:after {content:''; display:block; clear:both;}
+div.more-top-img {margin-top:20px;}
+div.more-top-img img {display:block; width:600px; margin:0 auto;}
+div.selec-box {padding-top:40px;}
+div.article-product-list ul.b-top {border-top:0;}
+
+/* 2013-06-10 푸터 메뉴 추가 */
+div.add-box ul.m-list {overflow:hidden;}
+div.add-box ul.m-list li {float:left; font-size:0; line-height:0;}
+div.add-box ul.m-list li a {margin-right:9px; font-size:20px; line-height:26px;}
+
+/* 2013-06-28 다둥이 아이콘 */
+.flag_m_babyclub {display:inline-block; width:60px; height:60px; background:url('/images/mobile/front/common/ico_dadoongi.png') no-repeat 0 0; overflow:hidden; text-indent:-999px; vertical-align:middle;}
+
+/* 2013-06-24 푸터 수정 */
+div.add-box {overflow-x:hidden}
+div.section-links2 ul.foot-utill {border-top:1px solid #b4b4b4; background:url('//simage.lottemart.com/images/mobile/common/bg_links2.gif') repeat-x;}
+div.section-links2 ul.foot-utill li {border-top:1px solid #9b9b9b; background:url('//simage.lottemart.com/images/mobile/common/bg_links2_line2.gif') no-repeat 0 0;}
+div.section-links2 ul.foot-utill li:first-child {background:none;}
+div.add-bg {background:#e6e6e6;}
+div.add-box div.btn-box {width:100%; height:68px;text-align:center;}/* 2013-08-07 수정 */
+div.add-box div.btn-box a {display:inline-block; padding-left:16px;}
+div.add-box div.btn-box a:first-child {padding-left:0;}
+div.add-box ul.lotte-code {padding-top:7px;}
+div.add-box ul.lotte-code li {height:auto; line-height:25px;}
+div.add-box ul.lotte-code li.p-top {padding-top:18px;}
+div.add-box p.copyright {font-weight:normal;}
+div.add-box ul.m-list {width:576px; margin:0 auto;padding-left:10px;}/* 2013-08-07 수정 */
+div.add-box ul.m-list li {padding-right:10px;}/* 2013-08-07 수정 */
+div.add-box ul.m-list li.last {padding-right:0;}
+div.add-box ul.m-list li span {padding-right:20px; font-weight:bold;}/* 2013-08-07 수정 */
+div.add-box div.business {padding-top:13px;}
+div.add-box div.business h2 {font-family:sans-serif; color:#4C4C4C;}
+div.section-relation {border-top:0;}
+a.bottom_line {text-decoration:underline;}
+
+/* 2013-06-25 행사코드 아이콘 60, 72 */
+[class*="flag_m_evticon"]{display:inline-block; position:absolute; top:10px; left:10px; overflow:hidden;}
+.flag_m_evticon01_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon01-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드01 - 72 */
+.flag_m_evticon01_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon01-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드01 - 60 */
+.flag_m_evticon02_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon02-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드02 - 72 */
+.flag_m_evticon02_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon02-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드02 - 60 */
+.flag_m_evticon03_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon03-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드03 - 72 */
+.flag_m_evticon03_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon03-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드03 - 60 */
+.flag_m_evticon04_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon04-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드04 - 72 */
+.flag_m_evticon04_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon04-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드04 - 60 */
+.flag_m_evticon05_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon05-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드05 - 72 */
+.flag_m_evticon05_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon05-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드05 - 60 */
+.flag_m_evticon06_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon06-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드06 - 72 */
+.flag_m_evticon06_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon06-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드06 - 60 */
+.flag_m_evticon07_72 { width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon07-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드07 - 72 */
+.flag_m_evticon07_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon07-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드07 - 60 */
+.flag_m_evticon08_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon08-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드08 - 72 */
+.flag_m_evticon08_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon08-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드08 - 60 */
+.flag_m_evticon09_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon09-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드09 - 72 */
+.flag_m_evticon09_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon09-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드09 - 60 */
+.flag_m_evticon10_72 {width:72px; height:72px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon10-72.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드10 - 72 */
+.flag_m_evticon10_60 {width:60px; height:60px; background:url('//simage.lottemart.com/images/mobile/front/common/flag-m-evticon10-60.png') no-repeat 0 0; text-indent:-999px; vertical-align:middle;} /* 행사코드10 - 60 */
+
+/* 2013-07-15  select design */
+div.article-product-list .header-list .wrap-select {width:45%;}
+div.article-product-list .header-list .wrap-select select.btn.default,
+div.article-product-list .header-list .selec-box select.wrap-select-paging {
+width:100%; height:46px; padding:0 0 0 4px;/* border:none; background:none;*/font-size:24px; -webkit-border-radius: 5px;-webkit-appearance: none;-webkit-border-image:none;
+border-width:2px 80px 2px 5px;-webkit-border-image: url('//simage.lottemart.com/images/mobile/front/common/btn-select_red.png') 2 80 2 5 repeat stretch;}
+#contentWrap select.default_type01 {height:46px;border-width:2px 80px 2px 5px;-webkit-border-image: url('//simage.lottemart.com/images/mobile/front/common/btn-select_red.png') 2 80 2 5 repeat stretch;}
+
+div.footer-paging .wrap-select-paging,
+div.wrap-btn-more .footer-paging select.wrap-select-paging {display:block; width:100%; height:64px; padding: 6px 0 0 34%; border: 2px solid #bdbdbd; background:url( '//simage.lottemart.com/images/mobile/common/bg_select_btn2.png') no-repeat 100% 0;font-size:26px; color:#4c4c4c; -webkit-appearance: none;-webkit-border-image:none;}
+
+/* 2013-07-30 wa */
+.blind{visibility:hidden;overflow:hidden;position:absolute;top:0;left:0;width:1px;height: 1px;font-size:0;line-height:0}
+.hidden{display:none;visibility:hidden; overflow:hidden; width:0;height:0;font-size:0;line-height:0}
+caption{visibility:hidden; overflow:hidden; width:0;height:0;font-size:0;line-height:0}
+.wa_mobile_tabtitle{display: block; height: 0; font-size: 1px; visibility: hidden; text-indent: -9999px;}
+
+/* 2013-09-26 new_footer */
+.new_footer {margin:0 auto; text-align:center}
+.new_footer span {margin:0 15px; font-weight: bold;}
+
+/* layer popup guide */
+.layerpop{position:absolute;top:-999em;;left:0;width:100%;height:100%;z-index:1000;}
+.layerpop.on{top:0;}
+.layerpop.on > i{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.35);-webkit-backface-visibility:hidden;}
+.layerpop > div{position:relative;padding:45px 20px 25px;margin:95px 10px 0;background-color:#fff;z-index:1001;}
+.layerpop .btn_clspop{position:absolute;top:0;right:0;padding:5px 10px 10px;border:none;font-size:45px;line-height:1;}
+
+/* common layer plotting */
+.commonLayer_ploting {position:fixed;left:0px;top:0;width:100%;height:100%;margin-bottom:88px;text-align:center;background:url("//simage.lottemart.com/images/mobile/common/layout/bg_half_transparent_01.png") repeat left top;-webkit-backface-visibility:hidden;z-index:100;}
+.plotting-type01 {position:relative;top:240px;width:600px;margin:0 auto;background:url("//simage.lottemart.com/images/mobile/common/layout/bg_plotting_type01.png") no-repeat center center;vertical-align:middle;}
+.plotting-type01 h1 {position:absolute;left:50%;top:128px;width:185px;height:51px;margin-left:-92px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h1.png") no-repeat center top;}
+.plotting-type01 .wrap_conts {position:relative;height:288px;padding:189px 46px 0;}
+.plotting-type01 .wrap_conts .conts {height:272px;}
+.plotting-type01 .wrap_conts .conts a {display:block;}
+.plotting-type01 .wrap_conts button {position:absolute;right:50px;top:136px;display:block;width:37px;height:37px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_close_size_37_37.png") no-repeat center center;text-indent:-9999px;overflow:hidden;white-space:nowrap;}
+.plotting-type01 .wrap_conts label {position:absolute;left:172px;bottom:-48px;font-size:24px;color:#FFF;}
+.plotting-type01 input[type="checkbox"] {}
+@-webkit-keyframes anitype_plot01 {
+	0%{
+	-webkit-transform:rotate(3deg);
+	}
+	100%{
+	-webkit-transform:rotate(-3deg);
+	}
+}
+.plotting-type01{
+-webkit-animation-name:anitype_plot01;
+-webkit-animation-delay:1.0s;
+-webkit-animation-duration:.1s;
+-webkit-animation-iteration-count:4;
+-webkit-animation-timing-function:ease-in-out;
+-webkit-animation-direction:alternate;
+}
+
+
+.plotting-type02 {position:relative;top:240px;width:600px;margin:0 auto;background:url("//simage.lottemart.com/images/mobile/common/layout/bg_plotting_type02.png") no-repeat center center;vertical-align:middle;}
+.plotting-type02 h1 {position:absolute;left:342px;top:42px;width:180px;height:47px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h1_02.png") no-repeat left top;background-size:165px auto;}
+.plotting-type02 .wrap_conts {position:relative;height:445px;padding:94px 117px 0 46px;}
+.plotting-type02 .wrap_conts .conts {height:332px;}
+.plotting-type02 .wrap_conts .conts a {display:block;}
+.plotting-type02 .wrap_conts button {position:absolute;right:23px;top:8px;display:block;width:27px;height:27px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_close_size_27_27.png") no-repeat center center;text-indent:-9999px;overflow:hidden;white-space:nowrap;}
+.plotting-type02 .wrap_conts label {position:absolute;left:172px;bottom:53px;font-size:24px;color:#FFF;}
+.plotting-type02 input[type="checkbox"] {}
+@-webkit-keyframes anitype_plot02 {
+  0% {
+    -webkit-transform: translateX(100%) skewX(0deg);
+  }
+
+  100% {
+    -webkit-transform: translateX(0%) skewX(0deg);
+  }
+}
+.plotting-type02 {
+ -webkit-animation-name:anitype_plot02;
+ -webkit-animation-duration:.5s;
+ -webkit-animation-timing-function:ease-in-out;
+}
+
+.plotting-type03 {position:relative;top:200px;width:600px;height:513px;margin:0 auto;background:url("//simage.lottemart.com/images/mobile/common/layout/bg_plotting_type03.png") no-repeat center top;vertical-align:middle;}
+.plotting-type03 h1 {position:absolute;left:20px;top:42px;width:167px;height:48px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h1_03.png") no-repeat center top;z-index:1;}
+.plotting-type03 h2 {position:absolute;right:23px;top:46px;width:135px;height:41px;padding:0;text-indent:-9999px;border:0px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h2_01.png") no-repeat center top;cursor:default;z-index:1;}
+.plotting-type03 h2:before, .plotting-type03 h2:after {display:none;}
+.plotting-type03 h2.event {background-image:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h2_02.png");}
+.plotting-type03 .wrap_conts {position:relative;padding:102px 20px 0;}
+.plotting-type03 .wrap_conts .conts {height:376px;}
+.plotting-type03 .wrap_conts .conts a {display:block;}
+.plotting-type03 .wrap_conts .btn_goLink {position:absolute;right:48px;bottom:5px;width:34px;height:27px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_push_go.png") no-repeat center top;}
+.plotting-type03 .wrap_conts button {position:absolute;right:40px;top:124px;display:block;width:26px;height:26px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_close_size_26_26.png") no-repeat center center;text-indent:-9999px;overflow:hidden;white-space:nowrap;}
+
+.plotting-type04 {position:relative;top:170px;width:600px;height:554px;margin:0 auto;background:url("//simage.lottemart.com/images/mobile/common/layout/bg_plotting_type04.png") no-repeat center top;vertical-align:middle;}
+.plotting-type04 h1 {position:absolute;left:20px;top:80px;width:167px;height:48px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h1_03.png") no-repeat center top;z-index:1;}
+.plotting-type04 h2 {position:absolute;right:23px;top:90px;width:135px;height:41px;padding:0;text-indent:-9999px;border:0px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h2_01.png") no-repeat center top;cursor:default;z-index:1;}
+.plotting-type04 h2:before, .plotting-type04 h2:after {display:none;}
+.plotting-type04 h2.event {background-image:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h2_02.png");}
+.plotting-type04 .wrap_conts {position:relative;padding:143px 20px 0;}
+.plotting-type04 .wrap_conts .conts {height:400px;}
+.plotting-type04 .wrap_conts .conts a {display:block;}
+.plotting-type04 .wrap_conts .btn_goLink {position:absolute;right:48px;bottom:30px;width:34px;height:27px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_push_go.png") no-repeat center top;}
+.plotting-type04 .wrap_conts button {position:absolute;right:40px;top:166px;display:block;width:26px;height:26px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_close_size_26_26.png") no-repeat center center;text-indent:-9999px;overflow:hidden;white-space:nowrap;}
+
+.plotting-type05 {position:relative;top:150px;width:600px;height:590px;margin:0 auto;background:url("//simage.lottemart.com/images/mobile/common/layout/bg_plotting_type05.png") no-repeat center bottom;vertical-align:middle;}
+.plotting-type05 h1 {position:absolute;left:24px;top:116px;width:167px;height:48px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h1_03.png") no-repeat center top;z-index:1;}
+.plotting-type05 h2 {position:absolute;right:28px;top:124px;width:135px;height:41px;padding:0;text-indent:-9999px;border:0px;background:url("//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h2_01.png") no-repeat center top;cursor:default;z-index:1;}
+.plotting-type05 h2:before, .plotting-type05 h2:after {display:none;}
+.plotting-type05 h2.event {background-image:url(//simage.lottemart.com/images/mobile/common/layout/title_plotting_layer_h2_02.png);}
+.plotting-type05 .wrap_conts {position:relative;padding:0;}
+.plotting-type05 .wrap_conts .conts {height:589px;}
+.plotting-type05 .wrap_conts .conts a {display:block;}
+.plotting-type05 .wrap_conts .btn_goLink {position:absolute;right:75px;bottom:50px;width:34px;height:27px;text-indent:-9999px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_push_go.png") no-repeat center top;}
+.plotting-type05 .wrap_conts button {position:absolute;right:56px;top:218px;display:block;width:27px;height:27px;background:url("//simage.lottemart.com/images/mobile/common/icon/icon_close_size_27_27.png") no-repeat center center;text-indent:-9999px;overflow:hidden;white-space:nowrap;}
+/* 모바일기획전링크타입 */
+.article-product-list .header-list ul.link_plan{height:auto; padding:0px; width:100%; overflow:hidden; border-top:0px; background-color:none;}
+.article-product-list .header-list ul.link_plan li{float:left;margin:0px;}
+.article-product-list .header-list ul.link_plan li img{width:100%;}

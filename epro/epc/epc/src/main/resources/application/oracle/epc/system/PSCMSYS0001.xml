@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmsys0001">
+    <typeAlias alias="pscmsys0001VO" type="com.lottemart.epc.system.model.PSCMSYS0001VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectDeliveryAmtInfoTotalCnt" resultClass="java.lang.Integer">
+        /* PSCMSYS0001.selectDeliveryAmtInfoTotalCnt */
+        SELECT
+            COUNT(1) AS COUNT
+        FROM
+            TVE_VENDOR_DELI_BASE
+        WHERE VENDOR_ID = #vendorId#
+        <isEqual property="deliDivnCd" compareValue="10">
+          	AND DELI_DIVN_CD = #deliDivnCd#
+        </isEqual>
+        <isEqual property="deliDivnCd" compareValue="20">
+          	AND DELI_DIVN_CD IN ('20','30')
+        </isEqual>
+           
+    </select>
+
+    <select id="selectDeliveryAmtInfoList" resultClass="pscmsys0001VO">
+        /* PSCMSYS0001.selectDeliveryAmtInfoList */
+        SELECT * FROM
+        (
+            SELECT
+                RANK()OVER(ORDER BY DELI_DIVN_CD ASC, APPLY_START_DY DESC, DELIVERY_AMT DESC) AS NUM
+              , APPLY_START_DY
+              , APPLY_END_DY
+              , DELI_BASE_MIN_AMT
+              , DELI_BASE_MAX_AMT
+              , DELIVERY_AMT
+              , (CASE WHEN APPLY_START_DY > TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') THEN '수정' ELSE '' END) AS DO_MODIFY
+              , (CASE WHEN APPLY_START_DY > TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') THEN '삭제' ELSE '' END) AS DO_DELETE
+              , DELI_DIVN_CD
+              , DECODE(DELI_DIVN_CD,'10','배송비','20','반품비','30','교환비') AS DELI_DIVN_NM
+            FROM
+                TVE_VENDOR_DELI_BASE
+            WHERE VENDOR_ID = #vendorId#
+            <isEqual property="deliDivnCd" compareValue="10">
+              	AND DELI_DIVN_CD = #deliDivnCd#
+            </isEqual>
+            <isEqual property="deliDivnCd" compareValue="20">
+            	AND DELI_DIVN_CD IN ('20','30')
+            </isEqual>                                   
+        )
+        <isNotEmpty property="startRow">
+        WHERE
+            NUM BETWEEN #startRow# AND #endRow#
+        </isNotEmpty>
+    </select>
+
+    <select id="selectDeliveryAmtList" resultClass="pscmsys0001VO">
+        /* PSCMSYS0001.selectDeliveryAmtList */
+        SELECT
+            LET_1_REF    AS PROD_CD
+          , LET_2_REF    AS DELIVERY_AMT
+          , '9999-12-31' AS APPLY_END_DY
+        FROM
+            TET_CODE CODE
+          , TPR_PRODUCT PP
+        WHERE
+            CODE.LET_1_REF = PP.PROD_CD(+)
+        AND CODE.MAJOR_CD  = 'DE007'
+        AND CODE.LET_3_REF = #let3Ref#
+        AND CODE.USE_YN    = 'Y'
+        ORDER BY
+            DELIVERY_AMT DESC
+    </select>
+
+    <select id="selectLatestApplyStartDy" resultClass="dataMap">
+        /* PSCMSYS0001.selectLatestApplyStartDy */
+        SELECT
+            MAX(APPLY_START_DY) AS MAX_APPLY_START_DY
+        FROM
+            TVE_VENDOR_DELI_BASE
+        WHERE
+            VENDOR_ID = #vendorId#
+            <isEqual property="deliDivnCd" compareValue="10">
+              	AND DELI_DIVN_CD = #deliDivnCd#
+            </isEqual>
+            <isEqual property="deliDivnCd" compareValue="20">
+            	AND DELI_DIVN_CD IN ('20','30')
+            </isEqual>
+    </select>
+
+    <select id="validateDeliveryAmtInsert" resultClass="dataMap">
+    <![CDATA[
+        /* PSCMSYS0001.validateDeliveryAmtInsert */
+        SELECT
+            CASE
+                WHEN MAX(A.APPLY_START_DY) >= #applyStartDy# THEN 'ERROR1'
+                ELSE 'OK'
+            END AS CHECK_GUBUN
+        FROM
+            TVE_VENDOR_DELI_BASE A
+        WHERE
+            A.VENDOR_ID = #vendorId#
+            
+    ]]>
+    	<isEqual property="deliDivnCd" compareValue="10">
+          	AND A.DELI_DIVN_CD = #deliDivnCd#
+        </isEqual>
+        <isEqual property="deliDivnCd" compareValue="20">
+        	AND A.DELI_DIVN_CD IN ('20','30')
+        </isEqual>
+    </select>
+
+    <update id="updateLatestApplyEndDy">
+        /* PSCMSYS0001.updateLatestApplyStartDy */
+        UPDATE TVE_VENDOR_DELI_BASE A
+        SET
+            A.APPLY_END_DY = #oneDayBefore# /* APPLY_START_DY -1 */
+        WHERE
+            A.VENDOR_ID    = #vendorId#
+        AND A.APPLY_START_DY = (SELECT MAX(APPLY_START_DY) FROM TVE_VENDOR_DELI_BASE WHERE  VENDOR_ID = #vendorId#)
+        AND DELI_DIVN_CD   = #deliDivnCd#
+    </update>
+
+    <insert id="insertDeliveryAmt">
+        /* PSCMSYS0001.insertDeliveryAmt */
+        INSERT INTO TVE_VENDOR_DELI_BASE
+        (
+            VENDOR_ID
+          , APPLY_START_DY
+          , APPLY_END_DY
+          , DELI_BASE_MIN_AMT
+          , DELI_BASE_MAX_AMT
+          , PROD_CD
+          , DELIVERY_AMT
+          , REG_DATE
+          , REG_ID
+          , MOD_DATE
+          , MOD_ID
+          , DELI_DIVN_CD
+        )
+        SELECT
+            #vendorId#
+          , #applyStartDy#
+          , #applyEndDy#
+          , #deliBaseMinAmt#
+          , #deliBaseMaxAmt#
+          , #prodCd#
+          , #deliveryAmt#
+          , CURRENT_TIMESTAMP(0)
+          , #regId#
+          , CURRENT_TIMESTAMP(0)
+          , #modId#
+          , #deliDivnCd#
+        FROM DUAL
+    </insert>
+    
+    <select id="selectTargetCnt" resultClass="int">
+        /* PSCMSYS0001.selectTargetCnt */
+        SELECT  
+            COUNT(1) COUNT
+        FROM
+            TVE_VENDOR_DELI_BASE A
+        WHERE
+            A.VENDOR_ID      = #vendorId#
+        AND A.APPLY_START_DY = #applyStartDy#
+        AND A.DELIVERY_AMT   = #deliveryAmt#
+        AND DELI_DIVN_CD   = #deliDivnCd#
+    </select>
+    
+    <update id="updateDeliveryAmt">
+        /* PSCMSYS0001.updateDeliveryAmt */
+        UPDATE TVE_VENDOR_DELI_BASE A
+        SET A.DELI_BASE_MIN_AMT = #deliBaseMinAmt#
+          , A.DELI_BASE_MAX_AMT = #deliBaseMaxAmt#
+        WHERE
+            A.VENDOR_ID      = #vendorId#
+        AND A.APPLY_START_DY = #applyStartDy#
+        AND A.DELIVERY_AMT   = #deliveryAmt#
+        AND A.DELI_DIVN_CD   = #deliDivnCd#
+    </update>
+    
+    <update id="updateDeliveryAmt20">
+        /* PSCMSYS0001.updateDeliveryAmt20 */
+        UPDATE TVE_VENDOR_DELI_BASE A
+        SET A.DELIVERY_AMT = #deliveryAmt#
+        WHERE
+            A.VENDOR_ID      = #vendorId#
+        AND A.APPLY_START_DY = #applyStartDy#
+        AND A.DELI_DIVN_CD   = #deliDivnCd#
+    </update>
+    
+    <delete id="deleteDeliveryAmt">
+        /* PSCMSYS0001.deleteDeliveryAmt */ 
+        DELETE FROM TVE_VENDOR_DELI_BASE
+        WHERE
+            VENDOR_ID      = #vendorId#
+        AND APPLY_START_DY = #applyStartDy#
+        <isEqual property="deliDivnCd" compareValue="10">
+          	AND DELI_DIVN_CD = #deliDivnCd#
+        </isEqual>
+        <isEqual property="deliDivnCd" compareValue="20">
+        	AND DELI_DIVN_CD IN ('20','30')
+        </isEqual>
+    </delete>
+    
+    <update id="updateLatestApplyEndDy_AfterDelete">
+        /* PSCMSYS0001.updateLatestApplyEndDy_AfterDelete */ 
+        UPDATE TVE_VENDOR_DELI_BASE SET
+            APPLY_END_DY   = '99991231'
+        WHERE
+            VENDOR_ID    = #vendorId#
+        AND APPLY_END_DY = (SELECT MAX(APPLY_START_DY) FROM TVE_VENDOR_DELI_BASE WHERE  VENDOR_ID = #vendorId#)
+        AND DELI_DIVN_CD   = #deliDivnCd#
+    </update>
+    
+    <update id="updateRecoveryDate">
+        /* PSCMSYS0001.updateRecoveryDate */ 
+        UPDATE TVE_VENDOR_DELI_BASE SET
+            APPLY_END_DY   = '99991231'
+        WHERE
+            VENDOR_ID    = #VENDOR_ID#
+        AND APPLY_END_DY = TO_CHAR(TO_DATE(#APPLY_START_DY#, 'YYYYMMDD') -1, 'YYYYMMDD')
+        AND DELI_DIVN_CD   = #DELI_DIVN_CD#
+    </update>
+
+</sqlMap>

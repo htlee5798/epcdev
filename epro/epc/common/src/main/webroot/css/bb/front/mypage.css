@@ -1,0 +1,96 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: mypage.css
+ * description	: mypage, CSS import
+ * date			: 2011.10.05
+************************************************************************/
+
+.tit_mypage	{margin:-22px 0 20px 0;}
+.tit_mypage	h3	{margin-bottom:10px;}
+
+.board_product	.tb_wishlist	{margin-top:10px;}
+.board_product	.tb_wishlist	th	 {padding:4px 0 7px 0; *padding:6px 0 5px 0; line-height:14px; vertical-align:middle;}
+.board_product	.tb_wishlist	td	 .pr_price	.txt	{width:38px;}
+.board_product	.tb_wishlist	.rel_soldout .bg_noproduct	{height:25px;}
+.board_product	table	td	.t_price	 {padding-right:10px; *padding-right:5px; font-size:14px; letter-spacing:0; text-align:right;}
+.board_product	table	td	.t_price	 span	{color:#333;}
+
+.board_list	table	td	{font-size:14px !important;}
+.board_list	table	td.td_price	{background-color:#edf7fc;}
+.board_list	table	td	.t_price	 {padding-right:10px; font-size:14px; letter-spacing:0; text-align:right;}
+.board_list	table	td	.t_price	 span	{color:#333;}
+.board_list	table	td	.t_price2	{padding-right:30px; font-size:14px; letter-spacing:0; text-align:right;}
+.board_list	table	td.my_ordernum	 {letter-spacing:0; text-decoration:underline;}
+
+/* 기간별 조회 */
+.tb_period_sch	 {width:100%; margin-bottom:30px;}
+.tb_period_sch	 table	{border-top:2px solid #b3b3b3;}
+.tb_period_sch	 table	caption	{display:none;}
+.tb_period_sch	 table	th	{border-bottom:1px solid #ccc; background-color:#f4f4f4; text-align:left;}
+.tb_period_sch	 table	th	p	{padding:11px 0 11px 20px; *padding:12px 0 10px 20px; color:#333;}
+.tb_period_sch	 table	td	{border-bottom:1px solid #ccc;}
+.tb_period_sch	 table	td	.td_p	{padding:10px 5px 10px 15px; font-size:14px;}
+.tb_period_sch	 table	td	.td_p	.btn_g_ls	{margin-left:2px;}
+.tb_period_sch	 table	td	 .td_period	{padding-left:15px;}
+.tb_period_sch	 table	td	 .td_period	img	{vertical-align:middle;}
+.tb_period_sch	 table	td	 .t_ymd	 {margin-right:10px;}
+.t_keep	{color:#333; letter-spacing:0;}
+
+/* 상품요청 리스트 */
+.list_table	 {margin-top:10px;}
+.list_table	.thead	{width:100%; overflow:hidden; border-top:2px solid #c7c7c7; border-bottom:1px solid #c7c7c7; background-color: #F4F4F4;}
+.list_table	.thead	li	{float:left; margin-left:-1px; padding: 10px 0 13px; background:url("/images/bb/front/mypage/line-th-prod.gif") no-repeat 0 0; font-size: 13px; font-weight: bold; line-height: 16px; text-align:center;}
+.list_table	.thead	.num	{width:96px;}
+.list_table	.thead	.subject	{width:406px;}
+.list_table	.thead	.reg_date	{width:132px;}
+.list_table	.thead	.answer_yn	{width:116px;}
+
+.list_table	.tbody	li	{border-bottom:1px solid #ccc; height:1%; text-align:center;}/*height:1% ie6,7 버그*/
+.list_table	.tbody	li.on	.question	.q_tit	{text-decoration:underline;}
+.list_table	.tbody	li.on	.answer	{display:block;}
+
+.list_t_wrap	{width:100%; overflow:hidden; padding:12px 0 11px;}
+.list_t_wrap	span	{display:block; float:left; margin-left:-1px; text-align:center;}
+.list_t_wrap	.num	{width:96px; font-size:14px; letter-spacing:0;}
+.list_t_wrap	.question	{width:372px; padding-left:34px; text-align:left; cursor:pointer;}
+.list_t_wrap	.question	.q_tit	{font-size:14px; color:#4c4c4c;}
+.list_t_wrap	.question	.ico_answer	{width:31px; height:17px; background:url('/images/bb/front/mypage/ico-answer.gif') no-repeat 0 0; margin-right:10px;}
+.list_t_wrap	.reg_date	{width:132px; font-size:14px; letter-spacing:0;}
+.list_t_wrap	.answer_yn	{width:116px;}
+
+
+.list_table	.tbody	.answer	{display:none; width:610px; background:#fafafa url("/images/bb/front/common/line-b-dot-de.gif") repeat-x 0 0; padding:18px 10px 17px 130px; text-align:left;}
+.list_table	.tbody	.answer	p	{font:12px/18px Dotum;}
+.list_table	.tbody	.answer	.q_con	{margin-bottom:10px; word-break:break-all;}
+.list_table	.tbody	.answer	.a_con	{background:url('/images/bb/front/mypage/bul-answer.gif') no-repeat 0 1px; padding-left:23px; font:12px/18px Dotum; word-break:break-all;}
+.list_table	.tbody	.answer	.a_con	.t	{margin-bottom:3px; font-weight:bold; color:#2484c6;}
+.list_table	.tbody	.nodata	{padding:50px 0; text-align:center;}
+
+/* 회원정보수정 */
+.box_my	{width:750px; background:url('/images/bb/front/mypage/box-my-btm.gif') no-repeat 0 bottom;}
+.box_my	.con	{background:url('/images/bb/front/mypage/box-my-top.gif') no-repeat 0 0; padding:28px 0 32px 0; text-align:center;}
+.box_my	.con	.input_tit	{margin-right:5px; color:#4c4c4c;}
+.box_my	.con	.input_tit2	{margin-right:5px; color:#333;}
+.box_my	.con	.input_txt	 {margin-right:29px;}
+.box_my	.con	select	{margin-right:29px;}
+.box_my	.con	.mr0	{margin-right:0;}
+
+.box_input	{width:666px; background-color:#f5f5f5; margin:20px auto 0 auto; padding:20px 0;}
+
+.txt_info_modify	{font-weight:bold; font-size:18px; color:#333;}
+.txt_info_modify	em	{color:#2484c6;}
+
+.txt_leave	 {margin:40px 0 20px 0; text-align:center;}
+.txt_leave	 .t1	{margin-bottom:20px;}
+.txt_leave	 .t2	{font-size:14px; color:#333;}
+.txt_leave2	{margin:20px 0; font-size:14px; color:#333;}
+.txt_leave2	em	{color:#2484c6;}
+
+.account_keep	{font-size:25px; color:#333;}
+.account_keep	em	{font-weight:bold; color:#ee1c24;}
+
+.btn_keep_info	 {margin-left:5px; cursor:pointer;}
+.btn_keep_info	 img	{vertical-align:middle;}
+
+.txt_fv_prod	 {margin-bottom:10px;}
+.txt_fv_prod	 em	{color:#ee1c24;}

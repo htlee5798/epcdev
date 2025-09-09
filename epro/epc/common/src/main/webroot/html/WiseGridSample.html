@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>WiseGrid Initialize Sample</title>
+<script language="JavaScript" src="/js/WiseGridTag.js"></script>
+</head>
+<script language="JavaScript" for="WiseGrid" event="Initialize()">
+	setProperty();
+    setHeader();
+</script>
+
+<script>
+function setProperty()
+{
+    // Cell Font Setting
+    document.WiseGrid.strCellFontName = "돋움";
+    document.WiseGrid.nCellFontSize = 10;
+
+    // Header Font Setting
+    document.WiseGrid.strHDFontName = "돋움";
+    document.WiseGrid.nHDFontSize = 10;
+    document.WiseGrid.bHDFontBold = true;
+
+    // Header Color
+    document.WiseGrid.strHDBgColor = "95|177|206";
+    document.WiseGrid.strHDFgColor = "255|255|255";
+
+    // Cell Color
+    document.WiseGrid.strGridBgColor ="255|255|255";
+    document.WiseGrid.strCellBgColor ="255|255|255";
+    document.WiseGrid.strCellFgColor ="51|51|51";
+
+    // Border Style
+    document.WiseGrid.strGridBorderColor = "204|204|204";
+    document.WiseGrid.strGridBorderStyle = "solidline";
+    document.WiseGrid.strHDBorderStyle = "solidline";
+    document.WiseGrid.strCellBorderStyle = "solidline";
+
+    // ETC Color
+    document.WiseGrid.strSelectedCellBgColor = "241|231|221";
+    document.WiseGrid.strSelectedCellFgColor = "51|51|51";
+    document.WiseGrid.strStatusbarBgColor = "243|243|243";
+    document.WiseGrid.strStatusbarFgColor = "101|101|101";
+    document.WiseGrid.strProgressbarColor = "0|126|174";
+
+    // ETC
+    document.WiseGrid.bMultiRowMenuVisible = true;
+    document.WiseGrid.bRowSelectorVisible = false;
+    document.WiseGrid.bHDSwapping = true;
+    document.WiseGrid.nAlphaLevel = 0;
+    document.WiseGrid.nRowHeight = 22;
+}
+
+function setHeader()
+{
+    document.WiseGrid.AddHeader("MAJOR_CD", "분류코드", "t_text", 10, 80, false);
+    document.WiseGrid.AddHeader("MINOR_CD", "코드값", "t_text", 10,   80, false);
+    document.WiseGrid.AddHeader("CODE_NAME", "코드명", "t_text", 100, 100, false);
+    document.WiseGrid.AddHeader("DESCRIPTION", "설명", "t_text", 200, 200, false);
+    document.WiseGrid.AddHeader("DISPLAY_ORDER", "노출순서", "t_number", 10, 80, false);
+
+    document.WiseGrid.BoundHeader();
+}
+
+function doSearch() {
+	var url = '/lottemart-bos/test/WiseGridTest.do?method=getCodeList';
+//	var url = '/lottemart-bos/test/WiseGridTest.do';
+	document.WiseGrid.setParam('method', 'getCodeList');
+	document.WiseGrid.setParam('majorCd', 'PRD02');
+	document.WiseGrid.DoQuery(url);
+}
+</script>
+<body>
+<h1>WiseGrid Initialize Sample</h1>
+<hr>
+
+<a href="#" onclick="doSearch();">검색</a>
+<table width="800" height="400" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+        <td><script>initWiseGrid("WiseGrid", "800", "400");</script></td>
+    </tr>
+</table> 
+</body>
+</html> 

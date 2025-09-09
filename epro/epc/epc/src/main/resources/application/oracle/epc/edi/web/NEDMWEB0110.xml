@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMWEB0110">
+
+	<typeAlias alias="resultClass" type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass" type="lcn.module.common.util.HashBox" />
+
+	<typeAlias alias="NEDMWEB0110VO"
+		type="com.lottemart.epc.edi.weborder.model.NEDMWEB0110VO" />
+
+
+<!-- 오늘 등록되었는 반품 상품 조회 -->
+	<resultMap id="NEDMWEB0110VOMAP" class="NEDMWEB0110VO">
+		<result property="rrlReqNo" 	column="RRL_REQ_NO" />
+		<result property="prodCd" 		column="PROD_CD" />
+		<result property="rrlDy" 		column="RRL_DY" />
+		<result property="strCd" 		column="STR_CD" />
+		<result property="venCd" 		column="VEN_CD" />
+		<result property="srcmkCd" 		column="SRCMK_CD" />
+		<result property="prodNm" 		column="PROD_NM" />
+		<result property="prodStd" 		column="PROD_STD" />
+		<result property="ordIpsu" 		column="ORD_IPSU" />
+		<result property="ordUnit" 		column="ORD_UNIT" />
+		<result property="stdBuyPrc" 	column="STD_BUY_PRC" />
+		<result property="rrlQty" 		column="RRL_QTY" />
+		<result property="rrlCfmQty" 	column="RRL_CFM_QTY" />
+		<result property="regStsCd" 	column="REG_STS_CD" />
+		<result property="regDt" 		column="REG_DT" />
+		
+	</resultMap>
+	
+	<!-- 반품 등록된 리스트 조회 -->
+	<select id="EDI_TED_PO_RRL_PROD_01" parameterClass="NEDMWEB0110VO" resultMap="NEDMWEB0110VOMAP">
+		/* NEDMWEB0110.EDI_TED_PO_RRL_PROD_01 */
+		SELECT 	RRL_REQ_NO
+			,	PROD_CD
+			,	RRL_DY
+			,	STR_CD
+			,	VEN_CD
+			,	SRCMK_CD
+			,	PROD_NM
+			,	PROD_STD
+			,	ORD_IPSU
+			,	ORD_UNIT
+			,	STD_BUY_PRC
+			,	RRL_QTY
+			,	RRL_CFM_QTY
+			,	REG_STS_CD
+			,	REG_DT
+		FROM 	TPC_PO_RRL_PROD
+		WHERE 	1 = 1
+			AND VEN_CD = #venCd#
+			
+			<isNotEmpty property="strCd">
+				AND STR_CD = #strCd#
+			</isNotEmpty>
+			
+			AND RRL_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</select>
+	
+	<!-- 반품등록 MST 생성 -->
+	<select id="selectNewRtnReqNo" resultClass="java.lang.String">
+		/* NEDMWEB0110.selectNewRtnReqNo */
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_RRL_MST_SEQ.NEXTVAL,6,'0') FROM DUAL
+	</select>
+	
+	<insert id="EDI_RETURN_PROD_DATA_03" parameterClass="com.lottemart.epc.edi.weborder.model.NEDMWEB0110VO">
+		/* NEDMWEB0110.EDI_RETURN_PROD_DATA_03 */
+		INSERT INTO TPC_PO_RRL_MST
+		(
+				RRL_REQ_NO
+			,	VEN_CD
+			,	VEN_NM
+			,	STR_CD
+			,	RRL_DY
+			,	RRL_VSEQ
+			,	RRL_TOT_PROD_QTY
+			,	RRL_TOT_PRC
+			,	RRL_TOT_STK_QTY
+			,	RRL_PRGS_CD
+			,	REG_DT
+		)
+		VALUES
+		(
+				#rrlReqNo#
+			,	#venCd#
+			,	#venNm#
+			,	#strCd#
+			,	TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+			,	'1'
+			,	#rrlTotProdQty#
+			,	#rrlTotPrc#
+			,	#rrlTotStkQty#
+			,	'01'
+			,	TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		)
+	</insert>
+
+	<!-- 반품등록 PROD 생성 -->
+	<update id="EDI_RETURN_PROD_DATA_04" parameterClass="NEDMWEB0110VO">
+		/* NEDMWEB0110.EDI_RETURN_PROD_DATA_04 */
+		INSERT INTO TPC_PO_RRL_PROD
+		(
+				RRL_REQ_NO
+			,	PROD_CD
+			,	RRL_DY
+			,	STR_CD
+			,	VEN_CD
+			,	SRCMK_CD
+			,	PROD_NM
+			,	PROD_STD
+			,	ORD_IPSU
+			,	ORD_UNIT
+			,	STD_BUY_PRC
+			,	RRL_QTY
+			,	RRL_CFM_QTY
+			,	REG_STS_CD
+			,	RRL_STK_QTY
+			,	REG_DT
+		)
+		VALUES
+		(
+				#rrlReqNo#
+			,	#prodCd#
+			,	TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+			,	#strCd#
+			,	#venCd#
+			,	#srcmkCd#
+			,	#prodNm#
+			,	#prodStd#
+			,	#ordIpsu#
+			,	#ordUnit#
+			,	#stdBuyPrc#
+			,	#rrlQty#
+			,	#rrlQty#
+			,	'0'
+			,	#rrlStkQty#
+			,	CURRENT_TIMESTAMP(0)
+		)
+	</update>
+
+</sqlMap>

@@ -1,0 +1,12 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Fri Jan 24 11:48:36 KST 2025
+http\://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-etax/.error=Could not transfer artifact lcnjf.pom.lottemart\:lcnjf-pom-lottemart\:pom\:1.2.1 from/to lcnjf-etax (http\://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-etax)\: lcn.eknow.co.kr
+@default-onlinemall-http\://10.52.2.150\:8080/nexus/content/repositories/onlinemall/.lastUpdated=1737686916086
+https\://repo.maven.apache.org/maven2/.lastUpdated=1737686916775
+@default-lcnjf-thirdparty-http\://lcn.eknow.co.kr/nexus/content/repositories/thirdparty/.lastUpdated=1737686905999
+https\://repo.maven.apache.org/maven2/.error=
+http\://lcn.eknow.co.kr/nexus/content/repositories/thirdparty/.error=Could not transfer artifact lcnjf.pom.lottemart\:lcnjf-pom-lottemart\:pom\:1.2.1 from/to lcnjf-thirdparty (http\://lcn.eknow.co.kr/nexus/content/repositories/thirdparty/)\: \uC54C\uB824\uC9C4 \uD638\uC2A4\uD2B8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4 (lcn.eknow.co.kr)
+@default-lcnjf-etax-http\://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-etax/.lastUpdated=1737686906020
+@default-lcnjf-lottemart-http\://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-lottemart/.lastUpdated=1737686906051
+http\://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-lottemart/.error=Could not transfer artifact lcnjf.pom.lottemart\:lcnjf-pom-lottemart\:pom\:1.2.1 from/to lcnjf-lottemart (http\://lcn.eknow.co.kr/nexus/content/repositories/lcnjf-lottemart)\: lcn.eknow.co.kr
+http\://10.52.2.150\:8080/nexus/content/repositories/onlinemall/.error=Could not transfer artifact lcnjf.pom.lottemart\:lcnjf-pom-lottemart\:pom\:1.2.1 from/to onlinemall (http\://10.52.2.150\:8080/nexus/content/repositories/onlinemall)\: Connect to 10.52.2.150\:8080 [/10.52.2.150] failed\: Connect timed out

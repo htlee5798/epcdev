@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMETC0001">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmetc0001VO" type="com.lottemart.epc.etc.model.PSCMETC0001VO" />
+	
+	<resultMap id="codeDetail" class="com.lottemart.epc.etc.model.PSCMETC0001VO">
+		<result property="majorCd" column="major_cd"/>
+		<result property="minorCd" column="minor_cd"/>
+		<result property="cdNm" column="cd_nm"/>
+		<result property="cdDesc" column="cd_desc"/>
+	</resultMap>
+	
+	<select id="selectCodeMainList" resultClass="com.lottemart.common.util.DataMap">
+	/*	PSCMETC0001.selectCodeMainList	*/
+	SELECT *
+	  FROM (
+	        SELECT   
+	            CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+	          , COUNT(*) OVER() TOTAL_COUNT
+	          , A.*   
+	        FROM (        
+	            SELECT RANK()OVER(ORDER BY t.MAJOR_CD, T.MINOR_CD) RANK_NUM  
+	                , T.* 
+	            FROM TET_CODE T
+	            WHERE 1=1
+			<isNotEmpty prepend="AND" property="majorCd" > T.MAJOR_CD = #majorCd#  </isNotEmpty>
+			<isNotEmpty prepend="AND" property="minorCd" > T.MINOR_CD = #minorCd#  </isNotEmpty>
+			<isNotEmpty prepend="AND" property="cdNm" > T.CD_NM LIKE '%'||#cdNm#||'%'   </isNotEmpty>					            
+	              )A
+	         )
+	     WHERE PAGE = #currentPage#     
+	</select>
+
+	<insert id="insertCodeMainList">
+	/*	PSCMETC0001.insertCodeMainList	*/
+			INSERT INTO TET_CODE 
+				( MAJOR_CD
+				  , MINOR_CD
+				  , CD_NM
+				  , CD_DESC
+				  , ORDER_SEQ
+				  , USE_YN
+				  , VALI_END_DATE
+				  , VALI_START_DATE
+				  , REG_DIVN_CD
+				  , REG_DATE
+				  , REG_ID
+				  , MOD_DATE
+				  , MOD_ID
+				  )
+			VALUES ( #majorCd#
+				  , #minorCd#
+				  , #cdNm#
+				  , #cdDesc#
+				  , #orderSeq#
+				  , #useYn#
+				  , '99991231235959'
+				  , '20110101000000'
+				  , #regDivnCd#
+				  , CURRENT_TIMESTAMP(0)
+				  , 'admin'
+				  , CURRENT_TIMESTAMP(0)
+				  , 'admin'
+				  )
+	</insert>
+	
+	<update id="updateCodeMainList">
+	/*	PSCMETC0001.updateCodeMainList	*/
+			UPDATE 	TET_CODE 
+			SET 	CD_NM = #cdNm#
+					, CD_DESC = #cdDesc#
+					, ORDER_SEQ = #orderSeq#
+					, USE_YN = #useYn#
+					, VALI_END_DATE = '99991231235959'
+					, VALI_START_DATE = '20110101000000'
+					, REG_DIVN_CD = #regDivnCd#
+					, MOD_DATE = CURRENT_TIMESTAMP(0)
+					, MOD_ID = 'admin'
+			WHERE 	MAJOR_CD = #majorCd#
+			AND		MINOR_CD = #minorCd#
+	</update>
+	
+	
+	<delete id="deleteCodeMainList">
+	/*	PSCMETC0001.deleteCodeMainList	*/
+			DELETE 	FROM TET_CODE 
+			WHERE	MAJOR_CD = #majorCd#
+			AND		MINOR_CD = #minorCd#
+	</delete>	
+
+	<select id="selectCodePopup" resultMap="codeDetail">
+	/*	PSCMETC0001.selectCodePopup	*/
+		SELECT 	MAJOR_CD, MINOR_CD, CD_NM, CD_DESC
+		FROM 	TET_CODE
+     	WHERE 	MAJOR_CD = #majorCd#
+     	AND 	MINOR_CD = #minorCd#
+	</select>
+	
+</sqlMap>

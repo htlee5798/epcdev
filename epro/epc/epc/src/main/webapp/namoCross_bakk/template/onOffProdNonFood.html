@@ -1,0 +1,218 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title> 파트너사 고도화 가이드 </title>
+	<meta charset="utf-8">
+	<meta name="Referrer" content="origin">
+	<meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="Keywords" content="">
+	<meta name="Description" content="">
+	<style type="text/css">
+			@charset "UTF-8";
+		html{	/
+			-webkit-text-size-adjust: none; /*Chrome, Safari, newer versions of Opera*/
+			-ms-text-size-adjust: none; /*Ie*/
+			}
+		body, p {margin:0; padding:0; border:0; font:inherit;vertical-align:baseline;font-family:NotoSansCJKkr,Malgun,Gothic,arial,sans-serif;}
+		ul {list-style-type:none;margin:0px;padding:0px;}
+		.wrap {width:980px;margin:0 auto;}
+		.depth01 {margin-bottom:170px;}
+		.depth02 {margin-bottom:80px;}
+		.depth03 {margin-bottom:70px;}
+		.depth04 {margin-bottom:20px;}
+		.tit_line {height:35px;margin:0px 50px 70px 50px;padding-top:20px;}
+		.tit_line .line {display:inline-block;width:100%;height:1px;border-top:1px solid #ddd;}
+		.wrap .tit_line h1 {display:inline-block;margin-top:-35px;padding-right:15px;font-size:3.5em;font-weight:bold;color:#555;letter-spacing:-0.05em;background-color:#fff;}
+
+		.sguide01 {text-align:center;}
+		.sguide01 .info {margin:170px auto;width:880px;text-align:center;}
+		.sguide01 .info .sub_01 {line-height:1.25em;font-size:4.5em;font-weight:bold;color:#333; letter-spacing:-0.036em;}
+		.sguide01 .info .sub_02 {line-height:1em;margin:40px 0 0 0;font-size:3em;color:#333; letter-spacing:-0.036em;}
+		.sguide01 .sub_03 {margin:0 auto;font-size:3em;color:#333;}
+
+		.sguide02 {text-align:left;}
+		.sguide02 h2 {margin:70px 60px 70px 60px;font-size:3.5em;font-weight:bold;color:#333;letter-spacing:-0.26px;letter-spacing:-0.026em;}
+		.sguide02 .sinfor_01 {margin:0 60px 80px 60px;}
+		.sguide02 .sinfor_01 p {font-size:2.5em;color:#555;letter-spacing:-0.026em;word-break:keep-all;}
+
+		.sguide03 h2 {margin:70px 50px 45px 60px;font-size:2.7em;font-weight:bold;color:#333;letter-spacing:-0.026em;}
+		.sguide03 .sinfor_01 {margin:0 60px 80px 0px;}
+		.sguide03 .sinfor_01 p {font-size:2.5em;color:#555;letter-spacing:-0.026em;}
+		.sguide03 .sinfor_02 {margin:0 60px 0px 0px;}
+		.sguide03 .sinfor_02 p {font-size:2.5em;color:#555;letter-spacing:-0.026em;}
+		.sguide03 p {margin:0 60px;font-size:2em;color:#555;letter-spacing:-0.026em;word-break:keep-all;}
+		.sguide03 img {margin:0 0px;}
+
+		.sguide04 .info_box {margin:0 0 20px 50px;padding:35px 0;width:880px;background-color:#fafafa;}
+		.sguide04 .info_box:last-child  {margin-bottom:0px;}
+		.sguide04 .info_box h2 {margin:0px 50px 40px 35px;font-size:2.5em;font-weight:bold;color:#333;letter-spacing:-0.026em;line-height:1em;}
+		.sguide04 .info_box .sinfor_01 p {margin:0 60px 40px 35px;font-size:2em;color:#555;letter-spacing:-0.026em;word-break:keep-all;}
+		.sguide04 .info_box .sinfor_01 p:last-child {margin-bottom:0px;}
+		.sguide04 .sinfor_02 {margin:0 60px 0px 85px;}
+		.sguide04 .sinfor_02 p {margin:0 60px 40px 0px;font-size:2em;color:#555;letter-spacing:-0.026em;}
+		.sguide04 .sinfor_02 p:last-child  {margin:0 60px 0px 0px;}
+
+		.sguide05 h2 {margin:70px 50px 35px 85px;font-size:2.5em;font-weight:bold;color:#333;letter-spacing:-0.026em;}
+		.sguide05 .info {margin:70px auto;text-align:center;}
+		.sguide05 .info .sub_01 {line-height:1em;font-size:2.5em;font-weight:bold;color:#333; letter-spacing:-0.036em;}
+		.sguide05 .info .sub_02 {line-height:1em;margin:40px 0 0 0;font-size:3em;color:#333; letter-spacing:-0.036em;}
+		.sguide05 .sub_03 {margin:0 auto;font-size:3em;color:#333;}
+		.sguide05 .pub_infor_01 {width:90%;margin:0 50px;border-top:3px solid #333;border-bottom:3px solid #333;}
+		.sguide05 .pub_infor_01 th , .sguide05 .pub_infor_01 td {height:40px;font-size:2em;color:#333;padding:5px;letter-spacing:-0.036em;text-align:left }
+		.sguide05 .pub_infor_01 th {width:30%;padding-left:30px;font-weight:normal;border-bottom:1px solid #333;}
+		.sguide05 .pub_infor_01 td {border-bottom:1px solid #333;border-left:0px;border-right:0px}
+
+		.sguide05 .pub_infor_02 {width:712px;margin:0 auto;padding:0px;border:1px solid #333;border-spacing:0px;}
+		.sguide05 .pub_infor_02 th , .sguide05 .pub_infor_02 td {border-top:1px solid #333;font-size:2em;color:#333;padding:7px;letter-spacing:-0.036em;}
+		.sguide05 .pub_infor_02 thead th {width:60%;background-color:#333; color:#fff; font-weight:normal;text-align:center;}
+		.sguide05 .pub_infor_02 thead td {background-color:#333; color:#fff; font-weight:normal;text-align:right;}
+		.sguide05 .pub_infor_02 tbody th {font-weight:normal;text-align:left;}
+		.sguide05 .pub_infor_02 tbody td.line {border-right:1px solid #333;}
+		.sguide05 .pub_infor_02 tbody td.last {text-align:right;}
+		.sguide05 .pub_infor_02 tbody td.space {border:0px;}
+
+		.sguide06 h2 {margin:0px 50px 70px 85px;font-size:2.7em;font-weight:bold;color:#333;letter-spacing:-0.026em;}
+		.sguide06 .sinfor_01 {margin:0 60px 0px 85px;}
+		.sguide06 .sinfor_01 .question {margin-bottom:40px;font-size:2.5em;color:#b31016;font-weight:bold;letter-spacing:-0.026em;}
+		.sguide06 .sinfor_01 .answer {margin-bottom:70px;font-size:2em;color:#555;letter-spacing:-0.026em;}
+		.sguide06 .sinfor_01 p:last-child  {margin-bottom:0px;}
+
+		.sguide07 h2 {margin:70px 50px 40px 85px;font-size:2.375em;font-weight:bold;color:#333;letter-spacing:-0.026em;}
+		.sguide07 .sinfor_01 {margin:0 60px 0px 85px;}
+		.sguide07 .sinfor_01 p {margin-bottom:40px;font-size:1.875em;color:#555;letter-spacing:-0.026em;}
+		.sguide07 .sinfor_01 p:last-child  {margin-bottom:0px;}
+
+		.wrap .alt_blind {position: absolute;width: 1px;height: 1px;margin: -1px;padding: 0;border: 0;clip: rect(0 0 0 0);overflow: hidden;}
+	</style>
+
+</head>
+
+<body>
+	<div class="wrap">
+		<!-- 인트로 영역 시작입니다. -->
+		<div class="sguide01">
+			<div class="info">
+				<p class="sub_01">상품명 또는 한줄 소개</p>
+				<p class="sub_02">상품 부가 소개말을 입력하세요</p>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/living_sample_01.jpg" alt="point_01"/>
+		</div>
+		<!--// 인트로 영역 끝입니다. -->
+
+		<!-- 상품 소구 포인트 영역 입니다 -->
+		<div class="sguide02 depth01">
+			<h2>상품 소구 포인트 제목</h2>
+			<div class="sinfor_01">
+				<p>상품 소구 포인트를 상세하게 기술합니다 </p>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/living_sample_02.jpg" alt="point_01"/>
+			<h2>꼬임 없는 쾌적한 샤워</h2>
+			<div class="sinfor_01">
+				<p>꼬임 방지 기술을 적용한 메탈 호스 2m로 편안하게 사용하세요.</p>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/living_sample_03.jpg" alt="point_01"/>
+			<h2>강력한 수압과 안심하고 사용하는 정수 필터</h2>
+			<div class="sinfor_01">
+				<p>복합물살 미세플레이트로 수압을 상승시키며 파워 분사와 안개 분사의 듀얼 복합 물살로 차원이 다른 수압을 선보이는 샤워헤드입니다.
+					수돗물의 녹물, 불순물, 이물질 등을 제거하는 정수필터를 적용해 안심하고 쓸 수 있습니다.</p>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/living_sample_05.jpg" alt="point_01"/>
+			<h2>상품 소구포인트 제목2</h2>
+			<div class="sinfor_01">
+				<p>상품, 또는 브랜드의 소구 포인트를 제안해보세요.</p>
+			</div>
+		</div>
+    <!--// 상품 소구 포인트 영역 끝입니다 -->
+
+		<!-- 상품 이용팁 영역 시작입니다. -->
+		<div class="sguide03 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>상품이용팁</h1>
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/living_sample_04.jpg" alt="point_01"/>
+			<h2>상품이용팁 타이틀</h2>
+			<div class="sinfor_01">
+				<p>세척법, 교체주기, 관리방법 등 상품 이용에 도움이 되는 부가적인 정보를 입력해주세요.
+			</div>
+			<img src="http://simage.lottemart.com/images/b2c/2021/living_sample_06.jpg" alt="point_01"/>
+			<h2>교체주기를 확인하세요</h2>
+			<div class="sinfor_02">
+				<p> 샤워호스와 헤드는 세균이 번식하기 좋은 습도, 온도이며 내부 청소가 어려워 세균 번식이 될 수 있습니다. 6개월~1년에 한번 씩 교체를 권장드려요</p>
+			</div>
+		</div>
+		<!--// 상품 이용팁 영역 끝입니다. -->
+
+		<!-- 상품 이용시 주의 사항 영역 시작입니다. -->
+		<div class="sguide04 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>주의사항</h1>
+			</div>
+			<div class="info_box">
+				<h2>주의사항 제목1</h2>
+				<div class="sinfor_01">
+					<p>1. 주의사항 제목1과 관련된 소비자가 알아야하는 유의사항을 입력해주세요</p>
+					<p>2. 주의사항 제목1과 관련된 소비자가 알아야하는 유의사항을 입력해주세요</p>
+				</div>
+			</div>
+			<div class="info_box">
+				<h2>필터 교체시 주의사항</h2>
+				<div class="sinfor_01">
+					<p>필터 교체시 반드시 고무링 부분을 위로 가도록 한 후 교체해주세요. 반대시 샤워기가 막힐 수 있어요.</p>
+				</div>
+			</div>
+		</div>
+		<!--// 상품 이용시 주의 사항 영역 끝입니다. -->
+
+		<!-- 표시사항 영역 시작입니다. -->
+		<div class="sguide05 depth01">
+			<div class="tit_line">
+				<div class="line"></div>
+				<h1>상품의 표시사항</h1>
+			</div>
+			<div class="info">
+				<p class="sub_01">상품 고시정보</p>
+			</div>
+			<table class="pub_infor_01">
+				<tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요</td>
+				</tr>
+        <tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요</td>
+				</tr>
+				<tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요 /</td>
+				</tr>
+				<tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요</td>
+				</tr>
+				<tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요</td>
+				</tr>
+				<tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요</td>
+				</tr>
+				<!--// 고시정보 테이블 행을 추가하고 싶을 때는 여기서부터 복사하세요. -->
+				<tr>
+					<th>고시정보명</th>
+					<td>고시정보 내용을 입력하세요</td>
+				</tr>
+				<!--// 고시정보 테이블 행을 추가하고 싶을 때는 여기까지 복사하세요. -->
+			</table>
+		</div>
+		<!--// 표시사항 영역 끝입니다. -->
+
+	</div>
+</body>
+</html>

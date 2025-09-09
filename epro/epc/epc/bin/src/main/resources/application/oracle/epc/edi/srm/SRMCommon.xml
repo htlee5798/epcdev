@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMCommon">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<!-- 공통코드  -->
+	<select id="selectCommonCode" parameterClass="paramClass" resultClass="resultClass">
+		/* SRMCommon.selectCommonCode */
+		SELECT 	CODE	AS CODE_ID
+			,	TEXT1	AS CODE_NAME
+		FROM 	SCODE
+		WHERE 	TYPE 		= #parentCodeId#
+			AND USE_FLAG 	= 'Y'
+			AND LANGUAGE 	= UPPER(NVL(#locale#,'KO'))
+		
+		<isEqual property="sortStd" compareValue="CODE">
+			ORDER BY CODE
+		</isEqual>
+		
+		<isEqual property="sortStd" compareValue="NAME">
+			ORDER BY TEXT1
+		</isEqual>
+		
+		<isEmpty property="sortStd">
+			ORDER BY TO_NUMBER(SORT_SEQ)
+		</isEmpty>
+		
+	</select>
+	
+</sqlMap>

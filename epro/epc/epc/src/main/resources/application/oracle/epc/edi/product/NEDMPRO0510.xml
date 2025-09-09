@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0510">
+	<typeAlias alias="NEDMPRO0500VO" type="com.lottemart.epc.edi.product.model.NEDMPRO0500VO" />
+	
+	<!-- 원가변경요청 ItemMap -->
+	<resultMap id="tpcProdChgCostItemMap" class="NEDMPRO0500VO">
+		<result column="ROW_STAT"			property="rowStat" />	 			<!-- 행상태 -->
+		<result column="RNUM"				property="rnum" />	 				<!-- 행순번 -->
+		<result column="REQ_NO"				property="reqNo" /> 				<!-- 요청번호 -->
+		<result column="SRCMK_CD"			property="srcmkCd" /> 				<!-- 판매코드 -->
+		<result column="PROD_CD"			property="prodCd" /> 				<!-- 상품코드 -->
+		<result column="PROD_NM"			property="prodNm" /> 				<!-- 상품명 -->
+		<result column="SEQ"				property="seq" /> 					<!-- 순번 -->
+		<result column="VEN_CD"				property="venCd" /> 				<!-- 파트너사코드 -->
+		<result column="PUR_DEPT"			property="purDept" /> 				<!-- 구매조직코드 -->
+		<result column="PUR_DEPT_NM"		property="purDeptNm" /> 			<!-- 구매조직명 -->
+		<result column="NB_PB_GBN"			property="nbPbGbn" /> 				<!-- NB/PB구분 -->
+		<result column="NB_PB_GBN_NM"		property="nbPbGbnNm" />				<!-- NB/PB구분명 -->
+		<result column="ORD_UNIT"			property="ordUnit" /> 				<!-- 기본단위 -->
+		<result column="CHG_REQ_COST"		property="chgReqCost" /> 			<!-- 변경요청금액 -->
+		<result column="COST_RSN_CD"		property="costRsnCd" /> 			<!-- 변경사유코드 -->
+		<result column="COST_RSN_CD_NM"		property="costRsnCdNm" /> 			<!-- 변경사유코드명 -->
+		<result column="COST_RSN_DTL_CD"	property="costRsnDtlCd" /> 			<!-- 변경상세사유코드 -->
+		<result column="COST_RSN_DTL_CD_NM"	property="costRsnDtlCdNm" />		<!-- 변경상세사유코드명 -->
+		<result column="CMT"				property="cmt" /> 					<!-- 비고 -->
+		<result column="CHG_REQ_COST_DT"	property="chgReqCostDt" /> 			<!-- 변경시작일시 -->
+		<result column="PR_STAT"			property="prStat" /> 				<!-- 진행상태코드 -->
+		<result column="PR_STAT_NM"			property="prStatNm" /> 				<!-- 진행상태명 -->
+		<result column="CHG_REQ_DY"			property="chgReqDy" /> 				<!-- MD 요청일자 -->
+		<result column="DEL_FG"				property="delFg" /> 				<!-- 삭제여부 -->
+		<result column="DC_NUM"				property="dcNum" /> 				<!-- 계약(공문)번호 -->
+		<result column="CONT_CODE"			property="contCode" /> 				<!-- 연계계약(공문)번호 -->
+		<result column="RTN_RSN"			property="rtnRsn" /> 				<!-- 반려사유 -->
+		<result column="IF_REQ_DT"			property="ifReqDt" /> 				<!-- 인터페이스송신일시 -->
+		<result column="IF_RCV_DT"			property="ifRcvDt" /> 				<!-- 인터페이스수신일시 -->
+		<result column="ORG_COST"			property="orgCost" />	 			<!-- 기존원가금액 -->
+		<result column="INC_DEC_RATE"		property="incDecRate" /> 			<!-- 증감율 -->
+		<result column="PROD_PAT_FG"		property="prodPatFg" /> 			<!-- 상품패턴구분 -->
+		<result column="L3_CD"				property="l3Cd" /> 					<!-- 소분류코드 -->
+		<result column="L3_NM"				property="l3Nm" /> 					<!-- 소분류코드명 -->
+		<result column="L2_CD"				property="l2Cd" /> 					<!-- 중분류코드 -->
+		<result column="L2_NM"				property="l2Nm" /> 					<!-- 중분류코드명 -->
+		<result column="L1_CD"				property="l1Cd" /> 					<!-- 대분류코드 -->
+		<result column="L1_NM"				property="l1Nm" /> 					<!-- 대분류코드명 -->
+		<result column="TAX_FG"				property="taxFg" /> 				<!-- 과세유형 -->
+		<result column="TAX_FG_NM"			property="taxFgNm"/>				<!-- 과세유형명 -->
+		<result column="FRESH_STD_YN"		property="freshStdYn"/>				<!-- 신선규격상품여부 -->
+		<result column="GRP_ID"				property="grpId"/>					<!-- 요청그룹아이디 -->
+		<result column="DC_CRE_ALL_YN"		property="dcCreAllYn"/>				<!-- 모든공문생성여부 -->
+		<result column="DC_SEND_ALL_YN"		property="dcSendAllYn"/>			<!-- 모든공문발송여부 -->
+		<result column="EDIT_AVAIL_YN"		property="editAvailYn"/>			<!-- 수정가능여부 -->
+	</resultMap>
+	
+	<!-- 진행상태 map -->
+	<resultMap id="tpcProdChgStatusMap" class="NEDMPRO0500VO">
+		<result column="SRCMK_CD"		property="srcmkCd"/>	<!-- 판매코드 -->
+		<result column="PROD_CD"		property="prodCd"/>		<!-- 상품코드 -->
+		<result column="SEQ"			property="seq"/>		<!-- 순번 -->
+		<result column="PR_STAT"		property="prStat"/>		<!-- 진행상태코드 -->
+		<result column="DC_NUM"			property="dcNum"/>		<!-- 공문번호 -->
+	</resultMap>
+	
+	<!-- 원가변경요청 엑셀 정보 -->
+	<resultMap id="tpcProdChgCostDetailExcelInfo" class="java.util.HashMap">
+		<result column="SRCMK_CD"			property="SRCMK_CD" 	nullValue="" /> 		<!-- 판매코드 -->
+		<result column="PROD_CD"			property="PROD_CD" 		nullValue="" /> 				<!-- 상품코드 -->
+		<result column="PROD_NM"			property="PROD_NM" 		nullValue="" /> 				<!-- 상품명 -->
+		<result column="VEN_CD"				property="VEN_CD" 		nullValue="" /> 				<!-- 파트너사코드 -->
+		<result column="PUR_DEPT_NM"		property="PUR_DEPT_NM" 	nullValue="" /> 			<!-- 구매조직명 -->
+		<result column="NB_PB_GBN_NM"		property="NB_PB_GBN_NM" nullValue="" />				<!-- NB/PB구분명 -->
+		<result column="CHG_REQ_COST"		property="CHG_REQ_COST" nullValue=""/> 			<!-- 변경요청금액 -->
+		<result column="COST_RSN_CD_NM"		property="COST_RSN_CD_NM" nullValue=""/> 			<!-- 변경사유코드명 -->
+		<result column="COST_RSN_DTL_CD_NM"	property="COST_RSN_DTL_CD_NM"  nullValue=""/>		<!-- 변경상세사유코드명 -->
+		<result column="CMT"				property="CMT" 			nullValue=""/> 					<!-- 비고 -->
+		<result column="CHG_REQ_COST_DT"	property="CHG_REQ_COST_DT"  nullValue=""/> 			<!-- 변경시작일시 -->
+		<result column="PR_STAT_NM"			property="PR_STAT_NM"  nullValue=""/> 				<!-- 진행상태명 -->
+		<result column="DC_NUM"				property="DC_NUM"  		nullValue=""/> 				<!-- 계약(공문)번호 -->
+		<result column="ORG_COST"			property="ORG_COST" 	nullValue=""/>	 			<!-- 기존원가금액 -->
+		<result column="INC_DEC_RATE"		property="INC_DEC_RATE" nullValue=""/> 			<!-- 증감율 -->
+		<result column="L3_NM"				property="L3_NM" 		nullValue=""/> 					<!-- 소분류코드명 -->
+		<result column="L2_NM"				property="L2_NM" 		nullValue=""/> 					<!-- 중분류코드명 -->
+		<result column="L1_NM"				property="L1_NM" 		nullValue=""/> 					<!-- 대분류코드명 -->
+		<result column="REG_ID"				property="REG_ID" 		nullValue=""/> 					<!-- 등록자 -->
+		<result column="REG_DATE"			property="REG_DATE" 	nullValue=""/> 					<!-- 등록날짜 -->
+	</resultMap>
+	
+	<!-- 원가변경요청 아이템리스트 검색조건 -->
+	<sql id="selectTpcProdChgCostItemList_Where">
+		/* NEDMPRO0510.selectTpcProdChgCostItemList_Where */
+		<isNotEmpty property="srchPurDept" prepend="AND" >
+			A.PUR_DEPT = #srchPurDept#
+		</isNotEmpty>
+		<isNotEmpty property="srchVenCd" prepend="AND" >
+			A.VEN_CD = #srchVenCd#
+		</isNotEmpty>
+		<isEmpty  property="srchVenCd"  prepend="AND">	<!-- 파트너사 코드 미선택 시, 본인이 속한 회사의 모든 데이터 조회 --> 
+			<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+				#venCds[]# 
+			</iterate>
+	  	</isEmpty>
+		<isNotEmpty property="srchNbPbGbn" prepend="AND" >
+			A.NB_PB_GBN = #srchNbPbGbn#
+		</isNotEmpty>
+		<isNotEmpty property="srchSrcmkCd" prepend="AND" >
+			A.SRCMK_CD = #srchSrcmkCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchChgReqCostDt" prepend="AND" >
+			A.CHG_REQ_COST_DT = #srchChgReqCostDt#
+		</isNotEmpty>
+		<isNotEmpty property="srchPrStat" prepend="AND" >
+			A.PR_STAT = #srchPrStat#
+		</isNotEmpty>
+		<isNotEmpty property="srchProdPatFg" prepend="AND" >
+			B.PROD_PAT_FG = #srchProdPatFg#
+		</isNotEmpty>
+		<isNotEmpty property="srchTaxFg" prepend="AND" >
+			B.TAX_FG = #srchTaxFg#
+		</isNotEmpty>
+		<isNotEmpty property="srchFreshStdYn" prepend="AND" >
+			<isEqual property="srchFreshStdYn" compareValue="Y">
+			E.L3_CD IS NOT NULL AND E.L3_CD <![CDATA[<>]]> ''
+			</isEqual>
+			<isEqual property="srchFreshStdYn" compareValue="N">
+			E.L3_CD IS NULL
+			</isEqual>
+		</isNotEmpty>
+	</sql>
+	
+	<!-- 원가변경요청 아이템리스트 카운트 -->
+	<select id="selectTpcProdChgCostItemListCnt" parameterClass="NEDMPRO0500VO" resultClass="Integer">
+		/* NEDMPRO0510.selectTpcProdChgCostItemListCnt */
+		SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_PROD_CHG_COST_ITEM A
+		LEFT OUTER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		LEFT OUTER JOIN CATEGORY C ON B.L3_CD = C.CAT_CD AND C.LVL = '3'
+		LEFT OUTER JOIN V_FRESH_CATEGORY E ON C.CAT_CD = E.L3_CD
+		WHERE 1=1
+		<include refid="selectTpcProdChgCostItemList_Where"/>
+	</select>
+	
+	<!-- 원가변경요청 아이템리스트 조회 -->
+	<select id="selectTpcProdChgCostItemList" parameterClass="NEDMPRO0500VO" resultMap="tpcProdChgCostItemMap">
+		/* NEDMPRO0510.selectTpcProdChgCostItemList */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY A.REG_DATE DESC, A.SRCMK_CD) AS RNUM
+			, 'R' AS ROW_STAT	/* 행상태 */
+			, A.REQ_NO			/* 요청번호 */
+			, A.SRCMK_CD 		/* 판매코드 */
+			, A.PROD_CD 		/* 상품코드 */
+			, A.SEQ 			/* 순번 */
+			, B.PROD_NM			/* 상품명 */
+			, A.VEN_CD			/* 파트너사코드 */
+			, A.PUR_DEPT		/* 구매조직 */
+			, FN_NEW_CODE_RTN('PURDE',A.PUR_DEPT) AS PUR_DEPT_NM		/* 구매조직명 */
+			, A.NB_PB_GBN		/* NB/PB구분 */
+			, FN_NEW_CODE_RTN('NBPB',A.NB_PB_GBN) AS NB_PB_GBN_NM /* NB,PB구분명 */
+			, A.ORD_UNIT		/* 기본단위 */
+			, ROUND(A.CHG_REQ_COST, 0) AS CHG_REQ_COST 	/* 변경요청금액 */
+			, A.COST_RSN_CD 	/* 변경사유코드 */
+			, FN_NEW_CODE_RTN('CORSN',A.COST_RSN_CD) AS COST_RSN_CD_NM 	/* 변경사유코드명 */
+			, A.COST_RSN_DTL_CD /* 변경상세사유코드 */
+			, FN_NEW_CODE_RTN('CORSD',A.COST_RSN_DTL_CD) AS COST_RSN_DTL_CD_NM /* 변경상세사유코드명 */
+			, A.CMT 			/* 비고 */
+			, A.CHG_REQ_COST_DT /* 변경시작일시 */
+			, A.PR_STAT 		/* 진행상태코드 */
+			, FN_NEW_CODE_RTN('PR01', A.PR_STAT) AS PR_STAT_NM	/* 진행상태명 */
+			, A.CHG_REQ_DY 		/* MD요청일자 */
+			, A.DEL_FG 			/* 삭제구분 */
+			, A.DC_NUM			/* 계약(공문)번호 */
+			, A.CONT_CODE		/* 연계계약번호 */
+			, A.RTN_RSN 		/* 반려사유 */
+			, A.IF_REQ_DT 		/* 인터페이스송신일시 */
+			, A.IF_RCV_DT 		/* 인터페이스수신일시 */
+			, CASE
+				WHEN (NULLIF(A.PR_STAT, '') IS NULL OR A.PR_STAT = '00') AND NULLIF(A.CONT_CODE, '') IS NULL		<!-- 공문발송전 :: 원가테이블에서조회 -->
+					THEN FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD)
+				ELSE TRUNC(A.ORG_COST, 0)	<!-- 공문발송후 :: 원가변경요청테이블에서 조회 -->
+			END AS ORG_COST 	/* 기존원가금액 */
+			, CASE
+				WHEN (NULLIF(A.PR_STAT, '') IS NULL OR A.PR_STAT = '00') AND NULLIF(A.CONT_CODE, '') IS NULL		<!-- 공문발송전 :: 원가테이블에서조회 -->
+				THEN 
+					CASE
+						WHEN FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD) = 0
+						THEN 0 
+						ELSE ROUND(((COALESCE(A.CHG_REQ_COST, 0) :: DECIMAL - COALESCE(FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD), 0)::DECIMAL)*100/FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD)::DECIMAL), 2)
+					END
+				ELSE	<!-- 공문발송후 :: 원가변경요청테이블에서 조회 --> 
+					CASE 
+						WHEN A.ORG_COST = 0 THEN 0 
+						ELSE ROUND(((COALESCE(A.CHG_REQ_COST, 0) :: DECIMAL - COALESCE(A.ORG_COST, 0)::DECIMAL)*100/A.ORG_COST::DECIMAL), 2) 
+					END
+			END AS INC_DEC_RATE	/* 증감율 */
+			<!-- , CASE
+				WHEN A.PR_STAT <![CDATA[<>]]> '00' THEN A.ORG_COST
+				ELSE '10000'				
+			END ORG_COST /* 기존원가금액 */
+			, CASE
+				WHEN COALESCE('10000', 0) = 0 THEN 0
+				ELSE ROUND(((COALESCE(A.CHG_REQ_COST, 0) :: DECIMAL - COALESCE('10000', 0)::DECIMAL)*100/COALESCE('10000', 0)::DECIMAL), 2)
+			END AS INC_DEC_RATE /* 증감율 */ -->
+			, B.PROD_PAT_FG 	/* 상품패턴구분 */
+			, C.CAT_CD AS L3_CD /* 소분류코드 */
+			, C.CAT_NM AS L3_NM	/* 소분류코드명 */
+			, C.L1_CD 			/* 대분류코드 */
+			, FN_GET_CAT_NM(C.L1_CD) AS L1_NM /* 대분류코드명 */
+			, C.L2_CD 			/* 중분류코드 */
+			, FN_GET_CAT_NM(C.L2_CD) AS L2_NM /* 중분류코드명 */
+			, B.TAX_FG						/* 면과세여부 */
+			, FN_NEW_CODE_RTN('TAXFG', B.TAX_FG) AS TAX_FG_NM	/* 과세유형명 */
+			, CASE WHEN NULLIF(E.L3_CD, '') IS NOT NULL THEN 'Y' ELSE 'N' END AS FRESH_STD_YN		/* 신선규격상품여부 */
+			, A.GRP_ID			/* 요청그룹아이디 */
+			, CASE
+				WHEN A.GRP_ID <![CDATA[<>]]>  ''
+					THEN (SELECT CASE WHEN COUNT(1) <![CDATA[>]]> 0 THEN 'N' ELSE 'Y' END AS CNT FROM TPC_PROD_CHG_COST_ITEM S1 WHERE S1.GRP_ID <![CDATA[<>]]> '' AND S1.GRP_ID = A.GRP_ID AND (S1.CONT_CODE IS NULL OR S1.CONT_CODE = '')) 
+				WHEN NULLIF(A.CONT_CODE, '') IS NULL THEN 'N'
+				ELSE 'Y'
+			END AS DC_CRE_ALL_YN		/* 모든 공문 생성 여부 */
+			, CASE
+				WHEN A.GRP_ID <![CDATA[<>]]>  ''
+					THEN
+						(SELECT CASE WHEN COUNT(1) <![CDATA[>]]> 0 THEN 'N' ELSE 'Y' END AS CNT 
+						FROM TPC_PROD_CHG_COST_ITEM S1
+						LEFT OUTER JOIN IF_ECS_DETAIL_EPC S2 ON S1.CONT_CODE = S2.CONT_CODE
+						WHERE S1.GRP_ID <![CDATA[<>]]> ''
+						AND S1.GRP_ID = A.GRP_ID
+						AND S2.DC_STAT NOT IN ('40', '50')
+						)
+				WHEN NULLIF(D.DC_STAT, '') IN ('40', '50') THEN 'Y'
+				ELSE 'N'
+			END AS DC_SEND_ALL_YN	/* 모든 공문 발송 여부 */
+			, CASE
+				WHEN A.GRP_ID <![CDATA[<>]]> ''
+				THEN 
+					(SELECT CASE WHEN COUNT(1) <![CDATA[>]]> 0 THEN 'N' ELSE 'Y' END AS CNT FROM TPC_PROD_CHG_COST_ITEM S1 WHERE S1.GRP_ID <![CDATA[<>]]> '' AND S1.GRP_ID = A.GRP_ID AND S1.CONT_CODE <![CDATA[<>]]> '')
+				WHEN NULLIF(A.CONT_CODE, '') IS NULL THEN 'Y'
+				ELSE 'N'
+			END AS EDIT_AVAIL_YN	/* 수정가능여부 */
+		FROM TPC_PROD_CHG_COST_ITEM A
+		LEFT OUTER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		LEFT OUTER JOIN CATEGORY C ON B.L3_CD = C.CAT_CD AND C.LVL = '3'
+		LEFT OUTER JOIN IF_ECS_DETAIL_EPC D ON A.CONT_CODE = D.CONT_CODE
+		LEFT OUTER JOIN V_FRESH_CATEGORY E ON C.CAT_CD = E.L3_CD
+		WHERE 1=1
+		<include refid="selectTpcProdChgCostItemList_Where"/>
+	</select>
+
+	<!-- 원가변경요청정보 아이템 복사 -->
+	<update id="insertCopyTpcProdChgCostItem" parameterClass="NEDMPRO0500VO">
+		/* NEDMPRO0510.insertCopyTpcProdChgCostItem */
+		INSERT INTO TPC_PROD_CHG_COST_ITEM 
+		(
+			REQ_NO				/* 요청번호 */
+			, SRCMK_CD			/* 판매코드 */
+			, PROD_CD			/* 상품코드 */
+			, SEQ				/* 순번 */
+			, VEN_CD			/* 파트너사코드 */
+			, PUR_DEPT          /* 구매조직 */
+			, NB_PB_GBN         /* NB/PB구분 */
+			, ORD_UNIT			/* 기본단위 */
+			, CHG_REQ_COST      /* 변경요청금액 */
+			, COST_RSN_CD       /* 변경사유 */
+			, COST_RSN_DTL_CD   /* 변경상세사유 */
+			, CMT               /* 비고 */
+			, CHG_REQ_COST_DT   /* 원가변경시작일자 */
+			, PR_STAT           /* 진행상태 */
+			, REG_ID            /* 등록아이디 */
+			, REG_DATE          /* 등록일시 */
+		)
+		(SELECT
+			TO_CHAR(NOW(), 'YYYYMMDD') AS REQ_NO	/* 요청번호 */
+			, ORG.SRCMK_CD			/* 판매코드 */
+			, ORG.PROD_CD			/* 상품코드 */
+			, (
+				SELECT COALESCE(MAX(A.SEQ), 0)+1 AS SEQ
+				FROM TPC_PROD_CHG_COST_ITEM A 
+				WHERE A.SRCMK_CD = ORG.SRCMK_CD
+				AND A.PROD_CD = ORG.PROD_CD
+				AND A.REQ_NO = TO_CHAR(NOW(), 'YYYYMMDD')
+			)
+			AS SEQ					/* 순번 */
+			, ORG.VEN_CD			/* 파트너사코드 */
+			, ORG.PUR_DEPT          /* 구매조직 */
+			, ORG.NB_PB_GBN         /* NB/PB구분 */
+			, COALESCE(NULLIF(ORG.ORD_UNIT, ''), PROD.ORD_UNIT) AS ORD_UNIT         /* 기본단위 */
+			, 0 AS CHG_REQ_COST     /* 변경요청금액 */
+			, ORG.COST_RSN_CD       /* 변경사유 */
+			, ORG.COST_RSN_DTL_CD   /* 변경상세사유 */
+			, ORG.CMT               /* 비고 */
+			, ORG.CHG_REQ_COST_DT   /* 원가변경시작일자 */
+			, '00' AS PR_STAT       /* 진행상태 */
+			, #regId# AS REG_ID     /* 등록아이디 */
+			, NOW() AS REG_DATE     /* 등록일시 */
+		FROM TPC_PROD_CHG_COST_ITEM ORG
+		LEFT OUTER JOIN PRODUCT PROD ON ORG.PROD_CD = PROD.PROD_CD
+		WHERE ORG.PR_STAT = '03'	/* 반려된 건만 복사 가능 */
+		AND ORG.REQ_NO = #reqNo#
+		AND ORG.SRCMK_CD = #srcmkCd#
+		AND ORG.PROD_CD = #prodCd#
+		AND ORG.SEQ = CAST(#seq# AS INTEGER) 
+		<!-- <iterate prepend="AND" property="prodDataArr" conjunction="OR">
+			(
+				REQ_NO = #prodDataArr[].reqNo#
+				AND SRCMK_CD = #prodDataArr[].srcmkCd#
+				AND PROD_CD = #prodDataArr[].prodCd#
+				AND SEQ = CAST(#prodDataArr[].seq# AS INTEGER)
+			)
+		</iterate> -->
+	)
+	</update>
+	
+	
+	
+	<!-- 원가변경요청 엑셀 다운로드 리스트 -->
+	<select id="selectTpcProdChgCostDetailExcelInfo" parameterClass="NEDMPRO0500VO" resultMap="tpcProdChgCostDetailExcelInfo">
+		/* NEDMPRO0510.selectTpcProdChgCostDetailExcelInfo */
+		SELECT
+			 A.SRCMK_CD 		/* 판매코드 */
+			, A.PROD_CD 		/* 상품코드 */
+			, B.PROD_NM			/* 상품명 */
+			, A.VEN_CD			/* 파트너사코드 */
+			, FN_NEW_CODE_RTN('PURDE',A.PUR_DEPT) AS PUR_DEPT_NM		/* 구매조직명 */
+			, FN_NEW_CODE_RTN('NBPB',A.NB_PB_GBN) AS NB_PB_GBN_NM /* NB,PB구분명 */
+			, ROUND(A.CHG_REQ_COST, 0) AS CHG_REQ_COST 	/* 변경요청금액 */
+			, FN_NEW_CODE_RTN('CORSN',A.COST_RSN_CD) AS COST_RSN_CD_NM 	/* 변경사유코드명 */
+			, FN_NEW_CODE_RTN('CORSD',A.COST_RSN_DTL_CD) AS COST_RSN_DTL_CD_NM /* 변경상세사유코드명 */
+			, A.CMT 			/* 비고 */
+			, A.CHG_REQ_COST_DT /* 변경시작일시 */
+			, FN_NEW_CODE_RTN('PR01', A.PR_STAT) AS PR_STAT_NM	/* 진행상태명 */
+			, A.DC_NUM			/* 계약(공문)번호 */
+			, CASE
+				WHEN (NULLIF(A.PR_STAT, '') IS NULL OR A.PR_STAT = '00') AND NULLIF(A.CONT_CODE, '') IS NULL		/* 공문발송전 :: 원가테이블에서조회 */
+					THEN FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD)
+				ELSE TRUNC(A.ORG_COST, 0)	/* 공문발송후 :: 원가변경요청테이블에서 조회 */
+			END AS ORG_COST 	/* 기존원가금액 */
+			, CASE
+				WHEN (NULLIF(A.PR_STAT, '') IS NULL OR A.PR_STAT = '00') AND NULLIF(A.CONT_CODE, '') IS NULL		/* 공문발송전 :: 원가테이블에서조회 */
+				THEN 
+					CASE
+						WHEN FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD) = 0
+						THEN 0 
+						ELSE ROUND(((COALESCE(A.CHG_REQ_COST, 0) :: DECIMAL - COALESCE(FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD), 0)::DECIMAL)*100/FN_GET_PROD_ORG_COST(A.PUR_DEPT, A.PROD_CD, A.VEN_CD)::DECIMAL), 2)
+					END
+				ELSE	/* 공문발송후 :: 원가변경요청테이블에서 조회 */ 
+					CASE 
+						WHEN A.ORG_COST = 0 THEN 0 
+						ELSE ROUND(((COALESCE(A.CHG_REQ_COST, 0) :: DECIMAL - COALESCE(A.ORG_COST, 0)::DECIMAL)*100/A.ORG_COST::DECIMAL), 2) 
+					END
+			END AS INC_DEC_RATE	/* 증감율 */
+			, C.CAT_NM AS L3_NM	/* 소분류코드명 */
+			, FN_GET_CAT_NM(C.L1_CD) AS L1_NM /* 대분류코드명 */
+			, FN_GET_CAT_NM(C.L2_CD) AS L2_NM /* 중분류코드명 */
+			, A.REG_ID
+			, TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE
+		FROM TPC_PROD_CHG_COST_ITEM A
+		LEFT OUTER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		LEFT OUTER JOIN CATEGORY C ON B.L3_CD = C.CAT_CD AND C.LVL = '3'
+		LEFT OUTER JOIN IF_ECS_DETAIL_EPC D ON A.CONT_CODE = D.CONT_CODE
+		LEFT OUTER JOIN V_FRESH_CATEGORY E ON C.CAT_CD = E.L3_CD
+		WHERE 1=1
+		<include refid="selectTpcProdChgCostItemList_Where"/>
+		ORDER BY A.REG_DATE DESC, A.SRCMK_CD
+	</select>
+	
+	<!-- 원가변경요청 아이템 정보 수정 저장 -->
+	<update id="updateTpcProdChgCostItem" parameterClass="NEDMPRO0500VO">
+		/* NEDMPRO0510.updateTpcProdChgCostItem */	
+		UPDATE TPC_PROD_CHG_COST_ITEM A
+		SET VEN_CD = #venCd#
+<!-- 			, PUR_DEPT = #purDept# -->
+<!-- 			, NB_PB_GBN = #nbPbGbn# -->
+			, ORD_UNIT = B.ORD_UNIT
+			, CHG_REQ_COST = CAST(NULLIF(#chgReqCost#, '') as NUMERIC)
+			, COST_RSN_CD = #costRsnCd#
+			, COST_RSN_DTL_CD = #costRsnDtlCd#
+			, CMT = #cmt#	
+			, CHG_REQ_COST_DT = #chgReqCostDt#
+			, MOD_ID = #modId#
+			, MOD_DATE = NOW()
+		FROM PRODUCT B
+		WHERE A.PROD_CD = B.PROD_CD
+			AND A.REQ_NO = #reqNo#
+			AND A.SRCMK_CD = #srcmkCd#
+			AND A.PROD_CD = #prodCd#
+			AND A.SEQ = CAST(#seq# AS INTEGER) 
+	</update>
+	
+	<!-- 원가변경요청 동일 그룹아이디 데이터 동일하게 수정 -->
+	<update id="updateTpcProdChgCostItemGrp" parameterClass="NEDMPRO0500VO">
+		/* NEDMPRO0510.updateTpcProdChgCostItemGrp */	
+		UPDATE TPC_PROD_CHG_COST_ITEM A
+		SET VEN_CD = #venCd#
+<!-- 			, NB_PB_GBN = #nbPbGbn# -->
+			, ORD_UNIT = B.ORD_UNIT
+			, CHG_REQ_COST = CAST(NULLIF(#chgReqCost#, '') as NUMERIC)
+			, COST_RSN_CD = #costRsnCd#
+			, COST_RSN_DTL_CD = #costRsnDtlCd#
+			, CMT = #cmt#	
+			, CHG_REQ_COST_DT = #chgReqCostDt#
+			, MOD_ID = #modId#
+			, MOD_DATE = NOW()
+		FROM PRODUCT B
+		WHERE A.PROD_CD = B.PROD_CD
+		AND A.GRP_ID = #grpId#
+	</update>
+</sqlMap>

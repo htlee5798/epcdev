@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false"/>
+		<setting name="localCacheScope" value="STATEMENT"/>
+		<setting name="defaultExecutorType" value="REUSE"/>
+		<setting name="defaultFetchSize" value="1000"/>
+		<setting name="defaultResultSetType" value="FORWARD_ONLY"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	
+	<!-- typeAliases>
+	</typeAliases-->
+	
+</configuration>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CsrCode">
+	
+	<typeAlias  alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias  alias="csrCodeSerarchVO" type="com.lottemart.epc.csr.model.CsrCodeDefaultVO"/>
+	<typeAlias  alias="csrSearchParam" type="com.lottemart.epc.csr.model.CsrSearchParam"/>
+	
+	<resultMap id="csrCode" class="com.lottemart.epc.csr.model.CsrCodeVO">
+		<result property="catNm" column="CAT_NM" columnIndex="1"/>
+		<result property="catCd" column="CAT_CD" columnIndex="2"/>
+		<result property="catParCd" column="CAT_PAR_CD" columnIndex="3"/>
+		<result property="catLvl" column="CAT_LVL" columnIndex="4"/>
+		<result property="dscrpt" column="DSCRPT" columnIndex="5"/>
+		<result property="extent01" column="EXTENT01" columnIndex="6"/>
+		<result property="regDt" column="REG_DT" columnIndex="7"/>
+		<result property="modDt" column="MOD_DT" columnIndex="8"/>
+	</resultMap>
+	
+	<insert id="csrCodeDAO.insertCsrCode_S">
+		<![CDATA[
+			INSERT INTO CSR_CODE 
+				( CAT_NM
+				  , CAT_CD
+				  , CAT_PAR_CD
+				  , CAT_LVL
+				  , DSCRPT
+				  , EXTENT01
+				  , REG_DT
+				  , MOD_DT )
+			VALUES ( #catNm#
+				  , #catCd#
+				  , #catParCd#
+				  , #catLvl#
+				  , #dscrpt#
+				  , #extent01#
+				  , #regDt#
+				  , #modDt# )
+		]]>
+	</insert>
+	
+	<update id="csrCodeDAO.updateCsrCode_S">
+		<![CDATA[
+			UPDATE CSR_CODE
+			SET CAT_NM=#catNm#
+				, CAT_CD=#catCd#
+				, CAT_PAR_CD=#catParCd#
+				, CAT_LVL=#catLvl#
+				, DSCRPT=#dscrpt#
+				, EXTENT01=#extent01#
+				, REG_DT=#regDt#
+				, MOD_DT=#modDt#
+			]]>
+	</update>
+	
+	<delete id="csrCodeDAO.deleteCsrCode_S">
+		<![CDATA[
+			DELETE FROM CSR_CODE 
+			]]>
+	</delete>
+	
+	<select id="csrCodeDAO.selectCsrCode_S" resultMap="csrCode">
+		<![CDATA[
+			SELECT
+				CAT_NM
+				, CAT_CD
+				, CAT_PAR_CD
+				, CAT_LVL
+				, DSCRPT
+				, EXTENT01
+				, REG_DT
+				, MOD_DT
+			FROM CSR_CODE
+			]]>
+	</select>
+	
+
+	<select id="csrCodeDAO.selectCsrCodeCat1List" resultMap="csrCode"  parameterClass="csrSearchParam">
+		<![CDATA[
+		/*csrCodeDAO.selectCsrCodeCat1List*/
+			SELECT
+				CAT_NM
+				, CAT_CD
+				, CAT_PAR_CD
+				, CAT_LVL
+				, DSCRPT
+				, EXTENT01
+				, REG_DT
+				, MOD_DT
+			FROM CSR_CODE
+			where CAT_LVL='1'
+			
+			]]>
+	</select>
+	<select id="csrCodeDAO.selectCsrCodeCat2List" resultMap="csrCode"  parameterClass="csrSearchParam">
+		<![CDATA[
+		/*csrCodeDAO.selectCsrCodeCat2List*/
+			SELECT
+				CAT_NM
+				, CAT_CD
+				, CAT_PAR_CD
+				, CAT_LVL
+				, DSCRPT
+				, EXTENT01
+				, REG_DT
+				, MOD_DT
+			FROM CSR_CODE
+			where CAT_LVL='2'
+			]]>
+	</select>
+	<select id="csrCodeDAO.selectCsrCodeCat3List" resultMap="csrCode"  parameterClass="csrSearchParam">
+		<![CDATA[
+		/*csrCodeDAO.selectCsrCodeCat3List*/
+			SELECT
+				CAT_NM
+				, CAT_CD
+				, CAT_PAR_CD
+				, CAT_LVL
+				, DSCRPT
+				, EXTENT01
+				, REG_DT
+				, MOD_DT
+			FROM CSR_CODE
+			where CAT_LVL='3'
+			]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	<select id="csrCodeDAO.selectCsrCodeL1List" resultMap="csrCode"  parameterClass="csrSearchParam">
+		<![CDATA[
+		/*csrCodeDAO.selectCsrCodeL1List*/
+			SELECT
+				CAT_NM
+				, CAT_CD
+				, CAT_PAR_CD
+				, CAT_LVL
+				, DSCRPT
+				, EXTENT01
+				, REG_DT
+				, MOD_DT
+			FROM CSR_CODE
+			where CAT_LVL='L1'
+			]]>
+	</select>
+	
+	
+	<select id="csrCodeDAO.selectCsrCodeL2List" resultMap="csrCode"  parameterClass="csrSearchParam">
+		<![CDATA[
+		/*csrCodeDAO.selectCsrCodeL2List*/
+			SELECT
+				CAT_NM
+				, CAT_CD
+				, CAT_PAR_CD
+				, CAT_LVL
+				, DSCRPT
+				, EXTENT01
+				, REG_DT
+				, MOD_DT
+			FROM CSR_CODE
+			where CAT_LVL='L2'
+			]]>
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="csrCodeDAO.selectCsrCodeList_D" parameterClass="csrCodeSerarchVO" resultClass="dataMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								CAT_NM
+								, CAT_CD
+								, CAT_PAR_CD
+								, CAT_LVL
+								, DSCRPT
+								, EXTENT01
+								, REG_DT
+								, MOD_DT
+						FROM CSR_CODE
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					CAT_NM = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					CAT_CD LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+	
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="csrCodeDAO.selectCsrCodeListTotCnt_S" parameterClass="csrCodeSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM CSR_CODE
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CAT_NM = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				CAT_CD LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>

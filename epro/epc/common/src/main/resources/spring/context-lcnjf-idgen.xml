@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<bean name="FileIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="fileStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="FILE_ID"/>
+	</bean>
+	
+	<bean name="SmsIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="smsIdStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="SMS_ID"/>
+	</bean>
+	
+	<bean name="EmailIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource_seq" />
+		<property name="strategy" ref="emailIdStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="EMAIL_ID"/>
+	</bean>
+	
+	<bean name="QustIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="surveyQustIdStrategy" />
+		<property name="blockSize" 	value="13"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="QUST_ID"/>
+	</bean>
+	
+	<bean name="mileAdjSeqGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="tmePointAdjustIdStrategy" />
+		<property name="blockSize" 	value="13"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="MILE_ADJ_SEQ"/>
+	</bean>
+	
+	<bean name="pbomprd0059SeqGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="pbomprd0059IdStrategy" />
+		<property name="blockSize" 	value="13"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="PROD_LIMT_QTY_SEQ"/>
+	</bean>
+	
+	<bean name="eventPlanSeqGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="eventPlanIdStrategy" />
+		<property name="blockSize" 	value="13"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="EVT_PLAN_SEQ"/>
+	</bean>
+	
+	<bean name="mdTalkSeqGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="mdTalkIdStrategy" />
+		<property name="blockSize" 	value="13"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="MD_TALK_SEQ"/>
+	</bean>
+	<bean name="tprMpicSeqGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="tprMpicIdStrategy" />
+		<property name="blockSize" 	value="13"/>
+		<property name="table"	   	value="TB_SEQ"/>
+		<property name="tableName"	value="TPR_MPIC_SEQ"/>
+	</bean>
+	
+	<bean name="fileStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="FILE_" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>
+		   
+	<bean name="smsIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="mall" />
+		<property name="cipers" value="11" />
+		<property name="fillChar" value="0" />
+	</bean>	
+
+	<bean name="emailIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="emall" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	          
+	
+	<bean name="surveyQustIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="qust" />
+		<property name="cipers" value="9" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<bean name="tmePointAdjustIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="MAS_" />
+		<property name="cipers" value="9" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<bean name="pbomprd0059IdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="PLQ" />
+		<property name="cipers" value="7" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<bean name="eventPlanIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="EPS" />
+		<property name="cipers" value="7" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	<bean name="mdTalkIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="" />
+		<property name="cipers" value="12" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<bean name="tprMpicIdStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="LO" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+
+
+<!-- Login Log... START-->			
+	<bean name="LoginLogIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy"   ref="loginLogStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="COMTECOPSEQ"/>
+		<property name="tableName"	value="LOGINLOG_ID"/>
+	</bean>
+
+	<bean name="loginLogStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="LOGIN_" />
+		<property name="cipers" value="14" />
+		<property name="fillChar" value="0" />
+	</bean>		
+	<!-- Login Log... END-->		
+    	
+	<!-- System Log... START-->			
+	<bean name="SysLogIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy"   ref="sysLogStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="COMTECOPSEQ"/>
+		<property name="tableName"	value="SYSLOG_ID"/>
+	</bean>
+
+	<bean name="sysLogStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="SYSLOG_" />
+		<property name="cipers" value="13" />
+		<property name="fillChar" value="0" />
+	</bean>		
+	<!-- System Log... END-->		
+    	
+	<!-- Web Log... START-->			
+	<bean name="WebLogIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy"   ref="webLogStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="COMTECOPSEQ"/>
+		<property name="tableName"	value="WEBLOG_ID"/>
+	</bean>
+
+	<bean name="webLogStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="WEBLOG_" />
+		<property name="cipers" value="13" />
+		<property name="fillChar" value="0" />
+	</bean>		
+	<!-- Web Log... END-->		
+    	
+	
+	<bean name="TrsmrcvLogIdGnrService"
+		class="lcn.module.framework.idgen.impl.TableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy"   ref="trsmrcvLogStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="COMTECOPSEQ"/>
+		<property name="tableName"	value="TRSMRCVLOG_ID"/>
+	</bean>
+
+	<bean name="trsmrcvLogStrategy"
+		class="lcn.module.framework.idgen.impl.strategy.IdGnrStrategyImpl">
+		<property name="prefix" value="TRSMRCV_" />
+		<property name="cipers" value="12" />
+		<property name="fillChar" value="0" />
+	</bean>		
+	<!-- Trsmrcv Log... END-->		
+    		
+</beans>
+

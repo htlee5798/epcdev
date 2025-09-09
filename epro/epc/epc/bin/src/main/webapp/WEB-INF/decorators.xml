@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<decorators defaultdir="/WEB-INF/jsp/decorators">
+	<excludes>
+		<pattern>**/**Download.do**</pattern>
+		<pattern>**/ajax*</pattern>		
+		<pattern>**/fckeditor*</pattern>
+		<pattern>/epc/edi/consult/*Password*</pattern>
+		<pattern>**Popup.do**</pattern>			
+        <pattern>/checkFirstLogin*</pattern>
+        <pattern>/edi/mnt/SRMMNT*</pattern>
+	</excludes>
+
+	<decorator name="ediConsultStep" page="layout-edi-consult-step.jsp">
+		<pattern>/epc/edi/consult/*Step*</pattern>
+	</decorator>
+	
+	<decorator name="ediConsult" page="layout-edi-consult.jsp">
+		<pattern>/epc/edi/consult/*</pattern>
+	</decorator>
+	
+	<!-- 품질평가 로그인 -->
+<!-- 	<decorator name="ediEvl01" page="layout-edi-srm.jsp"> -->
+<!-- 		<pattern>/edi/srm/SRMEVL0010</pattern> -->
+<!-- 	</decorator> -->
+	
+	<!-- 품질평가 화면 -->
+	<decorator name="ediEvl02" page="layout-edi-srm-evl.jsp">
+		<pattern>/edi/evl/SRMEVL*</pattern>
+	</decorator>
+	
+	<!-- 입점상담 -->
+	<decorator name="ediSrm" page="layout-edi-srm.jsp">
+		<pattern>/edi/srm/*</pattern>
+		<pattern>/edi/srm/SRMRST*</pattern>
+	</decorator>
+	
+	
+</decorators>

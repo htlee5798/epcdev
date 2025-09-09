@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0210">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+ 	<!-- SQLINES DEMO ***  -->
+ 	<select id="selectBarcodeList_2"	parameterClass="map" 	resultClass="resultClass">
+ 		/* SQLINES DEMO *** ectBarcodeList_2 */
+ 		  SELECT  	T.REG_DT
+		      ,   	T.SRCMK_CD
+		      ,   	T.PROD_NM
+		      ,   	T.LOGI_BCD
+		      ,   	T.WIDTH
+		      ,   	T.LENGTH
+		      ,   	T.HEIGHT
+		      ,   	T.WG
+		      ,   	T.SORTER_FG
+		      ,   	T.LOGI_CFM_FG
+		      ,   	T.W_USE_FG
+		      ,   	T.USE_FG
+		  FROM
+		  (
+		      SELECT  TO_CHAR(A.REG_DATE, 'yyyy-mm-dd')  AS REG_DT
+		          ,   C.SRCMK_CD 	   	AS SRCMK_CD
+		          ,   C.SHORT_NM  	 	AS PROD_NM
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.LOGI_BCD ELSE		B.LOGI_BCD END		 								AS LOGI_BCD
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.WIDTH ELSE		B.WIDTH END		 								AS WIDTH
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.LENGTH ELSE		B.LENGTH END		 								AS LENGTH
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.HEIGHT ELSE		B.HEIGHT END		 								AS HEIGHT
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.WG ELSE			B.WG END			 								AS WG
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.SORTER_FG ELSE	CASE B.SORTER_FG  WHEN '' THEN  '0' ELSE '1' END END			 	AS SORTER_FG
+		          ,   B.LOGI_CFM_FG  	AS LOGI_CFM_FG  
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.W_USE_FG ELSE		CASE B.W_USE_FG  WHEN '' THEN  '0' ELSE '1' END END			 	AS W_USE_FG
+				  ,	  CASE B.LOGI_BCD	 WHEN '' THEN 		A.USE_FG ELSE		CASE B.USE_FG  WHEN '' THEN  '0' ELSE '1' END END			 		AS USE_FG
+		          ,   A.VEN_CD       	AS VEN_CD
+		      FROM TPC_LOGI_BCD A
+  LEFT OUTER JOIN TPC_LOGI_BCD_SAP B ON A.LOGI_BCD = B.LOGI_BCD
+      		AND A.SEQ = B.SEQ
+      		AND A.PGM_ID = B.PGM_ID
+  LEFT OUTER JOIN LOGI_BCD_SAP D ON A.LOGI_BCD = D.LOGI_BCD,  PRODUCT C
+		        	 /* SQLINES DEMO *** DL_MD_MARTNIS 테이블이 TO-BE에서는 LOGI_BCD_SAP 테이블로 변경됨 */
+		      WHERE 
+		      A.SRCMK_CD = C.SRCMK_CD
+		  )T 
+		  WHERE 1=1
+		  <isEmpty property="venCd">
+		      <isNotEmpty  property="venCds"  prepend="AND"> 
+			      <iterate prepend="T.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]#
+			      </iterate> 
+			  </isNotEmpty>
+	      </isEmpty>	
+	      
+	      <isNotEmpty  property="venCd"  prepend="AND"> 
+		 	 T.VEN_CD  	=	#venCd#
+		  </isNotEmpty>
+		   
+		  <isNotEmpty  property="srcmk_cd"  prepend="AND"> 
+		     T.SRCMK_CD =  #srcmk_cd#
+		  </isNotEmpty>
+		  
+		  <isEqual property="logi_cfm" compareValue="01" prepend="AND">
+		  	T.LOGI_CFM_FG in (  '01' ,'04' ) 
+		  </isEqual>
+		  
+		  <isEqual property="logi_cfm" compareValue="02" prepend="AND">
+		  	T.LOGI_CFM_FG in (  '02' ,'00' ) 
+		  </isEqual>
+		  
+		  <isEqual property="logi_cfm" compareValue="03" prepend="AND">
+		  	T.LOGI_CFM_FG = '03' 
+		  </isEqual>
+		  
+		  <isEqual property="logi_cfm" compareValue="09" prepend="AND">
+		  	T.LOGI_CFM_FG = '09' 
+		  </isEqual>		  
+		  AND T.REG_DT BETWEEN #srchStartDate#  AND #srchEndDate#	 
+		  ORDER BY T.REG_DT DESC		  
+ 	</select>
+	 
+</sqlMap>

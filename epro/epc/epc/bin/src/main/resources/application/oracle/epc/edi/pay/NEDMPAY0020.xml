@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0020">
+
+	<typeAlias alias="resultClass" type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass" type="lcn.module.common.util.HashBox" />
+
+
+
+	<!-- 대금결제정보 -->
+	<typeAlias alias="NEDMPAY0020VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0020VO" />
+	<resultMap id="NEDMPAY0020VOMap" class="NEDMPAY0020VO">
+		<result property="payDay" 			column="PAY_DAY" 			/>
+		<result property="payBuy" 			column="PAY_BUY" 			/>
+		<result property="subBuy" 			column="SUB_BUY" 			/>
+		<result property="mul" 				column="MUL" />
+		<result property="usply" 			column="USPLY" />
+		<result property="infoAnlyFee"		column="INFO_ANLY_FEE" />
+		<result property="sinsang" 			column="SINSANG" />
+		<result property="sinsang2" 		column="SINSANG2" />
+		<result property="newProdIncentFee" column="NEW_PROD_INCENT_FEE" />
+		<result property="ehbtIncentFee" 	column="EHBT_INCENT_FEE" />
+		<result property="pfrmIncentFee" 	column="PFRM_INCENT_FEE" />
+		<result property="facilityFee" 		column="FACILITY_FEE" />
+		<result property="onlineAdFee" 		column="ONLINE_AD_FEE" />
+		<result property="movStdFee" 		column="MOV_STD_FEE" />
+		<result property="bottDedu" 		column="BOTT_DEDU" />
+		<result property="alcoBottDedu" 	column="ALCO_BOTT_DEDU" />
+		<result property="digitalAdFee" 	column="DIGITAL_AD_FEE" />
+		<result property="etcDedu" 			column="ETC_DEDU" />
+		<result property="total" 			column="TOTAL" 				/>
+		<result property="occationPayBuy" 	column="OCCASION_PAY_BUY" 	/>
+		<result property="occationSubPay" 	column="OCCASION_SUB_PAY" 	/>
+		<result property="realPayBuy" 		column="REAL_PAY_BUY" 		/>
+	</resultMap>
+
+
+	<select id="TSC_PAYMENT_DAY-SELECT01" resultMap="NEDMPAY0020VOMap" parameterClass="NEDMPAY0020VO">
+		/* NEDMPAY0020.TSC_PAYMENT_DAY-SELECT01*/
+		SELECT 	BB.PAY_DAY
+			,	NVL(BB.PAY_BUY, 0) AS PAY_BUY
+			,	NVL(BB.SUB_BUY, 0) AS SUB_BUY
+			
+			,	NVL(AA.MUL, 0) 				   AS MUL
+			,	NVL(AA.USPLY, 0) 			   AS USPLY
+			,	NVL(AA.INFO_ANLY_FEE, 0)	   AS INFO_ANLY_FEE
+			,	NVL(AA.SINSANG, 0) 			   AS SINSANG
+			,	NVL(AA.SINSANG2, 0) 		   AS SINSANG2
+			,	NVL(AA.NEW_PROD_INCENT_FEE, 0) AS NEW_PROD_INCENT_FEE
+			,	NVL(AA.EHBT_INCENT_FEE, 0)     AS EHBT_INCENT_FEE
+			,	NVL(AA.PFRM_INCENT_FEE, 0)     AS PFRM_INCENT_FEE
+			,	NVL(AA.FACILITY_FEE, 0)        AS FACILITY_FEE
+			,	NVL(AA.ONLINE_AD_FEE, 0) 	   AS ONLINE_AD_FEE
+			,	NVL(AA.MOV_STD_FEE, 0) 		   AS MOV_STD_FEE
+			,	NVL(AA.BOTT_DEDU, 0) 		   AS BOTT_DEDU
+			,	NVL(AA.ALCO_BOTT_DEDU, 0)	   AS ALCO_BOTT_DEDU
+			,	NVL(AA.DIGITAL_AD_FEE, 0)	   AS DIGITAL_AD_FEE
+			,	NVL(AA.ETC_DEDU, 0) 		   AS ETC_DEDU
+			
+			,	NVL(AA.TOTAL, 0) AS TOTAL
+			,	NVL(BB.OCCASION_PAY_BUY, 0) AS OCCASION_PAY_BUY
+			,	OCCASION_SUB_PAY
+			,	REAL_PAY_BUY
+		FROM
+		(
+			SELECT 	A.PAY_DAY
+				,	SUM(MUL) 			     AS MUL
+				,	SUM(USPLY) 			     AS USPLY
+				,	SUM(INFO_ANLY_FEE) 		 AS INFO_ANLY_FEE
+				,	SUM(SINSANG) 			 AS SINSANG
+				,	SUM(SINSANG2)			 AS SINSANG2
+				,	SUM(NEW_PROD_INCENT_FEE) AS NEW_PROD_INCENT_FEE
+				,	SUM(EHBT_INCENT_FEE)     AS EHBT_INCENT_FEE
+				,	SUM(PFRM_INCENT_FEE)     AS PFRM_INCENT_FEE
+				,	SUM(FACILITY_FEE) 		 AS FACILITY_FEE
+				,	SUM(ONLINE_AD_FEE)		 AS ONLINE_AD_FEE
+				,	SUM(MOV_STD_FEE) 		 AS MOV_STD_FEE
+				,	SUM(BOTT_DEDU) 			 AS BOTT_DEDU
+				,	SUM(ALCO_BOTT_DEDU) 	 AS ALCO_BOTT_DEDU
+				,	SUM(DIGITAL_AD_FEE)		 AS DIGITAL_AD_FEE
+				,	SUM(ETC_DEDU) 		     AS ETC_DEDU
+				,	(SUM(MUL) + SUM(USPLY) + SUM(INFO_ANLY_FEE) + SUM(SINSANG) + SUM(SINSANG2) + SUM(NEW_PROD_INCENT_FEE) + SUM(EHBT_INCENT_FEE) +
+				     SUM(PFRM_INCENT_FEE) + SUM(FACILITY_FEE) + SUM(ONLINE_AD_FEE) + SUM(MOV_STD_FEE) + SUM(BOTT_DEDU) + SUM(ALCO_BOTT_DEDU) + SUM(ETC_DEDU) +
+				     SUM(DIGITAL_AD_FEE))  AS TOTAL 
+			FROM
+			(
+				<![CDATA[
+				SELECT 	PAY_DAY
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '25W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS MUL
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '28W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS USPLY
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '43W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS INFO_ANLY_FEE
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '26W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS SINSANG
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '41W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS SINSANG2
+					,	(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = 'A1W' OR
+									 ACCT_CD || ACCT_GRP_CD = 'A2W' OR
+									 ACCT_CD || ACCT_GRP_CD = 'A7W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS NEW_PROD_INCENT_FEE
+					,	(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = 'A3W' OR
+									 ACCT_CD || ACCT_GRP_CD = 'A4W' OR
+									 ACCT_CD || ACCT_GRP_CD = 'A8W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS EHBT_INCENT_FEE
+					,	(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = 'A5W' OR
+									 ACCT_CD || ACCT_GRP_CD = 'A6W' OR
+									 ACCT_CD || ACCT_GRP_CD = 'A9W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS PFRM_INCENT_FEE
+					,	(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = '47W' OR
+									 ACCT_CD || ACCT_GRP_CD = '55W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS FACILITY_FEE
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '44W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS ONLINE_AD_FEE
+					,	(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = '98W' OR
+									 ACCT_CD || ACCT_GRP_CD = '34W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS MOV_STD_FEE
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '51W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS BOTT_DEDU
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = '35W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS ALCO_BOTT_DEDU
+					,	(CASE WHEN 	 ACCT_CD || ACCT_GRP_CD = 'B1W'  THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS DIGITAL_AD_FEE
+					,	(CASE WHEN 	(ACCT_CD || ACCT_GRP_CD = '23W' OR
+									 ACCT_CD || ACCT_GRP_CD = '46W') THEN (SUM(SUB_AMT)+SUM(VAT)) ELSE 0 END ) AS ETC_DEDU	
+					,	SUM(SUB_AMT) + SUM(VAT) TOTAL_SUB
+				]]>
+				FROM 	TPC_SUB_AGG
+				WHERE 	PAY_DAY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+					AND ACCT_GRP_CD = 'W'
+					
+					<isEmpty property="searchEntpCd">
+						<isNotEmpty property="venCds" prepend="AND">
+							<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					</isEmpty>
+					
+					<isNotEmpty prepend="AND" property="searchEntpCd">
+						VEN_CD = #searchEntpCd#
+					</isNotEmpty>
+				
+				GROUP BY ACCT_CD || ACCT_GRP_CD, PAY_DAY
+			) A
+			GROUP BY A.PAY_DAY
+		) AA RIGHT OUTER JOIN
+		(
+			SELECT 	A.PAY_DAY
+				,	SUM(A.PAY_BUY_AMT) + SUM(A.PAY_VAT) AS PAY_BUY
+				,	SUM(A.SUB_BUY_AMT)+SUM(A.SUB_VAT) AS SUB_BUY
+				,	(CASE WHEN EXISTS	(
+													SELECT 	ACCT_CD||ACCT_GRP_CD
+													FROM 	TPC_SUB_AGG
+													WHERE 1=1
+													<isEmpty property="searchEntpCd">
+														<isNotEmpty  property="venCds"  prepend="AND">
+															<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+																#venCds[]#
+															</iterate>
+														</isNotEmpty>	
+													</isEmpty>														
+															
+													<isNotEmpty prepend="AND" property="searchEntpCd">
+														VEN_CD = #searchEntpCd#
+													</isNotEmpty>												 
+													GROUP BY ACCT_CD || ACCT_GRP_CD
+													HAVING ACCT_CD || ACCT_GRP_CD = '85J' OR		
+													       ACCT_CD || ACCT_GRP_CD = '87J'
+											 ) THEN SUM(OCCASION_AMT) + SUM(OCCASION_VAT) ELSE 0 END) OCCASION_PAY_BUY
+				,	(CASE WHEN EXISTS	(
+													SELECT 	ACCT_CD||ACCT_GRP_CD
+													FROM 	TPC_SUB_AGG
+													WHERE 1=1
+													<isEmpty property="searchEntpCd">
+														<isNotEmpty  property="venCds"  prepend="AND">
+															<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+																#venCds[]#
+															</iterate>
+														</isNotEmpty>	
+													</isEmpty>														
+															
+													<isNotEmpty prepend="AND" property="searchEntpCd">
+														VEN_CD = #searchEntpCd#
+													</isNotEmpty>												 
+													GROUP BY ACCT_CD || ACCT_GRP_CD
+													HAVING ACCT_CD || ACCT_GRP_CD = '53J' OR		/* 현금입금 */
+													       ACCT_CD || ACCT_GRP_CD = '33J' OR		/* 수시지급 */
+													       ACCT_CD || ACCT_GRP_CD = '52J' OR		/* 기타선지불 */
+													       ACCT_CD || ACCT_GRP_CD = '88J' 			/* 구매카드/외담대수시지급  */
+											 ) THEN SUM(OCCASION_AMT) + SUM(OCCASION_VAT) ELSE 0 END) OCCASION_SUB_PAY
+				,	SUM(A.REAL_PAY_BUY_AMT) + SUM(A.REAL_PAY_VAT) AS REAL_PAY_BUY
+			FROM	TPC_PAYMENT A
+				,	STORE B
+			WHERE A.STR_CD = B.STR_CD
+			AND A.PAY_DAY BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')				
+				<isEmpty property="searchEntpCd" prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isEmpty>
+				
+				<isNotEmpty property="searchEntpCd" prepend="AND">
+					A.VEN_CD = #searchEntpCd#
+				</isNotEmpty>
+			GROUP BY A.PAY_DAY
+		) BB ON AA.PAY_DAY = BB.PAY_DAY
+		ORDER BY BB.PAY_DAY
+	</select>
+
+</sqlMap>

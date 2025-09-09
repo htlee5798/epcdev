@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0110">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	<!-- 거래실적조회 -->
+	<typeAlias alias="NEDMPAY0110VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0110VO" />
+	<resultMap id="NEDMPAY0110VOMap" 			class="NEDMPAY0110VO">
+		<result property="buyYm" 				column="BUY_YM" />
+		<result property="transBuyAmtTotal" 	column="TRANS_BUY_AMT_TOTAL" />
+		<result property="transVatTotal" 		column="TRANS_VAT_TOTAL" />
+		<result property="buyAmtTotal" 			column="BUY_AMT_TOTAL" />
+		<result property="vatTotal" 			column="VAT_TOTAL" />
+		<result property="payBuyAmtTotal" 		column="PAY_BUY_AMT_TOTAL" />
+		<result property="payVatTotal" 			column="PAY_VAT_TOTAL" />
+		<result property="remBuyAmtTotal" 		column="REM_BUY_AMT_TOTAL" />
+		<result property="remVatTotal" 			column="REM_VAT_TOTAL" />
+		<result property="remSumTotal"	 		column="REM_SUM_TOTAL" />
+	</resultMap>
+	
+	
+	<select id="TSC_CRED_LED-SELECT01" resultMap="NEDMPAY0110VOMap" parameterClass="NEDMPAY0110VO">
+		/* NEDMPAY0110.TSC_CRED_LED-SELECT01 */
+		SELECT	BUY_YM
+			,	NVL(SUM(TRANS_BUY_AMT), 0) AS TRANS_BUY_AMT_TOTAL
+			,	NVL(SUM(TRANS_VAT), 0) AS TRANS_VAT_TOTAL
+			,	NVL(SUM(BUY_AMT), 0) AS BUY_AMT_TOTAL
+			,	NVL(SUM(VAT), 0) AS VAT_TOTAL
+			,	NVL(SUM(PAY_BUY_AMT), 0) AS PAY_BUY_AMT_TOTAL
+			,	NVL(SUM(PAY_VAT), 0) AS PAY_VAT_TOTAL
+			,	NVL(SUM(REM_BUY_AMT), 0) AS REM_BUY_AMT_TOTAL
+			,	NVL(SUM(REM_VAT), 0) AS REM_VAT_TOTAL
+			,	NVL(SUM(REM_BUY_AMT), 0) + NVL(SUM(REM_VAT), 0) AS REM_SUM_TOTAL
+		FROM 	TPC_CRED_BUY_LED
+		WHERE 	BUY_YM BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty prepend="AND" property="searchStoreAl">
+				<iterate prepend="STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+				
+			<isNotEmpty prepend="AND" property="searchEntpCd">
+				VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+		GROUP BY BUY_YM
+		ORDER BY BUY_YM
+	</select>
+
+
+</sqlMap>

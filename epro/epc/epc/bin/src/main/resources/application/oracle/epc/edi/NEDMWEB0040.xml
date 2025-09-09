@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMWEB0040">
+
+	<typeAlias alias="nEDMWEB0040VO" type="com.lottemart.epc.edi.weborder.model.NEDMWEB0040VO" />
+	
+	<resultMap id="tedOrdTotListMap" class="nEDMWEB0040VO">
+		<result property="prodCd" 			column="PROD_CD"    		/><!--상품코드			-->
+		<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="strCd" 			column="STR_CD"    			/><!--첨포코드			-->
+		<result property="strNm" 			column="STR_NM"    			/><!--점포명				-->
+		<result property="venCd" 			column="VEN_CD"    			/><!--협력업체코드		-->
+		<result property="srcmkCd" 			column="SRCMK_CD"    		/><!--판매코드			-->
+		<result property="prodNm" 			column="PROD_NM"    		/><!--상품명				-->
+		<result property="prodStd" 			column="PROD_STD"    		/><!--상품규격			-->
+		<result property="ordIpsu" 			column="ORD_IPSU"    		/><!--발주입수			-->
+		<result property="ordUnit" 			column="ORD_UNIT"    		/><!--발주단위			-->
+		<result property="ordQty" 			column="ORD_QTY"    		/><!--발주수량			-->
+		<result property="ordCfmQty" 		column="ORD_CFM_QTY"    	/><!--확정발주수량		-->
+		<result property="ordTotQtySum" 	column="ORD_TOT_QTY_SUM"    /><!--발주총수량			-->
+		<result property="ordTotPrcSum" 	column="ORD_TOT_PRC_SUM"   	/><!--발주금액			-->
+		<result property="regStsCd" 		column="REG_STS_CD"    		/><!--등록상태코드		-->
+		<result property="mdModCd" 			column="MD_MOD_CD"    		/><!--MD조정구분코드		-->
+		<result property="regStsNm" 		column="REG_STS_NM"    		/><!--등록상태명			-->
+		<result property="mdModNm" 			column="MD_MOD_NM"    		/><!--MD조정구분명		-->
+	</resultMap>
+	
+	<resultMap id="tedStoreOrdCntSumMap" class="nEDMWEB0040VO">
+	 	<result property="strCnt" 			column="STR_CNT"    			/><!--발주총수량합계			-->
+	 	<result property="prodCnt" 			column="PROD_CNT"    			/><!--발주총수량합계			-->
+		<result property="ordTotQtySum" 	column="ORD_TOT_QTY_SUM"    	/><!--발주총수량합계			-->
+		<result property="ordTotPrcSum" 	column="ORD_TOT_PRC_SUM"    	/><!--발주총금액합계			-->
+		<result property="ordTotAllQtySum" 	column="ORD_TOT_ALL_QTY_SUM"    /><!--충수량EA합계			-->
+	</resultMap>
+	
+	<select id="selectOrdTotListTotCnt" parameterClass="nEDMWEB0040VO" resultClass="int" >
+	 	/* PEDMWEB0004.selectOrdTotListTotCnt */
+		     SELECT COUNT(*) FROM (
+		 		SELECT   M1.*
+		 			   , (SELECT AREA_FG FROM STORE M2 WHERE M1.STR_CD = M2.STR_CD  ) AS AREA_FG
+                  FROM TPC_PO_ORD_PROD M1
+                          INNER JOIN TPC_PO_ORD_MST S1 
+                                               ON M1.STR_CD = S1.STR_CD
+                                              AND M1.ORD_DY = S1.ORD_DY
+                                              AND M1.VEN_CD = S1.VEN_CD
+                                              AND M1.ORD_REQ_NO = S1.ORD_REQ_NO
+                                              AND S1.VEN_CD = #venCd#
+                                              AND S1.ORD_DY = #ordDy#
+                 WHERE M1.VEN_CD = #venCd#
+                   AND M1.ORD_DY = #ordDy# 
+	               ) T 
+	               <dynamic prepend="WHERE"> 
+				       <isNotEmpty property="areaCd" prepend="AND" >
+		               		T.AREA_FG = #areaCd#
+		               </isNotEmpty>
+		               <isNotEmpty property="strCd" prepend="AND" >
+		               		T.STR_CD = #strCd#
+		               </isNotEmpty> 
+		               <isNotEmpty property="prodCd" prepend="AND" >
+		               		T.PROD_CD like #prodCd#||'%'
+		               </isNotEmpty> 
+		               <isEqual property="regStsfg" prepend="AND" compareValue="2">
+		               		T.REG_STS_CD = '0'
+		               </isEqual> 
+		               <isEqual property="regStsfg" prepend="AND" compareValue="3">
+		               		(T.REG_STS_CD <![CDATA[<>]]> '0' OR T.REG_STS_CD IS NULL)
+		               </isEqual> 
+		               <isEqual property="mdModFg" prepend="AND" compareValue="2">
+		               		T.MD_MOD_CD = '01'
+		               </isEqual> 
+		               <isEqual property="mdModFg" prepend="AND" compareValue="3">
+		               		T.MD_MOD_CD = '02'
+		               </isEqual>
+		            </dynamic>
+	</select>
+	
+	<select id="selectOrdTotList" parameterClass="nEDMWEB0040VO" resultMap="tedOrdTotListMap">
+	 	/* PEDMWEB0004.selectOrdTotList */
+	 	SELECT	*
+		  FROM ( SELECT	ROWNUM RNUM,A.* FROM (
+				 	SELECT   M1.ORD_REQ_NO   					AS ORD_REQ_NO
+				           , M1.PROD_CD      					AS PROD_CD
+				           , M1.ORD_DY       					AS ORD_DY
+				           , M1.STR_CD 							AS STR_CD                      
+				           , (SELECT STR_NM FROM STORE M2 WHERE M1.STR_CD = M2.STR_CD ) AS STR_NM
+				           , M1.VEN_CD       					AS VEN_CD
+				           , M1.SRCMK_CD     					AS SRCMK_CD
+				           , M1.PROD_NM      					AS PROD_NM
+				           , M1.PROD_STD     					AS PROD_STD
+				           , M1.ORD_IPSU     					AS ORD_IPSU
+				           , M1.ORD_UNIT     					AS ORD_UNIT
+				           , M1.ORD_QTY      					AS ORD_QTY
+				           , M1.ORD_CFM_QTY      				AS ORD_CFM_QTY
+				           ,(M1.ORD_IPSU*M1.ORD_CFM_QTY) 		AS ORD_TOT_QTY_SUM
+				           ,(M1.ORD_IPSU*M1.ORD_CFM_QTY*ORD_BUY_PRC) AS ORD_TOT_PRC_SUM
+				           , M1.REG_STS_CD	 					AS REG_STS_CD
+				           , M1.MD_MOD_CD    					AS MD_MOD_CD
+				           , C1.CD_NM        					AS REG_STS_NM  
+				           , C2.CD_NM        					AS MD_MOD_NM  
+				           , (SELECT AREA_FG FROM STORE M3 WHERE M1.STR_CD = M3.STR_CD  ) AS AREA_FG
+				      FROM TPC_PO_ORD_PROD M1
+				                INNER JOIN TPC_PO_ORD_MST S1 
+				                                     ON M1.STR_CD = S1.STR_CD
+				                                    AND M1.ORD_DY = S1.ORD_DY
+				                                    AND M1.VEN_CD = S1.VEN_CD
+				                                    AND M1.ORD_REQ_NO = S1.ORD_REQ_NO
+				                                    AND S1.VEN_CD = #venCd#
+				                                    AND S1.ORD_DY = #ordDy#
+				                LEFT OUTER JOIN TPC_CODE C1 ON C1.MAJOR_CD='WPO03'  AND  M1.REG_STS_CD = C1.MINOR_CD
+				                LEFT OUTER JOIN TPC_CODE C2 ON C2.MAJOR_CD='WPO04'  AND  M1.MD_MOD_CD = C2.MINOR_CD
+				     WHERE M1.VEN_CD = #venCd#
+				       AND M1.ORD_DY = #ordDy#  
+			       ) A
+			       <dynamic prepend="WHERE">
+			       	   <isNotEmpty property="areaCd" prepend="AND" >
+			                A.AREA_FG = #areaCd#
+		               </isNotEmpty>
+		               <isNotEmpty property="strCd" prepend="AND" >
+		               		A.STR_CD = #strCd#
+		               </isNotEmpty> 
+		               <isNotEmpty property="prodCd" prepend="AND" >
+		               		A.PROD_CD like #prodCd#||'%'
+		               </isNotEmpty> 
+		               <isEqual property="regStsfg" prepend="AND" compareValue="2">
+		               		A.REG_STS_CD = '0'
+		               </isEqual> 
+		               <isEqual property="regStsfg" prepend="AND" compareValue="3">
+		               		(A.REG_STS_CD <![CDATA[<>]]> '0' OR A.REG_STS_CD IS NULL)
+		               </isEqual> 
+		                <isEqual property="mdModFg" prepend="AND" compareValue="2">
+		               		A.MD_MOD_CD = '01'
+		                </isEqual> 
+		                <isEqual property="mdModFg" prepend="AND" compareValue="3">
+		               		A.MD_MOD_CD = '02'
+		                </isEqual>
+		            </dynamic>
+			       ORDER BY A.STR_CD, A.PROD_CD
+			 )A
+		WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+	</select>
+	
+	<select id="selectOrdTotCntSum" parameterClass="nEDMWEB0040VO" resultMap="tedStoreOrdCntSumMap">
+	 	/* PEDMWEB0004.selectOrdTotCntSum */
+	 	SELECT  COUNT(DISTINCT(T.STR_CD))   AS STR_CNT
+                    ,COUNT(DISTINCT(T.PROD_CD))  AS PROD_CNT
+                    ,NVL(SUM(T.ORD_QTY), '0')							AS ORD_TOT_QTY_SUM
+                    ,NVL(SUM(T.ORD_IPSU*T.ORD_QTY), '0')				AS ORD_TOT_ALL_QTY_SUM
+                    ,NVL(SUM(T.ORD_IPSU*T.ORD_QTY*T.ORD_BUY_PRC), '0') 	AS ORD_TOT_PRC_SUM
+               FROM (  SELECT  * FROM (
+                       SELECT    M1.VEN_CD       					AS VEN_CD
+							   , M1.STR_CD 							AS STR_CD
+			                   , M1.PROD_CD      					AS PROD_CD        
+			                   , M1.ORD_REQ_NO   					AS ORD_REQ_NO   
+			                   , M1.PROD_NM      					AS PROD_NM
+					           , M1.ORD_IPSU     					AS ORD_IPSU
+					           , M1.ORD_UNIT     					AS ORD_UNIT
+					           , M1.ORD_QTY      					AS ORD_QTY
+					           , M1.ORD_BUY_PRC      				AS ORD_BUY_PRC
+					           , M1.REG_STS_CD	 					AS REG_STS_CD
+					           , M1.MD_MOD_CD						AS MD_MOD_CD
+					           , (SELECT AREA_FG FROM STORE M3 WHERE M1.STR_CD = M3.STR_CD ) AS AREA_FG
+					      FROM TPC_PO_ORD_PROD M1
+					     WHERE M1.VEN_CD = #venCd#
+						   AND M1.ORD_DY = #ordDy#
+					       ) A
+					       <dynamic prepend="WHERE">
+							   <isNotEmpty property="areaCd" prepend="AND" >
+					                A.AREA_FG = #areaCd#
+				               </isNotEmpty>
+				               <isNotEmpty property="strCd" prepend="AND" >
+				               		A.STR_CD = #strCd#
+				               </isNotEmpty> 
+				               <isNotEmpty property="prodCd" prepend="AND" >
+				               		A.PROD_CD like #prodCd#||'%'
+				               </isNotEmpty> 
+				               <isEqual property="regStsfg" prepend="AND" compareValue="2">
+				               		A.REG_STS_CD = '0'
+				               </isEqual> 
+				               <isEqual property="regStsfg" prepend="AND" compareValue="3">
+				               		(A.REG_STS_CD <![CDATA[<>]]> '0' OR A.REG_STS_CD IS NULL)
+				               </isEqual> 
+				                <isEqual property="mdModFg" prepend="AND" compareValue="2">
+				               		A.MD_MOD_CD = '01'
+				                </isEqual> 
+				                <isEqual property="mdModFg" prepend="AND" compareValue="3">
+				               		A.MD_MOD_CD = '02'
+				                </isEqual>
+				           </dynamic>
+               		) T
+	</select>
+	
+    
+    
+</sqlMap>

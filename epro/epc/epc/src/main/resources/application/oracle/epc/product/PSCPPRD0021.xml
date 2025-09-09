@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+	<sqlMap namespace="pscpprd0021">
+	
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<sql id="pre-page-frag">
+		SELECT *
+		  FROM ( SELECT SELECT_BOS.*
+		              , CEIL( ROWNUM / #rowsPerPage# ) PAGEINDEX
+		              , COUNT(1) OVER() TOTAL_COUNT
+		           FROM (
+	</sql>
+	<sql id="post-page-frag">
+		                 ) SELECT_BOS
+		        )
+		 WHERE PAGEINDEX = #currentPage#
+	</sql>
+
+	<!--  MD이미지 수정조회 -->
+	<select id="selectProdImgChgHist" resultClass="dataMap">
+	<include refid="pre-page-frag" />
+	/* pscpprd0021.selectProdImgChgHist - MD이미지 수정조회 */
+		SELECT ROW_NUMBER() OVER(ORDER BY A.SEQ DESC) NUM
+              ,A.SEQ
+              ,A.PROD_CD
+              ,(SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD) AS PROD_NM
+              ,(SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.VENDOR_ID) AS VENDOR_NM
+              ,A.APRV_CD
+              ,(SELECT CD_NM FROM TET_CODE WHERE MINOR_CD = A.APRV_CD AND MAJOR_CD = 'PRD34') AS APRV_NM
+              ,(SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = A.APRV_ID) AS APRV_ADMIN
+              ,A.MEMO
+              ,'보기' AS BOS_IMG
+              ,B.PROD_IMG_NO
+          FROM TPR_PROD_MD_APRV_MST A, 				-- 상품승인관리
+               TPR_PRODUCT_IMG_HIST B
+         WHERE A.TYPE_CD = '001'					-- 구분코드(PRD35-001:이미지,002:상세,003:전상법,004:상품반려)
+           AND A.SEQ = B.SEQ
+           <isNotEmpty property="prodCd">
+           AND A.PROD_CD LIKE #prodCd# || '%'
+           </isNotEmpty>
+           AND (0, A.VENDOR_ID)
+	        <iterate prepend=" IN" property="vendorId" open="(" close=")" conjunction=","> 
+	            (0,#vendorId[]#)
+	        </iterate>
+	       <isNotEmpty property="statusCd">
+           AND A.APRV_CD LIKE #statusCd# || '%'
+           </isNotEmpty>
+           AND B.MOD_DATE BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')+0.99999
+           AND EXISTS (SELECT 1 FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD  AND PROD_NM LIKE #prodNm# || '%')
+    		
+    <include refid="post-page-frag" />
+	</select>
+	
+	<!--  MD상세설명 수정조회 -->
+	<select id="selectProdDescChgHist" resultClass="dataMap">
+	<include refid="pre-page-frag" />
+	/* pscpprd0021.selectProdDescChgHist - MD상세 수정조회 */
+		SELECT ROW_NUMBER() OVER(ORDER BY A.MOD_DATE) NUM
+              ,A.SEQ
+              ,A.PROD_CD
+              ,(SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD) AS PROD_NM
+              ,(SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.VENDOR_ID) AS VENDOR_NM
+              ,A.APRV_CD
+              ,(SELECT CD_NM FROM TET_CODE WHERE MINOR_CD = A.APRV_CD AND MAJOR_CD = 'PRD34') AS APRV_NM
+              ,(SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = A.APRV_ID) AS APRV_ADMIN
+              ,A.MEMO
+              ,'보기' AS PROD_DESC
+          FROM TPR_PROD_MD_APRV_MST A, 				-- 상품승인관리
+               TPR_PRODUCT_DESC_HIST B				-- 상품상세설명이력
+         WHERE A.TYPE_CD = '002'					-- 구분코드(PRD35-001:이미지,002:상세,003:전상법, 004:상품반려)
+           AND A.SEQ = B.SEQ
+           <isNotEmpty property="prodCd">
+           AND A.PROD_CD LIKE #prodCd# || '%'
+           </isNotEmpty>
+           
+           AND (0, A.VENDOR_ID)
+	        <iterate prepend=" IN" property="vendorId" open="(" close=")" conjunction=","> 
+	            (0, #vendorId[]#)
+	        </iterate>
+           <isNotEmpty property="statusCd">
+           AND A.APRV_CD LIKE #statusCd# || '%'
+           </isNotEmpty>
+           AND B.MOD_DATE BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')+0.99999
+           AND EXISTS (SELECT 1 FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD AND PROD_NM LIKE #prodNm# || '%')
+    <include refid="post-page-frag" />
+	</select>
+	
+	
+	<!--  MD전상법 수정조회 -->
+	<select id="selectProdAddChgHist" resultClass="dataMap">
+	<include refid="pre-page-frag" />
+	/* pscpprd0021.selectProdAddChgHist - MD전상법 수정조회 */
+		SELECT ROW_NUMBER() OVER(ORDER BY A.MOD_DATE) NUM
+              ,A.SEQ
+              ,A.PROD_CD
+              ,(SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD) AS PROD_NM
+              ,(SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.VENDOR_ID) AS VENDOR_NM
+              ,A.APRV_CD
+              ,(SELECT CD_NM FROM TET_CODE WHERE MINOR_CD = A.APRV_CD AND MAJOR_CD = 'PRD34') AS APRV_NM
+              ,(SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = A.APRV_ID) AS APRV_ADMIN
+              ,A.MEMO
+              ,'보기' AS ADD_INFO
+          FROM TPR_PROD_MD_APRV_MST A
+         WHERE TYPE_CD = '003'           -- 구분코드(PRD35-001:이미지,002:상세,003:전상법, 004:상품반려)
+           <isNotEmpty property="prodCd">
+           AND PROD_CD LIKE #prodCd# || '%'
+           </isNotEmpty>
+           AND (0, A.VENDOR_ID)
+	        <iterate prepend=" IN" property="vendorId" open="(" close=")" conjunction=","> 
+	            (0,#vendorId[]#)
+	        </iterate>
+           <isNotEmpty property="statusCd">
+           AND APRV_CD LIKE #statusCd# || '%'
+           </isNotEmpty>          
+           AND EXISTS (SELECT  1 
+                       FROM    TPR_PRODUCT 
+                       WHERE   PROD_CD = A.PROD_CD
+                       AND     PROD_NM LIKE #prodNm# || '%')
+           AND EXISTS (SELECT 1 FROM TPR_PRODUCT_ADD_INFO_HIST B 			-- 상품전상법이력
+                        WHERE B.SEQ = A.SEQ 
+                          AND B.MOD_DATE BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')+0.99999)                             
+    		
+    <include refid="post-page-frag" />
+	</select>
+	
+	<!--  상품 수정조회 -->
+	<select id="selectProdMstChgHist" resultClass="dataMap">
+	<include refid="pre-page-frag" />
+	/* pscpprd0021.selectProdMstChgHist -상품수정조회 */
+		SELECT ROW_NUMBER() OVER(ORDER BY A.MOD_DATE) NUM
+              ,A.SEQ
+              ,A.PROD_CD
+              ,(SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD) AS PROD_NM
+              ,(SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.VENDOR_ID) AS VENDOR_NM
+              ,A.APRV_CD
+              ,(SELECT CD_NM FROM TET_CODE WHERE MINOR_CD = A.APRV_CD AND MAJOR_CD = 'PRD34') AS APRV_NM
+              ,(SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = A.APRV_ID) AS APRV_ADMIN
+              ,A.MEMO
+              ,PR.APRV_YN
+          FROM TPR_PROD_MD_APRV_MST A, 
+               TPR_PRODUCT PR
+         WHERE A.TYPE_CD = '004'
+           AND A.PROD_CD = PR.PROD_CD
+           <isNotEmpty property="prodCd">
+           AND A.PROD_CD LIKE #prodCd# || '%'
+           </isNotEmpty>
+           AND (0, A.VENDOR_ID)
+	        <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+	            (0, #vendorId[]#)
+	        </iterate>
+           <isNotEmpty property="statusCd">
+           AND A.APRV_CD LIKE #statusCd# || '%'
+           </isNotEmpty>
+           AND A.MOD_DATE BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')+0.99999
+           AND EXISTS (SELECT 1 
+                       FROM   TPR_PRODUCT 
+                       WHERE  PROD_CD = A.PROD_CD
+                       AND    PROD_NM LIKE #prodNm# || '%')
+    <include refid="post-page-frag" />
+	</select>
+
+    
+    <resultMap id="selectProdDescMap" class="dataMap" >
+	    <result column="BEFORE_DESC"      property="BEFORE_DESC"	jdbcType="CLOB"		javaType="String" />
+		<result column="AFTER_DESC"       property="AFTER_DESC"	jdbcType="CLOB"		javaType="String" />
+		<result column="APRV_CD"     	  property="APRV_CD"       />
+		<result column="TYPE_CD"     	  property="TYPE_CD"       />
+		<result column="SEQ"     	   	  property="SEQ"       />
+		<result column="PROD_CD"     	  property="PROD_CD"       />
+		<result column="MEMO"     	   	  property="MEMO"       />
+		
+	</resultMap>
+		
+	<select id="selectProdDesc" resultMap="selectProdDescMap">
+		SELECT 
+               (SELECT ADD_DESC 
+                FROM   TPR_PRODUCT_ADD_DESCR
+                WHERE  PROD_CD = MM.PROD_CD
+                AND    SEQ = '001') AS BEFORE_DESC
+              ,(SELECT ADD_DESC 
+                FROM   TPR_PRODUCT_DESC_HIST
+                WHERE  SEQ = MM.SEQ) AS AFTER_DESC
+              ,APRV_CD
+              ,TYPE_CD
+              ,SEQ
+              ,PROD_CD
+              ,MEMO
+          FROM TPR_PROD_MD_APRV_MST MM
+         WHERE SEQ = #seq#         
+    </select>
+    
+    <select id="selectProdInfoView" resultClass="dataMap">
+	/* pscpprd0021.selectProdInfoView  */		
+		SELECT DECODE(TYPE_CD,'001',(SELECT PROD_IMG_NO FROM TPR_PRODUCT_IMG_HIST WHERE SEQ = #seq#),'') AS PROD_IMG_NO
+              ,APRV_CD
+              ,TYPE_CD
+              ,SEQ
+              ,PROD_CD
+              ,MEMO
+              ,(SELECT MD_SRCMK_CD FROM TPR_ITEM WHERE PROD_CD = A.PROD_CD AND ITEM_CD ='001') AS MD_SRCMK_CD
+          FROM TPR_PROD_MD_APRV_MST A
+         WHERE SEQ = #seq#
+    </select>
+    
+    <select id="selectProdAddBefore" resultClass="dataMap">
+	/* pscpprd0021.selectProdAddBefore  */
+		SELECT (SELECT INFO_GRP_NM FROM TPR_PROD_ADD_INFO_MST WHERE INFO_GRP_CD = TV.INFO_GRP_CD LIMIT 1) AS INFO_GRP_NM 
+		      ,TD.INFO_COL_NM 
+		      ,TD.INFO_COL_DESC
+		      ,TV.COL_VAL
+		  FROM TPR_PROD_ADD_INFO_VAL TV , 
+		       TPR_PROD_ADD_INFO_DET TD
+		 WHERE TV.INFO_GRP_CD = TD.INFO_GRP_CD
+		   AND TV.INFO_COL_CD = TD.INFO_COL_CD
+		   AND TV.PROD_CD = #prodCd#
+		   AND TD.USE_YN = 'Y'
+		   AND TV.DISP_YN = 'Y'
+		 ORDER BY TD.ORDER_SEQ
+    </select>
+    
+    <select id="selectProdAddAfter" resultClass="dataMap">
+	/* pscpprd0021.selectProdAddAfter  */
+		SELECT (SELECT INFO_GRP_NM FROM TPR_PROD_ADD_INFO_MST WHERE INFO_GRP_CD = TV.INFO_GRP_CD LIMIT 1) AS INFO_GRP_NM 
+		      ,TD.INFO_COL_NM 
+		      ,TD.INFO_COL_DESC
+		      ,TV.COL_VAL
+		  FROM TPR_PRODUCT_ADD_INFO_HIST TV , TPR_PROD_ADD_INFO_DET TD
+		 WHERE TV.INFO_GRP_CD = TD.INFO_GRP_CD
+		   AND TV.INFO_COL_CD = TD.INFO_COL_CD
+		   AND TV.SEQ = #seq#
+		   AND TD.USE_YN = 'Y'
+		 ORDER BY TD.ORDER_SEQ
+    </select>
+    
+	<update id="prodAprvStatus">
+	 <![CDATA[
+	 /* pscpprd0021.prodAprvStatus */
+	 UPDATE TPR_PROD_MD_APRV_MST 
+	    SET APRV_CD   = #statusCd# 
+	  ]]>  
+	  <isNotEmpty property="memo">
+	       ,MEMO   = #memo#
+	  </isNotEmpty>
+	  <![CDATA[     	       
+	       ,MOD_DATE  = CURRENT_TIMESTAMP(0)
+	  ]]>
+	  <isNotEmpty property="modId">
+	       ,MOD_ID   = #modId#
+	  </isNotEmpty>    
+	  <![CDATA[ 
+	  WHERE SEQ = #seq#
+	  ]]>   
+	 </update>
+
+ 	<!-- 20180911 상품키워드 입력 기능 추가 -->
+	<select id="selectProdKeywordChgHist" resultClass="dataMap">
+	<include refid="pre-page-frag" />
+		/* pscpprd0021.selectProdKeywordChgHist */
+		SELECT	ROW_NUMBER() OVER(ORDER BY A.MOD_DATE) NUM
+					, A.SEQ
+					, A.PROD_CD
+					, (SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD) AS PROD_NM
+					, (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.VENDOR_ID) AS VENDOR_NM
+					, A.APRV_CD
+					, (SELECT CD_NM FROM TET_CODE WHERE MINOR_CD = A.APRV_CD AND MAJOR_CD = 'PRD34') AS APRV_NM
+					, (SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = A.APRV_ID) AS APRV_ADMIN
+					, A.MEMO
+					, '보기' AS PROD_DESC
+		FROM	TPR_PROD_MD_APRV_MST A, TPR_PRODUCT_KEYWORD_HIST B
+		WHERE	A.TYPE_CD = '005'	
+					AND A.SEQ = B.KEYWORD_SEQ
+					AND B.SEQ = '000'
+					
+					<isNotEmpty property="prodCd">
+					AND A.PROD_CD LIKE #prodCd# || '%'
+					</isNotEmpty>
+					  
+					AND (0, A.VENDOR_ID)
+					
+					<iterate prepend=" IN" property="vendorId" open="(" close=")" conjunction=","> 
+					(0, #vendorId[]#)
+					</iterate>
+					
+					<isNotEmpty property="statusCd">
+					AND A.APRV_CD LIKE #statusCd# || '%'
+					</isNotEmpty>
+					
+					AND B.REG_DATE BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')+0.99999
+					AND EXISTS (SELECT 1 FROM TPR_PRODUCT WHERE PROD_CD = A.PROD_CD AND PROD_NM LIKE #prodNm# || '%')
+    <include refid="post-page-frag" />
+	</select>
+	
+    <select id="selectProdKeywordChgBefore" resultClass="dataMap">
+	/* pscpprd0021.selectProdKeywordChgBefore */
+		SELECT	ROW_NUMBER() OVER(ORDER BY SEQ) NUM
+					, PROD_CD
+					, SEQ
+					, SEARCH_KYWRD
+					, REG_DATE
+					, REG_ID
+					, MOD_DATE
+					, MOD_ID
+		FROM TPR_PRODUCT_KEYWORD A
+		WHERE PROD_CD = #prodCd#		 
+    </select>
+    
+    <select id="selectProdKeywordChgAfter" resultClass="dataMap">
+	/* pscpprd0021.selectProdKeywordChgAfter */
+		SELECT	ROW_NUMBER() OVER(ORDER BY B.SEQ) NUM
+					, B.KEYWORD_SEQ
+					, B.PROD_CD
+					, B.SEQ
+					, B.SEARCH_KYWRD
+					, B.REG_DATE
+					, B.REG_ID
+					, B.MOD_DATE
+					, B.MOD_ID  
+		FROM	TPR_PROD_MD_APRV_MST A, TPR_PRODUCT_KEYWORD_HIST B		
+		WHERE	A.TYPE_CD = '005'
+					AND A.SEQ = B.KEYWORD_SEQ
+					AND B.KEYWORD_SEQ = #seq#
+    </select>	
+ 	<!-- 20180911 상품키워드 입력 기능 추가 -->
+ 
+</sqlMap>

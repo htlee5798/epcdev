@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMIGG0010">
+
+	<typeAlias alias="NEDMIGG0010VO" type="com.lottemart.epc.edi.imgagong.model.NEDMIGG0010VO" />
+	
+	<resultMap id="grDataListMap"    class="NEDMIGG0010VO">                                         	
+		<result property="budat"			column="BUDAT"			/> <!-- 전기일자 -->
+		<result property="werks"			column="WERKS"			/> <!-- 점포 -->
+		<result property="eblnr"			column="EBLNR"			/> <!-- 관리번호 -->
+		<result property="giSeq"			column="GI_SEQ"			/> <!-- 출고 순번 -->
+		<result property="grSeq"			column="GR_SEQ"			/> <!-- 입고 순번 -->
+		<result property="giMatnr"			column="GI_MATNR"		/> <!-- 원재료 코드 -->
+		<result property="useNewQty"		column="USE_NEW_QTY"	/> <!-- 사용수량 -->
+		<result property="lossNewQty"		column="LOSS_NEW_QTY"	/> <!-- 수율수량 -->
+		<result property="grMatnr"			column="GR_MATNR"		/> <!-- 완제품 코드 -->
+		<result property="grNewQty"			column="GR_NEW_QTY"		/> <!-- 입고수량 -->
+		<result property="splyDw"			column="SPLY_DW"		/> <!-- 납품예정일 -->
+		<result property="memo"				column="MEMO"			/> <!-- 메모 -->
+		<result property="regDt"			column="REG_DT"			/> <!-- 등록일자 -->
+		<result property="workId"			column="REG_ID"			/> <!-- 등록자 -->
+	</resultMap>
+	
+	
+	<!-- 임가공 입고 정보 저장 -->
+	<insert id="insertGrDataInfo" parameterClass="NEDMIGG0010VO">
+		/* NEDMIGG0010.insertGrDataInfo */
+		INSERT INTO TED_IGG_GRDATA
+		(
+			 BUDAT
+			,WERKS
+			,EBLNR
+			,GI_SEQ
+			,GR_SEQ
+			,GI_MATNR
+			,USE_NEW_QTY
+			,LOSS_NEW_QTY
+			,GR_MATNR
+			,GR_NEW_QTY
+			,SPLY_DW
+			,MEMO
+			,REG_DT
+			,REG_ID
+		)
+		VALUES
+		(
+			 #budat#
+			,#werks#
+			,#eblnr#
+			,#giSeq#
+			,(
+				SELECT	LPAD(NVL(MAX(GR_SEQ),'0') + 1, 2, '0')
+				FROM TED_IGG_GRDATA
+				WHERE BUDAT = #budat#
+				AND WERKS = #werks#
+				AND EBLNR = #eblnr#
+				AND GI_SEQ = #giSeq#
+			 )
+			,#giMatnr#
+			,#useNewQty#
+			,#lossNewQty#
+			,#grMatnr#
+			,#grNewQty#
+			,#splyDw#
+			,#memo#
+			,CURRENT_TIMESTAMP(0)
+			,#workId#
+		)
+	</insert>
+	
+	<!-- 임가공 입고 정보 조회 -->	
+	<select id="selectGrDataList" parameterClass="NEDMIGG0010VO" resultMap="grDataListMap">
+		/* NEDMIGG0010.selectGrDataList */
+		SELECT
+			 BUDAT
+			,WERKS
+			,EBLNR
+			,GI_SEQ
+			,GR_SEQ
+			,GI_MATNR
+			,USE_NEW_QTY
+			,LOSS_NEW_QTY
+			,GR_MATNR
+			,GR_NEW_QTY
+			,SPLY_DW
+			,MEMO
+			,TO_CHAR(REG_DT, 'YYYY-MM-DD HH24:MI:SS') AS REG_DT
+			,REG_ID
+		FROM
+			TED_IGG_GRDATA
+		WHERE
+			BUDAT = #budat#
+		AND WERKS = #werks#
+		AND EBLNR = #eblnr#
+		AND GI_SEQ = #giSeq#
+	</select>
+
+	<!-- 임가공 RFC호출 로그저장(입고,삭제) -->
+	<insert id="insertTpcRfcCallIgglog" parameterClass="java.util.HashMap">
+		
+		<selectKey keyProperty="pgmId" resultClass="String">
+			SELECT TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SEQ_RFC_CALL_IGGLOG.NEXTVAL,8,'0') FROM DUAL
+		</selectKey>
+		
+		INSERT INTO TPC_RFC_CALL_IGGLOG
+		(
+			 PGM_ID
+			,PROXY_NM
+			,PARAMS
+			,REG_DATE
+			,REG_ID
+		)
+		VALUES
+		(
+			 #pgmId#
+			,#proxyNm#
+			,#params#
+			,CURRENT_TIMESTAMP(0)
+			,#regId#
+		)
+	</insert>
+	
+	<!-- 임가공 RFC호출 로그상세정보 저장(입고,삭제) -->
+	<update id="updateTpcRfcCallIgglog" parameterClass="java.util.HashMap">
+		UPDATE TPC_RFC_CALL_IGGLOG
+		SET
+			 RTN_DATA = #rtnData#
+			,STAT_CD = #statCd#
+			,ERR_MSG = #errMsg#
+		WHERE
+			 PGM_ID = #pgmId#
+		AND	 PROXY_NM = #proxyNm#
+	</update>
+</sqlMap>

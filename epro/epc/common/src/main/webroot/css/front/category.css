@@ -1,0 +1,653 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: category.css
+ * description	: 카테고리, 전시 import
+ * date			: 2011.08.17
+************************************************************************/
+
+@import url(layout.css);
+
+/*common category*/
+.two_goods_product	{width:100%; padding-bottom:10px; /*overflow:hidden;*/}
+.two_goods_product	.list_product	{float:left; width:720px; margin-top:0; background:none;}
+.two_goods_product	.list_product	ul	{width:100%;margin-left:0px;}
+.two_goods_product	.list_product	li	{width:215px; height:440px; padding:0 0 0 20px;}
+.two_goods_product	.list_product	li.first	{padding-left:0;}
+.two_goods_product	.list_product	li	.photo_wrap	{margin-bottom:5px;}
+.two_goods_product	.list_product	li	.pr_price	{margin-bottom:0;margin-top:20px;}
+.two_goods_product	.list_product	li	.pr_price	.fixed	{height:19px; margin-bottom:-2px; color:#999;}
+.two_goods_product	.list_product	li	.pr_price	.t_roman	{font:26px CoHead; color:#333;}
+.two_goods_product	.list_product	li	.pr_name	{padding-top:4px;height:40px; line-height:18px; font:14px malgun, "Malgun Gothic"; color:#333;overflow:hidden;}
+.two_goods_product	.list_product	li	.tit_head	{width:100%; height:36px; margin:0 0 0 0;}
+.two_goods_product	.list_product	.tit_head	h2	{padding:1px 0 0 10px;}
+.two_goods_product	.list_product	.tit_head	.tit_right	{position:relative; margin-top:-17px;}
+.two_goods_product	.list_product	.tit_head	.tit_right	.icon	em	{position:absolute; left:-5000px; top:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden}
+.two_goods_product	.plan_banner	{float:left;}
+
+.summary_wrap	{height:35px; *height:33px; padding-top:20px;}
+.summary_wrap	p	{font:18px/19px malgun, "Malgun Gothic"; color:#333;}
+.summary_wrap	p	strong	{font-weight:normal; color:#ee1c24;}
+.summary_wrap	p	em	{font:20px CoHead; color:#e71b23;}
+
+/*조건 검색*/
+.option_search	{padding-bottom:5px; background:url('/images/front/common/box-option-search-bottom.gif') no-repeat 0 bottom;}
+.option_search_t	{background:url('/images/front/common/box-option-search.gif') no-repeat 0 0;}
+.option_search	.os_head	{position:relative; width:100%; z-index:0;}
+.option_search	.os_head	h2	{height:34px; padding:11px 0 0 57px; background:url("/images/front/common/img_os_chk.gif") no-repeat 21px 9px; font-size:bold 16px malgun, "Malgun Gothic"; color:#333;}
+/* .option_search	.os_head	.guide_txt	{position:absolute; right:47px; top:16px; font:normal 11px Dotum; color:#999;} */
+.option_search	.os_head	.click_btn	{position:absolute; right:20px !important; top:7px; width:36px; height:36px; overflow:hidden;} /* 2012-04-23 */
+.option_search	.os_head	.click_btn	{cursor:pointer}
+.option_search	.os_head	.click_btn	img	{margin-top:0;}
+.option_search	.os_head	.click_btn	img.on	{margin-top:-36px;}
+.option_search	.option_conts	{width:910px; margin-top:4px; padding:9px 20px 6px; border-top:1px solid #c7c7c7;}
+.option_search	.option_conts	.over_h	{width:100%; overflow:hidden;}
+
+/*.option_search	.btn_p_sch	{position:absolute; right:7px; bottom:7px;}*/
+.option_search	.btn_p_sch	{float:right; margin-right:20px !important; _margin-right:3px; margin-top:-38px;} /* 2012-04-23 */
+
+
+.sch_cont	{float:left; width:877px; margin-top:-1px;}
+.sch_wrap	{float:left; width:100%; padding-top:1px; background:url("/images/front/common/bg-dot-sch.gif") repeat-x 0 top; overflow:hidden;}
+.sch_wrap	h3	{float:left; width:83px; padding-top:7px; padding-right:20px; font:14px malgun, "Malgun Gothic"; color:#333;}
+.sch_wrap	.sch_list	{float:left; width:774px; margin-top:-1px; background:url("/images/front/common/bg-dot-sch-list.gif") repeat-y 0 0; overflow:hidden;}
+.sch_wrap	.sch_list	.bg_r_cb	{float:left; margin-right:20px; padding:11px 0 9px; *padding:9px 0 7px; white-space:nowrap;}
+	:root	 .sch_wrap	.sch_list	.bg_r_cb	{padding:8px 0 9px;}
+.sch_wrap	.sch_list	.bg_r_cb	.checkbox	{margin-right:7px;}
+
+/*
+.option_search	.option_conts	ul	{float:left; width:100%; margin-top:-1px;}
+.option_search	.option_conts	li	{float:left; width:100%; padding:12px 0 11px; border-top:1px solid #e6e6e6;}
+.option_search	.option_conts	li	.option_t	{float:left; width:85px; margin-left:4px; font-size:13px; color:#333;}
+.option_search	.option_conts	li	.sel_wrap	{float:left; width:809px; font:normal 13px Dotum; color:#666; letter-spacing:0;}
+.option_search	.option_conts	li	.sel_row	{float:left; width:100%; margin-top:5px;}
+.option_search	.option_conts	li	.sel_row	.bg_r_cb	{float:left; width:146px; padding-right:10px; word-wrap:break-word;}
+.option_search	.option_conts	li	.sel_row	.label	{width:80px;}
+.option_search	.option_conts	.btn_wrap	{padding:10px 0; border-top:1px solid #e6e6e6;}
+*/
+
+/* category list */
+.category_smenu	{position:relative; z-index:5; width:950px; background:url('/images/front/category/box-category.gif') no-repeat 0 0; padding-top:10px;}
+	:root	.category_smenu	{padding-top:7px;}
+.category_smenu	.con	{overflow:hidden; height:100%; background:url('/images/front/category/box-category.gif') no-repeat 0 bottom; padding-bottom:6px;}
+.cate_area	{float:left; width:230px; padding:0 0 0 22px; cursor:pointer}
+.cate_area	h1	{width:180px; margin-top:-4px; font:bold 24px malgun, "Malgun Gothic"; color:#f88e12;word-break:break-all;}
+	:root	.cate_area	h1	{margin-top:-1px;}
+.cate_area	.click_btn	{position:absolute; left:210px; top:18px; cursor:pointer;}
+.cate_list	{float:left; border-left:1px solid #f89f12; padding-left:20px;}
+.cate_list	ul	{overflow:hidden; height:100%; width:653px; background:url('/images/front/category/bg-category-menu-list.gif') repeat-x 0 0; margin-top:-1px;}
+.cate_list	ul	li	{float:left; margin:0 10px 0 20px; padding:8px 0 9px 0; color:#333; line-height:18px; white-space:nowrap;}
+.cate_list	ul	li.on,	 .cate_list	ul	li.on	a	{color:#ee1c24; text-decoration:underline;}
+.cate_list	ul	li	a	{color:#333;}
+.cate_list	ul	li:hover,	.cate_list	ul	li	a:hover	{color:#ee1c24;}
+
+.layer_cate	{position:absolute; z-index:2; top:0; left:0; width:256px;}
+.layer_cate	.con	{padding-top:5px; background:url('/images/front/category/bg-category-list.gif') no-repeat 0 0;}
+.layer_cate	.con-btm	{width:256px; height:12px; background:url('/images/front/category/bg-category-list-btm.gif') no-repeat 0 bottom; *font-size:0;}
+.layer_cate	ul	{padding-left:26px;}
+.layer_cate	ul	li	{padding-top:10px; font:14px malgun, "Malgun Gothic"; color:#333;}
+.layer_cate	ul	li.on,	 .layer_cate	ul	li.on	a	{color:#ee1c24; text-decoration:underline;}
+.layer_cate	ul	li	a	{color:#333;}
+.layer_cate	ul	li:hover,	.layer_cate	ul	li	a:hover	{color:#ee1c24;}
+
+/* sub menu */
+.box_only_menu	{width:100%; padding-top:8px; background:url('/images/front/common/box-wgray-w950.gif') no-repeat left top}
+.box_only_menu_b	{padding:0 25px; background:url('/images/front/common/box-wgray-w950.gif') no-repeat left bottom;}
+.box_only_menu	.sub_menu	{padding:0 50px 7px 10px;}
+
+/* only_product_L */
+h3.only_product_L	{margin-bottom:10px;}
+
+/* Olny Lotte 제품 1depth list */
+.depth_n_list	{width:950px;}
+.depth_n_list	.cont	{width:950px; padding:13px 0 7px; background:url("/images/front/category/bg-bx-dn-cont.gif") repeat-y 0 0; overflow:hidden;}
+.depth_n_list	p.cap	{width:950px; height:5px; background:url("/images/front/category/bg-bx-dn-cap.gif") no-repeat 0 0; font-size:0; line-height:0;}
+.depth_n_list	p.btm	{width:950px; height:5px; background:url("/images/front/category/bg-bx-dn-btm.gif") no-repeat 0 0; font-size:0; line-height:0;}
+.depth_n_list	.dlist	{float:left;}
+.depth_n_list	.dlist	h3	{margin-bottom:11px; font:bold 15px malgun, "Malgun Gothic";}
+.depth_n_list	.dlist	h3	a:hover	{text-decoration:none;}
+.depth_n_list	.dlist	h3.fc1	a	{color:#cc1018;}
+.depth_n_list	.dlist	h3.fc2	a	{color:#a1770e;}
+.depth_n_list	.dlist	h3.fc3	a	{color:#316c4a;}
+.depth_n_list	.dlist	h3.fc4	a	{color:#1689b8;}
+.depth_n_list	.dlist	h3.fc5	a	{color:#7252a1;}
+.depth_n_list	.dlist	h3.fc6	a	{color:#c2441e;}
+.depth_n_list	.dlist	h3.fc7	a	{color:#003f90;}
+.depth_n_list	.dlist	h3.fc8	a	{color:#00457c;}
+.depth_n_list	.dlist	li	{padding-bottom:11px; line-height:13px;}
+.depth_n_list	.dlist	li	a:hover	{color:#f2362f;}
+.depth_n_list	.dlist	.mt15	{margin-top:15px;}
+.depth_n_list	.dlist	.mt39	{margin-top:39px;}
+.depth_n_list	.type1	{width:309px; padding-left:21px;}
+.depth_n_list	.type1	li	{float:left; width:152px;}
+.depth_n_list	.type2	{width:186px; padding-left:20px;}
+
+/* Only Lotte 메인 */
+.txt_pb	{margin-bottom:19px; padding-left:285px; background:url("/images/front/category/bg-lm-brand.gif") no-repeat 0 0;}
+.txt_pb	ul	{position:relative; top:-1px; _top:1px;}
+.txt_pb	li	{padding-bottom:5px; line-height:13px;}
+
+.ol_new	{margin-top:30px;}
+.ol_new	.ol_tab	{width:950px; height:46px;}
+.ol_new	.ol_tab	{width:950px; height:46px; background:url("/images/front/category/bg-ol-tab.gif") no-repeat 0 0;}
+.ol_new	.ol_tab	li	{float:left; color:#333; font:14px malgun, "Malgun Gothic"; font-weight:bold; text-align:center;}
+.ol_new	.ol_tab	li	div	{width:119px; height:46px; background:url("/images/front/category/bg-ol-tab-r.gif") no-repeat right 0;}/* 111229 추가/수정-119 */
+.ol_new	.ol_tab	li	div.end	{background:url("/images/front/category/bg-ol-tab-re.gif") no-repeat right 0;}
+.ol_new	.ol_tab	.first,	.ol_new	.ol_tab	.end	{width:118px;}/* 111229 추가/수정-118 */
+.ol_new	.ol_tab	li	div	p	{width:100%; height:100%; background:url("/images/front/category/bg-ol-tab-l.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li	.first	p	{background:url("/images/front/category/bg-ol-tab-lf.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li.on	div	{background:url("/images/front/category/bg-ol-tab-on-r.gif") no-repeat right 0;}
+.ol_new	.ol_tab	li.on	.first	{background:url("/images/front/category/bg-ol-tab-on-r.gif") no-repeat right 0;}
+.ol_new	.ol_tab	li.on	.end	{background:url("/images/front/category/bg-ol-tab-on-re.gif") no-repeat right 0;}
+.ol_new	.ol_tab	li.on	p	{background:url("/images/front/category/bg-ol-tab-on-l.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li.on	.first	p	{background:url("/images/front/category/bg-ol-tab-on-lf.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li	a	{display:block; color:#333; height:30px; padding-top:12px;}
+.ol_new	.ol_tab	li	a:hover	{text-decoration:none;}
+.ol_new	.ol_tab	li.on	.fc1	a	{color:#cc1018;}
+.ol_new	.ol_tab	li.on	.fc2	a	{color:#a1770e;}
+.ol_new	.ol_tab	li.on	.fc3	a	{color:#316c4a;}
+.ol_new	.ol_tab	li.on	.fc4	a	{color:#1689b8;}
+.ol_new	.ol_tab	li.on	.fc5	a	{color:#7252a1;}
+.ol_new	.ol_tab	li.on	.fc6	a	{color:#c2441e;}
+.ol_new	.ol_tab	li.on	.fc7	a	{color:#003f90;}
+.ol_new	.ol_tab	li.on	.fc8	a	{color:#00457c;}
+.ol_new	.ol_nc	{width:910px; padding:36px 0 32px 40px; background:url("/images/front/category/bg-ol-new.gif") no-repeat 0 bottom; overflow:hidden;}
+.ol_new	.br_info	{float:left; width:327px;}
+.ol_new	.br_list	{float:left; width:552px; margin-left:30px;}
+.ol_new	.br_list	h3	{margin-top:-3px; color:#333; font:bold 20px malgun, "Malgun Gothic"; line-height:21px;}
+.ol_new	.br_list	h3	.en	{font:normal 22px CoHead; letter-spacing:1px;}
+.ol_new	.br_list	.list_product	{background:none #f7f7f7;}
+.ol_new	.br_list	.list_product	ul	{width:552px;}
+.ol_new	.br_list	.list_product	li	{width:184px; height:315px; padding-right:0;}
+.ol_top10	{margin-top:27px; padding-left:30px; padding-bottom:20px;}
+.ol_top10	h3	{color:#333; font:bold 20px malgun, "Malgun Gothic"; font-weight:bold; line-height:20px;}
+.ol_top10	h3	.en	{font:normal 22px CoHead; letter-spacing:1px;}
+.ol_top10	.list_product	{background-position:0 top;}
+.ol_top10	.list_product	ul	{/*width:920px;*/position:relative;zoom:1;} /*2014.05.10*/
+.ol_top10	.list_product	ul	li	{/*width:184px;*/ padding-right:0;}/*2014.05.10*/
+
+/* 손큰 피자 메인*/
+.big_hand_main	{background:url('/images/front/category/bg-hand-pizza-order.jpg') repeat-y;}
+.big_hand_main	.order	{position:relative; width:867px; margin:0 0 20px 42px; overflow:hidden; *zoom:1;}
+.big_hand_main	.order	ul	{float:left; width:870px;}
+.big_hand_main	.order	{}
+.big_hand_main	.order	li	{float:left; padding:28px 9px 0 10px; background:url('/images/front/category/line-pizza-order.gif') no-repeat right 20px;}
+.big_hand_main	.order	li	.prod_with_cart	{width:165px; overflow:hidden; margin:22px 0 0 15px; _font-size:0;}
+.big_hand_main	.order	li.banner	{padding:20px 0 0 0;}
+.big_hand_main	.order	li.pl20	{padding-left:20px;} /* 120523 추가 */
+.big_hand_main	.order	li.banner	img	{vertical-align:top}
+
+.big_hand_main	.order_shop	{width:868px; padding:0 40px 0 42px; height:321px; background:url('/images/front/category/bg-big-hand-pizza.gif') no-repeat 0 0;}
+.big_hand_main	.order_shop	table	{width:100%;}
+.big_hand_main	.order_shop	th	{padding:13px 0 14px; border-top:2px solid #dfdfdf; border-bottom:1px solid #dfdfdf; background:#f3f3f3;}
+.big_hand_main	.order_shop	td	 {text-align:center; padding:13px 0 16px; border-bottom:1px solid #dfdfdf;}
+.big_hand_main	.order_shop	td.left	{text-align:left; padding-left:15px;}
+
+/* 1depth 카테고리 */
+.m_wrap	{margin-top:30px;}
+.m_wrap	.visual	{font-size:0; line-height:0;}
+.m_wrap	.stit	{margin-bottom:10px;}
+.bnr_cate	{overflow:hidden; width:950px; height:164px; margin-bottom:10px;}
+.bnr_cate	li	{float:left; font-size:0; line-height:0;}
+
+h2.depth1_best	{margin-bottom:10px; color:#333; font:bold 20px malgun, "Malgun Gothic"; font-weight:bold; line-height:20px;}
+/* h2.depth1_best	em	{color:#ee1c24; font:normal 22px CoHead; vertical-align:-2px; letter-spacing:0;} */
+h2.depth1_best	em	{color:#ee1c24;} /* 2013-06-26 국문에맞게수정 */
+
+.m0_cnt2	{/*z-index:-1; */position:relative; width:950px; height:164px; margin-bottom:20px;} /* 120627 추가 */
+.m0_cnt2	.prod1	{position:absolute; left:0; top:1px; width:474px; height:164px;}/* 120627 추가 */
+.m0_cnt2	.prod2	{position:absolute; left:475px; top:1px; width:475px; height:164px;}/* 120627 추가 */
+
+
+/* 1depth 카테고리 : 신선식품 */
+.m1_cnt1	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m1-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m1_cnt1	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m1_cnt1	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:257px;}
+.m1_cnt1	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+.m1_cnt2	{position:relative; width:950; height:264px; background:url('/images/front/category/bg-m1-02.gif') no-repeat 0 0;}
+.m1_cnt2	.prod1	{position:absolute; left:0; top:1px; width:474px; height:262px;}
+.m1_cnt2	.prod2	{position:absolute; left:475px; top:1px; width:475px; height:262px;}
+
+/* 1depth 카테고리 : 가공식품 */
+.m2_cnt1	{position:relative; width:950; height:391px; background:url('/images/front/category/bg-m2-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m2_cnt1	.prod1	{position:absolute; left:0; top:1px; width:474px; height:260px;}
+.m2_cnt1	.prod2	{position:absolute; left:475px; top:1px; width:237px; height:260px;}
+.m2_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+.m2_cnt1	.prod4	{position:absolute; left:0; top:262px; width:316px; height:128px;}
+.m2_cnt1	.prod5	{position:absolute; left:317px; top:262px; width:316px; height:128px;}
+.m2_cnt1	.prod6	{position:absolute; left:634px; top:262px; width:316px; height:128px;}
+
+.m2_cnt2	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m2-02.gif') no-repeat 0 0;}
+.m2_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m2_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m2_cnt2	.prod3	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m2_cnt2	.prod4	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+/* 1depth 카테고리 : 유아/아동 */
+.m3_cnt1	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m3-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m3_cnt1	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m3_cnt1	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:257px;}
+.m3_cnt1	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+.m3_cnt2	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m3-02.gif') no-repeat 0 0;}
+.m3_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:128px;}
+.m3_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m3_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:128px;}
+.m3_cnt2	.prod4	{position:absolute; left:0; top:130px; width:316px; height:128px;}
+.m3_cnt2	.prod5	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m3_cnt2	.prod6	{position:absolute; left:634px; top:130px; width:316px; height:128px;}
+
+/* 1depth 카테고리 : 문구/완구 */
+.m4_cnt1	{position:relative; width:950; height:262px; background:url('/images/front/category/bg-m4-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m4_cnt1	.prod1	{position:absolute; left:0; top:1px; width:474px; height:260px;}
+.m4_cnt1	.prod2	{position:absolute; left:475px; top:1px; width:475px; height:260px;}
+
+.m4_cnt2	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m4-02.gif') no-repeat 0 0;}
+.m4_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:128px;}
+.m4_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m4_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:128px;}
+.m4_cnt2	.prod4	{position:absolute; left:0; top:130px; width:316px; height:128px;}
+.m4_cnt2	.prod5	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m4_cnt2	.prod6	{position:absolute; left:634px; top:130px; width:316px; height:128px;}
+
+/* 1depth 카테고리 : 생활용품 */
+.m5_cnt1	{position:relative; width:950; height:262px; background:url('/images/front/category/bg-m5-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m5_cnt1	.prod1	{position:absolute; left:0; top:1px; width:237px; height:260px;}
+.m5_cnt1	.prod2	{position:absolute; left:237px; top:1px; width:476px; height:260x;}
+.m5_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+
+.m5_cnt2	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m5-02.gif') no-repeat 0 0;}
+.m5_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m5_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m5_cnt2	.prod3	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m5_cnt2	.prod4	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+/* 1depth 카테고리 : 전자제품 */
+.m6_cnt1	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m6-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m6_cnt1	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m6_cnt1	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:257px;}
+.m6_cnt1	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+.m6_cnt2	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m6-02.gif') no-repeat 0 0;}
+.m6_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:128px;}
+.m6_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m6_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:128px;}
+.m6_cnt2	.prod4	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m6_cnt2	.prod5	{position:absolute; left:634px; top:130px; width:316px; height:128px;}
+
+/* 1depth 카테고리 : 취미/자동차 */
+.m7_cnt1	{position:relative; width:950; height:262px; background:url('/images/front/category/bg-m7-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m7_cnt1	.prod1	{position:absolute; left:0; top:1px; width:237px; height:260px;}
+.m7_cnt1	.prod2	{position:absolute; left:237px; top:1px; width:476px; height:260x;}
+.m7_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+
+.m7_cnt2	{position:relative; width:950; height:259px; background:url('/images/front/category/bg-m7-02.gif') no-repeat 0 0;}
+.m7_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m7_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m7_cnt2	.prod3	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m7_cnt2	.prod4	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+/* 1depth 카테고리 : 패션잡화 */
+.m8_cnt1	{position:relative; width:950; height:262px; background:url('/images/front/category/bg-m8-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m8_cnt1	.prod1	{position:absolute; left:0; top:1px; width:237px; height:260px;}
+.m8_cnt1	.prod2	{position:absolute; left:237px; top:1px; width:476px; height:260x;}
+.m8_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+
+.m8_cnt2	{position:relative; width:950; height:691px; background:url('/images/front/category/bg-m8-02.gif') no-repeat 0 0;}
+.m8_cnt2	.prod1	{position:absolute; left:0; top:1px; width:317px; height:229px;}
+.m8_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:114px;}
+.m8_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:114px;}
+.m8_cnt2	.prod4	{position:absolute; left:317px; top:116px; width:316px; height:114px;}
+.m8_cnt2	.prod5	{position:absolute; left:634px; top:116px; width:316px; height:114px;}
+
+.m8_cnt2	.prod6	{position:absolute; left:0; top:231px; width:316px; height:229px;}
+.m8_cnt2	.prod7	{position:absolute; left:317px; top:231px; width:316px; height:114px;}
+.m8_cnt2	.prod8	{position:absolute; left:634px; top:231px; width:316px; height:114px;}
+.m8_cnt2	.prod9	{position:absolute; left:317px; top:346px; width:316px; height:114px;}
+.m8_cnt2	.prod10	{position:absolute; left:634px; top:346px; width:316px; height:114px;}
+
+.m8_cnt2	.prod11	{position:absolute; left:0; top:461px; width:316px; height:229px;}
+.m8_cnt2	.prod12	{position:absolute; left:317px; top:461px; width:316px; height:114px;}
+.m8_cnt2	.prod13	{position:absolute; left:634px; top:461px; width:316px; height:114px;}
+
+.m8_cnt2	.prod14	{position:absolute; left:317px; top:576px; width:316px; height:114px;}
+.m8_cnt2	.prod15	{position:absolute; left:634px; top:576px; width:316px; height:114px;}
+
+/* 2012-06-18 NEW STYLE */
+div.inConts-D-Park {
+	overflow:hidden; zoom:1;
+	width:100%;
+	font-size:0;
+	line-height:0;
+	letter-spacing:-1px;
+}
+div.inConts-D-Park h2.stit {margin-top:50px;}
+div.Board-Dpark {
+	width:938px;
+	padding:0 0 0 12px;
+	background:url('//simage.lottemart.com/images/front/category/bg_board_dpark.gif') no-repeat 0 0;
+}
+div.Board-Dpark table {
+	table-layout:fixed;
+	width:100%;
+	border-bottom:3px solid #1f54a6;
+}
+div.Board-Dpark table thead th {
+	padding:10px 0;
+	background:#f3f3f3;
+}
+div.Board-Dpark table tbody td {
+	padding:10px 0 7px;
+	background:url('//simage.lottemart.com/images/front/category/bg_dott.gif') repeat-x 0 0;
+	color:#757575;
+	text-align:center;
+	font:13px/16px malgun,"Malgun Gothic";
+}
+div.Board-Dpark table tbody td.subject {
+	text-align:left;
+}
+div.Board-Dpark table tbody td.subject a {color:#7a7a7a;}
+div.Board-Dpark table tbody td.bcolor {color:#2164cb;}
+div.btnC-v1 {
+	margin-top:30px;
+	text-align:center;
+	font-size:0;
+	line-height:0;
+}
+
+/* 121214 PB 수정관련 추가 */
+.depth_n_list_v2	.cont	{width:950px; padding:13px 0 7px; background:url('//simage.lottemart.com/images/front/category/bg-bx-dn-cont2.gif') repeat-y 0 0; overflow:hidden;}
+.depth_n_list_v2	.dlist	h3.fc1	{color:#58a703;}
+.depth_n_list_v2	.dlist	h3.fc2	{color:#ee1d24;}
+.depth_n_list_v2	.type1	{width:440px; padding-left:35px;}
+.depth_n_list_v2	.type1	li	{float:left; width:183px; padding-left:10px; background:url('//simage.lottemart.com/images/front/category/type1_li_bg.gif') no-repeat 0 4px;}
+.depth_n_list_v2	.type2	{width:455px; padding-left:20px;}
+.depth_n_list_v2	.type2	li	{float:left; width:140px; padding-left:10px; background:url('//simage.lottemart.com/images/front/category/type2_li_bg.gif') no-repeat 0 4px;}
+.txt_pb_v2	{margin-bottom:19px; padding-bottom:15px; padding-left:285px; background:url('//simage.lottemart.com/images/front/category/bg-lm-brand.gif') no-repeat 0 0;}
+.txt_pb_v2	ul	{position:relative; top:10px; _top:1px;}
+
+
+
+/* 2012-12-21 두판피자 추가 관련 css 추가 */
+.big_hand_main div.twopan div.buy_cart01{position:relative;}
+.big_hand_main div.twopan div.buy_cart01 div.prod_with_cart{position:absolute; bottom:3px; right:220px;}
+
+/* 2013-02-26 두판피자 추가 관련 css 추가 */
+.big_hand_main ul.twopan div.buy_cart01 div.prod_with_cart{left:525px;}
+
+/* 2013-03-20 */
+a.buttonMores {
+	display:inline-block;
+	float:left;
+	margin:0 0 0 9px;
+}
+
+/* 2013-04-15 */
+ul.plantheme-list {
+	overflow:hidden; _zoom:1;
+	width:948px;
+	margin:15px 0 0;
+	border-top:2px solid #fd8a19;
+	border-right:1px solid #fda64f;
+	border-left:1px solid #fda64f;
+	border-bottom:1px solid #fd8a19;
+}
+ul.plantheme-list li {
+	float:left;
+	font-size:0;
+	line-height:0;
+}
+ul.plantheme-list li a {
+	display:inline-block;
+	width:221px;
+	height:25px;
+	margin:-1px 0 0;
+	padding:6px 0 0 15px;
+	border-top:1px solid #e4e4e4;
+	border-left:1px solid #e4e4e4;
+	color:#707070;
+	font-weight:bold;
+	font-size:14px;
+	line-height:18px;
+}
+ul.plantheme-list li.diss1 a {
+	width:222px;
+	border-left:0;
+}
+ul.plantheme-list li a.vacate {cursor:auto;}
+ul.plantheme-list li a:hover {
+	background:#fd8a19;
+	color:#fff;
+	text-decoration:none;
+}
+ul.plantheme-list li.on {
+	background:#fd8a19;
+}
+ul.plantheme-list li.on a {
+	color:#fff;
+	text-decoration:none;
+}
+ul.plantheme-list li a.vacate:hover {background:none;}
+h2.plantheme-tit-txt {
+	padding:22px 0 0;
+	font-weight:bold;
+	font-size:15px;
+	line-height:18px;
+}
+
+/* 2013-07-11 카드행사 상세 */
+.layerPoint {display:inline-block;position:relative;left:-5px;*left:0;width:105px;height:22px;vertical-align:top;}
+.layerPoint .popup {display:none;position:absolute;top:21px;left:0;}
+.layerPoint:hover .popup {display:block; z-index:21;}
+
+/* 2013-09-06 회원 등급 혜택 */
+.level_benefit {position:relative; *z-index:9;}
+.btn_level_more {position:relative;}
+.btn_level_view {position:absolute; top:21px; left:0; z-index:20;}
+
+/* 140303 이벤트 - 선착순쿠푼 */
+.adiscount_coupon .abox_d_c_btm li {position:relative;}
+.adiscount_coupon .actcoupon_wrap {position:absolute; bottom:-4px; left:30px; overflow:hidden; width:201px; height:30px;}
+.adiscount_coupon .actcoupon_wrap [class|="actc"] {overflow:hidden; background:url('//simage.lottemart.com/images/common/icon/sp_actcoupon_mobile.png') 0 0 no-repeat; font:0/0 a;}
+.adiscount_coupon .actcoupon_wrap .actc-title {position:relative; float:left; width:75px; height:25px;}
+.adiscount_coupon .actcoupon_wrap .actc-title em {position:absolute; top:0; left:27px; display:block; width:38px; height:12px; line-height:11px; background-color:#fff; font-size:12px; color:#ff7e00; font-family:tahoma; font-weight:bold; letter-spacing:-1px; text-align:right;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap {overflow:hidden; float:right;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap [class|="actc"] {float:left; width:23px; height:27px; margin-left:2px; background-position:0 -30px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-0 {background-position:0 -60px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-1 {background-position:-30px -60px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-2 {background-position:-60px -60px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-3 {background-position:-90px -60px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-4 {background-position:-120px -60px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-5 {background-position:0 -90px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-6 {background-position:-30px -90px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-7 {background-position:-60px -90px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-8 {background-position:-90px -90px;}
+.adiscount_coupon .actcoupon_wrap .numbers-wrap .actc-9 {background-position:-120px -90px;}
+.C0070536-content label {color:transparent;}
+
+/* 개인화 서비스 */
+.ps-wrap{}
+.ps-hgroup{position:relative;height:437px;margin-top:-57px;background:url('//simage.lottemart.com/images/front/personal/ps-topvisual.png') no-repeat 50% 0;z-index:-1;}
+.ps-hgroup:before{display:block;content:"";position:absolute;top:0;left:50%;margin-left:-666px;width:1333px;height:437px;background:url('//simage.lottemart.com/images/front/personal/ps-topvisual.png') no-repeat 50% 0;}
+.ps-category{position:relative;margin-top:20px;background:#eccf9c;}
+.ps-category>h2{position:relative;top:-20px;height:55px;background:url('//simage.lottemart.com/images/front/personal/ps-bg-category.png') no-repeat -10px 0;}
+.ps-category>h2:before,.ps-category>h2:after{display:block;content:"";position:absolute;top:0;width:7px;height:45px;background-image:url('//simage.lottemart.com/images/front/personal/ps-bg-category.png');}
+.ps-category>h2:before{left:-7px;background-position:-3px 0;}
+.ps-category>h2:after{right:-7px;background-position:-960px 0;}
+.ps-category>.desc{position:absolute;bottom:-27px;left:277px;width:367px;height:20px;background:url('//simage.lottemart.com/images/front/personal/ps-tit.png') no-repeat 0 0;}
+.ps-category>.bg01{display:block;position:relative;width:100%;height:4px;margin-top:18px;background-color:#c1a97e;}
+.ps-category>.bg01:before,.ps-category>.bg01:after{display:block;content:"";position:absolute;bottom:0;width:10px;height:8px;background-image:url('//simage.lottemart.com/images/front/personal/ps-bg-category.png');}
+.ps-category>.bg01:before{left:-10px;background-position:0 -62px;}
+.ps-category>.bg01:after{right:-10px;background-position:-10px -62px;}
+.ps-category>.bg02{display:block;content:"";position:absolute;top:47px;left:-88px;width:1082px;height:551px;background:url('//simage.lottemart.com/images/front/personal/ps-bg-category.png') no-repeat 0 -71px;}
+.ps-catelist{position:relative;width:895px;padding-top:151px;margin:0 auto;*zoom:1;z-index:1;}
+.ps-catelist:after{display:block;content:"";clear:both;}
+.ps-catelist>li{position:relative;float:left;width:148px;height:50px;border-right:1px solid #eccf9c;border-bottom:1px solid #eccf9c;}
+.ps-catelist>li>a{display:block;width:100%;height:100%;background-image:url('//simage.lottemart.com/images/front/personal/ps-btn-category.png');cursor:pointer;}
+.ps-btn-cate1{background-position:0px 0px;}.ps-btn-cate1.active,.ps-btn-cate1:hover,.ps-btn-cate1:focus{background-position:-895px 0px;}
+.ps-btn-cate2{background-position:-461px 0px;}.ps-btn-cate2.active,.ps-btn-cate2:hover,.ps-btn-cate2:focus{background-position:-1356px 0px;}
+.ps-btn-cate3{background-position:0px -138px;}.ps-btn-cate3.active,.ps-btn-cate3:hover,.ps-btn-cate3:focus{background-position:-895px -138px;}
+.ps-btn-cate4{background-position:-149px -138px;}.ps-btn-cate4.active,.ps-btn-cate4:hover,.ps-btn-cate4:focus{background-position:-1044px -138px;}
+.ps-btn-cate5{background-position:-298px -138px;}.ps-btn-cate5.active,.ps-btn-cate5:hover,.ps-btn-cate5:focus{background-position:-1193px -138px;}
+.ps-btn-cate6{background-position:-447px -138px;}.ps-btn-cate6.active,.ps-btn-cate6:hover,.ps-btn-cate6:focus{background-position:-1342px -138px;}
+.ps-btn-cate7{background-position:-596px -138px;}.ps-btn-cate7.active,.ps-btn-cate7:hover,.ps-btn-cate7:focus{background-position:-1491px -138px;}
+.ps-btn-cate8{background-position:-745px -138px;}.ps-btn-cate8.active,.ps-btn-cate8:hover,.ps-btn-cate8:focus{background-position:-1640px -138px;}
+.ps-btn-cate9{background-position:0px -188px;}.ps-btn-cate9.active,.ps-btn-cate9:hover,.ps-btn-cate9:focus{background-position:-895px -188px;}
+.ps-btn-cate10{background-position:-149px -188px;}.ps-btn-cate10.active,.ps-btn-cate10:hover,.ps-btn-cate10:focus{background-position:-1044px -188px;}
+.ps-btn-cate11{background-position:-298px -188px;}.ps-btn-cate11.active,.ps-btn-cate11:hover,.ps-btn-cate11:focus{background-position:-1193px -188px;}
+.ps-btn-cate12{background-position:-447px -188px;}.ps-btn-cate12.active,.ps-btn-cate12:hover,.ps-btn-cate12:focus{background-position:-1342px -188px;}
+.ps-btn-cate13{background-position:-596px -188px;}.ps-btn-cate13.active,.ps-btn-cate13:hover,.ps-btn-cate13:focus{background-position:-1491px -188px;}
+.ps-btn-cate14{background-position:-745px -188px;}.ps-btn-cate14.active,.ps-btn-cate14:hover,.ps-btn-cate14:focus{background-position:-1640px -188px;}
+.ps-btn-cate15{background-position:0px -238px;}.ps-btn-cate15.active,.ps-btn-cate15:hover,.ps-btn-cate15:focus{background-position:-895px -238px;}
+.ps-btn-cate16{background-position:-149px -238px;}.ps-btn-cate16.active,.ps-btn-cate16:hover,.ps-btn-cate16:focus{background-position:-1044px -238px;}
+.ps-btn-cate17{background-position:-298px -238px;}.ps-btn-cate17.active,.ps-btn-cate17:hover,.ps-btn-cate17:focus{background-position:-1193px -238px;}
+.ps-btn-cate18{background-position:-447px -238px;}.ps-btn-cate18.active,.ps-btn-cate18:hover,.ps-btn-cate18:focus{background-position:-1342px -238px;}
+.ps-btn-cate19{background-position:-596px -238px;}.ps-btn-cate19.active,.ps-btn-cate19:hover,.ps-btn-cate19:focus{background-position:-1491px -238px;}
+.ps-btn-cate20{background-position:-745px -238px;}.ps-btn-cate20.active,.ps-btn-cate20:hover,.ps-btn-cate20:focus{background-position:-1640px -238px;}
+.ps-btn-cate21{background-position:0px -288px;}.ps-btn-cate21.active,.ps-btn-cate21:hover,.ps-btn-cate21:focus{background-position:-895px -288px;}
+.ps-btn-cate22{background-position:-149px -288px;}.ps-btn-cate22.active,.ps-btn-cate22:hover,.ps-btn-cate22:focus{background-position:-1044px -288px;}
+.ps-btn-cate23{background-position:-298px -288px;}.ps-btn-cate23.active,.ps-btn-cate23:hover,.ps-btn-cate23:focus{background-position:-1193px -288px;}
+.ps-btn-cate24{background-position:-447px -288px;}.ps-btn-cate24.active,.ps-btn-cate24:hover,.ps-btn-cate24:focus{background-position:-1342px -288px;}
+.ps-btn-cate25{background-position:-596px -288px;}.ps-btn-cate25.active,.ps-btn-cate25:hover,.ps-btn-cate25:focus{background-position:-1491px -288px;}
+.ps-btn-cate26{background-position:-745px -288px;}.ps-btn-cate26.active,.ps-btn-cate26:hover,.ps-btn-cate26:focus{background-position:-1640px -288px;}
+.ps-btn-cate27{background-position:0px -338px;}.ps-btn-cate27.active,.ps-btn-cate27:hover,.ps-btn-cate27:focus{background-position:-895px -338px;}
+.ps-btn-cate28{background-position:-149px -338px;}.ps-btn-cate28.active,.ps-btn-cate28:hover,.ps-btn-cate28:focus{background-position:-1044px -338px;}
+.ps-btn-cate29{background-position:-298px -338px;}.ps-btn-cate29.active,.ps-btn-cate29:hover,.ps-btn-cate29:focus{background-position:-1193px -338px;}
+.ps-btn-cate30{background-position:-447px -338px;}.ps-btn-cate30.active,.ps-btn-cate30:hover,.ps-btn-cate30:focus{background-position:-1342px -338px;}
+.ps-btn-cate31{background-position:-596px -338px;}.ps-btn-cate31.active,.ps-btn-cate31:hover,.ps-btn-cate31:focus{background-position:-1491px -338px;}
+.ps-btn-cate32{background-position:-745px -338px;}.ps-btn-cate32.active,.ps-btn-cate32:hover,.ps-btn-cate32:focus{background-position:-1640px -338px;}
+.ps-btn-cate33{background-position:0px -388px;}.ps-btn-cate33.active,.ps-btn-cate33:hover,.ps-btn-cate33:focus{background-position:-895px -388px;}
+.ps-btn-cate34{background-position:-149px -388px;}.ps-btn-cate34.active,.ps-btn-cate34:hover,.ps-btn-cate34:focus{background-position:-1044px -388px;}
+.ps-btn-cate35{background-position:-298px -388px;}.ps-btn-cate35.active,.ps-btn-cate35:hover,.ps-btn-cate35:focus{background-position:-1193px -388px;}
+.ps-btn-cate36{background-position:-447px -388px;}.ps-btn-cate36.active,.ps-btn-cate36:hover,.ps-btn-cate36:focus{background-position:-1342px -388px;}
+.ps-btn-cate37{background-position:-596px -388px;}.ps-btn-cate37.active,.ps-btn-cate37:hover,.ps-btn-cate37:focus{background-position:-1491px -388px;}
+.ps-btn-cate38{background-position:-745px -388px;}.ps-btn-cate38.active,.ps-btn-cate38:hover,.ps-btn-cate38:focus{background-position:-1640px -388px;}
+.ps-catelist>li>a>span{visibility:hidden;overflow:hidden;position:absolute;top:0;left:0;width:1px;height:1px;font-size:0;line-height:0;}
+.ps-catelist>.ps-catetop01,.ps-catelist>.ps-catetop02{position:absolute;top:0;width:434px;height:138px;}
+.ps-catelist>.ps-catetop01{left:0;}
+.ps-catelist>.ps-catetop02{right:0;}
+.ps-catelist .bg-round{}
+.ps-catelist .bg-round>i{display:block;position:absolute;width:15px;height:15px;background-image:url('//simage.lottemart.com/images/front/personal/ps-bg-category.png');}
+.ps-catelist .bg-round>.top{top:0;left:0;background-position:-970px 0;}
+.ps-catelist .bg-round>.right{top:0;right:0;background-position:-985px 0;}
+.ps-catelist .bg-round>.bottom{bottom:0;right:0;background-position:-985px -15px;}
+.ps-catelist .bg-round>.left{bottom:0;left:0;background-position:-970px -15px;}
+[class|="ps-prod-wrap"]{margin-top:98px;border-top:1px solid #e5e5e5;border-bottom:1px solid #e5e5e5;*zoom:1;}
+[class|="ps-prod-wrap"]:after{display:block;content:"";clear:both;}
+.ps-video{float:right;width:350px;padding-left:20px;border-left:1px solid #e5e5e5;}
+.ps-video>h2{width:190px;height:52px;margin:-45px 0 0 -6px;background:url('//simage.lottemart.com/images/front/personal/ps-tit.png') no-repeat 0 -21px;}
+.ps-video>p{overflow-y:auto;height:71px;padding:8px 10px;color:#666;font-size:11px;line-height:1.8;}
+.ps-video>.video{overflow:hidden;width:350px;height:224px;padding-bottom:25px;margin-top:15px;background:url('//simage.lottemart.com/images/front/personal/ps-bg-video.png') no-repeat 0 bottom;}
+.ps-prod-list{float:left;width:578px;}
+.ps-prod-list>h2{height:20px;margin-top:-31px;background-image:url('//simage.lottemart.com/images/front/personal/ps-tit.png');background-repeat:no-repeat;}
+.ps-tit-cate1{width:112px;background-position:0 -73px;}
+.ps-tit-cate2{width:128px;background-position:0 -96px;}
+.ps-tit-cate3{width:73px;background-position:0 -119px;}
+.ps-tit-cate4{width:73px;background-position:0 -144px;}
+.ps-tit-cate5{width:73px;background-position:0 -168px;}
+.ps-tit-cate6{width:56px;background-position:0 -192px;}
+.ps-tit-cate7{width:173px;background-position:0 -216px;}
+.ps-tit-cate8{width:73px;background-position:0 -240px;}
+.ps-tit-cate9{width:73px;background-position:0 -264px;}
+.ps-tit-cate10{width:73px;background-position:0 -288px;}
+.ps-tit-cate11{width:73px;background-position:0 -312px;}
+.ps-tit-cate12{width:106px;background-position:0 -336px;}
+.ps-tit-cate13{width:89px;background-position:0 -360px;}
+.ps-tit-cate14{width:90px;background-position:0 -384px;}
+.ps-tit-cate15{width:115px;background-position:0 -408px;}
+.ps-tit-cate16{width:115px;background-position:0 -432px;}
+.ps-tit-cate17{width:90px;background-position:0 -456px;}
+.ps-tit-cate18{width:73px;background-position:0 -480px;}
+.ps-tit-cate19{width:90px;background-position:0 -504px;}
+.ps-tit-cate20{width:138px;background-position:0 -528px;}
+.ps-tit-cate21{width:131px;background-position:0 -552px;}
+.ps-tit-cate22{width:115px;background-position:0 -575px;}
+.ps-tit-cate23{width:90px;background-position:0 -600px;}
+.ps-tit-cate24{width:56px;background-position:0 -624px;}
+.ps-tit-cate25{width:72px;background-position:0 -648px;}
+.ps-tit-cate26{width:73px;background-position:0 -671px;}
+.ps-tit-cate27{width:107px;background-position:0 -696px;}
+.ps-tit-cate28{width:72px;background-position:0 -720px;}
+.ps-tit-cate29{width:90px;background-position:0 -743px;}
+.ps-tit-cate30{width:106px;background-position:0 -768px;}
+.ps-tit-cate31{width:97px;background-position:0 -792px;}
+.ps-tit-cate32{width:115px;background-position:0 -816px;}
+.ps-tit-cate33{width:148px;background-position:0 -840px;}
+.ps-tit-cate34{width:131px;background-position:0 -863px;}
+.ps-tit-cate35{width:107px;background-position:0 -888px;}
+.ps-tit-cate36{width:107px;background-position:0 -911px;}
+.ps-tit-cate37{width:115px;background-position:0 -935px;}
+.ps-tit-cate38{width:115px;background-position:0 -960px;}
+.ps-prod-list>.list_product{width:578px;margin-top:12px;background:none;}
+.ps-prod-wrap>.list_product{width:100%;}
+.ps-prod-wrap-no>.ps-prod-list{width:100%;padding-bottom:55px;text-align:center;font-size:0;}
+.txt-nohistory{height:278px;margin:90px 0 20px;background:url('//simage.lottemart.com/images/front/personal/ps-txt-nohistory.png') no-repeat 50% 0;}
+.ps-prod-wrap-no [class|="ps-btn"]{display:inline-block;position:relative;width:315px;height:65px;margin:0 7px;background:green;color:#fff;box-shadow:inset -1px -1px 0 rgba(0,0,0,.1);vertical-align:top;}
+.ps-prod-wrap-no [class|="ps-btn"]>span{display:inline-block;height:42px;margin:12px 0 0 8px;background-image:url('//simage.lottemart.com/images/front/personal/ps-txt-nohistory.png');}
+.ps-prod-wrap-no .ps-btn-green{background-color:#3fbb25;}
+.ps-prod-wrap-no .ps-btn-green>span{width:221px;background-position:0 -288px;}
+.ps-prod-wrap-no .ps-btn-red{background-color:#f71802;}
+.ps-prod-wrap-no .ps-btn-red>span{width:272px;background-position:0 -338px;}
+.ps-prod-wrap-no [class|="ps-btn"] .bg-round>i{display:block;position:absolute;width:5px;height:5px;background-image:url('//simage.lottemart.com/images/front/personal/ps-bg-category.png');}
+.ps-prod-wrap-no [class|="ps-btn"] .bg-round>.top{top:0;left:0;background-position:-1000px 0;}
+.ps-prod-wrap-no [class|="ps-btn"] .bg-round>.right{top:0;right:0;background-position:-1005px 0;}
+.ps-prod-wrap-no [class|="ps-btn"] .bg-round>.bottom{bottom:0;right:0;background-position:-1005px -5px;}
+.ps-prod-wrap-no [class|="ps-btn"] .bg-round>.left{bottom:0;left:0;background-position:-1000px -5px;}
+
+/* 2014추석 기획전 메뉴 */
+.plan_chuseok2014_menu {overflow:hidden;}
+.plan_chuseok2014_menu:after {content:" ";display:block;clear:both}
+.plan_chuseok2014_menu li {float:left;}
+.plan_chuseok2014_menu li a {display:block;width:38px;height:169px;background:url("//simage.lottemart.com/images/contentimg/planthema/201408/2014chuseok_plan_menu.png") no-repeat;overflow:hidden;text-indent:-9999px;white-space:nowrap;}
+.plan_chuseok2014_menu li a.menu01 {background-position:0px 0px;}
+.plan_chuseok2014_menu li a.menu02 {background-position:-38px 0px;}
+.plan_chuseok2014_menu li a.menu03 {background-position:-76px 0px;}
+.plan_chuseok2014_menu li a.menu04 {background-position:-114px 0px;}
+.plan_chuseok2014_menu li a.menu05 {background-position:-152px 0px;}
+.plan_chuseok2014_menu li a.menu06 {background-position:-190px 0px;}
+.plan_chuseok2014_menu li a.menu07 {background-position:-228px 0px;}
+.plan_chuseok2014_menu li a.menu08 {background-position:-266px 0px;}
+.plan_chuseok2014_menu li a.menu09 {background-position:-304px 0px;}
+.plan_chuseok2014_menu li a.menu10 {background-position:-342px 0px;}
+.plan_chuseok2014_menu li a.menu11 {background-position:-380px 0px;}
+.plan_chuseok2014_menu li a.menu12 {background-position:-418px 0px;}
+.plan_chuseok2014_menu li a.menu13 {background-position:-456px 0px;}
+.plan_chuseok2014_menu li a.menu14 {background-position:-494px 0px;}
+.plan_chuseok2014_menu li a.menu15 {background-position:-532px 0px;}
+.plan_chuseok2014_menu li a.menu16 {background-position:-570px 0px;}
+.plan_chuseok2014_menu li a.menu17 {background-position:-608px 0px;}
+.plan_chuseok2014_menu li a.menu18 {background-position:-646px 0px;}
+.plan_chuseok2014_menu li a.menu19 {background-position:-684px 0px;}
+.plan_chuseok2014_menu li a.menu20 {background-position:-722px 0px;}
+.plan_chuseok2014_menu li a.menu21 {background-position:-760px 0px;}
+.plan_chuseok2014_menu li a.menu22 {background-position:-798px 0px;}
+.plan_chuseok2014_menu li a.menu23 {background-position:-836px 0px;}
+.plan_chuseok2014_menu li a.menu24 {background-position:-874px 0px;}
+.plan_chuseok2014_menu li a.menu25 {background-position:-912px 0px;}
+
+.plan_chuseok2014_menu li a.menu01:hover, .plan_chuseok2014_menu li a.menu01.on {background-position:0px -169px;}
+.plan_chuseok2014_menu li a.menu02:hover, .plan_chuseok2014_menu li a.menu02.on {background-position:-38px -169px;}
+.plan_chuseok2014_menu li a.menu03:hover, .plan_chuseok2014_menu li a.menu03.on {background-position:-76px -169px;}
+.plan_chuseok2014_menu li a.menu04:hover, .plan_chuseok2014_menu li a.menu04.on {background-position:-114px -169px;}
+.plan_chuseok2014_menu li a.menu05:hover, .plan_chuseok2014_menu li a.menu05.on {background-position:-152px -169px;}
+.plan_chuseok2014_menu li a.menu06:hover, .plan_chuseok2014_menu li a.menu06.on {background-position:-190px -169px;}
+.plan_chuseok2014_menu li a.menu07:hover, .plan_chuseok2014_menu li a.menu07.on {background-position:-228px -169px;}
+.plan_chuseok2014_menu li a.menu08:hover, .plan_chuseok2014_menu li a.menu08.on {background-position:-266px -169px;}
+.plan_chuseok2014_menu li a.menu09:hover, .plan_chuseok2014_menu li a.menu09.on {background-position:-304px -169px;}
+.plan_chuseok2014_menu li a.menu10:hover, .plan_chuseok2014_menu li a.menu10.on {background-position:-342px -169px;}
+.plan_chuseok2014_menu li a.menu11:hover, .plan_chuseok2014_menu li a.menu11.on {background-position:-380px -169px;}
+.plan_chuseok2014_menu li a.menu12:hover, .plan_chuseok2014_menu li a.menu12.on {background-position:-418px -169px;}
+.plan_chuseok2014_menu li a.menu13:hover, .plan_chuseok2014_menu li a.menu13.on {background-position:-456px -169px;}
+.plan_chuseok2014_menu li a.menu14:hover, .plan_chuseok2014_menu li a.menu14.on {background-position:-494px -169px;}
+.plan_chuseok2014_menu li a.menu15:hover, .plan_chuseok2014_menu li a.menu15.on {background-position:-532px -169px;}
+.plan_chuseok2014_menu li a.menu16:hover, .plan_chuseok2014_menu li a.menu16.on {background-position:-570px -169px;}
+.plan_chuseok2014_menu li a.menu17:hover, .plan_chuseok2014_menu li a.menu17.on {background-position:-608px -169px;}
+.plan_chuseok2014_menu li a.menu18:hover, .plan_chuseok2014_menu li a.menu18.on {background-position:-646px -169px;}
+.plan_chuseok2014_menu li a.menu19:hover, .plan_chuseok2014_menu li a.menu19.on {background-position:-684px -169px;}
+.plan_chuseok2014_menu li a.menu20:hover, .plan_chuseok2014_menu li a.menu20.on {background-position:-722px -169px;}
+.plan_chuseok2014_menu li a.menu21:hover, .plan_chuseok2014_menu li a.menu21.on {background-position:-760px -169px;}
+.plan_chuseok2014_menu li a.menu22:hover, .plan_chuseok2014_menu li a.menu22.on {background-position:-798px -169px;}
+.plan_chuseok2014_menu li a.menu23:hover, .plan_chuseok2014_menu li a.menu23.on {background-position:-836px -169px;}
+.plan_chuseok2014_menu li a.menu24:hover, .plan_chuseok2014_menu li a.menu24.on {background-position:-874px -169px;}
+.plan_chuseok2014_menu li a.menu25:hover, .plan_chuseok2014_menu li a.menu25.on {background-position:-912px -169px;}
+

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0024">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <sql id="pre-page-frag">
+	SELECT *
+	  FROM (SELECT SELECT_BOS.*
+	             , CEIL( ROWNUM / #rowsPerPage# ) PAGEINDEX
+	             , COUNT(1) OVER() TOTAL_COUNT
+	          FROM (
+	</sql>
+	<sql id="post-page-frag">
+	                ) SELECT_BOS
+	       )
+	 WHERE PAGEINDEX = #currentPage#
+	</sql>
+
+	<!-- 배송정보 조회 -->
+	<select id="selectDeliveryList" resultClass="dataMap">
+	/* pscpprd0024.selectDeliveryList */
+	SELECT ROWNUM NUM
+	     , A.*
+	  FROM (SELECT PROD_CD
+				 , DELIVERY_KIND_CD
+				 , ( SELECT CD_NM FROM TET_CODE
+					  WHERE MAJOR_CD = 'DE052'
+					    AND MINOR_CD = DELIVERY_KIND_CD
+					) DELIVERY_KIND_NM
+				 , SEQ
+				 , DELI_BASE_MIN_QTY
+				 , DELI_BASE_MAX_QTY
+				 , APPLY_START_DY
+				 , APPLY_END_DY
+				 , DELIVERY_AMT
+				 , DELI_COND_AMT
+				 , MOD_DATE
+				 , CASE WHEN APPLY_START_DY &gt;= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') THEN 'N' ELSE 'Y' END AS UDT_CHK
+			  FROM TPR_GOODCL_VEN_DELIVERY_AMT
+			 WHERE PROD_CD = #prodCd#
+			   AND DELIVERY_KIND_CD IN('01','02','03','04','05', '06', '08')
+			   AND EXISTS ( SELECT 1 FROM TVE_VENDOR V, TPR_PRODUCT TR
+			                 WHERE V.VENDOR_ID = TR.VENDOR_ID
+			                   AND TR.PROD_CD = #prodCd#
+			                  /* AND TR.ENTP_PROD_COND_DELI_YN='N' */ )
+			 ORDER BY APPLY_END_DY DESC, DELI_BASE_MIN_QTY, DELIVERY_KIND_CD
+		) A
+    </select>
+
+    <!-- 상품배송정보 조회 -->
+	<select id="selectDInfoList" resultClass="dataMap">
+	/* pscpprd0024.selectDInfoList */
+    SELECT ROWNUM NUM
+		 , A.*
+	FROM ( SELECT PROD_CD
+				, DELIVERY_KIND_CD
+				, ( SELECT CD_NM FROM TET_CODE
+				     WHERE MAJOR_CD = 'DE052'
+				       AND MINOR_CD = DELIVERY_KIND_CD
+				  ) DELIVERY_KIND_NM
+				, SEQ
+				, DELI_BASE_MIN_QTY
+				, DELI_BASE_MAX_QTY
+				, APPLY_START_DY
+				, APPLY_END_DY
+				, DELIVERY_AMT
+				, DELI_COND_AMT
+				, MOD_DATE
+				, CASE WHEN APPLY_START_DY &gt;= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') THEN 'N' ELSE 'Y' END AS UDT_CHK
+			 FROM TPR_GOODCL_VEN_DELIVERY_AMT
+			WHERE PROD_CD =  #prodCd#
+			  AND DELIVERY_KIND_CD IN('01','02','03','04','05','06','08')
+              AND APPLY_END_DY='99991231'
+			  AND  EXISTS ( SELECT 1 FROM TVE_VENDOR V, TPR_PRODUCT TR
+			                 WHERE V.VENDOR_ID = TR.VENDOR_ID
+			                   AND TR.PROD_CD =  #prodCd#
+			                   /* AND TR.ENTP_PROD_COND_DELI_YN='N' */  --업체상품조건부배송여부
+			                   OR TR.ENTP_PROD_COND_DELI_YN = NULL )
+			ORDER BY APPLY_END_DY DESC, DELI_BASE_MIN_QTY, DELIVERY_KIND_CD
+		) A
+    </select>
+
+	<!-- 배송정보 조회2 -->
+	<select id="selectDeliveryInfo" resultClass="dataMap">
+	/* pscpprd0024.selectDeliveryInfo */
+	SELECT TT1.PROD_CD
+         , TT1.DELI_PSBT_REGN_CD
+         , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM338' AND MINOR_CD = TT1.DELI_PSBT_REGN_CD) AS DELI_PSBT_REGN_NM
+         , TT1.NOCH_DELI_YN
+         , TT1.ENTP_PROD_COND_DELI_YN
+         , TT1.JUSO_1
+         , TT1.JUSO_2
+      FROM ( SELECT MAX(T1.PROD_CD) PROD_CD
+			      , MAX(T1.DELI_PSBT_REGN_CD) DELI_PSBT_REGN_CD
+			      , NVL(MAX(T1.NOCH_DELI_YN),'N') NOCH_DELI_YN
+			      , MAX(DECODE( ENTP_PROD_COND_DELI_YN, NULL,'N','N','N','Y')) ENTP_PROD_COND_DELI_YN
+			      , MAX(DECODE(T4.SEQ,'1', T4.VENDOR_SEQ)) AS JUSO_1
+                  , MAX(DECODE(T4.SEQ,'2', T4.VENDOR_SEQ)) AS JUSO_2
+               FROM TPR_PRODUCT T1
+                  LEFT OUTER JOIN (SELECT T2.PROD_CD, T2.SEQ, T2.VENDOR_SEQ
+                       FROM TPR_VEN_ADDR_MGR T2, TVE_VENDOR_ADDR_INFO T3
+                      WHERE T2.VENDOR_SEQ = T3.ADDR_SEQ
+                        AND T2.VENDOR_ID = T3.VENDOR_ID
+                        AND T2.PROD_CD = #prodCd# ) T4 ON T1.PROD_CD = T4.PROD_CD
+              WHERE
+                AND T1.PROD_CD = #prodCd#
+        ) TT1
+	</select>
+
+	<!-- 공통배송비1 조회 -->
+	<select id="selectVendorDlvInfo" resultClass="dataMap">
+	/* pscpprd0024.selectVendorDlvInfo */
+	SELECT BASE_DLV_AMT
+         , RTN_AMT
+         , EXCH_AMT
+         , ADD_DELI_AMT1
+         , ADD_DELI_AMT2
+	  FROM TVE_VENDOR
+	WHERE VENDOR_ID = #vendorId#
+	</select>
+
+	<!-- 공통배송비2 조회 -->
+	<select id="selectVendorDeliInfo" resultClass="dataMap">
+	/* pscpprd0024.selectVendorDeliInfo */
+	SELECT DELI_BASE_MIN_AMT
+         , DELI_BASE_MAX_AMT
+         , DELIVERY_AMT
+	  FROM TVE_VENDOR_DELI_BASE
+	 WHERE VENDOR_ID = #vendorId#
+	   AND DELI_DIVN_CD = #deliDivnCd#
+	   AND TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY
+	   LIMIT 1
+	</select>
+
+	<!-- 묶음배송 조회-->
+	<select id="selectBdlDelYn" resultClass="dataMap">
+	/* pscpprd0024.selectBdlDelYn */
+	SELECT BDL_DELI_YN FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#
+	</select>
+
+	<!-- 온라인배송유형 조회-->
+	<select id="selectOnlineProdInfo" resultClass="dataMap">
+	/* pscpprd0024.selectOnlineProdInfo */
+	SELECT ONLINE_PROD_TYPE_CD, ENTP_PROD_COND_DELI_YN
+	  FROM TPR_PRODUCT
+	 WHERE PROD_CD = #prodCd#
+	</select>
+
+	<insert id="insertDelivery">
+    /* pscpprd0024.insertDelivery */
+    INSERT INTO TPR_GOODCL_VEN_DELIVERY_AMT
+	( PROD_CD
+	, DELIVERY_KIND_CD
+	, SEQ
+	, APPLY_START_DY
+	, APPLY_END_DY
+	, DELIVERY_AMT
+	, DELI_BASE_MIN_QTY
+	, DELI_BASE_MAX_QTY
+	, DELI_COND_AMT
+	, REG_ID
+	, REG_DATE
+	, MOD_ID
+	, MOD_DATE )
+	VALUES
+	( #prodCd#
+	, #deliKindCd#
+	, (SELECT TO_CHAR(NVL(MAX(TO_NUMBER(SEQ)),0)+1) FROM TPR_GOODCL_VEN_DELIVERY_AMT WHERE PROD_CD = #prodCd# AND DELIVERY_KIND_CD = #deliKindCd# )
+	, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	, '99991231'
+	, #deliveryAmt#
+	, DECODE(#deliKindCd#, '04', '', '05', '','06','', #deliBaseMinQty#)
+	, DECODE(#deliKindCd#, '04', '', '05', '','06','', #deliBaseMaxQty#)
+	, DECODE(#deliKindCd#, '04', '', '05', '','06','', NVL(#deliCondAmt#, ''))
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #modId#
+	, CURRENT_TIMESTAMP(0) )
+    </insert>
+
+    <update id="updateDeliveryInfo">
+    /* pscpprd0024.updateDeliveryInfo */
+	UPDATE TPR_PRODUCT
+      SET ENTP_PROD_COND_DELI_YN = #entpProdCondDeliYn#  --업체상품조건부배송여부
+      ,MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE PROD_CD = #prodCd#
+    </update>
+
+    <update id="updateDeliveryBld">
+    /* pscpprd0024.updateDeliveryBld */
+	UPDATE TPR_PRODUCT
+       SET BDL_DELI_YN = #bdlDeliYn#  --묶음배송여부
+         , NOCH_DELI_YN = #nochDeliYn#  --무료배송여부
+         , ENTP_PROD_COND_DELI_YN = #entpProdCondDeliYn#  --업체상품조건부배송여부
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #modId#
+	 WHERE PROD_CD = #prodCd#
+    </update>
+
+    <update id="updateDelivery">
+    /* pscpprd0024.updateDelivery */
+    UPDATE TPR_GOODCL_VEN_DELIVERY_AMT
+       SET APPLY_END_DY = TO_CHAR(CURRENT_TIMESTAMP(0)-1,'YYYYMMDD')
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD = #prodCd#
+     AND DELIVERY_KIND_CD = #deliKindCd#
+     AND SEQ = #seq#
+    </update>
+
+    <!-- 20181211 배송지 설정 수정 -->
+	<select id="selectVendorAddrInfoCnt" resultClass="String">
+	/* pscpprd0024.selectVendorAddrInfoCnt */
+	SELECT COUNT(VENDOR_ID)
+	  FROM TVE_VENDOR_ADDR_INFO
+	 WHERE VENDOR_ID = #vendorId#
+	   AND USE_YN = 'Y'
+	</select>
+
+	<update id="updatePsbtRegnCd">
+	/* pscpprd0024.updatePsbtRegnCd */
+	UPDATE TPR_PRODUCT
+	   SET DELI_PSBT_REGN_CD = #psbtRegnCd#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #modId#
+	 WHERE PROD_CD = #prodCd#
+    </update>
+
+	<update id="updateDlvAddr">
+	/* pscpprd0024.updateDlvAddr */
+	MERGE INTO TPR_VEN_ADDR_MGR A
+	USING (SELECT #prodCd# AS PROD_CD, #addrSeq# AS SEQ FROM DUAL) U
+	   ON (A.PROD_CD = U.PROD_CD AND A.SEQ = U.SEQ)
+	WHEN MATCHED THEN
+		UPDATE SET
+			VENDOR_SEQ = #newVendorSeq#
+			, MOD_DATE = CURRENT_TIMESTAMP(0)
+			, MOD_ID = #modId#
+		WHERE PROD_CD = U.PROD_CD
+			AND SEQ = U.SEQ
+	WHEN NOT MATCHED THEN
+    	INSERT (
+    		PROD_CD
+    		, SEQ
+    		, VENDOR_ID
+    		, VENDOR_SEQ
+    		, REG_ID
+    		, REG_DATE
+    		, MOD_ID
+    		, MOD_DATE
+    	) VALUES (
+    		U.PROD_CD
+    		, U.SEQ
+    		, #regId#
+    		, #newVendorSeq#
+    		, #regId#
+    		, CURRENT_TIMESTAMP(0)
+    		, #modId#
+    		, CURRENT_TIMESTAMP(0)
+    	)
+	</update>
+    <!-- 20181211 배송지 설정 수정 -->
+
+	<select id="selectDeliStartDy" resultClass="java.lang.Integer">
+	/* pscpprd0024.selectDeliStartDy */
+	SELECT COUNT(*)
+	  FROM TPR_GOODCL_VEN_DELIVERY_AMT
+	 WHERE PROD_CD = #prodCd#
+	   AND APPLY_END_DY ='99991231'
+	   AND APPLY_START_DY <![CDATA[>]]>= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</select>
+
+	<delete id ="deleteDayDelivery">
+	/* pscpprd0024.deleteDayDelivery */
+	DELETE FROM TPR_GOODCL_VEN_DELIVERY_AMT
+	 WHERE PROD_CD = #prodCd#
+	   AND APPLY_END_DY = '99991231'
+	   AND APPLY_START_DY  <![CDATA[>]]>= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</delete>
+
+	<update id="updatePoliceDelivery">
+	/* pscpprd0024.updatePoliceDelivery */
+	UPDATE TEC_DELIVERY_AMT_POLICE
+	   SET DELI_POLICE_NO = DELI_POLICE_NO||'_'||TO_CHAR(CURRENT_TIMESTAMP(0),'HH24MISS')
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID =  #modId#
+	     , EC_SEND_YN = 'D'
+	 WHERE DELI_POLICE_NO IN ('LM_PRD_'||#prodCd#||'_ADD',
+                              'LM_PRD_'||#prodCd#||'_NORMAL' )
+	   AND END_DT = '99991231'
+	   AND START_DT &gt;= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</update>
+
+    <!-- <insert id="insertDelivery_old">
+    /* pscpprd0024.insertDelivery_old */
+    INSERT INTO TPR_GOODCL_VEN_DELIVERY_AMT
+    			(
+    			 PROD_CD
+				,DELIVERY_KIND_CD
+				,SEQ
+				,APPLY_START_DY
+				,APPLY_END_DY
+				,DELIVERY_AMT
+				,DELI_BASE_MIN_QTY
+				,DELI_BASE_MAX_QTY
+				,DELI_COND_AMT
+				,REG_ID
+				,REG_DATE
+				,MOD_ID
+				,MOD_DATE
+    			)
+
+    VALUES( #prodCd#
+              , #deliKindCd#
+              , (SELECT NVL(MAX(SEQ),0)+1 FROM TPR_GOODCL_VEN_DELIVERY_AMT WHERE PROD_CD = #prodCd# AND DELIVERY_KIND_CD = #deliKindCd# )
+              , TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+              , '99991231'
+              , #deliveryAmt#
+              , #deliBaseMinQty#
+              , #deliBaseMaxQty#
+              , nvl(#deliCondAmt# , '')
+              , #regId#
+              , CURRENT_TIMESTAMP(0)
+              , #modId#
+              , CURRENT_TIMESTAMP(0)
+              )
+    </insert> -->
+
+    <!-- 배송정보 조회2 -->
+	<!-- <select id="selectDeliveryInfo_old" resultClass="dataMap">
+	/* pscpprd0024.selectDeliveryInfo_old */
+	SELECT TT1.*
+		      ,(
+		         SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM338'
+		             AND MINOR_CD = TT1.DELI_PSBT_REGN_CD
+		       ) AS DELI_PSBT_REGN_NM
+     FROM (
+					SELECT MAX(T1.PROD_CD) PROD_CD
+					           ,MAX(T1.DELI_PSBT_REGN_CD) DELI_PSBT_REGN_CD
+					           ,NVL(MAX(T1.NOCH_DELI_YN),'N') NOCH_DELI_YN
+					           ,MAX(DECODE( ENTP_PROD_COND_DELI_YN, NULL,'N','N','N','Y')) ENTP_PROD_COND_DELI_YN
+					           ,MAX(DECODE(T3.ADDR_KIND_CD,'01', '('||T3.ZIP_CD ||') ' || T3.ADDR_1_NM ||' '||  T3.ADDR_2_NM)) AS JUSO_1
+		                       ,MAX(DECODE(T3.ADDR_KIND_CD,'02', '('||T3.ZIP_CD ||') ' || T3.ADDR_1_NM ||' '||  T3.ADDR_2_NM)) AS JUSO_2
+		                       ,MAX(DECODE(T3.ADDR_KIND_CD,'03', '('||T3.ZIP_CD ||') ' || T3.ADDR_1_NM ||' '||  T3.ADDR_2_NM)) AS JUSO_3
+                      FROM TPR_PRODUCT T1
+                               ,(SELECT T1.PROD_CD, T2.ADDR_KIND_CD, T2.ZIP_CD, T2.ADDR_1_NM, T2.ADDR_2_NM
+		                          FROM TPR_VEN_ADDR_MGR T1, TVE_VENDOR_ADDR_INFO T2
+		                        WHERE T1.VENDOR_SEQ = T2.ADDR_SEQ
+		                            AND T1.VENDOR_ID = T2.VENDOR_ID
+		                            AND T1.PROD_CD = #prodCd#
+		                         ) T3
+		             WHERE T1.PROD_CD = T3.PROD_CD(+)
+		                 AND T1.PROD_CD = #prodCd#
+                ) TT1
+	</select> -->
+
+</sqlMap>

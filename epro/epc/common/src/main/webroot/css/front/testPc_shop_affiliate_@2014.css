@@ -1,0 +1,42 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: order.css
+ * description	: order, basket CSS import
+ * date			: 2011.08.10
+************************************************************************/
+
+@import url(layout.css);
+
+body	{overflow:hidden; background:url('/images/front/common/bg-gnb.gif') repeat-x 0 0 #FFF;}
+#con_wrap	{width:980px; background:none}
+
+/*업체 제휴몰*/
+/*
+div#UxHeader div.Title {position:absolute;}
+div#UxHeader div.Title h1.part_h1 {position:absolute; top:51px; left:20px; z-index:64;}
+#h_affiliate {position:relative; left:0; top:0; height:63px; margin:27px 0 0 0;}
+#h_affiliate .h_banner	{float:right;}
+#h_affiliate .h_banner li {background:none; float:left; padding: 0 5px;}
+#h_affiliate p {clear:both; color:#fff; font:11px Dotum; padding:7px 17px 0 0; text-align:right;}
+*/
+
+/* 업체 제휴몰 수정 - 2014/09/16 */
+#UxHeader .Title {position:absolute;}
+#UxHeader .Title h1.part_h1 {position:absolute; top:51px; left:20px; z-index:64;}
+#h_affiliate {position:relative; left:0; top:0; height:63px; margin:27px 0 0 0;}
+#h_affiliate .h_banner{float:right;}
+#h_affiliate .h_banner li{background:none; float:left; padding: 0 10px;}
+#h_affiliate p{clear:both; color:#000; font:11px Dotum; padding:7px 17px 0 0; text-align:right;}
+
+
+
+
+/*
+#h_affiliate	{position:absolute; right:13px; top:34px;}
+#h_affiliate	.h_banner	{float:right;}
+#h_affiliate	.h_banner	li	{float:left; padding:0 17px 0 18px; background:url('/images/front/shop/line-partner-banner.gif') no-repeat}
+#h_affiliate	.h_banner	li.first	{background:0;}
+#h_affiliate	p	{clear:both; padding:7px 17px 0 0; font:normal 11px Dotum; text-align:right;}
+#h_affiliate	p	span	{color:#ee1c24;}
+*/
+#alFrameID	{width:100%;}

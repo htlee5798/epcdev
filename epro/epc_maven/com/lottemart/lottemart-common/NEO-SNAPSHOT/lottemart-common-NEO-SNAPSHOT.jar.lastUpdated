@@ -1,0 +1,6 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Apr 15 16:33:33 KST 2025
+http\://10.52.18.45\:8081/repository/maven-3rdparty/.error=Could not transfer artifact com.lottemart\:lottemart-common\:jar\:NEO-SNAPSHOT from/to onlinemall (http\://10.52.18.45\:8081/repository/maven-3rdparty)\: status code\: 400, reason phrase\: Repository version policy\: RELEASE does not allow version\: NEO-SNAPSHOT (400)
+http\://10.52.18.45\:8081/repository/maven-public/.lastUpdated=1744702413397
+http\://10.52.18.45\:8081/repository/maven-public/.error=
+@default-onlinemall-http\://10.52.18.45\:8081/repository/maven-3rdparty/.lastUpdated=1744702413423

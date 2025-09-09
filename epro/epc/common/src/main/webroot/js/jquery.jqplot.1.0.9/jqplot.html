@@ -1,0 +1,93 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko">    
+<head>
+<meta charset="UTF-8">
+<title>롯데마트관리자</title>
+
+
+<link class="include" rel="stylesheet" type="text/css" href="jquery.jqplot.min.css" />
+<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="plugins/jqplot.pieRenderer.js"></script>
+<!--script type="text/javascript" src="plugins/jqplot.categoryAxisRenderer.js"></script>
+<script type="text/javascript" src="plugins/jqplot.barRenderer.js"></script-->
+<script>
+
+
+$(function(){
+    //1번째 입력값 (그려진 영역의 id값)
+    //2번째 입력값 (그래프내에 들어갈 데이터 값)
+     //$.jqplot ('graph', [[1,2,3,4,5,300,30]]);
+	 
+	      //1번째 입력값 (그려진 영역의 id값)
+//2번째 입력값 (그래프내에 들어갈 데이터 값)
+/*$.jqplot('graph', [[['첫번째', 50], ['두번째', 22], ['세번째', 38], ['네번째', 30]]], {
+      title: '막대형그래프',
+      series:[{renderer:$.jqplot.BarRenderer}],
+      axes: {
+        xaxis: {
+          renderer: $.jqplot.CategoryAxisRenderer,
+          label: "X 좌표제목"
+        },
+        yaxis: {
+          label: "Y 좌표제목"
+        }
+      }
+    });
+	*/
+	  
+	  
+
+
+//$.jqplot ('graph', [[['첫번째', 42], ['두번째', 28], ['세번째', 38], ['네번째', 30]]], 
+$.jqplot ('graph', [[['온라인매출', 32], ['온오프매출', 68]]], 
+        { 
+          seriesDefaults: {
+            //원형으로 렌더링
+            renderer: $.jqplot.PieRenderer,
+            //원형상단에 값보여주기(알아서 %형으로 변환)
+            rendererOptions: {
+              showDataLabels: true
+            }
+          },
+          //우측 색상별 타이틀 출력
+          legend: { show:true, location: 'e' }
+        }
+);
+
+});
+</script>
+</header>
+
+<div id="graph" style="width:300px; height:300px;"></div>
+
+
+
+
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+ <sqlMap namespace="NEDMPROEXCEL">
+ 	<typeAlias alias="excelTempUploadVO" type="com.lottemart.epc.edi.product.model.ExcelTempUploadVO" />
+ 
+ 	<resultMap id="tempExcelMap" class="java.util.HashMap">
+		<result property="seqNo" 	column="SEQ_NO" />
+		<result property="entpCd" 	column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="regId" 	column="REG_ID" />
+	</resultMap>	
+	
+ 
+ 	<resultMap id="tempExcelCustomMap" class="java.util.HashMap">
+		<result property="seqNo" 	column="SEQ_NO" />
+		<result property="entpCd" 	column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="prodPatFg" column="PROD_PAT_FG" />
+		<!-- <result property="prStat" 	column="PR_STAT" /> -->
+		<result property="regId" 	column="REG_ID" />
+		<result property="l3Cd" 	column="L3_CD" />
+		<result property="l3Nm" 	column="L3_NM" />
+		<result property="l1Cd" 	column="L1_CD" />
+		<result property="l1Nm" 	column="L1_NM" />
+		<result property="l2Cd" 	column="L2_CD" />
+		<result property="l2Nm" 	column="L2_NM" />
+		<result property="prodNm" 	column="PROD_NM" />
+	</resultMap>
+	
+ 
+ 	<resultMap id="tempExcelCustomEvntMap" class="java.util.HashMap">
+		<result property="seqNo" 	column="SEQ_NO" />
+		<result property="entpCd" 	column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="prodNm" 	column="PROD_NM" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="regId" 	column="REG_ID" />
+		<result property="prodCd" 	column="PROD_CD" />
+		<result property="stsChk" 	column="STS_CHK" />
+		<result property="srcmkChk" 	column="SRCMK_CHK" />
+		<result property="prodCdChk" 	column="PROD_CD_CHK" />
+	</resultMap>	
+	
+ 	<resultMap id="tempExcelCustomRtnMap" class="java.util.HashMap">
+		<result property="seqNo" 	column="SEQ_NO" />
+		<result property="entpCd" 	column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="prodNm" 	column="PROD_NM" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="teamNm" 	column="TEAM_NM" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="regId" 	column="REG_ID" />
+		<result property="prodCd" 	column="PROD_CD" />
+		<result property="prodTypFg" 	column="PROD_TYP_FG" />
+		<result property="stsChk" 	column="STS_CHK" />
+		<result property="srcmkChk" 	column="SRCMK_CHK" />
+		<result property="prodCdChk" 	column="PROD_CD_CHK" />
+		<result property="rtrsn" 		column="RTRSN" />
+		<result property="rtrsd" 		column="RTRSD" />
+		<result property="rtplc" 		column="RTPLC" />
+		<result property="teamCdChk" 	column="TEAM_CD_CHK" />
+		<result property="bukrsChk" 	column="BUKRS_CHK" />
+	</resultMap>	
+	
+	<!-- 최신진행상태 map (new) -->
+	<resultMap id="excelValidMap" class="excelTempUploadVO">
+		<result column="PR_STS_CNT_00"		property="prStsCnt00"/>			<!-- 임시저장상태 개수 -->
+		<result column="PR_STS_DEPT_00"		property="prStsDept00"/>		<!-- 임시저장상태 구매조직 -->
+		<result column="PR_STS_CNT_01"		property="prStsCnt01"/>			<!-- 승인대기상태 개수 -->
+		<result column="PR_STS_DEPT_01"		property="prStsDept01"/>		<!-- 승인대기상태 구매조직 -->
+		<result column="PR_STS_CNT_02"		property="prStsCnt02"/>			<!-- 승인상태 개수 -->
+		<result column="PR_STS_DEPT_02"		property="prStsDept02"/>		<!-- 승인상태 구매조직 -->
+		<result column="PR_STS_CNT_03"		property="prStsCnt03"/>			<!-- 반려상태 개수 -->
+		<result column="PR_STS_DEPT_03"		property="prStsDept03"/>		<!-- 반려상태 구매조직 -->
+	</resultMap>
+	
+	
+	
+	 <insert id="insertExcelTemp" parameterClass="hashmap">
+	 	/* NEDMPROEXCEL.insertExcelTemp */
+			INSERT INTO TPC_EXCEL_TEMP
+			(
+				SEQ_NO
+				, ENTP_CD
+				, EXCEL_SYS_KND
+				,DATA1																
+				,DATA2																
+				,DATA3                                                              
+				,DATA4                                                              
+				,DATA5                                                              
+				,DATA6                                                              
+				,DATA7                                                              
+				,DATA8                                                              
+				,DATA9                                                              
+				,DATA10																
+				,DATA11																
+				,DATA12																
+				,DATA13
+				,DATA14
+				,DATA15
+				,DATA16
+				,DATA17
+				,DATA18
+				,DATA19
+				,DATA20
+				,DATA21
+				,DATA22
+				,DATA23
+				,DATA24
+				,DATA25
+				,DATA26
+				,DATA27
+				,DATA28
+				,DATA29
+				,DATA30
+				,REG_DT
+				,REG_ID
+			)
+			VALUES
+			( 
+				(SELECT COALESCE(MAX(SEQ_NO),0) + 1 
+				 FROM TPC_EXCEL_TEMP 
+				 WHERE EXCEL_SYS_KND = #excelSysKnd# 
+				 		AND REG_ID = #regId# 
+				 		AND ENTP_CD = #entpCd# ) 
+				,#entpCd# 									
+				,#excelSysKnd# 									
+				,#data1#                                        
+				,#data2#                                        
+				,#data3#                                        
+				,#data4#                                        
+				,#data5#						                
+				,#data6#                                        
+				,#data7#                                        
+				,#data8#                                        
+				,#data9#                                        
+				,#data10#                                       
+				,#data11#										
+				,#data12#										
+				,#data13#										
+				,#data14#
+				,#data15#
+				,#data16#
+				,#data17#
+				,#data18#
+				,#data19#
+				,#data20#
+				,#data21#
+				,#data22#
+				,#data23#
+				,#data24#
+				,#data25#
+				,#data26#
+				,#data27#
+				,#data28#
+				,#data29#
+				,#data30#
+				,NOW()
+				,#regId#
+				)
+ 	</insert>
+ 	
+ 	<delete id="deleteExcelTemp" parameterClass="hashmap">
+ 	/* NEDMPROEXCEL.deleteExcelTemp */
+	 		DELETE FROM TPC_EXCEL_TEMP
+			WHERE 1=1 
+			AND REG_ID = #regId#
+			AND ENTP_CD = #entpCd#
+ 			AND EXCEL_SYS_KND = #excelSysKnd#
+ 	</delete>
+ 	
+ 	
+ 	<!-- 상품코드/판매코드/구매조직 별 최신 상태 정보조회 -->
+	<select id="selectExcel500Validation" parameterClass="excelTempUploadVO" resultMap="excelValidMap">
+		/* NEDMPROEXCEL.selectExcel500Validation */
+		SELECT
+			COALESCE(SUM(CASE WHEN NULLIF(T.PR_STAT, '') = '00' THEN 1 ELSE 0 END), 0) AS PR_STS_CNT_00
+			, STRING_AGG(CASE WHEN NULLIF(T.PR_STAT, '') = '00' THEN T.PUR_DEPT_NM ELSE NULL END, ',') AS PR_STS_DEPT_00
+			, COALESCE(SUM(CASE WHEN NULLIF(T.PR_STAT, '') = '01' THEN 1 ELSE 0 END), 0) AS PR_STS_CNT_01
+			, STRING_AGG(CASE WHEN NULLIF(T.PR_STAT, '') = '01' THEN T.PUR_DEPT_NM ELSE NULL END, ',') AS PR_STS_DEPT_01
+			, COALESCE(SUM(CASE WHEN NULLIF(T.PR_STAT, '') = '02' THEN 1 ELSE 0 END), 0) AS PR_STS_CNT_02
+			, STRING_AGG(CASE WHEN NULLIF(T.PR_STAT, '') = '02' THEN T.PUR_DEPT_NM ELSE NULL END, ',') AS PR_STS_DEPT_02
+			, COALESCE(SUM(CASE WHEN NULLIF(T.PR_STAT, '') = '03' THEN 1 ELSE 0 END), 0) AS PR_STS_CNT_03
+			, STRING_AGG(CASE WHEN NULLIF(T.PR_STAT, '') = '03' THEN T.PUR_DEPT_NM ELSE NULL END, ',') AS PR_STS_DEPT_03
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(PARTITION BY A.SRCMK_CD, A.PROD_CD, A.PUR_DEPT ORDER BY A.REQ_NO DESC, A.SEQ DESC) AS RNUM
+				, A.SRCMK_CD 	/* 판매코드 */
+				, A.PROD_CD 	/* 상품코드 */
+				, A.PR_STAT 	/* 진행상태코드 */
+				, A.PUR_DEPT	/* 구매조직 */
+				, FN_NEW_SUB_CODE_RTN('PURDE', A.PUR_DEPT) AS PUR_DEPT_NM
+			FROM TPC_PROD_CHG_COST_ITEM A
+			WHERE A.SRCMK_CD = #srcmkCd#
+			AND A.PROD_CD = #prodCd#
+			<isNotEmpty property="purDepts">		<!-- 구매조직 array 있을경우, 다건체크 -->
+				<iterate prepend="AND A.PUR_DEPT IN " property="purDepts" open="(" close=")" conjunction=",">
+				#purDepts[]#
+				</iterate>
+			</isNotEmpty>
+		)T
+		WHERE T.RNUM = 1
+	</select>
+	
+	<!-- 원가변경 원가 구하기 -->
+	<select id="selectExcelOrdCostInfo" parameterClass="hashmap" resultClass="String">
+	    SELECT
+			 FN_GET_PROD_ORG_COST(COALESCE(NULLIF(#purDept#,''), 'KR02'), A.PROD_CD) AS ORG_COST	/* 상품원가 - 검색조건기준(default:마트기준) */
+		FROM PRODUCT A
+		WHERE 1=1
+		AND A.PROD_CD = #prodCd#
+		<!-- AND A.SRCMK_CD = #sellCd# -->
+	</select>	
+ 	
+ 	<select id="selectExcelTempUploadList" parameterClass="hashmap" resultMap="tempExcelMap">
+ 	/* NEDMPROEXCEL.selectExcelTempUploadList */
+ 		SELECT	SEQ_NO
+ 				,ENTP_CD
+				,EXCEL_SYS_KND
+				,DATA1																
+				,DATA2																
+				,DATA3                                                              
+				,DATA4                                                              
+				,DATA5                                                              
+				,DATA6                                                              
+				,DATA7                                                              
+				,DATA8                                                              
+				,DATA9                                                              
+				,DATA10																
+				,DATA11																
+				,DATA12																
+				,DATA13
+				,DATA14
+				,DATA15
+				,DATA16
+				,DATA17
+				,DATA18
+				,DATA19
+				,DATA20
+				,DATA21
+				,DATA22
+				,DATA23
+				,DATA24
+				,DATA25
+				,DATA26
+				,DATA27
+				,DATA28
+				,DATA29
+				,DATA30
+				,REG_ID
+ 		FROM TPC_EXCEL_TEMP
+ 		WHERE 1=1
+		AND REG_ID = #regId#
+		AND ENTP_CD = #entpCd#
+ 		<isNotEmpty property="excelSysKnd">
+ 				AND EXCEL_SYS_KND = #excelSysKnd#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="excelWorkKnd">
+ 				AND EXCEL_WORK_KND = #excelWorkKnd#
+ 		</isNotEmpty>
+ 	</select>
+ 	
+ 	<!-- [엑셀업로드|500] 원가변경요청 등록 Map -->
+ 	<resultMap id="tempExcelProdChgPrcMap" class="java.util.HashMap">
+ 		<result property="seqNo" 		column="SEQ_NO" />
+		<result property="entpCd" 		column="ENTP_CD" />
+		<result property="excelSysKnd" 	column="EXCEL_SYS_KND" />
+		<result property="prodNm" 		column="PROD_NM" />
+		<result property="data1" 	column="DATA1" />
+		<result property="data2" 	column="DATA2" />
+		<result property="data3" 	column="DATA3" />
+		<result property="data4" 	column="DATA4" />
+		<result property="data5" 	column="DATA5" />
+		<result property="data6" 	column="DATA6" />
+		<result property="data7"    column="DATA7" />
+		<result property="data8" 	column="DATA8" />
+		<result property="data9" 	column="DATA9" />
+		<result property="data10" 	column="DATA10" />
+		<result property="data11" 	column="DATA11" />
+		<result property="data12" 	column="DATA12" />
+		<result property="data13" 	column="DATA13" />
+		<result property="data14" 	column="DATA14" />
+		<result property="data15" 	column="DATA15" />
+		<result property="data16" 	column="DATA16" />
+		<result property="data17" 	column="DATA17" />
+		<result property="data18" 	column="DATA18" />
+		<result property="data19" 	column="DATA19" />
+		<result property="data20" 	column="DATA20" />
+		<result property="data21" 	column="DATA21" />
+		<result property="data22" 	column="DATA22" />
+		<result property="data23" 	column="DATA23" />
+		<result property="data24" 	column="DATA24" />
+		<result property="data25" 	column="DATA25" />
+		<result property="data26" 	column="DATA26" />
+		<result property="data27" 	column="DATA27" />
+		<result property="data28" 	column="DATA28" />
+		<result property="data29" 	column="DATA29" />
+		<result property="data30" 	column="DATA30" />
+		<result property="regId" 	column="REG_ID" />
+		<result property="prodCd" 	column="PROD_CD"	/>	<!-- 상품코드 -->
+		<result property="orgCost" 	column="ORG_COST"	/>	<!-- 상품원가 -->
+		<result property="l1Cd" 	column="L1_CD" />		<!-- 대분류코드 -->
+		<result property="l2Cd" 	column="L2_CD" />		<!-- 중분류코드 -->
+		<result property="l3Cd" 	column="L3_CD" />		<!-- 소분류코드 -->
+		<result property="l1Nm" 	column="L1_NM" />		<!-- 대분류코드명 -->
+		<result property="l2Nm" 	column="L2_NM" />		<!-- 중분류코드명 -->
+		<result property="l3Nm" 	column="L3_NM" />		<!-- 소분류코드명 -->
+		<result property="ordUnit" 	column="ORD_UNIT" />	<!-- 기본단위 -->
+		<result property="freshStdYn" 	column="FRESH_STD_YN" />	<!-- 신선규격상품여부 -->
+		<result property="chkProdZzmkt" column="CHK_PROD_ZZMKT" />	<!-- validaiton_상품의 적용채널 미존재 -->
+		<result property="chkSrcmkCd" 	column="CHK_SRCMK_CD"	/>	<!-- validaiton_유효하지 않은 판매코드 -->
+		<result property="chkProdCd" 	column="CHK_PROD_CD"	/>	<!-- validaiton_유효하지 않은 상품코드 -->
+		<result property="chkOrdUnit" 	column="CHK_ORD_UNIT"	/>	<!-- validaiton_기본단위가 존재하지 않는 상품 -->
+		<result property="chkProdSts" 	column="CHK_PROD_STS"	/>	<!-- validaiton_등록불가능한 상태 -->
+		<result property="chkProdStsTxt" column="CHK_PROD_STS_TXT"	/>	<!-- validaiton_등록불가능한 상태(메세지반환용 Text) -->
+		<result property="chkPurDept" 	column="CHK_PUR_DEPT"	/>	<!-- validaiton_선택한 구매조직으로 선택가능한 상품인지 -->
+		<result property="chkDuplRnum" 	column="CHK_DUPL_RNUM"	/>	<!-- 판매코드, 상품코드 중복된 거 있는지 체크용 (중복 시, 맨앞 1건만 업로드) -->
+		<result property="chgCostYn" 	column="CHG_COST_YN"	/>	<!-- 원가변경가능대상여부 -->
+ 	</resultMap>
+ 	
+ 	<!-- [엑셀업로드|500] 원가변경요청 등록 -->
+ 	<select id="selectExcelTempUploadProdChgPrcList" parameterClass="hashmap" resultMap="tempExcelProdChgPrcMap">
+ 		/* NEDMPROEXCEL.selectExcelTempUploadProdChgPrcList */
+ 		WITH VEN_PRODS AS (
+			SELECT
+				S1.PROD_CD			/* 상품코드 */
+				, S2.SRCMK_CD 		/* 판매코드 */
+				, S1.PROD_NM		/* 상품명 */
+				, S1.VEN_CD			/* 업체코드 */
+				, S1.L3_CD			/* 소분류코드 */
+				, S1.PROD_PAT_FG	/* 상품유형 */
+				, CASE
+					WHEN 
+						S1.PROD_PAT_FG <![CDATA[<>]]> '0'	/* 신선비규격 제외 */
+						AND
+						(S1.PAT_EXC_FG IS NULL OR S1.PAT_EXC_FG = '' OR S1.PRC_APPR_FG IS NULL OR S1.PRC_APPR_FG = '')	/* 패턴예외상품제외 - 두컬럼모두 X일 경우 예외상품임 */
+					THEN 'Y'
+					ELSE 'N'
+				END AS CHG_COST_YN	/* 원가변경가능대상 여부 */
+				, S1.ORD_UNIT		/* 기본단위 */
+				, S1.ZZMKT_FG_1		/* 상품적용_마트 */
+				, S1.ZZMKT_FG_2		/* 상품적용_MAXX */
+				, S1.ZZMKT_FG_3		/* 상품적용_슈퍼 */
+				, S1.ZZMKT_FG_4		/* 상품적용_CFC */
+				, CONCAT_WS (
+					','
+					, CASE WHEN S1.ZZMKT_FG_1 = 'X' THEN 'KR02' ELSE NULL END
+					, CASE WHEN S1.ZZMKT_FG_2 = 'X' THEN 'KR03' ELSE NULL END
+					, CASE WHEN S1.ZZMKT_FG_3 = 'X' THEN 'KR04,KR05' ELSE NULL END
+					, CASE WHEN S1.ZZMKT_FG_4 = 'X' THEN 'KR09' ELSE NULL END
+				) AS PROD_PUR_DEPTS	/* 상품등록 가능한 구매조직 구분 */
+			FROM PRODUCT S1
+			INNER JOIN SALE_MST S2 ON S1.PROD_CD = S2.PROD_CD AND S2.EAN_TYPE = '1' AND S2.ORD_ABLE_FG = 'X'
+			AND S1.VEN_CD = #entpCd#
+		)
+		SELECT
+			A.SEQ_NO		
+			, A.ENTP_CD
+			, A.EXCEL_SYS_KND
+			, B.PROD_NM		/* 상품명 */
+			, A.DATA1		/* 판매코드 */	
+			, A.DATA2		/* 변경원가 */
+			, CASE WHEN NULLIF(C.MINOR_CD, '') IS NOT NULL THEN A.DATA3 ELSE NULL END AS DATA3 /* 변경사유 */
+			, CASE
+				WHEN NULLIF(F.L3_CD, '') IS NOT NULL AND NULLIF(D.MINOR_CD, '') IS NOT NULL AND A.DATA3 = LPAD(D.LET_4_REF, '2', '0') THEN A.DATA4		<!-- 신선규격일 때, LET_4_REF 체크 -->
+				WHEN NULLIF(D.MINOR_CD, '') IS NOT NULL AND A.DATA3 = LPAD(D.LET_1_REF, '2', '0') THEN A.DATA4											<!-- 그 외, LET_1_REF 체크 -->
+				ELSE NULL
+			END AS DATA4	/* 변경상세사유 */
+			, CASE WHEN CHAR_LENGTH(REGEXP_REPLACE(A.DATA5, '[^0-9]', '', 'g')) = '8' THEN TO_CHAR(CAST(REGEXP_REPLACE(A.DATA5, '[^0-9]', '', 'g') AS TIMESTAMP), 'YYYY-MM-DD') ELSE NULL END AS DATA5 
+			, A.DATA6		/* 비고 */
+			, A.DATA7                                                              
+			, A.DATA8                                                              
+			, A.DATA9                                                              
+			, A.DATA10																
+			, A.DATA11																
+			, A.DATA12																
+			, A.DATA13
+			, A.DATA14
+			, A.DATA15
+			, A.DATA16
+			, A.DATA17
+			, A.DATA18
+			, A.DATA19
+			, A.DATA20
+			, A.DATA21
+			, A.DATA22
+			, A.DATA23
+			, A.DATA24
+			, A.DATA25
+			, A.DATA26
+			, A.DATA27
+			, A.DATA28
+			, A.DATA29
+			, A.DATA30
+			, A.REG_ID
+			, B.PROD_CD
+			, FN_GET_PROD_ORG_COST(#purDept#, B.PROD_CD, B.VEN_CD) AS ORG_COST	/* 상품원가 - 검색조건기준 */
+			, E.L1_CD	AS L1_CD		/* 대분류코드 */
+			, E.L2_CD	AS L2_CD		/* 중분류코드 */
+			, B.L3_CD	AS L3_CD		/* 소분류코드 */
+			, FN_GET_CAT_NM(E.L1_CD) AS L1_NM	/* 대분류코드 */
+			, FN_GET_CAT_NM(E.L2_CD) AS L2_NM	/* 중분류코드 */
+			, FN_GET_CAT_NM(B.L3_CD) AS L3_NM	/* 소분류코드 */
+			, B.ORD_UNIT	/* 기본단위 */
+			, CASE WHEN NULLIF(F.L3_CD, '') IS NOT NULL THEN 'Y' ELSE 'N' END FRESH_STD_YN	/* 신선_규격 상품 구분 */
+			, CASE WHEN (B.ZZMKT_FG_1 = 'X' OR B.ZZMKT_FG_2 = 'X' OR B.ZZMKT_FG_3 = 'X' OR B.ZZMKT_FG_4 = 'X') THEN 'T' ELSE 'F' END AS CHK_PROD_ZZMKT		/* 판매채널 설정되지 않은 상품 */
+			, CASE WHEN NULLIF(B.SRCMK_CD, '') IS NULL THEN 'F' ELSE 'T' END AS CHK_SRCMK_CD	/* 유효하지 않은 판매코드 */
+			, CASE WHEN NULLIF(B.PROD_CD, '') IS NULL THEN 'F' ELSE 'T' END AS CHK_PROD_CD		/* 유효하지 않은 상품코드 */
+			, CASE WHEN NULLIF(B.ORD_UNIT, '') IS NULL THEN 'F' ELSE 'T' END AS CHK_ORD_UNIT	/* 기본단위가 존재하지 않음 */
+			, (SELECT
+				CASE WHEN COUNT(1) <![CDATA[>]]> 0 THEN 'F' ELSE 'T' END AS CHK_DATA
+				FROM TPC_PROD_CHG_COST_ITEM SS1
+				WHERE SS1.PR_STAT IN ('00', '01')
+				AND SS1.SRCMK_CD = A.DATA1
+				AND SS1.PROD_CD = B.PROD_CD
+				<isNotEmpty property="purDepts">		<!-- 구매조직 array 있을경우, 다건체크 -->
+					<iterate prepend="AND SS1.PUR_DEPT IN " property="purDepts" open="(" close=")" conjunction=",">
+					#purDepts[]#
+					</iterate>
+				</isNotEmpty>
+			) AS CHK_PROD_STS		/* 원가등록 불가한 상태 */
+			, (SELECT
+				CASE WHEN COUNT(1) <![CDATA[>]]> 0 THEN STRING_AGG(FN_NEW_SUB_CODE_RTN('PURDE', SS1.PUR_DEPT), ', ') ELSE NULL END AS CHK_DATA
+				FROM TPC_PROD_CHG_COST_ITEM SS1
+				WHERE SS1.PR_STAT IN ('00', '01')
+				AND SS1.SRCMK_CD = A.DATA1
+				AND SS1.PROD_CD = B.PROD_CD
+				<isNotEmpty property="purDepts">		<!-- 구매조직 array 있을경우, 다건체크 -->
+					<iterate prepend="AND SS1.PUR_DEPT IN " property="purDepts" open="(" close=")" conjunction=",">
+					#purDepts[]#
+					</iterate>
+				</isNotEmpty>
+			) AS CHK_PROD_STS_TXT	/* 원가등록 불가한 상태 (메세지 반환용 TEXT) */
+			,CASE
+				WHEN ARRAY[<iterate property="purDepts" conjunction=","> #purDepts[]# </iterate>]::TEXT[]
+					<![CDATA[<@]]> STRING_TO_ARRAY(B.PROD_PUR_DEPTS,',') = TRUE
+				THEN 'T'
+				ELSE 'F'
+			END AS CHK_PUR_DEPT		/* 선택한 구매조직과 상품의 적용조직 비교 */
+			, ROW_NUMBER() OVER(PARTITION BY A.DATA1, B.PROD_CD ORDER BY A.DATA1, B.PROD_CD, A.SEQ_NO) AS CHK_DUPL_RNUM	/* 판매코드, 상품코드 중복된 거 있는지 체크용 (중복 시, 맨앞 1건만 업로드) */
+			, B.CHG_COST_YN			/* 원가변경가능대상여부 */
+		FROM TPC_EXCEL_TEMP A
+		LEFT OUTER JOIN VEN_PRODS B	ON A.DATA1 = B.SRCMK_CD
+		LEFT OUTER JOIN TPC_NEW_CODE C ON C.MAJOR_CD = 'CORSN' AND C.USE_YN = 'Y' AND A.DATA3 = C.MINOR_CD
+		LEFT OUTER JOIN TPC_NEW_CODE D ON D.MAJOR_CD = 'CORSD' AND D.USE_YN = 'Y' AND A.DATA4 = D.MINOR_CD
+		LEFT OUTER JOIN CATEGORY E ON B.L3_CD = E.CAT_CD AND E.LVL = '3' AND E.CHG_FG <![CDATA[<>]]> 'D'
+		LEFT OUTER JOIN V_FRESH_CATEGORY F ON B.L3_CD = F.L3_CD AND B.PROD_PAT_FG = '1'		/* 신선규격 상품 정보 */
+ 		WHERE A.EXCEL_SYS_KND = #excelSysKnd#
+ 		AND A.REG_ID = #regId#
+		AND A.ENTP_CD = #entpCd#
+ 	</select>
+ 	
+ 	<select id="selectExcelTempUploadProdChk" parameterClass="hashmap" resultMap="tempExcelCustomEvntMap">
+ 		/* NEDMPROEXCEL.selectExcelTempUploadProdChk */
+ 		SELECT 
+			A.SEQ_NO
+			,A.ENTP_CD
+			,A.EXCEL_SYS_KND
+			,DATA1																
+			,DATA2																
+			,DATA3                                                              
+			,DATA4                                                              
+			,DATA5                                                              
+			,DATA6                                                              
+			,DATA7                                                              
+			,DATA8                                                              
+			,DATA9                                                              
+			,DATA10																
+			,DATA11																
+			,DATA12																
+			,DATA13
+			,DATA14
+			,DATA15
+			,DATA16
+			,DATA17
+			,DATA18
+			,DATA19
+			,DATA20
+			,DATA21
+			,DATA22
+			,DATA23
+			,DATA24
+			,DATA25
+			,DATA26
+			,DATA27
+			,DATA28
+			,DATA29
+			,DATA30
+			,REG_ID
+			,CASE WHEN SRCMK_CHK = 'P' THEN (SELECT PROD_CD FROM PRODUCT WHERE SRCMK_CD = A.DATA1 )
+	 			  ELSE B.PROD_CD END PROD_CD
+			,CASE WHEN SRCMK_CHK = 'P' THEN (SELECT PROD_NM FROM PRODUCT WHERE SRCMK_CD = A.DATA1 )
+				  ELSE B.PROD_NM END PROD_NM
+			,B.SRCMK_CHK
+			,B.PROD_CD_CHK
+			,CASE WHEN B.SRCMK_CHK = 'P' THEN 'P'
+				  WHEN B.SRCMK_CHK IN ('T','P') AND B.PROD_CD_CHK = 'P' THEN 'P'
+				  ELSE 'F' END STS_CHK
+		FROM TPC_EXCEL_TEMP A
+		INNER JOIN (
+			SELECT	
+				A.SEQ_NO
+				,A.ENTP_CD
+				,A.EXCEL_SYS_KND
+				,B.PROD_CD
+				,B.PROD_NM
+				, CASE WHEN DATA1 IN (
+											SELECT
+											 SRCMK_CD
+											FROM PRODUCT
+											GROUP BY SRCMK_CD
+											HAVING COUNT(SRCMK_CD) > 1
+											) THEN 'T'
+					  WHEN DATA1 IN (SELECT SRCMK_CD FROM PRODUCT WHERE SRCMK_CD = A.DATA1) THEN 'P'
+					  ELSE 'F' END AS SRCMK_CHK
+				, CASE WHEN DATA2 = (SELECT PROD_CD FROM PRODUCT WHERE PROD_CD = A.DATA2 ) THEN 'P'
+					   WHEN DATA2 = '' THEN 'P'
+				  ELSE 'F' END AS PROD_CD_CHK
+				, A.REG_ID
+			FROM TPC_EXCEL_TEMP	A
+			LEFT JOIN PRODUCT B ON	A.DATA2 = B.PROD_CD 
+			WHERE A.REG_ID = #regId#
+			AND A.ENTP_CD = #entpCd#
+	 		AND A.EXCEL_SYS_KND = #excelSysKnd#
+		)B 	ON A.SEQ_NO = B.SEQ_NO
+			AND A.ENTP_CD = B.ENTP_CD
+			AND A.EXCEL_SYS_KND = B.EXCEL_SYS_KND
+			AND A.REG_ID = B.REG_ID
+		LEFT JOIN PRODUCT C ON	A.DATA2 = C.PROD_CD
+ 	</select>
+ 
+ 	<select id="selectExcelTempUploadProdChk_20250521" parameterClass="hashmap" resultMap="tempExcelCustomEvntMap">
+ 		/* NEDMPROEXCEL.selectExcelTempUploadProdChk */
+ 		SELECT	A.SEQ_NO
+ 				,A.ENTP_CD
+				,A.EXCEL_SYS_KND
+				,B.PROD_NM
+				,DATA1																
+				,DATA2																
+				,DATA3                                                              
+				,DATA4                                                              
+				,DATA5                                                              
+				,DATA6                                                              
+				,DATA7                                                              
+				,DATA8                                                              
+				,DATA9                                                              
+				,DATA10																
+				,DATA11																
+				,DATA12																
+				,DATA13
+				,DATA14
+				,DATA15
+				,DATA16
+				,DATA17
+				,DATA18
+				,DATA19
+				,DATA20
+				,DATA21
+				,DATA22
+				,DATA23
+				,DATA24
+				,DATA25
+				,DATA26
+				,DATA27
+				,DATA28
+				,DATA29
+				,DATA30
+				,REG_ID
+				,COALESCE(B.PROD_CD,'') AS PROD_CD
+ 		FROM TPC_EXCEL_TEMP	A
+ 		LEFT JOIN PRODUCT B ON	A.DATA2 = B.PROD_CD 
+ 		WHERE 1=1
+		AND A.REG_ID = #regId#
+		AND A.ENTP_CD = #entpCd#
+ 		AND A.EXCEL_SYS_KND = #excelSysKnd#
+ 	</select>
+ 	
+ 	<select id="selectExcelTempUploadRtnChk" parameterClass="hashmap" resultMap="tempExcelCustomRtnMap">
+ 		/* NEDMPROEXCEL.selectExcelTempUploadRtnChk */
+ 		SELECT 
+			A.SEQ_NO
+			,A.ENTP_CD
+			,A.EXCEL_SYS_KND
+			,CASE WHEN CHAR_LENGTH(A.DATA1) = 8 THEN TO_CHAR(CAST(A.DATA1 AS TIMESTAMP), 'YYYY-MM-DD')
+			 ELSE A.DATA1 END AS DATA1
+			,A.DATA2																
+			,A.DATA3                                                              
+			,A.DATA4                
+			,G.TEAM_NM                                              
+			,A.DATA5                                                              
+			,A.DATA6                                                              
+			,A.DATA8                                                              
+			,CASE WHEN CHAR_LENGTH(A.DATA7) = 8 THEN TO_CHAR(CAST(A.DATA7 AS TIMESTAMP), 'YYYY-MM-DD')
+			 ELSE A.DATA7 END AS DATA7
+			,A.DATA9                                                              
+			,A.DATA10																
+			,A.DATA11																
+			,A.DATA12																
+			,A.DATA13
+			,A.DATA14
+			,A.DATA15
+			,A.DATA16
+			,A.DATA17
+			,A.DATA18
+			,A.DATA19
+			,A.DATA20
+			,A.DATA21
+			,A.DATA22
+			,A.DATA23
+			,A.DATA24
+			,A.DATA25
+			,A.DATA26
+			,A.DATA27
+			,A.DATA28
+			,A.DATA29
+			,A.DATA30
+			,A.REG_ID
+			,CASE WHEN SRCMK_CHK = 'P' THEN (SELECT PROD_CD FROM PRODUCT WHERE SRCMK_CD = A.DATA5 )
+	 			  ELSE B.PROD_CD END PROD_CD
+			,CASE WHEN SRCMK_CHK = 'P' THEN (SELECT PROD_NM FROM PRODUCT WHERE SRCMK_CD = A.DATA5 )
+				  ELSE B.PROD_NM END PROD_NM
+			,CASE WHEN SRCMK_CHK = 'P' THEN (SELECT PROD_TYP_FG FROM PRODUCT WHERE SRCMK_CD = A.DATA5 )
+				  ELSE B.PROD_TYP_FG END PROD_TYP_FG
+			,B.SRCMK_CHK
+			,B.PROD_CD_CHK
+			,CASE WHEN B.SRCMK_CHK = 'P' THEN 'P'
+				  WHEN B.SRCMK_CHK IN ('T','P') AND B.PROD_CD_CHK = 'P' THEN 'P'
+				  ELSE 'F' END STS_CHK
+			,COALESCE(D.MINOR_CD, 'F') AS RTRSN
+			,COALESCE(E.MINOR_CD, 'F') AS RTRSD
+			,COALESCE(F.MINOR_CD, 'F') AS RTPLC
+			,(
+				SELECT 	COUNT(*)
+				FROM TPC_L1_CD
+				WHERE TEAM_CD = A.DATA4
+			) AS TEAM_CD_CHK
+			, CASE WHEN A.DATA2 IN ('KR02','KR03','KR99') THEN 'P'			
+			  ELSE 'F' END AS BUKRS_CHK
+		FROM TPC_EXCEL_TEMP A
+		INNER JOIN (
+			SELECT	
+				A.SEQ_NO
+				,A.ENTP_CD
+				,A.EXCEL_SYS_KND
+				,B.PROD_CD
+				,B.PROD_NM
+				, CASE WHEN DATA5 IN (
+											SELECT
+											 SRCMK_CD
+											FROM PRODUCT
+											GROUP BY SRCMK_CD
+											HAVING COUNT(SRCMK_CD) > 1
+											) THEN 'T'
+					  WHEN DATA5 IN (SELECT SRCMK_CD FROM PRODUCT WHERE SRCMK_CD = A.DATA5) THEN 'P'
+					  ELSE 'F' END AS SRCMK_CHK
+				, CASE WHEN DATA6 = (SELECT PROD_CD FROM PRODUCT WHERE PROD_CD = A.DATA6 ) THEN 'P'
+					   WHEN DATA6 = '' THEN 'P'
+				  ELSE 'F' END AS PROD_CD_CHK
+				,B.PROD_TYP_FG
+				,A.REG_ID
+			FROM TPC_EXCEL_TEMP	A
+			LEFT JOIN PRODUCT B ON	A.DATA6 = B.PROD_CD 
+			WHERE A.REG_ID = #regId#
+			AND A.ENTP_CD = #entpCd#
+	 		AND A.EXCEL_SYS_KND = #excelSysKnd#
+		)B 	ON A.SEQ_NO = B.SEQ_NO
+			AND A.ENTP_CD = B.ENTP_CD
+			AND A.EXCEL_SYS_KND = B.EXCEL_SYS_KND
+			AND A.REG_ID = B.REG_ID
+		LEFT JOIN PRODUCT C ON	A.DATA6 = C.PROD_CD
+		LEFT JOIN TPC_NEW_CODE D ON A.DATA8 = D.MINOR_CD AND D.MAJOR_CD = 'RTRSN'
+		LEFT JOIN TPC_NEW_CODE E ON A.DATA9 = E.MINOR_CD AND E.MAJOR_CD = 'RTRSD'
+		LEFT JOIN TPC_NEW_CODE F ON A.DATA10 = F.MINOR_CD AND F.MAJOR_CD = 'RTPLC'
+		LEFT JOIN 
+		(
+			SELECT 	TEAM_CD
+					,	TEAM_NM
+			FROM TPC_L1_CD_BAK_250526
+			GROUP BY TEAM_CD, TEAM_NM
+		)G ON A.DATA4 = G.TEAM_CD
+ 	</select>
+ 	
+ 	
+ </sqlMap>

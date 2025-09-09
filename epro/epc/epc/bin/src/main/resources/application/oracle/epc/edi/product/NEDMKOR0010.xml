@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMKOR0010">
+	<typeAlias alias="nedmkor0010VOClass" type="com.lottemart.epc.edi.product.model.NEDMKOR0010VO" />		<!-- SQLINES DEMO ***  정보 VO  -->
+	
+	<!-- 등록... SQLINES DEMO *** -->
+	<resultMap id="variantMap" class="nedmkor0010VOClass">
+		<result column="VARIANT" property="variant"	/>	<!-- 변형... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- SQLINES DEMO ***  가져오기 -->
+	<select id="selectBmanNo" parameterClass="String" resultClass="String">
+		/* SQLINES DEMO *** ectBmanNo */
+		SELECT 	BMAN_NO
+		FROM	HQ_VEN
+		WHERE	VEN_CD = #entpCd#
+	</select>
+	
+	<!-- 해당... SQLINES DEMO *** -->
+	<select id="selectAuthToken" resultClass="String">
+		/* SQLINES DEMO *** ectAuthToken */
+		SELECT	AUTH_TOKEN
+		FROM
+		(
+			SELECT	AUTH_TOKEN
+				,	ROW_NUMBER() OVER(PARTITION BY AUTH_START_DT ORDER BY KOR_SEQ DESC) AS RNUM
+			FROM	TPC_KOR_AUTH_TOKEN
+			<!-- SQLINES DEMO *** DATE, 'YYYYMMDD') BETWEEN AUTH_START_DT AND AUTH_END_DT -->
+			WHERE	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') = AUTH_START_DT
+		)
+		WHERE	RNUM = 1
+	</select>
+	
+	<!-- 인증... SQLINES DEMO *** -->
+	<insert id="insertAuthToken" parameterClass="java.util.HashMap">
+		/* SQLINES DEMO *** ertAuthToken */
+		INSERT INTO TPC_KOR_AUTH_TOKEN
+		(
+				KOR_SEQ
+			, 	AUTH_START_DT
+			, 	AUTH_END_DT
+			, 	AUTH_TOKEN
+			, 	REG_DT
+		)
+		VALUES
+		(
+				(SELECT COALESCE(MAX(KOR_SEQ), 0) + 1 FROM TPC_KOR_AUTH_TOKEN)
+			,	REPLACE(#authStartDt#, '-', '')
+			,	REPLACE(#authEndDt#, '-', '')
+			,	#authToken#
+			,	CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+	
+	<!-- 등록... SQLINES DEMO *** -->
+	<select id="selectVariant" parameterClass="String" resultMap="variantMap">
+		/* SQLINES DEMO *** ectVariant */
+		SELECT 	DISTINCT VARIANT
+		FROM 	TPC_VAR_ATT	A
+		WHERE 	PGM_ID = #pgmId#
+		ORDER BY VARIANT
+	</select>
+	
+	<!-- PO... SQLINES DEMO *** -->
+	<delete id="deleteSaleImg" parameterClass="java.util.HashMap">
+		/* SQLINES DEMO *** eteSaleImg */
+		DELETE FROM TPC_SALE_IMG
+		WHERE 	PGM_ID = #pgmId#
+			AND VARIANT = #variant#
+	</delete>
+	
+	<!-- SQLINES DEMO ***  -->
+	<delete id="deleteSaleImgAll" parameterClass="String">
+		/* SQLINES DEMO *** eteSaleImg */
+		DELETE FROM TPC_SALE_IMG
+		WHERE PGM_ID = #pgmId#
+	</delete>
+	
+	<!-- PO... SQLINES DEMO *** -->
+	<insert id="insertSaleImg" parameterClass="nedmkor0010VOClass">
+		/* SQLINES DEMO *** ertSaleImg */
+		MERGE INTO TPC_SALE_IMG A
+		USING
+		(
+			SELECT	#pgmId#		AS PGM_ID
+				,	#variant#	AS VARIANT
+				,	#imgNm#		AS IMG_NM
+				,	CURRENT_TIMESTAMP(0)		AS REG_DATE
+				,	'POG_BATCH'	AS REG_ID
+				,	'1'			AS CFM_FG
+				,	''			AS CFM_REASON_FG
+				,	''			AS PROD_CD
+				,	#srcmkCd# 	AS SRCMK_CD
+				,	#entpCd#	AS ENTP_CD
+		) B
+		ON (A.PGM_ID = B.PGM_ID AND A.VARIANT = B.VARIANT)
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+					PGM_ID
+				,	VARIANT
+				,	IMG_NM
+				,	REG_DATE
+				,	REG_ID
+				,	CFM_FG
+				,	CFM_REASON_FG
+				,	PROD_CD
+				,	SRCMK_CD
+				,	ENTP_CD
+			)
+			VALUES
+			(
+					B.PGM_ID
+				,	B.VARIANT
+				,	B.IMG_NM
+				,	B.REG_DATE
+				,	B.REG_ID
+				,	B.CFM_FG
+				,	B.CFM_REASON_FG
+				,	B.PROD_CD
+				,	B.SRCMK_CD
+				,	B.ENTP_CD
+			)
+	</insert>
+		
+</sqlMap>	

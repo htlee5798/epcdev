@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<proxyConfig>
+    <ssoSite value="bong.nssod.com">
+		<ProxyServer dns="mkdevx.nssod.com">
+			<SSOProviderProxy>
+				<ProxyDNS value="mkdevx.nssod.com" />
+				<ProxyPort value="80" />
+				<ProxyVirtualPath value="/c001" />
+				<ProxyRemoveVirtualPath value="/SSO" />				 
+				<ProxyUseSSL value="false" />
+			</SSOProviderProxy>
+			<ProxyPort value="80" />
+			<ProxyIPHeader name="X-Forwarded-For" value="10.74.143.12" />
+			<ProxyDNSHeader name="X-Forwarded-Server" />
+			<ProxyRootURLHeader name="x-orig-uri" />
+<!-- 			
+			<ProxyIPHeader name="HTTP_X_FORWARDED_FOR" value="10.74.143.12" />
+			<ProxyDNSHeader name="HTTP_X_FORWARDED_SERVER" />
+			<ProxyRootURLHeader name="HTTP_X_ORIG_URI" />
+ -->
+		</ProxyServer>
+		<ProxyServer dns="devx.nssod.com">
+			<SSOProviderProxy>
+				<ProxyDNS value="devx.nssod.com" />
+				<ProxyPort value="80" />
+				<ProxyVirtualPath value="/k001" />
+				<ProxyRemoveVirtualPath value="SSO" />
+				<ProxyUseSSL value="false" />
+			</SSOProviderProxy>
+			<ProxyPort value="80" />
+			<ProxyIPHeader name="HTTP_X_FORWARDED_FOR" value="10.74.196.10,10.74.196.11" />
+			<ProxyDNSHeader name="HTTP_X_FORWARDED_SERVER" />
+			<ProxyRootURLHeader name="HTTP_X_ORIG_URI" />
+		</ProxyServer>
+	</ssoSite>
+	<ssoSite value="bong.nssod.co.kr">
+		<ProxyServer dns="mkdevx.nssod.co.kr">
+			<SSOProviderProxy>
+				<ProxyDNS value="mkdevx.nssod.co.kr" />
+				<ProxyPort value="80" />
+				<ProxyVirtualPath value="/r001" />
+				<ProxyRemoveVirtualPath value="/SSO" />
+				<ProxyUseSSL value="false" />
+			</SSOProviderProxy>
+			<ProxyPort value="80" />
+			<ProxyIPHeader name="HTTP_X_FORWARDED_FOR" value="10.74.196.10,20.74.196.12" />
+			<ProxyDNSHeader name="HTTP_X_FORWARDED_SERVER" />
+			<ProxyRootURLHeader name="HTTP_X_ORIG_URI2" />
+		</ProxyServer>
+		<ProxyServer dns="devx.nssod.co.kr">
+			<SSOProviderProxy>
+				<ProxyDNS value="devx.nssod.co.kr" />
+				<ProxyPort value="80" />
+				<ProxyVirtualPath value="/t001" />
+				<ProxyRemoveVirtualPath value="/SSO" />
+				<ProxyUseSSL value="false" />
+			</SSOProviderProxy>
+			<ProxyPort value="80" />
+			<ProxyIPHeader name="HTTP_X_FORWARDED_FOR" value="10.74.196.20,10.74.196.12" />
+			<ProxyDNSHeader name="HTTP_X_FORWARDED_SERVER" />
+			<ProxyRootURLHeader name="HTTP_X_ORIG_URI2" />
+		</ProxyServer>
+	</ssoSite>
+</proxyConfig>

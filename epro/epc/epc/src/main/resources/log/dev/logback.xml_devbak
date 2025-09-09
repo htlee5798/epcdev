@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+    <appender name="dailyRolling"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>/sw/Tmax/jeus8/logs/application/epc/epc.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>/sw/Tmax/jeus8/logs/application/epc/epc.%d{yyyyMMdd}.log</FileNamePattern>
+        </rollingPolicy>
+        <encoder>
+        	<charset>UTF-8</charset>
+            <pattern>%d %-5level [%thread] %-70.70logger{70} - %msg%n</pattern>
+            <immediateFlush>true</immediateFlush>
+            <outputPatternAsHeader>false</outputPatternAsHeader>
+        </encoder>
+    </appender>
+    
+    <logger name="com.lottemart"            	level="DEBUG" additivity="true"></logger>
+    <logger name="org.springframework.aop"      level="INFO"  additivity="true"></logger>
+    <logger name="org.springframework.core"     level="INFO"  additivity="true"></logger>
+    <logger name="org.springframework.beans"    level="INFO"  additivity="true"></logger>
+    <logger name="org.springframework.context"  level="INFO"  additivity="true"></logger>
+    <logger name="org.springframework.web"      level="INFO"  additivity="true"></logger>
+    <logger name="org.apache.commons.digester"  level="INFO"  additivity="true"></logger>
+    <logger name="org.apache.commons.beanutils" level="INFO"  additivity="true"></logger>
+    
+    <root level="DEBUG">
+        <appender-ref ref="dailyRolling" />
+    </root>
+    
+</configuration>

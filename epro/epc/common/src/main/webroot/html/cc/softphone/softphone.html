@@ -1,0 +1,1343 @@
+﻿
+ <!--/***************************************************
+
+         softphone main
+         
+         
+   - softphone.html
+
+
+   * init : 2014-03-15 hawon
+      update : 2014-09-14 hawon
+   
+***************************************************/-->
+ <!--
+ 
+ NXCAPI3X.cab
+    - NXCAPI3X.ocx (CAPI3X.ocx)
+    - nxcapi.dll
+    - nxcapi.ini
+    - NXCAPI3X.inf
+ 
+ -->
+<html>
+<head>
+<title>롯데CRM센터-Softphone (nxcapi, ver 0.5)</title>
+<!-- #mart charset 변경-->
+
+<!--link href="./cti.css" rel="stylesheet" type="text/css"-->
+
+	<style>
+	
+		body { margin:0; padding:0; }
+		.cti td { padding:0 2px; }
+		.cti td img { CURSOR: pointer; }
+
+    body, input, select, textarea, a { font:100%/1.4 'Nanum Gothic', '나눔고딕', Dotum, tahoma, Arial, Helvetica, sans-serif; font-size:13px; color:#333; }
+		
+		table	{ font-size:12; }
+	  button	{ width:120; font-size:12; }
+	
+	</style>
+
+    <script language="JavaScript" src="./js/SC_api.js"></script>
+    <script language="JavaScript" src="./js/SC_button.js"></script>
+    <script language="JavaScript" src="./js/SC_evProc.js"></script>
+    <script language="JavaScript" src="./js/SC_msgConstants.js"></script>
+    <script language="JavaScript" src="./js/SC_nxcapi3x.js"></script>
+    <script language="JavaScript" src="./js/SC_softphone.js"></script>
+    <script language="JavaScript" src="./js/SE_testMode.js"></script>
+    <script language="JavaScript" src="./js/SE_debug.js"></script>
+    <script language="JavaScript" src="./js/SE_util.js"></script>
+    <script language="JavaScript" src="./js/SS_envConstants.js"></script>
+    <script language="JavaScript" src="./js/SS_siteUtil.js"></script>
+    
+<SCRIPT language="javascript" FOR="IVRMessage" EVENT="CnetRecvData(retData)">
+
+		var strRcv = retData;
+		
+		debugD("CnetRecvData : ARS Data Receive : " + strRcv);
+      	
+    evCnetRecvData(strRcv);
+        		
+</SCRIPT>
+    
+<!--
+	*Object : NXCAPI3X
+	*Event function : ctmpreadyagentgetvalue(long agentid, long device, long blendmode, long continuetime)
+	*Description : AgentReadyGet -> ctmpreadyagentgetvalue. (Ready 상담원 정보를 받아온다.)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="ctmpreadyagentgetexvalue(agentId, agentName, agentGroup, groupName, agentPart, partName, deviceDN, blendMode, continueTime)">
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+      ReadyAgentList.push(agentId+"/"+agentName+"/"+agentGroup+"/"+groupName+"/"+agentPart+"/"+partName+"/"+deviceDN);
+			
+			/*//////////////////////////////////////////////////
+			***************************************************/
+
+
+	document.all.cubeResult.innerText = "[ID:" + agentId + ", " +
+										"agentName:" + agentName + ", " +
+										"agentGroup:" + agentGroup + ", " +
+										"groupName:" + groupName + ", " +
+										"agentPart:" + agentPart + ", " +
+										"partName:" + partName + ", " +
+										"deviceDN:" + deviceDN + ", " +
+										"agentMode:" + blendMode + ", " +
+										"continueTime:" + continueTime + "]\n" + document.all.cubeResult.innerText;
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : ctmpreadyagentgetvalue(long agentid, long device, long blendmode, long continuetime)
+	*Description : AgentReadyGet -> ctmpreadyagentgetvalue. (Ready 상담원 정보를 받아온다.)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="ctmpreadyagentgetvalue(agentid, device, blendmode, continuetime)">
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+      ReadyAgentList.push(agentid+"/"+device+"/"+blendmode+"/"+continuetime);
+			
+			/*//////////////////////////////////////////////////
+			***************************************************/
+
+	document.all.cubeResult.innerText = "[ID:" + agentid + ", " +
+										"DN:" + device + ", " +
+										"blend:" + blendmode + ", " +
+										"contime:" + continuetime + "]\n" + document.all.cubeResult.innerText;
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : nxcapiagentstatusgetvalue(long group, long part, long agentid, long mode, LPCTSTR szName, long Dn);
+	*Description : AgentStatusGet -> nxcapiagentstatusgetvalue. (해당 group/party/mode 의 상담원 정보를 받아온다.)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="nxcapiagentStatusGetvalue(group, part, agentid, mode)">
+	document.all.cubeResult.innerText = "[group:" + group + ", " +
+										"part:" + part + ", " +
+										"ID:" + agentid + ", " +
+										"mode:" + mode + "\n" + document.all.cubeResult.innerText;
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : ctmpbusyagentgetvalue(long agentid, long device, long blendmode, long continuetime)
+	*Description : AgentBusyGet -> ctmpbusyagentgetvalue. (Ready 상담원 정보를 받아온다.)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="Ctmpbusyagentgetvalue(agentid, device, blendmode, continuetime)">
+	document.all.cubeResult.innerText = "[ID:" + agentid + ", " +
+										"DN:" + device + ", " +
+										"blend:" + blendmode + ", " +
+										"contime:" + continuetime + "]\n" + document.all.cubeResult.innerText;
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : NxcapiAgentGetBySkillX(LPCTSTR agentID, LPCTSTR agentNAme, long agentDN, short count)
+	*Description : AgentGetBySkillX -> NxcapiAgentGetBySkillX. (해당 Skill의 Ready 상담원 정보를 받아온다.)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="NxcapiAgentGetBySkillX(agentid, agentName, agentDN, count)">
+	document.all.cubeResult.innerText = "[ID:" + agentid + ", " +
+										"NAME:" + agentName + ", " +
+										"DN:" + agentDN + ", " +
+										"Count:" + count + "]\n" + document.all.cubeResult.innerText;
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : NxcapiGetMaxCPSQXvalue(long maxcpsq)
+	*Description : GetMaxCPSQX -> NxcapiGetMaxCPSQXvalue. (해당 ciod의 maxcpsq값을 받아온다.)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="NxcapiGetMaxCPSQXvalue(maxcpsq)">
+	document.all.cubeResult.innerText = "[maxcpsq:" + maxcpsq + "]\n" + document.all.cubeResult.innerText;
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : Nxcapiwaitingcalltimeperiodv(LPCTSTR queue, long waitperiod, long callcount)
+	*Description : waitingcalltimeperiod -> waitingcalltimeperiodv. (구간대별 대기 호 조회)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="Nxcapiwaitingcalltimeperiodv(queue, waitPeriod, callCount)">
+	if(waitPeriod == 99 )//1분이상
+	{
+		document.all.cubeResult.innerText = "[Queue:" + queue + ", " +
+										"waitPeriod: 60~" + ", " +
+										"callCount:" + callCount + "]\n" + document.all.cubeResult.innerText;		
+	}
+	else
+	{
+		document.all.cubeResult.innerText = "[Queue:" + queue + ", " +
+										"waitPeriod:" + (waitPeriod-_period) + "~" + waitPeriod + ", " +
+										"callCount:" + callCount + "]\n" + document.all.cubeResult.innerText;
+	}
+</SCRIPT>
+
+<!--
+	*Object : NXCAPI3X
+	*Event function : NxcapiwaitingcallListofquev(LPCTSTR queue, long callId, long waitTime LPCTSTR ani)
+	*Description : waitingcalltimeperiod -> waitingcalltimeperiodv. (Queue 리스트 정보 조회)
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3X" EVENT="NxcapiwaitingcallListofquev(queue, callId, waitTime, ani)">
+		document.all.cubeResult.innerText = "[Queue:" + queue + ", " +
+										"callId:" + callId + ", " +
+										"waitTime:" + waitTime + ", " +
+										"ani:" + ani + "]\n" + document.all.cubeResult.innerText;
+
+</SCRIPT>
+
+
+
+
+<!--
+	*Object : NXCAPI3XEvt
+	*Event function : nxcapieventget(eventKind);
+	*Description : 이벤트 받아오기, 모니터링 중인 Device, Call 등에 대한 이벤트를 검출한다.
+-->
+<SCRIPT language="javascript" FOR="NXCAPI3XEvt" EVENT="nxcapieventget(eventKind)">
+
+	// monitorparty
+	_monitorParty	= NXCAPI3XEvt.MonitorParty;
+	// otherparty
+	_otherParty		= NXCAPI3XEvt.OtherParty;
+
+	args			= "";
+
+	// GetEvent
+	switch(eventKind)
+	
+	{
+		case cubeEK_Originated:		
+			_callRefId = NXCAPI3XEvt.CallRefID;
+			args = "cubeEK_Originated.";
+			break;
+
+		case cubeEK_Delivered:	
+			_callRefId 	 = NXCAPI3XEvt.CallRefID;
+			_activeCallId = NXCAPI3XEvt.CallRefID;
+			_uei 		 = NXCAPI3XEvt.UEI;
+			args = "cubeEK_Delivered.";
+
+    //alert(_callRefId);	
+    
+    	/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+
+        evDelivered(NXCAPI3XEvt.LocalConnState);
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/					
+			
+			// 상대방이 전화를 걸았을 때
+			if (NXCAPI3XEvt.LocalConnState==cubeES_Altering) 
+			{
+	
+			}
+			// 내가 전화를 걸었을 때(cubeES_Connect)
+			else 
+			{
+
+			}
+			break;
+			
+		case cubeEK_Established:
+			_callRefId	 = NXCAPI3XEvt.CallRefID;
+			_activeCallId = NXCAPI3XEvt.CallRefID;
+			_activeDevice = _monitorParty;
+			args = "cubeEK_Established.";
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evEstablished();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/
+			
+			
+			break;
+			
+		case cubeEK_Held:
+			heldflag = 1;
+			_heldCallId = NXCAPI3XEvt.CallRefID;
+			_heldDevice = NXCAPI3XEvt.MonitorParty;
+
+			args = "cubeEK_Held.";
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+
+			evHeld();
+			
+			/*//////////////////////////////////////////////////
+			***************************************************/
+						
+			break;
+		
+		case cubeEK_Retrieved:
+			_activeCallId = _heldCallId;
+			_activeDevice = _heldDevice;
+			args = "cubeEK_Retrieved.";
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+
+			evRetrieved();
+			
+			/*//////////////////////////////////////////////////
+			***************************************************/			
+			
+			break;
+
+		case cubeEK_Transferred:
+			args = "cubeEK_Transferred.";
+			
+			// Transfered
+			if (NXCAPI3XEvt.ThirdPartyCause==cubeV_AddedParty)
+			{
+	
+			}
+			// Transfering
+			else
+			{
+				_activeCallId = NXCAPI3XEvt.CallRefID;
+				_activeDevice = NXCAPI3XEvt.MonitorParty;
+			}
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+
+			evTransfered();
+			
+			/*//////////////////////////////////////////////////
+			***************************************************/
+						
+			break;
+
+		case cubeEK_Confernced:
+			args = "cubeEK_Confernced.";
+			_activeCallId = NXCAPI3XEvt.CallRefID;
+			_activeDevice = NXCAPI3XEvt.MonitorParty;
+
+//alert(NXCAPI3XEvt.PreOldCallRefID);
+//alert(NXCAPI3XEvt.SecOldCallRefID);
+
+      
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+
+			evConferenced();
+			
+			/*//////////////////////////////////////////////////
+			***************************************************/
+      
+
+			// Conferencing
+			if (NXCAPI3XEvt.MonitorParty==NXCAPI3XEvt.CalledParty)
+			{
+			
+			}
+			// Conferenced
+			else
+			{
+				
+			}
+			break;
+
+		case cubeEK_ConnectionCleared:
+			args = "cubeEK_ConnectionCleared.";
+			
+			if(heldflag==0)
+			{
+				_activeCallId 	= NXCAPI3XEvt.CallRefID;
+				_activeDevice 	= _monitorParty;
+				_callRefId		= NXCAPI3XEvt.CallRefID;
+			}
+			else 
+			{
+				_activeCallId = _heldCallId;
+				_activeDevice = _heldDevice;
+				heldflag = 0;
+								
+			}
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+			if (NXCAPI3XEvt.CallRefID != _callRefId) {
+			
+				_callRefId = NXCAPI3XEvt.CallRefID;
+				_activeCallId 	= NXCAPI3XEvt.CallRefID;				
+				debugD("FLAG != _callRefId : _callRefId <= NXCAPI3XEvt.CallRefID");
+				
+			}
+			
+			if (_activeCallId != _callRefId) {
+			
+				_activeCallId 	= _callRefId;				
+				debugD("FLAG != _activeCallId : _activeCallId <= _callRefId");
+				
+			}
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/
+			
+						
+			// 전화를 건 사람이 끊었을 때
+			if (NXCAPI3XEvt.LocalConnState==cubeES_Connect) 
+			{
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+				
+				debugD("case : cubeES_Connect , call evConnectionCleared()");
+				evConnectionCleared("cubeES_Connect", HeldCallID);
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/
+								
+			} 
+			// 전화를 받은 사람이 끊었을 때(cubeES_Null)
+			else 
+			{
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evConnectionCleared("cubeES_Null", HeldCallID);
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/				
+			
+			}
+			
+			
+			break;
+						
+		
+		case ctmpEK_Popup:
+			args = "ctmpEK_Popup.";
+
+			/*
+				NXCAPI3XEvt.AgentID;			// agentId
+				NXCAPI3XEvt.CallRefID;			// campaignid
+				NXCAPI3XEvt.PreOldCallRefID;	// sequence No
+				NXCAPI3XEvt.MonitorParty;		// customer Tel.(고객전화번호)
+				NXCAPI3XEvt.UEI;				// customerkey(고객키)
+				NXCAPI3XEvt.Type;				// scriptId(상담 script)
+				NXCAPI3XEvt.VoiceLength;		// waitTime(고객 대기시간)
+				NXCAPI3XEvt.VoicePosition;		// dialSpeed(발신속도)
+				NXCAPI3XEvt.SecOldCallRefID;	// tokenid(power용 안내Id)
+				NXCAPI3XEvt.ThirdPartyTrunk;	// Campaign Mode
+				NXCAPI3XEvt.ThirdPartyType;		// Call Kind
+			*/
+
+			break;
+		
+		default:
+			if (eventKind == 1) 
+				args = "cubeEK_CallCleared.";
+			else if (eventKind == 5) 
+				args = "cubeEK_Diverted.";
+			else if (eventKind == 7) {
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evFailed();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/
+												
+				args = "cubeEK_Failed.";
+			}
+			
+			else if (eventKind == 9) 
+				args = "cubeEK_NetworkReached.";
+			else if (eventKind == 11) 
+				args = "cubeEK_Queued.";
+			else if (eventKind == 12) 
+				args = "cubeEK_Retrieved.";
+			else if (eventKind == 13) {
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evServiceInitated();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/			
+			
+				args = "cubeEK_ServiceInitated.";
+				
+			}
+			else if (eventKind == 201) {
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evLogin();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/			
+			
+				args = "cubeEK_LoggedOn.";
+				
+			}
+			else if (eventKind == 202) {
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evLogout();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/			
+							
+				args = "cubeEK_LoggedOff.";
+				
+      }
+			else if (eventKind == 203) {
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evNotReady();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/			
+										
+				args = "cubeEK_NotReady.";
+			}
+			
+			else if (eventKind == 204) {
+			
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evReady();
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/			
+													
+				args = "cubeEK_Ready.";
+			}
+			else if (eventKind == 205) 
+				args = "cubeEK_OtherWork.";
+			else if (eventKind == 206) {
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evAfterCallWork(1);
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/
+						
+				args = "cubeEK_AfterCallWork.";
+
+			}
+			else if (eventKind == 999) {
+
+			/***************************************************
+			//USER DEFINE-hawon////////////////////////////*/
+							
+				evCCSEDown(1);
+				
+			/*//////////////////////////////////////////////////
+			***************************************************/
+									
+				args = "cubeEK_CCSEDown.";
+				
+			}
+			else
+				args = ""+eventKind+".";
+							
+			_activeCallId = NXCAPI3XEvt.CallRefID;
+			_activeDevice = NXCAPI3XEvt.CalledParty;
+			
+			break;
+		}
+		
+		document.all.cubeResult.innerText = "CubeEvent["+args+"] occurred..\n" + document.all.cubeResult.innerText;
+		
+</SCRIPT>
+
+<script>
+  
+/*/////////////////////////////////////////////
+    
+    Windows Load / unload
+    
+/////////////////////////////////////////////*/
+  
+	//Load
+	function chkOpen() {
+
+    basicStatusSet();
+    
+//    alert("Load");
+
+	}
+
+	//Unload
+	function chkClose() {
+	
+    if (NowStatus == "AfterCallWork" || NowStatus == "NotReady") {
+    		
+		  logout();
+		  
+		} else {
+		
+		//  alert(ErrMsgTermOnOnLineError);
+		  
+		  hangup();
+		  logout();
+		  
+		}
+		
+	}
+	
+/*/////////////////////////////////////////////
+
+  Outer Function
+
+/////////////////////////////////////////////*/
+
+
+  //상담저장 여부
+  function saveOK() {
+  
+		saveFlagChange(true);
+				
+  }
+
+  //전화걸기 팝업 (전화번호)
+  function dialPopup(dn) {
+
+    if (NowStatus == "AfterCallWork" || NowStatus == "NotReady") {
+    
+  		if (!saveCheck()) return false;
+		
+      variableSet("MakeCall");
+          
+      //    if( confirm(dn[0]+"/"+dn[1]+"/"+dn[2]+"/"+dn[3]) ==  false) return;
+      
+      document.all.dialTelNo.value = dn[0];
+      DialTelNo = dn[0];
+      
+      for(var i=0 ; i < dn.length ; i++) arrDialTelNo[i] = dn[i];
+      
+      windowPopup("MakeCall");
+      
+    } else {
+    
+      usrAlert(ErrMsgDisable + " : 전화걸기("+NowStatus+")");
+      
+      return false;
+        
+    }
+    
+  }
+  
+  //협의걸기 팝업 (전화번호)
+  function consultationPopupl(dn) {
+    
+    if (NowStatus == "OnLine") {
+    
+      document.all.cubePhoneNo.value = dn[0];
+      ConsultationTelNo = dn[0];
+      
+      for(var i=0 ; i < dn.length ; i++) arrConsultationTelNo[i] = dn[i];
+      
+      windowPopup("Consultation");
+      
+    } else {
+    
+      usrAlert(ErrMsgDisable + " : 협의걸기(Error : "+NowStatus+")");
+      
+      return false;
+      
+    }
+    
+  }
+  
+  //외부 기본 다이얼링 함수
+  function dialing(dn) {
+  
+    if (NowStatus == "AfterCallWork" || NowStatus == "NotReady") {
+    
+      dialCall(dn);
+      
+    } else if (NowStatus == "OnLine") {
+      
+      consultationCall(dn);
+      
+    } else {
+    
+      usrAlert(ErrMsgDisable + " : 전화걸기(Error : "+NowStatus+")");
+      
+    }
+    
+  }
+  
+  //전화걸기 (전화번호)
+  function dialCall(dn) {
+	  
+	  dn = replaceAll(dn,"-","");
+  
+    if (NowStatus == "AfterCallWork" || NowStatus == "NotReady") {
+        
+  		if (!saveCheck()) return false;  		
+  		  		
+      variableSet("MakeCall");
+          
+      if (!isTelNo(trim(dn).replace('-',''))) {
+      
+        usrAlert(ErrMsgIsNotTelNo); 
+        
+        return false;
+        
+      }  		
+
+      if(!doDialCall(dn)) return false;
+      
+    } else {
+    
+      usrAlert(ErrMsgDisable + " : 전화걸기(Error : "+NowStatus+")");
+      
+      return false;
+    
+    }
+    
+    return true;
+    
+  }
+  
+  //그룹호전환 (큐 번호)
+  function groupTransfer(dn) {
+	  
+	  dn = replaceAll(dn,"-","");
+    
+    if (NowStatus == "OnLine") {
+          		  		
+      if (!isTelNo(trim(dn).replace('-',''))) {
+      
+        usrAlert(ErrMsgIsNotTelNo); 
+        
+        return false;
+        
+      }  		
+        
+      if(!doSingleStepTransfer(dn)) return false;
+      
+    } else {
+    
+      usrAlert(ErrMsgDisable + " : 그룹호전환(Error : "+NowStatus+")");
+      
+      return false;
+      
+    }
+    
+    return true;
+    
+  }
+  
+  //협의걸기 (전화번호)
+  function consultationCall(dn) {
+	  
+	  dn = replaceAll(dn,"-","");
+    
+    //alert(NowStatus);
+    if (NowStatus == "OnLine" || NowStatus == "Hold") {
+  		  		
+      if (!isTelNo(trim(dn).replace('-',''))) {
+      
+        usrAlert(ErrMsgIsNotTelNo); 
+        
+        return false;
+        
+      }
+      
+      if (!doConsultationCall(dn)) return false;
+      
+    } else {
+    
+      usrAlert(ErrMsgDisable + " : 협의걸기(Error : "+NowStatus+")");
+      
+      return false;
+      
+    }
+    
+    return true;
+    
+  }
+
+  //기본 함수
+  //사용자정보 변수 값 입력 (APPID, 사용자명, 상담그룹, 상담팀, CTI ID, 사용자IP, 내선번호)
+  function setUserInfo(usrId, usrNm, usrGrp, usrPrty, ctiId, usrIp, usrDn) {
+
+    AgentAppID = usrId;
+    AgentName = usrNm;
+    AgentGroup = usrGrp;
+    
+    if (AgentGroup == "") AgentGroup = fillRepetedChar(usrPrty.substring(0,GroupCodeLevel),"0", GroupCodeLength - GroupCodeLevel );
+          
+    AgentParty = usrPrty;
+    AgentID = ctiId;
+    AgentAppIP = usrIp;
+    AgentDN = usrDn;
+    
+    //alert(AgentAppID + "/" + AgentName + "/" + AgentGroup+ "/" + AgentParty + "/" + AgentID + "/" + AgentAppIP + "/" + AgentDN);
+    
+    chkOpen();
+    
+    //상담APP의 자동 로그인
+    if(AutoLogin) autoLogin();
+    
+  }
+
+/*/////////////////////////////////////////////
+
+   Popup Windows Function
+
+/////////////////////////////////////////////*/
+  
+  function ok(str) {
+  
+    if( confirm("OK " + str) ==  false) return;
+    
+  }
+    
+  function doAnswerCall() {
+    
+    if (NowStatus == "Ring" || NowStatus == "MakeRing") {
+
+      return procLoader(doActionFunc("Answer"));
+      
+  	}
+  	
+  	return;
+  	
+  }
+  
+  function doVacate(val) {
+    
+    ReasonCode = val;
+
+    return procLoader(doActionFunc("Vacate"));
+    
+  }
+  
+  function doVacateCancel() {
+    
+	  stateChange("AfterCallWork");
+			
+  }
+  
+  function doDialCall(val) {
+	//test
+// 	alert("softphone.html - doDialCall called");
+	
+    DialTelNo = val;
+    document.all.dialTelNo.value = val;
+    
+    //if(confirm(QstMsgDoRun + " - 전화걸기 : " + getDialNo(document.all.dialTelNo.value)) ==  false) return false;
+
+    return procLoader(doActionFunc("MakeCall"));
+    
+  }
+  
+  function doSingleStepTransfer(val) {
+  
+    TransferQueueNo = val;    
+    document.all.transferQueueNo.value = val;    
+
+    return procLoader(doActionFunc("SingleStepTransfer"));
+    
+  }
+  
+  
+  function doConsultationCall(val) {
+  
+    ConsultationTelNo = val;
+    document.all.cubePhoneNo.value = val;
+    
+    return procLoader(doActionFunc("Consultation"));
+    
+  }
+  
+  function doRecoveryPhone() {
+  
+    if(confirm(QstMsgDoRun + " - 복구 : NotReady") ==  false) return false;
+    
+    return procLoader(doActionFunc("NotReady"));
+    
+  }
+
+  //로딩이미지 보이기
+  
+  function showLoader() {
+  
+    //alert("SSSSS");
+    document.getElementById("loader").style.top = "0px";
+//    document.getElementById("loader").style.z-index = "500";
+    
+   }
+   
+  
+  //로딩이미지 감추기
+  function hideLoader() {
+  
+   // alert("HHHHH");
+    
+    document.getElementById("loader").style.top = "700px";
+//    document.getElementById("loader").style.z-index = "100";
+    
+    //alert("HHH!!!");
+   }
+
+  function procLoader(bool) {
+  
+    if (!bool) {
+    
+      hideLoader();
+    
+    }
+    
+    return bool;
+  
+  }
+  
+  function doButtonClick(btnID) {
+	  
+	  //test
+// 	  alert("function doButtonClick");
+// 	  urlCall("Established", "IN");	//inbound call test
+// 	  windowPopup("MakeCall");		//전화걸기 test
+// 	  return;
+	  
+    
+    showLoader();
+    
+    procLoader(procButtonClick(btnID));
+  
+  }
+
+    /*/////////////////////////////////////////////
+    
+  <!--
+	*Object : CNet.CAB , IVRMessage
+	*Event function : IVRMessage_CnetRecvData(str)
+	*Description : CNET IVR Message (비번 ARS 연동)
+-->
+    
+    /////////////////////////////////////////////*/
+        
+  function conferenceARS(serviceCode) {
+    var ARSServiceDN = "";
+  
+	// serviceCode : 01 = ARS 비번 VDN 3961
+	// serviceCode : 02 = ARS 생년월일 VDN 3962
+  
+    ARSServiceDN= getARSServiceDN(serviceCode);
+    
+    //test
+//     alert("softphone.html - conferenceARS called" 	+ "\n"
+//     		+ "serviceCode:"+serviceCode 			+ "\n"
+//     		+ "ARSServiceDN:"+ARSServiceDN 			);
+    
+    debugD("[conferenceARS] ARSServiceCode = " + serviceCode + "ARSServiceDN = " + ARSServiceDN );
+    
+//     alert( InfoMsgARSConference + "(" + getARSServiceNM(serviceCode) + ")");
+    
+  
+    if (ARSServiceDN != "") {
+    
+      document.all.cubeUei.value = serviceCode;
+      
+       //test ===
+//        ConsultationARSYN = "Y";
+//        urlCall("ARSReceive", ARSReceiveData);
+//        return true;
+		//------------end
+      
+      if (doConsultationCall(ARSServiceDN)) {
+      
+        ConsultationARSYN = "Y";
+
+        //test
+//        alert("softphone.html - conferenceARS() before call urlCall -  serviceCode:"+serviceCode +" ARSReceiveData:"+ARSReceiveData);
+//        debugD("softphone.html - conferenceARS() before call urlCall -  serviceCode:"+serviceCode +" ARSReceiveData:"+ARSReceiveData);
+        //#mart
+//         urlCall("ARSReceive", ARSReceiveData);
+        
+        //#mart
+        //ARSReceiveData = "";
+        
+        return true;
+      
+     // cnet_SetServer(); 
+      
+      } else {
+      
+      usrAlert(ErrMsgARSConsultationFail);
+      
+      debugD("[conferenceARS] ARSServiceCode = " + ErrMsgARSConsultationFail);
+  
+      }
+      
+    } else {
+    
+      usrAlert(ErrMsgARSServiceCodeError);
+      
+      debugD("[conferenceARS] ARSServiceCode = " + ErrMsgARSServiceCodeError);
+          
+    }
+    
+    return false;
+    
+  }
+  
+
+  function checkARSMessage(type) {
+  
+    debugD("[checkARSMessage] type = " + type);
+    
+    switch(type) {
+    
+      case "urlCall" :
+           
+        		if (ConsultationARSYN == "Y") {
+        		
+              
+              return true;
+              
+        		}
+        		
+            break;
+            
+      case "evConnectionCleared" :
+          
+        		if (ConsultationARSYN == "Y") {
+          		
+          		if(NowStatus == "Hold") {
+          		
+                // 보류 해제 - 
+               // if(retrieve()) {
+            		
+            			//debug("Retrieve");
+            			
+              	//	waitEvent("Retrieve");
+              			
+            			//stateChange("OnLine");
+            	//		
+        	//			} else {
+        				
+        	//			  usrAlert(ErrMsgARSConferenceFail + ". " + InfoMsgRetry);
+        				  
+        	//			}
+        				
+        		  }
+              
+              ConsultationARSYN = "N";
+              
+              //alert("ARS check - evConnectionCleared");
+              
+              return true;
+              
+        		}
+        		
+            break;
+
+      case "evDelivered" :
+		
+        		if (ConsultationARSYN == "Y") {
+        		
+      				if(conference()) {
+      				
+      					//debug("Conference");
+      					
+            		waitEvent("Conference");
+            			
+      					//stateChange("Conference");
+      					
+      				} else {
+      				
+      				  usrAlert(ErrMsgARSConferenceFail + ". " + InfoMsgRetry);
+      				  
+      				}
+      				
+      				return true;
+      				
+        		}
+      
+        break;    
+                
+      case "evConferenced" :
+        		
+        		if (ConsultationARSYN == "Y") {
+        		
+        		  ARSReceiveData = "";
+      
+          	  /**************************************************/
+          		//  (IF AVAYA == 1, LG 6.0 == 4)
+        		  if (Protocol == 1) {
+        		    
+              		
+              	//if(hold()) {
+      					
+      						//debug("Hold");
+      						
+              		//waitEvent("Hold");
+              			
+      						//stateChange("Hold");
+      						
+      				//	}
+      					
+      				}
+        		  
+        		  return true;
+        		  
+        		}
+      
+        break;
+
+      case "Init" :
+            
+            if (ARSMessageUseYN == "Y") {
+            
+              //ARS API 초기화 실행
+              cnet_SetServer();
+              
+              return true;
+            }
+      
+        break;
+    
+    }
+    
+    return false;
+  
+  }
+
+
+  function evCnetRecvData(str) {
+          			
+    ARSReceiveData = str;
+    
+    debugD("[evCnetRecvData] evCnetRecvData() called | ARSReceiveData:" + ARSReceiveData + " str:" + str);
+    
+    //alert(InfoMsgARSMessageReceiveSuccess);
+
+    if (ARSReceiveData == "") {
+    
+      usrAlert(ErrMsgARSMessageError);
+      
+      debugD("[evCnetRecvData] ARSReceiveData = " + ErrMsgARSMessageError);
+    
+
+
+    } else {
+      
+      debugD("[evCnetRecvData] ARSReceiveData = " + ARSReceiveData);
+      
+     //ARS받은값 어플리케이션으로 여기서 넘겨줘야할듯...
+
+
+ 
+      //Main Info Sending....
+  		sendInfoToMain("ARSReceive");
+  		
+    }
+    
+  }
+
+
+  // IVR API 초기화
+  function cnet_SetServer() {
+  
+  	if(IVRMessage.Listen_Data(ARSMessagePortNo,1)) {
+  	
+  	  debugD("[cnet_SetServer] : ARS Server connect Success");
+  		
+  	} else {
+  	
+  	  debugD("[cnet_SetServer] : ARS Server connect Fail");
+  	  
+  	}
+  	
+  }
+  
+  function test11() {
+  
+    var dn = "";
+    
+    if (AgentDN == "") dn = prompt(InputMsgDN, "ex)1701");
+    
+    if (dn == null) alert("null 입니다.");
+    else alert(dn);
+   
+  }
+  
+</script>
+
+</head>
+
+<body onload="chkOpen()" onunload="chkClose()" style="margin-left:0px;margin-top:0px;margin-right:0px;margin-bottom:0px;">
+
+<DIV class="cti" style="position:absolute; left:0px; top:0px; width: 100%; z-index:1;background-color: red;">
+	
+        <table width="515" border="0" cellspacing="0" cellpadding="0">
+          <tr>  
+<!--           	//test   -->
+<!--          	<td><img src="./images/Vacate_OFF.gif" id="testButton" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="TEST" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td> -->
+            <td><img src="./images/Login_OFF.gif" id="Login" width="75" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Login_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+          	<td><img src="./images/Ready_OFF.gif" id="Ready" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Ready_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>     
+            <td><img src="./images/MakeCall_OFF.gif" id="MakeCall" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="MakeCall_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+            <td><img src="./images/HangUp_OFF.gif" id="HangUp" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="HangUp_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+            <td><img src="./images/Consultation_OFF.gif" id="Consultation" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Consultation_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+            <td><img src="./images/Transfer_OFF.gif" id="Transfer" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Transfer_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+            <td><img src="./images/Conference_OFF.gif" id="Conference" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Conference_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+            <td><img src="./images/Hold_OFF.gif" id="Hold" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Hold_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+            <td><img src="./images/Vacate_OFF.gif" id="Vacate" width="55" height="40" border="0" onclick="javascript:doButtonClick(this.id)" alt="Vacate_OFF" onmouseover="mouseEvent(this.id, 'over')" onmouseout="mouseEvent(this.id, 'out')"></td>  
+          </tr>
+        </table>
+        
+        <table>
+        	<tr height = "50"><td>롯데CRM센터 소프트폰 Ver 1.1</td><td>(마트용, ARS 정보 인터페이스 추가)</td></tr>
+        </table>
+        
+				<table width="565" cellpadding="1" cellspacing="1">
+				  <tr><td><input type="text" name="StatusDisplay" size="7" value="" align="center" ondblclick="javascript:doRecoveryPhone()"></td></tr>				
+					<tr>
+						<td><textArea id="cubeResult" rows="9" cols="80"></textArea></td>
+					</tr>
+				</table>
+				
+				<table width="565" cellpadding="1" cellspacing="1">
+					<tr>
+						<td width="15%">AgentDN :</td>
+						<td width="35%"><input type="text" name="cubeDn" size="10" value=""></td>
+						<td width="15%">AgentID :</td>
+						<td width="35%"><input type="text" name="cubeId" size="10" value=""></td>
+					</tr>
+					<tr>
+						<td>AgentParty :</td>
+						<td><input type="text" name="cubeAgentParty" size="10" value=""></td>
+						<td>AgentGroup :</td>
+						<td><input type="text" name="cubeAgentGroup" size="10" value=""></td>
+					</tr>
+					<tr>
+						<td>CustomTelNo :</td>
+						<td><input type="text" name="customTelNo" size="10" value=""></td>
+						<td>ConsultationTelNo :</td>
+						<td><input type="text" name="cubePhoneNo" size="10" value=""></td>
+					</tr>
+					<tr>
+						<td> DialTelNo :</td>
+						<td><input type="text" name="dialTelNo" size="10" value=""></td>
+						<td> TransferQueueNo :</td>
+						<td><input type="text" name="transferQueueNo" size="10" value=""> <button name="SingleStepTransfer" onclick="singleStepTransfer();">SingleStepTransfer</button></td>
+					</tr>
+					<tr>
+						<td>UUI :</td>
+						<td><input type="text" name="cubeUui" size="20" value=""></td>
+						<td>UEI :</td>
+						<td><input type="text" name="cubeUei" size="20" value=""></td>
+					</tr>					
+					<tr>
+						<td>CI :</td>
+						<td><input type="text" name="cubeCi" size="20" value=""></td>
+						<td> ETC :</td>
+						<td><input type="text" name="etc" size="10" value=""></td>
+					</tr>
+				</table>
+				
+        <table width="565" cellpadding="0" cellspacing="0" border="0">
+        	<tr>
+        		<td valign="top" align="center" colspan="1">
+        		
+        				<table cellpadding="1" cellspacing="1" border="0">
+        					<tr>
+        						<td><button name="TEST1" onclick="javascript:dialPopup(new Array('1603','1601','0','0'))">arrDailCall</button></td>
+        						<td><button name="TEST2" onclick="javascript:consultationPopupl(new Array('1603','1601'))">arrConsultationCall</button></td>
+        						<td><button name="TEST3" onclick="javascript:agentReadyGet()">agentReadyGet</button></td>
+        						<td><button name="TEST4" onclick="javascript:agentReadyGetEx()">agentReadyGetEx</button></td>
+        						<td><button name="TEST5" onclick="javascript:getAgentList()">getAgentList</button></td>
+        					</tr>
+        				</table>
+        				<table cellpadding="1" cellspacing="1" border="0">
+        					<tr>
+        						<td><button name="TEST6" onclick="javascript:saveOK()">SaveOK</button></td>
+        						<td><button name="AgentStatusGet" onclick="callCubeMethod(this.name)">AgentStatusGet</button></td>
+        						<td><button name="AgentReadyGetEx" onclick="callCubeMethod(this.name)">AgentReadyGetEx</button></td>
+        						<td><button name="ClearConnection" onclick="callCubeMethod(this.name)">HangUp</button></td>
+        						<td><button name="Recorvery" onclick="javascript:doRecoveryPhone()">Recorvery</button></td>
+        					</tr>
+        				</table>	
+        				<table cellpadding="1" cellspacing="1" border="0">
+        					<tr>
+        						<td><button name="ConsultTest" onclick="javascript:consultationCall('01087901321')">Consultation</button></td>
+        						<td><button name="TEST7" onclick="javascript:conferenceARS('02')">비번ARS2</button></td>
+        						<td><button name="SetFeatureSpeakerMute" onclick="callCubeMethod(this.name)">SpeakerMute</button></td>
+        						<td><button name="TEST9" onclick="javascript:dialing('01087901321')">makeCall</button></td>
+        						<td><button name="TEST10" onclick="javascript:dialing('26263978')">makeCallForConsult</button></td>
+        					</tr>
+        				</table>
+        		</td>
+        	</tr>
+        </table>
+        
+        
+				<table width="565" cellpadding="0" cellspacing="0" width = "0" height="0">
+					<tr>
+						<td>
+						
+							<OBJECT 
+								id		 = "NXCAPI3X"
+								codebase = "NXCAPI3X.cab#version=5,1,2,63"
+								classid	 = "clsid:46BE120F-FA60-4FEC-8327-5690F3E31C31">
+								<span style="color:red;font-size:12">(1) Component failed to load! -- Please check settings.</span>
+							</OBJECT>
+							
+							<OBJECT 
+								id		 = "NXCAPI3XEvt"
+								codebase = "NXCAPI3X.cab#version=5,1,2,63"
+								classid	 = "clsid:2E830C8F-BC52-403A-8B18-B8A89127AFC8">
+								<br><span style="color:red;font-size:12">(2) Component failed to load! -- Please check settings.</span>
+							</OBJECT>
+							
+							<OBJECT 
+								id		 = "NXCAPI3XOB"
+								codebase = "NXCAPI3X.cab#version=5,1,2,63"
+								classid	 = "clsid:069F236C-F6CC-40BA-B215-2075A8E06F8F">
+								<br><span style="color:red;font-size:12">(3) Component failed to load! -- Please check settings.</span>
+							</OBJECT>
+							<OBJECT
+							  ID="IVRMessage"
+                CLASSID="CLSID:E46AD3AE-520A-4E5B-89F5-3B0DC273FC00"
+                CODEBASE="CNet.CAB#version=1,0,0,11">
+								<br><span style="color:red;font-size:17">(4) Component failed to load! -- Please check settings.</span>
+              </OBJECT>							
+              
+						</td>
+					</tr>
+				</table>		
+</div>				
+
+<div class="cti" id="loader" name="loader" style="left:0px; top:700px; width:565px; height:50px; position:relative; z-index:100">
+  <table width="565" height="40" border="0" cellspacing="0" cellpadding="0">
+    <tr><td valign="middle" align="center"><img src="./images/waiting.png" alt="로딩이미지" height="30"></td></tr>
+  </table>
+</div>
+
+<script> 
+    checkARSMessage("Init");
+</script>
+
+</body>
+
+</html>

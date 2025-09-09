@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>모바일 QPS 피킹 관리 시스템</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	<link rel="shortcut icon" href="http://image.lottemart.com/images/front/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" href="http://image.lottemart.com/images/mobile/contentimg/ico/ico-a_72_72.png">
+
+	<!-- CSS 임시경로  -->
+	<link rel="stylesheet" href=".//lib_new.css">
+</head>	
+<body>
+<!-- 화면 전체 구성 -->
+
+	<!-- 03. 비밀번호 변경 full Layer popup -->
+	<div id="password_popup"></div>
+	<!-- //03. 비밀번호 변경 full Layer popup -->
+	
+
+	<!-- 05. CONTAINER START -->
+	<div class="m-container-scroll">
+	</div>
+	<!-- 05. CONTAINER START -->
+
+	<!-- 06. layer popup -->
+	<div id="dialog_popup" style="display: block;">
+		<!-- layout - full Layer Popup -->
+		<div class="wrap-popup-page">
+			<!-- a. header -->
+			<div class="header">
+				<div class="user_info">
+					<h2 class="page_tit">Only Pirce 대패삼겹살(냉동)(800G)</h2>
+				</div>
+				<div class="user_action">
+					<button type="button" class="icon-close">닫기</button>
+				</div>
+			</div>
+			<!-- //a. header -->
+			<!-- b. container -->
+			<div class="supplant_detail">
+				<!-- 상품대체 -->
+				<div class="prod_tbl02">
+					<table>
+						<caption>상품대체</caption>
+						<colgroup>
+							<col style="width:*;">
+							<col style="width:30%;">
+							<col style="width:30%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>상품대체</th>
+								<td class="cnt">3</td>
+								<td class="cnt"><button type="button" class="btn-common-color3">대체 완료</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //상품대체 -->
+				<!-- 선택 된 상품대체 -->
+				<div class="prod_tbl01">
+					<h6 class="tit">선택된 대체상품</h6>
+					<table>
+						<caption>대체상품</caption>
+						<colgroup>
+							<col style="width:25%;">
+							<col style="width:*;">
+							<col style="width:18%;">
+							<col style="width:20%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th>판매코드</th>
+								<th>상품명</th>
+								<th>수량</th>
+								<th>판매가(원)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>8801115118183</td>
+								<td class="lft"><span class="name">일반구이용 대패삼겹살(냉동)(800G)급냉처리</span></td>
+								<td>3</td>
+								<td>367,900</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //선택 된 상품대체 -->
+				<!-- 대체상품 추천 리스트 -->
+				<div class="prod_tbl01">
+					<h6 class="tit">대체상품 추천 리스트</h6>
+					<table>
+						<caption>대체상품 추천</caption>
+						<colgroup>
+							<col style="width:60px;">
+							<col style="width:20%;">
+							<col style="width:*;">
+							<col style="width:18%;">
+							<col style="width:20%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th><input type="checkbox"></th>
+								<th>판매코드</th>
+								<th>상품명</th>
+								<th>현재고</th>
+								<th>판매가(원)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><input type="checkbox" disabled></td>
+								<td>8801115118183</td>
+								<td class="lft"><span class="name">일반구이용 대패삼겹살(냉동)(800G)급냉처리</span></td>
+								<td>3</td>
+								<td>367,900</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox"></td>
+								<td>8801115118183</td>
+								<td class="lft"><span class="name">일반구이용 대패삼겹살(냉동)(800G)급냉처리</span></td>
+								<td>3</td>
+								<td>367,900</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox"></td>
+								<td>8801115118183</td>
+								<td class="lft"><span class="name">일반구이용 대패삼겹살(냉동)(800G)급냉처리</span></td>
+								<td>3</td>
+								<td>367,900</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //대체상품 추천 리스트 -->
+
+				<!-- 대체상품 스캔 fixed Layer -->
+				<div class="supplant_fixed">
+					<button class="openSupplant">대체상품 스캔</button>
+					<div class="inner_box">
+						<div class="prod_tbl02 mrgB0">
+							<table>
+							<caption>대체상품</caption>
+							<colgroup>
+								<col style="width:25%;">
+								<col style="width:*;">
+							</colgroup>
+								<tbody>
+									<tr>
+										<th>판매코드</th>
+										<td>
+											<div class="ipbt_w100">
+												<input type="text" value="">
+												<button type="button" class="btn-common-color3" disabled>확인</button>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>상품명</th>
+										<td><input type="text" value=""></td>
+									</tr>
+									<tr>
+										<th>판매가</th>
+										<td><input type="text" value=""></td>
+									</tr>
+									<tr>
+										<th>현재고</th>
+										<td><input type="text" value=""></td>
+									</tr>
+									<tr>
+										<th>피킹수량</th>
+										<td>
+											<div class="quantityBox">
+												<button class="noPlus">-</button>
+												<input type="tel" value="1" class="no">
+												<button class="noPlus">+</button>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- //대체상품 스캔 fixed Layer -->
+			</div>
+			<!-- //b. container -->
+		</div>
+		<!-- //layout - full Layer Popup -->
+	</div>
+	<div id="detail_popup"></div>
+	<!-- //06. layer popup -->
+
+<!-- //화면 전체 구성 -->
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script>
+$(document).ready(function() {
+	// 열기
+	$('.openSupplant').click(function(e) {
+		$('.supplant_fixed').toggleClass('on');
+	});
+	
+
+});
+</script>
+</body>
+</html>

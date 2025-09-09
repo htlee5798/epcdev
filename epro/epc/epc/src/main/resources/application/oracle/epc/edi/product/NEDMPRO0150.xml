@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0150">
+	<typeAlias alias="nedmpro0150vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0150VO" />
+	
+	<resultMap id="pbProductListMap" class="nedmpro0150vo">
+		<result column="RNUM"					property="rnum" 				/>	
+		<result column="STD_DATE"				property="stdDate" 				/>	
+		<result column="VEN_CD"					property="venCd" 				/>	
+		<result column="VEN_NM"					property="venNm" 				/>	
+		<result column="PROD_CD"				property="prodCd" 				/>	
+		<result column="SRCMK_CD"				property="srcmkCd" 				/>	
+		<result column="PROD_NM"				property="prodNm" 				/>	
+		<result column="PROD_STD"				property="prodStd" 				/>	
+		<result column="IPSU"					property="ipsu" 				/>	
+		<result column="MIN_PROD_QTY"			property="minProdQty" 			/>	
+		<result column="PROD_READ_TIME"			property="prodReadTime" 		/>	
+		<result column="JAEGO_QTY"				property="jaegoQty" 			/>	
+		<result column="JAEGO_D1"				property="jaegoD1" 				/>	
+		<result column="JAEGO_D2"				property="jaegoD2" 				/>	
+		<result column="JAEGO_D3"				property="jaegoD3" 				/>	
+		<result column="JAEGO_D4"				property="jaegoD4" 				/>	
+		<result column="JAEGO_D5"				property="jaegoD5" 				/>	<!-- 일별... SQLINES DEMO *** -->
+		<result column="JAEGO_D6"				property="jaegoD6" 				/>	<!-- 일별... SQLINES DEMO *** -->
+		<result column="REG_DATE"				property="regDate" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="REG_ID"					property="regId" 				/>	<!-- 등록... SQLINES DEMO *** -->
+		<result column="MOD_DATE"				property="modDate" 				/>	<!-- 수정... SQLINES DEMO *** -->
+		<result column="MOD_ID"					property="modId" 				/>	<!-- 수정... SQLINES DEMO *** -->
+		<result column="ECO_SEND_YN"			property="ecoSendYn" 			/>	<!-- EC... SQLINES DEMO *** -->
+		<result column="ECO_SEND_DATE"			property="ecoSendDate" 			/>	<!-- EC... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- 현재일자 가져오기 -->
+	<select id="selectCurrDate" resultClass="String">
+		/* NEDMPRO0150.selectCurrDate */
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') 
+	</select>
+	
+	<!-- COUNT -->
+	<select id="selectPbProductCount" resultClass="Integer" parameterClass="nedmpro0150vo">
+		/* NEDMPRO0150.selectPbProductCount */
+		SELECT 	COUNT(1) AS CNT
+		FROM 	PRODUCT 		A
+			 LEFT OUTER JOIN	TED_PROD_JAEGO 	B
+		ON 	A.VEN_CD		= B.VEN_CD
+			AND A.PROD_CD		= B.PROD_CD
+			AND B.STD_DATE		= TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+			WHERE A.PROD_TYP_FG 	= '2'
+			<!-- AND A.VEN_CD 		= '899466' -->
+			<isEmpty property="srchEntpCd">
+				<isNotEmpty property="venCds" prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty  property="srchEntpCd"  prepend="AND">
+				A.VEN_CD = #srchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty property="srchSrcmkCd" prepend="AND">
+				A.SRCMK_CD = #srchSrcmkCd#		/* 판매코드 */
+			</isNotEmpty>
+	</select>
+	
+	<!-- LIST -->
+	<select id="selectPbProductList" resultMap="pbProductListMap" parameterClass="nedmpro0150vo">
+		/* NEDMPRO0150.selectPbProductList */
+		SELECT	*
+		FROM
+		(
+			SELECT 	ROW_NUMBER() OVER(ORDER BY A.VEN_CD, A.PROD_CD) AS RNUM
+				,	TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') AS STD_DATE
+				,	A.VEN_CD
+				,	(
+						SELECT 	VEN_NM
+						FROM	HQ_VEN
+						WHERE	VEN_CD = A.VEN_CD
+					) AS VEN_NM
+				,	A.PROD_CD
+				,	A.SRCMK_CD
+				,	A.PROD_NM
+				,	A.PROD_STD
+				,	'' AS IPSU
+				,	(CASE 	WHEN MIN_PROD_QTY IS NULL THEN	(
+																SELECT	MIN_PROD_QTY
+																FROM	TED_PROD_JAEGO
+																WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '1' DAY, 'YYYYMMDD')
+																	AND VEN_CD 		= A.VEN_CD
+																	AND PROD_CD 	= A.PROD_CD
+															)
+							ELSE B.MIN_PROD_QTY END) AS MIN_PROD_QTY
+				,	(CASE 	WHEN PROD_READ_TIME IS NULL THEN	(
+																SELECT	PROD_READ_TIME
+																FROM	TED_PROD_JAEGO
+																WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '1' DAY, 'YYYYMMDD')
+																	AND VEN_CD 		= A.VEN_CD
+																	AND PROD_CD 	= A.PROD_CD
+															)
+							ELSE B.PROD_READ_TIME END) AS PROD_READ_TIME
+				,	B.JAEGO_QTY AS JAEGO_QTY
+				,	(
+						SELECT	JAEGO_QTY
+						FROM	TED_PROD_JAEGO
+						WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '1' DAY, 'YYYYMMDD')
+							AND VEN_CD 		= A.VEN_CD
+							AND PROD_CD 	= A.PROD_CD
+					) AS JAEGO_D1
+				,	(
+						SELECT	JAEGO_QTY
+						FROM	TED_PROD_JAEGO
+						WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '2' DAY, 'YYYYMMDD')
+							AND VEN_CD 		= A.VEN_CD
+							AND PROD_CD 	= A.PROD_CD
+					) AS JAEGO_D2
+				,	(
+						SELECT	JAEGO_QTY
+						FROM	TED_PROD_JAEGO
+						WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '3' DAY, 'YYYYMMDD')
+							AND VEN_CD 		= A.VEN_CD
+							AND PROD_CD 	= A.PROD_CD
+					) AS JAEGO_D3
+				,	(
+						SELECT	JAEGO_QTY
+						FROM	TED_PROD_JAEGO
+						WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '4' DAY, 'YYYYMMDD')
+							AND VEN_CD 		= A.VEN_CD
+							AND PROD_CD 	= A.PROD_CD
+					) AS JAEGO_D4
+				,	(
+						SELECT	JAEGO_QTY
+						FROM	TED_PROD_JAEGO
+						WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '5' DAY, 'YYYYMMDD')
+							AND VEN_CD 		= A.VEN_CD
+							AND PROD_CD 	= A.PROD_CD
+					) AS JAEGO_D5
+				,	(
+						SELECT	JAEGO_QTY
+						FROM	TED_PROD_JAEGO
+						WHERE 	STD_DATE 	= TO_CHAR(CURRENT_TIMESTAMP(0) - INTERVAL '6' DAY, 'YYYYMMDD')
+							AND VEN_CD 		= A.VEN_CD
+							AND PROD_CD 	= A.PROD_CD
+					) AS JAEGO_D6
+				,	B.REG_ID
+				,	B.REG_DATE
+				,	B.MOD_ID
+				,	B.MOD_DATE
+				,	B.ECO_SEND_DATE
+				,	COALESCE(B.ECO_SEND_YN, 'N') AS ECO_SEND_YN
+			FROM 	PRODUCT 		A
+				 LEFT OUTER JOIN	TED_PROD_JAEGO 	B
+			ON 	A.VEN_CD		= B.VEN_CD
+				AND A.PROD_CD		= B.PROD_CD
+				AND B.STD_DATE		= TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				WHERE A.PROD_TYP_FG 	= '2'
+				<!-- AND A.VEN_CD 		= '899466' --> 
+				<isEmpty property="srchEntpCd">
+					<isNotEmpty property="venCds" prepend="AND">
+						<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				
+				<isNotEmpty  property="srchEntpCd"  prepend="AND">
+					A.VEN_CD = #srchEntpCd#
+				</isNotEmpty>
+				
+				<isNotEmpty property="srchSrcmkCd" prepend="AND">
+					A.SRCMK_CD = #srchSrcmkCd#		/* 판매코드 */
+				</isNotEmpty>
+		) A
+		WHERE 	CAST(#firstIndex# AS FLOAT) + 1 <![CDATA[<=]]> A.RNUM
+			AND A.RNUM <![CDATA[<]]> CAST(#lastIndex# AS FLOAT) + 1
+	</select>
+	
+	<!-- 재고등록 -->
+	<insert id="insertPbProduct" parameterClass="nedmpro0150vo">
+		/* NEDMPRO0150.insertPbProduct */
+		MERGE INTO TED_PROD_JAEGO T
+		USING
+		(
+			SELECT	#stdDate#			AS STD_DATE
+				,	#venCd#				AS VEN_CD
+				,	#prodCd#			AS PROD_CD
+				,	#srcmkCd#			AS SRCMK_CD
+				,	cast(#minProdQty# as numeric)	AS MIN_PROD_QTY	
+				,	cast(#prodReadTime# as numeric)		AS PROD_READ_TIME
+				,	cast(#jaegoQty# as numeric)			AS JAEGO_QTY
+				,	#regId#				AS REG_ID
+				,	#modId#				AS MOD_ID
+		) S
+		ON (S.STD_DATE = T.STD_DATE AND S.VEN_CD = T.VEN_CD AND S.PROD_CD = T.PROD_CD)
+		WHEN MATCHED THEN
+			UPDATE
+			SET 	MIN_PROD_QTY 	= S.MIN_PROD_QTY
+				,	PROD_READ_TIME	= S.PROD_READ_TIME
+				,	JAEGO_QTY		= S.JAEGO_QTY
+				,	MOD_DATE		= CURRENT_TIMESTAMP(0)
+<!-- 				,	MOD_ID			= S.REG_ID -->
+				,	MOD_ID			= S.MOD_ID
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+					STD_DATE
+				,	VEN_CD
+				,	PROD_CD
+				,	SRCMK_CD
+				,	MIN_PROD_QTY
+				,	PROD_READ_TIME
+				,	JAEGO_QTY
+				,	REG_DATE
+				,	REG_ID
+			)
+			VALUES
+			(
+					S.STD_DATE
+				,	S.VEN_CD
+				,	S.PROD_CD
+				,	S.SRCMK_CD
+				,	S.MIN_PROD_QTY
+				,	S.PROD_READ_TIME
+				,	S.JAEGO_QTY
+				,	CURRENT_TIMESTAMP(0)
+				,	S.REG_ID
+			)
+	</insert>
+	
+</sqlMap>

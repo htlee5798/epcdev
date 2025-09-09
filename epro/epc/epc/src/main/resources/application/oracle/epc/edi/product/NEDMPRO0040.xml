@@ -1,0 +1,3726 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0040">
+
+	<typeAlias alias="resultImsiClass" type="com.lottemart.epc.edi.product.model.NEDMPRO0040VO" /> <!-- SQLINES DEMO ***  리스트 VO -->
+	<typeAlias alias="resultNewSrcmkCdClass" type="com.lottemart.epc.edi.product.model.NEDMPRO0042VO" /> <!-- 판매... SQLINES DEMO *** -->
+
+	<typeAlias alias="resultProdDeetailVarAttClass" type="com.lottemart.epc.edi.product.model.NEDMPRO0043VO" /> <!-- SQLINES DEMO *** VO -->
+	<typeAlias alias="resultOnlineProdDetailClass" type="com.lottemart.epc.edi.product.model.NEDMPRO0044VO" /> <!-- SQLINES DEMO *** 88코드, 이익률  VO -->
+	<typeAlias alias="resultOnlineProdItemClass" type="com.lottemart.epc.edi.product.model.NEDMPRO0045VO" /> <!-- SQLINES DEMO *** 88코드, 이익률  VO -->
+	<typeAlias alias="resultVendorAddressInfoClass" type="com.lottemart.epc.system.model.PSCMSYS0003VO" /> <!-- 업체... SQLINES DEMO *** -->
+	
+	<typeAlias alias="nEDMPRO0028VO"    	type="com.lottemart.epc.edi.product.model.NEDMPRO0028VO" />		<!-- ESG 항목 등록 조회 VO -->
+
+	<!-- SQLINES DEMO ***  이익률, 88코드 조회] List Map -->
+	<resultMap id="selectOnlineItemListIntempMap" class="resultOnlineProdItemClass">
+		<result column="ITEM_CD" property="itemCd" /> <!-- 단품... SQLINES DEMO *** -->
+		<result column="SELL_CD" property="sellCd" /> <!-- 판매... SQLINES DEMO *** -->
+		<result column="OPTN_DESC" property="optnDesc" /> <!-- 옵션... SQLINES DEMO *** -->
+		<result column="STK_MGR_YN" property="stkMgrYn" /> <!-- 재고... SQLINES DEMO *** -->
+		<result column="RSERV_STK_QTY" property="rservStkQty" /> <!-- 예약... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- SQLINES DEMO ***  이익률, 88코드 조회] List Map -->
+	<resultMap id="onlineRepresentProductMap" class="resultOnlineProdDetailClass">
+		<result column="PROD_CD" property="prodCd" /> <!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_NM" property="prodNm" /> <!-- 상품... SQLINES DEMO *** -->
+		<result column="SRCMK_CD" property="srcmkCd" /> <!-- 판매... SQLINES DEMO *** -->
+		<result column="PROFIT_RT" property="profitRt" /> <!-- 이익... SQLINES DEMO *** -->
+		<result column="L4_NM" property="l4Nm" /> <!-- 세분... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- SQLINES DEMO *** ist Map -->
+	<resultMap id="selectNewProductDetailVarAttInfoMap" class="resultProdDeetailVarAttClass">
+		<result column="PGM_ID"				property="pgmId" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="VARIANT"			property="variant" 		/>	<!-- 변형... SQLINES DEMO *** -->
+		<result column="VAR_ATT_CLASS"		property="varAttClass" 	/>	<!-- 특성... SQLINES DEMO *** -->
+		<result column="ATT_CD"				property="attCd" 		/>	<!-- 속성... SQLINES DEMO *** -->
+		<result column="ATT_VALUE"			property="attValue" 	/>	<!-- 속성... SQLINES DEMO *** -->
+		<result column="SELL_CD"			property="sellCd" 		/>	<!-- 판매... SQLINES DEMO *** -->
+		<result column="STS_DIVN_CD"		property="stsDivnCd" 	/>	<!-- 상태... SQLINES DEMO *** -->
+		<result column="DEL_TF"				property="delTf" 		/>	<!-- 삭제... SQLINES DEMO *** -->
+		<result column="PROD_IMG_ID"		property="prodImgId" 	/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="OPTN_DESC"			property="optnDesc" 	/>	<!-- 옵션... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- SQLINES DEMO *** 보 LIST MAP -->
+	<resultMap id="selectNewTmpProductImgInfoMap"	class="java.util.HashMap">
+		<result column="PGM_ID"	 property="PGM_ID"	nullValue="" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="VARIANT" property="VARIANT"	nullValue="" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="SEQ"	 property="SEQ"		nullValue="" /> <!-- 순번... SQLINES DEMO *** -->
+		<result column="ZZIMAGE" property="ZZIMAGE"	nullValue="" /> <!-- 이미... SQLINES DEMO *** -->
+		<result column="CFM_FG"	 property="CFM_FG"	nullValue="" /> <!-- 수정... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- SQLINES DEMO *** T MAP -->
+	<resultMap id="selectNewTmpProductInfoMap"	class="java.util.HashMap">
+		<result column="PGM_ID"					property="PGM_ID"				 nullValue="" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="PROD_NM"				property="PROD_NM"				 nullValue="" /> <!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_ENM"				property="PROD_ENM"				 nullValue="" /> <!-- 영문... SQLINES DEMO *** -->
+		<result column="SHORT_NM"				property="SHORT_NM"				 nullValue="" /> <!-- 단축... SQLINES DEMO *** -->
+		<result column="L3_CD"					property="L3_CD"				 nullValue="" /> <!-- 소분... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"				property="SRCMK_CD"				 nullValue="" /> <!-- 대표... SQLINES DEMO *** -->
+		<result column="PROD_PAT_FG"			property="PROD_PAT_FG"			 nullValue="" /> <!-- SQLINES DEMO *** 9..규격/패션... -->
+		<result column="PROD_TYP_FG"			property="PROD_TYP_FG"			 nullValue="" /> <!-- SQLINES DEMO *** NPB...-->
+		<result column="SAISJ"					property="SAISJ"				 nullValue="" /> <!-- 년도... SQLINES DEMO *** -->
+		<result column="SAISO"					property="SAISO"				 nullValue="" /> <!-- 계절... SQLINES DEMO *** -->
+		<result column="TAX_FG"					property="TAX_FG"				 nullValue="" /> <!-- 면과... SQLINES DEMO *** -->
+		<result column="PROTECT_TAG_FG"			property="PROTECT_TAG_FG"		 nullValue="" /> <!-- 도난... SQLINES DEMO *** -->
+		<result column="PROD_STD"				property="PROD_STD"				 nullValue="" /> <!-- 상품... SQLINES DEMO *** -->
+		<result column="DISP_TOT_QTY"			property="DISP_TOT_QTY"			 nullValue="" /> <!-- 표시... SQLINES DEMO *** -->
+		<result column="DISP_BASE"				property="DISP_BASE"			 nullValue="" /> <!-- 표시... SQLINES DEMO *** -->
+		<result column="DISP_UNIT"				property="DISP_UNIT"			 nullValue="" /> <!-- 표시... SQLINES DEMO *** -->
+		<result column="PRC_ISU_FG"				property="PRC_ISU_FG"			 nullValue="" /> <!-- 가격... SQLINES DEMO *** -->
+		<result column="CTR_TYP_FG"				property="CTR_TYP_FG"			 nullValue="" /> <!-- 센터... SQLINES DEMO *** -->
+		<result column="HOME_CD"				property="HOME_CD"				 nullValue="" /> <!-- 원산... SQLINES DEMO *** -->
+		<result column="MAX_KEEP_DY_CNT"		property="MAX_KEEP_DY_CNT"		 nullValue="" /> <!-- 최대... SQLINES DEMO *** -->
+		<result column="VEN_CD"					property="VEN_CD"				 nullValue="" /> <!-- 협력... SQLINES DEMO *** -->
+		<result column="TRD_TYP_FG"				property="TRD_TYP_FG"			 nullValue="" /> <!-- 거래... SQLINES DEMO *** -->
+		<result column="BUY_PRC"				property="BUY_PRC"				 nullValue="" /> <!-- 정상... SQLINES DEMO *** -->
+		<result column="WAERS"					property="WAERS"				 nullValue="" /> <!-- 정상... SQLINES DEMO *** -->
+		<result column="SALE_PRC"				property="SALE_PRC"				 nullValue="" /> <!-- 정상... SQLINES DEMO *** -->
+		<result column="VWAER"					property="VWAER"				 nullValue="" /> <!-- 정상... SQLINES DEMO *** -->
+		<result column="PROFIT_RT"				property="PROFIT_RT"			 nullValue="" /> <!-- 정상... SQLINES DEMO *** -->
+		<result column="DELI_FG"				property="DELI_FG"				 nullValue="" /> <!-- 수탁... SQLINES DEMO *** -->
+		<result column="CFM_FG"					property="CFM_FG"				 nullValue="" /> <!-- SQLINES DEMO *** 2:2차, 3:삭제, 4:팀장승인, 5:정상완료, 6:비정상] -->
+		<result column="ORD_IPSU"				property="ORD_IPSU"				 nullValue="" /> <!-- 발주... SQLINES DEMO *** -->
+		<result column="ORD_UNIT"				property="ORD_UNIT"				 nullValue="" /> <!-- 발주... SQLINES DEMO *** -->
+		<result column="WIDTH"					property="WIDTH"				 nullValue="" /> <!-- 가로... SQLINES DEMO *** -->
+		<result column="LENGTH"					property="LENGTH"				 nullValue="" /> <!-- 세로... SQLINES DEMO *** -->
+		<result column="HEIGHT"					property="HEIGHT"				 nullValue="" /> <!-- 높이... SQLINES DEMO *** -->
+		<result column="SIZE_UNIT"				property="SIZE_UNIT"			 nullValue="" /> <!-- 치수... SQLINES DEMO *** -->
+		<result column="MIX_PROD_FG"			property="MIX_PROD_FG"			 nullValue="" /> <!-- 혼재... SQLINES DEMO *** -->
+		<result column="EXPIRA_ABLE_FG"			property="EXPIRA_ABLE_FG"		 nullValue="" /> <!-- 유통... SQLINES DEMO *** -->
+		<result column="ARR_LIFE_DAYS"			property="ARR_LIFE_DAYS"		 nullValue="" /> <!-- 입고... SQLINES DEMO *** -->
+		<result column="FWD_LIFE_DAYS"			property="FWD_LIFE_DAYS"		 nullValue="" /> <!-- 출고... SQLINES DEMO *** -->
+		<result column="TEMP_FG"				property="TEMP_FG"				 nullValue="" /> <!-- 온도... SQLINES DEMO *** -->
+		<result column="TOT_CNT_FG"				property="TOT_CNT_FG"			 nullValue="" /> <!-- 전사... SQLINES DEMO *** -->
+		<result column="PROD_DETAIL"			property="PROD_DETAIL"			 nullValue="" /> <!-- IS... SQLINES DEMO *** -->
+		<result column="MAT_CD"					property="MAT_CD"				 nullValue="" /> <!-- SQLINES DEMO *** RD41 -->
+		<result column="W_BUY_PRC"				property="W_BUY_PRC"			 nullValue="" /> <!-- W원... SQLINES DEMO *** -->
+		<result column="W_WAERS"				property="W_WAERS"				 nullValue="" /> <!-- W원... SQLINES DEMO *** -->
+		<result column="W_SALE_PRC"				property="W_SALE_PRC"			 nullValue="" /> <!-- W매... SQLINES DEMO *** -->
+		<result column="W_VWAER"				property="W_VWAER"				 nullValue="" /> <!-- W매... SQLINES DEMO *** -->
+		<result column="W_PROFIT_RT"			property="W_PROFIT_RT"			 nullValue="" /> <!-- W이... SQLINES DEMO *** -->
+		<result column="OVER_PROMO_FG"			property="OVER_PROMO_FG"		 nullValue="" /> <!-- 성과... SQLINES DEMO *** -->
+		<result column="NOPROD_FG"				property="NOPROD_FG"			 nullValue="" /> <!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_ATT_TYP_FG"		property="PROD_ATT_TYP_FG"		 nullValue="" /> <!-- 상품... SQLINES DEMO *** -->
+		<result column="NEW_PROD_ST_DY"			property="NEW_PROD_ST_DY"		 nullValue="" /> <!-- 신상... SQLINES DEMO *** -->
+		<result column="NEW_PROD_PROMO_FG"		property="NEW_PROD_PROMO_FG"	 nullValue="" /> <!-- SQLINES DEMO *** l, X]-->
+		<result column="FLOW_DD"				property="FLOW_DD"				 nullValue="" /> <!-- 유통... SQLINES DEMO *** -->
+		<result column="WASTE_FG"				property="WASTE_FG"				 nullValue="" /> <!-- 폐기... SQLINES DEMO *** -->
+		<result column="RECYCLE_FG1"			property="RECYCLE_FG1"			 nullValue="" /> <!-- 재활... SQLINES DEMO *** -->
+		<result column="RECYCLE_FG2"			property="RECYCLE_FG2"			 nullValue="" /> <!-- 재활... SQLINES DEMO *** -->
+		<result column="RECYCLE_FG3"			property="RECYCLE_FG3"			 nullValue="" /> <!-- 재활... SQLINES DEMO *** -->
+		<result column="PLASTIC_WEIGHT"			property="PLASTIC_WEIGHT"		 nullValue="" /> <!-- 플라... SQLINES DEMO *** -->
+		<result column="RECYCLE_WEIGHT1"		property="RECYCLE_WEIGHT1"		 nullValue="" /> <!-- 재활... SQLINES DEMO *** -->
+		<result column="RECYCLE_WEIGHT2"		property="RECYCLE_WEIGHT2"		 nullValue="" /> <!-- 재활... SQLINES DEMO *** -->
+		<result column="RECYCLE_WEIGHT3"		property="RECYCLE_WEIGHT3"		 nullValue="" /> <!-- 재활... SQLINES DEMO *** -->
+		<result column="VARIANT"				property="VARIANT"				 nullValue="" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="CLASS"					property="CLASS"				 nullValue="" /> <!-- 특성... SQLINES DEMO *** -->
+		<result column="ATNAM"					property="ATNAM"				 nullValue="" /> <!-- 속성... SQLINES DEMO *** -->
+		<result column="ATWRT"					property="ATWRT"				 nullValue="" /> <!-- 속성... SQLINES DEMO *** -->
+		<result column="V_EAN11"				property="V_EAN11"				 nullValue="" /> <!-- 대표... SQLINES DEMO *** -->
+		<result column="ZZIMAGE"				property="ZZIMAGE"				 nullValue="" /> <!-- 속성... SQLINES DEMO *** -->
+		<result column="CFG_FG"					property="CFG_FG"				 nullValue="" /> <!-- 대표... SQLINES DEMO *** -->
+		<result column="ZZLIQUOR_FG"			property="ZZLIQUOR_FG"			 nullValue="" /> <!-- 주류... SQLINES DEMO *** -->
+		<result column="ZZFRESH_MEAT_FG"		property="ZZFRESH_MEAT_FG"		 nullValue="" /> <!-- 축산... SQLINES DEMO *** -->
+		<result column="ZZDPS_TYP"				property="ZZDPS_TYP"			 nullValue="" /> <!-- DP... SQLINES DEMO *** -->
+		<result column="ZZWGCNT_FG"				property="ZZWGCNT_FG"			 nullValue="" /> <!-- 수중... SQLINES DEMO *** -->
+		<result column="ZZNEWPROD_FG"			property="ZZNEWPROD_FG"			 nullValue="" /> <!-- 신상... SQLINES DEMO *** -->
+		<result column="BRAND_CD"				property="BRAND_CD"				 nullValue="" /> <!-- 브랜... SQLINES DEMO *** -->
+		<result column="MAKER_CD"				property="MAKER_CD"				 nullValue="" /> <!-- 메이... SQLINES DEMO *** -->
+		<result column="MAKER_CD"				property="MAKER_CD"				 nullValue="" /> <!-- 메이... SQLINES DEMO *** -->
+		<result column="NPUR_BUY_PSBT_DIVN_CD"	property="NPUR_BUY_PSBT_DIVN_CD" nullValue="" /> <!-- 무발... SQLINES DEMO *** -->
+		<result column="ZZGP_CAT_CD"			property="ZZGP_CAT_CD"			 nullValue="" /> <!-- 그룹... SQLINES DEMO *** -->
+		<result column="ZZSOURCE"				property="ZZSOURCE"				 nullValue="" /> <!-- 그룹... SQLINES DEMO *** -->
+		<result column="ZIHSCD"					property="ZIHSCD"				 nullValue="" />
+		<result column="ZCUSRT"					property="ZCUSRT"				 nullValue="" />
+		<result column="ZIIPNO"					property="ZIIPNO"				 nullValue="" />
+		<result column="ZZINFO_GRP_CD"			property="ZZINFO_GRP_CD"		 nullValue="" />
+		<result column="ZZINFO_COL_CD"			property="ZZINFO_COL_CD"		 nullValue="" />
+		<result column="ZZCOL_VAL"				property="ZZCOL_VAL"			 nullValue="" />
+		<result column="BRGEW"					property="BRGEW"				 nullValue="" /> <!-- 총중... SQLINES DEMO *** -->
+		<result column="NTGEW"					property="NTGEW"				 nullValue="" /> <!-- 순중... SQLINES DEMO *** -->
+		<result column="GEWEI"					property="GEWEI"				 nullValue="" /> <!-- 총중... SQLINES DEMO *** -->
+		<result column="ZZ_OWNSTOK_FG"			property="ZZ_OWNSTOK_FG"		 nullValue="" /> <!-- 완사... SQLINES DEMO *** -->
+		<result column="ZZPLAN_RECV_QTY"		property="ZZPLAN_RECV_QTY"		 nullValue="" /> <!-- 계획... SQLINES DEMO *** -->
+		<result column="ZZS_TYPE"				property="ZZS_TYPE"				 nullValue="" /> <!-- 소싱... SQLINES DEMO *** -->
+		<result column="S_NETPR"				property="S_NETPR"				 nullValue="" /> <!-- 슈퍼 정상원가 -->
+		<result column="S_WAERS"				property="S_WAERS"				 nullValue="" /> <!-- 슈퍼 정상원가통화단위 -->
+		<result column="S_ENDPR"				property="S_ENDPR"				 nullValue="" /> <!-- 슈퍼 정상매가 -->
+		<result column="S_VWAER"				property="S_VWAER"				 nullValue="" /> <!-- 슈퍼 정상매가단위 -->
+		<result column="S_SPANE"				property="S_SPANE"				 nullValue="" /> <!-- 슈퍼 정상이익률 -->
+		<result column="O_NETPR"				property="O_NETPR"				 nullValue="" /> <!-- 오카도 정상원가 -->
+		<result column="O_WAERS"				property="O_WAERS"				 nullValue="" /> <!-- 오카도 정상원가통화단위 -->
+		<result column="O_ENDPR"				property="O_ENDPR"				 nullValue="" /> <!-- 오카도 정상매가 -->
+		<result column="O_VWAER"				property="O_VWAER"				 nullValue="" /> <!-- 오카도 정상매가단위 -->
+		<result column="O_SPANE"				property="O_SPANE"				 nullValue="" /> <!-- 오카도 정상이익률 -->
+		<result column="ZZMKT_FG_1"				property="ZZMKT_FG_1"			 nullValue="" /> <!-- 채널적용여부(롯데마트) -->
+		<result column="ZZMKT_FG_2"				property="ZZMKT_FG_2"			 nullValue="" /> <!-- 채널적용여부(maxx) -->
+		<result column="ZZMKT_FG_3"				property="ZZMKT_FG_3"			 nullValue="" /> <!-- 채널적용여부(롯데슈퍼) -->
+		<result column="ZZMKT_FG_4"				property="ZZMKT_FG_4"			 nullValue="" /> <!-- 채널적용여부(오카도) -->
+		<result column="ZZMKT_FG_5"				property="ZZMKT_FG_5"			 nullValue="" /> <!-- 채널적용여부(미지정) -->
+		<result column="ZZMKT_FG_6"				property="ZZMKT_FG_6"			 nullValue="" /> <!-- 채널적용여부(미지정1) -->
+		<result column="ZZMKT_FG_7"				property="ZZMKT_FG_7"			 nullValue="" /> <!-- 채널적용여부(미지정2) -->
+		<result column="S_NEW_PROD_PROMO_FG" 	property="S_NEW_PROD_PROMO_FG"	 nullValue="" /> <!-- (슈퍼) 신상품장려금구분 -->
+		<result column="S_NEW_PROD_ST_DY" 		property="S_NEW_PROD_ST_DY"		 nullValue="" /> <!-- (슈퍼) 신상품출시일자 -->
+		<result column="S_OVER_PROMO_FG" 		property="S_OVER_PROMO_FG" 		 nullValue="" /> <!-- (슈퍼) 성과초과장려금구분 -->
+	</resultMap>
+
+	<!-- SQLINES DEMO ***  LIST MAP -->
+	<resultMap id="selectRfcDataGrpAttrMap"	class="java.util.HashMap">
+		<result column="PGM_ID"		property="PGM_ID"		nullValue="" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="ATT_ID"		property="ATT_ID"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="ATT_VAR_ID"	property="ATT_VAR_ID"	nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="REG_DATE"	property="REG_DATE"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="REG_TIME"	property="REG_TIME"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="REG_ID"		property="REG_ID"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="MOD_DATE"	property="MOD_DATE"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="MOD_TIME"	property="MOD_TIME"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="MOD_ID"		property="MOD_ID"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+		<result column="CFG_FG"		property="CFG_FG"		nullValue="" /> <!--  -... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- SQLINES DEMO *** MAP -->
+	<resultMap id="selectNewSrcmkCdMap" class="resultNewSrcmkCdClass">
+		<result property="pgmId"		column="PGM_ID"		 /> <!-- 상품... SQLINES DEMO *** -->
+		<result property="variant"		column="VARIANT"	 /> <!-- 변형... SQLINES DEMO *** -->
+		<result property="sellCd"		column="SELL_CD"	 /> <!-- 판매... SQLINES DEMO *** -->
+		<result property="attNm"		column="ATT_NM"		 /> <!-- 속성... SQLINES DEMO *** -->
+		<result property="prodImgId"	column="PROD_IMG_ID" /> <!-- 속성... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- SQLINES DEMO *** T MAP -->
+	<resultMap id="selectRfcDataNutAttrMap"	class="java.util.HashMap">
+		<result column="PGM_ID"		property="PGM_ID"		nullValue="" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="NUT_CD"		property="NUT_CD"		nullValue="" /> <!-- 영양... SQLINES DEMO *** -->
+		<result column="NUT_AMT"	property="NUT_AMT"    	nullValue="" /> <!-- 영양... SQLINES DEMO *** -->
+	</resultMap>
+
+	<!-- 임시보관함 LIST MAP -->
+	<resultMap id="selectImsiListMap" class="resultImsiClass">
+		<result property="entpCd"			column="ENTP_CD"			/> <!-- 업체코드 -->
+		<result property="regDate"			column="REG_DATE"			/> <!--등록일자-->
+		<result property="sellCd"			column="SELL_CD"			/> <!--판매코드-->
+		<result property="prodNm"			column="PROD_NM"			/> <!--상품명-->
+		<result property="prodDivnCd"		column="PROD_DIVN_CD"		/> <!--상품구분코드[1:규격, 5:패션]-->
+		<result property="purInrcntQty"		column="PUR_INRCNT_QTY"		/> <!--발주입수수량-->
+		<result property="prodStandardNm"	column="PROD_STANDARD_NM"	/> <!--상품규격명-->
+		<result property="onlineProdNm"		column="ONLINE_PROD_NM"		/> <!--온라인상품명-->
+		<result property="norProdPcost"		column="NOR_PROD_PCOST"		/> <!--정상상품원가 마트-->
+		<result property="norProdSalePrc"	column="NOR_PROD_SALE_PRC"	/> <!--정상상품매출가격 마트-->
+		<result property="prftRate"			column="PRFT_RATE"			/> <!--이익율 마트-->
+		<result property="wnorProdPcost"	column="WNOR_PROD_PCOST"	/> <!--정상상품원가 MAXX-->
+		<result property="wnorProdSalePrc"	column="WNOR_PROD_SALE_PRC"	/> <!--정상상품매출가격 MAXX-->
+		<result property="wprftRate"		column="WPRFT_RATE"			/> <!--이익율 MAXX-->
+		<result property="snorProdPcost"	column="SNOR_PROD_PCOST"	/> <!--정상상품원가 슈퍼-->
+		<result property="snorProdSalePrc"	column="SNOR_PROD_SALE_PRC"	/> <!--정상상품매출가격 슈퍼-->
+		<result property="sprftRate"		column="SPRFT_RATE"			/> <!--이익율 슈퍼-->
+		<result property="onorProdPcost"	column="ONOR_PROD_PCOST"	/> <!--정상상품원가 오카도-->
+		<result property="onorProdSalePrc"	column="ONOR_PROD_SALE_PRC"	/> <!--정상상품매출가격 오카도-->
+		<result property="oprftRate"		column="OPRFT_RATE"			/> <!--이익율 오카도-->
+		<result property="logiPgmId"		column="LOGI_PGM_ID"		/> <!--물류바코드 테이블 상품코드-->
+		<result property="pgmId"			column="PGM_ID"				/> <!--상품테이블 상품코드-->
+		<result property="onoffDivnCd"		column="ONOFF_DIVN_CD"		/> <!--온오프구분코드 [1:온라인, 0:온오프]-->
+		<result property="brandCd"			column="BRAND_CD"			/> <!--브랜드코드-->
+		<result property="brandNm"			column="BRAND_NM"			/> <!--브랜드명-->
+		<result property="makerCd"			column="MAKER_CD"			/> <!--메이커코드-->
+		<result property="makerNm"			column="MAKER_NM"			/> <!--메이커명-->
+		<result property="prodImgId"		column="PROD_IMG_ID"		/> <!--상품 이미지 아이디-->
+		<result property="imgNcnt"			column="IMG_NCNT"			/> <!--온라인이미지개수-->
+	    <result property="imgNcntyn"		column="IMG_NCNTYN"			/> <!--온라인이미지여부-->
+	    <result property="wideImgNcnt"		column="WIDE_IMG_NCNT"		/> <!--와이드 온라인 이미지 개수-->
+	    <result property="wideImgNcntyn"	column="WIDE_IMG_NCNTYN"	/> <!--와이드 온라인 이미지 여부-->
+	    <result property="l1Cd"				column="L1_CD"				/> <!--대분류-->
+	    <result property="l3Cd"				column="L3_CD"				/> <!--소분류	-->
+	    <result property="prodcommerce"		column="PRODCOMMERCE"		/> <!--전상법 상태-->
+	    <result property="colorSizeState"	column="COLOR_SIZE_STATE"	/> <!--단품코드-->
+	    <result property="prodAttTypFg"		column="PROD_ATT_TYP_FG"	/> <!--상품범주(00:단일상품, 01:묶음상품) -->
+	    <result property="varAttCnt"		column="VAR_ATT_CNT"		/> <!--소분류에 매핑되어 있는 변형속성 카운트-->
+	    <result property="inputVarAttCnt"	column="INPUT_VAR_ATT_CNT"	/> <!--입력된 변형속성 카운트-->
+	    <result property="inputVarAttCnt001"	column="INPUT_VAR_ATT_CNT001" /> <!--입력된 001변형속성 카운트-->
+	    <result property="mixYn"			column="MIX_YN"				/> <!--상품 추가정보의 혼재여부-->
+	    <result property="trdTypeDivnCd"	column="TRD_TYPE_DIVN_CD"	/> <!--상품 거래 유형 -->	    
+	    <result property="inputGrpAttrCnt"	column="INPUT_GRP_ATTR_CNT"	/> <!--입력한 분석속성 갯수 -->
+	    <result property="grpAttrCnt"		column="GRP_ATTR_CNT"		/> <!--입력해야될 그룹분석 속성갯수 -->
+	    <result property="grpCd"			column="GRP_CD"				/> <!--그룹분류 -->
+	    <result property="dealRepProdYn"	column="DEAL_REP_PROD_YN"	/> <!--딜상품여부-->
+	    <result property="ctpdYn"			column="CTPD_YN"		/> <!--구성품여부-->
+	    <result property="staffSellYn"		column="STAFF_MALL_SELL_PSBT_YN" /><!--임직원몰판매가능여부-->
+	    <result property="matCd"			column="MAT_CD"				/> <!-- vic여부   -->
+	    <result property="vicOnlineCd"		column="VIC_ONLINE_CD"		/> <!-- vic전용 온라인여부 x는 적용-->
+	    <result property="admFg"			column="ADM_FG"				/> <!-- 온오프 등록시 관리자여부-->
+	    <result property="entpCondUseYn" 	column="ENTP_COND_USE_YN" /> <!-- 업체조건사용여부 -->
+	    <result property="keywordYn" 		column="KEYWORD_YN" /> <!-- 상품키워드등록여부 -->
+	    <result property="nochDeliYn" 		column="NOCH_DELI_YN" /> <!-- 배송설정여부 -->
+	    <result property="prodDescYn" 		column="PROD_DESC_YN" /> <!-- 상품상세 이미지 등록여부 -->
+	    <result property="onlineProdTypeCd" column="ONLINE_PROD_TYPE_CD" /> <!-- 온라인상품유형코드 -->
+	    <result property="ecAttrRegYn"		column="EC_ATTR_REG_YN" /> <!-- EC속성 등록 유무 -->
+	   	<result property="nutAttrRegYn"		column="NUT_ATTR_REG_YN" /> <!-- 영양성분속성 등록 유무 -->
+	   	<result property="canRegNutAttrYn"	column="CAN_REG_NUT_ATTR_YN" /> <!-- 입력가능 영양성분속성 존재 유무-->
+		<result property="ctrTypeDivnCd"	column="CTR_TYPE_DIVN_CD" /> <!-- 센터유형-->
+		<result property="tmprtDivnCd"		column="TMPRT_DIVN_CD" /> <!-- 온도구분-->
+		<result property="pbVenFg"			column="PB_VEN_FG" /> <!-- PB 업체 유무-->
+	    <result property="prodTypeDivnCd"   column="PROD_TYPE_DIVN_CD" /> <!-- 상품 유형 -->
+	    <result property="pogImgYn"			column="POG_IMG_YN" />			<!-- 오프라인 POG 이미지 등록여부 -->
+	    <result property="esgYn"			column="ESG_YN" />				<!-- ESG 상품구분 -->
+	    <result property="esgItmRegYn"		column="ESG_ITM_REG_YN" />		<!-- ESG 적용 시, 인증정보 등록여부 -->
+	    <result property="esgDtFgChk"		column="ESG_DT_FG_CHK" />		<!-- ESG인증기간 필수 등록여부 -->
+	    <result property="esgDtValidChk"	column="ESG_DT_VALID_CHK" />	<!-- ESG인증기간 유효성체크 -->
+	    <result property="chanCd"			column="CHAN_CD" />				<!-- 채널코드 -->
+	    <result property="bosSendDy"		column="BOS_SEND_DY" />			<!-- BOS 전송일자 -->
+	    <result property="autoSendFg"		column="AUTO_SEND_FG" />		<!-- ERP 자동발송 여부 -->
+	    <result property="bosCfrmEndDy"		column="BOS_CFRM_END_DY" />		<!-- BOS 승인마감일자 -->
+	    <result property="bosCfrmYn"		column="BOS_CFRM_YN" />			<!-- BOS 승인여부 -->
+	    <result property="bosCfrmExpYn"		column="BOS_CFRM_EXP_YN" />		<!-- BOS 승인마감일만료여부 -->
+	    <result property="bosTgYn"			column="BOS_TG_YN" />			<!-- BOS 승인대상여부 -->
+	</resultMap>
+	
+	<!-- 출고... SQLINES DEMO *** -->
+	<resultMap id="resultVendorAddressInfoMap" class="resultVendorAddressInfoClass">
+		<result property="vendorId"		column="VENDOR_ID"		 /> <!-- 업체... SQLINES DEMO *** -->
+		<result property="vendorNm"		column="VENDOR_NM"	 /> <!-- 업체... SQLINES DEMO *** -->
+		<result property="vendorKindCd"	column="VENDOR_KIND_CD"	 /> <!-- 업체... SQLINES DEMO *** -->
+		<result property="count"		column="COUNT"	 /> <!-- CO... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- 확정처리될 상품 ESG인증정보 -->	
+	<resultMap id="selectRfcDataEsgInfoMap"	class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"			nullValue="" /> <!-- 프로그램ID(신규상품코드) -->
+		<result column="ESG_GBN"		property="ESG_GBN"			nullValue="" /> <!-- ESG 유형 -->
+		<result column="ESG_AUTH"		property="ESG_AUTH"			nullValue="" /> <!-- ESG 인증유형 -->
+		<result column="ESG_AUTH_DTL"	property="ESG_AUTH_DTL"		nullValue="" /> <!-- ESG 인증상세유형 -->
+		<result column="ESG_EARTH"		property="ESG_EARTH"		nullValue="" /> <!-- ESG RE:EARTH 로고사용여부 -->
+		<result column="ESG_DT_FG"		property="ESG_DT_FG"		nullValue="" /> <!-- ESG 인증시작/종료일 필수 여부 -->
+		<result column="ESG_FR_DT"		property="ESG_FR_DT"		nullValue="" /> <!-- ESG 인증시작일 -->
+		<result column="ESG_TO_DT"		property="ESG_TO_DT"		nullValue="" /> <!-- ESG 인증종료일 -->
+		<result column="SAVE_FILE_NM"	property="SAVE_FILE_NM"		nullValue="" /> <!-- ESG 저장파일명 -->
+		<result column="IMG_FG"			property="IMG_FG"			nullValue="" /> <!-- ESG 이미지 첨부여부 -->
+	</resultMap>
+	
+	<!-- RFC 전송대상에 따른 조건 분기처리 -->
+	<sql id="selectImsiProductSendGbnWithInner">
+		/* NEDMPRO0040.selectImsiProductSendGbnWithInner */
+		<isNotEmpty property="sendGbn">
+			<isEqual property="sendGbn" compareValue="ERP">		/* ERP 전송대상 */
+				/* 1) 직매입, MAXX단일채널, 온라인미적용 */
+				SELECT S1.PGM_ID
+				FROM TPC_NEW_PROD_REG S1
+				WHERE S1.TRD_TYPE_DIVN_CD = '1'
+				AND (S1.VIC_ONLINE_CD IS NULL OR S1.VIC_ONLINE_CD = '')
+				AND S1.CHAN_CD = 'KR03'
+					<isNotEmpty property="prodArr" prepend="AND">
+						<iterate prepend="S1.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+							#prodArr[].pgmId#
+						</iterate>
+					</isNotEmpty>
+					<isEmpty property="prodArr" prepend="AND"> 1=0</isEmpty>
+				UNION ALL
+				/* 2) 직매입, SUPER단일채널 */
+				SELECT S1.PGM_ID
+				FROM TPC_NEW_PROD_REG S1
+				WHERE S1.TRD_TYPE_DIVN_CD = '1'
+				<!-- AND (S1.VIC_ONLINE_CD IS NULL OR S1.VIC_ONLINE_CD = '') -->
+				AND S1.CHAN_CD = 'KR04'
+					<isNotEmpty property="prodArr" prepend="AND">
+						<iterate prepend="S1.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+							#prodArr[].pgmId#
+						</iterate>
+					</isNotEmpty>
+					<isEmpty property="prodArr" prepend="AND"> 1=0</isEmpty>
+				UNION ALL
+				/* 3) 직매입X */
+				SELECT S1.PGM_ID
+				FROM TPC_NEW_PROD_REG S1
+				WHERE S1.TRD_TYPE_DIVN_CD <![CDATA[<>]]> '1'
+					<isNotEmpty property="prodArr" prepend="AND">
+						<iterate prepend="S1.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+							#prodArr[].pgmId#
+						</iterate>
+					</isNotEmpty>
+					<isEmpty property="prodArr" prepend="AND"> 1=0</isEmpty>
+			</isEqual>
+			<isEqual property="sendGbn" compareValue="BOS">		/* BOS 전송대상 */
+				/* 1) 직매입, MAXX단일채널, 온라인적용 */
+				SELECT S1.PGM_ID
+				FROM TPC_NEW_PROD_REG S1
+				WHERE S1.TRD_TYPE_DIVN_CD = '1'
+				AND S1.CHAN_CD = 'KR03'
+				AND NULLIF(S1.VIC_ONLINE_CD, '') = 'X'
+					<isNotEmpty property="prodArr" prepend="AND">
+						<iterate prepend="S1.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+							#prodArr[].pgmId#
+						</iterate>
+					</isNotEmpty>
+					<isEmpty property="prodArr" prepend="AND"> 1=0</isEmpty>
+				UNION ALL
+				/* 2) 직매입 전체 (MAXX단일채널 제외/SUPER 단일채널 제외) */
+				SELECT S1.PGM_ID
+				FROM TPC_NEW_PROD_REG S1
+				WHERE S1.TRD_TYPE_DIVN_CD = '1'
+				AND S1.CHAN_CD <![CDATA[<>]]> 'KR03'	/* MAXX 단일채널 제외 */
+				AND S1.CHAN_CD <![CDATA[<>]]> 'KR04'	/* 슈퍼 단일채널 제외 */
+					<isNotEmpty property="prodArr" prepend="AND">
+						<iterate prepend="S1.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+							#prodArr[].pgmId#
+						</iterate>
+					</isNotEmpty>
+					<isEmpty property="prodArr" prepend="AND"> 1=0</isEmpty>
+			</isEqual>
+			<isEqual property="sendGbn" compareValue="ATO">		/* BOS 미승인 건 ERP 자동전송 시 */
+				SELECT S1.PGM_ID
+				FROM TPC_NEW_PROD_REG S1
+				LEFT OUTER JOIN TPC_NEW_PROD_STS S2 ON S1.PGM_ID = S2.PGM_ID
+				WHERE S1.BOS_SEND_DY <![CDATA[<>]]> ''								/* BOS 전송일자 있으면서 */
+				AND (S1.AUTO_SEND_FG IS NULL OR S1.AUTO_SEND_FG = '')				/* ERP 자동발송 안했으면서 */
+				AND (S2.PRGS_STS IS NULL OR S2.PRGS_STS NOT IN ('81', '90'))		/* BOS 승인되지 않은건 */
+				<isNotEmpty property="prodArr" prepend="AND">
+					<iterate prepend="S1.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+						#prodArr[].pgmId#
+					</iterate>
+				</isNotEmpty>
+				<isEqual property="batchYn" compareValue="Y">	/* 스케쥴러에서 도는 경우, 만료날짜체크 */
+				AND S1.BOS_CFRM_END_DY <![CDATA[<]]> TO_CHAR(NOW(), 'YYYYMMDD')
+				</isEqual>
+			</isEqual>
+		</isNotEmpty>
+		<isEmpty property="sendGbn">
+			SELECT '' AS PGM_ID
+		</isEmpty>
+	</sql>
+
+	<!-- 임시보관함 LIST -->
+	<select id="selectImsiProductList_old250509" parameterClass="java.util.Map" resultMap="selectImsiListMap">
+	/* NEDMPRO0040.selectImsiProductList_old250509 */
+	<![CDATA[
+	SELECT T.PGM_ID
+	     , MIN(T.ENTP_CD)							AS ENTP_CD
+	     , MIN(TO_CHAR(T.REG_DATE, 'YYYY.MM.DD'))	AS REG_DATE
+	     , MIN(T.SELL_CD)							AS SELL_CD
+	     , MIN(T.PROD_NM)							AS PROD_NM
+	     , MIN(T.PROD_DIVN_CD)						AS PROD_DIVN_CD
+	     , MIN(COALESCE(T.PUR_INRCNT_QTY, '0'))			AS PUR_INRCNT_QTY
+	     , MIN(T.PROD_STANDARD_NM)					AS PROD_STANDARD_NM
+	     , MIN(T.ONLINE_PROD_NM)					AS ONLINE_PROD_NM
+	     , MIN(COALESCE(T.NOR_PROD_PCOST, '0'))			AS NOR_PROD_PCOST
+	     , MIN(COALESCE(T.NOR_PROD_SALE_PRC, '0'))		AS NOR_PROD_SALE_PRC
+	     , MIN(COALESCE(T.PRFT_RATE, '0'))				AS PRFT_RATE
+	     , MIN(COALESCE(C.PGM_ID, ''))					AS LOGI_PGM_ID
+	     , MIN(T.ONOFF_DIVN_CD)					AS ONOFF_DIVN_CD
+	     , MIN(T.BRAND_CD)							AS BRAND_CD
+	     , MIN(T.BRAND_NM)							AS BRAND_NM
+	     , MIN(T.MAKER_CD)							AS MAKER_CD
+	     , MIN(T.MAKER_NM)							AS MAKER_NM
+	     , MIN(T.PROD_IMG_ID)						AS PROD_IMG_ID
+	     , MIN(T.IMG_NCNT)							AS IMG_NCNT
+	     , MIN(CASE WHEN T.DEAL_REP_PROD_YN <> 'Y' AND T.CTPD_YN <> 'Y' AND T.IMG_NCNT > 2 THEN 'Y'
+	                  WHEN T.DEAL_REP_PROD_YN <> 'Y' AND T.CTPD_YN <> 'Y' AND T.IMG_NCNT < 3 THEN 'N'
+	                  WHEN T.IMG_NCNT > 0 THEN 'Y' 
+	                  ELSE 'N' 
+	             END )	AS IMG_NCNTYN
+         , MIN(T.WIDE_IMG_NCNT)						AS WIDE_IMG_NCNT
+	     , MIN(CASE WHEN T.WIDE_IMG_NCNT > 0 THEN 'Y'
+	     			ELSE 'N'
+	             END )	AS WIDE_IMG_NCNTYN
+	     , MIN(T.L1_CD)							AS L1_CD
+	     , MIN(T.L3_CD)							AS L3_CD
+	     , MIN(CASE  WHEN NULLIF(B.ITEM_CD, '') IS NULL THEN  'F' ELSE 'T' END)  AS COLOR_SIZE_STATE
+	     , MIN(T.MIX_YN)							AS MIX_YN
+	     , MIN(CASE /*전상법추가*/
+	     		WHEN T.ONOFF_DIVN_CD='0' THEN
+	     		   CASE WHEN (
+	     					SELECT COUNT(A.INFO_GRP_CD) CNT
+	     					FROM TPR_PROD_ADD_INFO_VAL A, 
+	     						 V_PR_ADD_INFO B 
+	     					WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+	     						AND A.INFO_COL_CD = B.INFO_COL_CD
+	     						AND A.PROD_CD = T.PGM_ID
+	     					   AND B.L1_CD = T.L1_CD
+	     					)=0 THEN 'N'
+	     				WHEN (
+	     					SELECT COUNT(A.INFO_GRP_CD) CNT
+	     					FROM TPR_PROD_ADD_INFO_VAL A,
+	     						 V_PR_ADD_INFO B
+	     					WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+	     						AND A.INFO_COL_CD = B.INFO_COL_CD
+	     						AND A.PROD_CD = T.PGM_ID
+	     					   AND B.L1_CD = T.L1_CD
+	     					)=
+	     					(
+	     					SELECT COUNT(A.INFO_GRP_CD) CNT
+	     					FROM V_PR_ADD_INFO A
+	     					WHERE A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = T.PGM_ID)
+	     					  AND A.L1_CD = T.L1_CD
+	     					)THEN 'Y'
+	     					ELSE 'N' END 
+	     		ELSE 
+	     		   CASE WHEN (
+	     					SELECT COUNT(A.INFO_GRP_CD) CNT
+	     					FROM TPR_PROD_ADD_INFO_VAL A,
+	     						 V_PR_ADD_INFO B
+	     					WHERE  A.INFO_GRP_CD = B.INFO_GRP_CD
+	     						AND A.INFO_COL_CD = B.INFO_COL_CD
+	     						AND A.PROD_CD = T.PGM_ID
+	     						AND B.L3_CD = T.L3_CD
+	     					)=0 THEN 'N'
+	     				WHEN (
+	     					SELECT COUNT(A.INFO_GRP_CD) CNT
+	     					FROM TPR_PROD_ADD_INFO_VAL A, 
+	     						 V_PR_ADD_INFO B 
+	     					WHERE  A.INFO_GRP_CD = B.INFO_GRP_CD
+	     						AND A.INFO_COL_CD = B.INFO_COL_CD
+	     						AND A.PROD_CD = T.PGM_ID
+	     						AND B.L3_CD = T.L3_CD
+	     					)=
+	     					(
+	     					SELECT COUNT(A.INFO_GRP_CD) CNT
+	     					FROM V_PR_ADD_INFO A
+	     					WHERE  A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = T.PGM_ID)
+	     						AND A.L3_CD = T.L3_CD
+	     					)THEN 'Y'
+	     					ELSE 'N' END 
+	     		END   
+	     	)	AS PRODCOMMERCE
+	     , MIN(T.PROD_ATT_TYP_FG)														AS PROD_ATT_TYP_FG
+	     , MIN((SELECT COUNT(*) AS CNT FROM PROD_ATT_CD WHERE PROD_RANGE = T.L3_CD))	AS VAR_ATT_CNT
+	     , MIN(T.TRD_TYPE_DIVN_CD)														AS TRD_TYPE_DIVN_CD
+	     , MIN((SELECT COUNT(*) AS CNT FROM TPC_GRP_ATT WHERE PGM_ID = T.PGM_ID))			AS INPUT_GRP_ATTR_CNT /* 입력한 분석속성 갯수 */
+	     /*, MIN((SELECT COUNT(*) AS CNT FROM GRP_L3_GRPCST_PUR_ATT WHERE L3_CD = T.L3_CD AND COALESCE(LOEKZ, ' ') <> 'X' AND ATT_ID IS NOT NULL and  GRP_CD = t.GRP_CD*/
+	     , MIN((SELECT count(*) AS CNT FROM GRP_L3_GRPCST_PUR_ATT 
+                                      WHERE  COALESCE(LOEKZ, ' ') <> 'X' AND ATT_ID IS NOT NULL AND TRIM(ATT_ID) != ''
+                                      and  ((L3_CD = T.L3_CD AND  GRP_CD='999999') OR (L3_CD = T.L3_CD AND  GRP_CD=T.GRP_CD))
+            ))	AS GRP_ATTR_CNT		/* 입력할 분석속성 갯수 */
+	     , COUNT(B.PGM_ID) 															AS INPUT_VAR_ATT_CNT
+	     , MIN((SELECT COUNT(*) AS CNT FROM TPC_VAR_ATT WHERE PGM_ID = T.PGM_ID and VARIANT='001' )) AS INPUT_VAR_ATT_CNT001 /* 입력한변형속성001 갯수 */
+	     , MIN(T.GRP_CD)                       									AS GRP_CD /*그룹분류*/
+	     , MIN(T.DEAL_REP_PROD_YN) AS  DEAL_REP_PROD_YN
+	     , MIN(T.CTPD_YN) AS  CTPD_YN
+	     , MIN(T.STAFF_MALL_SELL_PSBT_YN) AS STAFF_MALL_SELL_PSBT_YN
+	     , MIN(T.MAT_CD) AS MAT_CD
+	     , MIN(T.VIC_ONLINE_CD) AS VIC_ONLINE_CD
+	     , MIN(T.ADM_FG) AS ADM_FG
+	     , MIN(T.ENTP_COND_USE_YN) AS ENTP_COND_USE_YN
+	     , MIN(CASE WHEN (SELECT COUNT(*) FROM TPC_PRODUCT_KEYWORD WHERE PGM_ID = T.PGM_ID) = 0 THEN 'N' ELSE 'Y' END) AS KEYWORD_YN
+	     , MIN(CASE WHEN (
+	                   ( SELECT COALESCE(COUNT(*),0)
+	                     FROM TPC_GOODCL_VEN_DELIVERY_AMT
+	                     WHERE DELIVERY_KIND_CD IN ('01','02','03','08')
+	                     AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+	                     AND PGM_ID = T.PGM_ID ) = 0 AND
+	                   ( SELECT COALESCE( ENTP_COND_USE_YN, 'N')
+	                     FROM TPC_NEW_PROD_REG
+	                     WHERE PGM_ID = T.PGM_ID ) = 'Y' ) THEN 'N'
+	                 WHEN (
+	                   ( SELECT COALESCE(COUNT(*),0)
+	                     FROM TPC_GOODCL_VEN_DELIVERY_AMT
+	                     WHERE DELIVERY_KIND_CD IN ('01','02','03','08')
+	                     AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+	                     AND PGM_ID = T.PGM_ID ) = 0 AND
+	                   ( SELECT COALESCE( ENTP_COND_USE_YN, 'N')
+	                     FROM TPC_NEW_PROD_REG
+	                     WHERE PGM_ID = T.PGM_ID ) = 'N' ) THEN 'Y'
+	                 WHEN (
+                       ( SELECT COALESCE(COUNT(*),0)
+                         FROM TPC_GOODCL_VEN_DELIVERY_AMT
+                         WHERE DELIVERY_KIND_CD ='03' AND DELIVERY_AMT = '0'
+                         AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+                         AND PGM_ID = T.PGM_ID ) = 1 AND
+                       ( SELECT COALESCE( ENTP_COND_USE_YN, 'N')
+                         FROM TPC_NEW_PROD_REG
+                         WHERE PGM_ID = T.PGM_ID ) = 'N' ) THEN 'Y'
+	                WHEN (
+	                    ( SELECT COALESCE(COUNT(*),0)
+	                    FROM TPC_GOODCL_VEN_DELIVERY_AMT
+	                    WHERE DELIVERY_KIND_CD IN ('01','02','03','08')
+	                    AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+	                    AND PGM_ID = T.PGM_ID ) > 0 ) THEN 'N'
+	               END
+	           ) AS NOCH_DELI_YN
+	     , CASE WHEN COUNT(D.PGM_ID) > 0 THEN 'Y' ELSE 'N' END AS PROD_DESC_YN
+	     , T.ONLINE_PROD_TYPE_CD AS ONLINE_PROD_TYPE_CD
+	     , CASE WHEN ( SELECT COUNT(*) FROM TEC_ATTR_PROD_MAPPING WHERE PGM_ID = T.PGM_ID ) > 0 THEN 'Y' ELSE 'N' END AS EC_ATTR_REG_YN
+	     , CASE WHEN ( SELECT COUNT(*) FROM TPC_NUT_ATT WHERE PGM_ID = T.PGM_ID ) > 0 THEN 'Y' ELSE 'N' END AS NUT_ATTR_REG_YN
+	     , CASE WHEN MIN((SELECT COUNT(*) FROM TPC_NUT_L3CD WHERE L3_CD = T.L3_CD) )> 0 THEN 'Y' ELSE 'N' END AS CAN_REG_NUT_ATTR_YN
+	     , MIN(T.CTR_TYPE_DIVN_CD) AS CTR_TYPE_DIVN_CD
+	     , MIN(T.TMPRT_DIVN_CD) AS TMPRT_DIVN_CD
+	     , MIN(( SELECT PB_FG FROM HQ_VEN WHERE VEN_CD = T.ENTP_CD )) AS PB_VEN_FG
+	     , MIN( T.PROD_TYPE_DIVN_CD) AS PROD_TYPE_DIVN_CD
+	     , (SELECT CASE WHEN COUNT(1) > 0 THEN 'Y' ELSE 'N' END FROM TPC_SALE_IMG WHERE PGM_ID = T.PGM_ID) AS POG_IMG_YN	/* POG이미지 등록여부 */
+	     , MIN(T.ESG_YN) AS ESG_YN
+		 , CASE WHEN NULLIF(MIN(T.ESG_YN),'') = '1' AND NULLIF(MIN(ESG.PGM_ID), '') IS NULL THEN 'N' ELSE 'Y' END AS ESG_ITM_REG_YN	/* ESG 적용 시, 인증정보 등록여부 */
+		 , CASE WHEN NULLIF(MIN(T.ESG_YN),'') = '1' AND COALESCE(MIN(ESG.ESG_DT_FG_CHK), 0) > 0 THEN 'N' ELSE 'Y' END AS ESG_DT_FG_CHK		/* ESG인증기간 필수 등록여부 */
+		 , CASE WHEN NULLIF(MIN(T.ESG_YN),'') = '1' AND COALESCE(MIN(ESG.ESG_DT_VALID_CHK), 0) > 0 THEN 'N' ELSE 'Y' END AS ESG_DT_VALID_CHK	/* ESG인증기간 유효성체크 */
+		 , MIN(T.CHAN_CD) AS CHAN_CD
+	  FROM TPC_NEW_PROD_REG T
+	  	LEFT OUTER JOIN  TPC_VAR_ATT B ON T.PGM_ID = B.PGM_ID
+	    LEFT OUTER JOIN  TPC_LOGI_BCD C ON T.PGM_ID = C.PGM_ID
+	    LEFT OUTER JOIN  TPC_NEW_PROD_DESCR D ON T.PGM_ID = D.PGM_ID
+	    LEFT OUTER JOIN (
+	    	SELECT
+	    		S1.PGM_ID
+				, SUM(CASE WHEN S2.ESG_DT_FG = 'X' AND (NULLIF(S1.ESG_FR_DT, '') IS NULL OR NULLIF(S1.ESG_TO_DT, '') IS NULL) THEN 1 ELSE 0 END) AS ESG_DT_FG_CHK /* ESG인증기간 필수등록여부 체크 */
+				, SUM(
+					CASE
+					--	WHEN NULLIF(S1.ESG_FR_DT, '') IS NOT NULL AND NULLIF(S1.ESG_FR_DT, '') < TO_CHAR(NOW(), 'YYYYMMDD') THEN 1	/* 인증시작일은 과거일 수 없음 */
+						WHEN NULLIF(S1.ESG_TO_DT, '') IS NOT NULL AND NULLIF(S1.ESG_TO_DT, '') < TO_CHAR(NOW(), 'YYYYMMDD') THEN 1	/* 인증종료일은 과거일 수 없음 */
+						WHEN NULLIF(S1.ESG_FR_DT, '') IS NOT NULL AND NULLIF(S1.ESG_TO_DT, '') IS NOT NULL AND NULLIF(S1.ESG_TO_DT, '') < NULLIF(S1.ESG_FR_DT, '') THEN 1	/* 인증종료일은 인증시작일 이전일 수 없음 */
+						ELSE 0
+					END
+				)AS ESG_DT_VALID_CHK	/* ESG인증기간 유효성 체크 */
+			FROM TPC_NEW_PROD_ESG S1
+			LEFT OUTER JOIN ESG_MST S2 ON S1.ESG_GBN = S2.L_LV_CD AND S1.ESG_AUTH = S2.M_LV_CD AND S1.ESG_AUTH_DTL = S2.S_LV_CD 
+			WHERE S1.DEL_YN = 'N'
+			GROUP BY S1.PGM_ID
+	    )ESG ON T.PGM_ID = ESG.PGM_ID
+	  WHERE 1=1
+	    AND (T.MD_SEND_DIVN_CD IS NULL OR T.MD_SEND_DIVN_CD = '')
+
+	    ]]>
+	    <isNotEmpty property="srchStartDt">AND T.REG_DATE BETWEEN TO_DATE(CONCAT(#srchStartDt# , ' 000000'), 'YYYYMMDD HH24MISS') AND TO_DATE(CONCAT(#srchEndDt# , ' 235959'), 'YYYYMMDD HH24MISS')</isNotEmpty>
+	    <isNotEmpty property="srchEntpCode">AND T.ENTP_CD = #srchEntpCode#</isNotEmpty>
+	    <isEmpty property="srchEntpCode">
+	      <isNotEmpty  property="venCds" prepend="AND">
+	        <iterate prepend="T.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate>
+	       </isNotEmpty>
+	    </isEmpty>
+<!-- 	    <isNotEmpty property="srchOnOffDivnCode">AND T.ONOFF_DIVN_CD = #srchOnOffDivnCode#</isNotEmpty> -->
+<!-- 	    <isNotEmpty property="srchProductDivnCode">AND T.PROD_DIVN_CD = #srchProductDivnCode#</isNotEmpty> -->
+	    <isNotEmpty property="prodTypeFlag">
+	      <isEqual property="prodTypeFlag" compareValue="01"><!-- 일반... SQLINES DEMO *** -->
+	    AND COALESCE(T.DEAL_REP_PROD_YN,'N') &lt;&gt; 'Y'
+	    AND COALESCE(T.CTPD_YN,'N') &lt;&gt; 'Y'
+	      </isEqual>
+	      <isEqual property="prodTypeFlag" compareValue="02"><!-- 딜상... SQLINES DEMO *** -->
+	    AND COALESCE(T.DEAL_REP_PROD_YN,'N') = 'Y'
+	      </isEqual>
+	      <isEqual property="prodTypeFlag" compareValue="03"><!-- 추가... SQLINES DEMO *** -->
+	    AND COALESCE(T.CTPD_YN,'N') = 'Y'
+	      </isEqual>
+	    </isNotEmpty>
+	    <isNotEmpty property="uAdmFg">AND T.ADM_FG = #uAdmFg#</isNotEmpty>
+	    <isEmpty property="uAdmFg">AND (T.ADM_FG IS NULL OR T.ADM_FG = '')</isEmpty>
+	  GROUP BY T.PGM_ID, T.ONLINE_PROD_TYPE_CD
+	  ORDER BY T.PGM_ID DESC
+	</select>
+
+	<!-- SQLINES DEMO *** 임시보관함 상품 상세보기 속성 목록, 신상품 등록 이미지 등록[오프라인이미지 전용] 조회 -->
+	<select id="selectNewSrcmkCd"	parameterClass="java.util.Map"	resultMap="selectNewSrcmkCdMap">
+	/* SQLINES DEMO *** ectNewSrcmkCd */
+	SELECT A.PGM_ID
+	     , A.VARIANT
+	     , MIN(A.SELL_CD)	AS SELL_CD
+	     , STRING_AGG(CONCAT(A.ATT_GRP_NM , ':' , '[' , A.ATT_DETAIL_NM , ']'),',' ORDER BY A.ATT_GRP_NM) AS ATT_NM
+	     , MIN(A.PROD_IMG_ID)	AS PROD_IMG_ID /* SQLINES DEMO *** 용하기 위해 추가 2015.12.16 SONG MIN KYO */	
+	  FROM ( SELECT A.PGM_ID
+	              , A.VARIANT
+	              , A.SELL_CD
+	              , A.ATT_CD
+	              , B.ATT_GRP_NM
+	              , B.ATT_DETAIL_NM
+	              , A.PROD_IMG_ID
+	           FROM TPC_VAR_ATT A
+	               LEFT OUTER JOIN PROD_ATT_CD B
+	          ON A.L3_CD = B.PROD_RANGE
+	            AND A.ATT_CD = B.ATT_GRP_CD
+	            AND A.ATT_VALUE = B.ATT_DETAIL_CD
+	            AND A.CLASS = B.CLASS
+	            WHERE A.PGM_ID = #pgmId#
+	          ORDER BY A.PGM_ID,A.VARIANT, A.ATT_CD ) A
+	 GROUP BY A.PGM_ID, A.VARIANT
+	</select>
+
+	<!-- SQLINES DEMO *** 시보관함 판매코드조회, && 임시보관함 상품 상세보기 속성 목록, 신상품 등록 이미지 등록[오프라인이미지 전용] 조회 추가 2016.03.17 by song min kyo  -->
+	<select id="selectNewSrcmkCdFix"	parameterClass="java.util.Map"	resultMap="selectNewSrcmkCdMap">
+	/* SQLINES DEMO *** ectNewSrcmkCdFix */
+	SELECT A.PGM_ID
+	     , A.VARIANT
+	     , MIN(A.SRCMK_CD) AS SELL_CD
+	     , MIN(A.PROD_IMG_ID) AS PROD_IMG_ID
+	     , STRING_AGG(CONCAT(B.ATT_GRP_NM , ':' , '[' , B.ATT_DETAIL_NM , ']'),',' ORDER BY B.ATT_GRP_NM) AS ATT_NM	     
+	  FROM ( SELECT A.PGM_ID
+	              , A.VARIANT
+	              , A.SRCMK_CD
+	              , A.ATNAM
+	              , A.ATWRT
+	              , A.CLASS
+	              , B.PROD_IMG_ID
+	              , C.L3_CD
+	           FROM TPC_VAR_ATT_SAP A
+ LEFT OUTER JOIN TPC_VAR_ATT B ON A.PGM_ID = B.PGM_ID
+            	AND A.VARIANT = B.VARIANT
+	              , TPC_NEW_PROD_REG_SAP C
+	          WHERE A.PGM_ID = C.PGM_ID  
+	            AND A.PGM_ID = #pgmId# ) A
+	      LEFT OUTER JOIN PROD_ATT_CD B
+	 ON A.L3_CD = B.PROD_RANGE
+	   AND A.ATNAM = B.ATT_GRP_CD
+	   AND A.ATWRT = B.ATT_DETAIL_CD
+	   AND A.CLASS = B.CLASS	
+	 GROUP BY A.PGM_ID, A.VARIANT
+	 ORDER BY A.VARIANT
+	</select>
+
+	<!-- 임시보관함 선택한 상품 변형속성 삭제 -->
+	<delete id="deleteImsiNewProdVarAtt" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdVarAtt */
+	DELETE FROM TPC_VAR_ATT WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 임시보관함 선택한 상품 분석속성 삭제 -->
+	<delete id="deleteImsiNewProdCatAtt" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdCatAtt */
+	DELETE FROM TPC_GRP_ATT WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 임시보관함 선택한 상품 pog이미지 삭제 -->
+	<delete id="deleteImsiNewProdOfflineImg" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdOfflineImg */
+	DELETE FROM TPC_SALE_IMG WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 임시보관함 선택한 상품 삭제 -->
+	<delete id="deleteImsiNewProd" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProd */
+	DELETE FROM TPC_NEW_PROD_REG WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 임시보관함 선택한 상품(전상거래법) 삭제 -->
+	<delete id="deleteImsiNewProdAddInfoVal" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdAddInfoVal */
+	DELETE FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = #pgmId#
+	</delete>
+
+	<!-- 임시보관함 선택한 상품(KC인증) 삭제 -->
+	<delete id="deleteImsiNewProdCertInfoVal" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdCertInfoVal */
+	DELETE FROM TPR_PROD_CERT_INFO_VAL WHERE NEW_PROD_CD = #pgmId#
+	</delete>
+
+	<!-- 임시보관한 선택한 상품 상품 상세설명 삭제 -->
+	<delete id="deleteImsiNewProdDescr" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdDescr */
+	DELETE FROM TPC_NEW_PROD_DESCR WHERE PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 임시보관함 선택한 상품 배송정책 삭제 -->
+	<delete id="deleteImsiNewProdDelivery" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.deleteImsiNewProdDelivery */
+	DELETE FROM TPC_GOODCL_VEN_DELIVERY_AMT WHERE PGM_ID = #pgmId#
+	</delete>
+	
+	<!-- 임시보관함 확정처리 선택된 상품들의 상세정보 (확정처리될 상품들의 정보이므로 RFC 에 넘길 데이터 )_old250416 -->
+	<select id="selectNewTmpProductInfo_old250416" parameterClass="resultImsiClass" resultMap="selectNewTmpProductInfoMap">
+		/* NEDMPRO0040.selectNewTmpProductInfo_old250416 */
+		SELECT  T.PGM_ID				AS PGM_ID			/* 프로그램ID(신규상품코드) */
+			,	T.PROD_NM				AS PROD_NM			/* 상품명 */
+			,	T.PROD_EN_NM			AS PROD_ENM			/* 영문명 */
+			,	T.PROD_SHORT_NM			AS SHORT_NM			/* 단축명 */
+			,	T.L3_CD					AS L3_CD			/* 소분류 */
+			,	T.SELL_CD				AS SRCMK_CD			/* 대표판매코드 */
+			,	T.PROD_DIVN_CD			AS PROD_PAT_FG		/* SQLINES DEMO *** 5/9..규격/패션... */
+			,	T.PROD_TYPE_DIVN_CD		AS PROD_TYP_FG		/* SQLINES DEMO *** B/NPB...*/
+			,	T.SESN_YEAR_CD			AS SAISJ			/* 년도 */
+			,	T.SESN_DIVN_CD			AS SAISO			/* 계절구분 */
+			,	T.TAXAT_DIVN_CD			AS TAX_FG			/* 면과세구분 */
+			,	T.PROTECT_TAG_DIVN_CD	AS PROTECT_TAG_FG	/* 도난방지 TAG 구분 */	
+			,	T.PROD_STANDARD_NM		AS PROD_STD			/* 상품규격 */
+			,	T.DP_TOT_QTY			AS DISP_TOT_QTY		/* 표시총량 */	
+			,	T.DP_BASE_QTY			AS DISP_BASE		/* 표시기준 */
+			,	T.DP_UNIT_CD			AS DISP_UNIT		/* 표시단위 */
+			,	T.PRC_ISSUE_DIVN_CD		AS PRC_ISU_FG		/* 가격발행구분 */
+			,	T.CTR_TYPE_DIVN_CD		AS CTR_TYP_FG 		/* 센터유형구분 */
+			,	T.HOME_CD				AS HOME_CD			/* 원산지코드 */
+			,	'0'						AS MAX_KEEP_DY_CNT	/* 최대보관일수 */
+			,	T.ENTP_CD 				AS VEN_CD			/* 협력업체코드 */
+			,	T.TRD_TYPE_DIVN_CD 		AS TRD_TYP_FG		/* 거래형태구분 */
+			,	T.NOR_PROD_PCOST		AS BUY_PRC			/* 정상원가 */
+			,	CASE   WHEN T.NOR_PROD_PCOST IS NULL THEN  '' ELSE T.NOR_PROD_CURR END		AS WAERS	/* 정상원가통화단위 */
+			,	T.NOR_PROD_SALE_PRC										AS SALE_PRC	/* 정상매가 */
+			,	CASE   WHEN T.NOR_PROD_SALE_PRC IS NULL THEN  '' ELSE T.NOR_PROD_SALE_CURR END	AS VWAER	/* 정상매가단위 */
+			,	T.PRFT_RATE			AS PROFIT_RT		/* 정상이익률 */		
+			,	''					AS DELI_FG			/* 수탁배달구분(->배송구분) */
+			,	'0'					AS CFM_FG			/* 확정구분 */	
+			,	T.PUR_INRCNT_QTY	AS ORD_IPSU			/* 발주입수 */
+			,	T.PUR_UNIT_CD		AS ORD_UNIT			/* 발주단위	*/
+			,	T.PROD_HRZN_LENG	AS WIDTH			/* 가로 */
+			,	T.PROD_VTCL_LENG	AS LENGTH			/* 세로 */
+			,	T.PROD_HIGT			AS HEIGHT			/* 높이 */
+			,	T.SIZE_UNIT			AS SIZE_UNIT		/* 치수단위 */
+			,	T.MIX_YN			AS MIX_PROD_FG		/* 혼재상품구분 */
+			,	T.FLOW_DD_MGR_CD	AS EXPIRA_ABLE_FG	/* 유통일관리여부 */
+			,	T.STGE_PSBT_DD		AS ARR_LIFE_DAYS	/* 입고기준SHELFLIFE */
+			,	PICK_PSBT_DD		AS FWD_LIFE_DAYS	/* 출고기준SHELFLIFE */
+			,	TMPRT_DIVN_CD		AS TEMP_FG			/* 온도구분 */
+			,	T.TOT_INSP_YN		AS TOT_CNT_FG		/* 전수검수여부 */
+			,	T.ISP_DTL_DESC		AS PROD_DETAIL		/* ISP상세설명 */
+			,	T.MAT_CD			AS MAT_CD			/* SQLINES DEMO *** :PRD41 */
+			,	T.WNOR_PROD_PCOST	AS W_BUY_PRC		/* W원가 */
+			,	CASE   WHEN T.WNOR_PROD_PCOST IS NULL THEN  '' ELSE T.WNOR_PROD_CURR END			AS W_WAERS		/* W원가통화단위 */	
+			,	T.WNOR_PROD_SALE_PRC											AS W_SALE_PRC	/* W매가 */	
+			,	CASE   WHEN T.WNOR_PROD_SALE_PRC IS NULL THEN  '' ELSE T.WNOR_PROD_SALE_CURR END	AS W_VWAER		/* W매가통화단위 */
+			,	T.WPRFT_RATE			AS W_PROFIT_RT			/* W이익률 */
+			,	T.OVER_PROMO_FG			AS OVER_PROMO_FG		/* 성과초과장려금구분 */
+			,	NOPROD_FG				AS NOPROD_FG			/* 상품유형*/
+			,	PROD_ATT_TYP_FG			AS PROD_ATT_TYP_FG		/* 상품범주*/
+			,	T.NEW_PROD_ST_DY		AS NEW_PROD_ST_DY		/* 신상품출시일자 */
+			,	T.NEW_PROD_PROMO_FG		AS NEW_PROD_PROMO_FG	/* SQLINES DEMO *** ull, X] */
+			,	T.FLOW_DD				AS FLOW_DD				/* 유통기한(유통일) */
+			,	T.WASTE_FG				AS WASTE_FG				/* 폐기물유형 */
+			,	T.RECYCLE_FG1			AS RECYCLE_FG1			/* 재활용유형1*/
+			,	T.RECYCLE_FG2			AS RECYCLE_FG2			/* 재활용유형2 */
+			,	T.RECYCLE_FG3			AS RECYCLE_FG3			/* 재활용유형3 */
+			,	T.PLASTIC_WEIGHT		AS PLASTIC_WEIGHT		/* 플라스틱무게 */
+			,	T.RECYCLE_WEIGHT1		AS RECYCLE_WEIGHT1		/* 재활용무게1 */
+			,	T.RECYCLE_WEIGHT2		AS RECYCLE_WEIGHT2		/* 재활용무게2 */
+			,	T.RECYCLE_WEIGHT3		AS RECYCLE_WEIGHT3		/* 재활용무게3 */
+			-- SQLINES DEMO *** NM IS NOT NULL AND T.VARIANT_IMSI = '000' THEN '' ELSE T.VARIANT END AS VARIANT	/* 변형구분 */	
+			,	T.VARIANT_IMSI				AS VARIANT					/* 변형구분 */
+			,	T.CLASS						AS CLASS					/* 특성프로파일(클래스) */
+			,	T.ATT_CD					AS ATNAM					/* 속성분류코드 */
+			,	T.ATT_VALUE					AS ATWRT					/* 속성분류코드값*/
+			,	T.V_EAN11					AS V_EAN11					/* 판매코드 */
+			,  	B.IMG_NM					AS ZZIMAGE					/* 이미지명 */
+			,	'I'							AS CFG_FG					/* 이미지수정구분자*/
+			,	'0'							AS ZZLIQUOR_FG				/* 주류상품구분 */
+			,	'0'							AS ZZFRESH_MEAT_FG			/* 축산마리분구분 */
+			,	'0'							AS ZZDPS_TYP				/* DPS구분 */
+			,	'1'							AS ZZWGCNT_FG				/* 수중량구분 */
+			,	T.ZZNEWPROD_FG				AS ZZNEWPROD_FG				/* SQLINES DEMO *** 2:시즌상품, 3:행사상품, 4:라인확장] */
+			,	T.BRAND_CD					AS BRAND_CD					/* 브랜드코드 */
+			,	T.MAKER_CD					AS MAKER_CD					/* 메이커코드 */
+			,	T.NPUR_BUY_PSBT_DIVN_CD		AS NPUR_BUY_PSBT_DIVN_CD	/* 무발주매입구분 */
+			,	T.GRP_CD					AS ZZGP_CAT_CD				/* 그룹분석속성  */
+			,   T.ADM_FG                    AS ZZSOURCE                 /* 관리자여부  */
+			,   T.HS_CD						AS ZIHSCD
+	        ,   T.TARIFF_RATE				AS ZCUSRT
+	        ,   T.DEC_NO					AS ZIIPNO
+	        ,	T.INFO_GRP_CD				AS ZZINFO_GRP_CD
+	        ,	T.INFO_COL_CD				AS ZZINFO_COL_CD
+	        ,	T.COL_VAL					AS ZZCOL_VAL
+	        ,	T.TOT_WEIGHT				AS BRGEW			/* 총중량 */
+	        ,	T.NET_WEIGHT				AS NTGEW			/* 순중량 */
+	        ,	T.WEIGHT_UNIT				AS GEWEI			/* 총중량 단위 */
+	        ,	T.OWNSTOK_FG				AS ZZ_OWNSTOK_FG	/* 완사입구분 */
+	        ,	T.PLAN_RECV_QTY				AS ZZPLAN_RECV_QTY	/* 계획입고량 */
+	        ,	T.S_TYPE					AS ZZS_TYPE			/* 소싱유형 */
+		FROM (
+			SELECT  COALESCE(B.VARIANT, '000')	AS VARIANT_IMSI
+				,   B.VARIANT
+				,	B.CLASS
+				,	B.ATT_CD
+				,	B.ATT_VALUE
+				,	B.SELL_CD 	AS V_EAN11
+				,   A.ADM_FG			    ,A.BRAND_CD		        ,A.CTR_TYPE_DIVN_CD		,A.DP_BASE_QTY
+	            ,   A.DP_TOT_QTY			,A.DP_UNIT_CD		    ,A.ENTP_CD			    ,A.FLOW_DD
+	            ,   A.FLOW_DD_MGR_CD		,A.GRP_CD		        ,A.HOME_CD			    ,A.ISP_DTL_DESC
+	            ,   A.L3_CD			        ,A.MAKER_CD		        ,A.MAT_CD			    ,A.MIX_YN
+	            ,   A.NEW_PROD_PROMO_FG		,A.NEW_PROD_ST_DY	    ,A.NOPROD_FG			,A.NOR_PROD_CURR
+	            ,   A.NOR_PROD_PCOST		,A.NOR_PROD_SALE_PRC    ,A.NPUR_BUY_PSBT_DIVN_CD,A.OVER_PROMO_FG
+	            ,   A.PGM_ID			    ,A.PICK_PSBT_DD		    ,A.PLASTIC_WEIGHT		,A.PRC_ISSUE_DIVN_CD
+	            ,   A.PRFT_RATE			    ,A.PROD_ATT_TYP_FG	    ,A.PROD_DIVN_CD			,A.PROD_EN_NM
+	            ,   A.PROD_HIGT			    ,A.PROD_HRZN_LENG	    ,A.PROD_NM			    ,A.PROD_SHORT_NM
+	            ,   A.PROD_STANDARD_NM		,A.PROD_TYPE_DIVN_CD    ,A.PROD_VTCL_LENG		,A.PROTECT_TAG_DIVN_CD
+	            ,   A.PUR_INRCNT_QTY		,A.PUR_UNIT_CD		    ,A.RECYCLE_FG1			,A.RECYCLE_FG2
+	            ,   A.RECYCLE_FG3			,A.RECYCLE_WEIGHT1	    ,A.RECYCLE_WEIGHT2		,A.RECYCLE_WEIGHT3
+	            ,   A.SELL_CD			    ,A.SESN_DIVN_CD		    ,A.SESN_YEAR_CD			,A.SIZE_UNIT
+	            ,   A.STAFF_DC_AMT			,A.TAXAT_DIVN_CD	    ,A.TMPRT_DIVN_CD		,A.TOT_INSP_YN
+	            ,   A.TRD_TYPE_DIVN_CD		,A.WASTE_FG		        ,A.WNOR_PROD_CURR		,A.WNOR_PROD_PCOST
+	            ,   A.WNOR_PROD_SALE_CURR	,A.WNOR_PROD_SALE_PRC	,A.WPRFT_RATE			,A.ZZNEWPROD_FG
+	            ,   A.VIC_ONLINE_CD         ,A.STGE_PSBT_DD         ,A.NOR_PROD_SALE_CURR	,A.OWNSTOK_FG
+	            ,	A.TOT_WEIGHT			,A.NET_WEIGHT			,A.WEIGHT_UNIT    		,A.PLAN_RECV_QTY
+	            ,   C.HS_CD                 ,C.TARIFF_RATE          ,C.DEC_NO				,A.S_TYPE
+	            ,	D.INFO_GRP_CD			,D.INFO_COL_CD			,D.COL_VAL
+			FROM TPC_NEW_PROD_REG A
+				 LEFT OUTER JOIN TPC_VAR_ATT B ON A.PGM_ID = B.PGM_ID
+				 LEFT OUTER JOIN TPC_IMPORT_ATT C ON A.PGM_ID = C.PGM_ID
+				 LEFT OUTER JOIN TPR_PROD_CERT_INFO_VAL D ON A.PGM_ID = D.NEW_PROD_CD
+			<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+		      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> 	
+		        #arrPgmId[]# 
+		      </iterate> 
+		    </isNotEmpty>
+			AND A.ONOFF_DIVN_CD = '0'	/* SQLINES DEMO ***  한다. */
+			 AND A.TRD_TYPE_DIVN_CD <![CDATA[<>]]> '1'	/* SQLINES DEMO *** 품만 , 온오프이면서 직매입인 상품은 온라인 BOS단에서 RFC CALL */ 
+		UNION 
+			 SELECT  COALESCE(B.VARIANT, '000')	AS VARIANT_IMSI
+				,   B.VARIANT
+				,	B.CLASS
+				,	B.ATT_CD
+				,	B.ATT_VALUE
+				,	B.SELL_CD 	AS V_EAN11
+				,   A.ADM_FG			    ,A.BRAND_CD		        ,A.CTR_TYPE_DIVN_CD		,A.DP_BASE_QTY
+	            ,   A.DP_TOT_QTY			,A.DP_UNIT_CD		    ,A.ENTP_CD			    ,A.FLOW_DD
+	            ,   A.FLOW_DD_MGR_CD		,A.GRP_CD		        ,A.HOME_CD			    ,A.ISP_DTL_DESC
+	            ,   A.L3_CD			        ,A.MAKER_CD		        ,A.MAT_CD			    ,A.MIX_YN
+	            ,   A.NEW_PROD_PROMO_FG		,A.NEW_PROD_ST_DY	    ,A.NOPROD_FG			,A.NOR_PROD_CURR
+	            ,   A.NOR_PROD_PCOST		,A.NOR_PROD_SALE_PRC    ,A.NPUR_BUY_PSBT_DIVN_CD,A.OVER_PROMO_FG
+	            ,   A.PGM_ID			    ,A.PICK_PSBT_DD		    ,A.PLASTIC_WEIGHT		,A.PRC_ISSUE_DIVN_CD
+	            ,   A.PRFT_RATE			    ,A.PROD_ATT_TYP_FG	    ,A.PROD_DIVN_CD			,A.PROD_EN_NM
+	            ,   A.PROD_HIGT			    ,A.PROD_HRZN_LENG	    ,A.PROD_NM			    ,A.PROD_SHORT_NM
+	            ,   A.PROD_STANDARD_NM		,A.PROD_TYPE_DIVN_CD    ,A.PROD_VTCL_LENG		,A.PROTECT_TAG_DIVN_CD
+	            ,   A.PUR_INRCNT_QTY		,A.PUR_UNIT_CD		    ,A.RECYCLE_FG1			,A.RECYCLE_FG2
+	            ,   A.RECYCLE_FG3			,A.RECYCLE_WEIGHT1	    ,A.RECYCLE_WEIGHT2		,A.RECYCLE_WEIGHT3
+	            ,   A.SELL_CD			    ,A.SESN_DIVN_CD		    ,A.SESN_YEAR_CD			,A.SIZE_UNIT
+	            ,   A.STAFF_DC_AMT			,A.TAXAT_DIVN_CD	    ,A.TMPRT_DIVN_CD		,A.TOT_INSP_YN
+	            ,   A.TRD_TYPE_DIVN_CD		,A.WASTE_FG		        ,A.WNOR_PROD_CURR		,A.WNOR_PROD_PCOST
+	            ,   A.WNOR_PROD_SALE_CURR	,A.WNOR_PROD_SALE_PRC	,A.WPRFT_RATE			,A.ZZNEWPROD_FG
+	            ,   A.VIC_ONLINE_CD         ,A.STGE_PSBT_DD         ,A.NOR_PROD_SALE_CURR 	,A.OWNSTOK_FG
+	            ,	A.TOT_WEIGHT			,A.NET_WEIGHT			,A.WEIGHT_UNIT    		,A.PLAN_RECV_QTY
+	            ,   C.HS_CD                 ,C.TARIFF_RATE          ,C.DEC_NO				,A.S_TYPE
+	            ,	D.INFO_GRP_CD			,D.INFO_COL_CD			,D.COL_VAL
+			FROM TPC_NEW_PROD_REG A
+				 LEFT OUTER JOIN TPC_VAR_ATT B ON A.PGM_ID = B.PGM_ID
+				 LEFT OUTER JOIN TPC_IMPORT_ATT C ON A.PGM_ID = C.PGM_ID
+				 LEFT OUTER JOIN TPR_PROD_CERT_INFO_VAL D ON A.PGM_ID = D.NEW_PROD_CD
+			<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+		      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+		        #arrPgmId[]# 
+		      </iterate>
+		    </isNotEmpty>
+			AND A.ONOFF_DIVN_CD = '0'		/* SQLINES DEMO *** 라인 미적용에서 조회해서 확정 한다. */
+			AND A.TRD_TYPE_DIVN_CD = '1'
+			AND  A.MAT_CD='2'
+	        AND  A.VIC_ONLINE_CD IS NULL
+		) T
+		LEFT OUTER JOIN  TPC_SALE_IMG B ON T.PGM_ID = B.PGM_ID 	AND T.VARIANT_IMSI = B.VARIANT
+		ORDER BY T.PGM_ID, T.VARIANT, T.ATT_CD
+	</select>
+	
+
+	<!-- 임시보관함 확정처리 상품정보 (SAP 전송대상) -->
+	<select id="selectNewTmpProductInfo" parameterClass="resultImsiClass" resultMap="selectNewTmpProductInfoMap">
+		/* NEDMPRO0040.selectNewTmpProductInfo */
+		SELECT  
+			T.PGM_ID					AS PGM_ID			/* 프로그램ID(신규상품코드) */
+			,	T.PROD_NM				AS PROD_NM			/* 상품명 */
+			,	T.PROD_EN_NM			AS PROD_ENM			/* 영문명 */
+			,	T.PROD_SHORT_NM			AS SHORT_NM			/* 단축명 */
+			,	T.L3_CD					AS L3_CD			/* 소분류 */
+			,	T.SELL_CD				AS SRCMK_CD			/* 대표판매코드 */
+			,	T.PROD_DIVN_CD			AS PROD_PAT_FG		/* 상품패턴구분 EX) 0/1/5/9..규격/패션... */
+			,	T.PROD_TYPE_DIVN_CD		AS PROD_TYP_FG		/* 상품유형구분 EX) NB/PB/NPB...*/
+			,	T.SESN_YEAR_CD			AS SAISJ			/* 년도 */
+			,	T.SESN_DIVN_CD			AS SAISO			/* 계절구분 */
+			,	T.TAXAT_DIVN_CD			AS TAX_FG			/* 면과세구분 */
+			,	T.PROTECT_TAG_DIVN_CD	AS PROTECT_TAG_FG	/* 도난방지 TAG 구분 */	
+			,	T.PROD_STANDARD_NM		AS PROD_STD			/* 상품규격 */
+			,	T.DP_TOT_QTY			AS DISP_TOT_QTY		/* 표시총량 */	
+			,	T.DP_BASE_QTY			AS DISP_BASE		/* 표시기준 */
+			,	T.DP_UNIT_CD			AS DISP_UNIT		/* 표시단위 */
+			,	T.PRC_ISSUE_DIVN_CD		AS PRC_ISU_FG		/* 가격발행구분 */
+			,	T.CTR_TYPE_DIVN_CD		AS CTR_TYP_FG 		/* 센터유형구분 */
+			,	T.HOME_CD				AS HOME_CD			/* 원산지코드 */
+			,	'0'						AS MAX_KEEP_DY_CNT	/* 최대보관일수 */
+			,	T.ENTP_CD 				AS VEN_CD			/* 협력업체코드 */
+			,	T.TRD_TYPE_DIVN_CD 		AS TRD_TYP_FG		/* 거래형태구분 */
+			,	T.NOR_PROD_PCOST		AS BUY_PRC			/* 정상원가 */
+			,	CASE WHEN T.NOR_PROD_PCOST IS NULL THEN '' ELSE T.NOR_PROD_CURR END AS WAERS	/* 정상원가통화단위 */
+			,	T.NOR_PROD_SALE_PRC										AS SALE_PRC	/* 정상매가 */
+			,	CASE WHEN T.NOR_PROD_SALE_PRC IS NULL THEN '' ELSE T.NOR_PROD_SALE_CURR END AS VWAER	/* 정상매가단위 */
+			,	T.PRFT_RATE			AS PROFIT_RT		/* 정상이익률 */		
+			,	''					AS DELI_FG			/* 수탁배달구분(->배송구분) */
+			,	'0'					AS CFM_FG			/* 확정구분 */	
+			,	T.PUR_INRCNT_QTY	AS ORD_IPSU			/* 발주입수 */
+			,	T.PUR_UNIT_CD		AS ORD_UNIT			/* 발주단위	*/
+			,	T.PROD_HRZN_LENG	AS WIDTH			/* 가로 */
+			,	T.PROD_VTCL_LENG	AS LENGTH			/* 세로 */
+			,	T.PROD_HIGT			AS HEIGHT			/* 높이 */
+			,	T.SIZE_UNIT			AS SIZE_UNIT		/* 치수단위 */
+			,	T.MIX_YN			AS MIX_PROD_FG		/* 혼재상품구분 */
+			,	T.FLOW_DD_MGR_CD	AS EXPIRA_ABLE_FG	/* 유통일관리여부 */
+			,	T.STGE_PSBT_DD		AS ARR_LIFE_DAYS	/* 입고기준SHELFLIFE */
+			,	PICK_PSBT_DD		AS FWD_LIFE_DAYS	/* 출고기준SHELFLIFE */
+			,	TMPRT_DIVN_CD		AS TEMP_FG			/* 온도구분 */
+			,	T.TOT_INSP_YN		AS TOT_CNT_FG		/* 전수검수여부 */
+			,	T.ISP_DTL_DESC		AS PROD_DETAIL		/* ISP상세설명 */
+			,	T.MAT_CD			AS MAT_CD			/* 소재코드->VIC마켓상품구분:PRD41 */
+			,	T.WNOR_PROD_PCOST	AS W_BUY_PRC		/* W원가 */
+			,	CASE WHEN T.WNOR_PROD_PCOST IS NULL THEN '' ELSE T.WNOR_PROD_CURR END AS W_WAERS	/* W원가통화단위 */
+			,	T.WNOR_PROD_SALE_PRC										AS W_SALE_PRC	/* W매가 */
+			,	CASE WHEN T.WNOR_PROD_SALE_PRC IS NULL THEN '' ELSE T.WNOR_PROD_SALE_CURR END AS W_VWAER	/* W매가통화단위 */
+			,	T.WPRFT_RATE			AS W_PROFIT_RT			/* W이익률 */
+			,	T.OVER_PROMO_FG			AS OVER_PROMO_FG		/* 성과초과장려금구분 */
+			,	NOPROD_FG				AS NOPROD_FG			/* 상품유형*/
+			,	PROD_ATT_TYP_FG			AS PROD_ATT_TYP_FG		/* 상품범주*/
+			,	T.NEW_PROD_ST_DY		AS NEW_PROD_ST_DY		/* 신상품출시일자 */
+			,	T.NEW_PROD_PROMO_FG		AS NEW_PROD_PROMO_FG	/* 신상품입점장려금 적용구분[null, X] */
+			,	T.FLOW_DD				AS FLOW_DD				/* 유통기한(유통일) */
+			,	T.WASTE_FG				AS WASTE_FG				/* 폐기물유형 */
+			,	T.RECYCLE_FG1			AS RECYCLE_FG1			/* 재활용유형1*/
+			,	T.RECYCLE_FG2			AS RECYCLE_FG2			/* 재활용유형2 */
+			,	T.RECYCLE_FG3			AS RECYCLE_FG3			/* 재활용유형3 */
+			,	T.PLASTIC_WEIGHT		AS PLASTIC_WEIGHT		/* 플라스틱무게 */
+			,	T.RECYCLE_WEIGHT1		AS RECYCLE_WEIGHT1		/* 재활용무게1 */
+			,	T.RECYCLE_WEIGHT2		AS RECYCLE_WEIGHT2		/* 재활용무게2 */
+			,	T.RECYCLE_WEIGHT3		AS RECYCLE_WEIGHT3		/* 재활용무게3 */
+			--,	CASE WHEN B.IMG_NM IS NOT NULL AND T.VARIANT_IMSI = '000' THEN '' ELSE T.VARIANT END AS VARIANT	/* 변형구분 */	
+			,	T.VARIANT_IMSI				AS VARIANT					/* 변형구분 */
+			,	T.CLASS						AS CLASS					/* 특성프로파일(클래스) */
+			,	T.ATT_CD					AS ATNAM					/* 속성분류코드 */
+			,	T.ATT_VALUE					AS ATWRT					/* 속성분류코드값*/
+			,	T.V_EAN11					AS V_EAN11					/* 판매코드 */
+			,  	B.IMG_NM					AS ZZIMAGE					/* 이미지명 */
+			,	'I'							AS CFG_FG					/* 이미지수정구분자*/
+			,	'0'							AS ZZLIQUOR_FG				/* 주류상품구분 */
+			,	'0'							AS ZZFRESH_MEAT_FG			/* 축산마리분구분 */
+			,	'0'							AS ZZDPS_TYP				/* DPS구분 */
+			,	'1'							AS ZZWGCNT_FG				/* 수중량구분 */
+			,	T.ZZNEWPROD_FG				AS ZZNEWPROD_FG				/* 신상품구분[1:순수신상품, 2:시즌상품, 3:행사상품, 4:라인확장] */
+			,	T.BRAND_CD					AS BRAND_CD					/* 브랜드코드 */
+			,	T.MAKER_CD					AS MAKER_CD					/* 메이커코드 */
+			,	T.NPUR_BUY_PSBT_DIVN_CD		AS NPUR_BUY_PSBT_DIVN_CD	/* 무발주매입구분 */
+			,	T.GRP_CD					AS ZZGP_CAT_CD				/* 그룹분석속성  */
+			,   T.ADM_FG                    AS ZZSOURCE                 /* 관리자여부  */
+			,   T.HS_CD						AS ZIHSCD
+		    ,   T.TARIFF_RATE				AS ZCUSRT
+		    ,   T.DEC_NO					AS ZIIPNO
+		    ,	T.INFO_GRP_CD				AS ZZINFO_GRP_CD
+		    ,	T.INFO_COL_CD				AS ZZINFO_COL_CD
+		    ,	T.COL_VAL					AS ZZCOL_VAL
+		    ,	T.TOT_WEIGHT				AS BRGEW			/* 총중량 */
+		    ,	T.NET_WEIGHT				AS NTGEW			/* 순중량 */
+		    ,	T.WEIGHT_UNIT				AS GEWEI			/* 총중량 단위 */
+		    ,	T.OWNSTOK_FG				AS ZZ_OWNSTOK_FG	/* 완사입구분 */
+		    ,	T.PLAN_RECV_QTY				AS ZZPLAN_RECV_QTY	/* 계획입고량 */
+		    ,	T.S_TYPE					AS ZZS_TYPE			/* 소싱유형 */
+		    ,	T.SNOR_PROD_PCOST			AS S_NETPR			/* 슈퍼 정상원가 */
+			,	CASE WHEN T.SNOR_PROD_PCOST IS NULL THEN '' ELSE T.SNOR_PROD_CURR END AS S_WAERS	/* 슈퍼 정상원가통화단위 */
+			,	T.SNOR_PROD_SALE_PRC		AS S_ENDPR	/* 슈퍼 정상매가 */
+			,	CASE WHEN T.SNOR_PROD_SALE_PRC IS NULL THEN '' ELSE T.SNOR_PROD_SALE_CURR END AS S_VWAER	/* 슈퍼 정상매가단위 */
+			,	T.SPRFT_RATE				AS S_SPANE	/* 슈퍼 정상이익률 */
+			,	T.ONOR_PROD_PCOST			AS O_NETPR	/* 오카도 정상원가 */
+			,	CASE WHEN T.ONOR_PROD_PCOST IS NULL THEN '' ELSE T.ONOR_PROD_CURR END AS O_WAERS	/* 오카도 정상원가통화단위 */
+			,	T.ONOR_PROD_SALE_PRC		AS O_ENDPR	/* 오카도 정상매가 */
+			,	CASE WHEN T.ONOR_PROD_SALE_PRC IS NULL THEN '' ELSE T.ONOR_PROD_SALE_CURR END AS O_VWAER	/* 오카도 정상매가단위 */
+			,	T.OPRFT_RATE				AS O_SPANE	/* 오카도 정상이익률 */
+			,	CASE WHEN 'KR02' IN (SELECT UNNEST(STRING_TO_ARRAY(T.CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_1	/* 채널적용여부(롯데마트) */
+			,	CASE WHEN 'KR03' IN (SELECT UNNEST(STRING_TO_ARRAY(T.CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_2	/* 채널적용여부(maxx) */
+			,	CASE WHEN 'KR04' IN (SELECT UNNEST(STRING_TO_ARRAY(T.CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_3	/* 채널적용여부(롯데슈퍼) */
+			,	CASE WHEN 'KR09' IN (SELECT UNNEST(STRING_TO_ARRAY(T.CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_4	/* 채널적용여부(오카도) */
+			,	NULL 						AS ZZMKT_FG_5	/* 채널적용여부(미지정) */
+			,	NULL 						AS ZZMKT_FG_6	/* 채널적용여부(미지정1) */
+			,	NULL 						AS ZZMKT_FG_7	/* 채널적용여부(미지정2) */
+			,	T.S_NEW_PROD_PROMO_FG		AS S_NEW_PROD_PROMO_FG	/* (슈퍼) 신상품장려금구분 */
+			,	T.S_NEW_PROD_ST_DY			AS S_NEW_PROD_ST_DY		/* (슈퍼) 신상품출시일자 */
+	        ,	T.S_OVER_PROMO_FG			AS S_OVER_PROMO_FG		/* (슈퍼) 성과초과장려금구분 */
+		FROM (
+<!-- 			WITH CTE AS ( -->
+<!-- 				<include refid="selectImsiProductSendGbnWithInner"/> -->
+				<!-- SELECT A.PGM_ID
+				FROM TPC_NEW_PROD_REG A
+				WHERE A.ONOFF_DIVN_CD = '0'		/* 온오프 상품만 조회해서 확정 한다. */ 
+				AND A.TRD_TYPE_DIVN_CD <![CDATA[<>]]> '1'	/* 직매입 아닌 것만 전송(직매입 상품은 BOS에서 전송) */
+				<isEmpty  property="arrPgmId"  prepend="AND">
+					A.PGM_ID = ''
+				</isEmpty>
+				<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+			      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> 	
+			        #arrPgmId[]# 
+			      </iterate> 
+			    </isNotEmpty>
+				UNION
+				SELECT A.PGM_ID
+				FROM TPC_NEW_PROD_REG A
+				WHERE A.ONOFF_DIVN_CD = '0'		/* 온오프 상품만 조회해서 확정 한다. */
+				AND A.TRD_TYPE_DIVN_CD = '1'	/* 직매입 상품 중, 온라인적용 상품이 아닌 것만 전송 */
+				AND (A.VIC_ONLINE_CD IS NULL OR A.VIC_ONLINE_CD = '')
+				<isEmpty  property="arrPgmId"  prepend="AND">
+					A.PGM_ID = ''
+				</isEmpty>
+				<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+			      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> 	
+			        #arrPgmId[]# 
+			      </iterate> 
+			    </isNotEmpty> -->
+<!-- 			) -->
+			SELECT  COALESCE(B.VARIANT, '000')	AS VARIANT_IMSI
+				,   B.VARIANT
+				,	B.CLASS
+				,	B.ATT_CD
+				,	B.ATT_VALUE
+				,	B.SELL_CD 	AS V_EAN11
+				,   A.ADM_FG			    ,A.BRAND_CD		        ,A.CTR_TYPE_DIVN_CD		,A.DP_BASE_QTY
+		        ,   A.DP_TOT_QTY			,A.DP_UNIT_CD		    ,A.ENTP_CD			    ,A.FLOW_DD
+		        ,   A.FLOW_DD_MGR_CD		,A.GRP_CD		        ,A.HOME_CD			    ,A.ISP_DTL_DESC
+		        ,   A.L3_CD			        ,A.MAKER_CD		        ,A.MAT_CD			    ,A.MIX_YN
+		        ,   A.NEW_PROD_PROMO_FG		,A.NEW_PROD_ST_DY	    ,A.NOPROD_FG			,A.NOR_PROD_CURR
+		        ,   A.NOR_PROD_PCOST		,A.NOR_PROD_SALE_PRC    ,A.NPUR_BUY_PSBT_DIVN_CD,A.OVER_PROMO_FG
+		        ,   A.PGM_ID			    ,A.PICK_PSBT_DD		    ,A.PLASTIC_WEIGHT		,A.PRC_ISSUE_DIVN_CD
+		        ,   A.PRFT_RATE			    ,A.PROD_ATT_TYP_FG	    ,A.PROD_DIVN_CD			,A.PROD_EN_NM
+		        ,   A.PROD_HIGT			    ,A.PROD_HRZN_LENG	    ,A.PROD_NM			    ,A.PROD_SHORT_NM
+		        ,   A.PROD_STANDARD_NM		,A.PROD_TYPE_DIVN_CD    ,A.PROD_VTCL_LENG		,A.PROTECT_TAG_DIVN_CD
+		        ,   A.PUR_INRCNT_QTY		,A.PUR_UNIT_CD		    ,A.RECYCLE_FG1			,A.RECYCLE_FG2
+		        ,   A.RECYCLE_FG3			,A.RECYCLE_WEIGHT1	    ,A.RECYCLE_WEIGHT2		,A.RECYCLE_WEIGHT3
+		        ,   A.SELL_CD			    ,A.SESN_DIVN_CD		    ,A.SESN_YEAR_CD			,A.SIZE_UNIT
+		        ,   A.STAFF_DC_AMT			,A.TAXAT_DIVN_CD	    ,A.TMPRT_DIVN_CD		,A.TOT_INSP_YN
+		        ,   A.TRD_TYPE_DIVN_CD		,A.WASTE_FG		        ,A.WNOR_PROD_CURR		,A.WNOR_PROD_PCOST
+		        ,   A.WNOR_PROD_SALE_CURR	,A.WNOR_PROD_SALE_PRC	,A.WPRFT_RATE			,A.ZZNEWPROD_FG
+		        ,   A.VIC_ONLINE_CD         ,A.STGE_PSBT_DD         ,A.NOR_PROD_SALE_CURR	,A.OWNSTOK_FG
+		        ,	A.TOT_WEIGHT			,A.NET_WEIGHT			,A.WEIGHT_UNIT    		,A.PLAN_RECV_QTY
+		        ,   C.HS_CD                 ,C.TARIFF_RATE          ,C.DEC_NO				,A.S_TYPE
+		        ,	D.INFO_GRP_CD			,D.INFO_COL_CD			,D.COL_VAL				,A.CHAN_CD
+		        ,	A.SNOR_PROD_PCOST		,A.SNOR_PROD_CURR		,A.SNOR_PROD_SALE_PRC	,A.SNOR_PROD_SALE_CURR
+		        ,	A.ONOR_PROD_PCOST		,A.ONOR_PROD_CURR		,A.ONOR_PROD_SALE_PRC	,A.ONOR_PROD_SALE_CURR
+		        ,	A.SPRFT_RATE			,A.OPRFT_RATE			,A.S_NEW_PROD_PROMO_FG	,A.S_NEW_PROD_ST_DY
+		        ,	A.S_OVER_PROMO_FG
+<!-- 			FROM CTE -->
+<!-- 			INNER JOIN TPC_NEW_PROD_REG A ON CTE.PGM_ID = A.PGM_ID -->
+			FROM TPC_NEW_PROD_REG A
+			LEFT OUTER JOIN TPC_VAR_ATT B ON A.PGM_ID = B.PGM_ID
+			LEFT OUTER JOIN TPC_IMPORT_ATT C ON A.PGM_ID = C.PGM_ID
+			LEFT OUTER JOIN TPR_PROD_CERT_INFO_VAL D ON A.PGM_ID = D.NEW_PROD_CD
+			WHERE
+			<isNotEmpty property="prodArr">
+				<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+					#prodArr[].pgmId#
+				</iterate>
+			</isNotEmpty>
+			<!-- prodArr가 값 없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+			<isEmpty property="prodArr">
+			     1 = 0
+			</isEmpty>
+		) T
+		LEFT OUTER JOIN TPC_SALE_IMG B ON T.PGM_ID = B.PGM_ID AND T.VARIANT_IMSI = B.VARIANT
+		ORDER BY T.PGM_ID, T.VARIANT, T.ATT_CD
+	</select>
+
+	<!-- 상품확정 RFC 그룹분석 속성 조회_OLD250508 -->
+	<select id="selectRfcDataGrpAttr_OLD250508" parameterClass="resultImsiClass" resultMap="selectRfcDataGrpAttrMap">
+	/* NEDMPRO0040.selectRfcDataGrpAttr */
+	SELECT 	A.PGM_ID
+		,	B.ATT_ID
+		,	B.ATT_VAL_ID					AS ATT_VAR_ID
+		,	TO_CHAR(B.REG_DATE, 'yyyymmdd')	AS REG_DATE
+		,	TO_CHAR(B.REG_DATE, 'HH24Miss')	AS REG_TIME
+		,	B.REG_ID
+		,	TO_CHAR(B.MOD_DATE, 'yyyymmdd')	AS MOD_DATE
+		,	TO_CHAR(B.MOD_DATE, 'hh24miss')	AS MOD_TIME
+		,	B.MOD_ID
+		,	'I'								AS CFG_FG
+	FROM  TPC_NEW_PROD_REG A
+		, TPC_GRP_ATT B
+	WHERE 	A.PGM_ID = B.PGM_ID
+    AND		A.TRD_TYPE_DIVN_CD <![CDATA[<>]]> '1'	/* 직매입이 아닌 상품만 */
+	AND		B.ATT_VAL_ID IS NOT NULL
+	AND		B.ATT_VAL_ID  <![CDATA[<>]]> ''
+		<isEmpty property="arrPgmId" prepend="AND">
+		AND		A.PGM_ID = ''
+		</isEmpty>
+		 <isNotEmpty  property="arrPgmId"  prepend="AND">
+	      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+	        #arrPgmId[]#
+	      </iterate>
+	    </isNotEmpty>
+	UNION 
+    SELECT 	A.PGM_ID
+		,	B.ATT_ID
+		,	B.ATT_VAL_ID					AS ATT_VAR_ID
+		,	TO_CHAR(B.REG_DATE, 'yyyymmdd')	AS REG_DATE
+		,	TO_CHAR(B.REG_DATE, 'HH24Miss')	AS REG_TIME
+		,	B.REG_ID
+		,	TO_CHAR(B.MOD_DATE, 'yyyymmdd')	AS MOD_DATE
+		,	TO_CHAR(B.MOD_DATE, 'hh24miss')	AS MOD_TIME
+		,	B.MOD_ID
+		,	'I'								AS CFG_FG
+	FROM  TPC_NEW_PROD_REG A
+		, TPC_GRP_ATT B
+	WHERE 	A.PGM_ID = B.PGM_ID
+    AND		A.TRD_TYPE_DIVN_CD ='1'		/* 직매입 상품 중 온라인 미적용 상품만 */	
+<!--     AND    	A.MAT_CD='2' -->
+    AND 	(A.VIC_ONLINE_CD IS NULL OR A.VIC_ONLINE_CD = '')
+    AND		B.ATT_VAL_ID IS NOT NULL
+    AND		B.ATT_VAL_ID  <![CDATA[<>]]> ''
+    <isEmpty property="arrPgmId" prepend="AND">
+		AND		A.PGM_ID = ''
+	</isEmpty>
+	 <isNotEmpty  property="arrPgmId"  prepend="AND"> 
+	      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+	        #arrPgmId[]#
+	      </iterate>
+	    </isNotEmpty>
+	</select>
+
+	<!-- SQLINES DEMO *** C Call 넘겨줄 데이터 조회) [현재 사용하지 않음 상품확정 마스터 RFC 데이터 넘길때 이미지 정보까지 같이 넘김] -->
+	<select id="selectNewTmpProductImgInfo"		parameterClass="resultImsiClass"		resultMap="selectNewTmpProductImgInfoMap">
+	/* SQLINES DEMO *** ectNewTmpProductImgInfo */
+	SELECT  A.PGM_ID	AS PGM_ID		/* 프로그램ID */
+		,	A.VARIANT	AS VARIANT		/* 변형순번 */
+		,	'1'			AS SEQ			/* 순번 */
+		,	B.IMG_NM	AS ZZIMAGE		/* 이미지 이름 */
+		,	'I'			AS CFM_FG		/* 수정구분자 */
+	FROM
+	(
+		SELECT 	A.PGM_ID
+			,	CASE   WHEN NULLIF(B.VARIANT, '') IS NULL THEN  '000' ELSE B.VARIANT END	AS VARIANT
+		FROM TPC_NEW_PROD_REG A
+			 LEFT OUTER JOIN TPC_VAR_ATT B
+		ON A.PGM_ID= B.PGM_ID
+		<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+	      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> 
+	        #arrPgmId[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    AND A.ONOFF_DIVN_CD = '0'		/* 온오프 상품만 */
+		GROUP BY A.PGM_ID, B.VARIANT
+			ORDER BY A.PGM_ID DESC
+	)	A
+	LEFT OUTER JOIN	TPC_SALE_IMG B ON A.PGM_ID = B.PGM_ID
+	</select>
+
+	<!-- SQLINES DEMO *** 등록 안된 상품 확인-->
+	<select id="selectNewProdNoImgCnt" parameterClass="resultImsiClass" resultClass="int">
+	/* SQLINES DEMO *** ectNewProdNoImgCnt */
+	SELECT COUNT(PGM_ID) NO_IMG_CNT
+	  FROM TPC_NEW_PROD_REG
+	 WHERE <iterate prepend="PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> #arrPgmId[]# </iterate>
+	   AND CASE WHEN IMG_NCNT IS NULL OR IMG_NCNT = 0 THEN 'N'
+	            WHEN IMG_NCNT > 0 THEN 'Y'
+	       END  = 'N'
+	</select>
+	
+	<!-- 임시보관함 확정처리 이후 상품 마스터 테이블 MD전송 구분 update -->
+	<update id="updateImsiProductList" parameterClass="resultImsiClass">
+		/* NEDMPRO0040.updateImsiProductList */
+		UPDATE TPC_NEW_PROD_REG A
+		SET 
+			MD_SEND_DIVN_CD = (
+				CASE
+					WHEN B.ONOFF_DIVN_CD = '0' AND B.TRD_TYPE_DIVN_CD = '1' AND B.CHAN_CD = 'KR03' AND NULLIF(B.VIC_ONLINE_CD, '') IS NULL THEN 'S'	/* MAXX 직매입, 온라인미적용일 경우 (확정요청) */
+					WHEN B.ONOFF_DIVN_CD = '0' AND B.TRD_TYPE_DIVN_CD = '1' AND B.CHAN_CD = 'KR03' AND NULLIF(B.VIC_ONLINE_CD, '') = 'X' THEN 'W'		/* MAXX 직매입, 온라인적용일 경우 (온라인가확정 예정) */
+					WHEN B.ONOFF_DIVN_CD = '0' AND B.TRD_TYPE_DIVN_CD = '1' AND B.ADM_FG = '3' THEN 'W'		/* 온오프, 직매입, 관리자 등록 시(오프라인 확정 상태) */
+					WHEN B.ONOFF_DIVN_CD = '0' AND B.TRD_TYPE_DIVN_CD = '1' THEN 'A'						/* 온오프, 직매입 시 (온라인가확정 예정) */
+					ELSE 'S'																				/* 그 외 (확정요청) */
+				END
+			)
+		FROM TPC_NEW_PROD_REG B
+		WHERE A.PGM_ID = B.PGM_ID
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     1 = 0
+		</isEmpty>
+		<!-- <isNotEmpty property="arrPgmId" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+				#arrPgmId[]#
+			</iterate>
+		</isNotEmpty>
+		arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가
+		<isEmpty property="arrPgmId" prepend="AND">
+		     1 = 0
+		</isEmpty> -->
+	</update>
+
+	<!-- 임시보관함 확정처리 이후 상품 마스터 테이블 MD전송 구분 update -->
+	<update id="updateImsiProductList_old250423" parameterClass="resultImsiClass">
+	/* NEDMPRO0040.updateImsiProductList_old250423 */
+	UPDATE 
+	( SELECT PGM_ID
+	       , CASE WHEN ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' AND MAT_CD = '2' AND VIC_ONLINE_CD IS NULL
+	                   THEN 'S' /* SQLINES DEMO ***  직매입일 ,VIC마켓전용,온라인미적용 이면 경우 'S' */
+	              WHEN ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' AND MAT_CD = '2' AND VIC_ONLINE_CD ='X'
+	                   THEN 'W' /* SQLINES DEMO ***  직매입일 ,VIC마켓전용,온라인적용 이면 경우 'W' */
+	              WHEN ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' AND ADM_FG = '3'
+	                  THEN 'W' /* SQLINES DEMO ***  직매입일,관리자일때는  'W' */
+	              WHEN ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1'
+	                   THEN 'A' /* SQLINES DEMO ***  직매입일경우 'A' */
+	              ELSE 'S'
+	         END SEND_GBN
+	       , MD_SEND_DIVN_CD
+	    FROM TPC_NEW_PROD_REG
+	<isNotEmpty property="arrPgmId" prepend="WHERE">
+		<iterate prepend="PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+			#arrPgmId[]#
+		</iterate>
+	</isNotEmpty>
+	<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+	<isEmpty property="arrPgmId" prepend="WHERE">
+	     1 = 0
+	</isEmpty>
+	)
+	   MD_SEND_DIVN_CD := SEND_GBN
+	</update>
+
+	<!-- SQLINES DEMO *** 마스터 테이블 MD전송 구분 update -->
+	<update id="updateImsiProductListAdm" parameterClass="resultImsiClass">
+	/* SQLINES DEMO *** ateImsiProductListAdm */
+	UPDATE 
+	( SELECT PGM_ID
+	       , CASE WHEN ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' AND ADM_FG='3' THEN 'W'	/* SQLINES DEMO ***  직매입일경우 'A' 아닐경우 'S' */
+	              WHEN ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' THEN 'A'	/* SQLINES DEMO ***  직매입일경우 'A' 아닐경우 'S' */
+	              ELSE 'S' END SEND_GBN
+	       , MD_SEND_DIVN_CD
+	    FROM TPC_NEW_PROD_REG
+	   WHERE 1 = 1
+		<isNotEmpty property="arrPgmId" prepend="AND">
+			<iterate prepend="PGM_ID IN " property="arrPgmId" open="("
+				close=")" conjunction=",">
+				#arrPgmId[]#
+			</iterate>
+		</isNotEmpty>
+	)
+	MD_SEND_DIVN_CD := SEND_GBN 
+	</update>
+
+	<update id="updateImsiProductSts" parameterClass="resultImsiClass">
+	/* SQLINES DEMO *** ateImsiProductSts */
+	MERGE INTO TPC_NEW_PROD_STS A
+	  USING (select pgm_id
+         FROM 	TPC_NEW_PROD_REG
+		WHERE 	1=1
+           and ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' AND ADM_FG='3'
+           <isNotEmpty property="arrPgmId" prepend="AND">
+			<iterate prepend="PGM_ID IN " property="arrPgmId" open="("
+				close=")" conjunction=",">
+				#arrPgmId[]#
+			</iterate>
+		</isNotEmpty>
+         ) b ON (A.PGM_ID = b.pgm_id)
+ 		WHEN NOT MATCHED THEN
+			INSERT (  PGM_ID
+                       ,PRGS_STS
+                       ,REG_DATE
+                       ,REG_ID
+                       ,MOD_DATE
+                       ,MOD_ID
+                       ,OFF_CFM_DT
+			) VALUES (
+                     b.pgm_id
+				, '80'     			/* 진행상태(PRD32) */
+				, CURRENT_TIMESTAMP(0)       	/* 등록일시 */
+				, '000000000001'	/* 등록자 	*/
+				, CURRENT_TIMESTAMP(0)	 		/* 수정일시 */
+				, '000000000001'    /* 수정자 	*/
+				, CURRENT_TIMESTAMP(0)
+			)
+		WHEN MATCHED THEN
+			UPDATE  
+			   SET PRGS_STS    = '80'
+                    , REG_DATE =    CURRENT_TIMESTAMP(0)
+                    , REG_ID       = '000000000001'
+                    , MOD_DATE     = CURRENT_TIMESTAMP(0)
+                    , MOD_ID       ='000000000001'
+                    , OFF_CFM_DT   = CURRENT_TIMESTAMP(0)
+	</update>
+	
+	<!-- BOS 신상품 확정처리 상태 선등록 (MAXX단일, 온라인적용, 직매입 : 오프라인확정(80)) -->
+	<update id="updateImsiProductStsVicOn"		parameterClass="String">
+	/* NEDMPRO0040.updateImsiProductStsVicOn */
+	MERGE INTO TPC_NEW_PROD_STS A
+	USING (
+		SELECT PGM_ID
+        FROM 	TPC_NEW_PROD_REG
+		WHERE 	1=1
+		AND ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' -- AND MAT_CD='2' AND VIC_ONLINE_CD='X'  
+		AND PGM_ID = #pgmId#
+	) B ON (A.PGM_ID = B.PGM_ID)
+	WHEN NOT MATCHED THEN
+		INSERT (
+			PGM_ID
+			,PRGS_STS
+			,REG_DATE
+			,REG_ID
+			,MOD_DATE
+			,MOD_ID
+			,OFF_CFM_DT
+		)
+		VALUES 
+		(
+			B.PGM_ID
+			, '80'     			/* 진행상태(PRD32) */
+			, CURRENT_TIMESTAMP(0)       	/* 등록일시 */
+			, '000000000001'	/* 등록자 	*/
+			, CURRENT_TIMESTAMP(0)	 		/* 수정일시 */
+			, '000000000001'    /* 수정자 	*/
+			, CURRENT_TIMESTAMP(0)
+			)
+	WHEN MATCHED THEN
+		UPDATE  
+			SET PRGS_STS   = '80'
+			, REG_DATE	   = CURRENT_TIMESTAMP(0)
+			, REG_ID       = '000000000001'
+			, MOD_DATE     = CURRENT_TIMESTAMP(0)
+			, MOD_ID       ='000000000001'
+			, OFF_CFM_DT   = CURRENT_TIMESTAMP(0);
+	</update>
+	
+	<!-- BOS 신상품 확정처리 상태 선등록 (MAXX단일, 온라인미적용, 직매입 : 온라인확정(81)) -->
+	<update id="updateImsiProductStsVicOff"		parameterClass="String">
+		/* NEDMPRO0040.updateImsiProductStsVicOff */
+		MERGE INTO TPC_NEW_PROD_STS A
+		USING (
+			SELECT	PGM_ID
+			FROM 	TPC_NEW_PROD_REG
+			WHERE 	1=1
+			AND ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' -- AND MAT_CD='2' AND VIC_ONLINE_CD IS NULL
+			AND PGM_ID = #pgmId#
+		) B ON (A.PGM_ID = B.PGM_ID)
+		WHEN NOT MATCHED THEN
+			INSERT (
+				PGM_ID
+				,PRGS_STS
+				,REG_DATE
+				,REG_ID
+				,MOD_DATE
+				,MOD_ID
+				,OFF_CFM_DT
+				,ON_CFM_DT
+			)
+			VALUES
+			(
+				B.PGM_ID
+				, '81'     			/* 진행상태(PRD32) */
+				, CURRENT_TIMESTAMP(0)       	/* 등록일시 */
+				, '000000000001'	/* 등록자 	*/
+				, CURRENT_TIMESTAMP(0)	 		/* 수정일시 */
+				, '000000000001'    /* 수정자 	*/
+				, CURRENT_TIMESTAMP(0)
+				, CURRENT_TIMESTAMP(0)
+			)
+		WHEN MATCHED THEN
+			UPDATE  
+				SET PRGS_STS     = '81'
+					, REG_DATE		= CURRENT_TIMESTAMP(0)
+					, REG_ID       = '000000000001'
+					, MOD_DATE     = CURRENT_TIMESTAMP(0)
+					, MOD_ID       ='000000000001'
+					, OFF_CFM_DT   = CURRENT_TIMESTAMP(0)
+					, ON_CFM_DT    = CURRENT_TIMESTAMP(0);
+	</update>
+
+	<!-- 임시보관함 확정처리 > 관리자일 경우, 직매입 상품 오프라인확정처리 -->
+	<!-- BOS 신상품 확정처리 상태 선등록 (MAXX단일 외, 관리자등록, 직매입 : 오프라인확정(80)) -->
+	<update id="updateImsiProductStsNorAdm"		parameterClass="String">
+		/* NEDMPRO0040.updateImsiProductStsNorAdm */
+		MERGE INTO TPC_NEW_PROD_STS A
+		USING (
+			SELECT
+				S.PGM_ID
+				, '80' AS PRGS_STS /* 오프라인확정(보스)-진행상태(TET_CODE|PRD44) */
+			FROM TPC_NEW_PROD_REG S
+			WHERE S.ONOFF_DIVN_CD = '0'		/* 온오프상품 */
+			AND S.TRD_TYPE_DIVN_CD = '1'	/* 직매입 */
+			AND S.PGM_ID = #pgmId#::VARCHAR
+		) B ON (A.PGM_ID = B.PGM_ID)
+		WHEN NOT MATCHED THEN
+			INSERT
+			(
+				PGM_ID
+				, PRGS_STS
+				, REG_DATE
+				, REG_ID
+				, MOD_DATE
+				, MOD_ID
+				, OFF_CFM_DT
+			)
+			VALUES
+			(
+				B.PGM_ID
+				, B.PRGS_STS		/* 오프라인확정(보스)-진행상태(TET_CODE|PRD44) */
+				, NOW()				/* 등록일시 */
+				, '000000000001'	/* 등록자 */
+				, NOW()				/* 수정일시 */
+				, '000000000001'	/* 수정자 */
+				, NOW()				/* 오프라인확정일시 */
+			)
+		WHEN MATCHED THEN
+			UPDATE SET
+				PRGS_STS = B.PRGS_STS
+				, REG_DATE = NOW()
+				, REG_ID = '000000000001'
+				, MOD_DATE = NOW()
+				, MOD_ID = '000000000001'
+				, OFF_CFM_DT = NOW();
+	</update>
+	
+	<update id="updateImsiProductStsNor" parameterClass="String">
+	/* SQLINES DEMO *** ateImsiProductStsNor */
+	MERGE INTO TPC_NEW_PROD_STS A
+	  USING (select pgm_id
+         FROM 	TPC_NEW_PROD_REG
+		WHERE 	1=1
+           and ONOFF_DIVN_CD = '0' AND TRD_TYPE_DIVN_CD = '1' //사용안함
+           and pgm_id = #pgmId#
+           
+         ) b ON (A.PGM_ID = b.pgm_id)
+ 		WHEN NOT MATCHED THEN
+			INSERT (  PGM_ID
+                       ,PRGS_STS
+                       ,REG_DATE
+                       ,REG_ID
+                       ,MOD_DATE
+                       ,MOD_ID
+                       ,OFF_CFM_DT
+                       
+			) VALUES (
+                     b.pgm_id
+				, '80'     			/* 진행상태(PRD32) */
+				, CURRENT_TIMESTAMP(0)       	/* 등록일시 */
+				, '000000000001'	/* 등록자 	*/
+				, CURRENT_TIMESTAMP(0)	 		/* 수정일시 */
+				, '000000000001'    /* 수정자 	*/
+				, CURRENT_TIMESTAMP(0)
+			)
+		WHEN MATCHED THEN
+			UPDATE  
+			   SET PRGS_STS    = '80'
+                    , REG_DATE =    CURRENT_TIMESTAMP(0)
+                    , REG_ID       = '000000000001'
+                    , MOD_DATE     = CURRENT_TIMESTAMP(0)
+                    , MOD_ID       ='000000000001'
+                    , OFF_CFM_DT   = CURRENT_TIMESTAMP(0)
+	</update>
+	
+	<!-- 임시보관함 확정처리 RFC 실패 일 경우 MD_SEND_DIVN_CD 컬럼을  다시 미요청 상태로 update -->
+	<update id="updateImsiProductClear" parameterClass="resultImsiClass">
+		/* NEDMPRO0040.updateImsiProductClear */
+		UPDATE TPC_NEW_PROD_REG SET MD_SEND_DIVN_CD = ''
+		WHERE 
+			<isNotEmpty property="prodArr">
+				<iterate prepend="PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+					#prodArr[].pgmId#
+				</iterate>
+			</isNotEmpty>
+			<isEmpty property="prodArr">
+				PGM_ID = #pgmId#
+			</isEmpty>
+	</update>
+
+	<!-- 상품... SQLINES DEMO *** -->
+	<select id="selectNewProductDetailVarAttInfo" parameterClass="java.util.Map"		resultMap="selectNewProductDetailVarAttInfoMap">
+	/* SQLINES DEMO *** ectNewProductDetailVarAttInfo */
+	SELECT 	PGM_ID
+		,	VARIANT
+		,	CLASS		AS VAR_ATT_CLASS
+		,	ATT_CD
+		,	ATT_VALUE
+		,	SELL_CD
+		,	STS_DIVN_CD
+		,	DEL_TF
+		,	PROD_IMG_ID
+		,	OPTN_DESC
+	FROM TPC_VAR_ATT
+	WHERE PGM_ID = #pgmId#
+	</select>
+	
+	<!-- SQLINES DEMO ***  이익률, 88코드 조회] -->
+	<select id="selectOnlineRepresentProdctList"  parameterClass="String" resultMap="onlineRepresentProductMap">
+	/* SQLINES DEMO *** ectOnlineRepresentProdctList */
+   SELECT 	P.MD_PROD_CD AS PROD_CD     -- SQLINES DEMO *** d by 주환철 -- PROD_CD
+		,	P.PROD_NM
+		,	P.PROD_CD AS SRCMK_CD       -- SQLINES DEMO *** d by 주환철 -- SRCMK_CD
+		,	P.PROFIT_RATE AS PROFIT_RT  -- SQLINES DEMO *** d by 주환철 -- PROFIT_RT
+		,	T.L3_NM
+	FROM TPR_PRODUCT P                  -- SQLINES DEMO *** d by 주환철 -- PRODUCT
+	LEFT JOIN 
+	TPC_L1_CD  T
+	ON P.CAT_CD = T.L3_CD               -- SQLINES DEMO *** d by 주환철 -- CAT_CD
+	WHERE P.REP_PROD_CD_YN = 'Y'        -- SQLINES DEMO *** d by 주환철 -- ONLINE_FG = 'X' 
+         AND P.DEL_STOP_DIVN_YN = '0'      -- SQLINES DEMO *** d by 주환철 -- PROD_STATUS = '01'
+	  AND P.VENDOR_ID IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #entpCode#)  -- SQLINES DEMO *** d by 주환철 -- VEN_CD 
+	GROUP BY P.MD_PROD_CD, P.PROD_NM, P.PROD_CD, P.PROFIT_RATE, T.L3_NM
+	</select>
+	
+	<!-- SQLINES DEMO *** 용 단품정보 리스트] 조회 -->
+	<select id="selectOnlineItemListIntemp"	parameterClass="String"		resultMap="selectOnlineItemListIntempMap">
+	/* SQLINES DEMO *** ectOnlineItemListIntemp  */
+	SELECT 	A.ITEM_CD
+		,	A.SELL_CD
+		,	MIN(A.OPTN_DESC)		AS OPTN_DESC
+		,	MIN(A.STK_MGR_YN)		AS STK_MGR_YN
+		,	MIN(A.RSERV_STK_QTY)	AS RSERV_STK_QTY
+	FROM TPC_VAR_ATT A
+	WHERE PGM_ID = #pgmId#
+	GROUP BY A.ITEM_CD, A.SELL_CD
+	</select>	
+	
+	<!-- 상품 확정요청(RFC CALL 이전 해당상품의 소분류의 해당하지 않는 그룹분속속성이 있으면 해당 데이터는 삭제한다 2016.03.14 by song min kyo) -->
+	<delete id="deleteNotGrpAtt"	parameterClass="String">
+	/* NEDMPRO0040.deleteNotGrpAtt */	
+	DELETE FROM TPC_GRP_ATT
+	WHERE PGM_ID = #pgmId#
+	AND ATT_ID NOT IN 	(
+							SELECT DISTINCT ATT_ID FROM GRP_L3_GRPCST_PUR_ATT
+							 WHERE L3_CD = (SELECT L3_CD FROM TPC_NEW_PROD_REG WHERE PGM_ID = #pgmId#)
+							 AND COALESCE(LOEKZ, ' ') <![CDATA[<>]]> 'X'
+							 
+						)
+	</delete>
+	
+	<!-- 임직... SQLINES DEMO *** -->
+	<insert id="insertStaffSellProduct">
+	/* SQLINES DEMO *** ertStaffSellProduct */
+	INSERT INTO TPC_NEW_PROD_REG
+			(
+				PGM_ID
+				,TEAM_CD
+				,L1_CD
+				,L3_CD
+				,PROD_NM
+				,PROD_EN_NM
+				,PROD_SHORT_NM
+				,ONOFF_DIVN_CD
+				,ENTP_CD
+				,SELL_CD
+				,ONLINE_PROD_NM
+				,ONLINE_REP_PROD_CD
+				,PROD_DIVN_CD
+				,PROD_STANDARD_NM
+				,DP_TOT_QTY
+				,DP_BASE_QTY
+				,NOR_PROD_PCOST
+				,NOR_PROD_CURR
+				,NOR_PROD_SALE_PRC
+				,NOR_PROD_SALE_CURR
+				,DP_UNIT_CD
+				,EVT_PROD_SELL_PRC
+				,EVT_PROD_SELL_CURR
+				,SELL_PRC
+				,SELL_CURR
+				,TAXAT_DIVN_CD
+				,PROD_TYPE_DIVN_CD
+				,CTR_TYPE_DIVN_CD
+				,PRC_ISSUE_DIVN_CD
+				,PROD_HRZN_LENG
+				,PROD_VTCL_LENG
+				,PROD_HIGT
+				,PROD_DESC
+				,ISP_DTL_DESC
+				,HOME_CD
+				,PUR_INRCNT_QTY
+				,PRFT_RATE
+				,PUR_UNIT_CD
+				,PROMO_AMT_DIVN_CD
+				,NEW_PROD_FIRST_PUR_DIVN_CD
+				,NPUR_BUY_PSBT_DIVN_CD
+				,SESN_YEAR_CD
+				,SESN_DIVN_CD
+				,PROTECT_TAG_DIVN_CD
+				,PROTECT_TAG_TYPE_CD
+				,NEW_PROD_GEN_DIVN_CD
+				,TRD_TYPE_DIVN_CD
+				,BARCD_VERIFY_DOC_TF
+				,MIX_YN
+				,STGE_PSBT_DD
+				,PICK_PSBT_DD
+				,TMPRT_DIVN_CD
+				,FLOW_DD_MGR_CD
+				,QTY_WEGT_DIVN_CD
+				,MAX_KEEP_DD_CNT
+				,BRAND_CD
+				,BRAND_NM
+				,MAKER_CD
+				,MAKER_NM
+				,MIN_ORD_PSBT_QTY
+				,MAX_ORD_PSBT_QTY
+				,MD_SEND_DIVN_CD
+				,TOT_INSP_YN
+				,PRODUCT_DY
+				,PROD_IMG_ID
+				,NFOML_VARIATION_DESC
+				,REG_DATE
+				,REG_ID
+				,MOD_DATE
+				,MOD_ID
+				,CATEGORY_ID
+				,SOCIAL_PROD_DELI_CD
+				,KAN_PROD_CD
+				,UNSPSC_CD
+				,GTIN_CD
+				,IMG_NCNT
+				,WNOR_PROD_PCOST
+				,WNOR_PROD_CURR
+				,WNOR_PROD_SALE_PRC
+				,WNOR_PROD_SALE_CURR
+				,WPRFT_RATE
+				,MAT_CD
+				,MD_VALI_SELL_CD
+				,NEW_PROD_PROMO_FG
+				,NEW_PROD_ST_DY
+				,OVER_PROMO_FG
+				,MODEL_NM
+				,ECO_YN
+				,ECO_NM
+				,DLV_GA
+				,DLV_DT
+				,INS_CO
+				,SIZE_UNIT
+				,L2_CD
+				,NOPROD_FG
+				,PROD_ATT_TYP_FG
+				,TOT_WEIGHT
+				,WEIGHT_UNIT
+				,PIECE_QTY
+				,PIECE_UNIT
+				,WASTE_FG
+				,PLASTIC_WEIGHT
+				,RECYCLE_FG1
+				,RECYCLE_FG2
+				,RECYCLE_FG3
+				,RECYCLE_WEIGHT1
+				,RECYCLE_WEIGHT2
+				,RECYCLE_WEIGHT3
+				,FLOW_DD
+				,ZZNEWPROD_FG
+				,RSERV_ORD_PSBT_START_DY
+				,RSERV_ORD_PSBT_END_DY
+				,RSERV_PROD_PICK_IDCT_DY
+				,ONLINE_PROD_TYPE_CD
+				,OPTN_LOAD_SET_QTY
+				,OPTN_LOAD_CONTENT
+				,HOPE_DELI_PSBT_DD
+				,DEAL_REP_PROD_YN
+				,OPTN_PROD_PRC_MGR_YN
+				,CTPD_YN
+				,CTPD_DEAL_YN
+				,PERI_DELI_YN
+				,BDL_DELI_YN
+				,DELI_PSBT_REGN_CD
+				,ENTP_COND_USE_YN
+				,ENTP_IN_PROD_CD
+				,SELL_START_DY
+				,SELL_END_DY
+				,NOR_PROD_INFO_GRP_CD
+				,KC_INFO_GRP_CD
+				,DEAL_PROD_DIVN_CD
+				,ADL_YN
+			)
+			SELECT  #newPgmId# AS PGM_ID
+						,TEAM_CD
+						,L1_CD
+						,L3_CD
+						,Concat('[임직원용]' , PROD_NM) AS PROD_NM
+						,PROD_EN_NM
+						,PROD_SHORT_NM
+						,ONOFF_DIVN_CD
+						,ENTP_CD
+						,SELL_CD
+						,ONLINE_PROD_NM
+						,ONLINE_REP_PROD_CD
+						,PROD_DIVN_CD
+						,PROD_STANDARD_NM
+						,DP_TOT_QTY
+						,DP_BASE_QTY
+						,(
+						   SELECT CASE WHEN A.TAXAT_DIVN_CD ='1' THEN TRUNC(COALESCE(A.STAFF_DC_AMT,'0')/1.1*(1-COALESCE(A.PRFT_RATE,'0')/100 ),0)   		
+							                      ELSE TRUNC(COALESCE(A.STAFF_DC_AMT,'0')*(1-COALESCE(A.PRFT_RATE,'0')/100 ),0)
+									    END 
+						 ) AS NOR_PROD_PCOST
+						,NOR_PROD_CURR
+						,STAFF_DC_AMT AS NOR_PROD_SALE_PRC
+						,NOR_PROD_SALE_CURR
+						,DP_UNIT_CD
+						,EVT_PROD_SELL_PRC
+						,EVT_PROD_SELL_CURR
+						,STAFF_DC_AMT AS SELL_PRC
+						,SELL_CURR
+						,TAXAT_DIVN_CD
+						,PROD_TYPE_DIVN_CD
+						,CTR_TYPE_DIVN_CD
+						,PRC_ISSUE_DIVN_CD
+						,PROD_HRZN_LENG
+						,PROD_VTCL_LENG
+						,PROD_HIGT
+						,PROD_DESC
+						,ISP_DTL_DESC
+						,HOME_CD
+						,PUR_INRCNT_QTY
+						,PRFT_RATE
+						,PUR_UNIT_CD
+						,PROMO_AMT_DIVN_CD
+						,NEW_PROD_FIRST_PUR_DIVN_CD
+						,NPUR_BUY_PSBT_DIVN_CD
+						,SESN_YEAR_CD
+						,SESN_DIVN_CD
+						,PROTECT_TAG_DIVN_CD
+						,PROTECT_TAG_TYPE_CD
+						,NEW_PROD_GEN_DIVN_CD
+						,TRD_TYPE_DIVN_CD
+						,BARCD_VERIFY_DOC_TF
+						,MIX_YN
+						,STGE_PSBT_DD
+						,PICK_PSBT_DD
+						,TMPRT_DIVN_CD
+						,FLOW_DD_MGR_CD
+						,QTY_WEGT_DIVN_CD
+						,MAX_KEEP_DD_CNT
+						,BRAND_CD
+						,BRAND_NM
+						,MAKER_CD
+						,MAKER_NM
+						,MIN_ORD_PSBT_QTY
+						,MAX_ORD_PSBT_QTY
+						,'S' AS MD_SEND_DIVN_CD
+						,TOT_INSP_YN
+						,PRODUCT_DY
+						,PROD_IMG_ID
+						,NFOML_VARIATION_DESC
+						,CURRENT_TIMESTAMP(0) AS REG_DATE
+						,REG_ID
+						,CURRENT_TIMESTAMP(0) AS MOD_DATE
+						,MOD_ID
+						,CATEGORY_ID
+						,SOCIAL_PROD_DELI_CD
+						,KAN_PROD_CD
+						,UNSPSC_CD
+						,GTIN_CD
+						,IMG_NCNT
+						,WNOR_PROD_PCOST
+						,WNOR_PROD_CURR
+						,WNOR_PROD_SALE_PRC
+						,WNOR_PROD_SALE_CURR
+						,WPRFT_RATE
+						,MAT_CD
+						,MD_VALI_SELL_CD
+						,NEW_PROD_PROMO_FG
+						,NEW_PROD_ST_DY
+						,OVER_PROMO_FG
+						,MODEL_NM
+						,ECO_YN
+						,ECO_NM
+						,DLV_GA
+						,DLV_DT
+						,INS_CO
+						,SIZE_UNIT
+						,L2_CD
+						,NOPROD_FG
+						,PROD_ATT_TYP_FG
+						,TOT_WEIGHT
+						,WEIGHT_UNIT
+						,PIECE_QTY
+						,PIECE_UNIT
+						,WASTE_FG
+						,PLASTIC_WEIGHT
+						,RECYCLE_FG1
+						,RECYCLE_FG2
+						,RECYCLE_FG3
+						,RECYCLE_WEIGHT1
+						,RECYCLE_WEIGHT2
+						,RECYCLE_WEIGHT3
+						,FLOW_DD
+						,ZZNEWPROD_FG
+						,RSERV_ORD_PSBT_START_DY
+						,RSERV_ORD_PSBT_END_DY
+						,RSERV_PROD_PICK_IDCT_DY
+						,ONLINE_PROD_TYPE_CD
+						,OPTN_LOAD_SET_QTY
+						,OPTN_LOAD_CONTENT
+						,HOPE_DELI_PSBT_DD
+						,DEAL_REP_PROD_YN
+						,OPTN_PROD_PRC_MGR_YN
+						,CTPD_YN
+						,CTPD_DEAL_YN
+						,PERI_DELI_YN
+						,BDL_DELI_YN
+						,DELI_PSBT_REGN_CD
+						,ENTP_COND_USE_YN
+						,ENTP_IN_PROD_CD
+						,SELL_START_DY
+						,SELL_END_DY
+						,NOR_PROD_INFO_GRP_CD
+						,KC_INFO_GRP_CD
+						,DEAL_PROD_DIVN_CD
+						,ADL_YN
+			  FROM TPC_NEW_PROD_REG A
+		    WHERE PGM_ID = #pgmId#
+	</insert>
+	
+	<!-- 임직... SQLINES DEMO *** -->
+	<insert id="insertStaffSellProdAddDetail">
+	/* SQLINES DEMO *** ertStaffSellProdAddDetail */
+	INSERT INTO TPR_PROD_ADD_INFO_VAL
+            ( INFO_GRP_CD
+             ,INFO_COL_CD
+             ,PROD_CD
+             ,NEW_PROD_CD
+             ,COL_VAL
+             ,DISP_YN
+             ,REG_DATE
+             ,REG_ID
+             ,MOD_DATE
+             ,MOD_ID
+            )
+          SELECT INFO_GRP_CD
+		             ,INFO_COL_CD
+		             ,#newPgmId# AS PROD_CD
+		             ,#newPgmId# AS NEW_PROD_CD
+		             ,COL_VAL
+		             ,DISP_YN
+		             ,CURRENT_TIMESTAMP(0) AS REG_DATE
+		             ,REG_ID
+		             ,CURRENT_TIMESTAMP(0) AS MOD_DATE
+		             ,MOD_ID
+		    FROM TPR_PROD_ADD_INFO_VAL
+		  WHERE PROD_CD = #pgmId#
+	</insert>
+	
+	<!-- SQLINES DEMO *** -->
+	<insert id="insertStaffSellProdCertDetail">
+	/* SQLINES DEMO *** ertStaffSellProdCertDetail */
+	INSERT INTO TPR_PROD_CERT_INFO_VAL	
+	            ( INFO_GRP_CD
+	             ,INFO_COL_CD
+	             ,PROD_CD
+	             ,NEW_PROD_CD
+	             ,COL_VAL
+	             ,DISP_YN
+	             ,REG_DATE
+	             ,REG_ID
+	             ,MOD_DATE
+	             ,MOD_ID
+	            )
+            SELECT INFO_GRP_CD
+		               ,INFO_COL_CD
+		               ,#newPgmId# AS PROD_CD
+		               ,#newPgmId# AS NEW_PROD_CD
+		               ,COL_VAL
+		               ,DISP_YN
+		               ,CURRENT_TIMESTAMP(0) AS REG_DATE
+		               ,REG_ID
+		               ,CURRENT_TIMESTAMP(0) AS MOD_DATE
+		               ,MOD_ID
+		    FROM TPR_PROD_CERT_INFO_VAL
+		  WHERE PROD_CD = #pgmId#
+	</insert>
+	
+	<!-- SQLINES DEMO *** -->
+	<insert id="insertStaffSellProdDelivery">
+	/* SQLINES DEMO *** ertStaffSellProdDelivery */
+	INSERT INTO TPC_GOODCL_VEN_DELIVERY_AMT
+				(  
+				    PGM_ID
+				 ,	DELIVERY_KIND_CD
+				 ,  SEQ
+				 ,  APPLY_START_DY
+				 ,  APPLY_END_DY
+				 ,  DELIVERY_AMT
+				 ,  DELI_BASE_MIN_QTY
+				 ,  DELI_BASE_MAX_QTY
+				 ,  DELI_COND_AMT
+				 ,  REG_DATE
+				 ,  REG_ID
+				 ,  MOD_DATE
+				 ,  MOD_ID
+				)
+			SELECT #newPgmId# AS PGM_ID
+					 ,	DELIVERY_KIND_CD
+					 ,  SEQ
+					 ,  TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS APPLY_START_DY
+					 ,  '99991231' AS APPLY_END_DY
+					 ,  DELIVERY_AMT
+					 ,  DELI_BASE_MIN_QTY
+					 ,  DELI_BASE_MAX_QTY
+					 ,  CASE DELIVERY_KIND_CD WHEN '01' THEN DELI_COND_AMT ELSE '' END AS DELI_COND_AMT
+					 ,  CURRENT_TIMESTAMP(0) AS REG_DATE
+		             ,  REG_ID
+		             ,  CURRENT_TIMESTAMP(0) AS MOD_DATE
+		             ,  MOD_ID
+			 FROM  TPC_GOODCL_VEN_DELIVERY_AMT
+		   WHERE  PGM_ID = #pgmId#
+	</insert>
+	
+	<!-- SQLINES DEMO *** ,반품/교환지 주소 복사 -->
+	<insert id="insertStaffSellProdVendorAddr">
+	/* SQLINES DEMO *** ertStaffSellProdVendorAddr */
+	INSERT INTO TPC_VEN_ADDR_MGR
+				(
+				    PGM_ID
+				  , SEQ
+				  , VENDOR_ID
+				  , ADDR_SEQ
+				  , REG_ID
+				  , REG_DATE
+				  , MOD_ID
+				  , MOD_DATE
+				)
+		SELECT #newPgmId# AS PGM_ID
+			      , SEQ
+			      , VENDOR_ID
+			      , ADDR_SEQ
+			      , REG_ID
+			      , CURRENT_TIMESTAMP(0) AS REG_DATE
+			      , MOD_ID
+			      , CURRENT_TIMESTAMP(0) AS MOD_DATE
+		 FROM TPC_VEN_ADDR_MGR
+	   WHERE PGM_ID = #pgmId#
+	</insert>
+	
+	<!-- SQLINES DEMO *** -->
+	<insert id="insertStaffSellProductItemInfo">
+	/* SQLINES DEMO *** ertStaffSellProductItemInfo */
+	INSERT INTO  TPC_VAR_ATT 
+				(
+				  PGM_ID
+				 , ITEM_CD
+				 , VARIANT
+				 , CLASS
+				 , ATT_CD
+				 , ATT_VALUE
+				 , ENTP_CD
+				 , SELL_CD
+				 , REG_DATE
+				 , REG_ID
+				 , OPTN_DESC
+				 , STK_MGR_YN
+				 , RSERV_STK_QTY
+				 , OPTN_AMT
+				 )
+		SELECT #newPgmId# AS PGM_ID
+				 , ITEM_CD
+				 , VARIANT
+				 , CLASS
+				 , ATT_CD
+				 , ATT_VALUE
+				 , ENTP_CD	
+				 , SELL_CD	
+				 , CURRENT_TIMESTAMP(0) AS REG_DATE 	
+				 , REG_ID
+				 , OPTN_DESC 
+				 , STK_MGR_YN
+				 , RSERV_STK_QTY
+				 , OPTN_AMT
+		 FROM TPC_VAR_ATT
+	WHERE PGM_ID = #pgmId#
+	</insert>
+	
+	<!-- SQLINES DEMO *** -->
+	<insert id="insertStaffSellProductDescription">
+	/* SQLINES DEMO *** ertStaffSellProductDescription */
+	INSERT INTO TPC_NEW_PROD_DESCR 
+		  		( 
+				 PGM_ID
+				 ,SEQ
+				 ,TITLE
+				 ,ADD_DESC
+				 ,REG_DATE
+				 ,REG_ID
+				)
+		  SELECT #newPgmId# AS PGM_ID
+					 ,SEQ
+					 ,TITLE
+					 ,ADD_DESC
+					 ,CURRENT_TIMESTAMP(0) AS REG_DATE
+					 ,REG_ID
+			FROM TPC_NEW_PROD_DESCR
+	      WHERE PGM_ID = #pgmId#
+	  </insert>
+	  
+	<!-- SQLINES DEMO *** 입력 기능 추가 -->
+	<!-- SQLINES DEMO ***  복사 -->
+	<insert id="insertStaffSellTpcPrdKeyword">
+	/* SQLINES DEMO *** ertStaffSellTpcPrdKeyword */
+   	INSERT INTO TPC_PRODUCT_KEYWORD (
+       	PGM_ID
+     		, SEQ
+     		, SEARCH_KYWRD
+     		, REG_ID
+     		, REG_DATE
+     		, MOD_ID
+     		, MOD_DATE
+   	)
+   	SELECT	#newPgmId# AS PGM_ID
+     			, SEQ
+     			, SEARCH_KYWRD
+     			, REG_ID
+     			, REG_DATE
+     			, MOD_ID
+     			, MOD_DATE
+	FROM	TPC_PRODUCT_KEYWORD
+   	WHERE	PGM_ID = #pgmId#
+	</insert>
+
+		<!-- SQLINES DEMO ***  삭제 -->
+	<delete id="deleteAllTpcPrdTotalKeyword" parameterClass="resultImsiClass">
+	/* SQLINES DEMO *** eteAllTpcPrdTotalKeyword - 신규 상품키워드 전체 삭제 */ 
+	DELETE FROM TPC_PRODUCT_KEYWORD WHERE PGM_ID = #pgmId#
+	</delete>
+	<!-- SQLINES DEMO *** 입력 기능 추가 -->
+	
+	<!-- SQLINES DEMO ***  상세 설명 정보 확인 -->
+	<select id="selectProductDescChk" resultClass="java.lang.Integer">
+	/* SQLINES DEMO *** ectProductDescChk */
+	SELECT COUNT(1)
+	   FROM TPC_NEW_PROD_DESCR
+	 WHERE PGM_ID = #pgmId#
+	</select>
+	<!-- SQLINES DEMO *** 설명 정보 확인 기능 추가 -->
+	
+	<!-- SQLINES DEMO *** -->
+	<select id="selectAddressInfo" resultMap="resultVendorAddressInfoMap">
+		/* SQLINES DEMO *** ectAddressInfo */
+		SELECT T1.VENDOR_ID
+			 , T1.VENDOR_NM
+			 , T1.VENDOR_KIND_CD
+			 , COUNT(DISTINCT(ADDR_KIND_CD) ) AS  COUNT
+		  FROM TVE_VENDOR T1 LEFT OUTER JOIN TVE_VENDOR_ADDR_INFO T2 ON T1.VENDOR_ID = T2.VENDOR_ID AND T2.ADDR_KIND_CD IN ('01', '02') 
+		 WHERE T1.VENDOR_ID IN <iterate  open="(" close=")" conjunction=",">#[]#</iterate>
+		 GROUP BY T1.VENDOR_ID, T1.VENDOR_NM, T1.VENDOR_KIND_CD
+	</select>
+	<!-- SQLINES DEMO *** 품지 등록 여부 확인 기능추가 -->
+	
+	<delete id="deleteEcProductCategory" parameterClass="String">
+		/* SQLINES DEMO *** eteEcProductCategory - EC상품카테고리삭제 */ 
+		DELETE FROM TEC_CAT_PROD_MAPPING WHERE PGM_ID = #pgmId#
+	</delete>
+	
+	<insert id="insertEcProductCategory">
+		/* SQLINES DEMO *** ertEcProductCategory */
+		INSERT INTO TEC_CAT_PROD_MAPPING
+		(
+			  PROD_CD
+			, PGM_ID
+			, STD_CAT_CD
+			, DISP_CAT_CD
+			, DISP_YN
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		(
+        SELECT #newPgmId# AS PROD_CD
+			 , #newPgmId# AS PGM_ID
+			 , STD_CAT_CD
+			 , DISP_CAT_CD
+			 , DISP_YN
+			 , USE_YN
+			 , REG_ID
+			 , CURRENT_TIMESTAMP(0)
+			 , MOD_ID
+			 , CURRENT_TIMESTAMP(0)
+          FROM TEC_CAT_PROD_MAPPING
+         WHERE PGM_ID = #pgmId#
+		)
+	</insert>
+
+	<delete id="deleteEcProductAttribute" parameterClass="String">
+		/* SQLINES DEMO *** eteEcProductAttribute - EC상품속성삭제 */ 
+		DELETE FROM TEC_ATTR_PROD_MAPPING WHERE PGM_ID = #pgmId#
+	</delete>
+	
+	<insert id="insertEcProductAttribute">
+		/* SQLINES DEMO *** ertEcProductAttribute */
+		INSERT INTO TEC_ATTR_PROD_MAPPING
+		(
+			  PROD_CD
+			, PGM_ID
+			, ITEM_CD
+			, STD_CAT_CD
+			, ATTR_ID
+			, ATTR_VAL_ID
+			, ATTR_VAL
+			, ATTR_DTL_VAL
+			, ATTR_CODE_USE_YN
+			, USE_YN
+			, REG_ID
+			, REG_DATE
+			, MOD_ID
+			, MOD_DATE
+		)
+		(
+        SELECT #newPgmId#
+             , #newPgmId#
+             , ITEM_CD
+             , STD_CAT_CD
+             , ATTR_ID
+             , ATTR_VAL_ID
+             , ATTR_VAL
+             , ATTR_DTL_VAL
+             , ATTR_CODE_USE_YN
+             , USE_YN
+             , REG_ID
+             , CURRENT_TIMESTAMP(0)
+             , MOD_ID
+             , CURRENT_TIMESTAMP(0)
+          FROM TEC_ATTR_PROD_MAPPING
+         WHERE PGM_ID = #pgmId#
+         )
+	</insert>
+	
+	<!-- 상품확정 RFC 영양성분 조회_old250508 -->
+	<select id="selectRfcDataNutAtt_OLD250508" parameterClass="resultImsiClass" resultMap="selectRfcDataNutAttrMap">
+		/* NEDMPRO0040.selectRfcDataNutAtt */
+		SELECT 	A.PGM_ID
+			,	B.NUT_CD
+			,	B.NUT_AMT
+		FROM  TPC_NEW_PROD_REG A
+			, TPC_NUT_ATT B
+		WHERE 	A.PGM_ID = B.PGM_ID
+	    AND		A.TRD_TYPE_DIVN_CD <![CDATA[<>]]> '1'	/* 직매입이 아닌 상품만 */
+		AND		B.NUT_AMT IS NOT NULL
+		<isEmpty property="arrPgmId" prepend="AND">
+		AND		A.PGM_ID = ''
+		</isEmpty>
+		<isNotEmpty  property="arrPgmId"  prepend="AND">
+	      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+	        #arrPgmId[]#
+	      </iterate>
+	    </isNotEmpty>
+		UNION 
+	    SELECT 	A.PGM_ID
+			,	B.NUT_CD
+			,	B.NUT_AMT
+		FROM  TPC_NEW_PROD_REG A
+			, TPC_NUT_ATT B
+		WHERE 	A.PGM_ID = B.PGM_ID
+	    AND		A.TRD_TYPE_DIVN_CD ='1'		/* 직매입 상품 중 온라인 미적용 상품만 */	
+<!-- 	    AND    	A.MAT_CD='2' -->
+	    AND 	(A.VIC_ONLINE_CD IS NULL OR A.VIC_ONLINE_CD = '')
+	    AND		B.NUT_AMT IS NOT NULL
+	    <isEmpty property="arrPgmId" prepend="AND">
+		AND		A.PGM_ID = ''
+		</isEmpty>
+		<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+	      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=",">
+	        #arrPgmId[]#
+	      </iterate>
+	    </isNotEmpty>
+	</select>
+	
+	<delete id="deleteNutAttWithPgmId" parameterClass="String">
+	    DELETE 
+	    FROM
+	        TPC_NUT_ATT
+	    WHERE
+	        PGM_ID = #pgmId#	        	        	    
+	</delete>
+
+	<delete id="deleteOspDispCategory" parameterClass="String">
+		/* SQLINES DEMO *** eteOspDispCategory */
+		DELETE FROM
+		TEC_OSP_CAT_PROD_MAPPING
+		WHERE
+		PGM_ID = #pgmId#
+	</delete>
+
+	<!-- 상품확정 RFC ESG 항목 리스트 조회 -->
+	<select id="selectRfcDataEsgInfo_OLD250508" parameterClass="resultImsiClass" resultMap="selectRfcDataEsgInfoMap">
+		/* NEDMPRO0040.selectRfcDataEsgInfo */
+		WITH CTE AS (
+			SELECT A.PGM_ID
+			FROM TPC_NEW_PROD_REG A
+			WHERE A.ONOFF_DIVN_CD = '0'		/* 온오프 상품만 조회해서 확정 한다. */ 
+			AND A.TRD_TYPE_DIVN_CD <![CDATA[<>]]> '1'	/* 직매입 아닌 것만 전송(직매입 상품은 BOS에서 전송) */
+			<isEmpty  property="arrPgmId"  prepend="AND">
+				A.PGM_ID = ''
+			</isEmpty>
+			<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+		      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> 	
+		        #arrPgmId[]# 
+		      </iterate> 
+		    </isNotEmpty>
+			UNION
+			SELECT A.PGM_ID
+			FROM TPC_NEW_PROD_REG A
+			WHERE A.ONOFF_DIVN_CD = '0'		/* 온오프 상품만 조회해서 확정 한다. */
+			AND A.TRD_TYPE_DIVN_CD = '1'	/* 직매입 상품 중, 온라인적용 상품이 아닌 것만 전송 */
+			AND (A.VIC_ONLINE_CD IS NULL OR A.VIC_ONLINE_CD = '')
+			<isEmpty  property="arrPgmId"  prepend="AND">
+				A.PGM_ID = ''
+			</isEmpty>
+			<isNotEmpty  property="arrPgmId"  prepend="AND"> 
+		      <iterate prepend="A.PGM_ID IN " property="arrPgmId" open="(" close=")" conjunction=","> 	
+		        #arrPgmId[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		)
+		SELECT
+			A.PGM_ID			/* 신규상품코드 */
+			, B.ESG_GBN			/* ESG 유형 */
+			, B.ESG_AUTH		/* ESG 인증유형 */
+			, B.ESG_AUTH_DTL	/* ESG 인증상세유형 */
+			, CASE WHEN A.ESG_EARTH = '1' THEN 'X' ELSE NULL END AS ESG_EARTH		/* ESG RE:EARTH 로고사용여부 */
+			, NULLIF(D.ESG_DT_FG, '') AS ESG_DT_FG /* ESG 인증시작/종료일 필수 여부 */
+			, B.ESG_FR_DT 		/* ESG인증시작일 */
+			, B.ESG_TO_DT 		/* ESG인증종료일 */
+			, C.SAVE_FILE_NM 	/* ESG 저장파일명 */
+			, CASE WHEN C.ESG_FILE_ID IS NOT NULL THEN 'X' ELSE NULL END AS IMG_FG	/* ESG이미지 첨부여부 */
+		FROM CTE 
+		INNER JOIN TPC_NEW_PROD_REG A ON CTE.PGM_ID = A.PGM_ID
+		INNER JOIN TPC_NEW_PROD_ESG B ON A.PGM_ID = B.PGM_ID AND B.DEL_YN = 'N'
+		LEFT OUTER JOIN TPC_PROD_ESG_FILE C ON B.ESG_FILE_ID = C.ESG_FILE_ID 
+		LEFT OUTER JOIN ESG_MST D ON B.ESG_GBN = D.L_LV_CD AND B.ESG_AUTH = D.M_LV_CD AND B.ESG_AUTH_DTL = D.S_LV_CD 
+		WHERE A.ESG_YN = '1'	/* ESG 적용 상품만 조회 */
+	</select>
+	
+	<!-- ESG 인증항목 삭제 -->
+	<delete id="deleteTpcNewProdEsg" parameterClass="String">
+		/* NEDMPRO0040.deleteTpcNewProdEsg */
+		DELETE FROM TPC_NEW_PROD_ESG
+		WHERE PGM_ID = #pgmId#::VARCHAR
+	</delete>
+	
+	<!-- ESG 파일정보 삭제 -->
+	<delete id="deleteTpcNewProdEsgFile" parameterClass="String">
+		/* NEDMPRO0040.deleteTpcNewProdEsgFile */
+		DELETE FROM TPC_PROD_ESG_FILE A
+		USING TPC_NEW_PROD_ESG B 
+		WHERE A.ESG_FILE_ID = B.ESG_FILE_ID
+		AND B.PGM_ID = #pgmId#
+	</delete>
+	
+	<resultMap id="selectNewTmpProductInfoSendGbnMap" class="resultImsiClass">
+		<result column="PGM_ID"			property="pgmId"/>			<!-- 신상품코드 -->
+		<result column="VIC_ONLINE_CD"	property="vicOnlineCd"/>	<!-- 온라인적용구분 -->
+		<result column="MAXX_ONLY_YN"	property="maxxOnlyYn"/>		<!-- Maxx 단일 채널 여부 -->
+		<result column="SUPER_ONLY_YN"	property="superOnlyYn"/>	<!-- 슈퍼 단일 채널 여부 -->
+		<result column="ADM_FG"			property="admFg"/>			<!-- 관리자구분 -->
+	</resultMap>
+	
+	<!-- 확정 요청 대상별 상품LIST 구분 -->
+	<select id="selectNewTmpProductInfoSendGbn" parameterClass="resultImsiClass" resultMap="selectNewTmpProductInfoSendGbnMap">
+		/* NEDMPRO0040.selectNewTmpProductInfoSendGbn */
+		WITH CTE AS (
+			<include refid="selectImsiProductSendGbnWithInner"/>
+		)
+		SELECT
+			A.PGM_ID
+			, NULLIF(A.VIC_ONLINE_CD, '') AS VIC_ONLINE_CD
+			, CASE WHEN TRIM(A.CHAN_CD) = 'KR03' THEN 'Y' ELSE 'N' END AS MAXX_ONLY_YN			
+			, CASE WHEN TRIM(A.CHAN_CD) = 'KR04' THEN 'Y' ELSE 'N' END AS SUPER_ONLY_YN			
+			, A.ADM_FG
+		FROM TPC_NEW_PROD_REG A
+		INNER JOIN CTE ON A.PGM_ID = CTE.PGM_ID
+	</select>
+	
+	<!-- 상품확정RFC_그룹분석속성 조회 -->
+	<select id="selectRfcDataGrpAttr" parameterClass="resultImsiClass" resultMap="selectRfcDataGrpAttrMap">
+		/* NEDMPRO0040.selectRfcDataGrpAttr */
+		SELECT
+			A.PGM_ID
+			,	B.ATT_ID
+			,	B.ATT_VAL_ID					AS ATT_VAR_ID
+			,	TO_CHAR(B.REG_DATE, 'yyyymmdd')	AS REG_DATE
+			,	TO_CHAR(B.REG_DATE, 'HH24Miss')	AS REG_TIME
+			,	B.REG_ID
+			,	TO_CHAR(B.MOD_DATE, 'yyyymmdd')	AS MOD_DATE
+			,	TO_CHAR(B.MOD_DATE, 'hh24miss')	AS MOD_TIME
+			,	B.MOD_ID
+			,	'I'								AS CFG_FG
+		FROM TPC_NEW_PROD_REG A 
+		INNER JOIN TPC_GRP_ATT B ON A.PGM_ID = B.PGM_ID AND B.ATT_VAL_ID IS NOT NULL AND B.ATT_VAL_ID  <![CDATA[<>]]> ''
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- prodArr가 값 없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     1 = 0
+		</isEmpty>
+	</select>
+	
+	<!-- 상품확정RFC_영양성분 조회 -->
+	<select id="selectRfcDataNutAtt" parameterClass="resultImsiClass" resultMap="selectRfcDataNutAttrMap">
+		/* NEDMPRO0040.selectRfcDataNutAtt */
+		SELECT
+			A.PGM_ID
+			,	B.NUT_CD
+			,	B.NUT_AMT
+		FROM TPC_NEW_PROD_REG A
+		INNER JOIN TPC_NUT_ATT B ON A.PGM_ID = B.PGM_ID AND B.NUT_AMT IS NOT NULL
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- prodArr가 값 없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     1 = 0
+		</isEmpty>
+	</select>
+	
+	<!-- 상품확정RFC_ESG 항목 리스트 조회 -->
+	<select id="selectRfcDataEsgInfo" parameterClass="resultImsiClass" resultMap="selectRfcDataEsgInfoMap">
+		/* NEDMPRO0040.selectRfcDataEsgInfo */
+		SELECT
+			A.PGM_ID			/* 신규상품코드 */
+			, B.ESG_GBN			/* ESG 유형 */
+			, B.ESG_AUTH		/* ESG 인증유형 */
+			, B.ESG_AUTH_DTL	/* ESG 인증상세유형 */
+			, CASE WHEN A.ESG_EARTH = '1' THEN 'X' ELSE NULL END AS ESG_EARTH		/* ESG RE:EARTH 로고사용여부 */
+			, NULLIF(D.ESG_DT_FG, '') AS ESG_DT_FG /* ESG 인증시작/종료일 필수 여부 */
+			, B.ESG_FR_DT 		/* ESG인증시작일 */
+			, B.ESG_TO_DT 		/* ESG인증종료일 */
+			, C.SAVE_FILE_NM 	/* ESG 저장파일명 */
+			, CASE WHEN C.ESG_FILE_ID IS NOT NULL THEN 'X' ELSE NULL END AS IMG_FG	/* ESG이미지 첨부여부 */
+		FROM TPC_NEW_PROD_REG A
+		INNER JOIN TPC_NEW_PROD_ESG B ON A.PGM_ID = B.PGM_ID AND B.DEL_YN = 'N'
+		INNER JOIN ESG_MST D ON B.ESG_GBN = D.L_LV_CD AND B.ESG_AUTH = D.M_LV_CD AND B.ESG_AUTH_DTL = D.S_LV_CD	/* 항목마스터 존재 건만 전송 */
+		LEFT OUTER JOIN TPC_PROD_ESG_FILE C ON B.ESG_FILE_ID = C.ESG_FILE_ID 
+		WHERE A.ESG_YN = '1'	/* ESG 적용 상품만 조회 */
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- prodArr가 값 없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		    A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- BOS 전송일자 UPDATE -->
+	<update id="updateProdBosSendDy" parameterClass="resultImsiClass">
+		/* NEDMPRO0040.updateProdBosSendDy */
+		UPDATE TPC_NEW_PROD_REG
+		SET BOS_SEND_DY = TO_CHAR(NOW(), 'YYYYMMDD')									/* BOS 전송일자 */
+			, BOS_CFRM_END_DY = FN_GET_NEXT_WORKDAY(TO_CHAR(NOW(), 'YYYYMMDD'), 3)		/* BOS 승인마감일자 (영업일 3일 / 미승인 시 4일차부터 자동발송됨) */
+			, AUTO_SEND_EXP_DY = FN_GET_NEXT_WORKDAY(FN_GET_NEXT_WORKDAY(TO_CHAR(NOW(), 'YYYYMMDD'), 3), 1)		/* ERP 자동발송예정일자(BOS승인마감일자+1일) */
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- prodArr가 값 없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     PGM_ID = #pgmId#
+		</isEmpty>
+	</update>
+	
+	<!-- 임시보관함 List -->
+	<select id="selectImsiProductList" parameterClass="java.util.Map" resultMap="selectImsiListMap">
+		/* NEDMPRO0040.selectImsiProductList */
+		<![CDATA[
+		SELECT
+			T.PGM_ID 												/* 신상품아이디 */
+			, T.ENTP_CD 											/* 협력업체코드 */
+			, TO_CHAR(T.REG_DATE, 'YYYY.MM.DD') AS REG_DATE			/* 등록일자 */
+			, T.SELL_CD												/* 판매코드 */
+			, T.PROD_NM 											/* 상품명 */
+			, T.PROD_DIVN_CD 										/* 상품구분코드 */
+			, COALESCE(T.PUR_INRCNT_QTY, 0) AS PUR_INRCNT_QTY		/* 발주입수수량 */
+			, T.PROD_STANDARD_NM									/* 상품규격명 */
+			, T.ONLINE_PROD_NM										/* 온라인상품명 */
+			, COALESCE(T.NOR_PROD_PCOST, 0) AS NOR_PROD_PCOST		/* (마트)정상상품원가 */
+			, COALESCE(T.NOR_PROD_SALE_PRC, 0) AS NOR_PROD_SALE_PRC	/* (마트)정상상품매가 */
+			, COALESCE(T.PRFT_RATE, 0) AS PRFT_RATE					/* (마트)이익률 */
+			, COALESCE(T.WNOR_PROD_PCOST, 0) AS WNOR_PROD_PCOST		/* (MAXX)정상상품원가 */
+			, COALESCE(T.WNOR_PROD_SALE_PRC, 0) AS WNOR_PROD_SALE_PRC	/* (MAXX)정상상품매가 */
+			, COALESCE(T.WPRFT_RATE, 0) AS WPRFT_RATE					/* (MAXX)이익률 */
+			, COALESCE(T.SNOR_PROD_PCOST, 0) AS SNOR_PROD_PCOST			/* (슈퍼)정상상품원가 */
+			, COALESCE(T.SNOR_PROD_SALE_PRC, 0) AS SNOR_PROD_SALE_PRC	/* (슈퍼)정상상품매가 */
+			, COALESCE(T.SPRFT_RATE, 0) AS SPRFT_RATE					/* (슈퍼)이익률 */
+			, COALESCE(T.ONOR_PROD_PCOST, 0) AS ONOR_PROD_PCOST			/* (오카도)정상상품원가 */
+			, COALESCE(T.ONOR_PROD_SALE_PRC, 0) AS ONOR_PROD_SALE_PRC	/* (오카도)정상상품매가 */
+			, COALESCE(T.OPRFT_RATE, 0) AS OPRFT_RATE					/* (오카도)이익률 */
+			, COALESCE(C.PGM_ID, '') AS LOGI_PGM_ID					/* 물류바코드 신상품아이디 */
+			, T.ONOFF_DIVN_CD										/* 온오프구분 */
+			, T.BRAND_CD											/* 브랜드코드 */
+			, T.BRAND_NM											/* 브랜드명 */
+			, T.MAKER_CD                                            /* 메이커코드 */
+			, T.MAKER_NM                                            /* 메이커명 */
+			, T.PROD_IMG_ID                                         /* POG상품이미지아이디 */
+			, T.IMG_NCNT											/* 온라인필수이미지개수 */
+			, CASE WHEN T.IMG_NCNT > 0 THEN 'Y' ELSE 'N' END AS IMG_NCNTYN	/* 온라인이미지 첨부여부 */
+			, T.WIDE_IMG_NCNT										/* 온라인와이드이미지개수 */
+			, CASE WHEN T.WIDE_IMG_NCNT > 0 THEN 'Y' ELSE 'N' END AS WIDE_IMG_NCNTYN /* 온라인와이드이미지 첨부여부 */
+			, T.L1_CD												/* 대분류코드 */
+			, T.L3_CD												/* 소분류코드 */
+			, B.COLOR_SIZE_STATE									/* 변형속성 단품코드 여부 */
+			, T.MIX_YN												/* 혼재여부 */
+			, (CASE /*전상법추가*/
+		 		WHEN T.ONOFF_DIVN_CD='0' THEN
+		 		   CASE WHEN (
+		 					SELECT COUNT(A.INFO_GRP_CD) CNT
+		 					FROM TPR_PROD_ADD_INFO_VAL A, 
+		 						 V_PR_ADD_INFO B 
+		 					WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+		 						AND A.INFO_COL_CD = B.INFO_COL_CD
+		 						AND A.PROD_CD = T.PGM_ID
+		 					   AND B.L1_CD = T.L1_CD
+		 					)=0 THEN 'N'
+		 				WHEN (
+		 					SELECT COUNT(A.INFO_GRP_CD) CNT
+		 					FROM TPR_PROD_ADD_INFO_VAL A,
+		 						 V_PR_ADD_INFO B
+		 					WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+		 						AND A.INFO_COL_CD = B.INFO_COL_CD
+		 						AND A.PROD_CD = T.PGM_ID
+		 					   AND B.L1_CD = T.L1_CD
+		 					)=
+		 					(
+		 					SELECT COUNT(A.INFO_GRP_CD) CNT
+		 					FROM V_PR_ADD_INFO A
+		 					WHERE A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = T.PGM_ID)
+		 					  AND A.L1_CD = T.L1_CD
+		 					)THEN 'Y'
+		 					ELSE 'N' END 
+		 		ELSE 
+		 		   CASE WHEN (
+		 					SELECT COUNT(A.INFO_GRP_CD) CNT
+		 					FROM TPR_PROD_ADD_INFO_VAL A,
+		 						 V_PR_ADD_INFO B
+		 					WHERE  A.INFO_GRP_CD = B.INFO_GRP_CD
+		 						AND A.INFO_COL_CD = B.INFO_COL_CD
+		 						AND A.PROD_CD = T.PGM_ID
+		 						AND B.L3_CD = T.L3_CD
+		 					)=0 THEN 'N'
+		 				WHEN (
+		 					SELECT COUNT(A.INFO_GRP_CD) CNT
+		 					FROM TPR_PROD_ADD_INFO_VAL A, 
+		 						 V_PR_ADD_INFO B 
+		 					WHERE  A.INFO_GRP_CD = B.INFO_GRP_CD
+		 						AND A.INFO_COL_CD = B.INFO_COL_CD
+		 						AND A.PROD_CD = T.PGM_ID
+		 						AND B.L3_CD = T.L3_CD
+		 					)=
+		 					(
+		 					SELECT COUNT(A.INFO_GRP_CD) CNT
+		 					FROM V_PR_ADD_INFO A
+		 					WHERE  A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = T.PGM_ID)
+		 						AND A.L3_CD = T.L3_CD
+		 					)THEN 'Y'
+		 					ELSE 'N' END 
+		 		END   
+		 	)	AS PRODCOMMERCE	/* 전상법첨부여부 */
+			, T.PROD_ATT_TYP_FG										/* 상품범주(00:단일, 01:묶음) */
+			, (SELECT COUNT(*) AS CNT FROM PROD_ATT_CD WHERE PROD_RANGE = T.L3_CD) AS VAR_ATT_CNT		/* 입력할 분석속성개수 */
+			, T.TRD_TYPE_DIVN_CD									/* 거래유형구분코드 */
+			, (SELECT COUNT(*) AS CNT FROM TPC_GRP_ATT WHERE PGM_ID = T.PGM_ID) AS INPUT_GRP_ATTR_CNT	/* 입력한 분석속성개수 */
+			, (
+				SELECT COUNT(1) AS CNT
+				FROM GRP_L3_GRPCST_PUR_ATT
+				WHERE COALESCE(LOEKZ, ' ') <> 'X'
+				AND ATT_ID IS NOT NULL
+				AND ATT_ID <> ''
+				AND ((L3_CD = T.L3_CD AND  GRP_CD='999999') OR (L3_CD = T.L3_CD AND GRP_CD=T.GRP_CD))
+			)AS GRP_ATTR_CNT		/* 입력할 분석속성 갯수 */
+			, B.INPUT_VAR_ATT_CNT									/* 입력한 변형속성개수 */
+			, (SELECT COUNT(*) AS CNT FROM TPC_VAR_ATT WHERE PGM_ID = T.PGM_ID and VARIANT='001' ) AS INPUT_VAR_ATT_CNT001 /* 입력한변형속성001 갯수 */
+			, T.GRP_CD												/* 그룹분류 */
+			, T.DEAL_REP_PROD_YN									/* 딜 대표상품여부_온라인(미사용) */
+			, T.CTPD_YN												/* 구성품여부_온라인(미사용) */
+			, T.STAFF_MALL_SELL_PSBT_YN 							/* 임직원몰 판매가능여부 */
+			, T.MAT_CD												/* VIC/마켓 상품구분 (미사용) */
+			, T.VIC_ONLINE_CD 										/* 온라인적용여부 */
+			, T.ADM_FG												/* 관리자여부 */
+			, T.ENTP_COND_USE_YN									/* 업체조건사용여부 */
+			, CASE WHEN (SELECT COUNT(*) AS CNT FROM TPC_PRODUCT_KEYWORD WHERE PGM_ID = T.PGM_ID) = 0 THEN 'N' ELSE 'Y' END AS KEYWORD_YN	/* 키워드등록여부 */
+			,(CASE WHEN (
+		               ( SELECT COALESCE(COUNT(*),0)
+		                 FROM TPC_GOODCL_VEN_DELIVERY_AMT
+		                 WHERE DELIVERY_KIND_CD IN ('01','02','03','08')
+		                 AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+		                 AND PGM_ID = T.PGM_ID ) = 0 AND
+		               ( SELECT COALESCE( ENTP_COND_USE_YN, 'N')
+		                 FROM TPC_NEW_PROD_REG
+		                 WHERE PGM_ID = T.PGM_ID ) = 'Y' ) THEN 'N'
+		             WHEN (
+		               ( SELECT COALESCE(COUNT(*),0)
+		                 FROM TPC_GOODCL_VEN_DELIVERY_AMT
+		                 WHERE DELIVERY_KIND_CD IN ('01','02','03','08')
+		                 AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+		                 AND PGM_ID = T.PGM_ID ) = 0 AND
+		               ( SELECT COALESCE( ENTP_COND_USE_YN, 'N')
+		                 FROM TPC_NEW_PROD_REG
+		                 WHERE PGM_ID = T.PGM_ID ) = 'N' ) THEN 'Y'
+		             WHEN (
+		               ( SELECT COALESCE(COUNT(*),0)
+		                 FROM TPC_GOODCL_VEN_DELIVERY_AMT
+		                 WHERE DELIVERY_KIND_CD ='03' AND DELIVERY_AMT = '0'
+		                 AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+		                 AND PGM_ID = T.PGM_ID ) = 1 AND
+		               ( SELECT COALESCE( ENTP_COND_USE_YN, 'N')
+		                 FROM TPC_NEW_PROD_REG
+		                 WHERE PGM_ID = T.PGM_ID ) = 'N' ) THEN 'Y'
+		            WHEN (
+		                ( SELECT COALESCE(COUNT(*),0)
+		                FROM TPC_GOODCL_VEN_DELIVERY_AMT
+		                WHERE DELIVERY_KIND_CD IN ('01','02','03','08')
+		                AND (TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD') BETWEEN APPLY_START_DY AND APPLY_END_DY)
+		                AND PGM_ID = T.PGM_ID ) > 0 ) THEN 'N'
+		           END
+		       ) AS NOCH_DELI_YN		/* 배송설정여부 */
+			, CASE WHEN (SELECT COUNT(*) AS CNT FROM TPC_NEW_PROD_DESCR WHERE PGM_ID = T.PGM_ID) > 0 THEN 'Y' ELSE 'N' END PROD_DESC_YN	/* 상품상세설명 등록여부 */
+			, T.ONLINE_PROD_TYPE_CD									/* 온라인상품유형코드 */
+			, CASE WHEN ( SELECT COUNT(*) AS CNT FROM TEC_ATTR_PROD_MAPPING WHERE PGM_ID = T.PGM_ID ) > 0 THEN 'Y' ELSE 'N' END AS EC_ATTR_REG_YN	/* EC속성 등록유무 */
+			, CASE WHEN ( SELECT COUNT(*) AS CNT FROM TPC_NUT_ATT WHERE PGM_ID = T.PGM_ID ) > 0 THEN 'Y' ELSE 'N' END AS NUT_ATTR_REG_YN	/* 영양성분 등록유무 */
+			, CASE WHEN ( SELECT COUNT(*) AS CNT FROM TPC_NUT_L3CD WHERE L3_CD = T.L3_CD ) > 0 THEN 'Y' ELSE 'N' END AS CAN_REG_NUT_ATTR_YN	/* 등록가능한 영양성분 존재유무 */
+			, T.CTR_TYPE_DIVN_CD									/* 센터유형구분코드(PRD12) */
+			, T.TMPRT_DIVN_CD										/* 온도구분코드(PRD30) */
+			, V.PB_FG AS PB_VEN_FG									/* PB파트너사 구분 */
+			, T.PROD_TYPE_DIVN_CD									/* 상품유형구분코드(PRD09) */
+			, CASE WHEN ( SELECT COUNT(*) AS CNT FROM TPC_SALE_IMG WHERE PGM_ID = T.PGM_ID) > 0 THEN 'Y' ELSE 'N' END AS POG_IMG_YN			/* POG이미지 등록여부 */
+			, T.ESG_YN												/* ESG 적용여부 */
+			, CASE WHEN NULLIF(T.ESG_YN,'') = '1' AND NULLIF(ESG.PGM_ID, '') IS NULL THEN 'N' ELSE 'Y' END AS ESG_ITM_REG_YN		/* ESG 적용 시, 인증정보 등록여부 */
+			, CASE WHEN NULLIF(T.ESG_YN,'') = '1' AND COALESCE(ESG.ESG_DT_FG_CHK, 0) > 0 THEN 'N' ELSE 'Y' END AS ESG_DT_FG_CHK		/* ESG인증기간 필수 등록여부 */
+			, CASE WHEN NULLIF(T.ESG_YN,'') = '1' AND COALESCE(ESG.ESG_DT_VALID_CHK, 0) > 0 THEN 'N' ELSE 'Y' END AS ESG_DT_VALID_CHK	/* ESG인증기간 유효성체크 */
+			, T.CHAN_CD												/* 채널코드 */		
+			, NULLIF(T.BOS_SEND_DY, '') AS BOS_SEND_DY				/* BOS 전송 일자 */											
+			, NULLIF(T.AUTO_SEND_FG, '') AS AUTO_SEND_FG			/* ERP 자동발송 여부 */
+			, NULLIF(T.BOS_CFRM_END_DY, '')	AS BOS_CFRM_END_DY		/* BOS 승인마감일자 */
+			, COALESCE(BOS_STS.BOS_CFRM_YN, 'N') AS BOS_CFRM_YN		/* BOS 승인여부 */
+			, CASE
+				WHEN NULLIF(T.BOS_CFRM_END_DY, '') IS NOT NULL AND TO_CHAR(NOW(), 'YYYYMMDD') > T.BOS_CFRM_END_DY THEN 'Y'
+				WHEN NULLIF(T.BOS_CFRM_END_DY, '') IS NULL THEN ''
+				ELSE 'N'
+			END AS BOS_CFRM_EXP_YN									/* BOS 승인기간 만료여부 */
+			, CASE
+				WHEN T.TRD_TYPE_DIVN_CD != '1' THEN 'N'											/* 직매입이 아닐 시 */
+				WHEN T.CHAN_CD = 'KR03' AND NULLIF(T.VIC_ONLINE_CD, '') IS NULL THEN 'N'		/* 직매입, MAXX 단일, 온라인미적용시 */
+				WHEN T.CHAN_CD = 'KR04'	THEN 'N'												/* 직매입, SUPER 단일일 경우 */
+				ELSE 'Y' 
+			END AS BOS_TG_YN		/* BOS 승인대상여부 */
+		FROM TPC_NEW_PROD_REG T
+		LEFT OUTER JOIN (
+			SELECT
+				TVA.PGM_ID
+				, COUNT(TVA.PGM_ID) AS INPUT_VAR_ATT_CNT
+				, MIN(CASE WHEN NULLIF(TVA.ITEM_CD, '') IS NULL THEN  'F' ELSE 'T' END)  AS COLOR_SIZE_STATE
+			FROM TPC_VAR_ATT TVA
+			GROUP BY TVA.PGM_ID
+		)B ON T.PGM_ID = B.PGM_ID
+		LEFT OUTER JOIN TPC_LOGI_BCD C ON T.PGM_ID = C.PGM_ID
+		LEFT OUTER JOIN HQ_VEN V ON T.ENTP_CD = V.VEN_CD
+		LEFT OUTER JOIN (
+			SELECT
+				S1.PGM_ID
+				, SUM(CASE WHEN S2.ESG_DT_FG = 'X' AND (NULLIF(S1.ESG_FR_DT, '') IS NULL OR NULLIF(S1.ESG_TO_DT, '') IS NULL) THEN 1 ELSE 0 END) AS ESG_DT_FG_CHK /* ESG인증기간 필수등록여부 체크 */
+				, SUM(
+					CASE
+				--		WHEN NULLIF(S1.ESG_FR_DT, '') IS NOT NULL AND NULLIF(S1.ESG_FR_DT, '') < TO_CHAR(NOW(), 'YYYYMMDD') THEN 1	/* 인증시작일은 과거일 수 없음 */
+						WHEN NULLIF(S1.ESG_TO_DT, '') IS NOT NULL AND NULLIF(S1.ESG_TO_DT, '') < TO_CHAR(NOW(), 'YYYYMMDD') THEN 1	/* 인증종료일은 과거일 수 없음 */
+						WHEN NULLIF(S1.ESG_FR_DT, '') IS NOT NULL AND NULLIF(S1.ESG_TO_DT, '') IS NOT NULL AND NULLIF(S1.ESG_TO_DT, '') < NULLIF(S1.ESG_FR_DT, '') THEN 1	/* 인증종료일은 인증시작일 이전일 수 없음 */
+						ELSE 0
+					END
+				)AS ESG_DT_VALID_CHK	/* ESG인증기간 유효성 체크 */
+			FROM TPC_NEW_PROD_ESG S1
+			INNER JOIN ESG_MST S2 ON S1.ESG_GBN = S2.L_LV_CD AND S1.ESG_AUTH = S2.M_LV_CD AND S1.ESG_AUTH_DTL = S2.S_LV_CD
+									AND (S2.DEL_FG IS NULL OR S2.DEL_FG != 'X')	 
+			WHERE S1.DEL_YN = 'N'
+			GROUP BY S1.PGM_ID
+		)ESG ON T.PGM_ID = ESG.PGM_ID
+		LEFT OUTER JOIN (
+			SELECT
+				PGM_ID
+				, CASE WHEN COUNT(1) > 0 THEN 'Y' ELSE 'N' END AS BOS_CFRM_YN
+			FROM TPC_NEW_PROD_STS BOS_STS
+			WHERE PRGS_STS IN ('81', '90')
+			GROUP BY PGM_ID
+		)BOS_STS ON T.PGM_ID = BOS_STS.PGM_ID
+		WHERE 1=1
+		AND T.ONOFF_DIVN_CD = '0'		/* 온오프상품만 조회 */
+		]]>
+		AND (T.MD_SEND_DIVN_CD IS NULL OR T.MD_SEND_DIVN_CD = '')		/* 미발송건만조회 */
+		<!-- 관리자구분에 따른 조회조건 변경 START -->
+		<isNotEmpty property="uAdmFg">AND T.ADM_FG = #uAdmFg#</isNotEmpty>				<!-- 관리자 구분 있는 경우 -->
+		<isEmpty property="uAdmFg">AND (T.ADM_FG IS NULL OR T.ADM_FG = '')</isEmpty>	<!-- 관리자 구분 없는 경우 -->
+		<!-- ./관리자구분에 따른 조회조건 변경 END -->
+		<isNotEmpty property="srchStartDt">AND T.REG_DATE BETWEEN TO_TIMESTAMP(CONCAT(#srchStartDt# , '000000'), 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(CONCAT(#srchEndDt# , '235959'), 'YYYYMMDDHH24MISS')</isNotEmpty>
+	    <isNotEmpty property="srchEntpCode">AND T.ENTP_CD = #srchEntpCode#</isNotEmpty>
+	    <isEmpty property="srchEntpCode">
+	      <isNotEmpty  property="venCds" prepend="AND">
+	        <iterate prepend="T.ENTP_CD IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate>
+	       </isNotEmpty>
+	    </isEmpty>
+	    <isNotEmpty property="srchOnOffDivnCode">AND T.ONOFF_DIVN_CD = #srchOnOffDivnCode#</isNotEmpty>
+	    <isNotEmpty property="srchProductDivnCode">AND T.PROD_DIVN_CD = #srchProductDivnCode#</isNotEmpty>
+	    <isNotEmpty property="prodTypeFlag">
+	      <isEqual property="prodTypeFlag" compareValue="01"><!-- 일반상품 -->
+		    AND COALESCE(T.DEAL_REP_PROD_YN,'N') &lt;&gt; 'Y'
+		    AND COALESCE(T.CTPD_YN,'N') &lt;&gt; 'Y'
+	      </isEqual>
+	      <isEqual property="prodTypeFlag" compareValue="02"><!-- 딜상품 -->
+			AND COALESCE(T.DEAL_REP_PROD_YN,'N') = 'Y'
+	      </isEqual>
+	      <isEqual property="prodTypeFlag" compareValue="03"><!-- 추가구성품 -->
+			AND COALESCE(T.CTPD_YN,'N') = 'Y'
+	      </isEqual>
+	    </isNotEmpty>
+		ORDER BY T.PGM_ID DESC
+	</select>
+	
+	<!-- [BOS FIX MAP] 신상품마스터 -->
+	<resultMap id="selectTpcNewProdRegBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"							property="PGM_ID"						/>	<!-- 신상품코드 -->
+		<result column="TEAM_CD"						property="TEAM_CD"						/>	<!-- 팀코드 -->
+		<result column="L1_CD"							property="L1_CD"						/>	<!-- 대분류코드 -->
+		<result column="L3_CD"							property="L3_CD"						/>	<!-- 소분류코드 -->
+		<result column="PROD_NM"						property="PROD_NM"						/>	<!-- 상품명 -->
+		<result column="PROD_EN_NM"						property="PROD_EN_NM"					/>	<!-- 상품명(영문) -->
+		<result column="PROD_SHORT_NM"					property="PROD_SHORT_NM"				/>	<!-- 단축상품명 -->
+		<result column="ONOFF_DIVN_CD"					property="ONOFF_DIVN_CD"				/>	<!-- 온오프구분코드 -->
+		<result column="ENTP_CD"						property="ENTP_CD"						/>	<!-- 업체코드 -->
+		<result column="SELL_CD"						property="SELL_CD"						/>	<!-- 판매코드 -->
+		<result column="ONLINE_PROD_NM"					property="ONLINE_PROD_NM"				/>	<!-- 온라인상품명 -->
+		<result column="ONLINE_REP_PROD_CD"				property="ONLINE_REP_PROD_CD"			/>	<!-- 온라인대표상품코드 -->
+		<result column="PROD_DIVN_CD"					property="PROD_DIVN_CD"					/>	<!-- 상품구분코드(0:신선비규격, 1:규격, 5:패션) -->
+		<result column="PROD_STANDARD_NM"				property="PROD_STANDARD_NM"				/>	<!-- 상품규격명 -->
+		<result column="DP_TOT_QTY"						property="DP_TOT_QTY"					/>	<!-- 표시총수량 -->
+		<result column="DP_BASE_QTY"					property="DP_BASE_QTY"					/>	<!-- 표시기준수량 -->
+		<result column="NOR_PROD_PCOST"					property="NOR_PROD_PCOST"				/>	<!-- 마트 정상상품원가 -->
+		<result column="NOR_PROD_CURR"					property="NOR_PROD_CURR"				/>	<!-- 마트 정상상품원가 단위 -->
+		<result column="NOR_PROD_SALE_PRC"				property="NOR_PROD_SALE_PRC"			/>	<!-- 마트 정상상품매가 -->
+		<result column="NOR_PROD_SALE_CURR"				property="NOR_PROD_SALE_CURR"			/>	<!-- 마트 정상상품매가 단위 -->
+		<result column="DP_UNIT_CD"						property="DP_UNIT_CD"					/>	<!-- 표시단위코드 -->
+		<result column="EVT_PROD_SELL_PRC"				property="EVT_PROD_SELL_PRC"			/>	<!-- 행사상품판매가격 -->
+		<result column="EVT_PROD_SELL_CURR"				property="EVT_PROD_SELL_CURR"			/>	<!-- 행사상품판매가격 통화단위 -->
+		<result column="SELL_PRC"						property="SELL_PRC"						/>	<!-- 정상매가 -->
+		<result column="SELL_CURR"						property="SELL_CURR"					/>	<!-- 정상매가 통화단위 -->
+		<result column="TAXAT_DIVN_CD"					property="TAXAT_DIVN_CD"				/>	<!-- 과세구분코드[PRD06] -->
+		<result column="PROD_TYPE_DIVN_CD"				property="PROD_TYPE_DIVN_CD"			/>	<!-- 상품유형구분코드[PRD09] -->
+		<result column="CTR_TYPE_DIVN_CD"				property="CTR_TYPE_DIVN_CD"				/>	<!-- 센터유형구분코드[PRD12] -->
+		<result column="PRC_ISSUE_DIVN_CD"				property="PRC_ISSUE_DIVN_CD"			/>	<!-- 가격발급구분코드 -->
+		<result column="PROD_HRZN_LENG"					property="PROD_HRZN_LENG"				/>	<!-- 상품가로길이 -->
+		<result column="PROD_VTCL_LENG"					property="PROD_VTCL_LENG"				/>	<!-- 상품세로길이 -->
+		<result column="PROD_HIGT"						property="PROD_HIGT"					/>	<!-- 상품높이 -->
+		<result column="PROD_DESC"						property="PROD_DESC"					/>	<!-- 상품설명 -->
+		<result column="ISP_DTL_DESC"					property="ISP_DTL_DESC"					/>	<!-- ISP 상세설명 -->
+		<result column="HOME_CD"						property="HOME_CD"						/>	<!-- 원산지코드 -->
+		<result column="PUR_INRCNT_QTY"					property="PUR_INRCNT_QTY"				/>	<!-- 발주입수량 -->
+		<result column="PRFT_RATE"						property="PRFT_RATE"					/>	<!-- 마트 이익율 -->
+		<result column="PUR_UNIT_CD"					property="PUR_UNIT_CD"					/>	<!-- 발주단위코드 -->
+		<result column="PROMO_AMT_DIVN_CD"				property="PROMO_AMT_DIVN_CD"			/>	<!-- 권장금액구분코드 -->
+		<result column="NEW_PROD_FIRST_PUR_DIVN_CD"		property="NEW_PROD_FIRST_PUR_DIVN_CD"	/>	<!-- 새상품최초발주구분코드 -->
+		<result column="NPUR_BUY_PSBT_DIVN_CD"			property="NPUR_BUY_PSBT_DIVN_CD"		/>	<!-- 무발주매입가능구분코드 -->
+		<result column="SESN_YEAR_CD"					property="SESN_YEAR_CD"					/>	<!-- 시즌년도 -->
+		<result column="SESN_DIVN_CD"					property="SESN_DIVN_CD"					/>	<!-- 계절구분코드 -->
+		<result column="PROTECT_TAG_DIVN_CD"			property="PROTECT_TAG_DIVN_CD"			/>	<!-- 도난방지택구분코드 -->
+		<result column="PROTECT_TAG_TYPE_CD"			property="PROTECT_TAG_TYPE_CD"			/>	<!-- 도난방지택유형코드 -->
+		<result column="NEW_PROD_GEN_DIVN_CD"			property="NEW_PROD_GEN_DIVN_CD"			/>	<!-- 새상품생성구분코드 -->
+		<result column="TRD_TYPE_DIVN_CD"				property="TRD_TYPE_DIVN_CD"				/>	<!-- 거래유형구분코드 -->
+		<result column="BARCD_VERIFY_DOC_TF"			property="BARCD_VERIFY_DOC_TF"			/>	<!-- 바코드검증서유무 -->
+		<result column="MIX_YN"							property="MIX_YN"						/>	<!-- 혼재여부 -->
+		<result column="STGE_PSBT_DD"					property="STGE_PSBT_DD"					/>	<!-- 입고가능일 -->
+		<result column="PICK_PSBT_DD"					property="PICK_PSBT_DD"					/>	<!-- 출고가능일 -->
+		<result column="TMPRT_DIVN_CD"					property="TMPRT_DIVN_CD"				/>	<!-- 온도구분코드 -->
+		<result column="FLOW_DD_MGR_CD"					property="FLOW_DD_MGR_CD"				/>	<!-- 유통일관리코드 -->
+		<result column="QTY_WEGT_DIVN_CD"				property="QTY_WEGT_DIVN_CD"				/>	<!-- 수량무게구분코드 -->
+		<result column="MAX_KEEP_DD_CNT"				property="MAX_KEEP_DD_CNT"				/>	<!-- 최대보관일수 -->
+		<result column="BRAND_CD"						property="BRAND_CD"						/>	<!-- 브랜드코드 -->
+		<result column="BRAND_NM"						property="BRAND_NM"						/>	<!-- 브랜드명 -->
+		<result column="MAKER_CD"						property="MAKER_CD"						/>	<!-- 메이커코드 -->
+		<result column="MAKER_NM"						property="MAKER_NM"						/>	<!-- 메이커명 -->
+		<result column="MIN_ORD_PSBT_QTY"				property="MIN_ORD_PSBT_QTY"				/>	<!-- 최소주문가능량 -->
+		<result column="MAX_ORD_PSBT_QTY"				property="MAX_ORD_PSBT_QTY"				/>	<!-- 최대주문가능량 -->
+		<result column="MD_SEND_DIVN_CD"				property="MD_SEND_DIVN_CD"				/>	<!-- MD전송구분코드 -->
+		<result column="TOT_INSP_YN"					property="TOT_INSP_YN"					/>	<!-- 전수검사여부 -->
+		<result column="PRODUCT_DY"						property="PRODUCT_DY"					/>	<!-- 생산일자 -->
+		<result column="PROD_IMG_ID"					property="PROD_IMG_ID"					/>	<!-- 상품이미지아이디 -->
+		<result column="NFOML_VARIATION_DESC"			property="NFOML_VARIATION_DESC"			/>	<!-- 비정규베리에이션설명 -->
+		<result column="REG_DATE"						property="REG_DATE"						/>	<!-- 등록일시 -->
+		<result column="REG_ID"							property="REG_ID"						/>	<!-- 등록아이디 -->
+		<result column="MOD_DATE"						property="MOD_DATE"						/>	<!-- 수정일시 -->
+		<result column="MOD_ID"							property="MOD_ID"						/>	<!-- 수정아이디 -->
+		<result column="CATEGORY_ID"					property="CATEGORY_ID"					/>	<!-- 온라인전시카테고리코드 -->
+		<result column="SOCIAL_PROD_DELI_CD"			property="SOCIAL_PROD_DELI_CD"			/>	<!-- 소셜상품배송코드 -->
+		<result column="KAN_PROD_CD"					property="KAN_PROD_CD"					/>	<!-- KAN상품분류 -->
+		<result column="UNSPSC_CD"						property="UNSPSC_CD"					/>	<!-- UNSPC 코드 -->
+		<result column="GTIN_CD"						property="GTIN_CD"						/>	<!-- GTIN 코드 -->
+		<result column="IMG_NCNT"						property="IMG_NCNT"						/>	<!-- 온라인이미지개수 -->
+		<result column="WNOR_PROD_PCOST"				property="WNOR_PROD_PCOST"				/>	<!-- MAXX 정상상품원가 -->
+		<result column="WNOR_PROD_CURR"					property="WNOR_PROD_CURR"				/>	<!-- MAXX 정상상품원가 단위 -->
+		<result column="WNOR_PROD_SALE_PRC"				property="WNOR_PROD_SALE_PRC"			/>	<!-- MAXX 정상상품매가 -->
+		<result column="WNOR_PROD_SALE_CURR"			property="WNOR_PROD_SALE_CURR"			/>	<!-- MAXX 정상상품매가 단위 -->
+		<result column="WPRFT_RATE"						property="WPRFT_RATE"					/>	<!-- MAXX 이익률 -->
+		<result column="MD_VALI_SELL_CD"				property="MD_VALI_SELL_CD"				/>	<!-- MD유효판매코드 -->
+		<result column="NEW_PROD_PROMO_FG"				property="NEW_PROD_PROMO_FG"			/>	<!-- 신상품장려금구분 -->
+		<result column="NEW_PROD_ST_DY"					property="NEW_PROD_ST_DY"				/>	<!-- 신상품출시일자 -->
+		<result column="OVER_PROMO_FG"					property="OVER_PROMO_FG"				/>	<!-- 성과초과장려금구분 -->
+		<result column="MODEL_NM"						property="MODEL_NM"						/>	<!-- 모델명 -->
+		<result column="ECO_YN"							property="ECO_YN"						/>	<!-- 친환경인증여부 -->
+		<result column="ECO_NM"							property="ECO_NM"						/>	<!-- 친환경인증분류명 -->
+		<result column="DLV_GA"							property="DLV_GA"						/>	<!-- 차등배송비여부 -->
+		<result column="DLV_DT"							property="DLV_DT"						/>	<!-- 별도설치비내용 -->
+		<result column="INS_CO"							property="INS_CO"						/>	<!-- 별도설치비유무 -->
+		<result column="SIZE_UNIT"						property="SIZE_UNIT"					/>	<!-- 사이즈단위 -->
+		<result column="L2_CD"							property="L2_CD"						/>	<!-- 중분류코드 -->
+		<result column="NOPROD_FG"						property="NOPROD_FG"					/>	<!-- 상품유형 -->
+		<result column="PROD_ATT_TYP_FG"				property="PROD_ATT_TYP_FG"				/>	<!-- 상품범주 -->
+		<result column="TOT_WEIGHT"						property="TOT_WEIGHT"					/>	<!-- 총중량 -->
+		<result column="WEIGHT_UNIT"					property="WEIGHT_UNIT"					/>	<!-- 총중량단위 -->
+		<result column="PIECE_QTY"						property="PIECE_QTY"					/>	<!-- 낱개수량 -->
+		<result column="PIECE_UNIT"						property="PIECE_UNIT"					/>	<!-- 낱개단위 -->
+		<result column="WASTE_FG"						property="WASTE_FG"						/>	<!-- 폐기물유형 -->
+		<result column="PLASTIC_WEIGHT"					property="PLASTIC_WEIGHT"				/>	<!-- 플라스틱무게 -->
+		<result column="RECYCLE_FG1"					property="RECYCLE_FG1"					/>	<!-- 재활용유형1 -->
+		<result column="RECYCLE_FG2"					property="RECYCLE_FG2"					/>	<!-- 재활용유형2 -->
+		<result column="RECYCLE_FG3"					property="RECYCLE_FG3"					/>	<!-- 재활용유형3 -->
+		<result column="RECYCLE_WEIGHT1"				property="RECYCLE_WEIGHT1"				/>	<!-- 재활용무게1 -->
+		<result column="RECYCLE_WEIGHT2"				property="RECYCLE_WEIGHT2"				/>	<!-- 재활용무게2 -->
+		<result column="RECYCLE_WEIGHT3"				property="RECYCLE_WEIGHT3"				/>	<!-- 재활용무게3 -->
+		<result column="FLOW_DD"						property="FLOW_DD"						/>	<!-- 유통일 -->
+		<result column="ZZNEWPROD_FG"					property="ZZNEWPROD_FG"					/>	<!-- 신상품구분 -->
+		<result column="GRP_CD"							property="GRP_CD"						/>	<!-- 그룹분석속성코드 -->
+		<result column="ADM_FG"							property="ADM_FG"						/>	<!-- 관리자여부 -->
+		<result column="RSERV_ORD_PSBT_START_DY"		property="RSERV_ORD_PSBT_START_DY"		/>	<!-- 예약주문가능시작일자 -->
+		<result column="RSERV_ORD_PSBT_END_DY"			property="RSERV_ORD_PSBT_END_DY"		/>	<!-- 예약주문가능종료일자 -->
+		<result column="RSERV_PROD_PICK_IDCT_DY"		property="RSERV_PROD_PICK_IDCT_DY"		/>	<!-- 예약상품출고지시일자 -->
+		<result column="ONLINE_PROD_TYPE_CD"			property="ONLINE_PROD_TYPE_CD"			/>	<!-- 온라인상품유형코드 -->
+		<result column="OPTN_LOAD_SET_QTY"				property="OPTN_LOAD_SET_QTY"			/>	<!-- 골라담기세트수량 -->
+		<result column="OPTN_LOAD_CONTENT"				property="OPTN_LOAD_CONTENT"			/>	<!-- 골라담기옵션내용 -->
+		<result column="HOPE_DELI_PSBT_DD"				property="HOPE_DELI_PSBT_DD"			/>	<!-- 희망배송가능일 -->
+		<result column="DEAL_REP_PROD_YN"				property="DEAL_REP_PROD_YN"				/>	<!-- 딜대표상품여부 -->
+		<result column="OPTN_PROD_PRC_MGR_YN"			property="OPTN_PROD_PRC_MGR_YN"			/>	<!-- 옵션상품가격관리여부 -->
+		<result column="CTPD_YN"						property="CTPD_YN"						/>	<!-- 구성품여부 -->
+		<result column="CTPD_DEAL_YN"					property="CTPD_DEAL_YN"					/>	<!-- 구성품취급여부 -->
+		<result column="PERI_DELI_YN"					property="PERI_DELI_YN"					/>	<!-- 정기배송여부 -->
+		<result column="BDL_DELI_YN"					property="BDL_DELI_YN"					/>	<!-- 묶음배송여부 -->
+		<result column="STAFF_MALL_SELL_PSBT_YN"		property="STAFF_MALL_SELL_PSBT_YN"		/>	<!-- 임직원몰판매가능여부 -->
+		<result column="STAFF_DC_AMT"					property="STAFF_DC_AMT"					/>	<!-- 임직원할인가 -->
+		<result column="DELI_PSBT_REGN_CD"				property="DELI_PSBT_REGN_CD"			/>	<!-- 배송가능지역코드 -->
+		<result column="ENTP_COND_USE_YN"				property="ENTP_COND_USE_YN"				/>	<!-- 업체조건사용여부 -->
+		<result column="ENTP_IN_PROD_CD"				property="ENTP_IN_PROD_CD"				/>	<!-- 업체내부상품코드 -->
+		<result column="SELL_START_DY"					property="SELL_START_DY"				/>	<!-- 판매시작일자 -->
+		<result column="SELL_END_DY"					property="SELL_END_DY"					/>	<!-- 판매종료일자 -->
+		<result column="NOR_PROD_INFO_GRP_CD"			property="NOR_PROD_INFO_GRP_CD"			/>	<!-- 전상법분류코드 -->
+		<result column="KC_INFO_GRP_CD"					property="KC_INFO_GRP_CD"				/>	<!-- KC인증분류코드 -->
+		<result column="DEAL_PROD_DIVN_CD"				property="DEAL_PROD_DIVN_CD"			/>	<!-- 딜상품구분코드 -->
+		<result column="PROD_OPTION_DESC"				property="PROD_OPTION_DESC"				/>	<!-- 상품옵션설명 -->
+		<result column="DEAL_PROD_DESC_SHOW_YN"			property="DEAL_PROD_DESC_SHOW_YN"		/>	<!-- 딜상품 추가설명보기 여부 -->
+		<result column="VIC_ONLINE_CD"					property="VIC_ONLINE_CD"				/>	<!-- VIC 온라인여부 -->
+		<result column="EXPR_PROD_YN"					property="EXPR_PROD_YN"					/>	<!-- 체험형상품여부 -->
+		<result column="SELLER_RECOMM"					property="SELLER_RECOMM"				/>	<!-- 판매자 추천평 -->
+		<result column="NET_WEIGHT"						property="NET_WEIGHT"					/>	<!-- 수중량 -->
+		<result column="OWNSTOK_FG"						property="OWNSTOK_FG"					/>	<!-- 총량약정량구분 -->
+		<result column="PLAN_RECV_QTY"					property="PLAN_RECV_QTY"				/>	<!-- 총량약정량 -->
+		<result column="ORD_DEADLINE"					property="ORD_DEADLINE"					/>	<!-- 발주마감기한 -->
+		<result column="MNL_PROD_REG"					property="MNL_PROD_REG"					/>	<!-- 수기등록여부 -->
+		<result column="S_TYPE"							property="S_TYPE"						/>	<!-- 소싱유형 -->
+		<result column="ADL_YN"							property="ADL_YN"						/>	<!-- 성인전용상품여부 -->
+		<result column="WIDE_IMG_NCNT"					property="WIDE_IMG_NCNT"				/>	<!-- 와이드이미지 개수 -->
+		<result column="THEMA_YN"						property="THEMA_YN"						/>	<!-- 테마사용여부(Y/N) -->
+		<result column="DEAL_VIEW_CD"					property="DEAL_VIEW_CD"					/>	<!-- 묶음상품 보기 방식 -->
+		<result column="VIDEO_URL"						property="VIDEO_URL"					/>	<!-- 동영상경로 -->
+		<result column="DEAL_SC_DP_YN"					property="DEAL_SC_DP_YN"				/>	<!-- 딜상품 검색노출여부 -->
+		<result column="ESG_YN"							property="ESG_YN"						/>	<!-- ESG 상품여부 -->
+		<result column="ESG_EARTH"						property="ESG_EARTH"					/>	<!-- RE:EARTH 로고 사용유무 -->
+		<result column="SNOR_PROD_PCOST"				property="SNOR_PROD_PCOST"				/>	<!-- 슈퍼 정상상품원가 -->
+		<result column="SNOR_PROD_CURR"					property="SNOR_PROD_CURR"				/>	<!-- 슈퍼 정상상품원가 단위 -->
+		<result column="SNOR_PROD_SALE_PRC"				property="SNOR_PROD_SALE_PRC"			/>	<!-- 슈퍼 정상상품매가 -->
+		<result column="SNOR_PROD_SALE_CURR"			property="SNOR_PROD_SALE_CURR"			/>	<!-- 슈퍼 정상상품매가 단위 -->
+		<result column="SPRFT_RATE"						property="SPRFT_RATE"					/>	<!-- 슈퍼 이익률 -->
+		<result column="ONOR_PROD_PCOST"				property="ONOR_PROD_PCOST"				/>	<!-- 오카도 정상상품원가 -->
+		<result column="ONOR_PROD_CURR"					property="ONOR_PROD_CURR"				/>	<!-- 오카도 정상상품원가 단위 -->
+		<result column="ONOR_PROD_SALE_PRC"				property="ONOR_PROD_SALE_PRC"			/>	<!-- 오카도 정상상품매가 -->
+		<result column="ONOR_PROD_SALE_CURR"			property="ONOR_PROD_SALE_CURR"			/>	<!-- 오카도 정상상품매가 단위 -->
+		<result column="OPRFT_RATE"						property="OPRFT_RATE"					/>	<!-- 오카도 이익률 -->
+		<result column="CHAN_CD"						property="CHAN_CD"						/>	<!-- 채널코드 -->
+		<result column="BOS_CFRM_END_DY"				property="BOS_CFRM_END_DY"				/>	<!-- BOS 승인마감일자 -->
+		<result column="AUTO_SEND_EXP_DY"				property="AUTO_SEND_EXP_DY"				/>	<!-- ERP 자동발송예정일자(BOS승인마감일자+1일) -->
+		<result column="S_NEW_PROD_PROMO_FG" 			property="S_NEW_PROD_PROMO_FG" 			/>	<!-- (슈퍼) 신상품장려금구분 -->
+		<result column="S_NEW_PROD_ST_DY" 				property="S_NEW_PROD_ST_DY"				/>	<!-- (슈퍼) 신상품출시일자 -->
+		<result column="S_OVER_PROMO_FG" 				property="S_OVER_PROMO_FG" 				/>	<!-- (슈퍼) 성과초과장려금구분 --> 
+	</resultMap>
+	
+	<!-- [BOS FIX] 신상품마스터 -->
+	<select id="selectTpcNewProdRegBosFix" parameterClass="resultImsiClass" resultMap="selectTpcNewProdRegBosFixMap">
+		/* NEDMPRO0040.selectTpcNewProdRegBosFix */
+		SELECT
+			A.PGM_ID					/* 신상품코드 */
+			, A.TEAM_CD					/* 팀코드 */
+			, A.L1_CD					/* 대분류코드 */
+			, A.L3_CD					/* 소분류코드 */
+			, A.PROD_NM					/* 상품명 */
+			, A.PROD_EN_NM				/* 상품명(영문) */
+			, A.PROD_SHORT_NM			/* 단축상품명 */
+			, A.ONOFF_DIVN_CD			/* 온오프구분코드 */
+			, A.ENTP_CD					/* 업체코드 */
+			, A.SELL_CD					/* 판매코드 */
+			, A.ONLINE_PROD_NM			/* 온라인상품명 */
+			, A.ONLINE_REP_PROD_CD		/* 온라인대표상품코드 */
+			, A.PROD_DIVN_CD			/* 상품구분코드(0:신선비규격, 1:규격, 5:패션) */
+			, A.PROD_STANDARD_NM		/* 상품규격명 */
+			, A.DP_TOT_QTY				/* 표시총수량 */
+			, A.DP_BASE_QTY				/* 표시기준수량 */
+			, A.NOR_PROD_PCOST			/* 마트 정상상품원가 */
+			, A.NOR_PROD_CURR			/* 마트 정상상품원가 단위 */
+			, A.NOR_PROD_SALE_PRC		/* 마트 정상상품매가 */
+			, A.NOR_PROD_SALE_CURR		/* 마트 정상상품매가 단위 */
+			, A.DP_UNIT_CD				/* 표시단위코드 */
+			, A.EVT_PROD_SELL_PRC		/* 행사상품판매가격 */
+			, A.EVT_PROD_SELL_CURR		/* 행사상품판매가격 통화단위 */
+			, A.SELL_PRC				/* 정상매가 */
+			, A.SELL_CURR				/* 정상매가 통화단위 */
+			, A.TAXAT_DIVN_CD			/* 과세구분코드[PRD06] */
+			, A.PROD_TYPE_DIVN_CD		/* 상품유형구분코드[PRD09] */
+			, A.CTR_TYPE_DIVN_CD		/* 센터유형구분코드[PRD12] */
+			, A.PRC_ISSUE_DIVN_CD		/* 가격발급구분코드 */
+			, A.PROD_HRZN_LENG			/* 상품가로길이 */
+			, A.PROD_VTCL_LENG			/* 상품세로길이 */
+			, A.PROD_HIGT				/* 상품높이 */
+			, A.PROD_DESC				/* 상품설명 */
+			, A.ISP_DTL_DESC			/* ISP 상세설명 */
+			, A.HOME_CD					/* 원산지코드 */
+			, A.PUR_INRCNT_QTY			/* 발주입수량 */
+			, A.PRFT_RATE				/* 마트 이익율 */
+			, A.PUR_UNIT_CD				/* 발주단위코드 */
+			, A.PROMO_AMT_DIVN_CD		/* 권장금액구분코드 */
+			, A.NEW_PROD_FIRST_PUR_DIVN_CD /* 새상품최초발주구분코드 */
+			, A.NPUR_BUY_PSBT_DIVN_CD	/* 무발주매입가능구분코드 */
+			, A.SESN_YEAR_CD			/* 시즌년도 */
+			, A.SESN_DIVN_CD			/* 계절구분코드 */
+			, A.PROTECT_TAG_DIVN_CD		/* 도난방지택구분코드 */
+			, A.PROTECT_TAG_TYPE_CD		/* 도난방지택유형코드 */
+			, A.NEW_PROD_GEN_DIVN_CD	/* 새상품생성구분코드 */
+			, A.TRD_TYPE_DIVN_CD		/* 거래유형구분코드 */
+			, A.BARCD_VERIFY_DOC_TF		/* 바코드검증서유무 */
+			, A.MIX_YN					/* 혼재여부 */
+			, A.STGE_PSBT_DD			/* 입고가능일 */
+			, A.PICK_PSBT_DD			/* 출고가능일 */
+			, A.TMPRT_DIVN_CD			/* 온도구분코드 */
+			, A.FLOW_DD_MGR_CD			/* 유통일관리코드 */
+			, A.QTY_WEGT_DIVN_CD		/* 수량무게구분코드 */
+			, A.MAX_KEEP_DD_CNT			/* 최대보관일수 */
+			, A.BRAND_CD				/* 브랜드코드 */
+			, A.BRAND_NM				/* 브랜드명 */
+			, A.MAKER_CD				/* 메이커코드 */
+			, A.MAKER_NM				/* 메이커명 */
+			, A.MIN_ORD_PSBT_QTY		/* 최소주문가능량 */
+			, A.MAX_ORD_PSBT_QTY		/* 최대주문가능량 */
+			, A.MD_SEND_DIVN_CD			/* MD전송구분코드 */
+			, A.TOT_INSP_YN				/* 전수검사여부 */
+			, A.PRODUCT_DY				/* 생산일자 */
+			, A.PROD_IMG_ID				/* 상품이미지아이디 */
+			, A.NFOML_VARIATION_DESC	/* 비정규베리에이션설명 */
+			, A.REG_DATE				/* 등록일시 */
+			, A.REG_ID					/* 등록아이디 */
+			, A.MOD_DATE				/* 수정일시 */
+			, A.MOD_ID					/* 수정아이디 */
+			, A.CATEGORY_ID				/* 온라인전시카테고리코드 */
+			, A.SOCIAL_PROD_DELI_CD		/* 소셜상품배송코드 */
+			, A.KAN_PROD_CD				/* KAN상품분류 */
+			, A.UNSPSC_CD				/* UNSPC 코드 */
+			, A.GTIN_CD					/* GTIN 코드 */
+			, A.IMG_NCNT				/* 온라인이미지개수 */
+			, A.WNOR_PROD_PCOST			/* MAXX 정상상품원가 */
+			, A.WNOR_PROD_CURR			/* MAXX 정상상품원가 단위 */
+			, A.WNOR_PROD_SALE_PRC		/* MAXX 정상상품매가 */
+			, A.WNOR_PROD_SALE_CURR		/* MAXX 정상상품매가 단위 */
+			, A.WPRFT_RATE				/* MAXX 이익률 */
+<!-- 			, A.MAT_CD				/* 소재코드 */ -->
+			, A.MD_VALI_SELL_CD		/* MD유효판매코드 */
+			, A.NEW_PROD_PROMO_FG	/* 신상품장려금구분 */
+			, A.NEW_PROD_ST_DY		/* 신상품출시일자 */
+			, A.OVER_PROMO_FG		/* 성과초과장려금구분 */
+			, A.MODEL_NM			/* 모델명 */
+			, A.ECO_YN				/* 친환경인증여부 */
+			, A.ECO_NM				/* 친환경인증분류명 */
+			, A.DLV_GA				/* 차등배송비여부 */
+			, A.DLV_DT				/* 별도설치비내용 */
+			, A.INS_CO				/* 별도설치비유무 */
+			, A.SIZE_UNIT			/* 사이즈단위 */
+			, A.L2_CD				/* 중분류코드 */
+			, A.NOPROD_FG			/* 상품유형 */
+			, A.PROD_ATT_TYP_FG		/* 상품범주 */
+			, A.TOT_WEIGHT			/* 총중량 */
+			, A.WEIGHT_UNIT			/* 총중량단위 */
+			, A.PIECE_QTY			/* 낱개수량 */
+			, A.PIECE_UNIT			/* 낱개단위 */
+			, A.WASTE_FG			/* 폐기물유형 */
+			, A.PLASTIC_WEIGHT		/* 플라스틱무게 */
+			, A.RECYCLE_FG1			/* 재활용유형1 */
+			, A.RECYCLE_FG2			/* 재활용유형2 */
+			, A.RECYCLE_FG3			/* 재활용유형3 */
+			, A.RECYCLE_WEIGHT1		/* 재활용무게1 */
+			, A.RECYCLE_WEIGHT2		/* 재활용무게2 */
+			, A.RECYCLE_WEIGHT3		/* 재활용무게3 */
+			, A.FLOW_DD				/* 유통일 */
+			, A.ZZNEWPROD_FG		/* 신상품구분 */
+			, A.GRP_CD				/* 그룹분석속성코드 */
+			, A.ADM_FG				/* 관리자여부 */
+			, A.RSERV_ORD_PSBT_START_DY	/* 예약주문가능시작일자 */
+			, A.RSERV_ORD_PSBT_END_DY	/* 예약주문가능종료일자 */
+			, A.RSERV_PROD_PICK_IDCT_DY	/* 예약상품출고지시일자 */
+			, A.ONLINE_PROD_TYPE_CD		/* 온라인상품유형코드 */
+			, A.OPTN_LOAD_SET_QTY		/* 골라담기세트수량 */
+			, A.OPTN_LOAD_CONTENT		/* 골라담기옵션내용 */
+			, A.HOPE_DELI_PSBT_DD		/* 희망배송가능일 */
+			, A.DEAL_REP_PROD_YN		/* 딜대표상품여부 */
+			, A.OPTN_PROD_PRC_MGR_YN	/* 옵션상품가격관리여부 */
+			, A.CTPD_YN					/* 구성품여부 */
+			, A.CTPD_DEAL_YN			/* 구성품취급여부 */
+			, A.PERI_DELI_YN			/* 정기배송여부 */
+			, A.BDL_DELI_YN				/* 묶음배송여부 */
+			, A.STAFF_MALL_SELL_PSBT_YN	/* 임직원몰판매가능여부 */
+			, A.STAFF_DC_AMT			/* 임직원할인가 */
+			, A.DELI_PSBT_REGN_CD		/* 배송가능지역코드 */
+			, A.ENTP_COND_USE_YN		/* 업체조건사용여부 */
+			, A.ENTP_IN_PROD_CD			/* 업체내부상품코드 */
+			, A.SELL_START_DY			/* 판매시작일자 */
+			, A.SELL_END_DY				/* 판매종료일자 */
+			, A.NOR_PROD_INFO_GRP_CD	/* 전상법분류코드 */
+			, A.KC_INFO_GRP_CD			/* KC인증분류코드 */
+			, A.DEAL_PROD_DIVN_CD		/* 딜상품구분코드 */
+			, A.PROD_OPTION_DESC		/* 상품옵션설명 */
+			, A.DEAL_PROD_DESC_SHOW_YN	/* 딜상품 추가설명보기 여부 */
+			, A.VIC_ONLINE_CD			/* VIC 온라인여부 */
+			, A.EXPR_PROD_YN			/* 체험형상품여부 */
+			, A.SELLER_RECOMM			/* 판매자 추천평 */
+			, A.NET_WEIGHT				/* 수중량 */
+			, A.OWNSTOK_FG				/* 총량약정량구분 */
+			, A.PLAN_RECV_QTY			/* 총량약정량 */
+			, A.ORD_DEADLINE			/* 발주마감기한 */
+			, A.MNL_PROD_REG			/* 수기등록여부 */
+			, A.S_TYPE					/* 소싱유형 */
+			, A.ADL_YN					/* 성인전용상품여부 */
+			, A.WIDE_IMG_NCNT			/* 와이드이미지 개수 */
+			, A.THEMA_YN				/* 테마사용여부(Y/N) */
+			, A.DEAL_VIEW_CD			/* 묶음상품 보기 방식 */
+			, A.VIDEO_URL				/* 동영상경로 */
+			, A.DEAL_SC_DP_YN			/* 딜상품 검색노출여부 */
+			, A.ESG_YN					/* ESG 상품여부 */
+			, A.ESG_EARTH				/* RE:EARTH 로고 사용유무 */
+			, A.SNOR_PROD_PCOST			/* 슈퍼 정상상품원가 */
+			, A.SNOR_PROD_CURR			/* 슈퍼 정상상품원가 단위 */
+			, A.SNOR_PROD_SALE_PRC		/* 슈퍼 정상상품매가 */
+			, A.SNOR_PROD_SALE_CURR		/* 슈퍼 정상상품매가 단위 */
+			, A.SPRFT_RATE				/* 슈퍼 이익률 */
+			, A.ONOR_PROD_PCOST			/* 오카도 정상상품원가 */
+			, A.ONOR_PROD_CURR			/* 오카도 정상상품원가 단위 */
+			, A.ONOR_PROD_SALE_PRC		/* 오카도 정상상품매가 */
+			, A.ONOR_PROD_SALE_CURR		/* 오카도 정상상품매가 단위 */
+			, A.OPRFT_RATE				/* 오카도 이익률 */
+			, A.CHAN_CD					/* 채널코드 */
+			, A.BOS_CFRM_END_DY			/* BOS 승인마감일자 */
+			, A.AUTO_SEND_EXP_DY		/* ERP 자동발송예정일자(BOS승인마감일자+1일) */
+			, A.S_NEW_PROD_PROMO_FG		/* (슈퍼) 신상품장려금구분 */
+			, A.S_NEW_PROD_ST_DY		/* (슈퍼) 신상품출시일자 */
+			, A.S_OVER_PROMO_FG			/* (슈퍼) 성과초과장려금구분 */
+		FROM TPC_NEW_PROD_REG A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 신상품등록상태 -->
+	<resultMap id="selectTpcNewProdStsBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"		/> <!-- 신상품코드 -->
+		<result column="PROD_CD"		property="PROD_CD"		/> <!-- 인터넷상품코드 -->
+		<result column="PRGS_STS"		property="PRGS_STS"		/> <!-- 진행상태 -->
+		<result column="RETN_REASON"	property="RETN_REASON"	/> <!-- 반려사유 -->
+		<result column="REG_DATE"		property="REG_DATE"		/> <!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/> <!-- 등록자 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/> <!-- 수정일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/> <!-- 수정자 -->
+		<result column="OFF_CFM_DT"		property="OFF_CFM_DT"	/> <!-- 오프라인확정일시 -->
+		<result column="ON_CFM_DT"		property="ON_CFM_DT"	/> <!-- 온라인확정일시 -->
+		<result column="PRE_APRV_YN"	property="PRE_APRV_YN"	/> <!-- 전시승인여부사전선택 -->
+		<result column="BAN_WORD"		property="BAN_WORD"		/> <!-- 금칙어 1차검토 -->
+		<result column="BAN_YN"			property="BAN_YN"		/> <!-- 금칙어 검토유무 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 신상품등록상태 -->
+	<select id="selectTpcNewProdStsBosFix" parameterClass="resultImsiClass" resultMap="selectTpcNewProdStsBosFixMap">
+		/* NEDMPRO0040.selectTpcNewProdStsBosFix */
+		SELECT
+			A.PGM_ID				/* 신상품코드 */
+			, A.PROD_CD				/* 인터넷상품코드 */
+			, A.PRGS_STS			/* 진행상태 */
+			, A.RETN_REASON			/* 반려사유 */
+			, A.REG_DATE			/* 등록일시 */
+			, A.REG_ID				/* 등록자 */
+			, A.MOD_DATE			/* 수정일시 */
+			, A.MOD_ID				/* 수정자 */
+			, A.OFF_CFM_DT			/* 오프라인확정일시 */
+			, A.ON_CFM_DT			/* 온라인확정일시 */
+			, A.PRE_APRV_YN			/* 전시승인여부사전선택 */
+			, A.BAN_WORD			/* 금칙어 1차검토 */
+			, A.BAN_YN				/* 금칙어 검토유무 */
+		FROM TPC_NEW_PROD_STS A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		    A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 수입정보 -->
+	<resultMap id="selectTpcImportAttBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"			/> <!-- 신상품코드 -->
+		<result column="HS_CD"          property="HS_CD"            /> <!-- HS코드 -->
+		<result column="TARIFF_RATE"    property="TARIFF_RATE"      /> <!-- 관세율 -->
+		<result column="DEC_NO"         property="DEC_NO"           /> <!-- 수입신고번호 -->
+		<result column="ENTP_CD"        property="ENTP_CD"          /> <!-- 업체코드 -->
+		<result column="REG_DATE"       property="REG_DATE"         /> <!-- 등록일시 -->
+		<result column="REG_ID"         property="REG_ID"           /> <!-- 등록자 -->
+		<result column="MOD_DATE"       property="MOD_DATE"         /> <!-- 수정일시 -->
+		<result column="MOD_ID"         property="MOD_ID"           /> <!-- 수정자 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 수입정보 -->
+	<select id="selectTpcImportAttBosFix" parameterClass="resultImsiClass" resultMap="selectTpcImportAttBosFixMap">
+		/* NEDMPRO0040.selectTpcImportAttBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.HS_CD			/* HS코드 */
+			, A.TARIFF_RATE		/* 관세율 */
+			, A.DEC_NO			/* 수입신고번호 */
+			, A.ENTP_CD			/* 업체코드 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록자 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID			/* 수정자 */
+		FROM TPC_IMPORT_ATT A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+			A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] KC인증 -->
+	<resultMap id="selectTprProdCertInfoValBosFixMap" class="java.util.HashMap">
+		<result column="INFO_GRP_CD"	property="INFO_GRP_CD"	/> <!-- KC인증그룹코드 -->
+		<result column="INFO_COL_CD"	property="INFO_COL_CD"	/> <!-- KC인증컬럼코드 -->
+		<result column="PROD_CD"		property="PROD_CD"		/> <!-- 상품코드 -->
+		<result column="NEW_PROD_CD"	property="NEW_PROD_CD"	/> <!-- 신상품코드 -->
+		<result column="COL_VAL"		property="COL_VAL"		/> <!-- 컬럼값 -->
+		<result column="DISP_YN"		property="DISP_YN"		/> <!-- 전시여부 -->
+		<result column="REG_DATE"		property="REG_DATE"		/> <!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/> <!-- 등록아이디 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/> <!-- 수정일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/> <!-- 수정아이디 -->
+		<result column="ECO_PROD_CD"	property="ECO_PROD_CD"	/> <!-- ECO 상품코드 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] KC인증 -->
+	<select id="selectTprProdCertInfoValBosFix" parameterClass="resultImsiClass" resultMap="selectTprProdCertInfoValBosFixMap">
+		/* NEDMPRO0040.selectTprProdCertInfoValBosFix */
+		SELECT
+			A.INFO_GRP_CD		/* KC인증그룹코드 */
+			, A.INFO_COL_CD		/* KC인증컬럼코드 */
+			, A.PROD_CD			/* 상품코드 */
+			, A.NEW_PROD_CD		/* 신상품코드 */
+			, A.COL_VAL			/* 컬럼값 */
+			, A.DISP_YN			/* 전시여부 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록아이디 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID			/* 수정아이디 */
+			, A.ECO_PROD_CD		/* ECO 상품코드 */
+		FROM TPR_PROD_CERT_INFO_VAL A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.NEW_PROD_CD IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.NEW_PROD_CD = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 변형속성 -->
+	<resultMap id="selectTpcVarAttBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"		/> <!-- 신상품코드 -->
+		<result column="VARIANT"		property="VARIANT"		/> <!-- 변형번호 -->	
+		<result column="CLASS"			property="CLASS"		/> <!-- 특성프로파일(클래스) -->
+		<result column="ATT_CD"			property="ATT_CD"		/> <!-- 속성그룹코드 -->
+		<result column="ATT_VALUE"		property="ATT_VALUE"	/> <!-- 속성분류값코드 -->
+		<result column="ENTP_CD"		property="ENTP_CD"		/> <!-- 업체코드 -->
+		<result column="SELL_CD"		property="SELL_CD"		/> <!-- 판매코드 -->
+		<result column="STS_DIVN_CD"	property="STS_DIVN_CD"	/> <!-- 상태구분코드 -->
+		<result column="DEL_TF"			property="DEL_TF"		/> <!-- 삭제유무 -->
+		<result column="PROD_IMG_ID"	property="PROD_IMG_ID"	/> <!-- 상품이미지아이디참조용) -->
+		<result column="OPTN_DESC"		property="OPTN_DESC"	/> <!-- 옵션설명 -->
+		<result column="STK_MGR_YN"		property="STK_MGR_YN"	/> <!-- 재고관리여부 -->
+		<result column="RSERV_STK_QTY"	property="RSERV_STK_QTY"/> <!-- 예약재고수량 -->
+		<result column="L3_CD"			property="L3_CD"		/> <!-- 소분류코드 -->
+		<result column="ITEM_CD"		property="ITEM_CD"		/> <!-- 단품코드 -->
+		<result column="REG_DATE"		property="REG_DATE"		/> <!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/> <!-- 등록자 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/> <!-- 수정일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/> <!-- 수정자 -->
+		<result column="OPTN_AMT"		property="OPTN_AMT"		/> <!-- 옵션가격 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 변형속성 -->
+	<select id="selectTpcVarAttBosFix" parameterClass="resultImsiClass" resultMap="selectTpcVarAttBosFixMap">
+		/* NEDMPRO0040.selectTpcVarAttBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.VARIANT			/* 변형번호 */	
+			, A.CLASS			/* 특성프로파일(클래스) */
+			, A.ATT_CD			/* 속성그룹코드 */
+			, A.ATT_VALUE		/* 속성분류값코드 */
+			, A.ENTP_CD			/* 업체코드 */
+			, A.SELL_CD			/* 판매코드 */
+			, A.STS_DIVN_CD		/* 상태구분코드 */
+			, A.DEL_TF			/* 삭제유무 */
+			, A.PROD_IMG_ID		/* 상품이미지아이디참조용) */
+			, A.OPTN_DESC		/* 옵션설명 */
+			, A.STK_MGR_YN		/* 재고관리여부 */
+			, A.RSERV_STK_QTY	/* 예약재고수량 */
+			, A.L3_CD			/* 소분류코드 */
+			, A.ITEM_CD			/* 단품코드 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록자 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID			/* 수정자 */
+			, A.OPTN_AMT		/* 옵션가격 */
+		FROM TPC_VAR_ATT A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 상품추가설명 -->
+	<resultMap id="selectTpcNewProdDescrBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"		property="PGM_ID"	/>	<!-- 신상품코드 -->
+		<result column="SEQ"		property="SEQ"		/>	<!-- 순번 -->
+		<result column="TITLE"		property="TITLE"	/>	<!-- 제목 -->
+		<result column="ADD_DESC"	property="ADD_DESC"	/>	<!-- 추가설명 -->
+		<result column="REG_DATE"	property="REG_DATE"	/>	<!-- 등록일시 -->
+		<result column="REG_ID"		property="REG_ID"	/>	<!-- 등록아이디 -->
+		<result column="MOD_DATE"	property="MOD_DATE"	/>	<!-- 수정일시 -->
+		<result column="MOD_ID"		property="MOD_ID"	/>	<!-- 수정아이디 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 상품추가설명 -->
+	<select id="selectTpcNewProdDescrBosFix" parameterClass="resultImsiClass" resultMap="selectTpcNewProdDescrBosFixMap">
+		/* NEDMPRO0040.selectTpcNewProdDescrBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.SEQ				/* 순번 */
+			, A.TITLE			/* 제목 */
+			, A.ADD_DESC		/* 추가설명 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록아이디 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID			/* 수정아이디 */
+		FROM TPC_NEW_PROD_DESCR A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 그룹분석속성 -->
+	<resultMap id="selectTpcGrpAttBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"		/>	<!-- 신상품코드 -->
+		<result column="ATT_ID"			property="ATT_ID"		/>	<!-- 속성그룹아이디 -->
+		<result column="ATT_VAL_ID"		property="ATT_VAL_ID"	/>	<!-- 속성코드 -->
+		<result column="REG_DATE"		property="REG_DATE"		/>	<!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/>	<!-- 등록자 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/>	<!-- 수정일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/>	<!-- 수정자 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 그룹분석속성 -->
+	<select id="selectTpcGrpAttBosFix" parameterClass="resultImsiClass" resultMap="selectTpcGrpAttBosFixMap">
+		/* NEDMPRO0040.selectTpcGrpAttBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.ATT_ID			/* 속성그룹아이디 */
+			, A.ATT_VAL_ID		/* 속성코드 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록자 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID			/* 수정자 */
+		FROM TPC_GRP_ATT A 
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 영양성분속성 -->
+	<resultMap id="selectTpcNutAttBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"		property="PGM_ID"		/>	<!-- 신상품코드 -->
+		<result column="NUT_CD"		property="NUT_CD"		/>	<!-- 영양성분코드 -->
+		<result column="NUT_AMT"	property="NUT_AMT"		/>	<!-- 영양성분값 -->
+		<result column="REG_DT"		property="REG_DT"		/>	<!-- 등록일시 -->
+		<result column="REG_ID"		property="REG_ID"		/>	<!-- 등록자 -->
+		<result column="MOD_DT"		property="MOD_DT"		/>	<!-- 수정일시 -->
+		<result column="MOD_ID"		property="MOD_ID"		/>	<!-- 수정자 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 영양성분속성 -->
+	<select id="selectTpcNutAttBosFix" parameterClass="resultImsiClass" resultMap="selectTpcNutAttBosFixMap">
+		/* NEDMPRO0040.selectTpcNutAttBosFix */
+		SELECT
+			A.PGM_ID		/* 신상품코드 */
+			, A.NUT_CD		/* 영양성분코드 */
+			, A.NUT_AMT		/* 영양성분값 */
+			, A.REG_DT		/* 등록일시 */
+			, A.REG_ID		/* 등록자 */
+			, A.MOD_DT		/* 수정일시 */
+			, A.MOD_ID		/* 수정자 */
+		FROM TPC_NUT_ATT A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 상품키워드 -->
+	<resultMap id="selectTpcProductKeywordBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"		/>	<!-- 신상품코드 -->
+		<result column="SEQ"			property="SEQ"			/>	<!-- 키워드순번 -->
+		<result column="SEARCH_KYWRD"	property="SEARCH_KYWRD"	/>	<!-- 검색어 -->
+		<result column="REG_DATE"		property="REG_DATE"		/>	<!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/>	<!-- 등록자 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/>	<!-- 수정일시 -->
+		<result column="MOD_ID" 		property="MOD_ID" 		/>	<!-- 수정자 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 상품키워드 -->
+	<select id="selectTpcProductKeywordBosFix" parameterClass="resultImsiClass" resultMap="selectTpcProductKeywordBosFixMap">
+		/* NEDMPRO0040.selectTpcProductKeywordBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.SEQ				/* 키워드순번 */
+			, A.SEARCH_KYWRD	/* 검색어 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록자 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID 			/* 수정자 */
+		FROM TPC_PRODUCT_KEYWORD A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] EC 전시카테고리 -->
+	<resultMap id="selectTecCatProdMappingBosFixMap" class="java.util.HashMap">
+		<result column="PROD_CD"		property="PROD_CD"		/>	<!-- 상품코드 -->
+		<result column="STD_CAT_CD"		property="STD_CAT_CD"	/>	<!-- EC표준카테고리 -->
+		<result column="DISP_CAT_CD"	property="DISP_CAT_CD"	/>	<!-- EC전시카테고리 -->
+		<result column="DISP_YN"		property="DISP_YN"		/>	<!-- 전시여부 -->
+		<result column="USE_YN"			property="USE_YN"		/>	<!-- 사용여부 -->
+		<result column="REG_ID"			property="REG_ID"		/>	<!-- 등록아이디 -->
+		<result column="REG_DATE"		property="REG_DATE"		/>	<!-- 등록일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/>	<!-- 수정아이디 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/>	<!-- 수정일시 -->
+		<result column="PGM_ID" 		property="PGM_ID" 		/>	<!-- 신상품코드 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] EC 전시카테고리 -->
+	<select id="selectTecCatProdMappingBosFix" parameterClass="resultImsiClass" resultMap="selectTecCatProdMappingBosFixMap">
+		/* NEDMPRO0040.selectTecCatProdMappingBosFix */
+		SELECT
+			A.PROD_CD				/* 상품코드 */
+			, A.STD_CAT_CD			/* EC표준카테고리 */
+			, A.DISP_CAT_CD			/* EC전시카테고리 */
+			, A.DISP_YN				/* 전시여부 */
+			, A.USE_YN				/* 사용여부 */
+			, A.REG_ID				/* 등록아이디 */
+			, A.REG_DATE			/* 등록일시 */
+			, A.MOD_ID				/* 수정아이디 */
+			, A.MOD_DATE			/* 수정일시 */
+			, A.PGM_ID 				/* 신상품코드 */
+		FROM TEC_CAT_PROD_MAPPING A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] EC 상품속성 -->
+	<resultMap id="selectTecAttrProdMappingBosFixMap" class="java.util.HashMap">
+		<result column="PROD_CD"			property="PROD_CD"			/>	<!-- 상품코드 -->
+		<result column="STD_CAT_CD"			property="STD_CAT_CD"		/>	<!-- EC표준카테고리 -->
+		<result column="ITEM_CD"			property="ITEM_CD"			/>	<!-- 옵션코드 -->
+		<result column="ATTR_ID"			property="ATTR_ID"			/>	<!-- 속성유형 -->
+		<result column="ATTR_VAL_ID"		property="ATTR_VAL_ID"		/>	<!-- 속성값코드 -->
+		<result column="ATTR_VAL"			property="ATTR_VAL"			/>	<!-- 속성값 -->
+		<result column="ATTR_DTL_VAL"		property="ATTR_DTL_VAL"		/>	<!-- 세부값 -->
+		<result column="ATTR_CODE_USE_YN"	property="ATTR_CODE_USE_YN"	/>	<!-- 속성값코드사용여부 -->
+		<result column="USE_YN"				property="USE_YN"			/>	<!-- 사용여부 -->
+		<result column="REG_ID"				property="REG_ID"			/>	<!-- 등록자 -->
+		<result column="REG_DATE"			property="REG_DATE"			/>	<!-- 등록일시 -->
+		<result column="MOD_ID"				property="MOD_ID"			/>	<!-- 수정자 -->
+		<result column="MOD_DATE"			property="MOD_DATE"			/>	<!-- 수정일시 -->
+		<result column="PGM_ID"				property="PGM_ID"			/>	<!-- 가등록상품코드 -->
+		<result column="EC_TRNS_YN"			property="EC_TRNS_YN"		/>	<!--  -->
+	</resultMap>
+	
+	<!-- [BOS FIX] EC 상품속성 -->
+	<select id="selectTecAttrProdMappingBosFix" parameterClass="resultImsiClass" resultMap="selectTecAttrProdMappingBosFixMap">
+		/* NEDMPRO0040.selectTecAttrProdMappingBosFix */
+		SELECT
+			A.PROD_CD				/* 상품코드 */
+			, A.STD_CAT_CD			/* EC표준카테고리 */
+			, A.ITEM_CD				/* 옵션코드 */
+			, A.ATTR_ID				/* 속성유형 */
+			, A.ATTR_VAL_ID			/* 속성값코드 */
+			, A.ATTR_VAL			/* 속성값 */
+			, A.ATTR_DTL_VAL		/* 세부값 */
+			, A.ATTR_CODE_USE_YN	/* 속성값코드사용여부 */
+			, A.USE_YN				/* 사용여부 */
+			, A.REG_ID				/* 등록자 */
+			, A.REG_DATE			/* 등록일시 */
+			, A.MOD_ID				/* 수정자 */
+			, A.MOD_DATE			/* 수정일시 */
+			, A.PGM_ID				/* 가등록상품코드 */
+			, A.EC_TRNS_YN			/*  */
+		FROM TEC_ATTR_PROD_MAPPING A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 전상법 -->
+	<resultMap id="selectTprProdAddInfoValBosFixMap" class="java.util.HashMap">
+		<result column="INFO_GRP_CD"	property="INFO_GRP_CD"	/>	<!-- 전상법그룹코드 -->
+		<result column="INFO_COL_CD"	property="INFO_COL_CD"	/>	<!-- 전상법컬럼코드 -->
+		<result column="PROD_CD"		property="PROD_CD"		/>	<!-- 상품코드 -->
+		<result column="NEW_PROD_CD"	property="NEW_PROD_CD"	/>	<!-- 신상품코드 -->
+		<result column="COL_VAL"		property="COL_VAL"		/>	<!-- 컬럼값 -->
+		<result column="DISP_YN"		property="DISP_YN"		/>	<!-- 전시여부 -->
+		<result column="REG_DATE"		property="REG_DATE"		/>	<!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/>	<!-- 등록자 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/>	<!-- 수정일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/>	<!-- 수정자 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 전상법 -->
+	<select id="selectTprProdAddInfoValBosFix" parameterClass="resultImsiClass" resultMap="selectTprProdAddInfoValBosFixMap">
+		/* NEDMPRO0040.selectTprProdAddInfoValBosFix */
+		SELECT
+				A.INFO_GRP_CD		/* 전상법그룹코드 */
+				, A.INFO_COL_CD		/* 전상법컬럼코드 */
+				, A.PROD_CD			/* 상품코드 */
+				, A.NEW_PROD_CD		/* 신상품코드 */
+				, A.COL_VAL			/* 컬럼값 */
+				, A.DISP_YN			/* 전시여부 */
+				, A.REG_DATE		/* 등록일시 */
+				, A.REG_ID			/* 등록자 */
+				, A.MOD_DATE		/* 수정일시 */
+				, A.MOD_ID			/* 수정자 */
+		FROM TPR_PROD_ADD_INFO_VAL A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.NEW_PROD_CD IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.NEW_PROD_CD = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] ESG 항목 -->
+	<resultMap id="selectTpcNewProdEsgBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"		/>	<!-- 신상품코드 -->
+		<result column="ESG_GBN"		property="ESG_GBN"		/>	<!-- ESG인증구분 -->
+		<result column="ESG_AUTH"		property="ESG_AUTH"		/>	<!-- ESG인증유형 -->
+		<result column="ESG_AUTH_DTL"	property="ESG_AUTH_DTL"	/>	<!-- ESG상세인증유형 -->
+		<result column="ESG_FR_DT"		property="ESG_FR_DT"	/>	<!-- 인증시작일 -->
+		<result column="ESG_TO_DT"		property="ESG_TO_DT"	/>	<!-- 인증종료일 -->
+		<result column="ESG_FILE_ID"	property="ESG_FILE_ID"	/>	<!-- 인증서 첨부파일 ID -->
+		<result column="DEL_YN"			property="DEL_YN"		/>	<!-- 삭제여부 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/>	<!-- 수정일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/>	<!-- 수정자 -->
+		<result column="REG_DATE"		property="REG_DATE"		/>	<!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"		/>	<!-- 등록자 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] ESG 항목 -->
+	<select id="selectTpcNewProdEsgBosFix" parameterClass="resultImsiClass" resultMap="selectTpcNewProdEsgBosFixMap">
+		/* NEDMPRO0040.selectTpcNewProdEsgBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.ESG_GBN			/* ESG인증구분 */
+			, A.ESG_AUTH		/* ESG인증유형 */
+			, A.ESG_AUTH_DTL	/* ESG상세인증유형 */
+			, A.ESG_FR_DT		/* 인증시작일 */
+			, A.ESG_TO_DT		/* 인증종료일 */
+			, A.ESG_FILE_ID		/* 인증서 첨부파일 ID */
+			, A.DEL_YN			/* 삭제여부 */
+			, A.MOD_DATE		/* 수정일시 */
+			, A.MOD_ID			/* 수정자 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록자 */
+		FROM TPC_NEW_PROD_ESG A
+		INNER JOIN ESG_MST B ON A.ESG_GBN = B.L_LV_CD AND A.ESG_AUTH = B.M_LV_CD AND A.ESG_AUTH_DTL = B.S_LV_CD		/* 항목마스터 존재 건만 전송 */
+		WHERE A.DEL_YN ='N'		/* 삭제되지 않은 건만 전송 */
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] ESG 첨부파일 -->
+	<resultMap id="selectTpcNewProdEsgFileBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"		/>	<!-- 신상품코드 -->
+		<result column="ESG_FILE_ID"	property="ESG_FILE_ID"	/>	<!-- ESG 파일아이디 -->
+		<result column="ORG_FILE_NM"	property="ORG_FILE_NM"	/>	<!-- 원본파일명 -->
+		<result column="SAVE_FILE_NM"	property="SAVE_FILE_NM"	/>	<!-- 저장파일명 -->
+		<result column="FILE_SIZE"		property="FILE_SIZE"	/>	<!-- 파일사이즈 -->
+		<result column="FILE_PATH"		property="FILE_PATH"	/>	<!-- 파일경로 -->
+		<result column="FILE_EXT"		property="FILE_EXT"		/>	<!-- 확장자명 -->
+		<result column="REG_ID"			property="REG_ID"		/>	<!-- 등록자 -->
+		<result column="REG_DATE"		property="REG_DATE"		/>	<!-- 등록일시 -->
+		<result column="MOD_ID"			property="MOD_ID"		/>	<!-- 수정자 -->
+		<result column="MOD_DATE"		property="MOD_DATE"		/>	<!-- 수정일시 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] ESG 첨부파일 -->
+	<select id="selectTpcNewProdEsgFileBosFix" parameterClass="resultImsiClass" resultMap="selectTpcNewProdEsgFileBosFixMap">
+		/* NEDMPRO0040.selectTpcNewProdEsgFileBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, B.ESG_FILE_ID		/* ESG 파일아이디 */
+			, B.ORG_FILE_NM		/* 원본파일명 */
+			, B.SAVE_FILE_NM	/* 저장파일명 */
+			, B.FILE_SIZE		/* 파일사이즈 */
+			, B.FILE_PATH		/* 파일경로 */
+			, B.FILE_EXT		/* 확장자명 */
+			, B.REG_ID			/* 등록자 */
+			, B.REG_DATE		/* 등록일시 */
+			, B.MOD_ID			/* 수정자 */
+			, B.MOD_DATE		/* 수정일시 */
+		FROM TPC_NEW_PROD_ESG A
+		INNER JOIN TPC_PROD_ESG_FILE B ON A.ESG_FILE_ID = B.ESG_FILE_ID
+		INNER JOIN ESG_MST C ON A.ESG_GBN = C.L_LV_CD AND A.ESG_AUTH = C.M_LV_CD AND A.ESG_AUTH_DTL = C.S_LV_CD		/* 항목마스터 존재 건만 전송 */
+		WHERE A.DEL_YN ='N'		/* 삭제되지 않은 건만 전송 */
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] POG 이미지 정보 -->
+	<resultMap id="selectTpcSaleImgBosFixMap" class="java.util.HashMap">
+		<result column="PGM_ID"			property="PGM_ID"			/>	<!-- 신상품코드 -->
+		<result column="VARIANT"		property="VARIANT"			/>	<!-- 변형구분 -->
+		<result column="IMG_NM"			property="IMG_NM"			/>	<!-- 이미지명 -->
+		<result column="REG_DATE"		property="REG_DATE"			/>	<!-- 등록일시 -->
+		<result column="REG_ID"			property="REG_ID"			/>	<!-- 등록아이디 -->
+		<result column="CFM_FG"			property="CFM_FG"			/>	<!-- 확정여부 -->
+		<result column="CFM_REASON_FG"	property="CFM_REASON_FG"	/>	<!-- 반려사유 -->
+		<result column="PROD_CD"		property="PROD_CD"			/>	<!-- 상품코드 -->
+		<result column="SRCMK_CD"		property="SRCMK_CD"			/>	<!-- 판매코드 -->
+		<result column="ENTP_CD"		property="ENTP_CD"			/>	<!-- 업체코드 -->
+		<result column="CFM_REASON_TXT"	property="CFM_REASON_TXT"	/>	<!-- 반려사유수기입력값 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] POG 이미지 정보-->
+	<select id="selectTpcSaleImgBosFix" parameterClass="resultImsiClass" resultMap="selectTpcSaleImgBosFixMap">
+		/* NEDMPRO0040.selectTpcSaleImgBosFix */
+		SELECT
+			A.PGM_ID			/* 신상품코드 */
+			, A.VARIANT			/* 변형구분 */
+			, A.IMG_NM			/* 이미지명 */
+			, A.REG_DATE		/* 등록일시 */
+			, A.REG_ID			/* 등록아이디 */
+			, A.CFM_FG			/* 확정여부 */
+			, A.CFM_REASON_FG	/* 반려사유 */
+			, A.PROD_CD			/* 상품코드 */
+			, A.SRCMK_CD		/* 판매코드 */
+			, A.ENTP_CD			/* 업체코드 */
+			, A.CFM_REASON_TXT	/* 반려사유수기입력값 */
+		FROM TPC_SALE_IMG A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [BOS FIX MAP] 오카도 전시 카테고리 -->
+	<resultMap id="selectTecOspCatProdMappingBosFixMap" class="java.util.HashMap">
+		<result column="PROD_CD"			property="PROD_CD"			/>	<!-- 신상품코드 -->
+		<result column="STD_CAT_CD"			property="STD_CAT_CD"		/>	<!-- 마트표준카테고리(소분류코드) -->
+		<result column="OSP_DISP_CAT_CD"	property="OSP_DISP_CAT_CD"	/>	<!-- 오카도전시카테고리 -->
+		<result column="RPRT_DCAT_YN"		property="RPRT_DCAT_YN"		/>	<!--  -->
+		<result column="REG_ID"				property="REG_ID"			/>	<!-- 등록아이디 -->
+		<result column="REG_DATE"			property="REG_DATE"			/>	<!-- 등록일시 -->
+		<result column="MOD_ID"				property="MOD_ID"			/>	<!-- 수정아이디 -->
+		<result column="MOD_DATE"			property="MOD_DATE"			/>	<!-- 수정일시 -->
+		<result column="PGM_ID"				property="PGM_ID"			/>	<!-- 신상품코드 -->
+		<result column="OSP_DP_YN"			property="OSP_DP_YN"		/>	<!-- 대표카테고리여부 -->
+	</resultMap>
+	
+	<!-- [BOS FIX] 오카도 전시 카테고리 -->
+	<select id="selectTecOspCatProdMappingBosFix" parameterClass="resultImsiClass" resultMap="selectTecOspCatProdMappingBosFixMap">
+		/* NEDMPRO0040.selectTecOspCatProdMappingBosFix */
+		SELECT
+			A.PROD_CD				/* 신상품코드 */
+			, A.STD_CAT_CD			/* 마트표준카테고리(소분류코드) */
+			, A.OSP_DISP_CAT_CD		/* 오카도전시카테고리 */
+			, A.RPRT_DCAT_YN		/*  */
+			, A.REG_ID				/* 등록아이디 */
+			, A.REG_DATE			/* 등록일시 */
+			, A.MOD_ID				/* 수정아이디 */
+			, A.MOD_DATE			/* 수정일시 */
+			, A.PGM_ID				/* 신상품코드 */
+			, A.OSP_DP_YN			/* 대표카테고리여부 */
+		FROM TEC_OSP_CAT_PROD_MAPPING A
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- [확정요청] 항목삭제된 ESG정보 제거 -->
+	<update id="updateCtgDelEsgInfo" parameterClass="resultImsiClass">
+		/* NEDMPRO0040.updateCtgDelEsgInfo */
+		UPDATE TPC_NEW_PROD_ESG A
+		SET DEL_YN = 'Y' 
+		FROM ESG_MST B
+		WHERE A.ESG_GBN = B.L_LV_CD 
+		AND A.ESG_AUTH = B.M_LV_CD 
+		AND A.ESG_AUTH_DTL = B.S_LV_CD 
+		AND B.DEL_FG = 'X'			/* ESG 항목 삭제된 것만 조회 */
+		AND A.DEL_YN = 'N'			/* 등록한 ESG 인증정보 중 삭제되지 않은 건 조회 */
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</update>
+	
+	<!-- BOS 전송일자 clear -->
+	<update id="updateProdBosSendDyClear" parameterClass="resultImsiClass">
+		/* NEDMPRO0040.updateProdBosSendDyClear */
+		UPDATE TPC_NEW_PROD_REG
+		SET BOS_SEND_DY = ''	/* BOS 전송일자 */
+			, BOS_CFRM_END_DY = ''	/* BOS 승인마감일자 (영업일 3일 / 미승인 시 4일차부터 자동발송됨) */
+			, AUTO_SEND_EXP_DY = ''	/* ERP 자동발송예정일자(BOS승인마감일자+1일) */
+		WHERE 1=1
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- prodArr가 값 없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     PGM_ID = #pgmId#
+		</isEmpty>
+	</update>
+	
+	<!-- 등록된 ESG 파일정보 조회 (SFTP 전송용) ResultMap -->
+	<resultMap id="selectTpcProdEsgFileMap" class="java.util.HashMap">
+		<result column="PGM_ID"				property="PGM_ID" 			/>	<!-- 연계된 업무번호 -->
+		<result column="ESG_FILE_ID"		property="ESG_FILE_ID" 		/>	<!-- 파일ID -->
+		<result column="SAVE_FILE_NM"		property="SAVE_FILE_NM" 	/>	<!-- 서버저장파일명 -->
+		<result column="ORG_FILE_NM"		property="ORG_FILE_NM" 		/>	<!-- 원본파일명 -->
+		<result column="FILE_PATH"			property="FILE_PATH" 		/>  <!-- 파일경로 -->
+	</resultMap>
+	
+	<!-- 등록된 ESG 파일정보 조회 (SFTP 전송용) -->
+	<select id="selectTpcProdEsgFileForSend" parameterClass="resultImsiClass" resultMap="selectTpcProdEsgFileMap">
+		/* NEDMPRO0040.selectTpcProdEsgFileForSend */
+		SELECT
+			A.PGM_ID				/* 문서번호 */
+			, A.ESG_FILE_ID			/* 첨부파일아이디 */
+			, B.SAVE_FILE_NM		/* 저장파일명 */
+			, B.ORG_FILE_NM			/* 원본파일명 */
+			, B.FILE_PATH 			/* 파일업로드경로 */
+		FROM TPC_NEW_PROD_ESG A
+		INNER JOIN TPC_PROD_ESG_FILE B ON A.ESG_FILE_ID = B.ESG_FILE_ID AND B.SEND_YN = 'N'
+		WHERE A.DEL_YN = 'N'
+		<isNotEmpty property="prodArr" prepend="AND">
+			<iterate prepend="A.PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<!-- arrPgmId가 값없이 유입될경우 모두다 업데이트 될수 있어 조회 안되는 조건 추가 -->
+		<isEmpty property="prodArr" prepend="AND">
+		     A.PGM_ID = #pgmId#
+		</isEmpty>
+	</select>
+	
+	<!-- ESG 파일 SFTP 전송 정보 UPDATE -->
+	<update id="updateTpcProdEsgFileSendInfo" parameterClass="nEDMPRO0028VO">
+		/* NEDMPRO0040.updateTpcProdEsgFileSendInfo */
+		UPDATE TPC_PROD_ESG_FILE
+		SET SEND_YN = 'Y'
+			, SEND_DATE = TO_TIMESTAMP(NULLIF(#sendDate#, ''), 'YYYYMMDDHH24MISSMS')
+			, SEND_PATH = #sendPath#
+		WHERE ESG_FILE_ID = #esgFileId#
+	</update>
+</sqlMap>

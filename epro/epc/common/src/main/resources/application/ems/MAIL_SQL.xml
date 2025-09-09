@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Mail">
+
+	<typeAlias  alias="BaseMap" type="lcn.module.framework.ibatis.BaseMap"/>
+	<typeAlias  alias="LteMailVO" type="com.lottemart.common.mail.model.LteMailVO"/>
+	
+	<select id="MailDAO.selectMailInf" parameterClass="LteMailVO" resultClass="LteMailVO" >
+		/**MailDAO.selectMailInf - 메일 상세 내역 조회*/
+ 		<![CDATA[
+		 	SELECT
+		 		  R.MID
+				, R.SUBID
+				, R.TID
+				, R.RID
+				, R.RNAME
+				, R.RMAIL
+				, Q.SNAME
+				, Q.SMAIL
+				, Q.SID
+				, Q.RPOS
+				, Q.QUERY
+				, Q.CTNPOS
+				, Q.SUBJECT
+				, Q.CONTENTS
+				, Q.CDATE
+				, Q.SDATE
+				, Q.STATUS
+				, Q.DBCODE
+				, Q.CHARSET
+				, Q.ISSECURE
+				, Q.SECURETEMPLATE
+				, Q.ATTACHFILE01
+				, Q.ATTACHFILE02
+				, Q.ATTACHFILE03
+				, Q.ATTACHFILE04
+				, Q.ATTACHFILE05
+				, S.TNAME
+				, S.TDESC
+				, S.TEMPLATE_USE
+			FROM RTMS_RECIPIENTINFO R INNER JOIN RTMS_MAILQUEUE Q ON R.MID = Q.MID AND R.SUBID = Q.SUBID
+					RTMS_SENDTYPE S ON R.TID = S.TID 
+			WHERE R.MID = #MID#
+ 		]]>
+ 			<isNotEmpty property="CDATE_S">
+ 				AND CDATE_S <![CDATA[ < ]]> Q.CDATE AND CDATE_E <![CDATA[ > ]]> Q.CDATE
+ 			</isNotEmpty>
+ 			<isEmpty property="CDATE_S">
+ 				AND SDATE_S <![CDATA[ < ]]> Q.CDATE AND SDATE_E <![CDATA[ > ]]> Q.CDATE
+ 			</isEmpty>
+ 	</select>
+ 	
+ 	<select id="MailDAO.selectMailInfs" parameterClass="LteMailVO" resultClass="LteMailVO" >
+ 		/** MailDAO.selectMailInfs - 메일 가져오기 */
+ 			SELECT * 
+ 			FROM (
+ 				SELECT ROWNUM AS R, MAIL.*
+ 				FROM (
+ 			<![CDATA[
+			 	SELECT
+			 		  R.MID
+					, R.SUBID
+					, R.TID
+					, R.RID
+					, R.RNAME
+					, R.RMAIL
+					, Q.SNAME
+					, Q.SMAIL
+					, Q.SID
+					, Q.RPOS
+					, Q.QUERY
+					, Q.CTNPOS
+					, Q.SUBJECT
+					, Q.CONTENTS
+					, Q.CDATE
+					, Q.SDATE
+					, Q.STATUS
+					, Q.DBCODE
+					, Q.CHARSET
+					, Q.ISSECURE
+					, Q.SECURETEMPLATE
+					, Q.ATTACHFILE01
+					, Q.ATTACHFILE02
+					, Q.ATTACHFILE03
+					, Q.ATTACHFILE04
+					, Q.ATTACHFILE05
+					, S.TNAME
+					, S.TDESC
+					, S.TEMPLATE_USE
+				FROM RTMS_RECIPIENTINFO R INNER JOIN RTMS_MAILQUEUE Q ON R.MID = Q.MID AND R.SUBID = Q.SUBID
+						RTMS_SENDTYPE S ON R.TID = S.TID 
+				WHERE 1=1
+	 		]]>
+	 			<isNotEmpty property="CDATE_S">
+	 				AND CDATE_S <![CDATA[ <= ]]> Q.CDATE AND CDATE_E <![CDATA[ >= ]]> Q.CDATE
+	 			</isNotEmpty>
+	 			<isEmpty property="CDATE_S">
+	 				AND SDATE_S <![CDATA[ <= ]]> Q.CDATE AND SDATE_E <![CDATA[ >= ]]> Q.CDATE
+	 			</isEmpty>
+	 			<isNotEmpty property="RMAIL">AND R.RMAIL = #RMAIL#</isNotEmpty>
+	 			<isNotEmpty property="RNAME">AND R.RNAME = #RNAME#</isNotEmpty>
+	 				) MAIL
+	 			) RNUM
+			WHERE RNUM.R > #START# AND RNUM.R<![CDATA[<=]]>#END# 
+ 	</select>
+ 	
+ 	<select id="MailDAO.selectMailInfsCnt" parameterClass="LteMailVO" resultClass="int">
+ 		SELECT COUNT(R.MID) AS cnt
+ 		FROM RTMS_RECIPIENTINFO R INNER JOIN RTMS_MAILQUEUE Q ON R.MID = Q.MID AND R.SUBID = Q.SUBID
+			  RTMS_SENDTYPE S ON R.TID = S.TID 
+		WHERE 1=1
+		<isNotEmpty property="CDATE_S">
+			AND CDATE_S <![CDATA[ <= ]]> Q.CDATE AND CDATE_E <![CDATA[ >= ]]> Q.CDATE
+		</isNotEmpty>
+		<isEmpty property="CDATE_S">
+			AND SDATE_S <![CDATA[ <= ]]> Q.CDATE AND SDATE_E <![CDATA[ >= ]]> Q.CDATE
+		</isEmpty>
+		<isNotEmpty property="RMAIL">AND R.RMAIL = #RMAIL#</isNotEmpty>
+		<isNotEmpty property="RNAME">AND R.RNAME = #RNAME#</isNotEmpty>
+ 	</select>
+ 	
+ 	<insert id="MailDAO.insertMailReip" parameterClass="LteMailVO">
+ 		<![CDATA[
+ 		INSERT INTO RTMS_RECIPIENTINFO
+ 		(
+	 		  MID
+			, SUBID
+			, TID
+			, RID
+			, RNAME
+			, RMAIL
+		)
+		VALUES 
+		(
+			  #MID#
+			, #SUBID#
+			, #TID#
+			, #RID#
+			, #RNAME#
+			, #RMAIL#
+		)
+		]]>
+ 	</insert>
+ 	
+ 	<!-- 이메일 정보를 등록-->
+ 	<insert id="MailDAO.insertMailQueue" parameterClass="LteMailVO">
+ 		<![CDATA[
+ 		/*front MailDAO.insertMailQueue*/
+ 		INSERT INTO RTMS_MAILQUEUE
+ 		(
+	 		  MID
+			, SUBID
+			, TID
+			, SNAME
+			, SMAIL
+			, SID
+			, RPOS
+			, QUERY
+			, CTNPOS
+			, SUBJECT
+			, CONTENTS
+			, SDATE
+		)
+		VALUES 
+		(
+			  #MID#
+			, #SUBID#
+			, #TID#
+			, #SNAME#
+			, #SMAIL#
+			, #SID#
+			, #RPOS#
+			, #QUERY#
+			, #CTNPOS#
+			, SUBSTRB(#SUBJECT#, 1, 100)
+			, #CONTENTS:CLOB#
+			, CURRENT_TIMESTAMP(0)
+		)
+		]]>
+ 	</insert>
+ 	
+ 	<insert id="MailDAO.insertMailSendtype" parameterClass="LteMailVO">
+ 		<![CDATA[
+ 		INSERT INTO RTMS_SENDTYPE
+ 		(
+	 		  TID
+	 		, TNAME
+	 		, TDESC
+	 		, CONTENTS
+	 		, SENDNAME
+	 		, SENDEMAIL
+	 		, TEMPLATE_USE
+	 		, SUBJECT
+		)
+		VALUES 
+		(
+	 		  #TID#
+	 		, #TNAME#
+	 		, #TDESC#
+	 		, #CONTENTS#
+	 		, #SENDNAME#
+	 		, #SENDEMAIL#
+	 		, #TEMPLATE_USE#
+	 		, #SUBJECT#
+		)
+		]]>
+ 	</insert>
+ 	
+ 	<select id="MailDAO.selectIsMainSendTypeCnt" parameterClass="LteMailVO" resultClass="int">
+ 		SELECT COUNT(TID) AS cnt
+ 		FROM RTMS_SENDTYPE S
+		WHERE S.TID = #TID#
+ 	</select>
+</sqlMap>

@@ -1,0 +1,27 @@
+.wrap {  height: auto; width:100%; overflow-x: hidden; overflow-y: auto; float: left; }
+.content_box { height:auto; width:100%;  position: relative; }
+
+
+/*  Tab_menu  */
+#adddivtabdiv { padding-top: 10px; }
+ul.tabs { margin-left: 0px; font-size: 0; list-style-type: none; text-align: left; padding-top: 7px; padding-left:3px; padding-right: 0; padding-bottom: 7px; }
+ul.tabs li {
+display: inline;
+margin: 0;
+margin-right: 3px;
+}
+ul.tabs li a { text-decoration: none; position: relative; border-bottom-color: #F0F0F0; color: #333; border-radius: 3px 3px 0 0; outline: none; padding-top: 8px; padding-right: 14px; padding-bottom: 7px; padding-left: 16px; font-size: 12px; font-style: normal; font-weight: normal; font-variant: normal; border-top-width: 1px; border-right-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-left-style: solid; border-top-color: #CCC; border-right-color: #CCC; border-left-color: #CCC; background-color: #F0F0F0; background-image: url(bg.gif); background-repeat: repeat-x; background-position: 0 0; border-bottom-width: 1px; border-bottom-style: solid; }
+ul.tabs li a:visited {
+color: #000;
+}
+ul.tabs li a:hover { background-color: #d6d6d6; border-top-width: 1px; border-right-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-bottom-style: none; border-left-style: solid; border-top-color: #B7B7B7; border-right-color: #B7B7B7; border-left-color: #B7B7B7; }
+ul.tabs li.selected a, ul.tabs li.selected a:hover { position: relative; top: 0px; font-weight: 600; padding-right: -5px; color: #333; background-color: #FFF; border-top-width: 1px; border-right-width: 1px; border-left-width: 1px; border-top-style: solid; border-right-style: solid; border-left-style: solid; border-top-color: #bfc0c1; border-right-color: #bfc0c1; border-left-color: #bfc0c1; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #FFF; } /*선택된 탭메뉴 */
+ul.tabs li.selected a:hover {
+text-decoration: none;
+}
+div.tabcontents { height:auto; width:100%;  position: relative; background-color: #FFF; border-radius: 0 3px 3px 3px; border-top-width: 1px; border-top-style: solid; border-top-color: #D4D4D4; padding-top: 5px; padding-right: 3px; padding-bottom: 5px; padding-left: 1px; }
+.closeable { background-image: url(../../images/epc/new/close.png); height: 16px; width: 16px; display: inline-block; position: relative; right: -13px; top: 4px; width: 16px; background-position: 0px 1px; background-repeat: no-repeat; }
+/*.tabLoader { background-image: url(tab_loader.gif); height: 16px; width: 16px; display: inline-block; position: relative; right: -13px; top: 4px; width: 16px; background-position: 0px; } */
+.tabcontents .unselected {
+display: none;
+}

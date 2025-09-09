@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscmprd0040">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmbrd0040VO"
+		type="com.lottemart.epc.product.model.PSCMPRD0040VO" />
+	<typeAlias alias="pscmbrd0040DTLVO"
+		type="com.lottemart.epc.product.model.PSCMPRD0040DTLVO" />
+
+	<!-- 컬럼 카운트 -->
+	<select id="selectSelPointCnt" resultClass="java.lang.Integer">
+    /* pscmprd0040.selectSelPointCnt */   	
+    	
+ 	 SELECT COUNT(1) AS  COUNT  FROM( 
+ 		SELECT  mdTalkSeq, title, useYn, content, announStartDy, announEndDy, regDivnCd, apryYn, apryDate, apryId, regId, regDate, modId , modDate   FROM 	(
+			SELECT  
+				TPMT.MD_TALK_SEQ  AS mdTalkSeq, 
+				TPMT.TITLE  AS title,
+				TPMT.USE_YN  AS useYn,
+				TPMT.CONTENT  AS content,
+				TPMT.ANNOUN_START_DY  AS announStartDy,
+				TPMT.ANNOUN_END_DY  AS announEndDy ,
+				TPMT.REG_DIVN_CD regDivnCd,
+				DECODE(TPMT.APRY_YN,'Y','사용','N','미사용' ) AS  apryYn,
+				TPMT.APRY_DATE  AS apryDate,
+				TPMT.APRY_ID  AS apryId,
+				TPMT.REG_ID  AS regId ,
+				TPMT.REG_DATE  AS regDate,
+				TPMT.MOD_ID as modId,
+				TPMT.MOD_DATE  AS  modDate	
+			FROM TPR_PRODUCT_MD_TALK TPMT	
+			<isNotEmpty property="searchNm">
+				,TPR_PRODUCT_MD_TALK_DTL TPMTD
+			</isNotEmpty>
+			
+			     <![CDATA[      
+				WHERE 
+					 (TPMT.ANNOUN_START_DY BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD') 
+			         OR TPMT.ANNOUN_END_DY BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')  )
+			    	AND ( 0 , TPMT.VENDOR_ID ) IN
+			  	  ]]>  	
+		    	<iterate property="vendorId" open="(" close=")" conjunction=",">
+					/* 협력사 검색*/
+					( 0 ,  #vendorId[]# ) -- 협력업체코드
+				</iterate>
+				
+				<isNotEmpty property="searchNm">
+		    		AND TPMT.MD_TALK_SEQ=TPMTD.MD_TALK_SEQ
+		    	</isNotEmpty>
+		    
+     			<isNotEmpty property="searchNm">
+     			
+		     		 <isEqual property="seachType"  compareValue="pdNm">
+			     	  	AND TPMTD.APPLY_TO_CD IN (SELECT PROD_CD  FROM TPR_PRODUCT WHERE PROD_NM   LIKE  '%'||#searchNm#||'%')
+			     	  	AND TPMTD.APPLY_TO_TYPE_CD = 10
+			     	  </isEqual>    	
+			     	    
+			     	  <isEqual property="seachType"  compareValue="pdCd">
+				     	  	AND TPMTD.APPLY_TO_CD IN (SELECT PROD_CD  FROM TPR_PRODUCT WHERE PROD_CD   LIKE  '%'||#searchNm#||'%')
+				     	  	AND TPMTD.APPLY_TO_TYPE_CD = 10
+			     	  </isEqual>   	
+			     	    
+			     	  <isEqual property="seachType" compareValue="cgNm">
+				     	  	AND TPMTD.APPLY_TO_CD IN ( SELECT CATEGORY_ID FROM  TCA_CATEGORY WHERE CATEGORY_NM  LIKE  '%'||#searchNm#||'%')
+				     	  	AND TPMTD.APPLY_TO_TYPE_CD = 20
+			     	  </isEqual>  
+			     	  	  
+			     	  <isEqual property="seachType"  compareValue="vdId">
+			     	      AND TPMTD.APPLY_TO_CD IN ( SELECT VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_NM LIKE '%'||#searchNm#||'%' )
+			     	      AND TPMTD.APPLY_TO_TYPE_CD = 30
+			     	  </isEqual>
+			     	  
+     			</isNotEmpty>
+     
+				<isNotEmpty property="titleNm">
+					AND TPMT.TITLE LIKE '%'||#titleNm#||'%'
+				</isNotEmpty>
+						
+				<isNotEmpty property="useYn">
+					AND TPMT.USE_YN LIKE '%'||#useYn#||'%'
+				</isNotEmpty>
+			)
+			GROUP BY   mdTalkSeq, title, useYn, content, announStartDy, announEndDy, regDivnCd, apryYn, apryDate, apryId, regId, regDate, modId , modDate
+			ORDER BY   mdTalkSeq
+	 )
+	</select>
+
+
+	<!-- 셀링포인트 조회 -->
+	<select id="selectSelPoint" resultClass="pscmbrd0040VO"  parameterClass="dataMap">
+		/* pscmprd0040.selectselPoint */
+ 	 
+ 	 SELECT * FROM(
+ 	 	SELECT ROWNUM AS num, AD.* FROM( 
+ 			SELECT  mdTalkSeq, title, useYn, content, announStartDy, announEndDy, regDivnCd, apryYn, apryDate, apryId, regId, regDate, modId , modDate   FROM (
+				SELECT  
+					TPMT.MD_TALK_SEQ  AS mdTalkSeq, 
+					TPMT.TITLE  AS title,
+					TPMT.USE_YN  AS useYn,
+					TPMT.CONTENT  AS content,
+					TPMT.ANNOUN_START_DY  AS announStartDy,
+					TPMT.ANNOUN_END_DY  AS announEndDy ,
+					TPMT.REG_DIVN_CD regDivnCd,
+					DECODE(TPMT.APRY_YN,'Y','승인','N','미승인' ) AS  apryYn,
+					TPMT.APRY_DATE  AS apryDate,
+					(SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID=TPMT.APRY_ID ) AS apryId,
+					TPMT.REG_ID  AS regId ,
+					TPMT.REG_DATE  AS regDate,
+					TPMT.MOD_ID as modId,
+					TPMT.MOD_DATE  AS  modDate					
+				FROM TPR_PRODUCT_MD_TALK TPMT
+				<isNotEmpty property="searchNm">
+					,TPR_PRODUCT_MD_TALK_DTL TPMTD
+				</isNotEmpty>
+				
+				     <![CDATA[      
+					WHERE 
+						 (TPMT.ANNOUN_START_DY BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD') 
+				         OR TPMT.ANNOUN_END_DY BETWEEN TO_DATE(#startDate#,'YYYYMMDD') AND TO_DATE(#endDate#,'YYYYMMDD')  )
+				 	AND ( 0 ,  TPMT.VENDOR_ID ) IN
+				    ]]>  	
+				    
+				    <iterate property="vendorId" open="(" close=")" conjunction=",">
+						/* 협력사 검색*/
+						( 0 ,  #vendorId[]# ) -- 협력업체코드
+					</iterate>
+						
+			    	<isNotEmpty property="searchNm">
+			    		AND TPMT.MD_TALK_SEQ=TPMTD.MD_TALK_SEQ
+			    	</isNotEmpty>
+    
+		     	<isNotEmpty property="searchNm">
+		     		 <isEqual property="seachType"  compareValue="pdNm">
+				     	  	AND TPMTD.APPLY_TO_CD IN (SELECT PROD_CD  FROM TPR_PRODUCT WHERE PROD_NM   LIKE  '%'||#searchNm#||'%')
+				     	  	AND TPMTD.APPLY_TO_TYPE_CD = 10
+			     	  </isEqual>    	 
+			     	   
+			     	  <isEqual property="seachType"  compareValue="pdCd">
+				     	  	AND TPMTD.APPLY_TO_CD IN (SELECT PROD_CD  FROM TPR_PRODUCT WHERE PROD_CD   LIKE  '%'||#searchNm#||'%')
+				     	  	AND TPMTD.APPLY_TO_TYPE_CD = 10
+			     	  </isEqual>   	 
+			     	   
+			     	  <isEqual property="seachType" compareValue="cgNm">
+				     	  	AND TPMTD.APPLY_TO_CD IN ( SELECT CATEGORY_ID FROM  TCA_CATEGORY WHERE CATEGORY_NM  LIKE  '%'||#searchNm#||'%')
+				     	  	AND TPMTD.APPLY_TO_TYPE_CD = 20
+			     	  </isEqual>  	
+			     	    
+			     	  <isEqual property="seachType"  compareValue="vdId">
+			     	      AND TPMTD.APPLY_TO_CD IN ( SELECT VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_NM LIKE '%'||#searchNm#||'%' )
+			     	      AND TPMTD.APPLY_TO_TYPE_CD = 30
+			     	  </isEqual>    	  
+		     	</isNotEmpty>
+     
+					<isNotEmpty property="titleNm">
+							AND TPMT.TITLE LIKE '%'||#titleNm#||'%'
+					</isNotEmpty>
+		
+					<isNotEmpty property="useYn">
+							AND TPMT.USE_YN = #useYn#
+					</isNotEmpty>
+					)
+				GROUP BY   mdTalkSeq, title, useYn, content, announStartDy, announEndDy, regDivnCd, apryYn, apryDate, apryId, regId, regDate, modId , modDate
+				ORDER BY   mdTalkSeq
+		 		) AD
+ 			 )
+		WHERE num BETWEEN #startRow# AND #endRow# 		 
+	</select>
+
+	<!-- 셀링포인트 저장 -->
+	<insert id="selSave">
+		/* pscmprd0040.selSave */
+		INSERT INTO TPR_PRODUCT_MD_TALK (
+			MD_TALK_SEQ,
+			USE_YN,
+			REG_DIVN_CD,
+			TITLE,
+			CONTENT,
+			ANNOUN_START_DY,
+			ANNOUN_END_DY, 
+			REG_ID,
+			REG_DATE,
+			APRY_YN,
+			VENDOR_ID  )
+		VALUES(
+			LPAD(SQ_MD_TALK_SEQ.nextval, 12, 0),
+			'N',
+			'01',
+			#title#,
+			#content#,
+			#startDate#,
+			#endDate#,
+			#regId#,
+			CURRENT_TIMESTAMP(0),
+			'N',
+			#regId# )
+	</insert>
+	
+	<!-- 셀링포인트 수정 -->
+	<update id="editSelPont" >
+	/* pscmprd0040.editSelPont */
+	UPDATE TPR_PRODUCT_MD_TALK
+	SET 
+		USE_YN = #useYn#,
+		TITLE = #title#,
+		CONTENT = #content#,
+		ANNOUN_START_DY = #startDate#,
+		ANNOUN_END_DY = #endDate#,
+		MOD_ID = #regId#,
+		MOD_DATE = CURRENT_TIMESTAMP(0)
+	WHERE 1=1
+	AND MD_TALK_SEQ = #mdTalkSeq#	
+	</update>
+	
+	<!-- 셀링포인트 디테일 삭제  -->
+	<delete id="deleteDtlSelPoint">
+	/* pscmprd0040.deleteDtlSelPoint */
+	DELETE  TPR_PRODUCT_MD_TALK_DTL 
+	WHERE MD_TALK_SEQ = #mdTalkSeq#
+	</delete>
+
+	<!-- 셀링포인트 상세조회 -->
+	<select id="selectSelPointView" resultClass="pscmbrd0040VO">
+		/* pscmprd0040.selectSelPointView */
+		SELECT
+			MD_TALK_SEQ AS
+			mdTalkSeq,
+			TITLE
+			AS title,
+			USE_YN AS useYn,
+			CONTENT AS content,
+			TO_CHAR(TO_DATE(ANNOUN_START_DY,'yyyymmdd'),'YYYY-MM-DD') AS announStartDy ,
+   		 	TO_CHAR(TO_DATE(ANNOUN_END_DY,'yyyymmdd'),'YYYY-MM-DD') AS announEndDy ,
+			REG_DIVN_CD AS regDivnCd,
+			APRY_YN AS apryYn,
+			APRY_DATE AS apryDate,
+			APRY_ID AS apryId,
+			REG_ID AS regId,
+			REG_DATE AS regDate,
+			MOD_ID as modId,
+			MOD_DATE AS modDate
+		FROM TPR_PRODUCT_MD_TALK
+		WHERE MD_TALK_SEQ = #mdTalkSeq#
+	</select>
+	
+	<!-- 셀링포인트 디테일 -->
+<select id="selectSelSheet" resultClass="pscmbrd0040DTLVO">
+		/* pscmprd0040.selectSelSheet */
+		SELECT * FROM(
+			SELECT 
+				 RANK()OVER(ORDER BY MD_TALK_SEQ DESC) AS num
+				,APPLY_TO_TYPE_CD AS applyToTypeCd
+				,APPLY_TO_CD AS applyToCd
+				,DECODE(APPLY_TO_TYPE_CD,10,'상품',20,'카테고리',30,'업체코드' ) AS applyToTypeName
+				,MD_TALK_DTL_SEQ AS mdTalkDtlSeq
+				,MD_TALK_SEQ AS mdTalkSeq
+				,REG_ID AS regId
+				,REG_DATE AS regDate
+				,MOD_ID AS modId
+				,MOD_DATE AS modDate
+				,CASE WHEN APPLY_TO_TYPE_CD = '10' THEN (SELECT PROD_NM FROM TPR_PRODUCT WHERE PROD_CD = APPLY_TO_CD ) 
+		               	   WHEN APPLY_TO_TYPE_CD = '20' THEN (SELECT CATEGORY_NM FROM TCA_CATEGORY WHERE CATEGORY_ID = APPLY_TO_CD )
+		                   WHEN APPLY_TO_TYPE_CD = '30' THEN (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = APPLY_TO_CD )
+		                ELSE '' END applyToName
+				FROM TPR_PRODUCT_MD_TALK_DTL
+				WHERE MD_TALK_SEQ = #mdTalkSeq#
+		)
+	</select>
+
+	<!-- 셀링포인트 시트 수정 -->
+	<update id="updateSelPont" parameterClass="pscmbrd0040VO">
+		/* pscmprd0040.updateSelPont */
+		UPDATE TPR_PRODUCT_MD_TALK
+		SET
+			 MOD_ID = #modId# /* 수정자 */ 
+			, MOD_DATE = CURRENT_TIMESTAMP(0) /* 수정일시 */
+			, USE_YN = #useYn# /*시용여부 */
+		WHERE 1=1
+			AND MD_TALK_SEQ =#mdTalkSeq#
+	</update>
+
+	<!-- 일관업로드 -->
+	<insert id="insertAllPoint"  parameterClass="dataMap" >
+	/* pscmprd0040.insertAllPoint */		
+	INSERT INTO TPR_PRODUCT_MD_TALK_DTL (
+			 MD_TALK_SEQ
+			,MD_TALK_DTL_SEQ
+			,APPLY_TO_CD
+			,APPLY_TO_TYPE_CD
+			,REG_ID
+			,REG_DATE)
+		VALUES (
+			#mdTalkSeq#
+			,(select nvl(max(to_number(MD_TALK_DTL_SEQ)),0)+1 from TPR_PRODUCT_MD_TALK_DTL  WHERE MD_TALK_SEQ=#mdTalkSeq#)
+			,#applyToCd#
+			,#applyToTypeCd#
+			,#regId#
+			,CURRENT_TIMESTAMP(0)
+		)
+	</insert>
+
+</sqlMap>

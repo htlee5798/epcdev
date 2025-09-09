@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>롯데CRM센터</title>
+<meta http-equiv="X-UA-Compatible" content="IE=9" >
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link href="./cti.css" rel="stylesheet" type="text/css">
+
+<style>
+	
+		body { margin:0; padding:0; }
+		.cti td { padding:0 2px; }
+		.cti td img { CURSOR: pointer; }
+
+    body, input, select, textarea, a { font:100%/1.4 'Nanum Gothic', '나눔고딕', Dotum, tahoma, Arial, Helvetica, sans-serif; font-size:13px; color:#333; }
+		
+		table	{ font-size:12; }
+		
+</style>
+
+<script language="JavaScript" src="./../js/SE_util.js"></script>
+<script language="JavaScript" src="./../js/SC_msgConstants.js"></script>
+<script language="JavaScript" src="./../js/SS_envConstants.js"></script>
+
+<script>
+    
+  function keyCheck() {
+    
+    if(event.keyCode == 13) {
+      
+      //alert("keyCheck() : " + event.keyCode );
+      
+      doDialing();
+
+    }
+    
+  
+  }
+
+  function setValues() {
+
+	//window.resizeTo(350,550);
+	window.resizeTo(350,610);
+
+    //if( confirm(opener.arrConsultationTelNo[0]+"/"+opener.arrConsultationTelNo[1]) ==  false) return;
+    
+    var el;
+  
+    for (var i = 0 ; i< opener.arrConsultationTelNo.length ; i++) {
+      
+      if (opener.arrConsultationTelNo[i] != "0") {
+        
+        el = document.getElementById("txTelNo"+i);
+        
+        if (el != null) el.value = opener.arrConsultationTelNo[i];
+        
+        //alert(document.getElementById("txTelNo"+i).value + "/"+i);
+        
+      }
+      
+    }
+    
+//      opener.SingleStepTransferQueueList.sort();
+      
+    setSelectBox(document.getElementById("txTelNo2"), opener.SingleStepTransferQueueList);
+
+  
+    document.all.txTelNo0.value = opener.cubePhoneNo.value;
+
+    //UEI 고객전화번호 SET
+    document.all.ueiText.innerText = opener.CustType + "/" +  opener.customTelNo.value;
+    
+  }
+
+  function setAgent(dn) {
+  
+    document.all.txTelNo3.value = dn;
+    document.all.rdTelNo3.checked = true;
+    
+  }
+
+  function getTelNoIdx() {
+  
+    var arrRd = document.all.rdTelNo;
+    
+    for (var i=0; i < arrRd.length; i++) {
+    
+      if (arrRd[i].checked == true ) TelNoIdx = i;
+    
+    }
+    
+  }
+
+  function doValidation() {
+
+		DialTelNo = trim(document.getElementById("txTelNo"+TelNoIdx).value).replace('-', '');
+		
+		DialTelNo = replaceAll(DialTelNo,"-","");
+
+    if (!isTelNo(DialTelNo)) {
+    
+      usrAlert(ErrMsgIsNotTelNo); 
+      
+      return false;
+      
+    }    		
+    
+    if(confirm(QstMsgDoRun + " - 협의걸기/그룹전환 : " + DialTelNo) ==  false) return false;
+    
+    return true
+    
+  }
+
+  function doDialing() {
+  
+    getTelNoIdx();
+    
+    if(!doValidation()) return;
+    
+    //UEI SET
+    opener.cubeUei.value = document.all.ueiText.innerText;
+    opener.cubeUui.value = document.all.ueiText.innerText;
+    
+    if (TelNoIdx == 2) {
+    
+      opener.doSingleStepTransfer(DialTelNo);
+      
+    } else {
+    
+      opener.doConsultationCall(DialTelNo);
+    }
+    
+    self.close();  
+  
+  }
+  
+  function doCancel() {
+    
+    self.close();
+  
+  }
+
+
+  //variable
+  
+  var DialTelNo = "";
+  var TelNoIdx = 0;
+
+
+</script>
+
+</head>
+
+<body onKeyDown="keyCheck();" onload="setValues()">
+  
+  <h1 class="consultation">협의</h1>
+  
+    <div class="cti">
+    
+      <h2>연락처</h2>
+  
+					  <!-- 내용 테이블 -->
+					  <table border="0" cellspacing="0" cellpadding="0" style="text-align:left;">
+						  <tr>
+                <th><label for="rdTelNo0"><input type="radio" name="rdTelNo" id="rdTelNo0" value="" checked>연락처 1</label></th>
+								<td><div align="right"><input name="txTelNo" type="text" id="txTelNo0" size="15" style="font-size:12px;"></div></td>
+							</tr>
+						  <tr>
+                <th><label for="rdTelNo1"><input type="radio" name="rdTelNo" id="rdTelNo1" value="">연락처 2</label></th>
+								<td><div align="right"><input name="txTelNo" type="text" id="txTelNo1" size="15" style="font-size:12px;"></div></td>
+							</tr>  																
+						  <tr>
+                <th><label for="rdTelNo2"><input type="radio" name="rdTelNo" id="rdTelNo2" value="">그룹전환</label></th>
+								<td>
+								  <div align="right">
+                  		<select name="txTelNo" id="txTelNo2">
+         								  <option value="3901" SELECTED>01그룹
+          								<option value="3902">02그룹
+          								<option value="3903">03그룹
+        							</select>
+                   </div>
+                 </td>
+							</tr>											
+						  <tr>
+                <th><label for="rdTelNo3"><input type="radio" name="rdTelNo" id="rdTelNo3" value="">상담원</label></th>
+								<td><div align="right"><input name="txTelNo" type="text" id="txTelNo3" size="15" style="font-size:12px;"></div></td>
+							</tr>  																
+							<tr>
+                <th>전달내용</th>
+								<td style="text-align: right;">
+								    <textArea id="ueiText" cols="18" rows="2"></textArea>
+								</td>
+							</tr>  													
+						</table>
+						<!-- //내용 테이블 -->
+						
+        <br>
+    			
+      <h2>상담원정보(대기중)</h2>							  
+  
+    			  <!-- 상담원정보 내용 -->
+					  <table border="0" cellspacing="0" cellpadding="0" style="text-align:left;">
+    				<tr height="20">
+    					<td width="15%" style="text-align:center;">그룹</td>
+    					<td width="15%" style="text-align:center;">팀</td>
+    					<td width="20%" style="text-align:center;">ID</td>
+    					<td width="30%" style="text-align:center;">이름</td>
+    					<td width="20%" style="text-align:center;">내선번호</td>
+    				</tr>
+    				  <script>
+    				      for (var i = 0; i < opener.ReadyAgentList.length; i++) {
+  
+                      var splitData = opener.ReadyAgentList[i].split("/");
+              
+                      document.write("<tr height='18'  style='cursor:pointer' onmouseover='this.style.backgroundColor = '#FFFFAA'' onmouseout='this.style.backgroundColor = '#FFFFFF'' onclick='javascript:setAgent(" +splitData[6] +")' >");
+                      //document.write("<tr>");
+                      document.write("<td width='15%' style='text-align:center;'>" + splitData[2]  + "</td>");
+                      document.write("<td width='15%' style='text-align:center;'>" + splitData[4]  + "</td>");
+                      document.write("<td width='20%' style='text-align:center;'>" + splitData[0]  + "</td>");
+                      document.write("<td width='30%' style='text-align:center;'>" + splitData[1]  + "</td>");
+                      document.write("<td width='20%' style='text-align:center;'>" + splitData[6]  + "</td>");
+                      document.write("</tr>");
+  
+    				      }
+    				      
+    				  </script>
+    				  <!--tr height="18"  style="cursor:pointer" onmouseover="this.style.backgroundColor = '#FFFFAA'" onmouseout="this.style.backgroundColor = '#FFFFFF'" onclick="javascript:setAgent('1603')" >
+    					<td width="15%" class="text_box" style=" text-align: center;"><script>document.write(splitData[2]);</script></td>
+    					<td width="15%" class="text_box" style=" text-align: center;"><script>document.write(splitData[4]);</script></td>
+    					<td width="20%" class="text_box" style=" text-align: center;"><script>document.write(splitData[0]);</script></td>
+    					<td width="30%" class="text_box" style=" text-align: center;"><script>document.write(splitData[1]);</script></td>
+    					<td width="20%" class="text_box" style=" text-align: center;"><script>document.write(splitData[6]);</script></td>
+    				  </tr-->
+    				  <tr>
+    					<td height="1" colspan="6" bgcolor="#e4e4e4"></td>
+    					</tr>
+    				 </table>
+    				 <!-- // 상담원정보 내용 -->
+
+  	    <div class="btn"><span onclick="javascript:doDialing()">통화</span><span onclick="javascript:doCancel()">취소</span></div>
+  	    
+    </div>
+
+<script language="javascript">
+  function window::onload() {
+   document.getElementById("txTelNo0").focus();
+  }
+ </script>
+
+
+</body>
+</html>

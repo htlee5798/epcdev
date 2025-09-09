@@ -1,0 +1,132 @@
+@charset "utf-8";
+
+#container {
+	min-height:980px;
+	background:url("/images/epc/main/m_bg.jpg") no-repeat center top;
+	background-size:cover;
+	background-color:#000;
+	margin-top:-66px;
+}
+
+/* 상위 */
+.mct_warp {
+	padding-top:185px;
+}
+.en_slog {
+	text-align:center;
+	font-size:50px; line-height:1.5em;
+	color:#ffffff; letter-spacing:0.03em;
+	font-weight:300;
+	font-family: 'Ubuntu', sans-serif;
+}
+.ko_slog {
+	text-align:center;
+	font-size:16px; line-height:1.5em;
+	margin-top:15px; color:#fff;
+}
+
+/* 뉴스&공지사항 */
+.mct_noti {
+	position:relative;
+	margin:65px auto;
+	width:600px; height:270px;
+	padding:25px;
+	border-radius:3px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	background-image:url("/images/epc/main/m_ct_box.png");
+}
+.mct_noti .news_tit {
+	font-size:19px; line-height:1.5em;
+	color:#333; font-weight:600;
+	margin-bottom:10px;
+}
+.noti_list li {
+	position:relative;
+	padding:13px 0;
+	background:url("/images/epc/main/m_ct_line.png") repeat-x center top;
+}
+.noti_list li:first-child {
+	background:none;
+}
+.noti_list .new .tit {
+	padding-bottom:10px;
+	padding-left:50px;
+	font-size:16px; line-height:1.5em;
+	font-weight:600;
+	background:url("/images/epc/main/new.png") no-repeat 0 4px;
+}
+.noti_list .new .desc {
+	color:#787878
+}
+.noti_list .date {
+	position:absolute;
+	top:12px; right:0;
+	color:#999999;
+	font-family: 'Open Sans', sans-serif;
+}
+.noti_list .tit {
+	padding-left:20px;
+	background:url("/images/epc/main/dot1.png") no-repeat center left;
+	font-size:15px; line-height:1.5em;
+	color:#555555; letter-spacing:-0.03em;
+}
+.mct_noti .more_btn {
+	position:absolute;
+	top:28px; right:28px;
+}
+.mct_noti .more_btn a {
+	font-size:13px; line-height:1.5em;
+	color:#787878; font-weight:600;
+	letter-spacing:-0.03em;
+	padding-right:13px;
+	background:url("/images/epc/main/arr1.png") no-repeat center right;
+}
+.mct_noti .more_btn a:hover span {
+	border-bottom:1px solid #787878;
+}
+
+/* ic_list */
+.ic_list {
+	width:650px;
+	margin:0 auto;
+	overflow:hidden;
+}
+.ic_list li {
+	float:left;
+	width:20%;
+}
+.ic_list a {
+	display:block;
+	text-align:center;
+	width:100%; height:95px;
+	font-size:14px; line-height:1.5em; 
+	color:#fff; letter-spacing:-0.03em;
+	transition:all 0.2s linear;
+	-webkit-transition:all 0.2s linear;
+	-moz-transition:all 0.2s linear;
+}
+.ic_list a:hover {
+	border-radius:3px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	background-color:#c90514;
+	opacity:0.85; /* GOOD Brower */
+	filter:alpha(opacity=85); /* IE 5-7 */
+	-ms-filter: "alpha(opacity=85)"; /* IE 8 */
+	-moz-opacity:85; /* Netscape  */
+
+}
+.ic_list span {
+	display:block;
+	width:100%; height:35px; padding-top:60px;
+	background-repeat:no-repeat;
+	background-position:center top;
+}
+.ic_list .ic1 span {background-image:url("/images/epc/main/mct_icon1.png");}
+.ic_list .ic2 span {background-image:url("/images/epc/main/mct_icon2.png");}
+.ic_list .ic3 span {background-image:url("/images/epc/main/mct_icon3.png");}
+.ic_list .ic4 span {background-image:url("/images/epc/main/mct_icon4.png");}
+.ic_list .ic5 span {background-image:url("/images/epc/main/mct_icon5.png");}
+.ic_list .ic6 span {background-image:url("/images/epc/main/mct_icon6.png");}
+.ic_list .ic7 span {background-image:url("/images/epc/main/mct_icon7.png");}

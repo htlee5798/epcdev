@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMBUY0060">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="nEDMBUY0060VO" 		type="com.lottemart.epc.edi.buy.model.NEDMBUY0060VO" />
+	
+	 <!-- 리스트 MAP -->
+	 <resultMap id="nEDMBUY0060ListMap" 	class="nEDMBUY0060VO">
+	 	<result column="SRCMK_CD"  			property="srcmkCd" 		/>		<!-- 판매코드 -->	
+	 	<result column="PROD_NM"  			property="prodNm" 		/>		<!-- 상품명 --> 	
+	 	<result column="PROD_STD"  			property="prodStd" 		/>		<!-- 상품규격 -->
+	 	<result column="ORD_IPSU"  			property="ordIpsu" 		/>		<!-- 발주입수 -->
+	 	<result column="DANWI"  			property="danwi" 		/>		<!-- 판매마스터(0:EA,1:BOX,2:KG,3:묶음,4:행거,5:100G,6:10G,7:G) -->
+	 	<result column="STR_NM"  			property="strNm" 		/>		<!-- 점포명 -->
+	 	<result column="STR_CD"  			property="strCd" 		/>		<!-- 점포코드 -->
+	 	<result column="TOT_QTY"  			property="totQty" 		/>		<!-- 발주수량 -->
+	 	<result column="TOT_PRC"  			property="totPrc" 		/>		<!-- 원가 -->
+	 	<result column="BUY_RTN_NM"  		property="buyRtnNm" 	/>		<!-- 납품.매입(1:반품,2:매입,3:반품정정,4:매입정정) -->
+	 	<result column="BUY_BOX_QTY"  		property="buyBoxQty" 	/>		<!-- 매입박스수량 -->
+	 	<result column="BUY_QTY"  			property="buyQty" 		/>		<!-- 매입수량 -->
+	 	<result column="BUY_BUY_PRC"  		property="buyBuyPrc" 	/>		<!-- 매입원가 -->
+	 </resultMap>
+	 
+	 <!-- 점포 상품별 리스트 카운트 -->	
+	<select id="TSC_STORE_PRODUCT-SELECT01_CNT"		parameterClass="nEDMBUY0060VO"		resultClass="Integer">
+		/* NEDMBUY0060.TSC_STORE_PRODUCT-SELECT01_CNT */
+		SELECT COUNT(*) AS CNT
+		FROM
+		(
+			SELECT	SRCMK_CD
+				,	PROD_NM
+				,	PROD_STD
+				,	ORD_IPSU
+				,	STR_CD
+				,	BUY_RTN_FG
+			FROM
+			(	
+				SELECT	A.BUY_SLIP_NO
+					,	A.STR_CD
+					,	A.ORD_SLIP_NO
+					,	A.BUY_PROD_FG
+					,	A.SRCMK_CD
+					,	A.PROD_NM
+					,	A.PROD_STD
+					,	A.VEN_CD
+					,	A.ORD_IPSU
+                    ,   a.ORD_UNIT
+					,	A.BUY_DY
+					,	A.BUY_RTN_FG
+				FROM
+				(	
+						SELECT 	 /*+ ordered use_nl(a b) index(a IX_PC_STR_BUY_03)*/ 
+								A.BUY_SLIP_NO 			AS BUY_SLIP_NO
+							, 	A.STR_CD				AS STR_CD
+							,  	A.ORD_SLIP_NO			AS ORD_SLIP_NO
+							, 	B.BUY_PROD_FG 			AS BUY_PROD_FG
+							, 	B.SRCMK_CD 				AS SRCMK_CD
+							,  	B.PROD_CD 				AS PROD_CD
+							, 	B.PROD_NM 				AS PROD_NM
+							, 	B.PROD_STD 				AS PROD_STD
+							,  	A.VEN_CD 				AS VEN_CD
+							, 	B.ORD_IPSU				AS ORD_IPSU
+							, 	A.BUY_DY 				AS BUY_DY
+							,  	A.BUY_RTN_FG 			AS BUY_RTN_FG
+                            ,   B.ORD_UNIT
+						FROM   TPC_STR_BUY A 
+						INNER JOIN TPC_STR_BUY_PROD B
+						ON A.BUY_SLIP_NO = B.BUY_SLIP_NO
+					    	AND A.YYYY = B.YYYY
+					    WHERE 	A.BUY_DY BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')
+					<isEmpty property="srchEntpCode">
+						<isNotEmpty  property="venCds"  prepend="AND">
+							<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					</isEmpty>	
+					<isNotEmpty  property="srchEntpCode"  prepend="AND">
+						A.VEN_CD = #srchEntpCode#
+					</isNotEmpty>
+					
+					<isNotEmpty property="srchStoreVal"  prepend="AND">
+						<iterate prepend="A.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=",">
+							#srchStoreVal[]#
+						</iterate>
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchProductVal"  prepend="AND">
+						b.PROD_CD = #srchProductVal#
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchBuying"  prepend="AND">
+						A.BUY_RTN_FG = #srchBuying#
+					</isNotEmpty>					
+				)A
+				LEFT OUTER JOIN TPC_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD
+			)A	
+			GROUP BY SRCMK_CD, PROD_NM, PROD_STD, ORD_IPSU, ORD_UNIT, STR_CD, BUY_RTN_FG 
+    		)
+	</select>
+	
+	
+	
+
+
+<select id="TSC_STORE_PRODUCT-SELECT01" parameterClass="nEDMBUY0060VO" resultMap="nEDMBUY0060ListMap">
+		/* NEDMBUY0060.TSC_PRODUCT-SELECT01 */
+		SELECT	A.RN
+			,	A.SRCMK_CD
+			,	A.PROD_NM
+			,	A.PROD_STD
+			,	A.ORD_IPSU
+            ,   (SELECT SUBSTR(CD_NM, 1, 10) FROM TPC_CODE WHERE MAJOR_CD = 'CSA01' AND MINOR_CD = A.ORD_UNIT)		AS DANWI
+			,	A.STR_CD
+            ,	(SELECT STR_NM FROM STORE aa WHERE a.STR_CD = aa.STR_CD) as STR_NM
+			,	A.TOT_QTY
+			,	A.TOT_PRC
+            ,   (SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'SPP01' AND MINOR_CD = A.BUY_RTN_FG) BUY_RTN_NM
+			,	A.BUY_BOX_QTY
+			,	A.BUY_QTY
+			,	A.BUY_BUY_PRC
+		FROM
+		(	
+			SELECT	ROW_NUMBER() OVER(ORDER BY A.STR_CD, A.SRCMK_CD)				AS RN
+				,	SRCMK_CD
+				,	PROD_NM
+				,	PROD_STD
+				,	ORD_IPSU
+                ,	ORD_UNIT          
+				,	STR_CD               
+				,	NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+				,	NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+                ,   BUY_RTN_FG
+				,	NVL(SUM(BUY_BOX_QTY), 0) 	AS BUY_BOX_QTY
+				,	NVL(SUM(BUY_QTY), 0) 		AS BUY_QTY
+				,	NVL(SUM(BUY_BUY_AMT), 0) 	AS BUY_BUY_PRC
+			
+            FROM
+			(	
+				SELECT	
+                    A.STR_CD
+					,	A.ORD_SLIP_NO
+					,	A.SRCMK_CD
+					,	A.PROD_CD
+					,	A.PROD_NM
+					,	A.PROD_STD
+					,	A.ORD_IPSU
+                    ,   A.ORD_UNIT
+					,	A.BUY_RTN_FG
+					,	A.BUY_QTY
+					,	(B.ORD_QTY) AS TOT_QTY
+					,	(B.BUY_PRC) AS TOT_PRC
+					,	A.BUY_BOX_QTY
+					,	A.BUY_BUY_PRC
+					,	A.BUY_BUY_AMT
+				FROM
+				(	
+					
+						SELECT 	
+                             /*+ ordered use_nl(a b) index(a IX_PC_STR_BUY_03)*/ 
+                            A.STR_CD				AS STR_CD
+							,  	A.ORD_SLIP_NO			AS ORD_SLIP_NO
+							, 	B.SRCMK_CD 				AS SRCMK_CD
+							,  	B.PROD_CD 				AS PROD_CD
+							, 	B.PROD_NM 				AS PROD_NM
+							, 	B.PROD_STD 				AS PROD_STD
+							, 	B.ORD_IPSU				AS ORD_IPSU
+							,  	A.BUY_RTN_FG 			AS BUY_RTN_FG
+							,  	B.BUY_QTY 				AS BUY_QTY
+							, 	B.BUY_BOX_QTY 			AS BUY_BOX_QTY
+							,  	B.BUY_BUY_PRC 			AS BUY_BUY_PRC
+							, 	B.BUY_BUY_AMT 			AS BUY_BUY_AMT
+                            ,   B.ORD_UNIT
+						FROM   TPC_STR_BUY A 
+						INNER JOIN TPC_STR_BUY_PROD B
+						ON      A.BUY_SLIP_NO = B.BUY_SLIP_NO
+                       		AND A.YYYY = B.YYYY
+						WHERE 	A.BUY_DY BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')
+					<isEmpty property="srchEntpCode">
+						<isNotEmpty  property="venCds"  prepend="AND">
+							<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+								#venCds[]#
+							</iterate>
+						</isNotEmpty>
+					</isEmpty>	
+					<isNotEmpty  property="srchEntpCode"  prepend="AND">
+						A.VEN_CD = #srchEntpCode#
+					</isNotEmpty>
+					
+					<isNotEmpty property="srchStoreVal"  prepend="AND">
+						<iterate prepend="A.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=",">
+							#srchStoreVal[]#
+						</iterate>
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchProductVal"  prepend="AND">
+						B.PROD_CD = #srchProductVal#
+					</isNotEmpty>
+					
+					<isNotEmpty  property="srchBuying"  prepend="AND">
+						A.BUY_RTN_FG = #srchBuying#
+					</isNotEmpty>	
+
+				)A
+				LEFT OUTER JOIN TPC_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD
+			)A	
+            GROUP BY SRCMK_CD, PROD_NM, PROD_STD, ORD_IPSU, ORD_UNIT, STR_CD, BUY_RTN_FG
+		)A
+		<![CDATA[
+			WHERE TO_NUMBER(#firstIndex#) + 1 <= A.RN AND A.RN < TO_NUMBER(#lastIndex#) + 1
+		]]>			
+	</select>
+
+
+
+
+</sqlMap>

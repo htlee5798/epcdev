@@ -1,0 +1,89 @@
+@charset "utf-8";
+
+.clfix:after { content:""; display:block; clear:both; }
+.clfix { *zoom:1; }
+
+.alignC { text-align:center; }
+.alignL { text-align:left; }
+.alignR { text-align:right; }
+
+.btn_box { text-align:center; margin-bottom:50px; }
+
+nav #club_nav { margin-bottom:40px; background-color:#f1f1f1; }
+#club_nav ul { position:relative; *zoom:1; }
+#club_nav ul:after { display:block; content:""; clear:both; }
+#club_nav li { position:relative; float:left; width:33.3%; text-align:center; }
+#club_nav li:after { display:block; content:""; position:absolute; top:22px; left:-1px; width:1px; height:26px; background-color:#b6b6b6; border-left:1px solid #fcfcfc; }
+#club_nav li:first-child:after { width:0; border:none; }
+#club_nav li a { display:block; overflow:hidden; position:relative; height:72px; }
+#club_nav li a:before { display:block; content:""; position:absolute; left:0; bottom:0; width:100%; border-top:1px solid #d2d2d2; z-index:10; }
+#club_nav li a:after { display:block; content:""; position:absolute; top:0; left:50%; height:72px; background:url("/images/mcs/mobile/myclub/nav_img.png") no-repeat 0 0;}
+#club_nav li.club a:after { width:99px; margin-left:-55px; background-position:0 23px; }
+#club_nav li.event a:after { width:80px; margin-left:-55px; background-position:-100px 23px; }
+#club_nav li.join a:after { width:115px; margin-left:-55px; background-position:-200px 23px; }
+#club_nav li a.on:before { border-top:5px solid #ee1a0f; }
+#club_nav li.club a.on:after { background-position:0 -53px; }
+#club_nav li.event a.on:after { background-position:-100px -53px; }
+#club_nav li.join a.on:after { background-position:-200px -53px; }
+#club_nav li a span { display:block; text-indent:-999em; }
+
+div.club_content { width:100%; }
+div.club_content .tit { margin:0 20px 0 20px; }
+div.club_content p.sub_txt { margin:0 20px 14px 20px; font:20px malgun, "Malgun Gothic"; }
+
+/* 클럽안내 */
+div.club_info { position:relative; margin-bottom:20px; }
+div.club_info img { width:100%; }
+div.club_info p.join_btn { position:relative;}
+div.club_info p.join_btn .btn { display:inline-block; position:absolute; bottom:31%; left:24.5%; width:50%; }
+
+div.plan img { width:100%; }
+div.plan h3 { margin:0 20px 10px 20px; color:#000; font-size:28px; font-weight:bold; -webkit-text-stroke-width:0; }
+
+div.agree_box { position:relative; margin:20px; }
+div.agree_box ul li.tit { float:left; }
+div.agree_box ul li.tit h3 { color:#000; font-size:28px; font-weight:bold; line-height:46px; -webkit-text-stroke-width:0; }
+div.agree_box ul li.dtl_btn { float:right; }
+div.agree_box ul li.dtl_btn a { display:inline-block; }
+
+
+/* 가입 및 조회 */
+div.myclub { margin:0 20px 70px 20px; border-top:2px solid #c7c7c7; }
+div.myclub table { width:100%; margin-bottom:10px; }
+div.myclub table tr th { padding:25px 0; background:#f4f4f4 url('/images/mcs/mobile/myclub/icon_bar.gif') no-repeat 0 26px; border-bottom:1px solid #dedede; color:#666; } 
+div.myclub table tr th:nth-child(1) { background-image:none; }
+div.myclub table tr td { padding:25px 0; border-bottom:1px solid #dedede; color:#666; text-align:center; }
+div.myclub table tr td a img { margin-left:14px; vertical-align:middle; }
+div.myclub .modify { text-align:right; }
+
+div.regist { margin:0 20px 50px 20px; }
+div.regist table { width:100%; margin-bottom:14px; }
+div.regist table tr { border:2px solid #d3d9db; border-right:0; border-left:0; }
+div.regist table tr th { padding:22px 20px; border-right:2px solid #dbdbdb; background-color:#f5f9fa; color:#333; text-align:left; vertical-align:top; }
+div.regist table tr td { padding:22px 20px; }
+div.regist p.txt { color:#333; }
+div.regist table tr td select { height:50px; margin-bottom:4px; background:url('/images/mcs/mobile/myclub/btn_select.png')no-repeat right center; background-size:43px 50px; -webkit-appearance:none; border:1px solid #bdbdbd; -webkit-border-radius:5px; }
+
+/* 가입 및 조회 로그인 안내 */
+div.login_box { width:598px; margin:0 auto 45px auto; padding-top:18px; border:1px solid #b0b0b0; -webkit-border-radius:10px; }
+div.login_box h4 { margin:0 0 50px 24px; }
+div.login_box p.btn { margin-bottom:70px; text-align:center; }
+div.login_box dl { padding:34px 27px; background-color:#e5e5e5; }
+div.login_box dl dt { margin-bottom:4px; color:#000; font:22px malgun, "Malgun Gothic"; font-weight:bold; }
+div.login_box dl dd { color:#000; font:22px malgun, "Malgun Gothic"; }
+
+div.certify_box {  margin:0 20px 30px 20px; }
+div.certify_box ul.txt_box { margin-bottom:20px; }
+div.certify_box ul.txt_box li { font:22px malgun, "Malgun Gothic"; }
+div.certify_box ul.btn_box { margin-bottom:16px; text-align:center; }
+div.certify_box ul.btn_box li { float:left; width:50%; }
+div.certify_box p.txt{ margin-bottom:10px; line-height:1.5em; }
+
+div.certify_info { margin:0 20px 40px 20px; padding:10px; border:1px solid #62b8e5; border-radius:5px; -webkit-border-radius:5px; }
+div.certify_info dl dt { color:#000; font:22px malgun, "Malgun Gothic"; font-weight:bold; }
+div.certify_info dl dd { color:#000; font:22px malgun, "Malgun Gothic"; }
+
+/* 다둥이클럽 온라인 회원가입 이벤트 */
+div.new_mem { position:relative; width:100%; margin-bottom:20px; }
+div.new_mem img { width:100%; }
+div.new_mem a { display:inline-block; position:absolute; top:23%; right:3%; width:30%; }

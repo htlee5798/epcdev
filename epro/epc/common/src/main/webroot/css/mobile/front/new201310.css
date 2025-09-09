@@ -1,0 +1,857 @@
+@charset "utf-8";
+
+/************************************************************************
+ * filename     : new201310.css
+ * description  : 2013년 리뉴얼 CSS
+ * date         : 2013.10.11
+************************************************************************/
+
+#contentWrap {position:relative; width:100%; height:100%}
+
+/* TOP AREA */
+header #go_shoppingtip {height:58px; background:url(/images/mobile/front/common/reform2013/bg_shoppingtip.gif) repeat-x 0 0; overflow:hidden}
+header #go_shoppingtip a {background:url(/images/mobile/front/common/reform2013/btn_shoppingtip.png) no-repeat 50% 0; background-size:640px 100%; height:58px; width:100%; text-indent:-999em; display:block; position:relative}
+
+header #top_menu {overflow:hidden; border-top:solid 2px #ff5b43; border-bottom:solid 7px #494848; background-color:#ee1a0f}
+header #top_menu ul {height:86px; overflow:hidden; clear:both}
+header #top_menu ul a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; text-indent:-999em; display:block}
+header #top_menu li.btn_category {float:left; padding:17px 0 0 16px}
+header #top_menu li.btn_category a {background-position:0 -1216px; width:58px; height:58px}
+header #top_menu li.btn_search {float:right; padding:15px 19px 0 0}
+header #top_menu li.btn_search a {background-position:-77px -1216px; width:40px; height:62px}
+header #top_menu li.btn_home {text-align:center; padding-top:13px}
+header #top_menu li.btn_home a {background-position:0 -44px; width:209px; height:60px; margin:0 auto; position:relative}
+
+
+/* MAIN_MENU */
+nav #gnb_menu {height:78px; overflow:hidden; background-color:#f8f8f8; text-align:center; border-bottom:solid 2px #d9dad9}
+nav #gnb_menu ul.gnbWrap {overflow:hidden; position:relative; margin:0 auto; }
+nav #gnb_menu ul li {position:relative; float:left; font-weight:bold; margin:0 22px}
+nav #gnb_menu ul li a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; display:block; height:56px}
+nav #gnb_menu ul li span {padding-top:26px; display:block; text-indent:-999em}
+nav #gnb_menu ul a.on span {background:url(/images/mobile/front/common/reform2013/icon_arrow01.png) no-repeat center 0; padding-top:26px}
+nav #gnb_menu ul li.special a {background-position:0 -627px; width:136px}
+nav #gnb_menu ul li.special a.on {background-position:-164px -627px}
+
+nav #gnb_menu ul li.leaflet a {background-position:0 -703px; width:134px}/* background-position잡을 때 높이값에서 26px빼야함(공통) */
+nav #gnb_menu ul li.leaflet a.on {background-position:-165px -703px}
+nav #gnb_menu ul li.dontworry a {background-position:0 -779px; width:76px}
+nav #gnb_menu ul li.dontworry a.on {background-position:-218px -779px}
+nav #gnb_menu ul li.event a {background-position:0 -551px; width:138px}
+nav #gnb_menu ul li.event a.on {background-position:-163px -551px}
+nav #gnb_menu ul li.newyear a {background-position:0 -1439px; width:98px} /* 2013-11-29 */
+nav #gnb_menu ul li.newyear a.on {background-position:-171px -1439px} /* 2013-11-29 */
+nav #gnb_menu ul li.plan_display a {background-position:0 -1508px; width:72px} /* 2013-12-23 */
+nav #gnb_menu ul li.plan_display a.on {background-position:-165px -1508px} /* 2013-12-23 */
+/* 메뉴가 3개일 경우
+nav #gnb_menu ul li.leaflet {width:33%; margin:0}
+nav #gnb_menu ul li.dontworry {width:34%; margin:0}
+nav #gnb_menu ul li.event {width:33%; margin:0}
+nav #gnb_menu ul li a {margin:0 auto}
+ */
+
+
+/* MAIN_FOOTER */
+footer#main_footer {background-color:#e9e9e9; padding-bottom:10px; margin-top:30px} /* 2013-11-29 */
+footer#main_footer ul.info {overflow:hidden} 
+footer#main_footer ul.info li {height:74px}
+footer#main_footer ul.info li.lft {float:left; width:50%}
+footer#main_footer ul.info li.rgt {float:right; width:50%; background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat -265px -1077px}
+footer#main_footer ul.info li span {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; height:68%; text-indent:-999em; margin:0 auto; display:block}
+@media all and (max-width:719px){
+footer#main_footer ul.info li.rgt span {margin:14px 0 10px 23px}
+}
+@media all and (min-width:720px){
+footer#main_footer ul.info li.rgt span {margin:14px 0 10px 63px}
+}
+footer#main_footer ul.info li.lft span {background-position:0 -962px; margin:14px 0 10px 24px}
+footer#main_footer ul.info li.rgt span {background-position:0 -1011px}
+
+footer#main_footer div.notice {overflow:hidden; padding:0 17px 17px}
+footer#main_footer div.notice p {border:solid 2px #e0e0e0; background-color:#fff; padding:20px 26px 24px}
+footer#main_footer div.notice span.txt {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; white-space:nowrap; text-overflow:ellipsis; background-position:0 -1058px; height:32px; padding:0 60px 0 68px; overflow:hidden; color:#454545; display:block; font-weight:bold}
+footer#main_footer div.notice span.btn_view {float:right; margin-top:-78px} /* 2013-11-26 수정 */
+footer#main_footer div.notice span.btn_view a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; background-position:0 -1098px; width:77px; height:76px; text-indent:-999em; display:block}
+
+
+/* FOOTER */
+footer.web {padding-bottom:90px; padding-top:10px; background-color:#e6e6e6; border-top:solid 2px #acacac} /* 2013-11-29 */
+footer.app {padding-bottom:0; padding-top:10px; background-color:#e6e6e6; border-top:solid 2px #acacac} /* 2013-11-29 */
+footer #footer_info {background-color:#c4c4c4; overflow:hidden; padding:25px 20px 35px; font-size:18px; line-height:120%; font-family:Dotum; color:#555}
+footer #footer_info .menu {}
+footer #footer_info .menu li {display:inline}
+footer #footer_info .menu li a {font-weight:bold}
+footer #footer_info .menu li span {margin:0 10px; font-weight:bold}
+footer #footer_info dl {padding:25px 0}
+footer #footer_info dl strong {font-weight:bold}
+footer #footer_info address {font-style:normal; font-weight:bold; letter-spacing:-0.1em}
+
+@media all and (max-width:719px){
+footer #footer_menu {overflow:hidden; border-top:solid 2px #a7a7a7; background-color:#c4c4c4}
+footer #footer_menu li {float:left; border-left:solid 2px #acacac}
+footer #footer_menu li:first-child {border-left:none}
+footer #footer_menu li span {height:45px; background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; text-indent:-999em; margin:0 auto; display:block}
+footer #footer_menu li.menu01 {width:33%}
+footer #footer_menu li.menu01 span {width:62px; background-position:0 -404px}
+footer #footer_menu li.menu02 {width:33%}
+footer #footer_menu li.menu02 span {width:132px; background-position:0 -458px}
+footer #footer_menu li.menu03 {width:33%}
+footer #footer_menu li.menu03 span {width:80px; background-position:0 -510px}
+}
+@media all and (min-width:720px){
+footer #footer_menu {overflow:hidden; border-top:solid 2px #a7a7a7; background-color:#c4c4c4}
+footer #footer_menu li {float:left; background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat -100px -871px}
+footer #footer_menu li:first-child {background:none}
+footer #footer_menu li span {height:44px; background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; text-indent:-999em; margin:0 auto; display:block}
+footer #footer_menu li.menu01 {width:33.2%}
+footer #footer_menu li.menu01 span {width:62px; background-position:0 -404px}
+footer #footer_menu li.menu02 {width:33.2%}
+footer #footer_menu li.menu02 span {width:132px; background-position:0 -458px}
+footer #footer_menu li.menu03 {width:33.6%}
+footer #footer_menu li.menu03 span {width:80px; background-position:0 -510px}
+}
+
+/* QUICK_MENU */ /* 2013-11-26 수정 */
+nav #quick_menu {border-top:solid 2px #adadad; text-align:center; background-color:#f5f5f5; height:88px; width:100%; bottom:0; position:fixed; z-index:1000}
+nav #quick_menu ul {}
+nav #quick_menu ul li {float:left; border-left:solid 2px #d8d8d8; width:16.4%}
+nav #quick_menu ul li:first-child {border-left:none}
+nav #quick_menu ul li span {height:88px; width:106px; background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat; text-indent:-999em; margin:0 auto; display:block}
+nav #quick_menu ul li.menu01 span {background-position:0 -121px}
+nav #quick_menu ul li.menu01on span {background-position:-237px -121px}
+nav #quick_menu ul li.menu02 span {background-position:-118px -121px}
+nav #quick_menu ul li.menu02on span {background-position:-340px -121px}
+nav #quick_menu ul li.menu03 span {background-position:0 -220px}
+nav #quick_menu ul li.menu03on span {background-position:-237px -220px}
+nav #quick_menu ul li.menu04 span {background-position:-118px -220px}
+nav #quick_menu ul li.menu04on span {background-position:-340px -220px}
+nav #quick_menu ul li.menu05 span {background-position:4px -318px}
+nav #quick_menu ul li.menu05on span {background-position:-237px -318px}
+nav #quick_menu ul li.menu06 span {background-position:-116px -316px}
+nav #quick_menu ul li.menu06on span {background-position:-340px -316px}
+
+
+/* MAIN_POPUP */
+#main_pop {bottom:0; position:fixed; margin-bottom:88px; width:100%; text-align:center; z-index:100} /* 2013-11-27 수정 */
+#main_pop div {margin:0 auto}
+#main_pop_app {bottom:0; position:fixed; width:100%; text-align:center; z-index:100} /* 2013-11-27 추가 */
+#main_pop_app div {margin:0 auto} /* 2013-11-27 추가 */
+
+
+/* 금주의전단 */
+section#leaflet {position:relative; width:100%; background:#fff}
+section#leaflet .btn_lr {position:absolute; width:100%; height:0; margin-top:189px; z-index:10;}
+section#leaflet .btn_lr li a {width:36px; height:58px; background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat; text-indent:-999em; display:block}
+section#leaflet .btn_lr li.back {float:left}
+section#leaflet .btn_lr li.back a {background-position:0 0}
+section#leaflet .btn_lr li.next {float:right}
+section#leaflet .btn_lr li.next a {background-position:-42px 0}
+
+section#leaflet .btn_num {position:absolute; width:100%; height:0; margin-top:-40px; z-index:10;}
+section#leaflet .btn_num ul {width:400px; margin:0 auto; text-align:center}
+section#leaflet .btn_num li {display:inline-block; margin:0 5px}
+section#leaflet .btn_num li a {width:14px; height:14px; background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat 0 -65px; text-indent:-999em; display:block}
+section#leaflet .btn_num li a.on {background-position:-16px -65px}
+
+section#leaflet .img_area {overflow:hidden; width:100%}
+section#leaflet .img_area ul {position:relative; text-align:center;}	
+section#leaflet .img_area ul li {position:relative;float:left}	
+section#leaflet .img_area ul img {width:100%}
+
+section#leaflet .tl {overflow:hidden; height:37px; border-top:solid 2px #d2d2d2;  border-bottom:solid 2px #d2d2d2; background-color:#f8f8f8; padding:7px 0 0 26px}
+section#leaflet .tl h2 {background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat 0 -84px; height:28px; text-indent:-999em}
+section#leaflet .tl p {position:absolute; right:0; margin:-27px 16px 0 0}
+section#leaflet .tl a {display:block; background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat -90px 0; width:30px; height:30px; text-indent:-999em}
+
+section#leaflet .product {overflow:hidden}
+section#leaflet .product li {float:left; font-size:22px; color:#686868; line-height:120%; border-bottom:solid 2px #eee; width:50%; position:relative}
+section#leaflet .product li:nth-child(even) {background:url(/images/mobile/front/common/reform2013/bg_line.png) repeat-y 0 0}
+section#leaflet .product li p {position:relative; margin:5% 0 0 5%}
+section#leaflet .product li img.icon {position:absolute; width:25%; left:25px; top:25px}
+section#leaflet .product li img.pord {margin:0 5% 5% 0; width:95%}
+section#leaflet .product li span.icon {margin-top:-42px; position:absolute}
+section#leaflet .product li span.txt01 {display:block; width:60%; text-align:left}
+section#leaflet .product li span.txt02 {width:60%; text-align:left; overflow:hidden; height:50px; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical}
+section#leaflet .product li span em {color:#f30c0c; font-size:30px; font-weight:bold}
+section#leaflet .product li span.baske {float:right; margin-top:-80px}
+section#leaflet .product li span.baske a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat 0 -871px; text-indent:-999em; width:86px; height:86px; display:block}
+
+
+/* 모바일특가 */
+section#special {position:relative; width:100%; background:#fff;}	
+section#special .special_benner {margin:0 auto;background-color:#FF6841;text-align:center}
+section#special .special_benner img {}
+
+section#special .tl {overflow:hidden; height:37px; border-top:solid 2px #d2d2d2;  border-bottom:solid 2px #d2d2d2; background-color:#f8f8f8; padding:7px 0 0 26px}
+section#special .tl h2 {background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat 0 -129px; height:28px; text-indent:-999em}
+section#special .tl p {position:absolute; right:0; margin:-27px 16px 0 0}
+section#special .tl a {display:block; background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat -90px 0; width:30px; height:30px; text-indent:-999em}
+
+section#special .product {overflow:hidden}
+section#special .product li {float:left; font-size:22px; color:#686868; line-height:120%; border-bottom:solid 2px #eee; width:50%; position:relative}
+section#special .product li:nth-child(even) {background:url(/images/mobile/front/common/reform2013/bg_line.png) repeat-y 0 0}
+section#special .product li p {position:relative; margin:5% 0 0 5%}
+section#special .product li img.icon {position:absolute; width:25%; left:25px; top:25px}
+section#special .product li img.pord {margin:0 5% 5% 0; width:95%}
+section#special .product li span.icon {margin-top:-42px; position:absolute}
+section#special .product li span.txt01 {display:block; width:60%; text-align:left}
+section#special .product li span.txt02 {width:60%; text-align:left; overflow:hidden; height:55px; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical}
+section#special .product li span em {color:#f30c0c; font-size:30px; font-weight:bold}
+section#special .product li span.baske {float:right; margin-top:-80px}
+section#special .product li span.baske a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat 0 -871px; text-indent:-999em; width:86px; height:86px; display:block}
+
+
+/* 이벤트/쿠폰 */
+section#event {position:relative; width:100%; background:#fff;}	
+section#event .event_benner01 {overflow:hidden; margin:0 auto; text-align:center}
+section#event .event_benner01 img {width:100%}
+
+section#event .event_btn {overflow:hidden}
+section#event .event_btn li {float:left; width:50%; text-align:center; margin:0 auto; padding:44px 0}
+section#event .event_btn li.rgt {background:url(/images/mobile/front/common/reform2013/bg_line.png) repeat-y 0 0}
+section#event .event_btn li span {background:url(/images/mobile/front/common/reform2013/btn_event.png) no-repeat; text-indent:-999em; width:218px; height:230px; display:inline-block}
+section#event .event_btn li.lft span {background-position:17px 0}
+section#event .event_btn li.rgt span {background-position:0 -242px}
+
+section#event .event_benner02 {overflow:hidden; margin:0 auto; text-align:center; border-top:solid 2px #e6e6e6;}
+section#event .event_benner02 li {border-top:solid 4px #e6e6e6;background-color:#F7F7F7;text-align:left;}
+section#event .event_benner02 li a{display:block;}
+section#event .event_benner02 li img {/*width:100%*/}
+
+
+/* 돈워리 */
+section#dontworry {position:relative; width:100%; background:#fff;}
+section#dontworry .dontworry_benner {overflow:hidden; margin:0 auto;background-color:#FFB377;text-align:center;}
+section#dontworry .dontworry_benner img {}
+
+section#dontworry .dontworry_product li {}
+section#dontworry .dontworry_product li img {width:100%}
+section#dontworry .dontworry_product li span {line-height:120%; color:#636363; display:block}
+section#dontworry .dontworry_product li span.money01 {font-size:22px; margin:-100px 120px 0 0; text-align:right}
+section#dontworry .dontworry_product li span.money02 {font-size:26px; margin:10px 120px 0 0; text-align:right; font-weight:bold; height:64px}
+section#dontworry .dontworry_product li span.money02 em {font-size:56px; color:#f00a0a; letter-spacing:-0.05em}
+section#dontworry .dontworry_product li span.baske {margin:-107px 0 0 0; position:absolute; right:0}
+section#dontworry .dontworry_product li span.baske a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat -111px -1093px; text-indent:-999em; width:106px; height:107px; display:block}
+section#dontworry .dontworry_product li span.txt {background:url(/images/mobile/front/common/reform2013/txt_downworry.png) no-repeat 16px 13px; background-color:#e1e1e1; border-bottom:solid 2px #d5d5d5; overflow:hidden; height:26px; padding:8px 18px 0 0; text-align:right; font-size:16px; font-weight:bold; line-height:120%}
+section#dontworry .dontworry_product li span.txt em {color:#e63523}
+section#dontworry .dontworry_product li span.txt strong {color:#e63523; font-size:24px; font-weight:bold; vertical-align:bottom}
+
+
+
+/* 마이마트 */
+section#mymart {overflow:hidden}
+section#mymart .info01 {overflow:hidden; background-color:#e8e8e8; font-weight:bold; font-size:26px}
+section#mymart .info01 li.class01 {padding:18px; background-color:#e8e8e8; float:left}
+section#mymart .info01 li.class02 {border-bottom:solid 2px #d5d5d5; color:#292929; padding-top:28px; height:50px; margin-right:10px}
+section#mymart .info01 li.class02 em {color:#ee1a0f}
+section#mymart .info01 li.deliver01 {border-bottom:solid 2px #d5d5d5; padding:7px 0 5px; margin-right:10px; line-height:220%; color:#333; height:60px; background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat 180px 24px; text-align:right}
+section#mymart .info01 li.deliver01 button {display:inline-block; width:87px; height:51px; background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat 0 -54px; text-indent:-999em; margin-left:20px}
+section#mymart .info01 li.deliver02 {background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat 180px -108px; margin:14px 117px 0 0; padding-top:4px; text-align:right}
+
+section#mymart .info02 {overflow:hidden; border-top:solid 2px #bababa}
+section#mymart .info02 li {float:left; text-align:center; font-weight:bold; color:#666; padding:47px 0 43px}
+section#mymart .info02 li span {background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat; display:block; text-indent:-999em}
+section#mymart .info02 li em {color:#ee1a0f; text-decoration:underline}
+section#mymart .info02 .coupon {width:33%; border-bottom:solid 2px #e7e7e7}
+section#mymart .info02 .coupon span {background-position:0 -150px; width:123px; height:129px; margin:0 auto 17px;}
+section#mymart .info02 .mileage {width:34%; border-bottom:solid 2px #e7e7e7; background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat -218px -150px}
+section#mymart .info02 .mileage span {background-position:0 -289px; width:129px; height:133px; margin:0 auto 13px;}
+section#mymart .info02 .balance {width:33%; border-bottom:solid 2px #e7e7e7; background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat -218px -150px}
+section#mymart .info02 .balance span {background-position:0 -432px; width:123px; height:140px; margin:0 auto 6px;}
+section#mymart .info02 .point {width:50%}
+section#mymart .info02 .point span {background-position:0 -582px; width:204px; height:132px; margin:0 auto 16px;}
+section#mymart .info02 .change {width:50%; background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat -218px -150px}
+section#mymart .info02 .change span {background-position:0 -724px; width:150px; height:128px; margin:0 auto 20px;}
+
+section#mymart .menu {overflow:hidden; border-top:solid 2px #bababa}
+section#mymart .menu li {font-size:28px; color:#393737; font-weight:bold; border-bottom:solid 2px #d8d8d8; background-color:#f7f7f7; padding:14px 18px 20px}
+section#mymart .menu li:last-child {border-top:none}
+section#mymart .menu li em {color:#ee1a0f}
+section#mymart .menu li a {display:block}
+section#mymart .menu li span {display:inline-block; float:right; background:url(/images/mobile/front/common/reform2013/mymart_com.png) no-repeat 0 -868px; width:18px; height:25px; text-indent:-999em; margin-top:5px}
+
+
+
+/* 검색 */
+header#search {overflow:hidden; background-color:#ee1a0f; border-top:solid 2px #ff5b43; border-bottom:solid 6px #494848}
+header#search div.web {width:75%}
+header#search div.app_android {width:55%}
+header#search div.app_iphone {width:63%}
+header#search div.entry {height:49px; position:relative; float:left; padding:16px 50px 20px 18px}
+header#search div.entry input {font-size:24px; font-weight:bold; height:49px; padding:5px 25px 0 25px; width:100%; box-shadow: inset 3px 3px 5px 0 #ccc; border-radius:40px 40px; border:none; background-color:#fff}
+header#search div.entry button {background:url(/images/mobile/front/common/reform2013/btn_close01.png) no-repeat; width:34px; height:34px; position:absolute; top:27px; right:18px; text-indent:-999em;}
+header#search dl {overflow:hidden; float:right}
+header#search dd {float:left}
+header#search dd.qr {margin:26px 30px 0 0}
+header#search dd.qr button {background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat 0 0; width:36px; height:36px; text-indent:-999em; display:block}
+header#search dd.voice {margin:22px 20px 0 0}
+header#search dd.voice button {background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat -71px 0; width:29px; height:40px; text-indent:-999em; display:block}
+header#search dd.close {margin:26px 0 0 0}
+header#search dd.close a {background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat 0 -40px; width:84px; height:30px; text-indent:-999em; display:block}
+
+section#search_menu {overflow:hidden; position:relative;}
+section#search_menu > ul > li {height:0; font-size:26px}
+section#search_menu > ul > li h3 {width:50%; position:absolute; padding:30px 0; background-color:#f8f8f8; border-bottom:solid 2px #d0d0d0; text-align:center; top:0}
+section#search_menu > ul > li h3.lately {border-bottom:solid 2px #d0d0d0; border-left:solid 2px #d0d0d0; left:50%}
+section#search_menu > ul > li h3.popular {}
+section#search_menu > ul > li h3.lately a {display:inline-block; background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat; text-indent:-999em}
+section#search_menu > ul > li h3.popular a {display:inline-block; background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat; text-indent:-999em} 
+section#search_menu > ul > li h3.lately a {background-position:0 -82px; width:195px; height:59px}
+section#search_menu > ul > li h3.popular a {background-position:0 -221px; width:195px; height:59px}
+section#search_menu > ul > li.on {height:auto}
+section#search_menu > ul > li.on h3.lately a {background-position:0 -151px}
+section#search_menu > ul > li.on h3.popular a {background-position:0 -289px}
+section#search_menu > ul > li .list {visibility:hidden}
+section#search_menu > ul > li.on .list {visibility:visible; position:static}
+section#search_menu div.list {font-weight:bold; color:#898989; line-height:300%; padding-top:122px} /* 2013-11-26 수정 */
+section#search_menu div.list legend {text-indent:-999em; font-size:0; line-height:0}
+section#search_menu div.list li {border-bottom:solid 2px #eee; position:relative} /* 2013-11-26 수정 */
+section#search_menu div.list a {display:block; background:none; color:#333; padding:0 5%} /* 2013-11-26 수정 */
+section#search_menu div.list li span {color:#898989} /* 2013-11-26 추가 */
+section#search_menu div.list02 {font-weight:bold; color:#898989; line-height:300%; padding-top:122px} /* 2013-11-26 수정 */
+section#search_menu div.list02 legend {text-indent:-999em; font-size:0; line-height:0}
+section#search_menu div.list02 li {border-bottom:solid 2px #eee; padding:0 10% 0 5%; position:relative}
+section#search_menu div.list02 span {display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:90%}
+section#search_menu div.list02 a {display:block; background:none; color:#333} /* 2013-11-26 수정 */
+section#search_menu div.list02 .del01 button {position:absolute; right:20px; top:24px; width:30px; height:30px; background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat 0 -770px; text-indent:-999em}
+section#search_menu div.list02 .del {overflow:hidden; border-top:solid 2px #d0d0d0; background-color:#f7f7f7; padding:25px 0}
+section#search_menu div.list02 .del button {display:block; margin:0 auto; background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat 0 -376px; width:187px; height:26px; text-indent:-999em}
+
+section#search_list {overflow:hidden}
+section#search_list li {border-bottom:solid 2px #eee; font-weight:bold; color:#898989; line-height:300%; padding:0 3%; position:relative}
+section#search_list li a {color:#333; display:block} /* 2013-11-26 수정 */
+section#search_list li em {color:#ee1a0f}
+section#search_list li span:first-child {display:block; width:80%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+section#search_list li span:last-child {position:absolute; right:3%; top:0}
+
+section#search_result .result_sort {overflow:hidden; font-size:28px; padding:27px 20px 30px; font-weight:bold}
+section#search_result .result_sort span.txt {overflow:hidden; white-space:nowrap; text-overflow:ellipsis; width:55%; display:inline-block; vertical-align:top}
+section#search_result .result_sort span.num {display:inline-block; vertical-align:top}
+section#search_result .result_sort em {color:#ee1c24}
+
+/* 2013-11-14 추가 */
+section#search_result .result_posi {overflow:hidden; border-top:solid 2px #d0d0d0; font-size:24px; padding:24px 20px 27px}
+section#search_result .result_posi span {font-weight:bold}
+
+section#search_result .result_list {overflow:hidden; border-top:solid 2px #d0d0d0; background-color:#f1f1f1; position:relative}
+section#search_result .result_list p {position:absolute; right:0; top:50%; margin:-18px 10px 0 0}
+section#search_result .result_list p button {width:35px; height:36px; display:block; background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat 0 -455px; text-indent:-999em}
+section#search_result .result_list p button.on {background-position:0 -412px}
+section#search_result .result_list ul {overflow:hidden}
+section#search_result .result_list li {border-bottom:solid 2px #e6e6e6; border-right:solid 2px #e6e6e6; padding:10px 4px; width:90%; position:relative; background-color:#fff}
+section#search_result .result_list li a {white-space:nowrap; text-overflow:ellipsis; display:block; width:80%; overflow:hidden}
+section#search_result .result_list li span {position:absolute; right:3%; margin-top:-30px; color:#ee1a0f}
+
+section#search_result .search_group {overflow:hidden; position:relative; background:url(/images/mobile/front/common/reform2013/bg_line02.png) repeat-x 0 bottom; background-color:#d0d0d0; border-top:solid 2px #9a9a9a}
+section#search_result .search_group ul{overflow:hidden; padding:10px 20px 0}
+section#search_result .search_group li {background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat right -694px; float:left}
+section#search_result .search_group li:last-child {background:none}
+section#search_result .search_group li button {display:block }
+section#search_result .search_group li span {height:60px; display:block; font-family:'Malgun Gothic'; font-size:26px; line-height:160%; color#484848; font-weight:bold; padding:12px 20px 0}
+section#search_result .search_group li.on {margin-left:-4px}
+section#search_result .search_group li.on button {background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat 0 -512px}
+section#search_result .search_group li.on span {background:url(/images/mobile/front/common/reform2013/search_com.png) no-repeat right -593px}
+section#search_result .search_group .sort {position:absolute; right:0; top:18px }
+section#search_result .search_group .sort select {width:220px; height:42px; padding:0 60px 0 4px; border:2px solid #bdbdbd; font-weight:bold; background:url(/images/mobile/front/common/reform2013/bg_select_btn.png) no-repeat 100% 0; font-size:24px; -webkit-border-radius:5px; -webkit-appearance:none; -webkit-border-image:none; background-color:#fff}
+
+
+section#search_none {overflow:hidden}
+section#search_none .txt01 {font-size:28px; font-weight:bold; padding:20px}
+section#search_none .txt01 span {color:#ee1c24}
+section#search_none .txt02 {padding:0 20px 0 34px; text-indent: -14px;}
+
+
+
+/* 카테고리 메뉴 */
+#category_body {height:100%; background:url(/images/mobile/front/common/reform2013/bg_category.png) repeat}
+#category_wrap {min-height:100%;*height:100%; background:url(/images/mobile/front/common/reform2013/bg_category02.png) repeat-y}
+section#category {overflow:hidden; padding-bottom:97px} /* 2013-11-26 수정 */
+nav#large_category {width:126px; float:left; overflow:auto; height:100%; background:url(/images/mobile/front/common/reform2013/bg_category.png) repeat}
+nav#large_category ul {border-bottom:solid 2px #6e6e6e; border-right:solid 2px #474646}
+nav#large_category li {border-top:solid 2px #6e6e6e; border-bottom:solid 2px #181818; border-right:solid 2px #181818}
+nav#large_category a {display:block; background:url(/images/mobile/front/common/reform2013/category_com.png) no-repeat; width:122px; height:124px; text-indent:-999em}
+nav#large_category li.menu01 a {background-position:0 0}
+nav#large_category li.menu01 a.on {background-position:-136px 0}
+nav#large_category li.menu02 a {background-position:0 -134px}
+nav#large_category li.menu02 a.on {background-position:-136px -134px}
+nav#large_category li.menu03 a {background-position:0 -268px}
+nav#large_category li.menu03 a.on {background-position:-136px -268px}
+nav#large_category li.menu04 a {background-position:0 -402px}
+nav#large_category li.menu04 a.on {background-position:-136px -402px}
+nav#large_category li.menu05 a {background-position:0 -626px} /* 2013-12-04 추가 */
+nav#large_category li.menu05 a.on {background-position:-136px -626px} /* 2013-12-04 추가 */
+
+nav#menu_category {width:100%; border-bottom:solid 2px #474646}
+nav#menu_category ul.bg01 {margin-left:126px}
+nav#menu_category ul.bg01 li {border-top:solid 2px #474646; border-bottom:solid 2px #181818; height:124px; display:block; cursor:pointer}
+nav#menu_category ul.bg01 a {display:block; color:#ebebeb; height:124px; }
+nav#menu_category ul.bg01 a:hover {background-color:#ff5252}
+nav#menu_category ul.bg01 em {font-size:28px; font-weight:bold; padding:0 5%; display:inline-block; vertical-align:middle}
+nav#menu_category ul.bg01 span {display:inline-block; vertical-align:middle; width:0; height:124px; overflow:hidden}
+nav#menu_category ul.bg01 button {background:url(/images/mobile/front/common/reform2013/category_com.png) no-repeat -99px -548px; width:30px; height:20px; display:block; float:right; margin:50px 25px 0 0; text-indent:-999em}
+
+nav#menu_category ul.bg02 {background-color:#1f1e1e; margin-left:126px}
+nav#menu_category ul.bg02 li {border-top:solid 2px #474646; border-bottom:solid 2px #181818; height:124px; display:block; cursor:pointer}
+nav#menu_category ul.bg02 a {display:block; color:#bcbcbc; height:124px}
+nav#menu_category ul.bg02 a:hover {background-color:#ff5252; color:#fff}
+nav#menu_category ul.bg02 em {font-size:28px; font-weight:bold; padding:0 5%; display:inline-block; vertical-align:middle}
+nav#menu_category ul.bg02 span {display:inline-block; vertical-align:middle; width:0; height:124px; overflow:hidden}
+
+
+/* 스마트쇼핑팁 */
+section#smart_shopping {padding-bottom:97px} /* 2013-11-26 수정 */
+section#smart_shopping img {width:100%}
+
+
+/* 서브 메뉴 2개형 */
+nav#sub_menu {overflow:hidden; border-bottom:solid 2px #c4c6c5}
+nav#sub_menu ul {overflow:hidden}
+nav#sub_menu li {float:left}
+nav#sub_menu li.menu01 {width:50%}
+nav#sub_menu li.menu02 {width:50%; margin-left:-2px; border-left:solid 2px #c4c6c5}
+nav#sub_menu li a {display:block; text-indent:-999em; height:52px; padding:26px 0 0 0; background-color:#f8f8f8; border-bottom:solid 5px #f8f8f8}
+nav#sub_menu li a.on {border-bottom:solid 5px #ee1a0f; background-color:#f2f2f2}
+nav#sub_menu li a span {background:url(/images/mobile/front/common/reform2013/basket_com.png) no-repeat; display:block; margin:0 auto}
+nav#sub_menu li.menu01 a span {background-position:0 0; width:103px; height:29px}
+nav#sub_menu li.menu01 a.on span {background-position:0 -48px}
+nav#sub_menu li.menu02 a span {background-position:0 -96px; width:103px; height:29px}
+nav#sub_menu li.menu02 a.on span {background-position:0 -144px}
+
+/* 서브 메뉴 3개형
+nav#sub_menu {overflow:hidden; border-bottom:solid 2px #c4c6c5}
+nav#sub_menu ul {overflow:hidden}
+nav#sub_menu li {float:left}
+nav#sub_menu li.menu01 {width:33%}
+nav#sub_menu li.menu02 {width:34%; border-left:solid 2px #c4c6c5; margin-left:-2px}
+nav#sub_menu li.menu03 {width:33%; border-left:solid 2px #c4c6c5; margin-left:-2px}
+nav#sub_menu li a {display:block; text-indent:-999em; height:52px; padding:26px 0 0 0; background-color:#f8f8f8; border-bottom:solid 5px #f8f8f8}
+nav#sub_menu li a.on {border-bottom:solid 5px #ee1a0f; background-color:#f2f2f2}
+nav#sub_menu li a span {background:url(/images/mobile/front/common/reform2013/basket_com.png) no-repeat; display:block; margin:0 auto}
+nav#sub_menu li.menu01 a span {background-position:0 0; width:103px; height:29px}
+nav#sub_menu li.menu01 a.on span {background-position:0 -48px}
+nav#sub_menu li.menu02 a span {background-position:0 -96px; width:103px; height:29px}
+nav#sub_menu li.menu02 a.on span {background-position:0 -144px}
+nav#sub_menu li.menu03 a span {background-position:0 -192px; width:140px; height:29px}
+nav#sub_menu li.menu03 a.on span {background-position:0 -240px}
+ */
+
+
+/* 장바구니 메뉴 */
+nav#basket_menu {overflow:hidden}
+nav#basket_menu ul {overflow:hidden; clear:both; background:url(/images/mobile/front/common/reform2013/bg_basket.png) repeat-x; background-size:contain}
+nav#basket_menu li {float:left; width:25%; height:80px; background:url(/images/mobile/front/common/reform2013/basket_com.png) no-repeat right -286px; margin-left:-26px; padding-left:26px; margin-top:-1px} 
+nav#basket_menu li:last-child {background:none}
+nav#basket_menu li.on:last-child {background-image:none}
+nav#basket_menu li.on  {position:relative; z-index:-1; background:url(/images/mobile/front/common/reform2013/basket_com.png) no-repeat right -376px; background-color:#ff6058}
+nav#basket_menu li span {background:url(/images/mobile/front/common/reform2013/basket_com.png) no-repeat; display:block; text-indent:-999em; height:25px; margin:28px auto 0; padding-right:15px}
+nav#basket_menu li.menu01 span {background-position:0 -470px; width:82px}
+nav#basket_menu li.menu01.on span {background-position:0 -504px}
+nav#basket_menu li.menu02 span {background-position:0 -543px; width:82px}
+nav#basket_menu li.menu02.on span {background-position:0 -580px}
+nav#basket_menu li.menu03 span {background-position:0 -618px; width:92px}
+nav#basket_menu li.menu03.on span {background-position:0 -653px}
+nav#basket_menu li.menu04 span {background-position:0 -692px; width:83px}
+nav#basket_menu li.menu04.on span {background-position:0 -725px}
+
+
+/* 이용약관 */
+header#service_header {overflow:hidden; background-color:#ee1a0f; border-top:solid 2px #f5766f; border-bottom:solid 4px #494848; text-align:center}
+header#service_header h2 {font-size:32px; color:#fff; font-weight:bold; padding:28px 0 30px}
+header#service_header p {position:absolute; margin:-70px 24px 0 0; right:0}
+header#service_header a {display:block; width:50px; height:50px; background:url(/images/mobile/front/common/reform2013/btn_close02.png) no-repeat; text-indent:-999em}
+
+section#service_cont {overflow:hidden; color:#666; font-size:24px; padding-bottom:100px}
+section#service_cont h3 {font-size:26px; color:#282828; font-weight:bold; border-top:solid 2px #d7d9da; background-color:#f5f7f7; padding:14px 20px 20px; margin-top:10px}
+section#service_cont p {padding:20px}
+section#service_cont strong {font-weight:bold}
+section#service_cont ul.list01 {padding:0 20px 0 50px}
+section#service_cont ul.list02 {padding:10px 20px 10px 35px}
+section#service_cont table {margin:0 auto; width:95%}
+section#service_cont table caption {font-size:0}
+section#service_cont table th {border-top:solid 2px #d7d9da; border-bottom:solid 2px #d7d9da; background-color:#f5f7f7; padding:5px 0 10px}
+section#service_cont table td {border-left:solid 2px #d7d9da; border-bottom:solid 2px #d7d9da; padding:5px 10px 10px}
+section#service_cont table td:first-child {border-left:none}
+
+
+/* 개인정보 취급방침 */
+header#privacy_header {overflow:hidden; background-color:#ee1a0f; border-top:solid 2px #f5766f; border-bottom:solid 4px #494848; text-align:center}
+header#privacy_header h2 {font-size:32px; color:#fff; font-weight:bold; padding:28px 0 30px}
+header#privacy_header p {position:absolute; margin:-70px 24px 0 0; right:0}
+header#privacy_header a {display:block; width:50px; height:50px; background:url(/images/mobile/front/common/reform2013/btn_close02.png) no-repeat; text-indent:-999em}
+
+section#privacy_cont {overflow:hidden; color:#666; font-size:24px; padding-bottom:100px}
+section#privacy_cont h3 {font-size:26px; color:#282828; font-weight:bold; border-top:solid 2px #d7d9da; background-color:#f5f7f7; padding:14px 20px 20px; margin-top:10px}
+section#privacy_cont div {padding:20px 0; margin:0 20px; border-top:solid 2px #d7d9da; border-bottom:solid 2px #d7d9da}
+section#privacy_cont p {padding:20px}
+section#privacy_cont strong {font-weight:bold}
+section#privacy_cont em {color:#ff6058}
+section#privacy_cont ul.list01 {padding:0 20px 0 50px}
+section#privacy_cont ul.list02 {padding:10px 20px 10px 35px}
+section#privacy_cont .mt30 {margin-top:30px}
+section#privacy_cont table {margin:0 auto; width:95%}
+section#privacy_cont table caption {font-size:0}
+section#privacy_cont table th {border-top:solid 2px #d7d9da; border-bottom:solid 2px #d7d9da; background-color:#f5f7f7; padding:5px 0 10px}
+section#privacy_cont table td {border-left:solid 2px #d7d9da; border-bottom:solid 2px #d7d9da; padding:5px 5px 10px}
+section#privacy_cont table td:first-child {border-left:none}
+
+section#privacy_cont .cs_area p{padding:0;}
+section#privacy_cont .cs_area h3{padding:14px 0 20px;border:none;background-color:#fff;color:#ff6058;}
+section#privacy_cont .cs_area h4{position:relative;font-size:26px; color:#282828; font-weight:bold; border-top:solid 2px #d7d9da;border-bottom:solid 2px #d7d9da; background-color:#f5f7f7; padding:14px 20px 20px; margin-top:20px}
+section#privacy_cont .cs_area h4 .btn_top{position:absolute;top:14px;right:20px;}
+section#privacy_cont .cs_area div{padding:0;border-top:none;border-bottom:none;}
+section#privacy_cont .cs_area .list_num li{margin-top:5px;}
+section#privacy_cont .cs_area .list_num .num{display:inline-block;width:30px;}
+section#privacy_cont .cs_area .list_num .list_num{margin-left:25px;}
+section#privacy_cont .cs_area table{margin-top:10px;width:100%;}
+
+/*닫기버튼*/
+#close_btm {overflow:hidden; border-top:solid 2px #272727; background-color:#353535; width:100%; bottom:0; position:fixed; text-align:right; opacity:0.7} /* 2013-11-25 수정 */
+#close_btm a {display:inline-block; width:50px; height:50px; background:url(/images/mobile/front/common/reform2013/category_com.png) no-repeat 0 -536px; margin:20px}
+#close_btm a span {display:none}
+#close_btm02 {overflow:hidden; border-top:solid 2px #272727; background-color:#393737; width:100%; bottom:0; text-align:center}
+#close_btm02 a {display:inline-block; height:60px; background-color:#595656; border:solid 2px #292727; border-radius:10px; margin:20px auto; color:#d7d7d7; font-weight:bold; font-size:28px; line-height:180%; padding:0 60px}
+
+
+/* 최근본상품 */
+section#view_porduct {position:relative; width:100%; background:#fff;}	
+
+section#view_porduct .product {overflow:hidden}
+section#view_porduct .product li {float:left; font-size:22px; color:#686868; line-height:120%; border-bottom:solid 2px #eee; width:50%; position:relative}
+section#view_porduct .product li:nth-child(even) {background:url(/images/mobile/front/common/reform2013/bg_line.png) repeat-y 0 0}
+section#view_porduct .product li p {position:relative; margin:5% 0 0 5%}
+section#view_porduct .product li img.icon {position:absolute; width:25%; left:25px; top:25px}
+section#view_porduct .product li img.pord {margin:0 5% 5% 0; width:95%}
+section#view_porduct .product li span.icon {margin-top:-42px; position:absolute}
+section#view_porduct .product li span.txt01 {display:block; width:60%; text-align:left}
+section#view_porduct .product li span.txt02 {width:60%; text-align:left; overflow:hidden; height:55px; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical}
+section#view_porduct .product li span em {color:#f30c0c; font-size:30px; font-weight:bold}
+section#view_porduct .product li span.baske {float:right; margin-top:-80px}
+section#view_porduct .product li span.baske a {background:url(/images/mobile/front/common/reform2013/btn_com.png) no-repeat 0 -871px; text-indent:-999em; width:86px; height:86px; display:block}
+
+
+.app_contentWrap {top:0} /* 2013-11-19 추가 */
+
+
+/* 명절선물 */
+section#newyear {position:relative; width:100%; background:#fff;}	
+section#newyear .top_benner img {width:100%}	
+section#newyear .middle_benner {}/* 2013-12-26 수정 */
+section#newyear .middle_benner img {width:100%}
+section#newyear .tl {overflow:hidden; height:37px; border-top:solid 2px #d2d2d2;  border-bottom:solid 2px #d2d2d2; background-color:#f8f8f8; padding:7px 0 0 26px}
+section#newyear .tl h2 {background:url(/images/mobile/front/common/newyear/com_newyear.png) no-repeat; height:28px; text-indent:-999em}
+section#newyear .tl h2.money {background-position:0 0}
+section#newyear .tl h2.theme {background-position:0 -38px}
+section#newyear .tl h2.solo {background-position:0 -76px}
+section#newyear .tl p {position:absolute; right:0; margin:-27px 16px 0 0}/* 2013-12-26 추가 */
+section#newyear .tl a {display:block; background:url(/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat -90px 0; width:30px; height:30px; text-indent:-999em}/* 2013-12-26 추가 */
+section#newyear .money {overflow:hidden; padding:26px 0 34px}
+section#newyear .money li {float:left; width:18%; margin:0 1%}
+section#newyear .money li img {width:100%}
+section#newyear .theme01 {overflow:hidden; padding:26px 1% 42px}
+section#newyear .theme01 img {width:100%}
+section#newyear .theme02 {overflow:hidden; padding-bottom:36px}/* 2013-12-26 수정 */
+section#newyear .theme02 li {float:left; width:49%}
+section#newyear .theme02 li:nth-child(even) {float:right}
+section#newyear .theme02 li img {width:100%}
+section#newyear .theme03 {overflow:hidden; padding:22px 0 40px}/* 2013-12-26 수정 */
+section#newyear .theme03 img {width:100%}
+section#newyear .product {overflow:hidden}
+section#newyear .product li {float:left; font-size:22px; color:#686868; line-height:120%; border-bottom:solid 2px #eee; width:50%; position:relative}
+section#newyear .product li:nth-child(even) {background:url(/images/mobile/front/common/reform2013/bg_line.png) repeat-y 0 0}
+section#newyear .product li p {position:relative; margin:5% 0 0 5%}
+section#newyear .product li p:last-child {margin:0 5%; padding:10px 5%; border-top:dotted 1px #868686}
+section#newyear .product li img.icon {position:absolute; width:25%; left:25px; top:25px}
+section#newyear .product li img.pord {margin:0 5% 5% 0; width:95%}
+section#newyear .product li span.icon {margin-top:-42px; position:absolute}
+section#newyear .product li span.txt01 {display:block; text-align:left}
+section#newyear .product li span.txt02 {text-align:left; overflow:hidden; height:55px; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical}
+section#newyear .product li span em {color:#f30c0c; font-size:30px; font-weight:bold}
+section#newyear .solo01 {overflow:hidden; margin:26px 10px 0}/* 2013-12-26 수정 */
+section#newyear .solo01 img {width:100%}
+
+#tl_newyear {text-indent:-999em; background:url(/images/mobile/front/common/newyear/tl_newyear.jpg) no-repeat 0 0; background-size:100% 100%; height:62px; overflow:hidden}
+section#benner_newyear div {background:url(/images/mobile/front/common/newyear/bg_money02.jpg) repeat-x 0 0; margin-top:10px; overflow:hidden; padding-top:7px}
+section#benner_newyear a {float:left; width:50%}
+section#benner_newyear img {width:100%}
+
+.tl_money {background:url(/images/mobile/front/common/newyear/bg_money01.jpg) no-repeat 0 0; background-size:100% 100%; height:216px; overflow:hidden}
+.tl_money ul {overflow:hidden; margin:127px auto 0; width:620px}
+.tl_money li {float:left}
+.tl_money a {display:block; width:124px; height:60px; text-indent:-999em; background:url(/images/mobile/front/common/newyear/menu_money.png) no-repeat}
+.tl_money li.money01 a {background-position:0 0}
+.tl_money li.money01 a.on {background-position:-126px 0}
+.tl_money li.money02 a {background-position:0 -70px}
+.tl_money li.money02 a.on {background-position:-126px -70px}
+.tl_money li.money03 a {background-position:0 -140px}
+.tl_money li.money03 a.on {background-position:-126px -140px}
+.tl_money li.money04 a {background-position:0 -210px}
+.tl_money li.money04 a.on {background-position:-126px -210px}
+.tl_money li.money05 a {background-position:0 -280px}
+.tl_money li.money05 a.on {background-position:-126px -280px}
+
+section#newyear_brand .tl_brand {background:url(/images/mobile/front/common/newyear/bg_brand01.jpg) no-repeat 0 0; background-size:100% 100%; height:159px; overflow:hidden; text-indent:-999em}
+section#newyear_brand .stl {overflow:hidden; height:37px; background:url(/images/mobile/front/common/newyear/bg_brand02.jpg) no-repeat 0 0; background-size:100%; border-bottom:solid 2px #d2d2d2; background-color:#f8f8f8; padding:12px 0 0 26px}
+section#newyear_brand .stl h5 {background:url(/images/mobile/front/common/newyear/tl_brand.png) no-repeat; height:28px; text-indent:-999em}
+section#newyear_brand .stl h5.stl01 {background-position:0 0}
+section#newyear_brand .stl h5.stl02 {background-position:0 -38px}
+section#newyear_brand .stl h5.stl03 {background-position:0 -76px}
+section#newyear_brand .brand_list {overflow:hidden; margin:24px 0 44px}
+section#newyear_brand .brand_list ul {overflow:hidden; margin:0 auto; width:96%}
+section#newyear_brand .brand_list li {float:left; margin:1px; width:33%}
+section#newyear_brand .brand_list li img {width:100%}
+
+.tl_brand_plan {overflow:hidden; position:relative}
+.tl_brand_plan img {width:100%}
+.tl_brand_plan a {position:absolute; width:150px; height:130px; right:0; margin-top:-130px; text-indent:-999em}
+
+.newyear_coupon_tl01 {overflow:hidden; background:url(/images/mobile/front/common/newyear/bg_coupon.jpg) no-repeat 0 0; background-size:100%; border-bottom:solid 2px #d2d2d2; padding-top:4px; margin-bottom:20px}
+.newyear_coupon_tl01 img {width:100%}
+.newyear_coupon_tl02 {overflow:hidden; background:url(/images/mobile/front/common/newyear/bg_coupon.jpg) no-repeat 0 bottom; background-size:100%; padding-bottom:4px; margin-bottom:20px}
+.newyear_coupon_tl02 img {width:100%}
+
+section#newyear_coupon_list {width:100%}
+section#newyear_coupon_list div.list {position:relative; overflow:hidden; padding:30px 30px 20px; margin-bottom:30px; border-bottom:solid 2px #d0d6d8}
+section#newyear_coupon_list img {float:left; margin-right:20px}
+section#newyear_coupon_list div.txt {position:relative; float:left}
+section#newyear_coupon_list li {margin-bottom:30px; overflow:hidden}
+section#newyear_coupon_list span {display:block; line-height:100%}
+section#newyear_coupon_list span.txt01 {font-size:30px; color:#3f0a12; padding-bottom:10px}
+section#newyear_coupon_list span.txt01 strong {font-weight:bold}
+section#newyear_coupon_list span.txt02 {font-size:22px}
+section#newyear_coupon_list span.txt02 em {color:#ccc8c4}
+section#newyear_coupon_list p.dnc {position:relative; padding-top:10px}
+section#newyear_coupon_list p.dnc:after {content: ""; display:block; position:absolute; right:30px; top:25px; width:44px; height:25px; background:url(http://www.lottemart.com/images/mobile/front/common/ico-set-01.png) 0 -735px no-repeat}
+section#newyear_coupon_list button {width:250px; height:54px; padding-left:48px; font-size:26px; color:#f00; text-align:left; -webkit-border-image:url(/images/mobile/front/common/btn-default.png) 6 stretch; -moz-border-image: url('/images/mobile/front/common/btn-default.png') 6 stretch;}
+
+/* 2013-12-05 추가 */
+.selec-box {padding:30px 20px 0}
+.wrap-select-paging {width:100%; height:46px; padding:0 77px 0 4px; border:2px solid #bdbdbd; background:url(//simage.lottemart.com/images/mobile/common/bg_select_btn.png) no-repeat 100% 0; font-size:24px; -webkit-border-radius:5px; -webkit-appearance:none; -webkit-border-image:none}
+
+/* 2013-12-10 추가 */
+section#newyear_guide01 {overflow:hidden}
+section#newyear_guide01 .tl {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat 0 0; background-size:100%; height:158px; text-indent:-999em}
+section#newyear_guide01 ul {overflow:hidden; padding:40px 16px 0}
+section#newyear_guide01 li {padding:0 0 30px 0; position:relative; color:#454545; font-size:20px}
+section#newyear_guide01 span {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat; display:inline-block; width:26px; height:34px; position:absolute; text-indent:-999em}
+section#newyear_guide01 span.num01 {background-position:0 -352px}
+section#newyear_guide01 span.num02 {background-position:-46px -352px}
+section#newyear_guide01 span.num03 {background-position:-92px -352px}
+section#newyear_guide01 span.num04 {background-position:-138px -352px}
+section#newyear_guide01 span.num05 {background-position:-184px -352px}
+section#newyear_guide01 em {padding-left:36px; display:inline-block}
+
+section#newyear_guide02 {overflow:hidden}
+section#newyear_guide02 .tl {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat 0 -178px; background-size:100%; height:158px; text-indent:-999em}
+section#newyear_guide02 .stl01 {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat 0 -402px; background-size:100%; height:112px; text-indent:-999em}
+section#newyear_guide02 .stl02 {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat 0 -523px; background-size:100%; height:112px; text-indent:-999em}
+section#newyear_guide02 .shop {overflow:hidden; padding:30px 20px 0}
+section#newyear_guide02 .shop li {padding:0 0 15px 0; position:relative; color:#454545; font-size:22px}
+section#newyear_guide02 .shop span {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat; display:inline-block; width:104px; height:36px; position:absolute; text-indent:-999em}
+section#newyear_guide02 .shop span.txt01 {background-position:0 -653px}
+section#newyear_guide02 .shop span.txt02 {background-position:-124px -653px}
+section#newyear_guide02 .shop span.txt03 {background-position:-248px -653px}
+section#newyear_guide02 .shop em {padding-left:118px; display:inline-block}
+section#newyear_guide02 .delivery {overflow:hidden; padding:30px 20px 0}
+section#newyear_guide02 .delivery li {padding:0 0 15px 0; position:relative; color:#454545; font-size:22px}
+section#newyear_guide02 .delivery span {background:url(/images/mobile/front/common/newyear/com_guide.png) no-repeat; display:inline-block; width:104px; height:36px; position:absolute; text-indent:-999em}
+section#newyear_guide02 .delivery span.txt01 {background-position:0 -707px}
+section#newyear_guide02 .delivery span.txt02 {background-position:-124px -707px}
+section#newyear_guide02 .delivery span.txt03 {background-position:-248px -707px}
+section#newyear_guide02 .delivery em {padding-left:118px; display:inline-block}
+section#newyear_guide02 p {font-size:18px; color:#757575; padding:0 0 40px 26px; line-height:150%}
+
+/* 배송정보 2013-12-12 */
+.font_red {color:#f00000}
+.delivery_txt01 {overflow:hidden; font-size:22px; color:#333}
+.delivery_txt01 li {position:relative; line-height:120%}
+.delivery_txt01 li span {position:absolute; display:inline-block; height:20px}
+.delivery_txt01 li em {padding:0 0 10px 16px; display:inline-block}
+.delivery_btn01 {overflow:hidden; text-align:right}
+.delivery_btn01 button {height:60px; font-size:22px; font-weight:bold}
+.delivery_btn01 a {color:#fff}
+.delivery_btn02 {overflow:hidden; text-align:center; padding-top:20px}
+.delivery_btn02 button {font-size:26px}
+.delivery_btn03 {overflow:hidden; text-align:center; padding-bottom:5px}
+.delivery_btn03 button {font-size:26px; font-weight:bold}
+.delivery_tl {font-size:26px; color:#333; overflow:hidden; padding-bottom:10px}
+.delivery_tl strong {font-weight:bold}
+.delivery_table01 tr {border:2px solid #d3d9db; border-right:0; border-left:0}
+.delivery_table01 tr.selected {background:#fcf1f2}
+.delivery_table01 th {padding:16px 20px; border-right:2px solid #dbdbdb; background-color:#f5f9fa; color:#333; text-align:center}
+.delivery_table01 th.b-r-n {border-right:none}
+.delivery_table01 td {padding:22px 20px}
+.delivery_table01 td.line-r {border-right:2px solid #dbdbdb}
+.delivery_table01 td.cnt {text-align:center}
+.delivery_txt02 {border:solid 2px #dbdbdb; padding:20px; text-align:center; margin-bottom:40px}
+
+.delivery_modal {} 
+.delivery_modal .fg {background-color:#fff; padding:40px 0}
+.delivery_modal .cont_area {padding:0 20px 30px}
+.delivery_modal .table_scroll {overflow-y:scroll; height:350px}
+.delivery_modal .btn_close {text-align:right}
+.delivery_modal .txt01 {border-top:solid 2px #d6d7d9; border-bottom:2px solid #d3d9db; background:#f5f5f5; padding:20px 20px 25px}
+.delivery_modal .txt01 em {color:#ed1a23; font-weight:bold}
+
+/* 음성검색 서비스 2013-12-23 */
+section#voice_search {overflow:hidden}
+section#voice_search img {width:100%}
+
+/* 기획전 2013-12-23 */
+section#plan_display {position:relative; width:100%; background:#fff}
+section#plan_display .tl {overflow:hidden;padding:30px 0 28px 26px}
+section#plan_display .tl h2 {background:url(//simage.lottemart.com/images/mobile/front/common/reform2013/btn_com.png) no-repeat 0 -1594px; height:28px; text-indent:-999em}
+section#plan_display .tl p {position:absolute; right:0; margin:-27px 16px 0 0}
+section#plan_display .tl a {display:block; background:url(//simage.lottemart.com/images/mobile/front/common/reform2013/btn_leaflet.png) no-repeat -90px 0; width:30px; height:30px; text-indent:-999em}
+section#plan_display .list a {display:block;text-align:center;}
+
+/* new2014 */
+	/* common */
+/*header #top_menu{border-top-color:#ff4f58;border-bottom-color:#c5c5c5;}*/
+nav #gnb_list{background-color:#f1f1f1;}
+nav #gnb_list ul{position:relative;*zoom:1;}
+nav #gnb_list ul:after{display:block;content:"";clear:both;}
+nav #gnb_list ul li{position:relative;float:left;text-align:center;}
+nav #gnb_list ul li:after{display:block;content:"";position:absolute;top:22px;left:-1px;width:1px;height:26px;background-color:#b6b6b6;border-left:1px solid #fcfcfc;}
+nav #gnb_list ul li:first-child:after{width:0;border:none;}
+nav #gnb_list ul li.leaflet{width:17.2%;}
+nav #gnb_list ul li.dontworry{width:16.9%;}
+nav #gnb_list ul li.special{width:23.4%;}
+nav #gnb_list ul li.plan_display{width:16.4%;}
+nav #gnb_list ul li.event{width:26.1%;}
+nav #gnb_list ul li a{display:block;overflow:hidden;position:relative;height:72px;}
+nav #gnb_list ul li a:before{display:block;content:"";position:absolute;left:0;bottom:0;width:100%;border-top:1px solid #d2d2d2;z-index:10;}
+nav #gnb_list ul li a:after{display:block;content:"";position:absolute;top:0;left:50%;height:72px;background:url("http://m.lottemart.com/images/mobile/front/common/reform2013/btn_com.png") no-repeat;}
+nav #gnb_list ul li.leaflet a:after{width:110px;margin-left:-55px;background-position:0 -1916px;}
+nav #gnb_list ul li.dontworry a:after{width:108px;margin-left:-54px;background-position:-110px -1916px;}
+nav #gnb_list ul li.special a:after{width:150px;margin-left:-75px;background-position:-218px -1916px;}
+nav #gnb_list ul li.plan_display a:after{width:106px;margin-left:-53px;background-position:-368px -1916px;}
+nav #gnb_list ul li.event a:after{width:166px;margin-left:-84px;background-position:-473px -1916px;}
+nav #gnb_list ul li a.on:before{border-top:5px solid #ee1a0f;}
+nav #gnb_list ul li.leaflet a.on:after{background-position:0 -1988px;}
+nav #gnb_list ul li.dontworry a.on:after{background-position:-110px -1988px;}
+nav #gnb_list ul li.special a.on:after{background-position:-218px -1988px;}
+nav #gnb_list ul li.plan_display a.on:after{background-position:-368px -1988px;}
+nav #gnb_list ul li.event a.on:after{background-position:-473px -1988px;}
+nav #gnb_list ul li a span{display:block;text-indent:-999em;}
+
+	/* 금주의전단 */
+.weekBanner{position:relative;}
+#week_list { width:100%; height:340px; margin:0 auto;position:relative; overflow:hidden; }
+#week_list ul { width:99999px; height:340px; position:absolute; top:0; left:0; overflow:hidden; }
+#week_list ul li {float:left;width:100%;height:340px;background-color:#fff;text-align:center;}
+#week_list ul li a{display:block;}
+.week_btn_area{overflow:hidden;padding-bottom:15px;margin-top:-50px;text-align:center;}
+.week_btn_area:before,.week_btn_area:after{display:block;content:"";position:absolute;top:50%;width:40px;height:100px;margin-top:-50px;background-color:rgba(0,0,0,.5);background-image:url("http://m.lottemart.com/images/mobile/front/common/reform2013/btn_com.png");z-index:10;}
+.week_btn_area:before{left:0;border-top-right-radius:5px;border-bottom-right-radius:5px;background-position:-153px -1200px;}
+.week_btn_area:after{right:0;border-top-left-radius:5px;border-bottom-left-radius:5px;background-position:-215px -1200px;}
+.week_btn_area .btn_page{overflow:hidden;display:inline-block;position:relative;width:16px;height:16px;margin:3px 6px;border-radius:8px;background-color:#939393;font-size:0px;line-height:0;text-indent:-9999px;}
+.btn_page:after{display:block;content:"";position:absolute;left:5px;top:5px;width:6px;height:6px;border-radius:3px;background-color:#fff;}
+.week_btn_area .btn_page.on{background:#ee0f34;}
+
+section#leaflet .titbox {overflow:hidden;position:relative;padding:13px 17px 10px 30px;border-top:1px solid #c2c2c2;background-color:#eee;*zoom:1;}
+section#leaflet .titbox:after{display:block;content:"";clear:both;}
+section#leaflet .titbox:before{display:block;content:"";position:absolute;top:0;left:0;width:100%;border-top:1px solid #fff;z-index:10;}
+section#leaflet .titbox h2 {position:relative;float:left;font-size:22px;}
+section#leaflet .titbox h2:before{display:block;content:"";position:absolute;top:4px;left:-12px;width:2px;height:21px;border:1px solid #6f6f6f;border-radius:2px;background-color:#2a2a2a;z-index:10;}
+section#leaflet .titbox h2 span{color:#e80011;}
+section#leaflet .titbox p {float:right;}
+section#leaflet .titbox a {display:block;position:relative;height:30px;padding:0 20px 0 10px;border:1px solid #d42744;border-radius:4px;color:#fff;font-size:17px;line-height:30px;
+background:#df3d58;background:-moz-linear-gradient(top, #df3d58 0%, #d52946 100%);background:-webkit-linear-gradient(top, #df3d58 0%,#d52946 100%);}
+section#leaflet .titbox a:after,
+section#leaflet .titbox a:before{display:block;content:"";position:absolute;background-color:#fff;}
+section#leaflet .titbox a:after{top:14px;right:7px;width:2px;height:8px;-webkit-transform:translate(0px) rotate(45deg);-webkit-transform-origin:0% 0%;}
+section#leaflet .titbox a:before{top:16px;right:1px;width:8px;height:2px;z-index:10;-webkit-transform:translate(0px) rotate(225deg);-webkit-transform-origin:0% 0%;}
+
+section#leaflet .product_list {padding:7px 17px;background-color:#eee;*zoom:1;}
+section#leaflet .product_list:after{display:block;content:"";clear:both;}
+section#leaflet .product_list li {position:relative;float:left;width:33.3%;font-size:22px; color:#686868; line-height:120%;}
+section#leaflet .product_list li p {position:relative;padding:8px 13px 10px; margin:0 0 10px 9px;background-color:#fff;text-align:center;}
+section#leaflet .product_list li:nth-child(3n+1) p{margin-left:0;}
+section#leaflet .product_list li p a{display:block;}
+section#leaflet .product_list li img.icon {position:absolute; width:25%; left:25px; top:25px}
+section#leaflet .product_list li img.pord {width:154px;height:154px;}
+section#leaflet .product_list li span.icon {margin-top:-42px; position:absolute}
+section#leaflet .product_list li span.txt01 {display:block;text-align:left;font-size:20px;}
+section#leaflet .product_list li span.txt02 {overflow:hidden;display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;height:55px;padding-top:10px;margin:10px 0px 0;border-top:1px solid #ddd;font-size:18px;text-align:left;}
+section#leaflet .product_list li span em {color:#f30c0c; font-size:26px; font-weight:bold}
+
+.banner_list{*zoom:1;}
+.banner_list:after{display:block;content:"";clear:both;}
+.banner_list > div{float:left;width:50%;}
+.banner_list > div a{display:block;}
+.banner_list > div a img{width:100%;}
+.banner_recipe{padding-bottom:6px;margin-top:1px;border-top:1px solid #e6a02e;background:#ffba35 url("http://www.lottemart.com/images/mobile/contentimg/week/201402/bg_recipe_week.png") repeat-x 0 bottom;}
+.banner_recipe a{display:block;text-align:center;}
+.banner_recipe a img{}
+.bestcate_list{}
+.bestcate_list ul{*zoom:1;}
+.bestcate_list ul:after{display:block;content:"";clear:both;}
+.bestcate_list ul li{overflow:hidden;float:left;width:25%;}
+.bestcate_list ul li a{display:block;position:relative;padding:100px 0 10px;border-bottom:1px solid #d3d3d3;border-left:1px solid #d3d3d3;color:#706c6c;font-size:18px;text-align:center;white-space:pre;word-break:nowrap;text-overflow:clip;}
+.bestcate_list ul li a:after{display:block;content:"";position:absolute;top:0;left:50%;width:160px;height:130px;margin-left:-80px;background:url("http://m.lottemart.com/images/mobile/front/common/reform2013/btn_com.png") no-repeat 0 0;}
+.bestcate_list ul li:nth-child(4n+1) a{border-left:none;}
+.bestcate_list ul li:nth-child(1) a:after{background-position:0 -1651px;}
+.bestcate_list ul li:nth-child(2) a:after{background-position:-160px -1651px;}
+.bestcate_list ul li:nth-child(3) a:after{background-position:-320px -1651px;}
+.bestcate_list ul li:nth-child(4) a:after{background-position:-480px -1651px;}
+.bestcate_list ul li:nth-child(5) a:after{background-position:0 -1784px;}
+.bestcate_list ul li:nth-child(6) a:after{background-position:-160px -1784px;}
+.bestcate_list ul li:nth-child(7) a:after{background-position:-320px -1784px;}
+.bestcate_list ul li:nth-child(8) a:after{background-position:-480px -1784px;}
+
+	/* 마이마트 */
+section#mymart {overflow:hidden}
+section#mymart .info_new01 {overflow:hidden; background-color:#e8e8e8; font-weight:bold; font-size:26px}
+section#mymart .info_new01 li{*zoom:1;}
+section#mymart .info_new01 li:after{display:block;content:"";clear:both;}
+section#mymart .info_new01 li.class01 {padding:18px; background-color:#e8e8e8; float:left}
+section#mymart .info_new01 li.class02 {border-bottom:solid 2px #d5d5d5; color:#292929; padding-top:28px; height:50px; margin-right:10px}
+section#mymart .info_new01 li.class02 em {color:#ee1a0f}
+section#mymart .info_new01 li.deliver01 {border-bottom:solid 2px #d5d5d5; padding:7px 0 5px; margin-right:10px; line-height:220%; color:#333; height:60px;text-align:right}
+section#mymart .info_new01 li.deliver01 button {display:inline-block; width:87px;margin-left:20px;border:2px solid #b1b1b1;border-radius:3px;background:#d5d5d5;color:#444;font-size:28px;line-height:45px;box-shadow:1px 1px 1px #fff;font-family:'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif;}
+section#mymart .info_new01 li.deliver02 {margin:14px 117px 0 0; padding-top:4px; text-align:right}
+section#mymart .info_new01 li.deliver01 span,
+section#mymart .info_new01 li.deliver02 span{float:left;color:#666;}
+
+section#mymart .info_new02 {overflow:hidden; border-top:solid 2px #bababa}
+section#mymart .info_new02 li {float:left;height:273px; text-align:center; font-weight:bold; color:#666; }
+section#mymart .info_new02 li a{display:block;padding:41px 0 43px}
+section#mymart .info_new02 li span {display:block;position:relative;padding-bottom:125px;font-size:27px;}
+section#mymart .info_new02 li span:after{display:block;content:"";position:absolute;top:45px;left:50%;background:url("//simage.lottemart.com/images/mobile/front/common/reform2013/mymart_comNew.png") no-repeat;}
+section#mymart .info_new02 li em {margin-top:120px;color:#ee1a0f; text-decoration:underline;font-size:30px;}
+section#mymart .info_new02 .coupon {width:33%; border-bottom:solid 2px #e7e7e7}
+section#mymart .info_new02 .coupon span:after{width:123px;height:83px;margin-left:-62px;background-position:0 0;}
+section#mymart .info_new02 .mileage {width:34%; border-bottom:solid 2px #e7e7e7; }
+section#mymart .info_new02 .mileage a{border-left:2px solid #e7e7e7;}
+section#mymart .info_new02 .mileage span:after{width:114px;height:95px;margin-left:-57px;background-position:0 -93px;}
+section#mymart .info_new02 .balance {width:33%; border-bottom:solid 2px #e7e7e7; }
+section#mymart .info_new02 .balance a{border-left:2px solid #e7e7e7;}
+section#mymart .info_new02 .balance span:after{width:100px;height:101px;margin-left:-50px;background-position:0 -198px;}
+section#mymart .info_new02 .point {width:50%}
+section#mymart .info_new02 .point span:after{width:116px;height:94px;margin-left:-58px;background-position:0 -309px;}
+section#mymart .info_new02 .change {width:50%;}
+section#mymart .info_new02 .change a{border-left:2px solid #e7e7e7;}
+section#mymart .info_new02 .change span:after{width:122px;height:84px;margin-left:-61px;background-position:0 -413px;}
+
+section#mymart .menu_new {overflow:hidden; border-top:solid 2px #bababa}
+section#mymart .menu_new li {font-size:28px; color:#393737; font-weight:bold; border-bottom:solid 2px #d8d8d8; background-color:#f7f7f7; padding:14px 18px 20px}
+section#mymart .menu_new li:last-child {border-top:none}
+section#mymart .menu_new li em {color:#ee1a0f}
+section#mymart .menu_new li a {display:block}
+section#mymart .menu_new li span {overflow:hidden;display:inline-block; float:right;background:url("//simage.lottemart.com/images/mobile/front/common/reform2013/mymart_comNew.png") no-repeat 0 -513px;width:18px; height:25px; text-indent:-999em; margin-top:5px}
+
+	/* 기본 배송지 */
+.add_notice{padding:17px;text-align:right;}
+.add_notice span{display:block;margin-bottom:15px;text-align:left;}
+.add_notice button{padding:0 28px;border:1px solid #ec1f1f;border-radius:5px;background:#e10d0d;background:-moz-linear-gradient(top, #ff476c 0%, #e10d0d 100%);background:-webkit-linear-gradient(top, #ff476c 0%,#e10d0d 100%);color:#fff;font-size:22px;font-family:'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif;line-height:55px;box-shadow:0 2px 0px rgba(0,0,0,.3);}
+.delivery_box{padding-bottom:25px;margin:0 17px 28px;border:2px solid #d3d9db;border-radius:5px;}
+.delivery_box h2{padding:12px 20px;border-bottom:2px solid #d3d9db;background-color:#fafafa;font-size:24px;}
+.delivery_box h2 span{padding:2px 15px 3px;margin-left:15px;border-radius:5px;background-color:#ff6058;color:#fff;font-size:20px;line-height:1.5;}
+.delivery_box address{padding:20px;border-bottom:1px dashed #b4bdc0;color:#717171;font-style:normal;font-size:22px;}
+.delivery_box dl{padding:20px;font-size:22px;}
+.delivery_box dl dt,.delivery_box dl dd{margin-bottom:7px;}
+.delivery_box dl dt{float:left;width:130px;color:#333;}
+.delivery_box dl dd{color:#717171;text-align:right;}
+.delivery_box > span{display:block;padding:0 20px;text-align:right;}
+.delivery_box button[type="button"]{padding:0 15px 3px;margin-left:10px;border:2px solid #bdbdbd;border-radius:5px;color:#6a6a6a;font-size:22px;font-family:'Malgun Gothic', 'Dotum', 'Helvetica', 'AppleGothic', sans-serif;line-height:1.5;
+background:#f1f1f1;background:-moz-linear-gradient(top, #ffffff 0%, #ffffff 40%, #f1f1f1 100%);background:-webkit-linear-gradient(top, #ffffff 0%, #ffffff 40%,#f1f1f1 100%);}

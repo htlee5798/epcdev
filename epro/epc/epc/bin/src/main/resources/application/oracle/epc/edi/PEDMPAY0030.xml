@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPAY0030">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 전송카운트 조회 -->
+<select id="TED_PAMENT_CNT-SELECT01" parameterClass="map" resultClass="resultClass">
+	 SELECT  A.SPLY_CYCLE
+            ,A.SPLY_SEQ
+            ,TO_CHAR(TO_DATE(A.PAY_YM||'01','yyyyMMdd'),'yyyy-MM')  PAY_YM
+            ,A.SEQ
+            ,A.MD_PAYMENT_CNT
+            ,A.ED_PAYMENT_CNT
+            ,A.MD_SUB_AGG_COUNT
+            ,A.ED_SUB_AGG_CNT
+            ,CASE WHEN A.MD_PAYMENT_CNT = A.ED_PAYMENT_CNT THEN 'T'
+                  ELSE 'N' END AS PAY_STATE
+            ,CASE WHEN A.MD_SUB_AGG_COUNT = A.ED_SUB_AGG_CNT THEN 'T'
+                  ELSE 'N' END AS SUB_AGG_STATE
+            ,TO_CHAR(A.LST_CHG_DT,'YYYY-MM-DD') AS LST_CHG_DT
+       FROM TED_PAMENT_CNT A
+      WHERE A.PAY_YM       = #payYm#
+        AND A.SPLY_SEQ     = #splySeq#
+        AND A.SPLY_CYCLE   = #splyCycle#
+        ORDER BY A.SPLY_CYCLE
+            ,A.SPLY_SEQ
+            ,A.PAY_YM
+            ,A.SEQ DESC
+</select>
+
+<select id="TED_PAMENT_CNT-SELECT02" resultClass="integer" parameterClass="map">
+ SELECT COUNT(*)  
+   FROM TED_PAMENT_CNT A
+  WHERE A.PAY_YM     = #payYm#
+    AND A.SPLY_CYCLE = #splySeq#
+    AND A.SPLY_SEQ   = #splyCycle#
+    AND A.MD_PAYMENT_CNT IS NULL
+  </select>
+  
+
+</sqlMap>

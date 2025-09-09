@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0005">
+
+    <typeAlias alias="pscpprd0005VO" type="com.lottemart.epc.product.model.PSCPPRD0005VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectPrdDescription" resultClass="pscpprd0005VO">
+    /* pscpprd0005.selectPrdDescription */
+    SELECT PRA.PROD_CD AS prodCd
+         , PRA.SEQ AS seq
+         , PRA.TITLE AS title
+         , PRA.ADD_DESC AS addDesc
+         , SUBSTRB(PRA.PROD_CD,1,5) AS imgSubPath
+         , PR.MD_SRCMK_CD AS mdSrcmkCd
+      FROM TPR_PRODUCT_ADD_DESCR PRA
+         , TPR_PRODUCT PR
+     WHERE PR.PROD_CD(+)  = #prodCd#
+       AND PRA.PROD_CD(+) = PR.PROD_CD
+       AND PRA.SEQ(+)     = '001'
+     ORDER BY PRA.SEQ
+    </select>
+
+    <insert id="insertPrdDescription">
+    /* pscpprd0005.insertPrdDescription */
+    INSERT INTO TPR_PRODUCT_ADD_DESCR
+    ( PROD_CD
+    , SEQ
+    , TITLE
+    , ADD_DESC
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID )
+    VALUES
+    ( #prodCd#
+    , NVL((SELECT LPAD(NVL(MAX(SEQ)+1,'001'),3,'0')
+             FROM TPR_PRODUCT_ADD_DESCR
+            WHERE PROD_CD = #prodCd#), '001')
+    , #title#
+    , #addDesc#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , CURRENT_TIMESTAMP(0)
+    , #regId# )
+    </insert>
+
+    <update id="updatePrdDescription">
+    /* pscpprd0005.updatePrdDescription */
+    UPDATE TPR_PRODUCT_ADD_DESCR 
+       SET ADD_DESC = #addDesc#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID   = #regId#
+     WHERE PROD_CD  = #prodCd#
+       AND SEQ      = '001'
+    </update>
+
+ 	<insert id="insertPrdDescrLog" parameterClass="pscpprd0005VO">
+    /* pscpprd0005.insertPrdDescrLog - 추가설명 로그저장 */
+    INSERT INTO TPR_PRODUCT_ADD_DESCR_LOG_NEW
+    ( LOG_SEQ
+    , PROD_CD
+    , SEQ
+    , TITLE
+    , ADD_DESC
+    , DISP_TYPE_CD
+    , REG_DATE
+    , REG_ID
+    , CHG_PATH )
+    VALUES
+    ( SEQ_PROD_ADD_DESCR_LOG.NEXTVAL
+    , #prodCd#
+    , CASE WHEN LENGTH( NVL(#seq#,'001') ) &gt; 3 THEN '001' ELSE NVL(#seq#,'001') END
+    , #title#
+    , #addDesc#
+    , #dispTypeCd#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , '02' )
+    </insert>
+
+    <select id="selectPrdMdAprvMst" resultClass="pscpprd0005VO">
+    /* pscpprd0005.selectPrdMdAprvMst */
+    SELECT A.SEQ AS seq
+         , A.PROD_CD AS prodCd
+         , A.APRV_CD AS aprvCd
+         , A.APRV_DATE AS aprvDate
+         , A.APRV_ID AS aprvId
+         , A.TYPE_CD AS typeCd
+         , A.MEMO AS memo
+         , A.VENDOR_ID AS vendorId
+         , A.REG_DATE AS regDate
+         , A.REG_ID AS regId
+         , A.MOD_DATE AS modDate
+         , A.MOD_ID AS modId
+      FROM TPR_PROD_MD_APRV_MST A
+     WHERE A.PROD_CD = #prodCd#
+       AND A.TYPE_CD = #typeCd#
+       AND A.VENDOR_ID = NVL(#vendorId#, (SELECT VENDOR_ID FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#) )
+       AND A.APRV_CD IN ('001','002')
+    <isNotEmpty property="rowCnt">
+       AND EXISTS(SELECT 1 FROM TPR_PRODUCT_IMG_HIST B WHERE A.SEQ= B.SEQ AND B.PROD_IMG_NO = #rowCnt#)
+    </isNotEmpty>
+    </select>
+
+    <select id="selectPrdMdAprvMstCnt" resultClass="java.lang.Integer">
+    /* pscpprd0005.selectPrdMdAprvMstCnt */
+    SELECT COUNT(1) count
+      FROM TPR_PROD_MD_APRV_MST A
+     WHERE A.PROD_CD = #prodCd#
+       AND A.TYPE_CD = #typeCd#
+       AND A.VENDOR_ID = NVL(#vendorId#, (SELECT VENDOR_ID FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#) )
+       AND A.APRV_CD IN ('001','002')
+       <isNotEmpty property="rowCnt">
+       AND EXISTS (SELECT 1 FROM TPR_PRODUCT_IMG_HIST B WHERE A.SEQ = B.SEQ AND B.PROD_IMG_NO = #rowCnt#)
+       </isNotEmpty>
+    </select>
+
+    <insert id="insertPrdMdAprvMst">
+    <selectKey keyProperty="seq" resultClass="String">
+    SELECT LPAD(SEQ_PROD_MD_APRV_MST.NEXTVAL, 12, '0') AS SEQ FROM DUAL
+    </selectKey>
+    /* pscpprd0005.insertPrdMdAprvMst */
+    INSERT INTO TPR_PROD_MD_APRV_MST
+    ( SEQ
+    , PROD_CD
+    , APRV_CD
+    , APRV_DATE
+    , APRV_ID
+    , TYPE_CD
+    , MEMO
+    , VENDOR_ID
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID )
+    VALUES
+    ( #seq#
+    , #prodCd#
+    , #aprvCd#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , #typeCd#
+    , #memo#
+    , SUBSTR(NVL(#vendorId#, (SELECT VENDOR_ID FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#)), 1, 6)
+    , CURRENT_TIMESTAMP(0)
+    , NVL(#regId#, (SELECT VENDOR_ID FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#) )
+    , CURRENT_TIMESTAMP(0)
+    , NVL(#regId#, (SELECT VENDOR_ID FROM TPR_PRODUCT WHERE PROD_CD = #prodCd#) ) )
+    </insert>
+
+    <insert id="insertPrdDescriptionHist">
+    /* pscpprd0005.insertPrdDescriptionHist */
+    INSERT INTO TPR_PRODUCT_DESC_HIST
+    ( SEQ
+    , TITLE
+    , ADD_DESC
+    , REG_DATE
+    , REG_ID
+    , MOD_DATE
+    , MOD_ID )
+    VALUES
+    ( #seq#
+    , #title#
+    , #addDesc#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , CURRENT_TIMESTAMP(0)
+    , #regId# )
+    </insert>
+
+    <update id="updatePrdDescriptionHist">
+    /* pscpprd0005.updatePrdDescriptionHist */
+    UPDATE TPR_PRODUCT_DESC_HIST 
+       SET ADD_DESC = #addDesc#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID   = #regId#
+     WHERE SEQ = #seq#
+    </update>
+
+</sqlMap>

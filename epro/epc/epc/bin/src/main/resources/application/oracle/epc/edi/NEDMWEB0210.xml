@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMWEB0210">
+
+	<typeAlias alias="resultClass"		type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"		type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="nEDMWEB0210VO" type="com.lottemart.epc.edi.weborder.model.NEDMWEB0210VO" />
+	
+	<typeAlias alias="searchWebOrder"	type="com.lottemart.epc.edi.weborder.model.SearchWebOrder"/>
+	<typeAlias alias="tedOrdList"  		type="com.lottemart.epc.edi.weborder.model.TedOrdList" />
+	<typeAlias alias="tedOrdSumList"	type="com.lottemart.epc.edi.weborder.model.TedOrdSumList" />
+	<typeAlias alias="tedPoOrdMst" 		type="com.lottemart.epc.edi.weborder.model.TedPoOrdMstVO" />
+ 
+
+	<!-- 업체별 발주 승인대상 목록 조회 MAP [ORD_PROD_SELECT_04]  -->
+	<resultMap id="tedOrdListMap" class="nEDMWEB0210VO">
+		<result property="venCd"  				    column="VEN_CD"    />   			<!--협력업체코드  -->
+		<result property="venNm" 				    column="VEN_NM"    />				<!--협력업체명  -->
+		<result property="ordDy" 				    column="ORD_DY"    />				<!--발주일자  -->
+		<result property="ordTotQty" 				column="ORD_TOT_QTY"  />    		<!--발주총수량 -->
+		<result property="ordTotPrc" 				column="ORD_TOT_PRC"  />			<!--발주총금액  -->
+		<result property="ordTotAllQty" 			column="ORD_TOT_ALL_QTY_SUM"  />	<!--발주총금액  -->
+		
+		<result property="totCnt"					column="TOT_CNT"	   />	<!-- 점포별 등록갯수								 -->
+		<result property="notSendSum"         		column="NOT_SEND_SUM"   />	<!-- 점포별 미전송 갯수 (REG_STS_CD : 0)			 -->
+		<result property="sucSendSum"         		column="SUC_SEND_SUM"   />	<!-- 점포별 정상 전송갯수 (REG_STS_CD : 1)			 -->
+		<result property="nonSendSum"         		column="NON_SEND_SUM"   />	<!-- 점포별 발주중단 또는 누락 전송 (REG_STS_CD : 2) -->
+		<result property="timSendSum"         		column="TIM_SEND_SUM"   />	<!-- 점포별 마감 미전송 갯수 (REG_STS_CD : 4)		 -->
+		<result property="falSendSum"         		column="FAL_SEND_SUM"   />	<!-- 점포별 기타오류 미전송 갯수 (REG_STS_CD : 9)	 -->
+		<result property="falAllSum"         		column="FAL_ALL_SUM"   />	<!-- 점포별 전체오류 (REG_STS_CD : 9+4+2)	 -->
+	</resultMap>
+	
+	<resultMap id="tedOrdSumListMap" class="nEDMWEB0210VO">
+		<result property="ordTotQtySum" 			column="ORD_TOT_QTY_SUM"  />		<!--발주총수량합계  -->
+		<result property="ordTotPrcSum" 			column="ORD_TOT_PRC_SUM"  />		<!--발주총금액합계 -->
+		<result property="ordTotAllQtySum" 			column="ORD_TOT_ALL_QTY_SUM"  />	<!-- EA 총수량 -->
+	</resultMap>
+	
+	<!-- 발주 상세 펼침 조회 MAP [ ORD_PROD_SELECT_02]-->
+	<resultMap id="tedOrdStrCdListMap" class="nEDMWEB0210VO">
+		<result property="ordReqNo"  			    column="ORD_REQ_NO"		/>  <!--발주코드번호  -->
+		<result property="strCd"  				    column="STR_CD"    		/>  <!--점포코드  -->
+		<result property="strNm" 				    column="STR_NM"    		/>	<!--점포명  -->
+		<result property="ordCfmQty" 				column="ORD_CFM_QTY" 	/>  <!--발주확정수량 -->
+		<result property="eaQty" 				    column="EA_QTY"  		/>	<!--EA/수량  -->
+		<result property="eaPrc" 		            column="EA_PRC"  		/>	<!--EA/금액  -->
+		<result property="venCd"  				    column="VEN_CD"    		/>   <!--협력업체코드  -->
+		<result property="ordPrgsCd"  				column="ORD_PRGS_CD" 	/>   <!--발주진행상태코드 -->
+		
+		<result property="totCnt"					column="TOT_CNT"	   />	<!-- 점포별 등록갯수								 -->
+		<result property="notSendSum"         		column="NOT_SEND_SUM"   />	<!-- 점포별 미전송 갯수 (REG_STS_CD : 0)			 -->
+		<result property="sucSendSum"         		column="SUC_SEND_SUM"   />	<!-- 점포별 정상 전송갯수 (REG_STS_CD : 1)			 -->
+		<result property="nonSendSum"         		column="NON_SEND_SUM"   />	<!-- 점포별 발주중단 또는 누락 전송 (REG_STS_CD : 2) -->
+		<result property="timSendSum"         		column="TIM_SEND_SUM"   />	<!-- 점포별 마감 미전송 갯수 (REG_STS_CD : 4)		 -->
+		<result property="falSendSum"         		column="FAL_SEND_SUM"   />	<!-- 점포별 기타오류 미전송 갯수 (REG_STS_CD : 9)	 -->
+	</resultMap>
+	
+	<!-- 점포별 상품정보 MAP [ORD_PROD_SELECT_03] -->
+	<resultMap id="tedOrdProdListMap" class="nEDMWEB0210VO">
+		<result property="prodCd"  			  	    column="PROD_CD"    	/>  <!--상품코드 -->
+		<result property="prodNm"  				    column="PROD_NM"    	/>  <!--상품명  -->
+		<result property="mdModCd" 				    column="MD_MOD_CD"  	/>	<!--작업구분   -->
+		<result property="srcmkCd" 				    column="SRCMK_CD"  		/>  <!--판매코드 -->
+		<result property="prodStd" 				    column="PROD_STD"		/>	<!--규격  -->
+		<result property="ordIpsu" 		            column="ORD_IPSU"		/>	<!--입수 -->
+		<result property="ordUnit" 		            column="ORD_UNIT"		/>	<!--단위  -->
+		<result property="ordCfmQty" 		        column="ORD_CFM_QTY"	/>	<!--발주확정수량  -->
+		<result property="ordQty" 		        	column="ORD_QTY"  		/>	<!--발주수량  -->
+		<result property="eaQty" 		            column="EA_QTY"  		/>	<!-- EA  -->
+		<result property="prc" 		                column=	"PRC"  			/>	<!--금액  -->
+		<result property="ordBuyPrc" 		        column="ORD_BUY_PRC"  	/>	<!--발주원가  -->
+		<result property="ordReqNo" 		        column="ORD_REQ_NO"  	/>	<!--발주등록번호  -->
+		<result property="regStsCd" 		        column="REG_STS_CD"  	/>	<!--등록상태코드  -->
+		<result property="regStsNm"        			column="REG_STS_CD_NM"     	/>	<!-- 일괄등록상태명칭	-->   
+		<result property="regStsCdDetail"           column="REG_STS_CD_DETAIL"  />	<!-- 일괄등록상태상세	-->
+	</resultMap>
+	
+	<!-- 점포별 상품정보 합계 MAP  [VEND-SELECT05]-->
+	<resultMap id="tedOrdProdSumListMap" class="nEDMWEB0210VO">
+		<result property="ordTotQtySum" 			column="ORD_TOT_QTY_SUM"  />	<!-- 단위수량합계  -->
+		<result property="ordTotPrcSum" 			column="ORD_TOT_PRC_SUM"  />	<!-- 금액합계 -->
+		<result property="eaQtySum" 			    column="EA_QTY_SUM"  />	        <!-- EA 합계수량 -->
+	</resultMap>  
+
+	<!--  점포별 상품정보 MAP [VEND-SELECT06] -->
+	<resultMap id="tedOrdProdConfListMap" class="nEDMWEB0210VO">
+		<result property="ordDy"			column="ORD_DY"    />    	<!--업체코드 -->
+		<result property="strCd"			column="STR_CD"    />    	<!--상품코드 -->
+		<result property="venCd"			column="VEN_CD"    />    	<!--업체코드 -->
+		<result property="prodCd"			column="PROD_CD"    />    	<!--상품코드 -->
+		<result property="prodNm"			column="PROD_NM"    />   	<!--상품명  -->
+		<result property="mdModCd"			column="MD_MOD_CD"    />	<!--작업구분   -->
+		<result property="srcmkCd"			column="SRCMK_CD"  />    	<!--판매코드 -->
+		<result property="prodStd"			column="PROD_STD"  />		<!--규격  -->
+		<result property="ordIpsu"			column="ORD_IPSU"  />		<!--입수 -->
+		<result property="ordUnit"			column="ORD_UNIT"  />		<!--단위  -->
+		<result property="ordCfmQty"		column="ORD_CFM_QTY"  />	<!--발주확정수량  -->
+		<result property="ordQty"			column="ORD_QTY"  />	    <!--발주수량  -->
+		<result property="eaQty"			column="EA_QTY"  />			<!-- EA  -->
+		<result property="prc"				column=	"PRC"  />			<!--금액  -->
+		<result property="ordBuyPrc"		column="ORD_BUY_PRC"  />	<!--발주원가  -->
+		<result property="ordReqNo"			column="ORD_REQ_NO"  />	<!--발주등록번호  -->
+	</resultMap>
+
+	<!-- 업체별 발주 승인대상 TPC_PO_ORD_MST  PAGE COUNT-->
+	<select id="ORD_PROD_SELECT_TOT_CNT_01" parameterClass="nEDMWEB0210VO" resultClass="int">
+		/* NEDMWEB0210.ORD_PROD_SELECT_TOT_CNT_01 */
+		SELECT COUNT(*)
+		FROM
+		(
+			SELECT 	/*+first_rows() */
+					T1.VEN_CD
+				,	T1.VEN_NM
+				,	MAX(T1.ORD_DY)				AS ORD_DY
+				,	SUM(T1.ORD_TOT_QTY)			AS ORD_TOT_QTY
+				,	SUM(T1.ORD_TOT_PRC)			AS ORD_TOT_PRC
+				,	SUM(T1.ORD_TOT_ALL_QTY)		AS ORD_TOT_ALL_QTY_SUM
+			FROM 	TPC_PO_ORD_MST T1
+			INNER 	JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = T1.VEN_CD
+			WHERE 	1 = 1
+				AND T1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+				
+				<isNotEmpty  property="venCd"  prepend="AND">
+					T1.VEN_CD = #venCd#
+				</isNotEmpty>
+			GROUP BY T1.VEN_CD ,T1.VEN_NM
+		)
+	</select>
+	
+	<!-- 업체별 발주 승인대상 목록 조회 -->
+	<select id="ORD_PROD_SELECT_04" parameterClass="nEDMWEB0210VO" resultMap="tedOrdListMap">
+		/* NEDMWEB0210.ORD_PROD_SELECT_04 */
+		SELECT 	A.*
+		FROM
+		(
+			SELECT	ROWNUM RNUM
+				, 	A.*
+			FROM
+			(
+				SELECT 	T1.VEN_CD
+					,	T1.VEN_NM
+					,	MAX(T1.ORD_DY)				AS ORD_DY
+					,	SUM(T1.ORD_TOT_QTY)			AS ORD_TOT_QTY
+					,	SUM(T1.ORD_TOT_PRC)			AS ORD_TOT_PRC
+					,	SUM(T1.ORD_TOT_ALL_QTY) 	AS ORD_TOT_ALL_QTY_SUM
+					,	SUM(TOT_CNT)				AS TOT_CNT
+					,	SUM(NOT_SEND_SUM) 			AS NOT_SEND_SUM
+					,	SUM(SUC_SEND_SUM) 			AS SUC_SEND_SUM
+					,	SUM(NON_SEND_SUM) 			AS NON_SEND_SUM
+					,	SUM(TIM_SEND_SUM) 			AS TIM_SEND_SUM
+					,	SUM(FAL_SEND_SUM) 			AS FAL_SEND_SUM
+					,	SUM(FAL_ALL_SUM)			AS FAL_ALL_SUM
+				FROM 	TPC_PO_ORD_MST T1
+						INNER JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = T1.VEN_CD
+						INNER JOIN 	(
+										SELECT	ORD_REQ_NO
+											,	COUNT(*)		AS TOT_CNT
+											,	SUM(CASE WHEN S1.REG_STS_CD = '0' THEN 1 ELSE 0 END ) 				AS NOT_SEND_SUM
+											,	SUM(CASE WHEN S1.REG_STS_CD = '1' THEN 1 ELSE 0 END ) 				AS SUC_SEND_SUM
+											,	SUM(CASE WHEN S1.REG_STS_CD = '2' THEN 1 ELSE 0 END ) 				AS NON_SEND_SUM
+											,	SUM(CASE WHEN S1.REG_STS_CD = '4' THEN 1 ELSE 0 END ) 				AS TIM_SEND_SUM
+											,	SUM(CASE WHEN S1.REG_STS_CD = '9' THEN 1 ELSE 0 END ) 				AS FAL_SEND_SUM
+											,	SUM(CASE WHEN S1.REG_STS_CD not in ('0','1') THEN 1 ELSE 0 END ) 	AS FAL_ALL_SUM
+										FROM 	TPC_PO_ORD_PROD S1
+										WHERE 	1 = 1
+											AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+										GROUP BY S1.ORD_REQ_NO
+									) M2 ON T1.ORD_REQ_NO = M2.ORD_REQ_NO
+				WHERE 	1 = 1
+					AND T1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+					
+					<isNotEmpty  property="venCd"  prepend="AND">
+						T1.VEN_CD = #venCd#
+					</isNotEmpty>
+				
+				GROUP BY T1.VEN_CD ,T1.VEN_NM
+			) A
+			ORDER BY A.VEN_CD ASC
+		)A
+		WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- 업체별 합계-->
+	<select id="ORD_PROD_SELECT_01" parameterClass="nEDMWEB0210VO" resultMap="tedOrdSumListMap">
+		/* NEDMWEB0210.ORD_PROD_SELECT_01 */
+		SELECT 	SUM(ORD_TOT_QTY) 			AS ORD_TOT_QTY_SUM
+			,	SUM(ORD_TOT_PRC) 			AS ORD_TOT_PRC_SUM
+			,	SUM(ORD_TOT_ALL_QTY_SUM) 	AS ORD_TOT_ALL_QTY_SUM
+		FROM
+		(
+			SELECT	ROWNUM RNUM
+				,	A.*
+			FROM
+			(
+				SELECT 	T1.VEN_CD
+					,	T1.VEN_NM
+					,	MAX(T1.ORD_DY)			AS ORD_DY
+					,	SUM(T1.ORD_TOT_QTY)		AS ORD_TOT_QTY
+					,	SUM(T1.ORD_TOT_PRC)		AS ORD_TOT_PRC
+					,	SUM(T1.ORD_TOT_ALL_QTY) AS ORD_TOT_ALL_QTY_SUM
+				FROM 	TPC_PO_ORD_MST T1
+						INNER JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = T1.VEN_CD
+				WHERE 	1 = 1
+					AND T1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+					
+					<isNotEmpty  property="venCd"  prepend="AND">
+						T1.VEN_CD = #venCd#
+					</isNotEmpty>
+				
+				GROUP BY T1.VEN_CD ,T1.VEN_NM
+			) A
+		) A
+	</select>
+	
+	<!-- 발주 상세 펼침 조회-->
+	<select id="ORD_PROD_SELECT_02" parameterClass="nEDMWEB0210VO" resultMap="tedOrdStrCdListMap">
+		/* NEDMWEB0210.ORD_PROD_SELECT_02 */
+		SELECT 	M1.ORD_REQ_NO
+			,	M1.STR_CD AS STR_CD
+			,	S1.STR_NM  AS STR_NM
+			,	M1.ORD_TOT_QTY AS ORD_CFM_QTY
+			,	M1.ORD_TOT_ALL_QTY AS EA_QTY
+			,	M1.ORD_TOT_PRC AS EA_PRC
+			,	M1.VEN_CD AS VEN_CD
+			,	M1.ORD_PRGS_CD
+			,	M2.TOT_CNT
+			,	M2.NOT_SEND_SUM
+			,	M2.SUC_SEND_SUM
+			,	M2.NON_SEND_SUM
+			,	M2.TIM_SEND_SUM
+			,	M2.FAL_SEND_SUM
+		FROM 	TPC_PO_ORD_MST M1
+				INNER JOIN 	(
+								SELECT	ORD_REQ_NO
+									,	COUNT(*) TOT_CNT
+									,	SUM(CASE WHEN S1.REG_STS_CD = '0' THEN 1 ELSE 0 END ) AS NOT_SEND_SUM
+									,	SUM(CASE WHEN S1.REG_STS_CD = '1' THEN 1 ELSE 0 END ) AS SUC_SEND_SUM
+									,	SUM(CASE WHEN S1.REG_STS_CD = '2' THEN 1 ELSE 0 END ) AS NON_SEND_SUM
+									,	SUM(CASE WHEN S1.REG_STS_CD = '4' THEN 1 ELSE 0 END ) AS TIM_SEND_SUM
+									,	SUM(CASE WHEN S1.REG_STS_CD = '9' THEN 1 ELSE 0 END ) AS FAL_SEND_SUM
+								FROM 	TPC_PO_ORD_PROD S1
+								WHERE 	1 = 1
+									AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+									AND S1.VEN_CD = #venCd#
+								GROUP BY S1.ORD_REQ_NO
+							) M2 ON M1.ORD_REQ_NO = M2.ORD_REQ_NO
+				INNER JOIN STORE S1 ON M1.STR_CD = S1.STR_CD
+		WHERE 	1 = 1
+			AND ORD_DY 		= TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+			AND M1.VEN_CD 	= #venCd#
+			AND M1.ORD_TOT_QTY IS NOT NULL
+	</select>
+	
+	<!-- 점포별 상품정보 -->
+	<select id="ORD_PROD_SELECT_03" parameterClass="nEDMWEB0210VO" resultMap="tedOrdProdListMap">
+		/* NEDMWEB0210.ORD_PROD_SELECT_03*/
+		SELECT M1.PROD_CD
+			,	M1.PROD_NM
+			,	M1.MD_MOD_CD
+			,	M1.SRCMK_CD
+			,	M1.PROD_STD
+			,	M1.ORD_IPSU
+			,	M1.ORD_UNIT
+			,	M1.ORD_QTY
+			,	M1.ORD_CFM_QTY		AS ORD_CFM_QTY
+			,	M1.ORD_IPSU * M1.ORD_CFM_QTY  AS EA_QTY
+			,	(M1.ORD_IPSU * M1.ORD_CFM_QTY) * M1.ORD_BUY_PRC  AS PRC
+			,	M1.ORD_BUY_PRC
+			,	M1.ORD_REQ_NO
+			,	M1.REG_STS_CD
+			,	S2.CD_NM REG_STS_CD_NM
+			,	S2.CD_DESC REG_STS_CD_DETAIL
+		FROM 	TPC_PO_ORD_PROD M1
+				INNER JOIN STORE S1 ON  M1.STR_CD = S1.STR_CD
+				LEFT OUTER JOIN TPC_CODE S2 ON S2.MAJOR_CD = 'WPO09' AND M1.REG_STS_CD = S2.MINOR_CD
+		WHERE 	1 = 1
+			AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+			AND M1.ORD_REQ_NO = #ordReqNo#
+	</select>
+	
+	<!-- 점포별 상품정보 합계 -->
+	<select id="VEND-SELECT05" parameterClass="nEDMWEB0210VO" resultMap="tedOrdProdSumListMap">
+		/* NEDMWEB0210.VEND-SELECT05 */
+		SELECT	SUM(ORD_CFM_QTY) AS ORD_TOT_QTY_SUM
+			,	SUM(PRC) AS ORD_TOT_PRC_SUM
+			,	SUM(EA_QTY) AS EA_QTY_SUM
+		FROM
+		(
+			SELECT 	M1.PROD_CD
+				,	M1.PROD_NM
+				,	M1.SRCMK_CD
+				,	M1.PROD_STD
+				,	M1.ORD_IPSU
+				,	M1.ORD_UNIT
+				,	M1.ORD_STK_QTY
+				,	M1.ORD_QTY
+				,	M1.ORD_CFM_QTY
+				,	M1.ORD_IPSU * M1.ORD_CFM_QTY  AS EA_QTY
+				,	(M1.ORD_CFM_QTY * M1.ORD_IPSU) * M1.ORD_BUY_PRC  AS PRC
+			FROM 	TPC_PO_ORD_PROD M1
+					INNER JOIN STORE S1 ON  M1.STR_CD = S1.STR_CD
+			WHERE 	1 = 1
+				AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+				AND M1.ORD_REQ_NO = #ordReqNo#
+		)
+	</select>
+	
+	<!-- 업체별 점포 발주상품정보 삭제(수정) -->
+	<update id="VEND-UPDATE01" parameterClass="tedOrdList">
+		/* NEDMWEB0210.VEND-UPDATE01 */
+		UPDATE 	TPC_PO_ORD_PROD
+		SET 	ORD_CFM_QTY = 0
+			,	MD_MOD_CD 	= '02'
+			,	MOD_ID 		= #modId#
+			,	MOD_DT 		= CURRENT_TIMESTAMP(0)
+		WHERE ORD_REQ_NO	= #ordReqNo#
+	</update>
+	
+	<!-- 업체별 점포상품 삭제(수정) -->
+	<update id="EID_ORD_PROD_UPDATE_02" parameterClass="nEDMWEB0210VO">
+		/* NEDMWEB0210.EID_ORD_PROD_UPDATE_02 */
+		UPDATE 	TPC_PO_ORD_PROD
+		SET 	ORD_CFM_QTY = 0
+			,	MD_MOD_CD 	= '02'
+			,	MOD_ID 		= #modId#
+			,	MOD_DT 		= CURRENT_TIMESTAMP(0)
+		WHERE 	ORD_REQ_NO	= #ordReqNo#
+			AND PROD_CD		= #prodCd#
+	</update>
+	
+	<!-- 업체별 점포상품 수정 -->
+	<update id="EID_ORD_PROD_UPDATE_03" parameterClass="nEDMWEB0210VO">
+		/* NEDMWEB0210.EID_ORD_PROD_UPDATE_03 */
+		UPDATE TPC_PO_ORD_PROD
+		SET 	ORD_CFM_QTY = #ordCfmQty#
+			,	MD_MOD_CD	= CASE WHEN ORD_QTY = TO_NUMBER(#ordCfmQty#) THEN '00' ELSE '01' END
+			,	MOD_ID 		= #modId#
+			,	MOD_DT 		= CURRENT_TIMESTAMP(0)
+		WHERE 	ORD_REQ_NO	= #ordReqNo#
+			AND PROD_CD 	= #prodCd#
+	</update>
+	
+	<update id="EID_ORD_PROD_UPDATE_04" parameterClass="nEDMWEB0210VO">
+		/* NEDMWEB0210.VEND-UPDATE04 */
+		UPDATE	TPC_PO_ORD_MST
+		SET 	(
+						ORD_TOT_QTY
+					,	ORD_TOT_ALL_QTY
+					,	ORD_TOT_PRC
+				) = 	(
+							SELECT	SUM(M1.ORD_CFM_QTY) AS ORD_TOT_QTY
+								,	SUM(M1.ORD_IPSU * M1.ORD_CFM_QTY)  AS ORD_TOT_ALL_QTY
+								,	SUM((M1.ORD_CFM_QTY * M1.ORD_IPSU) * M1.ORD_BUY_PRC) AS ORD_TOT_PRC
+							FROM 	TPC_PO_ORD_PROD M1
+							WHERE 	ORD_REQ_NO = #ordReqNo#
+						)
+		WHERE ORD_REQ_NO = #ordReqNo#
+	</update>
+	
+	<!-- 점포별 상품정보 -->
+	<select id="VEND-SELECT06" parameterClass="nEDMWEB0210VO" resultMap="tedOrdProdConfListMap">
+		/* NEDMWEB0210.VEND-SELECT06 */
+		SELECT	M1.ORD_DY
+			,	M1.STR_CD
+			,	M1.VEN_CD
+			,	M1.PROD_CD
+			,	M1.PROD_NM
+			,	M1.MD_MOD_CD
+			,	M1.SRCMK_CD
+			,	M1.PROD_STD
+			,	M1.ORD_IPSU
+			,	M1.ORD_UNIT
+			,	M1.ORD_QTY
+			,	M1.ORD_CFM_QTY		AS ORD_CFM_QTY
+			,	M1.ORD_IPSU * M1.ORD_CFM_QTY  AS EA_QTY
+			,	(M1.ORD_CFM_QTY * M1.ORD_IPSU) * M1.ORD_BUY_PRC  AS PRC
+			,	M1.ORD_BUY_PRC
+			,	M1.ORD_REQ_NO
+		FROM 	TPC_PO_ORD_PROD M1
+				INNER JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = M1.VEN_CD
+				
+				<isEqual property="regStsfg" compareValue="4"  >
+					AND M1.REG_STS_CD IN('0','9')
+				</isEqual>
+				
+				<isNotEmpty  property="venCds"  prepend="AND">
+					M1.VEN_CD
+					<iterate prepend="IN" property="venCds" open="(" close=")" conjunction="," >
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+		
+		WHERE 	1 = 1
+			AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+	</select>
+	
+	<!-- 발주 MARTNIS 전송 SP MAP -->
+	<parameterMap id="procedureParametersProdSend" class="nEDMWEB0210VO">
+		<parameter property="ordDy" 		javaType="java.lang.String"  jdbcType="VARCHAR" mode="IN" />
+		<parameter property="strCd" 		javaType="java.lang.String"  jdbcType="VARCHAR" mode="IN" />
+		<parameter property="prodCd" 		javaType="java.lang.String"  jdbcType="VARCHAR" mode="IN" />
+		<parameter property="venCd" 		javaType="java.lang.String"  jdbcType="VARCHAR" mode="IN" />
+		<parameter property="ordQtyNum" 	javaType="java.lang.Integer" jdbcType="NUMBER"  mode="IN" />
+		
+		<parameter property="o_ret" 		javaType="java.lang.String"  jdbcType="VARCHAR" mode="OUT" />
+		<parameter property="o_proc_cmt" 	javaType="java.lang.String"  jdbcType="VARCHAR" mode="OUT" />
+	</parameterMap>
+		
+	<!-- MARTNIS 전송 결과 Detail UPDATE -->
+	<update id="EDI_ORD_PROD_UPDATE_01" parameterClass="nEDMWEB0210VO" >
+		/* NEDMWEB0210.EDI_ORD_PROD_UPDATE_01 */
+		UPDATE 	TPC_PO_ORD_PROD
+		SET		REG_STS_CD		= #o_ret#
+			,	MOD_ID			= #modId#
+			,	MOD_DT			= CURRENT_TIMESTAMP(0)
+		WHERE 	ORD_REQ_NO		= #ordReqNo#
+			AND PROD_CD			= #prodCd#
+	</update>
+	
+	<!-- MARTNIS 전송 결과 Master UPDATE -->
+	<update id="EDI_ORD_MST_UPDATE_02" parameterClass="nEDMWEB0210VO" >
+		/* NEDMWEB0210.EDI_ORD_MST_UPDATE_02*/
+		UPDATE	TPC_PO_ORD_MST M1
+		SET 	ORD_PRGS_CD		= '10'
+			,	MOD_ID			= #empNo#
+			,	MOD_DT			= CURRENT_TIMESTAMP(0)
+		WHERE 	EXISTS	(
+							SELECT 	1
+							FROM 	TPC_PO_ORD_PROD P1
+									INNER JOIN TPC_PO_EMP_VENDOR SS ON SS.EMP_NO = #empNo# AND SS.VEN_CD = P1.VEN_CD
+							WHERE 	1 = 1
+								AND P1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+								AND M1.ORD_REQ_NO =  P1.ORD_REQ_NO
+								
+								<isNotEmpty  property="venCds"  prepend="AND">
+									P1.VEN_CD
+									<iterate prepend="IN" property="venCds" open="(" close=")" conjunction="," >
+										#venCds[]#
+									</iterate>
+								</isNotEmpty>
+						)
+	</update>
+	
+	<!-- 업체별 점포 발주상품정보 전체 삭제(수정)  [IN 조건을 통한 전체삭제] -->
+	<update id="EDI_ORD_PROD_UPDATE_10" parameterClass="nEDMWEB0210VO">
+		/* NEDMWEB0210.EDI_ORD_PROD_UPDATE_10 */
+		UPDATE 	TPC_PO_ORD_PROD
+		SET 	ORD_CFM_QTY = 0
+			,	MD_MOD_CD  	= '02'
+			,	MOD_ID 		= #modId#
+			,	MOD_DT 		= CURRENT_TIMESTAMP(0)
+		WHERE 	ORD_REQ_NO
+		
+			<iterate prepend="IN" property="ordReqNos" open="(" close=")" conjunction="," >
+				#ordReqNos[]#
+			</iterate>
+	</update>
+	
+	<!-- 업체별 점포 발주상품정보 삭제(수정) -->
+	<update id="EDI_ORD_PROD_UPDATE_10_01" parameterClass="nEDMWEB0210VO">
+		/* NEDMWEB0210.EDI_ORD_PROD_UPDATE_10_01 */
+		UPDATE 	TPC_PO_ORD_PROD
+		SET 	ORD_CFM_QTY 	= 0
+			,	MD_MOD_CD		= '02'
+			,	MOD_ID 			= #modId#
+			,	MOD_DT 			= CURRENT_TIMESTAMP(0)
+		WHERE 	ORD_REQ_NO 		= #ordReqNo#
+			AND PROD_CD			= #prodCd#
+	</update>
+	
+	<!-- 업체별 점포 발주상품정보 MST [IN 조건을 통한 전체 SUM 재계산] -->
+	<update id="EDI_ORD_PROD_UPDATE_11" parameterClass="nEDMWEB0210VO">
+		/* NEDMWEB0210.EDI_ORD_PROD_UPDATE_11 */
+		UPDATE	TPC_PO_ORD_MST
+		SET 	(
+					ORD_TOT_QTY
+				,	ORD_TOT_ALL_QTY
+				,	ORD_TOT_PRC
+				) =	(
+						SELECT	SUM(M1.ORD_CFM_QTY)	AS ORD_TOT_QTY
+							,	SUM(M1.ORD_IPSU * M1.ORD_CFM_QTY)  AS ORD_TOT_ALL_QTY
+							,	SUM((M1.ORD_CFM_QTY * M1.ORD_IPSU) * M1.ORD_BUY_PRC) AS ORD_TOT_PRC
+						FROM 	TPC_PO_ORD_PROD M1
+						WHERE	
+								ORD_REQ_NO
+								<iterate prepend="IN" property="ordReqNos" open="(" close=")" conjunction="," >
+									#ordReqNos[]#
+								</iterate>
+					)
+		WHERE	
+				ORD_REQ_NO
+				<iterate prepend="IN" property="ordReqNos" open="(" close=")" conjunction="," >
+					#ordReqNos[]#
+				</iterate>
+	</update>
+
+</sqlMap>

@@ -1,0 +1,280 @@
+#article * {
+    line-height: unset;
+
+}
+#article p, #article h4, #article h5, input {
+font-family: NanumGothic, "나눔고딕", ngttf, ngeot, ngwoff, dotum, "돋음", sans-serif;
+}
+#article ._textbox {
+    margin-bottom: 1.5rem;
+    padding-left: 15px;
+}
+#article ._filter {
+    border: 1px solid #ccc;
+    margin: 0 15px;
+}
+#article ._filter > ul {
+    display: flex;
+    width: 100%;
+}
+#article ._filter > ul > li {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    height: 2rem;
+}
+
+#article ._filter > ul > li > div:first-of-type {
+    background-color: #F0F0F0;
+    flex-grow: 1;
+
+    padding: 0 0.5rem 0 1rem;
+}
+#article ._filter > ul > li > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    border-right: 1px solid #ccc;
+}
+#article ._filter > ul > li > div > p {
+    font-size: 12px;
+}
+#article ._filter > ul > li > div > p > em {
+    color: red;
+}
+
+#article ._filter > ul > li > div > input[type=text] {
+    all: unset;
+    width: 4rem;
+    height: 100%;
+    text-align: center;
+}
+#article ._filter > ul > li > div > select {
+    height: 100%;
+    border: none;
+    padding: 0 3px 0 5px;
+}
+#article ._filter > ul > li > div > input[type=date] {
+    height: 100%;
+    border: none;
+    padding: 0 0.3rem;
+}
+#article ._filter > ul > li#search_button_frame {
+    background-color: #F0F0F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#article ._filter > ul > li#search_button_frame > button {
+    all: unset;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+#article ._filter > ul > li#search_button_frame.active > button {
+    display: none;
+}
+#article ._filter > ul > li#search_button_frame > div {
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+#article ._filter > ul > li#search_button_frame > div > div {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid #e60013;
+    border-left: 2px solid #00000000;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+#article ._filter > ul > li#search_button_frame.active > div {
+    display: flex;
+}
+#article ._btn_wrapper {
+    margin-right: 0.6rem;
+}
+#article ._btn_wrapper > ul {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin: 0.5rem 5px;
+}
+#article ._btn_wrapper > ul > li {
+
+}
+#article  ._btnBG7 {
+    all: unset;
+    cursor: pointer;
+    width: 7rem;
+    padding: 0.2rem 0;
+    text-align: center;
+    border-radius: 0.3rem;
+    background: #a5bf84;
+    color: #fff;
+    transition-duration: 0.2s;
+}
+#article  ._btnBG7:hover {
+    color: #F60;
+}
+#article  ._btnBG8 {
+    all: unset;
+    cursor: pointer;
+    width: 7rem;
+    padding: 0.2rem 0;
+    text-align: center;
+    border-radius: 0.3rem;
+    background: #d9ce7c;
+    color: #fff;
+    transition-duration: 0.2s;
+}
+#article ._btnBG8:hover {
+    color: #F60;
+}
+#article ._title_wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    margin: 0 15px;
+    padding: 0.6rem;
+}
+#article ._title_wrapper > h5 {
+    font-size: 1rem;
+    flex-grow: 1;
+}
+#article ._title_wrapper > ._sideBox {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+#article ._title_wrapper > ._sideBox > select {
+    width: 5rem;
+    text-align: center;
+    margin-right: 0.5rem;
+}
+
+#article ._result_wrapper {
+    margin: 1rem 15px;
+}
+#article ._result_wrapper > table {
+
+}
+/*  Inner Pop up */
+._pop_up_wrapper {
+    z-index: 2001;
+
+}
+._pop_up_wrapper  > ._pop_up_box {
+    border: 1px solid #ccc;
+    position: absolute;
+    background: #ffffff;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_header {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem;
+    background: navy;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_header > h5 {
+    flex-grow: 1;
+    font-size: 1rem;
+    color: #fff;
+    margin-left: 0.5rem;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_header > i {
+    color: #fff;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    padding: 0.2rem;
+    transition-duration: 0.2s;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_header > i:hover {
+    background: #fff;
+    color: navy;
+    border-radius: 50%;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_search_box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.3rem 1rem;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_search_box > input {
+    flex-grow: 1;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    margin: 0.2rem 0.6rem 0.2rem 0;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.9rem;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_search_box > button {
+    all: unset;
+    cursor: pointer;
+}
+._pop_up_wrapper  > ._pop_up_box ._pop_up_search_box > button > i {
+
+}
+._pop_up_list_wrapper._inline {
+    display: flex;
+}
+.dragging {
+    opacity: .5;
+    border: 2px dashed red;
+}
+
+#article ._picker_element {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 0 1rem;
+    transition-duration: 0.2s;
+}
+#article ._picker_element.find {
+    background: #ecf1c1;
+}
+#article #_picker_list_1 > ._picker_element.active {
+    background: #0B75C150;
+}
+#article ._picker_element > p {
+    width: 1.5rem;
+    text-align: center;
+}
+
+#article ._picker_element > h5 {
+    margin: 0 1rem;
+    padding: 0.5rem 1rem;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    flex-grow: 1;
+}
+#article ._picker_element > input[type=checkbox] {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+}
+#article #_picker_handler_btn_wrapper {
+    display: flex;
+    width: 0rem;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition-duration: 0.2s;
+}
+#article #_picker_handler_btn_wrapper.active {
+    width: 3rem;
+}
+#article #_picker_handler_btn_wrapper > button {
+    all: unset;
+    cursor: pointer;
+}
+

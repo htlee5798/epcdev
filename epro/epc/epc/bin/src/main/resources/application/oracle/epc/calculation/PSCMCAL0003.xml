@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMCAL0003">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmcal0003SearchVO" type="com.lottemart.epc.calculation.model.PSCMCAL0003SearchVO" />
+
+	<select id="selectDeliverySettleCostsCalculateSum" resultClass="dataMap">
+	/* PSCMCAL0003.selectDeliverySettleCostsCalculateSum */ 	   
+	SELECT SUBSTR(AA.PAY_MM,0,4) || '-' || SUBSTR(AA.PAY_MM,5) AS SUM_PAY_MM --정산월
+		 , SUM(AA.DELIVERY_AMT) AS SUM_DELIVERY_AMT --배송료 
+	  FROM TVE_VEN_DELIVERY_PAY AA,TOR_ORDER BB
+	 WHERE AA.ORDER_ID=BB.ORDER_ID 
+	   AND AA.PAY_MM = #searchMonth#
+	<isNotEmpty property="vendorId">
+	   AND AA.VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #vendorId#)
+	</isNotEmpty>
+	<isEmpty property="vendorId">
+	<isNotEmpty  property="venCds"  prepend="AND"> 
+	<iterate prepend="AA.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate>
+	</isNotEmpty>
+	</isEmpty>
+	<isEqual prepend="AND" property="searchOrderType" compareValue="1" >
+		BB.ORDER_ID = #orderId#
+	</isEqual>
+	<isEqual prepend="AND" property="searchOrderType" compareValue="2" >
+		BB.EC_ORDER_ID = #orderId#
+	</isEqual>
+	 GROUP BY AA.PAY_MM
+    </select>
+
+	<select id="selectDeliverySettleCostsCalculateList_old" resultClass="PSCMCAL0003SearchVO">
+		/* PSCMCAL0003.selectDeliverySettleCostsCalculateList_old */ 
+		
+		SELECT RANK_NUM as rankNum, TOTAL_COUNT as totalCount, PAY_MM as payMm, ISLND_REGN_CHEK as islndRegnChek, ORDER_ID as orderId, UP_ORDER_ID as upOrderId
+         , ORD_DY as ordDy, ORD_STS_NM as ordStsNm, SALE_STS_NM as saleStsNm, ORD_AMT as ordAmt, FN_MASKING_RTN(CUST_NM,'8') as custNm, DELIVERY_AMT as deliveryAmt
+        FROM (
+			SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+				, COUNT(*) OVER() TOTAL_COUNT
+				, B.*
+			FROM (
+				SELECT ROW_NUMBER()OVER(ORDER BY AA.ORD_DY DESC) RANK_NUM
+					, SUBSTR(AA.PAY_MM,0,4) || '-' || SUBSTR(AA.PAY_MM,5) AS PAY_MM
+					, AA.ISLND_REGN_CHEK --도서산간구분
+					, AA.ORDER_ID --주문번호
+					, BB.UP_ORDER_ID
+					, AA.ORD_DY
+					, AA.ORD_STS_NM --주문상태
+					, AA.SALE_STS_NM --매출상태
+					, AA.ORD_AMT --주문금액
+					, AA.CUST_NM --주문자
+					, AA.DELIVERY_AMT --배송료
+			FROM TVE_VEN_DELIVERY_PAY AA,TOR_ORDER BB
+           	WHERE AA.ORDER_ID=BB.ORDER_ID
+           	AND AA.PAY_MM =#searchMonth#
+			<isNotEmpty property="vendorId">
+				AND	AA.VEN_CD IN (SELECT SALE_VENDOR_ID FROM TVE_VENDOR WHERE VENDOR_ID = #vendorId#)
+			</isNotEmpty>
+			<isEmpty property="vendorId">
+				<isNotEmpty  property="venCds"  prepend="AND"> 
+					<iterate prepend="AA.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        	#venCds[]# 
+					</iterate> 
+			    </isNotEmpty>
+			</isEmpty>
+			) B
+		)
+     	WHERE PAGE = #currentPage#
+	</select>
+
+    <select id="selectDeliverySettleCostsCalculateList" resultClass="PSCMCAL0003SearchVO">
+    /* PSCMCAL0003.selectDeliverySettleCostsCalculateList */
+    SELECT RANK_NUM as rankNum, TOTAL_COUNT as totalCount, PAY_MM as payMm, ISLND_REGN_CHEK as islndRegnChek, ORDER_ID as orderId 
+         , ORD_DY as ordDy, ORD_STS_NM as ordStsNm, SALE_STS_NM as saleStsNm, ORD_AMT as ordAmt, FN_MASKING_RTN(CUST_NM,'8') as custNm, DELIVERY_AMT as deliveryAmt
+         , EC_ORDER_ID as ecOrderId
+      FROM (
+
+    SELECT CEIL(ROWNUM / #rowsPerPage# ) PAGE
+         , COUNT(*) OVER() TOTAL_COUNT
+         , B.*
+	  FROM (
+	<![CDATA[
+	        SELECT ROW_NUMBER()OVER(ORDER BY O.ORDER_ID DESC) RANK_NUM
+	             , #searchMonth# as PAY_MM
+	             , OD.VEN_CD
+	             , O.ORDER_ID
+	             , DECODE((SELECT ISLND_REGN_CHEK FROM TET_ZIP_CODE WHERE USE_YN = 'Y' AND ZIP_SEQ = OD.ZIP_SEQ),'00','근거리', '01', '도서','02','제주', '없음') AS ISLND_REGN_CHEK
+	             , O.ORD_DY
+	             , SUBSTR(O.ORD_TM, 0, 2) || SUBSTR(O.ORD_TM, 3, 2) || SUBSTR(O.ORD_TM, 5, 2) AS ORD_TM
+	             , (SELECT SUB.CD_NM FROM TET_CODE SUB WHERE SUB.MAJOR_CD = 'OR002' AND SUB.MINOR_CD = O.ORD_STS_CD) ORD_STS_NM --주문상태
+	             , (SELECT SUB.CD_NM FROM TET_CODE SUB WHERE SUB.MAJOR_CD = 'OR003' AND SUB.MINOR_CD = O.SALE_STS_CD) SALE_STS_NM --매출상태
+	             , (SELECT NVL(SUM(ORD_AMT),0) FROM TOR_ORDER_ITEM WHERE ORDER_ID = O.ORDER_ID AND ORD_ITEM_DIVN_CD = '00' AND DELIVERY_ID = OD.DELIVERY_ID ) AS ORD_AMT --주문금액
+	             , OD.CUST_NM --고객명
+	             , OD.DELIVERY_ID --배송지순번
+                 , NVL(CASE WHEN O.ORD_RTN_DIVN_CD IN ('10','11')      THEN OD.DELIVERY_AMT + NVL(OI.DPST_AMT,0)   -- 일반, 명절
+                            WHEN O.ORD_RTN_DIVN_CD IN ('20','30','40') THEN -(OD.DELIVERY_AMT + NVL(OI.DPST_AMT,0)) -- 취소, 결품, 반품
+                        END, 0 ) AS DELIVERY_AMT --배송비
+                 , O.LST_SALE_CFM_DATE
+	             , O.EC_ORDER_ID
+	          FROM TOR_ORDER O
+             INNER JOIN TDE_ORDER_DELIVERY OD ON O.ORDER_ID = OD.ORDER_ID
+              LEFT OUTER JOIN (SELECT T1.ORDER_ID, T1.DELIVERY_ID, T2.DPST_AMT 
+                                 FROM TOR_ORDER_ITEM T1
+                                INNER JOIN TOR_DEMAND T2
+                                      ON T1.ORDER_ID = T2.ORDER_ID
+                                     AND T1.ORD_ITEM_DIVN_CD IN ('11','12','13')
+                                     AND T1.ORDER_ITEM_SEQ = T2.DPST_PSN_NM
+                                     AND  T2.SETL_TYPE_CD = '05' ) OI ON OD.ORDER_ID = OI.ORDER_ID AND OD.DELIVERY_ID = OI.DELIVERY_ID
+	         WHERE O.LST_SALE_CFM_DATE BETWEEN #searchMonth# ||'000000' AND #searchMonth# ||'999999'
+	           AND O.STR_CD IN ('981', '309', PG_UTIL.FN_GET_FEDAY_MALL_STR_CD())
+	           AND OD.DELIVERY_ID != '000' --주문자가 아닌경우
+	           AND OD.VEN_CD IS NOT NULL
+	]]>
+    <isNotEmpty property="vendorId">
+	           AND OD.VEN_CD = #vendorId#
+    </isNotEmpty>
+    <isEmpty property="vendorId">
+	<isNotEmpty  property="venCds"  prepend="AND"> <iterate prepend="OD.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> #venCds[]# </iterate> </isNotEmpty>
+	</isEmpty>
+	<isEqual property="searchOrderType" compareValue="1">
+	           AND O.ORDER_ID = #orderId#
+	</isEqual>
+	<isEqual  property="searchOrderType" compareValue="2">
+	           AND O.EC_ORDER_ID = #orderId#
+	</isEqual>
+	      ) B
+	<![CDATA[  WHERE B.DELIVERY_AMT <> 0 ]]>
+        )
+    WHERE PAGE = #currentPage#
+    </select>
+
+</sqlMap>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscmbrd0010">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	
+	<!-- 게시글 리스트  -->
+	<select id="selectBoardList" resultClass="dataMap">
+	<![CDATA[
+        /* pscmbrd0010.selectBoardList */
+        SELECT
+            *
+        FROM
+        (
+            SELECT CEIL(NUM / #rowsPerPage#) AS PAGE
+            	  , COUNT(*) OVER()                     AS TOTAL_COUNT                 
+                  ,A.* 
+              FROM (
+              		SELECT RANK()OVER(ORDER BY B.LIST_SEQ DESC) AS NUM
+              		      ,B.*
+              		  FROM
+              		      (
+              		      	SELECT *
+              		      	  FROM
+              		      	      (
+				                    SELECT T.BOARD_SEQ
+				                          ,T.UP_BOARD_SEQ
+				                          ,T.LIST_SEQ
+				                          ,DECODE(DEPTH,2,'    (RE)',3,'        (RE)(RE)',4,'            (RE)(RE)(RE)',5,'                (RE)(RE)(RE)(RE)','') || T.TITLE AS TITLE
+				                          ,T.VIEW_CNT
+				                          ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA001'  AND MINOR_CD = T.CLM_LGRP_CD) AS CLM_LGRP_NM
+				                          ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA004'  AND MINOR_CD = T.BOARD_PRGS_STS_CD) AS BOARD_PRGS_STS_NM
+				                          ,(CASE WHEN T.ACCEPT_LOCA_CD = '2' 
+				                                 THEN (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = T.ACCEPT_ID)
+				                                 ELSE (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = T.ACCEPT_ID)
+				                             END
+				                           ) AS ACCEPT_NM
+				                          ,FN_MASKING_RTN((CASE WHEN T.ACCEPT_LOCA_CD = '2' 
+				                                 THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = T.REG_ID)
+				                                 ELSE CASE WHEN UP_BOARD_SEQ IS NOT NULL THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = T.REG_ID) ELSE (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = T.REG_ID) END
+				                             END
+				                           ),'4') AS REG_NM
+				                          ,TO_CHAR(T.REG_DATE,'YYYY-MM-DD') AS REG_DATE
+				                          ,T.MOD_ID
+				                          ,TO_CHAR(T.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE
+				                      FROM TBO_BOARD T
+				                     WHERE T.DEL_YN = 'N'
+				                       AND T.WRT_DY IN (SELECT IN_DATE FROM SEARCH_CALENDAR WHERE IN_DATE BETWEEN #startDate# AND #endDate#)	
+				                       AND BOARD_DIVN_CD = '36'															
+		]]>				      		
+								    <isNotEmpty property="clmLgrpCd"> 
+									   AND T.CLM_LGRP_CD = #clmLgrpCd#
+									</isNotEmpty>
+									<isNotEmpty property="brdPrgsStsCd"> 
+									   AND T.BOARD_PRGS_STS_CD = #brdPrgsStsCd#
+									</isNotEmpty>
+									<isNotEmpty property="acceptLocaCd"> 
+									   AND T.ACCEPT_LOCA_CD = #acceptLocaCd#
+									</isNotEmpty>         
+		<![CDATA[    
+								)
+								START WITH BOARD_SEQ IN (SELECT BOARD_SEQ FROM TBO_BOARD WHERE DEL_YN = 'N' AND BOARD_DIVN_CD = '36' 
+        ]]> 
+        						AND (0, REG_ID)
+			        			<iterate prepend=" IN " property="vendorId" open="(" close=")" conjunction=","> 
+					        		(0, #vendorId[]#) 
+					      		</iterate>
+		<![CDATA[
+								   )
+							  CONNECT BY PRIOR BOARD_SEQ = UP_BOARD_SEQ
+							UNION ALL
+							SELECT *
+							  FROM
+							      (
+									SELECT T.BOARD_SEQ
+										  ,T.UP_BOARD_SEQ
+									      ,T.LIST_SEQ
+				                          ,DECODE(DEPTH,2,'    (RE)',3,'        (RE)(RE)',4,'            (RE)(RE)(RE)',5,'                (RE)(RE)(RE)(RE)','') || T.TITLE AS TITLE
+				                          ,T.VIEW_CNT
+				                          ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA001'  AND MINOR_CD = T.CLM_LGRP_CD) AS CLM_LGRP_NM
+				                          ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA004'  AND MINOR_CD = T.BOARD_PRGS_STS_CD) AS BOARD_PRGS_STS_NM
+				                          ,(CASE WHEN T.ACCEPT_LOCA_CD = '2' 
+				                                 THEN (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = T.ACCEPT_ID)
+				                                 ELSE (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = T.ACCEPT_ID)
+				                             END
+				                           ) AS ACCEPT_NM
+				                          ,(CASE WHEN T.ACCEPT_LOCA_CD = '2' 
+				                                 THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = T.REG_ID)
+				                                 ELSE CASE WHEN UP_BOARD_SEQ IS NOT NULL THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = T.REG_ID) ELSE (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = T.REG_ID) END
+				                             END
+				                           )AS REG_NM
+				                          ,TO_CHAR(T.REG_DATE,'YYYY-MM-DD') AS REG_DATE
+				                          ,T.MOD_ID
+				                          ,TO_CHAR(T.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE
+				                      FROM TBO_BOARD T
+				                     WHERE T.DEL_YN = 'N'
+				                       AND T.WRT_DY IN (SELECT IN_DATE FROM SEARCH_CALENDAR WHERE IN_DATE BETWEEN #startDate# AND #endDate#)	
+				                       AND BOARD_DIVN_CD = '36'															
+		]]>				      		
+								    <isNotEmpty property="clmLgrpCd"> 
+									   AND T.CLM_LGRP_CD = #clmLgrpCd#
+									</isNotEmpty>
+									<isNotEmpty property="brdPrgsStsCd"> 
+									   AND T.BOARD_PRGS_STS_CD = #brdPrgsStsCd#
+									</isNotEmpty>
+									<isNotEmpty property="acceptLocaCd"> 
+									   AND T.ACCEPT_LOCA_CD = #acceptLocaCd#
+									</isNotEmpty>         
+		<![CDATA[    
+								)
+								START WITH BOARD_SEQ IN (SELECT BOARD_SEQ FROM TBO_BOARD WHERE DEL_YN = 'N' AND BOARD_DIVN_CD = '36' 
+        ]]> 
+        						AND(0, ACCEPT_ID)
+			        			<iterate prepend=" IN " property="vendorId" open="(" close=")" conjunction=","> 
+					        		(0, #vendorId[]# )
+					      		</iterate>
+		<![CDATA[
+								   )
+							  CONNECT BY PRIOR BOARD_SEQ = UP_BOARD_SEQ              	              
+						) B   
+					WHERE 1=1
+		]]>						
+						
+					<isNotEmpty property="searchTitle"> 
+		   			  AND B.TITLE LIKE '%' || #searchTitle# || '%'
+					</isNotEmpty>		
+					<isNotEmpty property="searchRegNm"> 
+		   			  AND B.REG_NM LIKE '%' || #searchRegNm# || '%'
+					</isNotEmpty>
+		<![CDATA[   				       
+        		) A
+        )
+        WHERE PAGE = #currentPage#
+		]]>  
+	</select>
+	
+</sqlMap>

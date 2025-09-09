@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO0007">
+
+	  <typeAlias alias="newProduct"  type="com.lottemart.epc.edi.product.model.NewProduct" />
+	  <typeAlias alias="newProductEDI"  type="com.lottemart.epc.edi.product.model.NewProduct" />
+	  <typeAlias alias="colorSize" 	 type="com.lottemart.epc.edi.product.model.ColorSize" />
+	  <typeAlias alias="searchProduct" type="com.lottemart.epc.edi.product.model.SearchProduct" />
+	  <typeAlias alias="pedmPro0005VO" type="com.lottemart.epc.edi.product.model.PEDMPRO0005VO" />
+
+	
+	<resultMap id="standardProductImageListMap" class="pedmPro0005VO">
+	    <result property="sellCode" 			column="SRCMK_CD"    />
+	    <result property="productName" 			column="PROD_NM" 	 />
+	    <result property="imageName"  			column="IMG_NM"  />
+	    <result property="confirmFlag" 			column="CFM_FG"  />
+	    <result property="imageSeq" 			column="IMG_SEQ"  />
+	    <result property="confirmReasonFlag" 	column="CFM_REASON_FG"  />
+	    <result property="productDay" 			column="APPLY_DY"  />
+	    <result property="width" 				column="WIDTH"  />
+	    <result property="length" 				column="LENGTH"  />
+	    <result property="height" 				column="HEIGHT"  />
+	    <result property="regWidth" 			column="REG_WIDTH"  />
+	    <result property="regLength" 			column="REG_LENGTH"  />
+	    <result property="regHeight" 			column="REG_HEIGHT"  />
+	    <result property="entpCode" 			column="VEN_CD"  />
+	    
+	    <result property="szCatCode" 			column="SZ_CAT_CD"  />
+	    <result property="szCode" 			    column="SZ_CD"      />
+	    <result property="colorCode" 			column="COLOR_CD"   />
+    </resultMap>
+ 
+ 
+ 	  <select id="selectStandardProductImageList" resultMap="standardProductImageListMap" parameterClass="searchProduct">
+	   	/* SQLINES DEMO *** ectStandardProductImageList */
+	   	SELECT *  
+		FROM    
+		(   SELECT  
+				A.SRCMK_CD,		B.PROD_NM ,		 C.IMG_NM ,		CASE C.CFM_FG  WHEN '' THEN  '0' WHEN ' ' THEN '0' ELSE C.CFM_FG END AS CFM_FG, 
+				C.IMG_SEQ ,		C.CFM_REASON_FG, D.APPLY_DY,
+				A.WIDTH ,  		A.LENGTH , 		 A.HEIGHT,
+				D.WIDTH AS REG_WIDTH,  		D.LENGTH AS REG_LENGTH, 	 D.HEIGHT AS REG_HEIGHT,
+				B.VEN_CD,
+				C. COLOR_CD,	          C.SZ_CAT_CD,		   C.SZ_CD
+		    FROM    
+			    SALE_MST@DL_MD_MARTNIS A  LEFT JOIN 
+	            SALE_MST_IMG@DL_MD_MARTNIS C
+	            ON A.SRCMK_CD = C.SRCMK_CD LEFT JOIN 
+	            SALE_MST_RSERV@DL_MD_MARTNIS D 
+	            ON A.SRCMK_CD = D.SRCMK_CD and D.APPLY_DY = TO_CHAR(current_timestamp(0)+INTERVAL '1' DAY, 'yyyyMMdd') ,
+	            ( SELECT * FROM STR_PROD@DL_MD_MARTNIS WHERE STR_CD = '301') B 
+	        WHERE   A.PROD_CD = B.PROD_CD  AND A.ORD_ABLE_FG = '1'    
+	          AND   B.VEN_CD = #entpCode#
+	        	<isNotEmpty property="sellCode" prepend="AND">
+	        		A.SRCMK_CD = #sellCode#
+	        	</isNotEmpty>
+	        	<isEqual property="productStatus" compareValue="0" prepend="AND">
+	        		C.CFM_FG IN ('0' , '1') 
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="1" prepend="AND">
+	        		C.CFM_FG IN ('0' , '1') 
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="2" prepend="AND">
+	        		C.CFM_FG =#productStatus#
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="3" prepend="AND">
+	        		C.CFM_FG =#productStatus#
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="4" prepend="AND">
+	        		C.CFM_FG IS NULL
+	        	</isEqual>
+	        	<isNotEmpty property="startDate" prepend="AND">
+			        A.REG_DT BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+			    </isNotEmpty>
+			  ORDER BY A.REG_DT DESC
+		  ) BB 
+		  WHERE	COALESCE(BB.CFM_FG,20) != '9'
+		
+	  </select>	  
+	  
+	  
+	  
+	<resultMap id="fashionProductImageListMap" class="pedmPro0005VO">
+	    <result property="sellCode" 			column="SRCMK_CD"    />
+	    <result property="productName" 			column="PROD_NM" 	 />
+	    <result property="imageName"  			column="IMG_NM"  />
+	    <result property="confirmFlag" 			column="CFM_FG"  />
+	    <result property="imageSeq" 			column="IMG_SEQ"  />
+	    <result property="confirmReasonFlag" 	column="CFM_REASON_FG"  />
+	    <result property="productDay" 			column="APPLY_DY"  />
+	    <result property="width" 				column="WIDTH"  />
+	    <result property="length" 				column="LENGTH"  />
+	    <result property="height" 				column="HEIGHT"  />
+	    <result property="regWidth" 			column="REG_WIDTH"  />
+	    <result property="regLength" 			column="REG_LENGTH"  />
+	    <result property="regHeight" 			column="REG_HEIGHT"  />
+	    <result property="categroyName" 		column="SZ_CAT_NM"  />
+	    <result property="colorName" 			column="COLOR_NM"  />
+	    <result property="sizeName" 			column="SZ_NM"  />
+	    
+	    <result property="szCatCode" 			column="SZ_CAT_CD"  />
+	    <result property="szCode" 			    column="SZ_CD"      />
+	    <result property="colorCode" 			column="COLOR_CD"   />
+	    
+    </resultMap>
+ 
+	  
+	   <select id="selectFashionProductImageList" resultMap="fashionProductImageListMap" parameterClass="searchProduct">
+	   	
+	   		/* SQLINES DEMO *** ectFashionProductImageList */
+	   	SELECT BB.*, F.SZ_CAT_NM 	,D.COLOR_NM,  E.SZ_NM	 
+	   	 FROM    
+		(   SELECT  
+				A.SRCMK_CD,		B.PROD_NM ,		 C.IMG_NM ,		CASE C.CFM_FG  WHEN '' THEN  '0' WHEN ' ' THEN '0' ELSE C.CFM_FG END AS CFM_FG, 
+				C.IMG_SEQ ,		C.CFM_REASON_FG, D.APPLY_DY,
+				A.WIDTH ,  		A.LENGTH , 		 A.HEIGHT,
+				D.WIDTH AS REG_WIDTH,  		D.LENGTH AS REG_LENGTH, 	 D.HEIGHT AS REG_HEIGHT,
+				B.SZ_CAT_CD,	B.SZ_CD,	B.COLOR_CD
+		    FROM    
+			    SALE_MST@DL_MD_MARTNIS A  LEFT JOIN 
+	            SALE_MST_IMG@DL_MD_MARTNIS C
+	            ON A.SRCMK_CD = C.SRCMK_CD LEFT JOIN 
+	            SALE_MST_RSERV@DL_MD_MARTNIS D 
+	            ON A.SRCMK_CD = D.SRCMK_CD and D.APPLY_DY = TO_CHAR(current_timestamp(0)+INTERVAL '1' DAY, 'yyyyMMdd') ,
+	            PRODUCT B 
+	        WHERE   A.SRCMK_CD = B.SRCMK_CD  AND A.ORD_ABLE_FG = '1'    
+	          AND   B.VEN_CD = #entpCode#
+	        	<isNotEmpty property="sellCode" prepend="AND">
+	        		A.SRCMK_CD = #sellCode#
+	        	</isNotEmpty>
+	        	<isEqual property="productStatus" compareValue="0" prepend="AND">
+	        		C.CFM_FG IN ('0' , '1') 
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="1" prepend="AND">
+	        		C.CFM_FG IN ('0' , '1') 
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="2" prepend="AND">
+	        		C.CFM_FG =#productStatus#
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="3" prepend="AND">
+	        		C.CFM_FG =#productStatus#
+	        	</isEqual>
+	        	<isEqual property="productStatus" compareValue="4" prepend="AND">
+	        		C.CFM_FG IS NULL
+	        	</isEqual>
+	        	<isNotEmpty property="startDate" prepend="AND">
+			        A.REG_DT BETWEEN TO_DATE(#startDate#, 'YYYY-MM-DD') AND TO_DATE(CONCAT(#endDate#,' 23:59:59'), 'YYYY-MM-DD HH24:MI:SS')
+			    </isNotEmpty>
+		  ) BB ,																	
+		   COLOR D, SZ E, SZ_CAT F		
+		  WHERE	COALESCE(BB.CFM_FG,20) != '9'
+		  	AND	BB.COLOR_CD  =D.COLOR_CD AND	BB.SZ_CD = E.SZ_CD AND	BB.SZ_CAT_CD= E.SZ_CAT_CD AND BB.SZ_CAT_CD = F.SZ_CAT_CD
+	  </select>	  
+	  
+	
+	 <select id="selectMDSellCodeinReserv" parameterClass="searchProduct" resultClass="String">
+	 		/* SQLINES DEMO *** ectMDSellCodeinReserv */
+	 	SELECT  
+		    	SRCMK_CD
+		FROM    	SALE_MST_RSERV@DL_MD_MARTNIS
+		WHERE	SRCMK_CD = #sellCode#  
+		AND  	APPLY_DY = #applyDay#
+	 </select>
+	 
+  
+	 <update id="updateMDSizeInReserv" parameterClass="searchProduct">
+	 		/* SQLINES DEMO *** ateMDSizeInReserv */
+	 	UPDATE	SALE_MST_RSERV@DL_MD_MARTNIS
+	 	SET WIDTH = #productWidth# , LENGTH= #productLength#, HEIGHT =#productHeight#
+		WHERE	SRCMK_CD = #sellCode#  
+		AND  	APPLY_DY = #applyDay#
+	 </update>
+	 
+  
+	 <insert id="inserNewMDSize" parameterClass="searchProduct">
+	 	/* SQLINES DEMO *** erNewMDSize */
+	 INSERT INTO SALE_MST_RSERV@DL_MD_MARTNIS (
+				     SRCMK_CD 
+				    ,WIDTH      
+				    ,LENGTH     
+				    ,HEIGHT     
+				    ,REP_CD
+				    ,ORD_IPSU
+				    ,CONV_RT
+				    ,PROD_CD
+				    ,ORD_UNIT				    
+				    ,ORD_ABLE_FG
+				    ,CHG_FG
+				    ,OLD_WIDTH
+				    ,OLD_LENGTH
+				    ,OLD_HEIGHT
+				    ,OLD_REP_CD
+				    ,OLD_ORD_IPSU
+				    ,OLD_CONV_RT
+				    ,OLD_PROD_CD
+				    ,OLD_ORD_UNIT				    
+				    ,OLD_ORD_ABLE_FG
+				    ,OLD_CHG_FG
+				    ,REG_DT
+				    ,REG_EMP_NO
+				    ,LST_CHG_DT
+				    ,LST_CHG_EMP_NO
+				    ,APPLY_DY   
+				)
+		SELECT
+			    SRCMK_CD
+			    , #productWidth#
+			    , #productHeight#
+			    , #productLength#
+			    ,REP_CD
+			    ,ORD_IPSU
+			    ,CONV_RT
+			    ,PROD_CD
+			    ,ORD_UNIT			    
+			    ,ORD_ABLE_FG
+			    ,CHG_FG
+			    ,WIDTH
+			    ,LENGTH
+			    ,HEIGHT
+			    ,REP_CD
+			    ,ORD_IPSU
+			    ,CONV_RT
+			    ,PROD_CD
+			    ,ORD_UNIT			    
+			    ,ORD_ABLE_FG
+			    ,CHG_FG
+			    ,REG_DT 
+			    ,'EDI_POG'
+			    ,CURRENT_TIMESTAMP(0)
+			    ,'EDI_POG'
+			    , #applyDay#
+			FROM    SALE_MST@DL_MD_MARTNIS
+			where	SRCMK_CD = #sellCode#
+	 </insert>
+	 <delete id="deleteMDLegacyImageData" parameterClass="string">
+	 		/* SQLINES DEMO *** eteMDLegacyImageData */
+	 	DELETE FROM SALE_MST_IMG@DL_MD_MARTNIS 
+		 WHERE IMG_SEQ =  #imageSeq# 
+	 </delete>
+	 
+</sqlMap>

@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="MainDashBoard">
+	<typeAlias alias="mainDashBoardVO"    	type="com.lottemart.epc.edi.main.model.MainDashBoardVO" />		<!-- Main 화면 VO -->
+
+	<!-- Main → 파트너사 실적 조회 Map -->	
+	<resultMap id="selectVenPrfrListMap" class="java.util.HashMap">
+		<result column="MONTH"				property="month"			/>	<!-- 테이블행번호 -->
+		<result column="NAME"				property="name" 			/>	<!-- 명칭 -->
+		<result column="DATA"				property="data" 			/>	<!-- 데이터 -->
+		<result column="TYPE"				property="type" 			/>	<!-- type -->
+		<result column="YAXISINDEX"			property="yAxisIndex" 		/>	<!-- yAxisIndex -->
+	</resultMap>
+	
+	<!-- Main → 파트너사 매입액 조회 Map -->	
+	<resultMap id="selectMainVenBuyMap"		class="mainDashBoardVO">
+		<result column="ROWNUM"				property="rownum" 			/>	<!-- 행번호 -->
+		<result column="dy"					property="dy" 				/>	<!-- 일자 -->
+		<result column="ven_cd"				property="venCd" 			/>	<!-- 파트너사코드 -->
+		<result column="prod_cd"			property="prodCd" 			/>	<!-- 상품코드 -->
+		<result column="prod_nm"			property="prodNm" 			/>  <!-- 상품명 -->
+		<result column="sell_cd"			property="sellCd" 			/>  <!-- 판매코드 -->
+		<result column="chan_cd"			property="chanCd" 			/>  <!-- 채널코드 -->
+		<result column="team_cd"			property="teamCd" 			/>  <!-- 팀코드 -->
+		<result column="l1_cd"				property="l1Cd" 			/>  <!-- 대분류 -->
+		<result column="l2_cd"				property="l2Cd" 			/>  <!-- 중분류 -->
+		<result column="l3_cd"				property="l3Cd" 			/>  <!-- 소분류 -->
+		<result column="l1_nm"				property="l1Nm" 			/>  <!-- 대분류명 -->
+		<result column="l2_nm"				property="l2Nm" 			/>  <!-- 중분류명 -->
+		<result column="l3_nm"				property="l3Nm" 			/>  <!-- 소분류명 -->
+		<result column="buy_amt"			property="buyAmt" 			/>  <!-- 매입금액 -->
+		<result column="buy_qty"			property="buyQty" 			/>  <!-- 매입량 -->
+		<result column="sales_amt"			property="salesAmt" 		/>  <!-- 매출액 -->
+		<result column="sales_qty"			property="salesQty" 		/>  <!-- 매출량 -->
+		<result column="mod_date"			property="modDate" 			/>  <!-- 수정일시 -->
+		<result column="mod_id"				property="modId" 			/>  <!-- 수정자 -->
+		<result column="reg_date"			property="regDate" 			/>  <!-- 등록일시 -->
+		<result column="reg_id"				property="regId" 			/>  <!-- 등록자 -->
+	</resultMap>
+
+	<!-- Main → 신상품 실적 조회 Map -->	
+	<resultMap id="selectMainNewProdPrfrMap"		class="mainDashBoardVO">
+		<result column="rownum"				property="rownum"			/>	<!-- 일련번호 -->
+		<result column="dy"					property="dy" 				/>	<!-- 일자 -->
+		<result column="ven_cd"				property="venCd" 			/>	<!-- 파트너사코드 -->
+		<result column="prod_cd"			property="prodCd" 			/>  <!-- 상품코드 -->
+		<result column="prod_nm"			property="prodNm" 			/>  <!-- 상품명 -->
+		<result column="chan_cd"			property="chanCd" 			/>  <!-- 채널코드 -->
+		<result column="team_cd"			property="teamCd" 			/>  <!-- 팀코드 -->
+		<result column="l1_cd"				property="l1Cd" 			/>  <!-- 대분류 -->
+		<result column="l2_cd"				property="l2Cd" 			/>  <!-- 중분류 -->
+		<result column="l3_cd"				property="l3Cd" 			/>  <!-- 소분류 -->
+		<result column="sales_amt"			property="salesAmt" 		/>  <!-- 순매출금액 -->
+		<result column="prod_profit"		property="prodProfit" 		/>  <!-- 상품이익 -->
+		<result column="profit_rate"		property="profitRate" 		/>  <!-- 이익율 -->
+		<result column="sales_qty"			property="salesQty" 		/>  <!-- 판매량 -->
+		<result column="mod_date"			property="modDate" 			/>  <!-- 수정일시 -->
+		<result column="mod_id"				property="modId" 			/>  <!-- 수정자 -->
+		<result column="reg_date"			property="regDate" 			/>  <!-- 등록일시 -->
+		<result column="reg_id"				property="regId" 			/>  <!-- 등록자 -->
+	</resultMap>
+
+	<!-- Main → 신상품 입점 제안 조회 Map -->	
+	<resultMap id="selectProdNewPropMap"		class="mainDashBoardVO">
+		<result column="ROWNUM"				property="rownum"			/>	<!-- 일련번호 -->
+		<result column="MOD_DATE"			property="modDate"			/>	<!-- 상태변경일 -->
+		<result column="PRDT_STATUS"		property="prdtStatus"		/>  <!-- 상태 -->
+		<result column="REG_DATE"			property="regDate"			/>  <!-- 등록일자 -->
+		<result column="TEAM_NM"			property="teamNm"			/>  <!-- 팀 -->
+		<result column="L1_NM"				property="l1Nm"				/>  <!-- 대분류 -->
+		<result column="VEN_CD"				property="venCd"			/>  <!-- 파트너사코드 -->
+		<result column="PROD_STANDARD_NM"	property="prodStandardNm"	/>  <!-- 규격 -->
+		<result column="NOR_PROD_PCOST"		property="norProdPcost"		/>  <!-- 원가 -->
+		<result column="PROD_SELL_PRC"		property="prodSellPrc"		/>  <!-- 판매가 -->
+	</resultMap>
+	
+	<!-- Main 공통 조회조건 -->
+	<sql id="selectMainCommon_Where">
+		WHERE 1=1
+		<isEmpty  property="venCd">	<!-- 파트너사 코드 미선택 시, 본인이 속한 회사의 모든 데이터 조회 --> 
+			<iterate prepend="AND A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+				#venCds[]# 
+			</iterate>
+	  	</isEmpty>
+		<isNotEmpty property="venCd">
+			AND A.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="teamCd">
+			AND A.TEAM_CD = #teamCd#
+		</isNotEmpty>
+		<isNotEmpty property="chanCd">
+			AND A.CHAN_CD = #chanCd#
+		</isNotEmpty>
+		<isNotEmpty property="l1Cd">
+			AND A.L1_CD = #l1Cd#
+		</isNotEmpty>
+		<isNotEmpty property="l2Cd">
+			AND A.L2_CD = #l2Cd#
+		</isNotEmpty>
+		<isNotEmpty property="startDy">
+			AND A.DY <![CDATA[>=]]> #startDy#
+		</isNotEmpty>
+		<isNotEmpty property="endDy">
+			AND A.DY <![CDATA[<=]]> #endDy#
+		</isNotEmpty>
+	</sql>
+	
+	<!-- Main 원가변경요청 내역 조회조건 -->
+    <sql id="selectMainTpcProdChgCostItem_Where">
+    	WHERE A.PR_STAT <![CDATA[<>]]> '00'	/* 요청이후건만 조회 */
+    	<isEmpty  property="venCd"  prepend="AND">	<!-- 파트너사 코드 미선택 시, 본인이 속한 회사의 모든 데이터 조회 --> 
+			<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+				#venCds[]# 
+			</iterate>
+	  	</isEmpty>
+    	<isNotEmpty property="venCd">
+			AND A.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="chanCd">
+			AND A.PUR_DEPT = #chanCd#
+		</isNotEmpty>
+		<isNotEmpty property="l1Cd">
+			AND C.L1_CD = #l1Cd#
+		</isNotEmpty>
+		<isNotEmpty property="l2Cd">
+			AND C.L2_CD = #l2Cd#
+		</isNotEmpty>
+		<isNotEmpty property="startDy">
+			AND A.IF_REQ_DT <![CDATA[>=]]> TO_TIMESTAMP(CONCAT(#startDy#, '000000'), 'YYYYMMDDHH24MISS')
+		</isNotEmpty>
+		<isNotEmpty property="endDy">
+			AND A.IF_REQ_DT <![CDATA[<=]]> TO_TIMESTAMP(CONCAT(#endDy#, '235959'), 'YYYYMMDDHH24MISS')
+		</isNotEmpty>
+    </sql>
+    
+	<!-- Main 신상품 입점 제안 조회조건 -->
+    <sql id="selectProdNewPropList_Where">
+		WHERE A.DEL_YN <![CDATA[<>]]> 'Y'
+		<isEmpty  property="venCd"  prepend="AND">	<!-- 파트너사 코드 미선택 시, 본인이 속한 회사의 모든 데이터 조회 --> 
+			<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+				#venCds[]# 
+			</iterate>
+	  	</isEmpty>
+		<isNotEmpty property="venCd">
+			AND A.VEN_CD = #venCd#
+		</isNotEmpty>
+		<isNotEmpty property="chanCd">
+			AND #chanCd# = ANY(STRING_TO_ARRAY(A.SELL_CHAN_CD, ',') )
+		</isNotEmpty>
+		<isNotEmpty property="l1Cd">
+			AND A.L1_CD = #l1Cd#
+		</isNotEmpty>
+		<!-- <isNotEmpty property="l2Cd"></isNotEmpty> -->
+		<isNotEmpty property="startDy">
+			AND A.MOD_DATE <![CDATA[>=]]> TO_TIMESTAMP(CONCAT(#startDy#, '000000'), 'YYYYMMDDHH24MISS')
+		</isNotEmpty>
+		<isNotEmpty property="endDy">
+			AND A.MOD_DATE <![CDATA[<=]]> TO_TIMESTAMP(CONCAT(#endDy#, '235959'), 'YYYYMMDDHH24MISS')
+		</isNotEmpty>
+	</sql>
+	
+	
+    <!-- Main → 파트너사 실적 조회 -->
+    <select id="selectVenPrfrList" parameterClass="mainDashBoardVO" resultMap="selectVenPrfrListMap" >
+    /* MainDashBoard.selectVenPrfrList */
+	    	WITH MONTH_MST AS (
+				SELECT EXTRACT(MONTH FROM (#startDy#::DATE - '3 MONTH'::INTERVAL)) AS MONTH
+				UNION ALL
+				SELECT EXTRACT(MONTH FROM (#startDy#::DATE - '2 MONTH'::INTERVAL)) AS MONTH
+				UNION ALL
+				SELECT EXTRACT(MONTH FROM (#startDy#::DATE - '1 MONTH'::INTERVAL)) AS MONTH
+				UNION ALL
+				SELECT EXTRACT(MONTH FROM (#startDy#::DATE + '0 MONTH'::INTERVAL)) AS MONTH
+				UNION ALL
+				SELECT EXTRACT(MONTH FROM (#startDy#::DATE + '1 MONTH'::INTERVAL)) AS MONTH
+				UNION ALL
+				SELECT EXTRACT(MONTH FROM (#startDy#::DATE + '2 MONTH'::INTERVAL)) AS MONTH
+			)
+			SELECT
+				STRING_AGG(A.MONTH, ',') AS MONTH
+				, '매입액' AS NAME
+				, STRING_AGG(CAST(A.BUY_AMT AS TEXT), ',') AS DATA
+				, 'bar' AS TYPE
+				, '0' AS YAXISINDEX
+			FROM(
+				SELECT 	
+					  CONCAT(MST.MONTH, '월') AS MONTH
+					, COALESCE(A.BUY_AMT, 0) AS BUY_AMT
+				FROM MONTH_MST MST
+				LEFT JOIN 
+				(
+					SELECT                                     
+					 TRUNC(SUM(BUY_AMT) / 10000) AS BUY_AMT      
+					, EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP)) AS MONTH
+					FROM TPC_MAIN_VEN_PRFR
+					WHERE DY BETWEEN #startDy# AND #endDy#
+					GROUP BY EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP))
+				)A ON MST.MONTH = A.MONTH
+				ORDER BY MST.MONTH
+			)A
+			UNION ALL
+			SELECT
+				STRING_AGG(B.MONTH, ',') AS MONTH
+				, '순매출' AS NAME
+				, STRING_AGG(CAST(B.SALES_AMT AS TEXT), ',') AS DATA
+				, 'bar' AS TYPE
+				, '0' AS YAXISINDEX
+			FROM(
+				SELECT 	
+					  CONCAT(MST.MONTH, '월') AS MONTH
+					, COALESCE(A.SALES_AMT, 0) AS SALES_AMT
+				FROM MONTH_MST MST
+				LEFT JOIN 
+				(
+					SELECT                                     
+					 TRUNC(SUM(SALES_AMT) / 10000) AS SALES_AMT      
+					, EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP)) AS MONTH
+					FROM TPC_MAIN_VEN_PRFR
+					WHERE DY BETWEEN #startDy# AND #endDy#
+					GROUP BY EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP))
+				)A ON MST.MONTH = A.MONTH
+				ORDER BY MST.MONTH
+			)B
+			UNION ALL
+			SELECT
+				STRING_AGG(C.MONTH, ',') AS MONTH
+				, '매출신장율' AS NAME
+				, STRING_AGG(CAST(C.SALES_RATE AS TEXT), ',') AS DATA
+				, 'line' AS TYPE
+				, '1' AS YAXISINDEX
+			FROM(
+				SELECT 	
+					  CONCAT(MST.MONTH, '월') AS MONTH
+					, COALESCE(A.SALES_RATE, 0) AS SALES_RATE
+				FROM MONTH_MST MST
+				LEFT JOIN 
+				(
+					SELECT                                     
+					 MAX(SALES_RATE) AS SALES_RATE      
+					, EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP)) AS MONTH
+					FROM TPC_MAIN_VEN_PRFR
+					WHERE DY BETWEEN #startDy# AND #endDy#
+					GROUP BY EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP))
+				)A ON MST.MONTH = A.MONTH
+				ORDER BY MST.MONTH
+			)C
+			UNION ALL
+			SELECT
+				STRING_AGG(D.MONTH, ',') AS MONTH
+				, '매입신장율' AS NAME
+				, STRING_AGG(CAST(D.BUY_RATE AS TEXT), ',') AS DATA
+				, 'line' AS TYPE
+				, '1' AS YAXISINDEX
+			FROM(
+				SELECT 	
+					  CONCAT(MST.MONTH, '월') AS MONTH
+					, COALESCE(A.BUY_RATE, 0) AS BUY_RATE
+				FROM MONTH_MST MST
+				LEFT JOIN 
+				(
+					SELECT                                     
+					 MAX(BUY_RATE) AS BUY_RATE      
+					, EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP)) AS MONTH
+					FROM TPC_MAIN_VEN_PRFR
+					WHERE DY BETWEEN #startDy# AND #endDy#
+					GROUP BY EXTRACT(MONTH FROM CAST(DY AS TIMESTAMP))
+				)A ON MST.MONTH = A.MONTH
+				ORDER BY MST.MONTH
+			)D
+    </select>
+	
+	<!-- Main → 파트너사 매입액 카운터 조회 -->
+    <select id="selectVenBuyCount" parameterClass="mainDashBoardVO" resultClass="Integer" >
+		/* MainDashBoard.selectVenBuyCount */
+	    SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_MAIN_VEN_BUY A
+		INNER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		<include refid="selectMainCommon_Where"/>
+    </select>
+    
+    <!-- Main → 파트너사 매입액 조회 -->
+    <select id="selectVenBuyList" parameterClass="mainDashBoardVO" resultMap="selectMainVenBuyMap" >
+		/* MainDashBoard.selectVenBuyList */
+		SELECT                                     
+			ROW_NUMBER() OVER(ORDER BY A.BUY_AMT DESC) AS ROWNUM
+			, A.DY				/* 일자		*/
+			, A.VEN_CD          /* 파트너사코드	*/
+			, A.PROD_CD         /* 상품코드	*/
+			, B.PROD_NM			/* 상품명		*/
+			, A.SELL_CD         /* 판매코드	*/
+			, A.CHAN_CD         /* 채널코드	*/
+			, A.TEAM_CD         /* 팀코드		*/
+			, A.L1_CD           /* 대분류		*/
+			, A.L2_CD           /* 중분류		*/
+			, A.L3_CD           /* 소분류		*/
+			, FN_GET_CAT_NM(A.L1_CD) AS L1_NM /* 소분류명 */
+			, FN_GET_CAT_NM(A.L2_CD) AS L2_NM /* 중분류명 */
+			, FN_GET_CAT_NM(A.L3_CD) AS L3_NM /* 대분류명 */
+			, A.BUY_AMT			/* 매입액		*/
+			, A.BUY_QTY			/* 매입량 	*/
+			, A.SALES_AMT		/* 판매액 	*/
+			, A.SALES_QTY		/* 판매량 	*/
+			, A.MOD_DATE		/* 수정일시	*/
+			, A.MOD_ID			/* 수정자		*/
+			, A.REG_DATE		/* 등록일시	*/
+			, A.REG_ID			/* 등록자		*/
+		FROM TPC_MAIN_VEN_BUY A
+		INNER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		<include refid="selectMainCommon_Where"/>
+		LIMIT 10;
+    </select>
+	
+	<!-- Main → 신상품 실적 카운터 조회 -->
+    <select id="selectNewProdPrfrCount" parameterClass="mainDashBoardVO" resultClass="Integer" >
+		/* MainDashBoard.selectNewProdPrfrCount */
+	    SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_MAIN_NEW_PROD_PRFR A
+		INNER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		<include refid="selectMainCommon_Where"/>
+    </select>
+    
+    <!-- Main → 신상품 실적 조회 -->
+    <select id="selectNewProdPrfrList" parameterClass="mainDashBoardVO" resultMap="selectMainNewProdPrfrMap" >
+    	/* MainDashBoard.selectNewProdPrfrList */
+		SELECT
+			T.ROWNUM
+			, T.DY				/* 일자		*/
+			, T.VEN_CD			/* 파트너사코드	*/
+			, T.PROD_CD			/* 상품코드	*/
+			, T.PROD_NM			/* 상품명		*/
+			, T.CHAN_CD			/* 채널코드	*/
+			, T.TEAM_CD			/* 팀코드		*/
+			, T.L1_CD			/* 대분류		*/
+			, T.L2_CD			/* 중분류		*/
+			, T.L3_CD			/* 소분류		*/
+			, T.SALES_AMT		/* 순매출금액	*/
+			, T.PROD_PROFIT		/* 상품이익	*/
+			, T.PROFIT_RATE		/* 이익율		*/
+			, T.SALES_QTY		/* 판매량		*/
+			, T.MOD_DATE		/* 수정일시	*/
+			, T.MOD_ID			/* 수정자		*/
+			, T.REG_DATE		/* 등록일시	*/
+			, T.REG_ID			/* 등록자		*/
+		FROM (
+			 SELECT                                     
+			 	ROW_NUMBER() OVER(ORDER BY DY ASC) AS ROWNUM
+				, DY				/* 일자		*/
+				, A.VEN_CD			/* 파트너사코드	*/
+				, A.PROD_CD			/* 상품코드	*/
+				, B.PROD_NM			/* 상품명		*/
+				, A.CHAN_CD			/* 채널코드	*/
+				, A.TEAM_CD			/* 팀코드		*/
+				, A.L1_CD			/* 대분류		*/
+				, A.L2_CD			/* 중분류		*/
+				, A.L3_CD			/* 소분류		*/
+				, A.SALES_AMT		/* 순매출금액	*/
+				, A.PROD_PROFIT		/* 상품이익	*/
+				, A.PROFIT_RATE		/* 이익율		*/
+				, A.SALES_QTY		/* 판매량		*/
+				, TO_CHAR(A.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE	/* 수정일시	*/
+				, A.MOD_ID			/* 수정자		*/
+				, TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE	/* 등록일시	*/
+				, A.REG_ID			/* 등록자		*/
+			FROM TPC_MAIN_NEW_PROD_PRFR A
+			INNER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+			<include refid="selectMainCommon_Where"/>
+		)T
+		WHERE T.ROWNUM BETWEEN #startRowNo# AND #endRowNo#
+    </select>
+    
+    
+    <!-- Main → 신상품 입점 제안 카운터 조회 -->
+    <select id="selectProdNewPropCount" parameterClass="mainDashBoardVO" resultClass="Integer" >
+		/* MainDashBoard.selectProdNewPropCount */
+    	SELECT COUNT(1) AS CNT
+		FROM TPC_PROD_NEW_PROP A
+		<include refid="selectProdNewPropList_Where"/>
+    </select>
+    
+    <!-- Main → 신상품 입점 제안 조회 -->
+    <select id="selectProdNewPropList" parameterClass="mainDashBoardVO" resultMap="selectProdNewPropMap" >
+    	/* MainDashBoard.selectProdNewPropList */
+	    SELECT
+	    	T.ROWNUM
+	    	, T.MOD_DATE
+	    	, T.PRDT_STATUS
+	    	, T.REG_DATE
+	    	, T.TEAM_NM
+	    	, T.L1_NM
+	    	, T.VEN_CD
+	    	, T.PROD_STANDARD_NM
+	    	, T.NOR_PROD_PCOST
+	    	, T.PROD_SELL_PRC
+	    FROM (
+	    	SELECT                                     
+				(ROW_NUMBER() OVER(ORDER BY MOD_DATE DESC)) AS ROWNUM
+				, TO_CHAR(A.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE	/* 수정일시	*/
+				, CASE WHEN A.PRDT_STATUS = '0' THEN '파트너사등록'
+						WHEN A.PRDT_STATUS = '1' THEN '승인'
+						WHEN A.PRDT_STATUS = '2' THEN '반려'
+						ELSE '' END AS PRDT_STATUS/* 진행상태	*/
+				, TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE	/* 등록일시	*/
+				, (SELECT MAX(TEAM_NM) AS TEAM_NM FROM TPC_L1_CD WHERE A.TEAM_CD = TEAM_CD GROUP BY TEAM_CD ) AS TEAM_NM	/* 팀명	*/
+				, (SELECT MAX(L1_NM) AS L1_NM FROM TPC_L1_CD WHERE A.L1_CD = L1_CD AND A.TEAM_CD = TEAM_CD GROUP BY L1_CD ) AS L1_NM	/* 대분류		*/
+				, A.VEN_CD				/* 파트너사코드	*/
+				, A.PROD_STANDARD_NM	/* 규격	*/
+				, A.NOR_PROD_PCOST		/* 원가	*/
+				, A.PROD_SELL_PRC		/* 판매가	*/
+			FROM TPC_PROD_NEW_PROP A
+			<include refid="selectProdNewPropList_Where"/>
+	    )T
+		WHERE T.ROWNUM BETWEEN #startRowNo# AND #endRowNo#
+    </select>
+    
+    <!-- Main 원가변경요청 내역 및 상태 조회 Map -->
+    <resultMap id="selectMainTpcProdChgCostItemMap" class="mainDashBoardVO">
+		<result column="ROWNUM" 		property="rownum"		/>    	
+		<result column="L3_NM" 			property="l3Nm"			/>    	
+		<result column="SRCMK_CD"		property="srcmkCd"		/>    	
+		<result column="PUR_DEPT" 		property="purDept"		/>    	
+		<result column="SEQ" 			property="seq"			/>    	
+		<result column="PROD_CD"		property="prodCd"		/>    	
+		<result column="PROD_NM"		property="prodNm"		/>    	
+		<result column="ORG_COST"		property="orgCost"		/>    	
+		<result column="CHG_REQ_COST"	property="chgReqCost"	/>    	
+		<result column="PR_STAT"		property="prStat"		/>    	
+		<result column="PR_STAT_NM"		property="prStatNm"		/>    	
+		<result column="REQ_DT"			property="reqDt"		/>    	 
+    </resultMap>
+
+	<!-- Main 원가변경요청 내역 및 상태 조회 -->
+	<select id="selectMainTpcProdChgCostItem" parameterClass="mainDashBoardVO" resultMap="selectMainTpcProdChgCostItemMap">
+		/* MainDashBoard.selectMainTpcProdChgCostItem */
+		SELECT
+			T.ROWNUM
+			, T.L3_NM 			/* 소분류명 */
+			, T.SRCMK_CD		/* 판매코드 */
+			, T.PUR_DEPT 		/* 구매조직 */
+			, T.SEQ				/* 순번 */
+			, T.PROD_CD 		/* 상품코드 */
+			, T.PROD_NM 		/* 상품명 */
+			, T.ORG_COST 		/* 기존원가 */
+			, T.CHG_REQ_COST 	/* 변경원가 */
+			, T.PR_STAT			/* 진행상태 */
+			, T.PR_STAT_NM		/* 진행상태명 */
+			, T.REQ_DT			/* 요청일시 */
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.IF_REQ_DT DESC) AS ROWNUM
+				, FN_GET_CAT_NM(B.L3_CD) AS L3_NM /* 소분류명 */
+				, A.SRCMK_CD		/* 판매코드 */
+				, A.PUR_DEPT 		/* 구매조직 */
+				, A.SEQ				/* 순번 */
+				, A.PROD_CD 		/* 상품코드 */
+				, B.PROD_NM 		/* 상품명 */
+				, A.ORG_COST 		/* 기존원가 */
+				, A.CHG_REQ_COST 	/* 변경원가 */
+				, A.PR_STAT			/* 진행상태 */
+				, FN_NEW_CODE_RTN('PR01', A.PR_STAT) AS PR_STAT_NM	/* 진행상태명 */
+				, TO_CHAR(A.IF_REQ_DT, 'YYYY-MM-DD HH:MI') AS REQ_DT	/* 요청일시 */
+			FROM TPC_PROD_CHG_COST_ITEM A
+			INNER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD 
+			<isNotEmpty property="teamCd">INNER JOIN</isNotEmpty>
+			<isEmpty property="teamCd">LEFT OUTER JOIN</isEmpty>
+			(
+				SELECT S1.L3_CD
+					, STRING_AGG(S1.TEAM_CD, '|') AS TEAM_CD
+					, STRING_AGG(S1.TEAM_NM, '|') AS TEAM_NM
+				FROM TPC_L1_CD S1
+				WHERE 1=1
+				<isNotEmpty property="teamCd">AND S1.TEAM_CD = #teamCd#</isNotEmpty>
+				GROUP BY S1.L3_CD
+			)TM ON B.L3_CD = TM.L3_CD
+			LEFT OUTER JOIN CATEGORY C ON B.L3_CD = C.CAT_CD AND C.LVL = '3' AND C.CHG_FG <![CDATA[<>]]> 'D'
+			<include refid="selectMainTpcProdChgCostItem_Where"/>
+		)T
+		WHERE T.ROWNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- Main 원가변경요청 내역 및 상태 조회 카운트 -->
+	<select id="selectMainTpcProdChgCostItemCnt" parameterClass="mainDashBoardVO" resultClass="Integer">
+		/* MainDashBoard.selectMainTpcProdChgCostItemCnt */
+		SELECT COUNT(1) AS CNT
+		FROM TPC_PROD_CHG_COST_ITEM A
+		INNER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD 
+		<isNotEmpty property="teamCd">INNER JOIN</isNotEmpty>
+		<isEmpty property="teamCd">LEFT OUTER JOIN</isEmpty>
+		(
+			SELECT S1.L3_CD
+				, STRING_AGG(S1.TEAM_CD, '|') AS TEAM_CD
+				, STRING_AGG(S1.TEAM_NM, '|') AS TEAM_NM
+			FROM TPC_L1_CD S1
+			WHERE 1=1
+			<isNotEmpty property="teamCd">AND S1.TEAM_CD = #teamCd#</isNotEmpty>
+			GROUP BY S1.L3_CD
+		)TM ON B.L3_CD = TM.L3_CD
+		LEFT OUTER JOIN CATEGORY C ON B.L3_CD = C.CAT_CD AND C.LVL = '3' AND C.CHG_FG <![CDATA[<>]]> 'D'
+		<include refid="selectMainTpcProdChgCostItem_Where"/>
+	</select>
+	
+	<!-- Main 미납내역 Map -->
+    <resultMap id="selectMainNonPayItemsMap" class="mainDashBoardVO">
+		<result column="ROWNUM" 		property="rownum"		/>    	
+		<result column="ORD_NO" 		property="ordNo"		/>    	
+		<result column="RCV_DT" 		property="rcvDt"		/>    	
+		<result column="PROD_NM"	 	property="prodNm"		/>    	
+		<result column="NON_PAY_RSRN" 	property="nonPayRsrn"	/>    	
+		<result column="NON_PAY_ST" 	property="nonPaySt"		/>    	
+		<result column="NON_PAY_AMT" 	property="nonPayAmt"	/>    	
+	</resultMap>
+	
+	<!-- Main 미납내역 조회 -->
+	<select id="selectMainNonPayItems" parameterClass="mainDashBoardVO" resultMap="selectMainNonPayItemsMap">
+		/* MainDashBoard.selectMainNonPayItems */
+		SELECT
+			T.ROWNUM
+			, T.ORD_NO			/* 발주번호 */
+			, T.RCV_DT 			/* 입고예정일 */
+			, T.PROD_NM 		/* 상품명 */
+			, T.NON_PAY_RSRN 	/* 미납사유 */
+			, T.NON_PAY_ST 		/* 귀책 */
+			, T.NON_PAY_AMT		/* 미납금액 */
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.DY DESC, A.RCV_DT) AS ROWNUM
+				, A.ORD_NO			/* 발주번호 */
+				, A.RCV_DT 			/* 입고예정일 */
+				, A.PROD_NM 		/* 상품명 */
+				, A.NON_PAY_RSRN 	/* 미납사유 */
+				, A.NON_PAY_ST 		/* 귀책 */
+				, A.NON_PAY_AMT		/* 미납금액 */
+			FROM TPC_MAIN_NON_PAY_ITEMS A
+			<include refid="selectMainCommon_Where"/>
+		)T
+		WHERE T.ROWNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- Main 미납내역 count -->
+	<select id="selectMainNonPayItemsCnt" parameterClass="mainDashBoardVO" resultClass="Integer">
+		/* MainDashBoard.selectMainNonPayItemsCnt */
+		SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_MAIN_NON_PAY_ITEMS A
+		<include refid="selectMainCommon_Where"/>
+	</select>
+	
+	<!-- Main 미납내역 > 미납율 -->
+	<select id="selectMainNonPayRate" parameterClass="mainDashBoardVO" resultClass="String">
+		/* MainDashBoard.selectMainNonPayRate */
+		<!-- TODO_JIA ::: 미납율 계산 방법 확인 필요 -->
+		SELECT '0.05' AS NON_PAY_RATE 
+	</select>
+	
+	<!-- Main 파트너사별 SKU 현황 Map -->
+    <resultMap id="selectMainVenSkuMap" class="mainDashBoardVO">
+		<result column="ROWNUM" 		property="rownum"		/>    	
+		<result column="PROD_CD" 		property="prodCd"		/>    	
+		<result column="PROD_NM" 		property="prodNm"		/>    	
+		<result column="PROD_GRD"	 	property="prodGrd"		/>    	
+		<result column="PROD_STS_NM" 	property="prodStsNm"	/>    	
+	</resultMap>
+	
+	<!-- Main 파트너사별 SKU 현황 조회 -->
+	<select id="selectMainVenSku" parameterClass="mainDashBoardVO" resultMap="selectMainVenSkuMap">
+		/* MainDashBoard.selectMainVenSku */
+		SELECT
+			T.ROWNUM
+			, T.PROD_CD
+			, T.PROD_NM
+			, T.PROD_GRD
+			, T.PROD_STS_NM
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.PROD_CD) AS ROWNUM
+				, A.PROD_CD		/* 상품코드 */
+				, B.PROD_NM		/* 상품명 */
+				, A.PROD_GRD	/* PLC 등급 */
+				, FN_TET_CODE_RTN('PRD72', A.PROD_STS) AS PROD_STS_NM	/* 상품상태 */
+			FROM TPC_MAIN_VEN_SKU A
+			LEFT OUTER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+			<include refid="selectMainCommon_Where"/>
+		)T
+		WHERE T.ROWNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- Main 파트너사별 SKU 현황 count -->
+	<select id="selectMainVenSkuCnt" parameterClass="mainDashBoardVO" resultClass="Integer">
+		/* MainDashBoard.selectMainVenSkuCnt */
+		SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_MAIN_VEN_SKU A
+		LEFT OUTER JOIN PRODUCT B ON A.PROD_CD = B.PROD_CD
+		<include refid="selectMainCommon_Where"/>
+	</select>
+	
+	<!-- Main 입고 거부 상품 미조치 내역 Map -->
+    <resultMap id="selectMainInboundRejectsMap" class="mainDashBoardVO">
+		<result column="ROWNUM" 		property="rownum"		/>    	
+		<result column="DY" 			property="dy"			/>    	
+		<result column="SELL_CD" 		property="sellCd"		/>    	
+		<result column="PROD_CD"	 	property="prodCd"		/>    	
+		<result column="PROD_NM"	 	property="prodNm"		/>    	
+		<result column="ISU_STORE" 		property="isuStore"		/>    	
+		<result column="ISU_TYPE" 		property="isuType"		/>    	
+	</resultMap>
+	
+	<!-- Main 입고 거부 상품 미조치 내역 조회 -->
+	<select id="selectMainInboundRejects" parameterClass="mainDashBoardVO" resultMap="selectMainInboundRejectsMap">
+		/* MainDashBoard.selectMainInboundRejects */
+		SELECT
+			T.ROWNUM
+			, T.DY			/* 일자 */
+			, T.SELL_CD 	/* 판매코드 */
+			, T.PROD_CD 	/* 상품코드 */
+			, T.PROD_NM 	/* 상품명 */
+			, T.ISU_STORE 	/* 발생지점 */
+			, T.ISU_TYPE 	/* 발생유형 */
+		FROM (
+			SELECT
+				ROW_NUMBER() OVER(ORDER BY A.DY, A.SELL_CD) AS ROWNUM
+				, A.DY			/* 일자 */
+				, A.SELL_CD 	/* 판매코드 */
+				, A.PROD_CD 	/* 상품코드 */
+				, A.PROD_NM 	/* 상품명 */
+				, A.ISU_STORE 	/* 발생지점 */
+				, A.ISU_TYPE 	/* 발생유형 */
+			FROM TPC_MAIN_INBOUND_REJECTS A
+			<include refid="selectMainCommon_Where"/>
+		)T
+		WHERE T.ROWNUM BETWEEN #startRowNo# AND #endRowNo#
+	</select>
+	
+	<!-- Main 입고 거부 상품 미조치 내역 count -->
+	<select id="selectMainInboundRejectsCnt" parameterClass="mainDashBoardVO" resultClass="Integer">
+		/* MainDashBoard.selectMainInboundRejectsCnt */
+		SELECT COUNT(1) AS TOTAL_COUNT
+		FROM TPC_MAIN_INBOUND_REJECTS A
+		<include refid="selectMainCommon_Where"/>
+	</select>
+	
+	<!-- Main 입고 거부 상품 미조치 내역 > 거부율 -->
+	<select id="selectMainInboundRejectsRate" parameterClass="mainDashBoardVO" resultClass="String">
+		/* MainDashBoard.selectMainInboundRejectsRate */
+		<!-- TODO_JIA :: 거부율 계산 방법 확인 필요 -->
+		SELECT '0.15' AS RJT_RATE 
+	</select>
+	
+</sqlMap>	

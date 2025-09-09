@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMDLV0009">
+
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmdlv0009VO" type="com.lottemart.epc.delivery.model.PSCMDLV0009VO" />
+
+	<select id="getTetCodeList" parameterClass="pscmdlv0009VO" resultClass="dataMap">
+	/* PSCMDLV0009.getTetCodeList */
+    SELECT MINOR_CD , CD_NM
+      FROM TET_CODE
+     WHERE MAJOR_CD = #majorCd#
+       AND MINOR_CD != '*'
+       <isEqual property="majorCd" compareValue="OR001">
+       AND MINOR_CD IN ('20', '40', '50')
+       </isEqual>
+       <isEqual property="majorCd" compareValue="OR002">
+       AND MINOR_CD BETWEEN '20' AND '59'
+       </isEqual>
+     ORDER BY ORDER_SEQ
+	</select>
+
+	<select id="selectPartnerReturnList"  parameterClass="dataMap"  resultClass="dataMap">
+    /* PSCMDLV0009.selectPartnerReturnList */
+    SELECT *
+      FROM ( SELECT CEIL(ROWNUM / #rowsPerPage# ) PAGE
+                  , ROWNUM AS NUM
+                  , COUNT(*) OVER() TOTAL_COUNT
+                  , E.*
+    <![CDATA[
+	              , CASE WHEN SUBSTR(E.ORD_DY2, 0, 8) < TO_CHAR(ADD_MONTHS(CURRENT_TIMESTAMP(0), -1),'YYYYMMDD')
+                              THEN FN_MASKING_RTN(ORG_CUST_NM,5)
+                              ELSE ORG_CUST_NM END AS CUST_NM 
+	]]>
+               FROM ( SELECT /*+INDEX(O IX_OR_ORDER_01) */ O.ORDER_ID        /*주문번호*/
+                           , O.FIRST_ORDER_ID  /*원주문번호*/
+                           , OI.ORD_STS_CD     /*주문상태코드*/
+                           , PG_UTIL.FN_GET_CD_NM('OR002', OI.ORD_STS_CD) AS ORD_STS_NM          /*주문상태*/
+                           , OI.DELI_STATUS_CD                                                   /*배송상태코드*/
+                           , PG_UTIL.FN_GET_CD_NM('DE002', OI.DELI_STATUS_CD) AS DELI_STATUS_NM  /*배송상태*/
+                           , O.SALE_STS_CD                                                       /*매출상태코드*/
+                           , PG_UTIL.FN_GET_CD_NM('OR003', O.SALE_STS_CD) AS SALE_STS_NM         /*매출상태*/
+                           , OI.DELIVERY_ID                                                      /*배송지순번*/
+                           , O.MEMBER_NO                                                         /*회원번호*/
+                           , ( SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') AS ORG_CUST_NM  /*주문자*/
+                           , OI.PROD_CD
+                           , OI.PROD_NM
+                           , OI.ITEM_CD
+                           , OI.ORDER_ITEM_SEQ
+                           , OI.ORD_QTY TOT_QTY
+                           , CASE WHEN ORD_CANCEL_REASON_CD IS NOT NULL AND ACCEPT_QTY = 0
+                                  THEN NVL ( OI.ORD_QTY - ( SELECT ORD_QTY 
+                                                              FROM TOR_ORDER_ITEM C 
+                                                             WHERE OI.UP_ORDER_ID = C.UP_ORDER_ID 
+                                                               AND OI.UP_ORDER_ID != C.ORDER_ID 
+                                                               AND OI.ORDER_ITEM_SEQ = C.ORDER_ITEM_SEQ 
+                                                               AND ORD_RTN_DIVN_CD = '10' 
+                                                           ), OI.ORD_QTY 
+                                           )
+                                  ELSE OI.ACCEPT_QTY
+                              END AS ACCEPT_QTY  /*취소/반품수량*/
+                           , OI.ORD_AMT          /*주문금액*/
+                           , OI.TOT_SELL_AMT     /*결제금액*/
+                           , (SELECT SUM( OI.TOT_SELL_AMT ) AS TOT_SELL_AMT_SUM
+                                FROM TOR_ORDER_ITEM OI
+                               WHERE OI.ORDER_ID = O.ORDER_ID) AS SUM_TOT_SELL_AMT  /*총결제금액*/
+                           , DECODE(OI.ORD_RTN_DIVN_CD, '40', PG_UTIL.FN_GET_CD_NM('OR006', OI.ORD_CANCEL_REASON_CD),
+                                    PG_UTIL.FN_GET_CD_NM('OR004', OI.ORD_CANCEL_REASON_CD)) AS ORD_CANCEL_REASON_NM  /*사유*/ 
+                           , (SELECT OM.MEMO
+                                FROM  TOR_ORDER_ITEM_MEMO OM
+                               WHERE OM.ORDER_ID = OI.ORDER_ID  /* OI.UP_ORDER_ID */
+                                 AND OI.ORDER_ITEM_SEQ = OM.ORDER_ITEM_SEQ
+                                 AND OM.MEMO_DIVN_CD IN ('03', '04') ) AS MEMO
+                           , TO_CHAR(O.REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS ORD_DY
+                           , OI.STR_VENDOR_ID
+                           , O.ORD_DY AS ORD_DY2
+                           , (SELECT CASE WHEN O2.EC_ORDER_ID IS NOT NULL THEN 'Y' ELSE 'N' END FROM TOR_ORDER O2 WHERE O2.ORDER_ID = O.FIRST_ORDER_ID) AS EC_ORDER_YN
+                           , O.EC_ORDER_ID
+                        FROM TOR_ORDER O, TOR_ORDER_ITEM OI
+                       WHERE O.ORDER_ID = OI.ORDER_ID
+                         AND OI.DELIVERY_ID != '000'
+                         AND OI.ORD_ITEM_DIVN_CD = '00'
+        <isNotEmpty property="vendorId">
+                         AND (0, OI.STR_VENDOR_ID) <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0,  #vendorId[]#) </iterate>
+        </isNotEmpty>
+                         AND O.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+                         AND O.ORD_RTN_DIVN_CD IN ('20','40','50')
+        <isNotEmpty property="ordRtnDivnCd">
+                         AND O.ORD_STS_CD LIKE SUBSTR(#ordRtnDivnCd#,1,1) || '%'
+        </isNotEmpty>
+        <isNotEmpty property="ordStsCd">
+                         AND OI.ORD_STS_CD = #ordStsCd#
+        </isNotEmpty>
+        <isEmpty property="ordStsCd">
+                         AND OI.ORD_STS_CD BETWEEN '20' AND '59'
+        </isEmpty>
+                         AND O.ORDER_ID NOT IN ( SELECT /*+ NO_UNNEST*/ TOO.FIRST_ORDER_ID
+                                                   FROM TOR_ORDER TOO, TOR_ORDER_ITEM TOI
+                                                  WHERE TOO.ORDER_ID = TOI.ORDER_ID
+                                                    AND TOI.DELIVERY_ID != '000'
+                                                    AND TOI.ORD_ITEM_DIVN_CD = '00'
+        <isNotEmpty property="vendorId">
+                                                    AND (0, TOI.STR_VENDOR_ID) <iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> (0, #vendorId[]#) </iterate>
+        </isNotEmpty>
+                                                    AND TOO.ORD_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+                                                    AND TOO.ORD_RTN_DIVN_CD IN ('10')
+                                                    AND TOO.ORD_STS_CD BETWEEN '10' AND '19'
+                                                    AND TOO.FIRST_ORDER_ID = OI.ORDER_ID
+                                                    AND TOI.FIRST_ORDER_ITEM_SEQ = OI.ORDER_ITEM_SEQ
+                                                    AND TOI.ORD_QTY - NVL(TOI.CASH_RTN_QTY,0) = OI.ORD_QTY - NVL(OI.CASH_RTN_QTY,0)
+                                               )
+        <isEqual property="searchType" compareValue="1">
+                         AND O.ORDER_ID = #searchContent#
+        </isEqual>
+        <isEqual property="searchType" compareValue="2">
+                         AND O.EC_ORDER_ID = #searchContent#
+        </isEqual>
+        <isEqual property="searchType" compareValue="3">
+                         AND (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = O.ORDER_ID AND DELIVERY_ID = '000') LIKE #searchContent# || '%'
+        </isEqual>
+        <isEqual property="searchType" compareValue="4" >
+                         AND OI.PROD_NM LIKE  '%' || #searchContent# || '%'
+        </isEqual>
+                    ) E
+              ORDER BY  ORDER_ID DESC, STR_VENDOR_ID
+           )
+     WHERE PAGE = #currentPage#
+    </select>
+
+	<update id="updateTorOrderItem">
+	/* PSCMDLV0009.updateTorOrderItem */
+	UPDATE TOR_ORDER_ITEM
+	   SET DELI_STATUS_CD = #deliStatusCd#
+	     , VEN_DELI_STATUS_CD = '05'
+	   <isEqual property="deliStatusCd" compareValue="74"> /* 교환회수완료일경우 주문상태 교환완료로 처리 */
+	     , ORD_STS_CD = '51'
+	   </isEqual>
+	   <isEqual property="deliStatusCd" compareValue="77"> /* 교환회수완료일경우 주문상태 교환완료로 처리 */
+	     , ORD_STS_CD = '51'
+	   </isEqual>
+	   	 , EXCH_RTN_PROC_QTY = ACCEPT_QTY  /* 회수완료일경우 접수수량으로 회수수량 업데이트 */
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #modId#
+	WHERE ORDER_ID = #orderId#
+	  AND ORDER_ITEM_SEQ = #orderItemSeq#
+	</update>
+
+	<update id="updateTdeDeliMst">
+	/* PSCMDLV0009.updateTdeDeliMst */
+	UPDATE TDE_DELI_MST
+	   SET DELI_STATUS_CD = #deliStatusCd#
+	     , VEN_DELI_STATUS_CD = '05'
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #modId#
+	WHERE ORDER_ID = #orderId#
+	  AND DELIVERY_ID = #deliveryId#
+	  AND DELI_DIVN_CD = '20'
+	</update>
+
+	<!-- 교환완료처리 -->
+	<update id="updateTorOrderOrdStsCd">
+	/* PSCMDLV0009.updateTorOrderOrdStsCd */
+	UPDATE TOR_ORDER
+	   SET ORD_STS_CD = '51' 
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #modId#
+	WHERE ORDER_ID = #orderId#
+	</update>
+
+	<!-- 원주문번호 주문상태 교환요청에서 결제완료로 변경처리 -->
+	<update id="updateTorOrderOrdStsCd11">
+	/* PSCMDLV0009.updateTorOrderOrdStsCd11 */
+	UPDATE TOR_ORDER
+	   SET ORD_STS_CD = '11'
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #modId#
+	WHERE ORDER_ID = ( SELECT UP_ORDER_ID FROM TOR_ORDER_ITEM
+	                    WHERE ORDER_ID = #orderId#
+	                      AND ORDER_ITEM_SEQ = #orderItemSeq# )
+	</update>
+
+    <select id="selectExchFnshChk" resultClass="java.lang.Integer">
+    /* PSCMDLV0009.selectExchFnshChk */
+    SELECT COUNT(*)
+      FROM TOR_ORDER_ITEM
+     WHERE ORDER_ID = #orderId#
+       AND ORD_STS_CD != '51'
+       AND ORD_ITEM_DIVN_CD = '00' /*일반상품*/
+    </select>
+
+    <select id="selectRtnMap" resultClass="dataMap">
+    /* PSCMDLV0009.selectRtnMap */
+    SELECT ORDER_ID
+         , CASE WHEN COUNT(1) = SUM( CASE WHEN ORD_RTN_DIVN_CD = (SELECT ORD_RTN_DIVN_CD FROM TOR_ORDER B WHERE B.ORDER_ID = A.ORDER_ID)
+                                               AND DELI_STATUS_CD = DECODE((SELECT ORD_RTN_DIVN_CD FROM TOR_ORDER B WHERE B.ORDER_ID = A.ORDER_ID), '40', '66', '50', '77')
+                                               THEN 1 ELSE 0 END)
+                     THEN 'Y' ELSE' N' END AS ALL_RETURN_YN
+         , MAX(DELI_STATUS_CD) AS DELI_STATUS_CD
+         , (SELECT MAX(DELI_NO) FROM TDE_DELI_MST B WHERE B.ORDER_ID = A.ORDER_ID AND B.DELI_DIVN_CD = '20') AS DELI_NO
+      FROM TOR_ORDER_ITEM A WHERE ORDER_ID = #orderId# AND ORD_ITEM_DIVN_CD = '00'
+     GROUP BY ORDER_ID
+    </select>
+
+	<!-- 반품입고 : 8. 반품/교환주문 시 반품완료,교환완료 -->
+    <update id="updateDeliMstByEnter" parameterClass="dataMap">
+    /* PSCMDLV0009.updateDeliMstByEnter */
+    UPDATE TDE_DELI_MST
+       SET DELI_STATUS_CD = #DELI_STATUS_CD#
+          ,MOD_ID = #MOD_ID#
+          ,MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE ORDER_ID = #ORDER_ID#
+       AND DELI_DIVN_CD = '20'
+    </update>
+
+    <!-- 반품입고 : 9. 예약배송마스터 취소처리 -->
+    <update id="updateInvoiceByEnter" parameterClass="dataMap">
+    /* PSCMDLV0009.updateInvoiceByEnter */
+    UPDATE TDP_RSERV_DELI_INVOICE
+       SET INVOICE_STS_CD ='02'  --반품완료 시취소처리
+          ,MOD_ID = #MOD_ID#
+          ,MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE DELI_NO IN (SELECT DELI_NO
+                         FROM TDE_DELI_MST 
+                        WHERE ORDER_ID = #ORDER_ID#
+                          AND DELI_DIVN_DTL_CD = '11')
+    </update>
+
+	<update id="updateReturnTorderStatus">
+    UPDATE TOR_ORDER
+       SET ORD_STS_CD = '41'
+         , SALE_STS_CD = '11'
+         , LST_SALE_CFM_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #MOD_ID#
+    WHERE ORDER_ID = #ORDER_ID#
+	</update>
+
+	<update id="updateReturnTorderItemStatus">
+    UPDATE TOR_ORDER_ITEM
+       SET ORD_STS_CD = '41'
+         , SALE_STS_CD = '11'
+         , DELI_STATUS_CD = #DELI_STATUS_CD#
+         , SALE_CFM_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+         , SALE_CFM_TM = TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #MOD_ID#
+     WHERE ORDER_ID = #ORDER_ID#
+	</update>
+
+	<select id="selectDemandList" resultClass="dataMap">
+	SELECT AA.*
+	    , (SELECT SUBSTR(PROD_NM, 0, 5) FROM TOR_ORDER_ITEM A WHERE A.ORDER_ID = AA.ORDER_ID LIMIT 1) AS PROD_NM_SHORT
+	FROM ( (
+	        SELECT /*+ INDEX( OD IX_OR_DEMAND_02 ) */
+	               OD.DEMAND_ID
+	             , OD.UP_DEMAND_ID
+	             , OD.FIRST_ORDER_ID
+	             , OD.UP_ORDER_ID
+	             , OD.ORDER_ID
+	             , OD.ORD_SETL_DIVN_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR012', OD.ORD_SETL_DIVN_CD ) AS ORD_SETL_DIVN_NM
+	             , OD.SETL_TYPE_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR008', OD.SETL_TYPE_CD ) AS SETL_TYPE_NM
+	             , OD.SETL_PRGS_STS_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR009', OD.SETL_PRGS_STS_CD ) AS SETL_PRGS_STS_NM
+	             , OD.CARDCO_CD
+	             , CASE WHEN OD.SETL_TYPE_CD = '03'
+	                    THEN NULL
+	                    ELSE PG_UTIL.FN_GET_CD_NM( 'CAP02', OD.CARDCO_CD )
+	               END  AS CARDCO_NM
+	             , CASE WHEN OD.SETL_TYPE_CD = '03'
+	                    THEN NULL
+	                    ELSE PG_UTIL.FN_GET_CD_NM( 'OR010', OD.CARDCO_CD )
+	               END  AS BANK_NM
+	             , OD.ACCOUNT_NO
+	             , SUBSTR( OD.ACCOUNT_NO, 1, 4 ) AS CARD_NO_1
+	             , SUBSTR( OD.ACCOUNT_NO, 5, 4 ) AS CARD_NO_2
+	             , TRIM( SUBSTR( OD.ACCOUNT_NO, 1, 4 ) ) AS MOBILE_NO_1
+	             , TRIM( SUBSTR( OD.ACCOUNT_NO, 5, 4 ) ) AS MOBILE_NO_2
+	             , TRIM( SUBSTR( OD.ACCOUNT_NO, 9, 4 ) ) AS MOBILE_NO_3
+	             , OD.DPST_PRAR_DY
+	             , OD.DPST_PRAR_TM
+	             , OD.DPST_PRAR_AMT
+	             , OD.APRV_DPST_FNSH_DY
+	             , OD.APRV_DPST_FNSH_TM
+	             , OD.DPST_AMT
+	             , OD.SIN_DC
+	             , OD.PROC_COMM
+	             , OD.NO_INT_YN
+	             , CASE WHEN OD.SETL_TYPE_CD IN ('01','06','07','17','19','18')
+	                    THEN CASE WHEN C.CNT_2_REF <![CDATA[>]]> 0 AND TO_NUMBER( DIV_TERM ) <![CDATA[>]]>= C.CNT_2_REF
+	                              THEN LPAD( TO_NUMBER( DIV_TERM ) - CNT_2_REF, 2, '0' )
+	                              ELSE OD.DIV_TERM
+	                         END
+	                    ELSE ''
+	               END AS DIV_TERM
+	             , CASE WHEN OD.SETL_TYPE_CD = '01'
+	                    THEN CASE WHEN C.CNT_2_REF <![CDATA[>]]> 0 AND TO_NUMBER( DIV_TERM ) <![CDATA[>]]>= C.CNT_2_REF
+	                              THEN 'Y'
+	                              ELSE 'N'
+	                         END
+	                    ELSE ''
+	               END AS CARD_POINT_YN
+	             , OD.APRV_ORN_CD
+	             , DECODE( OD.APRV_ORN_CD, '2', '롯데카드', '7', 'KIS', '9', 'KSNET', '5', 'JTNET', '' ) AS APRV_ORN_NM
+	             , OD.CARD_APRV_NO
+	             , OD.DPST_PSN_NM
+	             , OD.DPST_CNFM_MEMO
+	             , OD.REPY_ACCEPT_DY
+	             , OD.REPY_REASON_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR005', OD.REPY_REASON_CD ) AS REPY_REASON_NM
+	             , MC.COUPON_TYPE_CD
+	             , MC.COUPON_NM
+	             , ( SELECT PROD_NM
+	                   FROM TOR_ORDER_ITEM OI
+	                       ,TOR_ORDER_ITEM_EVENT OE
+	                 WHERE  OI.ORDER_ID = OD.ORDER_ID
+	                   AND  OI.ORDER_ID = OE.ORDER_ID
+	                   AND  OI.ORDER_ITEM_SEQ = OE.ORDER_ITEM_SEQ
+	                   AND  OE.PROMO_CL_MST_NO= OD.ACCOUNT_NO
+	                   LIMIT 1 ) AS PROD_NM
+	             ,   MC.REP_COUPON_ID
+	             , ( SELECT CASE WHEN CASH_RTN_DIVN_CD = 'Y' AND DELIVERY_COUPON_CNT <![CDATA[>]]> 0 AND ITEM_ORDER_QTY = CASH_RTN_QTY
+	                             THEN 'Y'
+	                             WHEN CASH_RTN_DIVN_CD = 'Y' AND DELIVERY_COUPON_CNT = 0 AND ORD_QTY = CASH_RTN_QTY
+	                             THEN 'Y'
+	                             WHEN CASH_RTN_DIVN_CD = 'N' AND ORD_STS_CD IN ( '20', '21', '30', '41' )
+	                             THEN 'Y'
+	                             ELSE 'N'
+	                        END CHK_COUPON_RE_YN
+	                 FROM ( SELECT MIN ( O.CASH_RTN_DIVN_CD ) CASH_RTN_DIVN_CD
+	                           ,   MIN ( O.ORD_STS_CD ) ORD_STS_CD
+	                           ,   SUM ( OI.ORD_QTY + NVL ( OI.EXTRA_QTY, 0 ) ) ORD_QTY
+	                           ,   SUM ( DECODE ( OI.ORD_ITEM_DIVN_CD, '00', ( OI.ORD_QTY + NVL ( OI.EXTRA_QTY,    0 ) ) ) ) ITEM_ORDER_QTY
+	                           ,   SUM ( OI.CASH_RTN_QTY ) CASH_RTN_QTY
+	                           , ( SELECT COUNT(*)
+	                               FROM TOR_DEMAND
+	                               WHERE ORDER_ID = OO.ORDER_ID AND SETL_TYPE_CD = '05' ) DELIVERY_COUPON_CNT
+	                        FROM ( SELECT MAX ( CASH_RTN_DIVN_CD ) CASH_RTN_DIVN_CD
+	                                  ,   CASE WHEN MAX ( CASH_RTN_DIVN_CD ) = 'Y'
+	                                           THEN SUBSTR ( MIN ( DECODE ( CASH_RTN_DIVN_CD, 'Y', '0' , '1' ) || ORDER_ID ) , 2 )
+	                                           ELSE MAX ( ORDER_ID )
+	                                      END ORDER_ID
+	                               FROM TOR_ORDER
+	                               WHERE FIRST_ORDER_ID IN ( SELECT FIRST_ORDER_ID
+	                                                         FROM TOR_ORDER
+	                                                         WHERE ORDER_ID = #ORDER_ID# ) ) OO
+	                           ,   TOR_ORDER      O
+	                           ,   TOR_ORDER_ITEM OI
+	                        WHERE    OO.ORDER_ID = O.ORDER_ID AND OO.ORDER_ID = OI.ORDER_ID
+	                        GROUP BY OO.ORDER_ID ) ) AS CHK_COUPON_RE_YN
+	             , CASE WHEN OD.SETL_TYPE_CD = '04'
+	                    THEN ( SELECT CUST_NO
+	                           FROM TTR_POINT_TRAN_LOG
+	                           WHERE SEQ = ( SELECT MAX( SEQ )
+	                                           FROM TTR_POINT_TRAN_LOG
+	                                          WHERE ORDER_ID = #ORDER_ID#
+	                                            AND APPRO_TYPE IN ( '1210', '7210' )
+	                                            AND RES_CODE = '00' ) )
+	                    ELSE 'X'
+	               END AS ORG_UNT_MBRS_NO
+	          FROM TOR_DEMAND OD
+	             , TMA_COUPON MC
+	             , TMA_COUPON_ISSUED MI
+	             , TET_CODE C
+	         WHERE OD.ORDER_ID = #ORDER_ID#
+	           AND OD.ACCOUNT_NO = MI.COUPON_ID(+)
+	           AND MI.REP_COUPON_ID = MC.REP_COUPON_ID(+)
+	           AND C.MINOR_CD(+) = OD.CARDCO_CD
+	           AND C.MAJOR_CD(+) = 'CAP02'
+	           AND ( OD.SETL_TYPE_CD <![CDATA[<>]]> '03' OR OD.CARDCO_CD NOT IN ( '21', '22', '23', '24') )
+	) UNION ALL (
+	        SELECT /*+ INDEX( OD IX_OR_DEMAND_02 ) */
+	               OD.DEMAND_ID
+	             , OD.UP_DEMAND_ID
+	             , OD.FIRST_ORDER_ID
+	             , OD.UP_ORDER_ID
+	             , OD.ORDER_ID
+	             , OD.ORD_SETL_DIVN_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR012', OD.ORD_SETL_DIVN_CD ) AS ORD_SETL_DIVN_NM
+	             , OD.SETL_TYPE_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR008', OD.SETL_TYPE_CD ) AS SETL_TYPE_NM
+	             , OD.SETL_PRGS_STS_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR009', OD.SETL_PRGS_STS_CD ) AS SETL_PRGS_STS_NM
+	             , OD.CARDCO_CD
+	             , CASE WHEN OD.SETL_TYPE_CD = '03'
+	                    THEN NULL
+	                    ELSE PG_UTIL.FN_GET_CD_NM( 'CAP02', OD.CARDCO_CD )
+	               END  AS CARDCO_NM
+	             , CASE WHEN OD.SETL_TYPE_CD = '03'
+	                    THEN NULL
+	                    ELSE PG_UTIL.FN_GET_CD_NM( 'OR010', OD.CARDCO_CD )
+	               END  AS BANK_NM
+	             , OD.ACCOUNT_NO
+	             , SUBSTR( OD.ACCOUNT_NO, 1, 4 ) AS CARD_NO_1
+	             , SUBSTR( OD.ACCOUNT_NO, 5, 4 ) AS CARD_NO_2
+	             , TRIM( SUBSTR( OD.ACCOUNT_NO, 1, 4 ) ) AS MOBILE_NO_1
+	             , TRIM( SUBSTR( OD.ACCOUNT_NO, 5, 4 ) ) AS MOBILE_NO_2
+	             , TRIM( SUBSTR( OD.ACCOUNT_NO, 9, 4 ) ) AS MOBILE_NO_3
+	             , OD.DPST_PRAR_DY
+	             , OD.DPST_PRAR_TM
+	             , OD.DPST_PRAR_AMT
+	             , OD.APRV_DPST_FNSH_DY
+	             , OD.APRV_DPST_FNSH_TM
+	             , OD.DPST_AMT
+	             , OD.SIN_DC
+	             , OD.PROC_COMM
+	             , OD.NO_INT_YN
+	             ,  CASE WHEN OD.SETL_TYPE_CD IN ('01','06','07','17','19','18')
+	                    THEN CASE WHEN C.CNT_2_REF <![CDATA[>]]> 0 AND TO_NUMBER( DIV_TERM ) <![CDATA[>]]>= C.CNT_2_REF
+	                              THEN LPAD( TO_NUMBER( DIV_TERM ) - CNT_2_REF, 2, '0' )
+	                              ELSE OD.DIV_TERM
+	                         END
+	                    ELSE ''
+	               END AS DIV_TERM
+	             , CASE WHEN OD.SETL_TYPE_CD = '01'
+	                    THEN CASE WHEN C.CNT_2_REF <![CDATA[>]]> 0 AND TO_NUMBER( DIV_TERM ) <![CDATA[>]]>= C.CNT_2_REF
+	                              THEN 'Y'
+	                              ELSE 'N'
+	                         END
+	                    ELSE ''
+	               END AS CARD_POINT_YN
+	             , OD.APRV_ORN_CD
+	             , DECODE( OD.APRV_ORN_CD, '2', '롯데카드', '7', 'KIS', '9', 'KSNET', '5', 'JTNET', '' ) AS APRV_ORN_NM
+	             , OD.CARD_APRV_NO
+	             , OD.DPST_PSN_NM
+	             , OD.DPST_CNFM_MEMO
+	             , OD.REPY_ACCEPT_DY
+	             , OD.REPY_REASON_CD
+	             , PG_UTIL.FN_GET_CD_NM( 'OR005', OD.REPY_REASON_CD ) AS REPY_REASON_NM
+	             , ( SELECT COUPON_TYPE_CD FROM TOR_SMT_CPN_APPLY WHERE FIRST_ORDER_ID = OD.ORDER_ID AND COUPON_ID = OD.ACCOUNT_NO LIMIT 1 ) COUPON_TYPE_CD
+	             , ( SELECT COUPON_NM FROM TOR_SMT_CPN_APPLY WHERE FIRST_ORDER_ID = OD.ORDER_ID AND COUPON_ID = OD.ACCOUNT_NO LIMIT 1 ) COUPON_NM
+	             , ( SELECT   PROD_NM
+	                 FROM   TOR_ORDER_ITEM OI
+	                      , TOR_SMT_CPN_APPLY OU
+	                WHERE  OI.ORDER_ID = OU.ORDER_ID
+	                  AND  OI.ORDER_ITEM_SEQ = OU.ORDER_ITEM_SEQ
+	                  AND  OI.ORDER_ID = OD.ORDER_ID
+	                  AND  OU.COUPON_ID = OD.ACCOUNT_NO
+	                  AND  OU.SCP_FG = OD.CARD_APRV_NO
+	                  AND  (OU.CPN_APPLY_AMT * OU.CPN_APPLY_QTY) = OD.DPST_AMT
+	                  LIMIT 1  ) AS PROD_NM
+	             ,   OD.ACCOUNT_NO REP_COUPON_ID
+	             , ( SELECT CASE WHEN CASH_RTN_DIVN_CD = 'Y' AND DELIVERY_COUPON_CNT <![CDATA[>]]> 0 AND ITEM_ORDER_QTY = CASH_RTN_QTY
+	                             THEN 'Y'
+	                             WHEN CASH_RTN_DIVN_CD = 'Y' AND DELIVERY_COUPON_CNT = 0 AND ORD_QTY = CASH_RTN_QTY
+	                             THEN 'Y'
+	                             WHEN CASH_RTN_DIVN_CD = 'N' AND ORD_STS_CD IN ( '20', '21', '30', '41' )
+	                             THEN 'Y'
+	                             ELSE 'N'
+	                        END CHK_COUPON_RE_YN
+	                 FROM ( SELECT MIN ( O.CASH_RTN_DIVN_CD ) CASH_RTN_DIVN_CD
+	                           ,   MIN ( O.ORD_STS_CD ) ORD_STS_CD
+	                           ,   SUM ( OI.ORD_QTY + NVL ( OI.EXTRA_QTY, 0 ) ) ORD_QTY
+	                           ,   SUM ( DECODE ( OI.ORD_ITEM_DIVN_CD, '00', ( OI.ORD_QTY + NVL ( OI.EXTRA_QTY,    0 ) ) ) ) ITEM_ORDER_QTY
+	                           ,   SUM ( OI.CASH_RTN_QTY ) CASH_RTN_QTY
+	                           , ( SELECT COUNT (*)
+	                               FROM TOR_DEMAND
+	                               WHERE ORDER_ID = OO.ORDER_ID AND SETL_TYPE_CD = '05' ) DELIVERY_COUPON_CNT
+	                        FROM ( SELECT MAX ( CASH_RTN_DIVN_CD ) CASH_RTN_DIVN_CD
+	                                  ,   CASE WHEN MAX ( CASH_RTN_DIVN_CD ) = 'Y'
+	                                           THEN SUBSTR ( MIN ( DECODE ( CASH_RTN_DIVN_CD, 'Y', '0' , '1' ) || ORDER_ID ) , 2 )
+	                                           ELSE MAX ( ORDER_ID )
+	                                      END ORDER_ID
+	                               FROM TOR_ORDER
+	                               WHERE FIRST_ORDER_ID IN ( SELECT FIRST_ORDER_ID
+	                                                         FROM TOR_ORDER
+	                                                         WHERE ORDER_ID = #ORDER_ID# ) ) OO
+	                           ,   TOR_ORDER      O
+	                           ,   TOR_ORDER_ITEM OI
+	                        WHERE    OO.ORDER_ID = O.ORDER_ID AND OO.ORDER_ID = OI.ORDER_ID
+	                        GROUP BY OO.ORDER_ID ) ) AS CHK_COUPON_RE_YN
+	             , CASE WHEN OD.SETL_TYPE_CD = '04'
+	                    THEN ( SELECT CUST_NO
+	                           FROM TTR_POINT_TRAN_LOG
+	                           WHERE SEQ = ( SELECT MAX( SEQ )
+	                                         FROM   TTR_POINT_TRAN_LOG
+	                                         WHERE  ORDER_ID = #ORDER_ID#
+	                                         AND    APPRO_TYPE IN ( '1210', '7210' )
+	                                         AND    RES_CODE = '00' ) )
+	                    ELSE 'X'
+	               END AS ORG_UNT_MBRS_NO
+	        FROM            TOR_DEMAND        OD
+	        LEFT OUTER JOIN TET_CODE          C
+	        ON              OD.CARDCO_CD    = C.MINOR_CD
+	        AND             C.MAJOR_CD      = 'SM014'
+	        WHERE         ( OD.SETL_TYPE_CD = '03' AND OD.CARDCO_CD IN ( '21', '23' ) )
+	        AND             OD.ORDER_ID     = #ORDER_ID#
+	) ) AA
+	ORDER BY DEMAND_ID
+	</select>
+
+    <select id="selectAddPointCouponList" resultClass="dataMap">
+    SELECT PROMO_CL_MST_NO AS COUPON_ID
+      FROM TOR_ORDER_EVENT
+     WHERE PROMO_KIND_CD = '03'
+       AND PROMO_CL_TYP_CD = '25'
+       AND ORDER_ID = #ORDER_ID#
+	UNION ALL
+    SELECT PROMO_CL_MST_NO AS COUPON_ID
+      FROM TOR_ORDER_ITEM_EVENT
+     WHERE PROMO_KIND_CD = '03'
+       AND PROMO_CL_TYP_CD = '25'
+       AND ORDER_ID = #ORDER_ID#
+	</select>
+
+	<select id="selectRepCouponId" resultClass="String">
+	SELECT REP_COUPON_ID
+	  FROM ( ( SELECT REP_COUPON_ID
+	                , COUPON_ID
+	             FROM TMA_COUPON_ISSUED )
+               UNION ALL
+             ( SELECT COUPON_ID REP_COUPON_ID
+                    , COUPON_ID
+                 FROM TOR_SMT_CPN_APPLY
+                WHERE USE_YN = 'Y'
+                GROUP BY COUPON_ID ) )
+     WHERE COUPON_ID = #couponId#
+	</select>
+
+	<update id="updateCouponIssuedUsedYn">
+	UPDATE TMA_COUPON_ISSUED
+	   SET ORDER_ID = #order_id#
+	      ,USE_YN = 'N'
+	      ,MOD_DATE = CURRENT_TIMESTAMP(0)
+	      ,MOD_ID = #mod_id#
+	 WHERE COUPON_ID = #couponId#
+	   AND REP_COUPON_ID !=  'C00000003066269'
+	</update>
+
+	<update id="updateReturnConfirmTorDemandStatus">
+	UPDATE TOR_DEMAND
+       SET SETL_PRGS_STS_CD = '03'
+         , APRV_DPST_FNSH_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+         , APRV_DPST_FNSH_TM = TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #MOD_ID#
+     WHERE ORDER_ID = #ORDER_ID#
+       AND ORD_SETL_DIVN_CD = '21'
+	</update>
+
+	<update id="updateTorCounselProcessStatus">
+	UPDATE TOR_COUNSEL
+	   SET BOARD_PRGS_STS_CD = '4'
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	     , MOD_ID = #MOD_ID#
+	 WHERE ORDER_ID = #ORDER_ID#
+	   AND CLM_LGRP_CD = '999'
+	   AND CLM_MGRP_CD ='9903'
+	</update>
+
+	<update id="updateOrgTorderReturnCompleteStatus">
+	UPDATE TOR_ORDER /* PCCMAGT0038.updateOrgTorderReturnCompleteStatus */
+	   SET ORD_STS_CD = '41'
+	     , MOD_ID = #MOD_ID#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE ORDER_ID = (SELECT FIRST_ORDER_ID FROM TOR_ORDER WHERE ORDER_ID = #ORDER_ID#)
+	   AND ORD_STS_CD = '43'
+	</update>
+
+	<!-- 반품배송비의 주문번호, 매출확정여부 조회 -->
+	<select id="selectRtnDeliAmtOrder" resultClass="dataMap">
+    SELECT ORDER_ID
+         , CASE WHEN EXISTS (SELECT 1 FROM TSA_BATCH_LOG_3 WHERE ORDER_ID = T.ORDER_ID AND ORGIN_ORDER_ID = T.ORGIN_ORDER_ID AND STATUS_FG = '3') THEN 'Y' ELSE 'N' END AS FG_3_YN -- 매출확정 존재 여부
+      FROM TSA_BATCH_LOG_3 T
+     WHERE STATUS_FG = '1' -- 주문확정
+       AND ORGIN_ORDER_ID = #ORDER_ID# -- 반품주문번호
+       AND EXISTS (SELECT 1 FROM TOR_ORDER_ITEM WHERE ORDER_ID = T.ORDER_ID AND ORD_STS_CD = '11' AND ORD_ITEM_DIVN_CD IN ('13', '15')) -- 결제완료된 (교환)반품배송비
+	</select>
+
+	<!-- 반품배송비 주문의  매출확정처리 -->
+	<update id="updateRtnDeliAmtOrder">
+    UPDATE TOR_ORDER
+       SET SALE_STS_CD = '01'
+         , LST_SALE_CFM_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDDHH24MISS')
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #MOD_ID#
+    WHERE ORDER_ID = #ORDER_ID#
+	</update>
+
+	<!-- 반품배송비 주문상품의  매출확정처리 -->
+	<update id="updateRtnDeliAmtOrderItem">
+    UPDATE TOR_ORDER_ITEM
+       SET SALE_STS_CD = '01'
+         , DELI_STATUS_CD = '51'
+         , VEN_DELI_STATUS_CD = '05'
+         , SALE_CFM_DY = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+         , SALE_CFM_TM = TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #MOD_ID#
+     WHERE ORDER_ID = #ORDER_ID#
+       AND ORD_STS_CD = '11' 
+       AND ORD_ITEM_DIVN_CD IN ('13', '15') -- 결제완료된 (교환)반품배송비
+	</update>
+
+	<insert id="insertTsaBatchLog3">
+    INSERT INTO TSA_BATCH_LOG_3
+    ( SEQ
+    , ORDER_ID
+    , ORGIN_ORDER_ID
+    , STR_CD
+    , STATUS_FG
+    , ERR_FG
+    , ERR_MSG
+    , REG_DATE
+    , MOD_DATE
+    , SEND_RESULT
+    , POINT_APPLY_YN
+    , SALE_DY
+    , PK_VALID_YN
+    , SPECIFIC_STR_CD
+    , ETC1 )
+    ( SELECT SQ_TR_SEQ_SEQ.NEXTVAL
+           , ORDER_ID
+           , UP_ORDER_ID
+           , STR_CD
+           , #statusFg#
+           , ''
+           , ''
+           , CURRENT_TIMESTAMP(0)
+           , CURRENT_TIMESTAMP(0)
+           , ''
+           , ''
+           , ''
+           , ''
+           , ''
+           , ''
+        FROM TOR_ORDER A
+       WHERE ORDER_ID = #orderId#
+	<isEqual property="statusFg" compareValue="2">
+         AND NOT EXISTS (SELECT 1 FROM TSA_BATCH_LOG_3 B WHERE B.ORDER_ID = A.ORDER_ID AND B.STATUS_FG = #statusFg#)
+         AND ORD_STS_CD = '41' AND SALE_STS_CD = '11'
+	</isEqual>
+	<isEqual property="statusFg" compareValue="4">
+         AND NOT EXISTS (SELECT 1 FROM TSA_BATCH_LOG_3 B WHERE B.ORDER_ID = A.ORDER_ID AND B.STATUS_FG = #statusFg#)
+         AND EXISTS (SELECT 1 FROM TSA_BATCH_LOG_3 B WHERE B.ORDER_ID = A.ORDER_ID AND B.STATUS_FG = '2')
+	</isEqual>
+    )
+	</insert>
+
+	<select id="selectSppDeliType" resultClass="dataMap">
+	/* PSCMDLV0009.selectSppDeliType */
+	SELECT A.SPP_DELI_TYPE, A.DELI_NO, A.CLAIM_REASON_CD
+	FROM (
+		SELECT CASE WHEN ORD.EXT_STR_TYPE IS NOT NULL THEN
+			            (SELECT NVL(TC.LET_2_REF, 'N') FROM TET_CODE TC WHERE TC.MAJOR_CD='SM169' AND TC.MINOR_CD = ORD.EXT_STR_TYPE)
+			            WHEN DM.DELI_TYPE_CD = '03' AND ORD.EXT_STR_TYPE IS NULL THEN 'S'
+			            ELSE 'N' END AS SPP_DELI_TYPE
+		                , DM.DELI_NO
+		                , EC.CLAIM_REASON_CD
+		FROM TDE_DELI_MST DM, TOR_ORDER ORD, TEC_ORDER EC
+		WHERE DM.ORDER_ID = ORD.ORDER_ID
+		AND DM.ORDER_ID = EC.ORDER_ID
+		AND DM.DELI_NO = #deliNo# 
+		AND DM.INVOICE_STATUS_CD = '10'
+		<isNotEmpty property="deliTypeCd">
+			AND DM.DELI_TYPE_CD = #deliTypeCd#
+		</isNotEmpty>
+		<isNotEmpty property="isLodgSppSend">
+			<isEqual property="isLodgSppSend" compareValue="Y">
+				AND ( DM.DELI_TYPE_CD = '03' OR ORD.EXT_STR_TYPE IN ('002','003') )
+			</isEqual>
+			<isEqual property="isLodgSppSend" compareValue="N">
+				AND ORD.EXT_STR_TYPE NOT IN ('002','003')
+				AND ORD.EXT_STR_TYPE IS NOT NULL
+			</isEqual>
+		</isNotEmpty>
+	) A
+	WHERE A.SPP_DELI_TYPE <![CDATA[<>]]> 'N'
+	GROUP BY A.SPP_DELI_TYPE, A.DELI_NO, A.CLAIM_REASON_CD
+	</select>
+
+	<update id="insertSppInfo">
+	/* PSCMDLV0009.insertSppInfo */
+    MERGE INTO TEC_DELIVERY_SPP EC
+	USING (
+		 SELECT DM.DELI_NO
+		      , DM.ORDER_ID
+		      , DM.FIRST_ORDER_ID
+		      , ORD.EC_ORDER_ID
+		      , #pickupStatCd# AS PICKUP_STAT_CD
+		      , DM.DELI_HOPE_DY
+		      , #sppDeliType# AS SPP_DELI_TYPE
+		      , DM.DELI_STR_CD
+		      , DM.RECP_PSN_POST_NO AS ZIP_CD
+		      , (SELECT CUST_NM FROM TDE_ORDER_DELIVERY OD WHERE OD.ORDER_ID = ORD.ORDER_ID AND DELIVERY_ID = '000') AS ORD_MAN_NM
+		      , (SELECT REGEXP_REPLACE(CELL_NO,'-| ','') FROM TDE_ORDER_DELIVERY OD WHERE OD.ORDER_ID = ORD.ORDER_ID AND DELIVERY_ID = '000') AS ORD_MAN_PHON
+		      , (SELECT CUST_NM FROM TDE_ORDER_DELIVERY OD WHERE OD.ORDER_ID = ORD.ORDER_ID AND OD.DELIVERY_ID = DM.DELIVERY_ID) AS ACQ_MAN_NM
+		      , (SELECT REGEXP_REPLACE(CELL_NO,'-| ','') FROM TDE_ORDER_DELIVERY OD WHERE OD.ORDER_ID = ORD.ORDER_ID AND OD.DELIVERY_ID = DM.DELIVERY_ID) AS ACQ_MAN_PHON
+		      , #regId# AS REG_ID
+		      , #regId# AS MOD_ID
+		      , 'N' AS EC_API_STATUS
+		  FROM TDE_DELI_MST DM, TOR_ORDER ORD
+		 WHERE DM.ORDER_ID = ORD.ORDER_ID
+		   AND DM.DELI_NO = #deliNo# 
+	) B ON (EC.DELI_NO = B.DELI_NO)
+	WHEN NOT MATCHED THEN 
+	INSERT 
+	( DELI_NO, ORDER_ID, FIRST_ORDER_ID, EC_ORDER_ID, PICKUP_STAT_CD, DELI_HOPE_DY
+	, SPP_DELI_TYPE, DELI_STR_CD, ZIP_CD, ORD_MAN_NM, ORD_MAN_PHON, ACQ_MAN_NM, ACQ_MAN_PHON
+	, REG_ID, REG_DATE, MOD_ID, MOD_DATE, EC_API_STATUS )
+	 VALUES
+	( B.DELI_NO, B.ORDER_ID, B.FIRST_ORDER_ID, B.EC_ORDER_ID, B.PICKUP_STAT_CD, B.DELI_HOPE_DY
+	, B.SPP_DELI_TYPE, B.DELI_STR_CD, B.ZIP_CD, B.ORD_MAN_NM, B.ORD_MAN_PHON, B.ACQ_MAN_NM, B.ACQ_MAN_PHON
+	, B.REG_ID, CURRENT_TIMESTAMP(0), B.MOD_ID, CURRENT_TIMESTAMP(0), B.EC_API_STATUS )
+	</update>
+
+	<update id="updateSppInfoForReturnEnd">
+	/* PSCMDLV0009.updateSppInfoForReturnEnd */
+	UPDATE TEC_DELIVERY_SPP
+	   SET PICKUP_STAT_CD = '900'
+	     , EC_API_STATUS = 'N'
+	     , API_MSG =''
+	     , MOD_ID = #regId#
+	     , MOD_DATE = CURRENT_TIMESTAMP(0)
+	 WHERE DELI_NO = #deliNo#
+	   AND SPP_DELI_TYPE ='R'
+	</update>
+
+</sqlMap>

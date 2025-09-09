@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0190">
+	<typeAlias alias="nedmpro0190vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0190VO" />
+
+	<resultMap id="selectNutAttrInfoMap"	class="java.util.HashMap">
+		<result column="RNUM"	 	property="RNUM"	nullValue="" /> <!-- 프로... SQLINES DEMO *** -->
+		<result column="PROD_CD" 	property="PROD_CD"	nullValue="" /> <!-- 변형... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"	property="SRCMK_CD"		nullValue="" /> <!-- 순번... SQLINES DEMO *** -->
+		<result column="PROD_NM"	property="PROD_NM"	nullValue="" /> <!-- 이미... SQLINES DEMO *** -->
+		<result column="L3_CD"		property="L3_CD"	nullValue="" /> <!-- 수정... SQLINES DEMO *** -->
+		<result column="CNT_NUT_CD"		property="CNT_NUT_CD"	nullValue="" /> <!-- 수정... SQLINES DEMO *** -->
+		<result column="CNT_NUT_CD_SAVED"		property="CNT_NUT_CD_SAVED"	nullValue="" /> <!-- 수정... SQLINES DEMO *** -->
+		<result column="APRV_STAT"		property="APRV_STAT"	nullValue="" /> <!-- 수정... SQLINES DEMO *** -->
+		<result column="REJECT_ATT_CNT"		property="REJECT_ATT_CNT"	nullValue="" /> <!-- 수정... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<resultMap id="selectNutWithProdL3CdMap"	class="java.util.HashMap">
+		<result column="PROD_CD"	 	property="PROD_CD"	nullValue="" /> 
+		<result column="NUT_NM" 	property="NUT_NM"	nullValue="" /> 
+		<result column="UNIT"	property="UNIT"		nullValue="" /> 
+		<result column="NUT_CD_REQ"	property="NUT_CD_REQ"	nullValue="" /> 
+		<result column="NUT_AMT_REQ"		property="NUT_AMT_REQ"	nullValue="" /> 
+		<result column="APRV_FG_SAP"		property="APRV_FG_SAP"	nullValue="" /> 
+	</resultMap>
+	
+	<resultMap id="selectProdNutAprvMap"	class="java.util.HashMap">
+		<result column="PROD_CD"	 	property="PROD_CD"	nullValue="" /> 
+		<result column="NUT_NM" 	property="NUT_NM"	nullValue="" /> 
+		<result column="UNIT"	property="UNIT"		nullValue="" /> 
+		<result column="NUT_CD_REQ"	property="NUT_CD_REQ"	nullValue="" /> 
+		<result column="NUT_AMT_REQ"		property="NUT_AMT_REQ"	nullValue="" /> 
+		<result column="APRV_FG_SAP"		property="APRV_FG_SAP"	nullValue="" /> 
+	</resultMap>
+              
+
+   <select id="countNutAttrInfo" parameterClass="nedmpro0190vo" resultClass="Integer">
+        SELECT 
+            COUNT(*)
+        FROM
+        (
+            SELECT
+                PRD.PROD_CD
+            FROM
+                (
+                    SELECT *
+                    FROM 
+                        PRODUCT
+                    WHERE 1=1
+                      AND PROD_STATUS  IN 
+                              ('01', '02', '03')
+                    <isEmpty property="srchEntpCd">
+                      <isNotEmpty property="venCds" prepend="AND" >
+                        <iterate property="venCds" prepend="VEN_CD IN " open="(" close=")" conjunction=",">
+                          #venCds[]#
+                        </iterate>
+                      </isNotEmpty>
+                    </isEmpty>  
+                    <isNotEmpty property="srchEntpCd" prepend="AND">
+                         VEN_CD = #srchEntpCd#
+                    </isNotEmpty>
+                    <isEmpty property="srchSellCd">
+                      <isNotEmpty property="srchSellCds" prepend="AND" >
+                        <iterate property="srchSellCds" prepend="SRCMK_CD IN " open="(" close=")" conjunction=",">
+                          #srchSellCds[]#
+                        </iterate>
+                      </isNotEmpty>
+                    </isEmpty>         
+                    <isNotEmpty property="srchSellCd" prepend="AND">
+                         SRCMK_CD = #srchSellCd#     
+                    </isNotEmpty>
+                    <isNotEmpty property="srchL1Cd" prepend="AND">
+                         L3_CD IN
+                         (
+                             SELECT 
+                                 L3_CD
+                             FROM 
+                                 TPC_L1_CD
+                             WHERE
+                                 L1_CD = #srchL1Cd#
+                         )
+                    </isNotEmpty>                     
+                ) PRD
+                LEFT JOIN
+                (
+                    SELECT 
+                        TNAR.PROD_CD
+                      , CASE 
+                            WHEN COUNT(TNAR.PROD_CD) != COUNT(NARS.PROD_CD) 
+                                THEN 'APRVING'
+                            WHEN COUNT(TNAR.PROD_CD) = COUNT(NARS.PROD_CD)
+                                THEN 
+                                    CASE 
+                                        WHEN MAX(NARS.SEQ) IS NOT NULL AND TO_CHAR(MAX(NARS.IF_DT) + 30, 'YYYYMMDD') <![CDATA[>]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+                                           THEN 'APRVDONE'
+                                        ELSE 'APRVPOSSIBLE'
+                                    END
+                        END AS APRV_STAT
+                    FROM
+                    (
+                        SELECT
+                            PROD_CD
+                          , MAX(SEQ) AS SEQ
+                        FROM 
+                            TPC_NUT_ATT_REQ 
+                        GROUP BY 
+                            PROD_CD
+                    ) TNAR_MAXSEQ
+                    INNER JOIN
+                    TPC_NUT_ATT_REQ TNAR
+                        ON TNAR.PROD_CD = TNAR.PROD_CD
+                       AND TNAR.SEQ = TNAR_MAXSEQ.SEQ
+                    LEFT JOIN
+                    NUT_ATT_REQ_SAP NARS
+                        ON SUBSTR(NARS.PROD_CD, -10) = TNAR.PROD_CD
+                       AND SUBSTR(NARS.SEQ, -3) = LPAD(TNAR.SEQ, 3, '0')
+                       AND NARS.NUT_CD = TNAR.NUT_CD
+                    WHERE
+                        (NARS.SEQ IS NULL OR
+                            (NARS.PROD_CD IS NOT NULL AND NARS.SEQ IS NOT NULL))                     
+                    GROUP BY TNAR.PROD_CD
+                ) NUT_ATT_REQ_STATUS
+                    ON NUT_ATT_REQ_STATUS.PROD_CD = PRD.PROD_CD
+            GROUP BY 
+                PRD.PROD_CD, PRD.SRCMK_CD, PRD.PROD_NM, PRD.L3_CD
+              <isNotEmpty property="srchAprvStat">
+            HAVING 
+	            <isEqual property="srchAprvStat" compareValue="aprvPossible">
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) = 'APRVPOSSIBLE' OR
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) IS NULL
+			    </isEqual>
+			    <isEqual property="srchAprvStat" compareValue="aprvIng">
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) = 'APRVING'
+			    </isEqual>			
+			    <isEqual property="srchAprvStat" compareValue="aprvDone">
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) = 'APRVDONE'
+			    </isEqual>						   					   
+		      </isNotEmpty>
+      ) A
+    </select>
+   
+   <select id="selectNutAttrInfo" parameterClass="nedmpro0190vo" resultMap="selectNutAttrInfoMap">
+        SELECT *
+        FROM
+        (
+            SELECT
+                ROW_NUMBER() OVER(ORDER BY PRD.PROD_CD ASC) AS RNUM
+              , PRD.PROD_CD
+              , PRD.SRCMK_CD
+              , PRD.PROD_NM
+              , PRD.L3_CD
+              , COUNT(TNL.NUT_CD) AS CNT_NUT_CD
+              , COUNT(NARS.NUT_CD) AS CNT_NUT_CD_SAVED
+              , COALESCE(MAX(NUT_ATT_REQ_STATUS.APRV_STAT),'APRVPOSSIBLE') AS APRV_STAT
+              , MAX(NUT_ATT_REQ_STATUS.REJECT_ATT_CNT) AS REJECT_ATT_CNT
+            FROM
+                (
+                    SELECT *
+                    FROM 
+                        PRODUCT
+                    WHERE 1=1
+                      AND PROD_STATUS  IN 
+                              ('01', '02', '03')
+                    <isEmpty property="srchEntpCd">
+                      <isNotEmpty property="venCds" prepend="AND" >
+                        <iterate property="venCds" prepend="VEN_CD IN " open="(" close=")" conjunction=",">
+                          #venCds[]#
+                        </iterate>
+                      </isNotEmpty>
+                    </isEmpty>
+                    <isNotEmpty property="srchEntpCd" prepend="AND">
+                        VEN_CD = #srchEntpCd#
+                    </isNotEmpty>         
+                    <isEmpty property="srchSellCd">
+                      <isNotEmpty property="srchSellCds" prepend="AND" >
+                        <iterate property="srchSellCds" prepend="SRCMK_CD IN " open="(" close=")" conjunction=",">
+                          #srchSellCds[]#
+                        </iterate>
+                      </isNotEmpty>
+                    </isEmpty>
+                    <isNotEmpty property="srchSellCd" prepend="AND">
+                        SRCMK_CD = #srchSellCd#     
+                    </isNotEmpty>
+                    <isNotEmpty property="srchL1Cd" prepend="AND">
+                        L3_CD IN
+                        (
+                            SELECT 
+                                L3_CD
+                            FROM 
+                                TPC_L1_CD
+                            WHERE
+                                L1_CD = #srchL1Cd#
+                        )
+                    </isNotEmpty>      
+                ) PRD
+                LEFT JOIN
+                (
+                    SELECT
+                        L3_CD
+                      , NUT_CD
+                    FROM
+                        TPC_NUT_L3CD
+                    GROUP BY
+                        L3_CD
+                      , NUT_CD         
+                ) TNL
+                    ON TNL.L3_CD = PRD.L3_CD
+                LEFT JOIN
+                NUT_ATT_PROD_SAP NARS
+                    ON NARS.PROD_CD = PRD.PROD_CD
+                   AND NARS.NUT_CD = TNL.NUT_CD
+                   AND COALESCE(NARS.LOEKZ, ' ') != 'D'
+                LEFT JOIN 
+                (
+                    SELECT 
+                        TNAR.PROD_CD
+                      , CASE 
+                            WHEN COUNT(TNAR.PROD_CD) != COUNT(NARS.PROD_CD) 
+                                THEN 'APRVING'
+                            WHEN COUNT(TNAR.PROD_CD) = COUNT(NARS.PROD_CD)
+                                THEN 
+                                    CASE 
+                                        WHEN MAX(NARS.SEQ) IS NOT NULL AND TO_CHAR(MAX(NARS.IF_DT) + 30, 'YYYYMMDD') <![CDATA[>]]> TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+                                           THEN 'APRVDONE'
+                                        ELSE 'APRVPOSSIBLE'
+                                    END
+                        END AS APRV_STAT
+                     , COUNT(NARS_REJECT.NUT_CD) AS REJECT_ATT_CNT 
+                    FROM
+                    (
+                        SELECT
+                            PROD_CD
+                          , MAX(SEQ) AS SEQ
+                        FROM 
+                            TPC_NUT_ATT_REQ 
+                        GROUP BY 
+                            PROD_CD
+                    ) TNAR_MAXSEQ
+                    INNER JOIN
+                    TPC_NUT_ATT_REQ TNAR
+                        ON TNAR.PROD_CD = TNAR_MAXSEQ.PROD_CD
+                       AND TNAR.SEQ = TNAR_MAXSEQ.SEQ
+                    LEFT JOIN
+                    NUT_ATT_REQ_SAP NARS
+                        ON SUBSTR(NARS.PROD_CD, -10) = TNAR.PROD_CD
+                       AND SUBSTR(NARS.SEQ, -3) = LPAD(TNAR.SEQ, 3, '0')
+                       AND NARS.NUT_CD = TNAR.NUT_CD
+                    LEFT JOIN
+                    (
+                       SELECT *
+                       FROM
+                           NUT_ATT_REQ_SAP
+                       WHERE 
+                           APRV_FG = '3'
+                    ) NARS_REJECT
+                        ON NARS_REJECT.PROD_CD = NARS.PROD_CD 
+                       AND NARS_REJECT.SEQ = NARS.SEQ
+                    WHERE
+                        (NARS.SEQ IS NULL OR
+                            (NARS.PROD_CD IS NOT NULL AND NARS.SEQ IS NOT NULL))                     
+                    GROUP BY TNAR.PROD_CD
+                ) NUT_ATT_REQ_STATUS
+                    ON NUT_ATT_REQ_STATUS.PROD_CD = PRD.PROD_CD
+            GROUP BY 
+                PRD.PROD_CD, PRD.SRCMK_CD, PRD.PROD_NM, PRD.L3_CD  
+	          <isNotEmpty property="srchAprvStat">
+	        HAVING
+	            <isEqual property="srchAprvStat" compareValue="aprvPossible">
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) = 'APRVPOSSIBLE' OR
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) IS NULL
+			    </isEqual>
+			    <isEqual property="srchAprvStat" compareValue="aprvIng">
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) = 'APRVING'
+			    </isEqual>			
+			    <isEqual property="srchAprvStat" compareValue="aprvDone">
+			    MAX(NUT_ATT_REQ_STATUS.APRV_STAT) = 'APRVDONE'
+			    </isEqual>						   
+	          </isNotEmpty>      
+        ) A
+        WHERE RNUM BETWEEN #firstIndex# + 1 AND #lastIndex#
+        ORDER BY RNUM
+    </select>
+    
+
+    <select id="selectProdNutAprv" parameterClass="java.util.HashMap" resultMap="selectProdNutAprvMap">
+       SELECT
+           TNAR.PROD_CD
+         , COALESCE(TNM.NUT_NM, '-') AS NUT_NM
+         , COALESCE(TNM.UNIT, '') AS UNIT
+         , TNAR.NUT_CD AS NUT_CD_REQ
+         , COALESCE(TNAR.NUT_AMT, '-1') AS NUT_AMT_REQ
+         , NARS.APRV_FG AS APRV_FG_SAP
+       FROM
+       (
+           SELECT 
+               *
+           FROM
+               TPC_NUT_ATT_REQ
+           WHERE
+               PROD_CD = #prodCd#
+           AND SEQ = #seq#::varchar
+       ) TNAR
+       LEFT JOIN
+       NUT_ATT_REQ_SAP NARS
+           ON SUBSTR(NARS.PROD_CD, -10) = TNAR.PROD_CD
+          AND SUBSTR(NARS.SEQ, -3) = LPAD(TNAR.SEQ, 3, '0')
+          AND NARS.NUT_CD = TNAR.NUT_CD
+       LEFT JOIN
+       TPC_NUT_MST TNM
+           ON TNM.NUT_CD = TNAR.NUT_CD
+	</select>
+	
+	<!-- SQLINES DEMO ***  -->
+    <select id="selectNutWithProdL3Cd" parameterClass="java.util.HashMap" resultMap="selectNutWithProdL3CdMap">
+        /* SQLINES DEMO *** ectNutWithProdL3Cd */
+        SELECT 
+           PRD.PROD_CD
+         , TNM.NUT_NM
+         , TNM.UNIT 
+         , '-' AS NUT_CD_REQ
+         , '-' AS NUT_AMT_REQ
+         , '-' AS APRV_FG_SAP
+        FROM 
+        (
+            SELECT 
+                NUT_CD
+              , L3_CD
+            FROM
+                TPC_NUT_L3CD
+            WHERE 
+                L3_CD = #l3Cd#
+            AND COALESCE(DEL_FG, ' ') != 'D'
+            AND NUT_CD IS NOT NULL
+            GROUP BY 
+                NUT_CD, L3_CD
+        ) TNL
+        INNER JOIN
+        ( 
+            SELECT * 
+            FROM 
+                PRODUCT
+            WHERE PROD_CD = #prodCd# 
+        ) PRD
+            ON PRD.L3_CD = TNL.L3_CD
+        INNER JOIN
+        TPC_NUT_MST TNM
+            ON TNM.NUT_CD = TNL.NUT_CD
+       GROUP BY PROD_CD, NUT_NM, UNIT
+    </select>
+</sqlMap>

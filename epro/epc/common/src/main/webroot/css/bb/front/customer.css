@@ -1,0 +1,47 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: customer.css
+ * description	: customer, CSS import
+ * date			: 2011.10.05
+************************************************************************/
+
+.tit_customer	{height:92px; background:url('/images/bb/front/customer/visual-notice.gif') no-repeat 295px 0; margin-top:-42px; padding-top:20px;}
+.tit_customer	h3	{margin-bottom:10px;}
+
+.faq_sch	{width:635px; height:42px; background:url('/images/bb/front/customer/bg-faq-search.gif') no-repeat 0 0; margin-bottom:10px; padding:22px 0 0 115px;}
+.faq_sch	.txt_sch	{margin-right:17px;}
+
+.tab_faq	{background:url('/images/bb/front/customer/tab-faq.gif') repeat-x 0 0; margin-top:30px; *zoom:1; *height:1%;}
+.tab_faq:after {content:""; display:block; clear:both; height:0; visibility:hidden; font-size:0;}
+.tab_faq	ul	{float:left;}
+.tab_faq	li	{float:left; height:39px; background:url("/images/bb/front/customer/tab-faq-r.gif") no-repeat right 0;}
+.tab_faq	li.on	{background:url("/images/bb/front/customer/tab-faq-r-on.gif") no-repeat right 0;}
+.tab_faq	li	.tit_li	{float:left; width:150px; height:30px; background:url("/images/bb/front/customer/tab-faq-l.gif") no-repeat 0 0; padding-top:9px; font:15px malgun; text-align:center;}
+.tab_faq	li.on	.tit_li	{background:url("/images/bb/front/customer/tab-faq-l-on.gif") no-repeat 0 0; color:#333; }
+.tab_faq	li	.tit_li	a	{display:block; width:150px; height:30px; margin-top:-9px; padding-top:9px; font:15px malgun; text-align:center;}
+.tab_faq	li	.tit_li	a:hover,
+.tab_event	li	.tit_li	a:active	{text-decoration:none;}
+.tab_faq	li.on	.tit_li	a	{color:#333;}
+.tab_faq	li.on	.tit_li	a:hover,
+.tab_faq	li.on	.tit_li	a:active	{color:#333;}
+.tab_faq	ul.result	li	.tit_li,
+.tab_faq	ul.result	li	.tit_li	a	{width:125px;}
+
+.faq-list	 {margin-top:20px; border-top:1px solid #ccc;}
+.faq-list	 li	{border-bottom:1px solid #ccc; color:#4c4c4c;}
+.faq-list	 li	.question	{display:block; padding:11px 0 11px 0;}
+.faq-list	 li	.question	.n	{display:inline-block; width:115px; font-size:14px; text-align:center;}
+.faq-list	 li	.question	.t	{font-size:14px; color:#4c4c4c; cursor:pointer;}
+.faq-list	 li	.question	.t	em	{color:#ee1c24;}
+.faq-list	 li.on	 .question	.n	{color:#2484c6;}
+.faq-list	 li.on	 .question	.t{color:#2484c6; cursor:pointer;}
+.faq-list	 li	.answer	{display:none; background:#fafafa url('/images/bb/front/common/line-b-dot-de.gif') repeat-x 0 0; padding:19px 20px 15px 40px; font:12px Dotum; line-height:18px; word-break:break-all;}
+.faq-list	 li	.answer	dl	{overflow:hidden; height:100%;}
+.faq-list	 li	.answer	dl	dt	 {float:left; width:51px;}
+.faq-list	 li	.answer	dl	dd	 {float:left; width:620px; font:12px Dotum; line-height:18px;}
+.faq-list	 li	.answer	.ico	{position:absolute; left:0; top:20px; width:31px; height:17px; background:url('/images/bb/front/customer/ico-answer.gif') no-repeat 0 0;}
+.faq-list	 li.on	 .answer	{display:block;}
+
+.tit_result	 {margin:30px 0 -15px 0; font-size:22px; color:#ee1c24;}
+
+.no_result	{padding:50px 0; font-size:14px; text-align:center;}

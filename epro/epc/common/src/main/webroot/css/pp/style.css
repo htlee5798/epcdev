@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+/* added */
+table.bbs_search .day {text-align:center; background-color:#eeeeee;}
+
+/* DP added */
+.dp_read {border:1px solid #ccc;font-size:11px;height:12px;line-height:12px;background-color:#eeeeee; }
+
+table.dp_grid1 {width:100%; background-color:#ffffff; border-collapse:collapse;}
+table.dp_grid1 th {background:url('/images/common/layout/bg_list_04.gif') repeat-x left top;color:#444444;font-size:11px;font-weight:normal;padding:5px 0 2px 0;}
+table.dp_grid1 td {background:#ffffff url('/images/common/layout/bg_list_03.gif') repeat-x left top;color:#444444;font-size:11px;padding:5px 0 3px 5px;text-align:left;}
+table.dp_grid1 .star {color:red;}
+
+table.dp_list {width:100%;border:1px solid #88a1b6;}
+table.dp_list td {height:29px;background-color:#96acbf;}
+table.dp_list .tit {font-size:12px;color:#fff;font-weight:bold;padding:0 0 0 13px;}
+table.dp_list .input {width:95%;height:12px;border:1px solid #ccc;font-size:11px;line-height:12px;}

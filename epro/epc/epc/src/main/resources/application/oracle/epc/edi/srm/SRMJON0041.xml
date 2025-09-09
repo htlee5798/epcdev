@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0041">
+
+
+	<typeAlias alias="SRMJON0041VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0041VO" />
+	<typeAlias alias="CommonFileVO"	type="com.lottemart.epc.common.model.CommonFileVO" />
+
+	<!-- 잠재업체 기본정보조회 resultMap -->
+	<resultMap id="selectHiddenCompDetailInfoResultMap" class="SRMJON0041VO">
+		<result column="HOUSE_CODE"						property="houseCode" 				/>	<!-- 하우스코드 -->
+		<result column="SELLER_CODE"					property="sellerCode" 				/>	<!-- 업체코드 -->
+		<result column="REQ_SEQ"						property="reqSeq" 					/>	<!-- 순번 -->
+		<result column="FOUNDATION_DATE"				property="foundationDate" 			/>	<!-- 설립일자 -->
+		<result column="BASIC_AMT"						property="basicAmt" 				/>	<!-- 자본금 -->
+		<result column="SALES_AMT"						property="salesAmt" 				/>	<!-- 연간 매출액(최근 3년) -->
+		<result column="EMP_COUNT"						property="empCount" 				/>	<!-- 종업원 수(정규직) -->
+		<result column="PLANT_OWN_TYPE"					property="plantOwnType" 			/>	<!-- 공장소유구분 -->
+		<result column="PLANT_ROLE_TYPE"				property="plantRoleType" 			/>	<!-- 공장 운영 형태{scode_type=M792} -->
+		<result column="MAIN_CUSTOMER"					property="mainCustomer" 			/>	<!-- 주요거래처 -->
+		<result column="ABOARD_CHANNEL_TEXT"			property="aboardChannelText" 		/>	<!-- 롯데마트 旣 진출 채널 -->
+		<result column="ABOARD_COUNTRY_TEXT"			property="aboardCountryText" 		/>	<!-- 롯데마트 旣 진출 국가 -->
+		<result column="PRODUCT_NAME"					property="productName" 				/>	<!-- 상품명 -->
+		<result column="PRODUCT_PRICE"					property="productPrice" 			/>	<!-- 납품가 -->
+		<result column="CUR"							property="cur"					 	/>	<!-- 통화 -->
+		<result column="PRODUCT_IMG_PATH"				property="productImgPath" 			/>	<!-- 상품이미지 -->
+		<result column="PRODUCT_IMG_PATH_NAME"			property="productImgPathName" 		/>	<!-- 상품이미지 -->
+		<result column="PRODUCT_INTRO_ATTACH_NO"		property="productIntroAttachNo" 	/>	<!-- 제품소개서 첨부파일 -->
+		<result column="PRODUCT_INTRO_ATTACH_NO_NAME"	property="productIntroAttachNoName" />	<!-- 제품소개서 첨부파일 -->
+		<result column="COMPANY_INTRO_ATTACH_NO"		property="companyIntroAttachNo" 	/>	<!-- 회사소개서 첨부파일 -->
+		<result column="COMPANY_INTRO_ATTACH_NO_NAME"	property="companyIntroAttachNoName" />	<!-- 회사소개서 첨부파일 -->
+		<result column="MAIN_PRODUCT"					property="mainProduct" 				/>	<!-- 상품정보 -->
+		<result column="DEALING_BRAND_PRODUCT"			property="dealingBrandProduct" 		/>	<!-- 주사용 브랜드 -->
+		<result column="SM_FLAG"						property="smFlag" 					/>	<!-- 중소기업여부 -->
+	</resultMap>
+
+
+	<!-- 파일정보조회 resultMap -->
+	<resultMap id="selectHiddenCompFileResultMap" class="CommonFileVO">
+		<result column="DOC_NO"						property="fileId" 					/>	<!-- 파일ID -->
+		<result column="DOC_SEQ"					property="fileSeq" 					/>	<!-- 순번 -->
+		<result column="DES_FILE_NAME"				property="tempFileName" 			/>	<!-- 서버저장파일명 -->
+		<result column="SRC_FILE_NAME"				property="fileNmae" 				/>	<!-- 원본파일명 -->
+	</resultMap>
+
+	<!-- 잠재업체 상세정보조회 -->
+	<select id="selectHiddenCompDetailInfo" parameterClass="SRMJON0041VO" resultMap="selectHiddenCompDetailInfoResultMap">
+		/*SRMJON0041.selectHiddenCompDetailInfo*/
+		SELECT
+				A.HOUSE_CODE
+				, A.SELLER_CODE
+				, B.REQ_SEQ
+				, A.FOUNDATION_DATE
+				, A.BASIC_AMT
+				, A.SALES_AMT
+				, A.EMP_COUNT
+				, A.PLANT_OWN_TYPE
+				, A.PLANT_ROLE_TYPE
+				, A.MAIN_CUSTOMER
+				, A.ABOARD_CHANNEL_TEXT
+				, A.ABOARD_COUNTRY_TEXT
+				<!--, A.PRODUCT_NAME-->
+				, C.SKU_NAME AS PRODUCT_NAME
+				<!--, A.PRODUCT_PRICE-->
+				, C.PRODUCT_PRICE
+				<!--, A.CUR-->
+				, C.CUR
+				<!--, A.PRODUCT_IMG_PATH-->
+				, C.DOC_NO AS PRODUCT_IMG_PATH
+				, F1.SRC_FILE_NAME AS PRODUCT_IMG_PATH_NAME
+				<!--, A.PRODUCT_INTRO_ATTACH_NO-->
+				, C.PRODUCT_INTRO_ATTACH_NO
+				, F2.SRC_FILE_NAME AS PRODUCT_INTRO_ATTACH_NO_NAME
+				<!--, A.COMPANY_INTRO_ATTACH_NO-->
+				, C.COMPANY_INTRO_ATTACH_NO
+				, F3.SRC_FILE_NAME AS COMPANY_INTRO_ATTACH_NO_NAME
+				<!--, A.MAIN_PRODUCT-->
+				<!--, A.DEALING_BRAND_PRODUCT-->
+				, C.MAIN_PRODUCT
+				, C.DEALING_BRAND_PRODUCT
+				, A.SM_FLAG
+		FROM
+				SSUGL A
+				, SINRQ B
+				, SSUPI C
+				, SFILE F1
+				, SFILE F2
+				, SFILE F3
+		WHERE
+				A.HOUSE_CODE = B.HOUSE_CODE(+)
+			AND A.SELLER_CODE = B.VENDOR_CODE(+)
+			AND B.HOUSE_CODE = C.HOUSE_CODE
+			AND B.VENDOR_CODE = C.SELLER_CODE
+			AND B.REQ_SEQ = C.SEQ
+			<!--AND A.PRODUCT_IMG_PATH = F1.DOC_NO(+)-->
+			AND C.DOC_NO = F1.DOC_NO(+)
+			<!--AND A.PRODUCT_INTRO_ATTACH_NO = F2.DOC_NO(+)-->
+			<!--AND A.COMPANY_INTRO_ATTACH_NO = F3.DOC_NO(+)-->
+			AND C.PRODUCT_INTRO_ATTACH_NO = F2.DOC_NO(+)
+			AND C.COMPANY_INTRO_ATTACH_NO = F3.DOC_NO(+)
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.SELLER_CODE = #sellerCode#
+			AND B.REQ_SEQ = #reqSeq#
+	</select>
+
+
+	<!--잠재업체 상세정보 수정-->
+	<update id="updateHiddenCompDetailInfo" parameterClass="SRMJON0041VO">
+		/*SRMJON0041.updateHiddenCompInfo*/
+		UPDATE 	SSUGL
+		SET 	FOUNDATION_DATE					= #foundationDate#
+				, BASIC_AMT						= #basicAmt#
+				, SALES_AMT						= #salesAmt#
+				, EMP_COUNT						= #empCount#
+				, PLANT_OWN_TYPE				= #plantOwnType#
+				, PLANT_ROLE_TYPE				= #plantRoleType#
+				, MAIN_CUSTOMER					= #mainCustomer#
+				, ABOARD_CHANNEL_TEXT			= #aboardChannelText#
+				, ABOARD_COUNTRY_TEXT			= #aboardCountryText#
+				<!--, PRODUCT_NAME					= #productName#-->
+				<!--, PRODUCT_PRICE					= #productPrice#-->
+				<!--, CUR							= #cur#-->
+				<!--, PRODUCT_IMG_PATH				= #productImgPath#-->
+				<!--, PRODUCT_INTRO_ATTACH_NO		= #productIntroAttachNo#-->
+				<!--, COMPANY_INTRO_ATTACH_NO		= #companyIntroAttachNo#-->
+				<!--, MAIN_PRODUCT					= #mainProduct#-->
+				<!--, DEALING_BRAND_PRODUCT			= #dealingBrandProduct#-->
+				, CHANGE_DATE					= CURRENT_TIMESTAMP(0)
+				, CHANGE_USER_ID				= #sellerCode#
+				, SM_FLAG						= #smFlag#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+	</update>
+
+
+	<!--잠재업체 상세정보 수정-->
+	<update id="updateHiddenCompDetailInfoSSUPI" parameterClass="SRMJON0041VO">
+		/*SRMJON0041.updateHiddenCompInfoSSUPI*/
+		UPDATE 	SSUPI
+		SET 	SKU_NAME					= #productName#
+				, DOC_NO				= #productImgPath#
+				, PRODUCT_PRICE					= #productPrice#
+				, CUR							= #cur#
+				, PRODUCT_INTRO_ATTACH_NO		= #productIntroAttachNo#
+				, COMPANY_INTRO_ATTACH_NO		= #companyIntroAttachNo#
+				, MAIN_PRODUCT					= #mainProduct#
+				, DEALING_BRAND_PRODUCT			= #dealingBrandProduct#
+				, CHANGE_DATE = TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+				, CHANGE_TIME = TO_CHAR(CURRENT_TIMESTAMP(0), 'HH24MISS')
+				, CHANGE_USER_ID				= #sellerCode#
+				, SM_ATTACH_NO					= #smAttachNo#
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</update>
+
+	<!--파일 등록-->
+	<insert id="insertHiddenCompFile" parameterClass="CommonFileVO">
+		/*SRMJON0041.insertHiddenCompFile*/
+		INSERT INTO SFILE
+				( DOC_NO
+				, DOC_SEQ
+				, ADD_DATE
+				, ADD_TIME
+				, ADD_USER_ID
+				, TYPE
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+				, FILE_SIZE)
+		VALUES
+				( #fileId#
+				, LPAD('1',8,'0')
+				, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+				, TO_CHAR(CURRENT_TIMESTAMP(0),'HH24MISS')
+				, #regId#
+				, 'SRM'
+				, #tempFileName#
+				, #fileNmae#
+				, #fileSize#)
+	</insert>
+
+	<!--파일삭제-->
+	<delete id="deleteHiddenCompFile" parameterClass="CommonFileVO">
+		/*SRMJON0041.deleteHiddenCompFile*/
+		DELETE
+		FROM
+				SFILE
+		WHERE
+				DOC_NO = #fileId#
+			AND DOC_SEQ = LPAD(#fileSeq#,8,'0')
+	</delete>
+
+
+	<!--파일 정보 조회-->
+	<select id="selectHiddenCompFile" parameterClass="CommonFileVO" resultMap="selectHiddenCompFileResultMap">
+		/*SRMJON0041.selectHiddenCompFile*/
+		SELECT
+				DOC_NO
+				, DOC_SEQ
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+		FROM
+				SFILE
+		WHERE
+				DOC_NO = #fileId#
+			AND DOC_SEQ = LPAD(#fileSeq#,8,'0')
+	</select>
+
+
+
+	<!--파일 정보 조회(PRODUCT_IMG_PATH)-->
+	<select id="selectHiddenCompProductImgPathFileId" parameterClass="SRMJON0041VO" resultClass="String">
+		/*SRMJON0041.selectHiddenCompProductImgPathFileId*/
+		SELECT
+				DOC_NO AS PRODUCT_IMG_PATH
+		FROM
+				SSUPI
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+
+	</select>
+
+	<!--파일 정보 조회(PRODUCT_INTRO_ATTACH_NO)-->
+	<select id="selectHiddenCompProductIntroAttachNoFileId" parameterClass="SRMJON0041VO" resultClass="String">
+		/*SRMJON0041.selectHiddenCompProductIntroAttachNoFileId*/
+		SELECT
+				PRODUCT_INTRO_ATTACH_NO
+		FROM
+				SSUPI
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</select>
+
+	<!--파일 정보 조회(COMPANY_INTRO_ATTACH_NO)-->
+	<select id="selectHiddenCompCompanyIntroAttachNoFileId" parameterClass="SRMJON0041VO" resultClass="String">
+		/*SRMJON0041.selectHiddenCompCompanyIntroAttachNoFileId*/
+		SELECT
+				COMPANY_INTRO_ATTACH_NO
+		FROM
+				SSUPI
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</select>
+	
+	<!--파일 정보 조회(SM_ATTACH_NO)-->
+	<select id="selectHiddenCompSmAttachNoFileId" parameterClass="SRMJON0041VO" resultClass="String">
+		/*SRMJON0041.selectHiddenCompsmAttachNoFileId*/
+		SELECT
+				SM_ATTACH_NO
+		FROM
+				SSUPI
+		WHERE
+				HOUSE_CODE = #houseCode#
+			AND SELLER_CODE = #sellerCode#
+			AND SEQ = #reqSeq#
+	</select>
+
+
+</sqlMap>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMINV0030">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="nedminv0030VO" type="com.lottemart.epc.edi.inventory.model.NEDMINV0030VO" />
+	
+	
+	 
+	<resultMap id="nedminv0030ListMap"    class="nedminv0030VO">                                         	
+	    <result column="STRO_DY" 				property="stroDy"          />	  <!-- 점출일자     		-->
+	    <result column="CTR_CD" 				property="ctrCd"           />	  <!-- 센터코드     		-->
+	    <result column="CTR_NM" 				property="ctrNm"           />	  <!-- 샌터명       		-->
+	    <result column="STR_CD" 				property="strCd"           />	  <!-- 점포코드     		-->
+	    <result column="STR_NM" 				property="strNm"           />	  <!-- 점포명       		-->
+	    <result column="STRO_QTY" 				property="stroQty"         />     <!-- 점출수량   		-->
+	    <result column="STRO_SALE_AMT" 			property="stroSaleAmt"     />     <!-- 점출금액   		-->
+	    <result column="STRI_QTY" 				property="striQty"         />     <!-- 점입수량   		-->
+	    <result column="STRI_SALE_AMT" 			property="striSaleAmt"     />     <!-- 점입금액   		-->
+	    <result column="STRIO_QTY" 				property="strioQty"        />     <!-- 점출입수량   		-->
+	    <result column="STRIO_SALE_AMT" 		property="strioSaleAmt"    />     <!-- 점출입금액   		-->
+	</resultMap>
+	
+	
+	<!-- 센터 점출입 -->
+	<select id="TSC_CENTER_STORE-SELECT01" parameterClass="nedminv0030VO" resultMap="nedminv0030ListMap">
+		/* NEDMINV0030.TSC_PRODUCT-SELECT01*/
+		SELECT	TO_CHAR(TO_DATE(STRO_DY,'yyyymmdd'),'YYYY-MM-DD') STRO_DY
+			,	CTR_CD
+			,	CTR_NM
+			,	STR_CD
+			,	STR_NM
+			,	SUM(STRO_QTY) AS STRO_QTY
+			,	SUM(STRO_SALE_AMT) AS STRO_SALE_AMT
+			,	SUM(STRI_QTY) AS STRI_QTY
+			,	SUM(STRI_SALE_AMT) AS STRI_SALE_AMT
+			,	SUM(STRO_QTY) - SUM(STRI_QTY) AS  STRIO_QTY
+			,	SUM(STRO_SALE_AMT) - SUM(STRI_SALE_AMT) AS  STRIO_SALE_AMT
+		FROM
+		(
+			SELECT 	B.STRO_DY
+				,	A.CTR_CD
+				,	NVL (C.STR_NM, 'no code') AS CTR_NM
+				,	B.STR_CD
+				,	NVL (E.STR_NM, 'no code') AS STR_NM
+				,	B.VEN_CD
+				,	B.PROD_CD
+				,	B.SRCMK_CD
+				,	B.PROD_NM
+				<!-- ,	CASE A.STRIO_FG WHEN '1' THEN SUM(B.STRI_QTY * (CASE B.ADJ_FG WHEN '1' THEN '1' ELSE '-1' END)) ELSE 0 END AS STRI_QTY
+				,	CASE A.STRIO_FG WHEN '1' THEN SUM(B.STRI_BUY_AMT * (CASE B.ADJ_FG WHEN '1' THEN '1' ELSE '-1' END)) ELSE 0 END AS STRI_BUY_AMT
+				,	CASE A.STRIO_FG WHEN '1' THEN SUM(B.STRI_SALE_AMT * (CASE B.ADJ_FG WHEN '1' THEN '1' ELSE '-1' END)) ELSE 0 END AS STRI_SALE_AMT
+				,	CASE A.STRIO_FG WHEN '2' THEN SUM(B.STRI_QTY * (CASE B.ADJ_FG WHEN '1' THEN '1' ELSE '-1' END)) 
+									WHEN '4' THEN SUM(B.STRI_QTY * (CASE B.ADJ_FG WHEN '1' THEN '1' ELSE '-1' END))
+									ELSE 0
+					END AS STRO_QTY
+				,	CASE A.STRIO_FG WHEN '2' THEN SUM(B.STRI_BUY_AMT * (CASE B.ADJ_FG WHEN '1' THEN 1 ELSE -1 END))
+									WHEN '4' THEN SUM(B.STRI_BUY_AMT * (CASE B.ADJ_FG WHEN '1' THEN 1 ELSE -1 END))
+									ELSE 0 
+					END AS STRO_BUY_AMT
+				,	CASE A.STRIO_FG WHEN '2' THEN SUM(B.STRI_SALE_AMT * (CASE B.ADJ_FG WHEN '1' THEN 1 ELSE -1 END))
+									WHEN '4' THEN SUM(B.STRI_SALE_AMT * (CASE B.ADJ_FG WHEN '1' THEN 1 ELSE -1 END))
+									ELSE 0
+					END AS STRO_SALE_AMT -->
+				,	CASE A.STRIO_FG WHEN '1' THEN SUM(B.STRI_QTY) ELSE 0 END AS STRI_QTY
+				,	CASE A.STRIO_FG WHEN '1' THEN SUM(B.STRI_BUY_PRC) ELSE 0 END AS STRI_BUY_AMT
+				,	CASE A.STRIO_FG WHEN '1' THEN SUM(B.STRI_BUY_PRC) ELSE 0 END AS STRI_SALE_AMT
+				,	CASE A.STRIO_FG WHEN '2' THEN SUM(B.STRI_QTY) 
+									WHEN '4' THEN SUM(B.STRI_QTY)
+									ELSE 0
+					END AS STRO_QTY
+				,	CASE A.STRIO_FG WHEN '2' THEN SUM(B.STRI_BUY_PRC)
+									WHEN '4' THEN SUM(B.STRI_BUY_PRC)
+									ELSE 0 
+					END AS STRO_BUY_AMT
+				,	CASE A.STRIO_FG WHEN '2' THEN SUM(B.STRI_BUY_PRC)
+									WHEN '4' THEN SUM(B.STRI_BUY_PRC)
+									ELSE 0
+					END AS STRO_SALE_AMT
+			FROM 	TPC_LOGI_STRIO A
+					INNER JOIN  TPC_LOGI_STRIO_PROD B ON  A.STRIO_SLIP_NO = B.STRIO_SLIP_NO AND A.STR_CD = B.STR_CD
+					LEFT OUTER JOIN  STORE C ON A.CTR_CD = C.STR_CD
+					LEFT OUTER JOIN STORE E ON B.STR_CD = E.STR_CD
+			WHERE 	B.STRO_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')
+			<isEmpty property="srchEntpCode">
+				<isNotEmpty  property="venCds"  prepend="AND"> 
+			      <iterate prepend="B.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]# 
+			      </iterate	> 
+			   </isNotEmpty>
+			</isEmpty>
+				
+		    		   
+			   <isNotEmpty  property="srchEntpCode"  prepend="AND"> 
+			    	B.VEN_CD = #srchEntpCode#
+			   </isNotEmpty>
+			   
+			   <isNotEmpty property="srchStoreVal"  prepend="AND"> 
+			      <iterate prepend="B.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=","> 
+			        #srchStoreVal[]# 
+			      </iterate> 
+		   	  </isNotEmpty> 
+			   
+			  <isNotEmpty  property="srchProductVal"  prepend="AND"> 
+			    	B.PROD_CD = #srchProductVal#
+		      </isNotEmpty> 
+	       
+		   GROUP BY   B.STRO_DY,
+		              A.CTR_CD,
+		              C.STR_NM,
+		              E.STR_NM,
+		              B.STR_CD,
+		              B.VEN_CD,
+		              B.PROD_CD,
+		              B.SRCMK_CD,
+		              B.PROD_NM,
+		              A.STRIO_FG
+		)
+		
+		GROUP BY STRO_DY, CTR_CD, CTR_NM, STR_CD, STR_NM
+		ORDER BY CTR_CD
+	</select>
+
+</sqlMap>

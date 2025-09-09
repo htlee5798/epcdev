@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMBUY0040">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	
+	<typeAlias alias="nEDMBUY0040VO" 		type="com.lottemart.epc.edi.buy.model.NEDMBUY0040VO" />
+	
+	 <!-- 리스트 MAP -->
+	 <resultMap id="nEDMBUY0040ListMap" 	class="nEDMBUY0040VO">
+	 	<result column="BUY_DY"  			property="buyDy" 		/>		<!-- 매입일 -->
+	 	<result column="STR_CD"  			property="strCd" 		/>		<!-- 점포코드 -->
+	 	<result column="STR_NM"  			property="strNm" 		/>		<!-- 점포명 -->
+	 	<result column="BUY_SLIP_NO"  		property="buySlipNo" 	/>		<!-- 매입전표번호 -->
+	 	<result column="BUY_RTN_NM"  		property="buyRtnNm" 	/>		<!-- 납품.매입(1:반품,2:매입,3:반품정정,4:매입정정) -->
+	 	<result column="ORD_DY"  			property="ordDy" 		/>		<!-- 발주전표번호 -->
+	 	<result column="TOT_QTY"  			property="totQty" 		/>		<!-- 발주수량 -->
+	 	<result column="TOT_PRC"  			property="totPrc" 		/>		<!-- 원가 -->
+	 	<result column="BUY_BOX_QTY"  		property="buyBoxQty" 	/>		<!-- 매입박스수량 -->
+	 	<result column="BUY_QTY"  			property="buyQty" 		/>		<!-- 매입수량 -->
+	 	<result column="BUY_BUY_PRC"  		property="buyBuyPrc" 	/>		<!-- 매입원가 -->
+	 </resultMap>
+
+	
+	<!-- 전표별 -->	
+<select id="TSC_JUNPYO-SELECT01" parameterClass="nEDMBUY0040VO" resultMap="nEDMBUY0040ListMap">
+		
+/* NEDMBUY0040.TSC_JUNPYO-SELECT01 */
+		SELECT	TO_CHAR(TO_DATE(BUY_DY,'yyyymmdd'),'YYYY-MM-DD') BUY_DY
+			,	STR_CD
+			,	(SELECT STR_NM FROM STORE aa WHERE a.STR_CD = aa.STR_CD) as STR_NM
+			,	BUY_SLIP_NO
+			,	(SELECT CD_NM FROM TPC_CODE WHERE MAJOR_CD = 'SPP01' AND MINOR_CD = A.BUY_RTN_FG) AS BUY_RTN_NM
+			,	(SELECT TO_CHAR(TO_DATE(ORD_DY, 'yyyymmdd'), 'yyyy-mm-dd') FROM TPC_ORD WHERE ORD_SLIP_NO = A.ORD_SLIP_NO LIMIT 1)	AS ORD_DY
+			,	NVL(SUM(TOT_QTY), 0) AS TOT_QTY
+			,	NVL(SUM(TOT_PRC), 0) AS TOT_PRC
+			,	NVL(SUM(BUY_BOX_QTY), 0) 	AS BUY_BOX_QTY
+			,	NVL(SUM(BUY_QTY), 0) 	AS BUY_QTY	
+			,	NVL(SUM(BUY_BUY_AMT), 0) AS BUY_BUY_PRC
+            
+		FROM
+		(
+			SELECT	A.BUY_SLIP_NO
+				,	A.STR_CD
+				,	A.ORD_SLIP_NO
+				,	A.BUY_DY
+				,	A.BUY_RTN_FG
+				,	A.BUY_QTY
+				,	(B.ORD_QTY) AS TOT_QTY
+				,	(B.BUY_PRC) AS TOT_PRC
+				,	A.BUY_BOX_QTY
+				,	A.BUY_BUY_AMT
+			FROM
+			(
+		
+							SELECT 	/*+ ordered use_nl(a b) index(a IX_PC_STR_BUY_03)*/
+                                    A.BUY_SLIP_NO 			AS BUY_SLIP_NO
+								, 	A.STR_CD				AS STR_CD
+								,  	A.ORD_SLIP_NO			AS ORD_SLIP_NO
+								,  	B.PROD_CD 				AS PROD_CD
+								, 	A.BUY_DY 				AS BUY_DY
+								,  	A.BUY_RTN_FG 			AS BUY_RTN_FG
+								,  	B.BUY_QTY 				AS BUY_QTY
+								, 	B.BUY_BOX_QTY 			AS BUY_BOX_QTY
+								, 	B.BUY_BUY_AMT 			AS BUY_BUY_AMT
+							FROM   TPC_STR_BUY A 
+							INNER JOIN TPC_STR_BUY_PROD B
+							ON      A.BUY_SLIP_NO = B.BUY_SLIP_NO
+                     			AND A.YYYY = B.YYYY
+					       WHERE A.BUY_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','') 
+							<isEmpty property="srchEntpCode">
+								<isNotEmpty  property="venCds"  prepend="AND">
+									<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+										#venCds[]#
+									</iterate>
+								</isNotEmpty>
+							</isEmpty>	
+						
+							<isNotEmpty  property="srchEntpCode"  prepend="AND">
+								A.VEN_CD = #srchEntpCode#
+							</isNotEmpty>
+							
+							<isNotEmpty property="srchStoreVal"  prepend="AND">
+								<iterate prepend="A.STR_CD IN " property="srchStoreVal" open="(" close=")" conjunction=",">
+									#srchStoreVal[]#
+								</iterate>
+							</isNotEmpty>
+							
+							<isNotEmpty  property="srchProductVal"  prepend="AND">
+								B.PROD_CD = #srchProductVal#
+							</isNotEmpty>
+							
+							<isNotEmpty  property="srchBuying"  prepend="AND">
+								A.BUY_RTN_FG = #srchBuying#
+							</isNotEmpty>	
+		
+			) A LEFT OUTER JOIN TPC_ORD_PROD B  ON A.ORD_SLIP_NO = B.ORD_SLIP_NO AND  A.PROD_CD = B.PROD_CD
+		) A
+		GROUP BY BUY_DY, STR_CD, BUY_SLIP_NO, ORD_SLIP_NO, BUY_RTN_FG
+		ORDER BY BUY_DY, STR_CD, BUY_SLIP_NO
+	</select>
+</sqlMap>

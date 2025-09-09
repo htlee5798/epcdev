@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommonMenu">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="countByName" resultClass="integer">
+		SELECT COUNT(*)
+		  FROM TAD_ADMIN_MENU A
+		 WHERE A.MENU_ID IN (SELECT MA.MENU_ID
+		                       FROM TAD_ADMIN_ROLE_ASSIGN RA,
+		                            TAD_ADMIN_ROLE RO,
+		                            TAD_ADMIN_MENU_ASSIGN MA
+		                      WHERE RA.ROLE_ID     = RO.ROLE_ID
+		                        AND RA.ROLE_ID     = MA.ROLE_ID
+		                        AND RA.ADMIN_ID    = #adminId#
+		                        AND RO.SYS_DIVN_CD = #sysDivnCd#
+		                        AND RO.ACTIVE_YN   = 'Y'
+		                        AND MA.ACTIVE_YN   = 'Y'
+		                  )
+		   AND A.MENU_YN = 'Y'
+		   AND A.ACTIVE_YN = 'Y'
+           AND A.LEAF_MENU_YN = 'Y'
+		<isNotEmpty property="q">
+		   AND REGEXP_LIKE(A.MENU_NM, #q#, 'i')
+		</isNotEmpty>
+		 START WITH A.MENU_ID IN (SELECT DISTINCT ME.MENU_ID
+                                    FROM TAD_ADMIN_ROLE_ASSIGN RA
+                                       , TAD_ADMIN_ROLE RO
+                                       , TAD_ADMIN_MENU_ASSIGN MA
+                                       , TAD_ADMIN_MENU ME
+                                   WHERE RA.ROLE_ID     = RO.ROLE_ID
+                                     AND RA.ROLE_ID     = MA.ROLE_ID
+                                     AND MA.MENU_ID     = ME.MENU_ID
+                                     AND RA.ADMIN_ID    = #adminId#
+                                     AND RO.SYS_DIVN_CD = #sysDivnCd#
+                                     AND RO.ACTIVE_YN   = 'Y'
+                                     AND MA.ACTIVE_YN   = 'Y'
+                                     AND ME.ACTIVE_YN   = 'Y'
+                                     AND ME.MENU_DEPTH  = 1
+                                 )
+		 CONNECT BY PRIOR A.MENU_ID = A.UP_MENU_ID
+	</select>
+
+	<select id="selectByName" resultClass="com.lottemart.common.menu.model.MenuVO">
+		/* CommonMenu.selectByName */
+		SELECT menuId, menuNm, url, param 
+		FROM 
+		(SELECT A.MENU_ID	as menuId
+		     , A.MENU_NM	as menuNm
+		     , A.URL		as url
+		     , NVL(A.PARAM,'') AS param
+		  FROM TAD_ADMIN_MENU A
+		 WHERE A.MENU_ID IN (SELECT MA.MENU_ID
+		                       FROM TAD_ADMIN_ROLE_ASSIGN RA,
+		                            TAD_ADMIN_ROLE RO,
+		                            TAD_ADMIN_MENU_ASSIGN MA
+		                      WHERE RA.ROLE_ID     = RO.ROLE_ID
+		                        AND RA.ROLE_ID     = MA.ROLE_ID
+		                        AND RA.ADMIN_ID    = #adminId#
+		                        AND RO.SYS_DIVN_CD = #sysDivnCd#
+		                        AND RO.ACTIVE_YN   = 'Y'
+		                        AND MA.ACTIVE_YN   = 'Y'
+		                  )
+		   AND A.MENU_YN = 'Y'
+		   AND A.ACTIVE_YN = 'Y'
+           AND A.LEAF_MENU_YN = 'Y'
+		<isNotEmpty property="q">
+		   AND REGEXP_LIKE(A.MENU_NM, #q#, 'i')
+		</isNotEmpty>
+		 START WITH A.MENU_ID IN (SELECT DISTINCT ME.MENU_ID
+                                    FROM TAD_ADMIN_ROLE_ASSIGN RA
+                                       , TAD_ADMIN_ROLE RO
+                                       , TAD_ADMIN_MENU_ASSIGN MA
+                                       , TAD_ADMIN_MENU ME
+                                   WHERE RA.ROLE_ID     = RO.ROLE_ID
+                                     AND RA.ROLE_ID     = MA.ROLE_ID
+                                     AND MA.MENU_ID     = ME.MENU_ID
+                                     AND RA.ADMIN_ID    = #adminId#
+                                     AND RO.SYS_DIVN_CD = #sysDivnCd#
+                                     AND RO.ACTIVE_YN   = 'Y'
+                                     AND MA.ACTIVE_YN   = 'Y'
+                                     AND ME.ACTIVE_YN   = 'Y'
+                                     AND ME.MENU_DEPTH  = 1
+                                 )
+		 CONNECT BY PRIOR A.MENU_ID = A.UP_MENU_ID
+		 ORDER BY A.MENU_NM ASC
+		 )
+		 UNION ALL
+	SELECT '---' menuId ,'-------------------------------' menuNm,'' url,''  param FROM DUAL
+         UNION ALL
+    SELECT menuId, menuNm, url, param 
+		FROM 
+         (SELECT A.MENU_ID	as menuId
+		     , A.MENU_NM	as menuNm
+		     , A.URL		as url
+		     , NVL(A.PARAM,'') AS param
+		  FROM TAD_ADMIN_MENU A
+		 WHERE A.MENU_YN = 'Y'
+		   AND A.ACTIVE_YN = 'Y'
+           AND A.LEAF_MENU_YN = 'Y'
+		<isNotEmpty property="q">
+		   AND REGEXP_LIKE(A.MENU_FUNC, #q#, 'i')
+		   AND NOT REGEXP_LIKE(A.MENU_NM, #q#, 'i')
+		</isNotEmpty>
+		   AND A.MENU_ID IN (SELECT MA.MENU_ID
+		                       FROM TAD_ADMIN_ROLE_ASSIGN RA,
+		                            TAD_ADMIN_ROLE RO,
+		                            TAD_ADMIN_MENU_ASSIGN MA
+		                      WHERE RA.ROLE_ID     = RO.ROLE_ID
+		                        AND RA.ROLE_ID     = MA.ROLE_ID
+		                        AND RA.ADMIN_ID    = #adminId#
+		                        AND RO.SYS_DIVN_CD = #sysDivnCd#
+		                        AND RO.ACTIVE_YN   = 'Y'
+		                        AND MA.ACTIVE_YN   = 'Y'
+		                  )
+		 ORDER BY A.MENU_NM ASC
+		 )
+	</select>
+
+</sqlMap>

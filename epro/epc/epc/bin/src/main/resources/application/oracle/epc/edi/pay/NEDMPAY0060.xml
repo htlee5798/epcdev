@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0060">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+
+	<!-- 판매장려금 정보 2014.04이전-->
+	<typeAlias alias="NEDMPAY0060VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0060VO" />
+	<resultMap id="NEDMPAY0060VOMap" class="NEDMPAY0060VO">
+		<result property="subYm" 			column="SUB_YM" />
+		<result property="strNm" 			column="STR_NM" />
+		<result property="buyBuyAmt" 			column="BUY_BUY_AMT" />
+		<result property="pbBuyAmt" 			column="PB_BUY_AMT" />
+		<result property="expromoBuyAmt" 			column="EXPROMO_BUY_AMT" />
+		<result property="promoAdjAmt" 			column="PROMO_ADJ_AMT" />
+		<result property="promoAmt" 			column="PROMO_AMT" />
+		<result property="promoAmtRt" 			column="PROMO_AMT_RT" />
+		<result property="manualPromoAmt" 			column="MANUAL_PROMO_AMT" />
+		<result property="subAmt" 			column="SUM_AMT" />
+		<result property="manualRt" 			column="MANUAL_RT" />
+	</resultMap>
+	
+	<select id="TSC_PROMO_SALE-SELECT01" resultMap="NEDMPAY0060VOMap" parameterClass="NEDMPAY0060VO">
+		/* NEDMPAY0060.TSC_PROMO_SALE-SELECT01 */
+		SELECT	SUB_YM
+			,	STR_NM
+			,	BUY_BUY_AMT
+			,	PB_BUY_AMT
+			,	EXPROMO_BUY_AMT
+			,	PROMO_ADJ_AMT
+			,	PROMO_AMT
+			,	PROMO_AMT_RT
+			,	MANUAL_PROMO_AMT
+			,	SUM_AMT
+			,	MANUAL_RT
+		FROM
+		(
+			SELECT	SUBSTR(AL.SUB_DY,1,6) AS SUB_YM
+				,	AL.STR_CD AS STR_CD
+				,	MIN(STR_NM) AS STR_NM
+				,	AL.VEN_CD AS VEN_CD
+				,	MIN(BM.COM_NM) AS COM_NM
+				,	SUM(AL.BUY_BUY_AMT) AS BUY_BUY_AMT
+				,	SUM(AL.PB_BUY_AMT) AS PB_BUY_AMT
+				,	SUM(AL.EXPROMO_BUY_AMT) AS EXPROMO_BUY_AMT
+				,	SUM(AL.BUY_BUY_AMT - AL.PB_BUY_AMT - AL.EXPROMO_BUY_AMT) AS PROMO_ADJ_AMT
+				,	SUM(AL.PROMO_AMT) AS PROMO_AMT
+				,	MAX(AL.PROMO_AMT_RT) AS PROMO_AMT_RT
+				,	SUM(AL.MANUAL_PROMO_AMT) AS MANUAL_PROMO_AMT
+				,	SUM(AL.PROMO_AMT + AL.MANUAL_PROMO_AMT) AS SUM_AMT
+				,	DECODE(SUM(AL.BUY_BUY_AMT - AL.PB_BUY_AMT - AL.EXPROMO_BUY_AMT), 0, 0
+						, ROUND(SUM(AL.PROMO_AMT + AL.MANUAL_PROMO_AMT) / SUM(AL.BUY_BUY_AMT - AL.PB_BUY_AMT - AL.EXPROMO_BUY_AMT) * 100,2)) AS MANUAL_RT
+			FROM
+			(
+				(
+					SELECT	A1.SUB_DY AS SUB_DY
+						,	A1.STR_CD AS STR_CD
+						,	A1.VEN_CD AS VEN_CD
+						,	MAX(A1.SPLY_SEQ) AS SPLY_SEQ
+						,	SUM(A1.BUY_BUY_AMT) AS BUY_BUY_AMT
+						,	SUM(A1.PB_BUY_AMT) AS PB_BUY_AMT
+						,	SUM(A1.EXPROMO_BUY_AMT) AS EXPROMO_BUY_AMT
+						,	SUM(A1.PROMO_AMT) AS PROMO_AMT
+						,	MAX(A1.PROMO_AMT_RT) AS PROMO_AMT_RT
+						,	0 AS MANUAL_PROMO_AMT
+					FROM SALE_PROMO_AMT@dl_md_martnis A1
+			
+			WHERE A1.SUB_DY LIKE replace(#srchStartDate#,'-','') || '%' 
+			
+		
+			<isNotEmpty prepend="AND" property="searchStoreAl"> 
+				     <iterate prepend="A1.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=","> 
+				       #storeVal[]# 
+				     </iterate> 
+			</isNotEmpty>
+	
+			<isNotEmpty  property="venCds" prepend="AND" > 
+		      <iterate prepend="A1.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="searchEntpCd"  prepend="AND"> 
+		    	A1.VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+			
+			
+			GROUP BY A1.SUB_DY, A1.STR_CD, A1.VEN_CD
+			)
+		
+			UNION ALL
+		
+				(SELECT  A2.SUB_DY AS SUB_DY
+				        ,A2.STR_CD
+				        ,A2.VEN_CD
+				        ,''
+				        ,0
+				        ,0
+				        ,0
+				        ,0
+				        ,0
+				        ,SUM(SUB_AMT)
+				
+				FROM ETC_SUB@dl_md_martnis A2
+				WHERE A2.SUB_DY LIKE replace(#srchStartDate#,'-','') || '%' 
+				
+							
+			
+				<isNotEmpty prepend="AND" property="searchStoreAl"> 
+					     <iterate prepend="A2.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=","> 
+					       #storeVal[]# 
+					     </iterate> 
+				</isNotEmpty>
+	
+				
+				<isNotEmpty  property="venCds" prepend="AND" > 
+			      <iterate prepend="A2.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+			        #venCds[]# 
+			      </iterate> 
+			    </isNotEmpty>
+			    
+			    <isNotEmpty  property="searchEntpCd"  prepend="AND"> 
+			    	A2.VEN_CD = #entp_cd#
+		 	    </isNotEmpty>
+				
+				  AND A2.ACCT_GRP_CD = 'W'
+				  AND A2.ACCT_CD IN ('30','40')
+				
+				GROUP BY A2.SUB_DY, A2.STR_CD, A2.VEN_CD
+				)
+				
+				) AL, VENDOR@dl_md_martnis VD, BIZ_MAN@dl_md_martnis BM, STORE S
+			
+			WHERE AL.STR_CD = S.STR_CD
+			  AND AL.STR_CD = VD.STR_CD
+			  AND AL.VEN_CD = VD.VEN_CD
+			  AND VD.BMAN_NO = BM.BMAN_NO
+			
+			GROUP BY SUBSTR(AL.SUB_DY,1,6), AL.STR_CD, AL.VEN_CD
+			
+			)
+	  
+</select>
+
+
+	<!-- 판매장려금 정보 2014.4 이후 -->
+	<typeAlias alias="NEDMPAY0061VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0061VO" />
+	<resultMap id="NEDMPAY0061VOMap" class="NEDMPAY0061VO">
+		<result property="strCd" 						column="STR_CD" />
+		<result property="strNm" 						column="STR_NM" />
+		<result property="totBuyAmt" 					column="TOT_BUY_AMT" />
+		<result property="newProdPromo" 				column="NEW_PROD_PROMO" />
+		<result property="standPromoAmtAuto" 			column="STAND_PROMO_AMT_AUTO" />
+		<result property="overPromoAmtAuto" 			column="OVER_PROMO_AMT_AUTO" />
+		<result property="newProdPromoAmtAuto" 			column="NEW_PROD_PROMO_AMT_AUTO" />
+		<result property="newProdPromoAmtMan" 			column="NEW_PROD_PROMO_AMT_MAN" />
+		<result property="standPromoAmtMan" 			column="STAND_PROMO_AMT_MAN" />
+		<result property="overPromoAmtMan" 				column="OVER_PROMO_AMT_MAN" />
+		<result property="newProdPrmoAmtMan" 			column="NEW_PROD_PROMO_AMT_MAN" />
+		<result property="sum"				 			column="SUM" />
+	</resultMap>
+	
+	<select id="TSC_PROMO_SALE-SELECT02" resultMap="NEDMPAY0061VOMap" parameterClass="NEDMPAY0061VO">
+		/* NEDMPAY0060.TSC_PROMO_SALE-SELECT02 */
+		SELECT	AA.STR_CD AS STR_CD
+			,	MAX(BB.STR_NM) AS STR_NM
+			,	SUM(AA.TOT_BUY_AMT) AS TOT_BUY_AMT
+			,	SUM(AA.NEW_PROD_PROMO_AMT_AUTO) AS NEW_PROD_PROMO
+			,	SUM(AA.STAND_PROMO_AMT_AUTO) AS STAND_PROMO_AMT_AUTO
+			,	SUM(AA.OVER_PROMO_AMT_AUTO) AS OVER_PROMO_AMT_AUTO
+			,	SUM(AA.NEW_PROD_PROMO_AMT_AUTO) + SUM(AA.STAND_PROMO_AMT_AUTO) + SUM(AA.OVER_PROMO_AMT_AUTO) AS NEW_PROD_PROMO_AMT_AUTO
+			,	SUM(AA.NEW_PROD_PROMO_AMT_MAN) AS NEW_PROD_PROMO_AMT_MAN
+			,	SUM(AA.STAND_PROMO_AMT_MAN) AS STAND_PROMO_AMT_MAN
+			,	SUM(AA.OVER_PROMO_AMT_MAN) AS OVER_PROMO_AMT_MAN
+			,	SUM(AA.NEW_PROD_PROMO_AMT_MAN) + SUM(AA.STAND_PROMO_AMT_MAN) + SUM(AA.OVER_PROMO_AMT_MAN) AS NEW_PROD_PROMO_AMT_MAN
+			,	SUM(AA.NEW_PROD_PROMO_AMT_AUTO) + SUM(AA.STAND_PROMO_AMT_AUTO) + SUM(AA.OVER_PROMO_AMT_AUTO) + SUM(AA.NEW_PROD_PROMO_AMT_MAN) + SUM(AA.STAND_PROMO_AMT_MAN) + SUM(AA.OVER_PROMO_AMT_MAN) AS SUM
+		FROM
+		(
+			SELECT 	A.STR_CD
+				,	SUM(A.BUY_AMT) AS TOT_BUY_AMT
+				,	0        AS NEW_PROD_PROMO_AMT_AUTO
+				,	0        AS STAND_PROMO_AMT_AUTO
+				,	0        AS OVER_PROMO_AMT_AUTO
+				,	0        AS NEW_PROD_PROMO_AMT_MAN
+				,	0        AS STAND_PROMO_AMT_MAN
+				,	0        AS OVER_PROMO_AMT_MAN
+			FROM  	TPC_CRED_BUY_AGG A
+				,	(
+						SELECT	AA.VEN_CD
+							,	AA.TRD_TYP_FG
+							,	BB.STR_CD
+						FROM	HQ_VEN 	AA
+							,	STORE	BB
+					) B
+			WHERE 	A.STR_CD = B.STR_CD
+				AND A.VEN_CD = B.VEN_CD
+				AND B.TRD_TYP_FG = '1'
+				AND	A.BUY_DY LIKE replace(#srchStartDate#,'-','') || '%'
+				
+				<isNotEmpty prepend="AND" property="searchStoreAl">
+					<iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+						#searchStoreAl[]#
+					</iterate>
+				</isNotEmpty>
+				
+				<isEmpty property="searchEntpCd">
+					<isNotEmpty  property="venCds" prepend="AND" >
+						<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				
+				
+				<isNotEmpty  property="searchEntpCd"  prepend="AND">
+					A.VEN_CD = #searchEntpCd#
+				</isNotEmpty>
+				
+				GROUP BY A.STR_CD				
+				UNION ALL				
+				SELECT	A.STR_CD
+					,	0		AS TOT_BUY_AMT
+					,	SUM(DECODE(A.ACCT_CD,'A1', 1, 0) * A.SUB_AMT)	AS NEW_PROD_PROMO_AMT_AUTO
+					,	SUM(DECODE(A.ACCT_CD,'A3', 1, 0) * A.SUB_AMT)	AS STAND_PROMO_AMT_AUTO
+					,	SUM(DECODE(A.ACCT_CD,'A5', 1, 0) * A.SUB_AMT)	AS OVER_PROMO_AMT_AUTO
+					,	SUM(DECODE(A.ACCT_CD,'A2', 1, 0) * A.SUB_AMT)	AS NEW_PROD_PROMO_AMT_MAN
+					,	SUM(DECODE(A.ACCT_CD,'A4', 1, 0) * A.SUB_AMT)	AS STAND_PROMO_AMT_MAN
+					,	SUM(DECODE(A.ACCT_CD,'A6', 1, 0) * A.SUB_AMT)	AS OVER_PROMO_AMT_MAN
+				FROM 	TPC_SUB_AGG A
+				WHERE A.SUB_DY LIKE replace(#srchStartDate#,'-','') || '%'
+				
+				<isNotEmpty prepend="AND" property="searchStoreAl">
+					<iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+						#searchStoreAl[]#
+					</iterate>
+				</isNotEmpty>
+				
+				<isEmpty property="searchEntpCd">
+					<isNotEmpty  property="venCds" prepend="AND" >
+						<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+							#venCds[]#
+						</iterate>
+					</isNotEmpty>
+				</isEmpty>
+				
+				<isNotEmpty  property="searchEntpCd"  prepend="AND">
+					A.VEN_CD = #searchEntpCd#
+				</isNotEmpty>
+				
+				GROUP BY A.STR_CD
+			) 	AA
+			, 	STORE		BB
+		WHERE 	AA.STR_CD	= BB.STR_CD
+		GROUP BY 	AA.STR_CD
+	</select>
+
+</sqlMap>

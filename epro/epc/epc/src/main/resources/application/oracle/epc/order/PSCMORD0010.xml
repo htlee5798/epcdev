@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="pscmord0010"> 
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmord0010VO" type="com.lottemart.epc.order.model.PSCMORD0010VO" />
+		
+		<!-- 컬럼 카운트 -->
+	<select id="selectCSRListCnt" resultClass="java.lang.Integer">
+    	<![CDATA[
+    	/* pscmord0010.selectCSRListCnt */  
+    	 	
+    	  SELECT COUNT(1) AS  COUNT  FROM (
+			SELECT  
+				 /*+USE_NL(D)*/
+			       D.L1_NM   AS l1Nm               
+			     , D.L2_NM   AS l2Nm                   
+			     , X.PROD_CD AS prodCd
+			     , X.PROD_NM AS prodNm
+			     , X.ITEM_CD AS itemCd
+			     , MAX(X.PROFIT_RATE)  AS profitRate
+			     , MAX(X.BUY_PRC)  AS buyPrc
+			     , MAX(X.CURR_SELL_PRC)  AS currSellPrc
+			     , SUM(X.ORD_QTY)  AS ordQty
+			     , SUM(X.ORD_AMT)   AS ordAmt
+			  FROM ( 
+		         SELECT
+		         	  /*+LEADING(O A B) INDEX(O IX_OR_ORDER_07) INDEX(A IX_OR_ORDER_ITEM_03) INDEX(B PK_PR_PRODUCT)*/	
+		         		B.PROD_CD, B.PROD_NM, A.ITEM_CD, B.VENDOR_ID, 
+		                B.PROFIT_RATE, 
+		                ROUND(( B.CURR_SELL_PRC / DECODE(B.TAXAT_DIVN_CD,'1',1.1,1) * (100 - B.PROFIT_RATE ) / 100 )) BUY_PRC, 
+		                B.CURR_SELL_PRC, 
+		                A.ORD_QTY,
+		                A.ORD_AMT,
+		                B.CAT_CD
+		         FROM TOR_ORDER O, TOR_ORDER_ITEM A, TPR_PRODUCT B
+		          WHERE O.ORDER_ID = A.ORDER_ID
+		           	 AND A.PROD_CD = B.PROD_CD
+	           		 AND ( 0, B.VENDOR_ID) IN
+	             ]]>
+		            <iterate property="vendorId" open="(" close=")" conjunction=",">
+					/* 협력사 검색*/
+					( 0 , #vendorId[]#) -- 협력업체코드
+				</iterate>
+	            AND O.ORD_STS_CD = '11'
+		            AND O.ORD_RTN_DIVN_CD = '10'
+		            AND O.LST_SALE_CFM_DATE BETWEEN#startDate#||'000000' AND #endDate#||'235959'
+		       ) X
+		     , V_CA_MD_CATEGORY D
+		 WHERE X.CAT_CD = D.L3_CD 
+		 GROUP BY D.L1_NM, D.L2_NM, X.PROD_CD, X.PROD_NM, X.ITEM_CD
+		 )
+	 ORDER BY l1Nm, l2Nm, ordQty DESC, ordAmt DESC, prodCd, itemCd
+	</select>
+	
+	<!-- 판매순위 조회 -->
+	<select id="selectCSRList" resultClass="pscmord0010VO">
+		/* pscmord0010.selectCSRList */
+		<![CDATA[
+		SELECT * FROM (
+		 SELECT  ROWNUM AS num, AD.* from (
+			SELECT
+			      /*+ USE_NL(D.A D.B D.C D.D) */
+				   D.L1_NM   AS    l1Nm                   
+			     , D.L2_NM    AS     l2Nm                   
+			     , X.PROD_CD  AS prodCd
+			     , X.PROD_NM AS prodNm
+			     , X.ITEM_CD AS itemCd
+			     , MAX(X.PROFIT_RATE) AS profitRate
+			     , MAX(X.BUY_PRC)  AS buyPrc
+			     , MAX(X.CURR_SELL_PRC)  AS currSellPrc
+			     , SUM(X.ORD_QTY)  AS ordQty
+			     , SUM(X.ORD_AMT)   AS ordAmt
+			  FROM ( 
+		         SELECT 
+		         		/*+LEADING(O A B) INDEX(O IX_OR_ORDER_07) USE_NL(A) USE_NL(B) */
+		         		B.PROD_CD, B.PROD_NM, A.ITEM_CD, B.VENDOR_ID, 
+		                B.PROFIT_RATE, 
+		                ROUND(( B.CURR_SELL_PRC / DECODE(B.TAXAT_DIVN_CD,'1',1.1,1) * (100 - B.PROFIT_RATE ) / 100 )) BUY_PRC, 
+		                B.CURR_SELL_PRC, 
+		                A.ORD_QTY,
+		                A.ORD_AMT,
+		                B.CAT_CD
+		           FROM TOR_ORDER O, TOR_ORDER_ITEM A, TPR_PRODUCT B
+		           WHERE O.ORDER_ID = A.ORDER_ID
+		           	 AND A.PROD_CD = B.PROD_CD
+		           	 AND ( 0 , B.VENDOR_ID ) IN
+		             ]]>
+		            <iterate property="vendorId" open="(" close=")" conjunction=",">
+					/* 협력사 검색*/
+					( 0 , #vendorId[]# ) -- 협력업체코드
+				</iterate>
+		            AND O.ORD_STS_CD = '11'
+		            AND O.ORD_RTN_DIVN_CD = '10'
+		            AND O.LST_SALE_CFM_DATE BETWEEN#startDate#||'000000' AND #endDate#||'235959'
+		       ) X
+		     , V_CA_MD_CATEGORY D
+		 WHERE X.CAT_CD = D.L3_CD 
+		 GROUP BY D.L1_NM, D.L2_NM, X.PROD_CD, X.PROD_NM, X.ITEM_CD 
+ 		) AD
+ 		)
+ 	<!-- 페이징 삭제 -->
+ 	<!--  WHERE num BETWEEN #startRow# AND #endRow# -->
+	 ORDER  BY num, l1Nm, l2Nm, ordQty DESC, ordAmt DESC, prodCd, itemCd
+
+	</select>	
+		
+		
+	<!-- 엑셀 다운 -->
+	<select id="selectPscmord0011Export" parameterClass="java.util.Map" resultClass="pscmord0010VO">
+		/* pscmord0010.selectPscmord0011Export */
+		<![CDATA[
+		SELECT * FROM (
+		 SELECT  ROWNUM AS num, AD.* from (
+			SELECT
+				 /*+ LEADING(X D.A D.B D.C D.D) USE_NL(D.A D.B D.C D.D) NO_PLACE_GROUP_BY((X A B C)) */
+				   D.L1_NM   AS    l1Nm                   
+			     , D.L2_NM    AS     l2Nm                   
+			     , X.PROD_CD  AS prodCd
+			     , X.PROD_NM AS prodNm
+			     , X.ITEM_CD AS itemCd
+			     , MAX(X.PROFIT_RATE) AS profitRate
+			     , MAX(X.BUY_PRC)  AS buyPrc
+			     , MAX(X.CURR_SELL_PRC)  AS currSellPrc
+			     , SUM(X.ORD_QTY)  AS ordQty
+			     , SUM(X.ORD_AMT)   AS ordAmt
+		  FROM (  
+		  		SELECT 
+		  			 /*+ LEADING(B) USE_NL(O A) NO_MERGE */	
+		  				B.PROD_CD, B.PROD_NM, A.ITEM_CD, B.VENDOR_ID, 
+		                B.PROFIT_RATE, 
+		                ROUND(( B.CURR_SELL_PRC / DECODE(B.TAXAT_DIVN_CD,'1',1.1,1) * (100 - B.PROFIT_RATE ) / 100 )) BUY_PRC, 
+		                B.CURR_SELL_PRC, 
+		                A.ORD_QTY,
+		                A.ORD_AMT,
+		                B.CAT_CD
+		        FROM TOR_ORDER O, TOR_ORDER_ITEM A, TPR_PRODUCT B
+		        WHERE O.ORDER_ID = A.ORDER_ID
+		            AND A.PROD_CD = B.PROD_CD
+		            AND ( 0, B.VENDOR_ID ) IN
+		             ]]>
+			            <iterate property="vendorId" open="(" close=")" conjunction=",">
+						/* 협력사 검색*/
+						( 0 , #vendorId[]# ) -- 협력업체코드
+					</iterate>
+		            AND O.ORD_STS_CD = '11'
+		            AND O.ORD_RTN_DIVN_CD = '10'
+		            AND O.LST_SALE_CFM_DATE BETWEEN#startDate#||'000000' AND #endDate#||'235959'
+		       ) X
+		     , V_CA_MD_CATEGORY D
+		 WHERE X.CAT_CD = D.L3_CD 
+		 GROUP BY D.L1_NM, D.L2_NM, X.PROD_CD, X.PROD_NM, X.ITEM_CD 
+ 		) AD
+ 	)
+ 	<!-- 페이징 삭제 -->
+ 	 <!-- WHERE num BETWEEN #startRow# AND #endRow# -->
+	 ORDER BY num, l1Nm, l2Nm, ordQty DESC, ordAmt DESC, prodCd, itemCd
+	</select>
+	
+	
+</sqlMap>
+	

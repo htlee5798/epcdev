@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCPBRD0007">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	
+	<resultMap id="detailSuggestion" class="com.lottemart.epc.board.model.PSCPBRD0007VO">
+		<result property="boardSeq" column="board_seq"/>
+		<result property="boardDivnCd" column="board_divn_cd"/>
+		<result property="listSeq" column="list_seq"/>
+		<result property="upBoardSeq" column="up_board_seq"/>
+		<result property="ntceStartDy" column="ntce_start_dy"/>
+		<result property="ntceEndDy" column="ntce_end_dy"/>
+		<result property="boardDpSeq" column="board_dp_seq"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="memo" column="memo"/>
+		<result property="smryContent" column="smry_content"/>
+		<result property="pwd" column="pwd"/>
+		<result property="scrpKindCd" column="scrp_kind_cd"/>
+		<result property="wrtrDivnCd" column="wrtr_divn_cd"/>
+		<result property="memberNo" column="member_no"/>
+		<result property="memberNm" column="member_nm"/>
+		<result property="childScrpCnt" column="child_scrp_cnt"/>
+		<result property="depth" column="depth"/>
+		<result property="viewCnt" column="view_cnt"/>
+		<result property="recomCnt" column="recom_cnt"/>
+		<result property="recomPnt" column="recom_pnt"/>
+		<result property="atchFileYn" column="atch_file_yn"/>
+		<result property="delYn" column="del_yn"/>
+		<result property="orderId" column="order_id"/>
+		<result property="scrpObjectCd" column="scrp_object_cd"/>
+		<result property="custQstDivnCd" column="cust_qst_divn_cd"/>
+		<result property="custQstMgrpCd" column="cust_qst_mgrp_cd"/>
+		<result property="clmLgrpCd" column="clm_lgrp_cd"/>
+		<result property="clmMgrpCd" column="clm_mgrp_cd"/>
+		<result property="boardPrgsStsCd" column="board_prgs_sts_cd"/>
+		<result property="telNo" column="tel_no"/>
+		<result property="cellNov" column="cell_no"/>
+		<result property="email" column="email"/>
+		<result property="smsDspYn" column="sms_dsp_yn"/>
+		<result property="ansSmsRecvYn" column="ans_sms_recv_yn"/>
+		<result property="ordYn" column="ord_yn"/>
+		<result property="wrtDy" column="wrt_dy"/>
+		<result property="pblYn" column="pbl_yn"/>
+		<result property="email_snd_yn" column="email_snd_yn"/>
+		<result property="ansEmailRecvYn" column="ans_email_recv_yn"/>
+		<result property="searchKywrd" column="search_kywrd"/>
+		<result property="url" column="url"/>
+		<result property="wpmnAnncDy" column="wpmn_annc_dy"/>
+		<result property="prizeContents" column="prize_contents"/>
+		<result property="prizePrvsMethodCd" column="prize_prvs_method_cd"/>
+		<result property="qstnObjectCdStrCd" column="qstn_object_cd_str_cd"/>
+		<result property="acceptLocaCd" column="accept_loca_cd"/>
+		<result property="acceptId" column="accept_id"/>
+		<result property="dicmfDeclareYn" column="dicmf_declare_yn"/>
+		<result property="let1Ref" column="let_1_ref"/>
+		<result property="let2Ref" column="let_2_ref"/>
+		<result property="let3Ref" column="let_3_ref"/>
+		<result property="let4Ref" column="let_4_ref"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="regId" column="reg_id"/>
+		<result property="modDate" column="mod_date"/>
+		<result property="modId" column="mod_id"/>
+		<result property="atchFileId" column="atch_file_id"/>
+	</resultMap>
+	
+	<select id="selectSuggestionDetailPopup" resultMap="detailSuggestion">
+	/* PSCPBRD0007.selectSuggestionDetailPopup */ 
+		SELECT 
+			A.BOARD_SEQ, 
+			A.BOARD_DIVN_CD, 
+			A.LIST_SEQ, 
+			A.UP_BOARD_SEQ, 
+			A.NTCE_START_DY, 
+			A.NTCE_END_DY, 
+			A.BOARD_DP_SEQ, 
+			A.TITLE, 
+			A.CONTENT, 
+			A.MEMO, 
+			A.SMRY_CONTENT, 
+			A.PWD, 
+			A.SCRP_KIND_CD, 
+			A.WRTR_DIVN_CD, 
+			A.MEMBER_NO, 
+			A.MEMBER_NM, 
+			A.CHILD_SCRP_CNT, 
+			A.DEPTH, 
+			A.VIEW_CNT, 
+			A.RECOM_CNT, 
+			A.RECOM_PNT, 
+			A.ATCH_FILE_YN, 
+			A.DEL_YN, 
+			A.ORDER_ID, 
+			A.SCRP_OBJECT_CD, 
+			A.CUST_QST_DIVN_CD, 
+			A.CUST_QST_MGRP_CD, 
+			A.CLM_LGRP_CD, 
+			A.CLM_MGRP_CD, 
+			A.BOARD_PRGS_STS_CD, 
+			A.TEL_NO, 
+			A.CELL_NO, 
+			A.EMAIL, 
+			A.SMS_DSP_YN, 
+			A.ANS_SMS_RECV_YN, 
+			A.ORD_YN, 
+			A.WRT_DY, 
+			A.PBL_YN, 
+			A.EMAIL_SND_YN, 
+			A.ANS_EMAIL_RECV_YN, 
+			A.SEARCH_KYWRD, 
+			A.URL, 
+			A.WPMN_ANNC_DY, 
+			A.PRIZE_CONTENTS, 
+			A.PRIZE_PRVS_METHOD_CD, 
+			A.QSTN_OBJECT_CD_STR_CD, 
+			A.ACCEPT_LOCA_CD, 
+			A.ACCEPT_ID, 
+			A.DICMF_DECLARE_YN, 
+			A.LET_1_REF, 
+			A.LET_2_REF, 
+			A.LET_3_REF, 
+			A.LET_4_REF, 
+			TO_CHAR(A.REG_DATE, 'YYYYMMDDHH24MISS')REG_DATE, 
+			NVL((SELECT SUB.ADMIN_NM FROM TAD_ADMIN SUB WHERE A.REG_ID = SUB.ADMIN_ID), REG_ID) REG_ID, 
+			A.MOD_DATE, 
+			A.MOD_ID, 
+			A.ATCH_FILE_ID
+		FROM TBO_BOARD A
+		WHERE BOARD_SEQ = #boardSeq#
+	</select>
+	
+	<update id="updateSuggestionDetailPopup">
+	/* PSCPBRD0007.updateSuggestionDetailPopup */ 
+		UPDATE TBO_BOARD SET
+			CONTENT = #content#
+			, DEL_YN = #delYn#
+			, MOD_DATE = CURRENT_TIMESTAMP(0)
+			<isNotEmpty property="atchFileId">
+			, ATCH_FILE_ID = #atchFileId#
+			</isNotEmpty>
+		WHERE BOARD_SEQ = #boardSeq#
+	</update>
+	
+	<update id="updateSuggestionDetailPopupReply">
+	/* PSCPBRD0007.updateSuggestionDetailPopupReply */ 
+		UPDATE TBO_BOARD SET
+			DEL_YN = #delYn#
+			, MOD_DATE = CURRENT_TIMESTAMP(0)
+		WHERE UP_BOARD_SEQ = #boardSeq#
+	</update>
+	
+	<update id="updateSuggestionReadCount">
+	/* PSCPBRD0007.updateSuggestionReadCount */ 
+		UPDATE TBO_BOARD SET
+			VIEW_CNT = VIEW_CNT + 1
+		WHERE BOARD_SEQ = #boardSeq#
+	</update>
+	
+	<update id="deleteAtchFileId">
+	/* PSCPBRD0007.deleteAtchFileId */ 
+		UPDATE TBO_BOARD 
+		SET	ATCH_FILE_ID = ''
+		WHERE BOARD_SEQ = #boardSeq#
+	</update>
+	
+</sqlMap>

@@ -1,0 +1,414 @@
+@charset "utf-8";
+@import "default.css";
+/* w: 720px , h: 1280px - 시간알림영역(50px) 포함 */
+.wrap{position:relative;min-height:100%;overflow:hidden;background:#fff;height:100%}
+.contents{padding-bottom:50px}
+
+
+/* 서브 헤더 공통 */
+header{width:100%;height:48px;position:relative;background:url(../../images/mdpnew/com/hd_bg.png) repeat-x 0 0;background-size:100% 100%;border-bottom:2px solid #07609e}
+header h1{font-family:MGB;line-height:47px;height:48px;text-align:center;color:#fff;font-size:20px;text-shadow: -1px -1px #114e7b;letter-spacing:-1px;word-spacing:-1px}
+header > a{position:absolute;display:block;height:48px;font-size:0;top:0;width:56px;height:48px;text-indent:-9999px;overflow:hidden}
+header > a.btn_back{left:0;background:url(../../images/mdpnew/com/back.png) no-repeat -5px 0;background-size:56px auto}
+header > a.btn_home{right:0;background:url(../../images/mdpnew/com/home.png) no-repeat 3px 0;background-size:56px auto}
+header > a:active{opacity:0.7}
+
+/* 배송계획 */
+.info{height:65px;border-bottom:2px solid #979797;z-index:8;background:#f5f5f5;padding:15px;position:relative}
+.info a.btn_map{display:block;position:absolute;top:15px;right:15px;width:63px;height:63px;background:url(../../images/mdpnew/com/btnMap_bg.png) repeat-x 0 0;background-size:100% 100%;
+	border:1px solid #cc4b07;border-radius:4px;box-shadow:inset 0 1px 0 #fba880;font-size:17px;font-family:MGB;color:#fff;line-height:42px;text-align:center;letter-spacing:-1px}
+.info a.btn_map span{display:block;width:63px;text-align:center;height:40px;padding-top:23px;background:url(../../images/mdpnew/com/ico7.png) no-repeat 50% 9px;background-size:16px 22px}
+.info a:active{opacity:0.7}
+.info > span{display:block;letter-spacing:-1px}
+.info > span:first-child{font-family:MGB;font-size:20px;color:#555;height:25px;word-spacing:-3px}
+.info > span:nth-child(2), .info > span:nth-child(3){font-family:MGB;font-size:16px;color:#989898;height:20px}
+.info .line > span:first-child{display:inline-block;padding-right:5px;background:url(../../images/mdpnew/com/part.png) no-repeat 100% 7px;background-size:2px 17px;padding-right:6px;margin-right:4px}
+.info .amount > span:first-child{display:inline-block;padding-right:5px;background:url(../../images/mdpnew/com/part.png) no-repeat 100% 6px;background-size:2px 13px;padding-right:8px;margin-right:5px}
+
+/* 출발보고 */
+.start{height:55px;padding:20px 0;width:100%;display:block;z-index:10;background:#fff;border-bottom:2px solid #ccc}
+.start > a {display:block;height:55px;margin:0 15px;line-height:51px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;letter-spacing:-1px;
+	;background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:100% 100%;color:#fff;font-size:26px;text-shadow: -1px -1px #0059a2;text-align:center;font-family:MGB;
+}
+.start > a:active{opacity:0.7}
+
+/* 리스트 2015-12-18 수정 */
+.list{position:relative;overflow:hidden;overflow-y:scroll}
+.list li{clear:both;border-bottom:1px solid #ccc;position:relative;position:relative;z-index:8;padding:12px 0 15px;min-height:98px;background:url(../../images/mdpnew/com/arrow_list.png) no-repeat 96% 50%;background-size:13px 24px}
+.list li .outer{width:100%;height:100%;background:url(../../images/mdpnew/com/part.png) no-repeat 68px 3px;background-size:1px 100%}
+.list li .outer > a{display:block}
+.list .INACTIVE  li{background:none;cursor:auto} /* 2015-12-28 수정 */
+.list li > a:active{background-color:#f5f5f5}
+.list li .inner{margin:0 auto}
+.list .fl{width:68px;position:absolute;left:0;top:15px}
+.list .fl > span{display:block}
+/* .list .fl > span.marker{width:40px;height:48px;margin:0 auto}
+.list .fl > span.custom{text-align:center;margin-top:0px;color:#555;font-family:MGB;font-size:15px;letter-spacing:-1px} */
+.list .fl > span.marker{width:40px;height:40px;background:url(../../images/mdpnew/com/marker.png) no-repeat 0 0;background-size:contain;text-align:center;font-size:16px;
+	font-family:MGB;margin:0 auto;padding-top:8px;color:#0069b8;}
+.list .fl > span.custom{text-align:center;margin-top:5px;color:#555;font-family:MGB;font-size:13px;letter-spacing:-1px;line-height:1;margin-bottom:1px}
+.list .flfr{height:auto;min-height:100px;}
+.list .fl > span.orderId1{text-align:center;margin-top:3px;font-size:15px;letter-spacing:-1px;line-height:1;margin-bottom:1px}
+.list .fl > span.orderId2{text-align:center;color:#DB0000;font-family:MGB;font-size:20px;letter-spacing:-1px;line-height:1;margin-bottom:1px}
+
+.btn_move{font-size:0;text-align:center;position:absolute;left:0;bottom:15px;width:68px}
+.btn_move button{display: inline-block;width:26px;height:26px;line-height:22px;color:#fff;font-size:17px;text-align:center;position:relative;
+	border:1px solid #999;border-radius:2px;box-shadow:inset 0px 1px 0px #fff;background:url(../../images/mdpnew/com/move_bg.png) repeat-x 0 0;background-size:1px 26px;
+	text-indent:-9999px;overflow:hidden;margin:0 2px
+}
+.btn_move button:active{background:#ddd;box-shadow:inset 0px 1px 0px #ddd}
+.btn_move button span{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
+.btn_move .up span{background:url(../../images/mdpnew/com/move_up.png) no-repeat 50% 50%;background-size:16px 10px}
+.btn_move .dw span{background:url(../../images/mdpnew/com/move_down.png) no-repeat 50% 50%;background-size:16px 10px}
+
+.list .fr{margin-left:75px}
+.list .fr > span{display:block}
+.list .fr > span.juso1{margin-right:32px;line-height:1.2;letter-spacing:-1px;vertical-align:top}
+.list .fr > span.juso1,
+.list .fr > span.juso2{font-family:MGB;font-size:20px;color:#555}
+.list .fr > span.juso2{margin-top:4px}
+.list .fr > span.detail{clear:both;font-family:MGB;font-size:16px;color:#989898;margin-top:6px;height:14px;letter-spacing:-0.5px}
+.list .fr > span.detail > span{float:left;height:14px;line-height:14px;display:block;background:url(../../images/mdpnew/com/part.png) no-repeat 100% 2px;background-size:1px 13px;padding-right:4px;margin-right:2px}
+.list .fr > span.detail > span:last-child{margin-right:0;padding-right:0;background:none}
+.list .btn_box{margin-left:75px;overflow:hidden;padding-top:5px}
+.list .btn_box > span, .list .btn_box > a{font-family:MGB;margin-right:5px;margin-top:6px}
+.list .btn_box > a:active{opacity:0.7}
+.list .btn_box .ch{display:block;float:left;width:46px;height:26px;line-height:23px;background:#f38226;color:#fff;
+	border-radius:2px;font-size:17px;text-align:center}
+.list .btn_box .rt{display:block;float:left;width:150px;height:26px;line-height:23px;background:#f3313c;color:#fff;
+	border-radius:2px;font-size:17px;text-align:center}
+.list .btn_box .bx{display:block;float:left;width:75px;height:26px;background:#e0e0e0;
+	border-radius:2px;font-size:20px;line-height:23px;text-align:center;color:#0762a0;letter-spacing:-1px}
+.list .btn_box .bxyl{display:block;float:left;width:75px;height:26px;background:#ffe400;
+	border-radius:2px;font-size:20px;line-height:23px;text-align:center;color:#0762a0;letter-spacing:-1px}
+.list .btn_box .coldbag{display:block;float:left;width:75px;height:26px;background:#4AA8D8;
+	border-radius:2px;font-size:20px;line-height:23px;text-align:center;color:#FFFFFF;letter-spacing:-1px}
+.list .btn_box .na{display:block;float:left;width:50px;height:24px;background:url(../../images/mdpnew/com/nav_bg.png) repeat-x 0 0;background-size:1px 24px;
+	border:1px solid #34519f;border-radius:2px;box-shadow:inset 0px 1px 0px #7287be;
+	font-size:17px;line-height:21px;text-align:center;color:#fff;letter-spacing:-1px;position:relative;z-index:9}
+.list .btn_box .na span{padding-right:10px;background:url(../../images/mdpnew/com/arrow_r.png) no-repeat 100% 9px;background-size:auto 9px;font-family:MGB}
+.list .btn_box .re{display:block;float:left;width:166px;height:26px;line-height:23px;background:#fc639a;color:#fff;font-family:MGB;letter-spacing:-1px;
+	border-radius:2px;font-size:17px;text-align:center}
+ 
+ /* 배송계획- 맵 */
+.map_box{height:calc(100% - 50px);width:100%;position:relative}
+.map_box .mk{position:absolute;z-index:10;display:block;width:40px;height:40px;background:url(../../images/mdpnew/com/marker.png) no-repeat 0 0;background-size:contain;text-align:center;
+font-size:18px;font-family:MGB;padding-top:8px}
+.map_box .view{position:relative;height:100%;width:100%}
+
+/* 환경설정 */
+section.setting > ul > li{height:45px;line-height:43px;border-bottom:2px solid #ccc;font-family:MGB;padding:0 15px}
+section.setting > ul > li:nth-child(odd){background-color:#f5f5f5;font-size:16px;color:#777}
+section.setting > ul > li:nth-child(even){font-size:18px;color:#555}
+section.setting > ul > li > a{display:block;font-family:MGB;color:#555;height:100%;padding-left:25px;background:url(../../images/mdpnew/com/arrow_list.png) no-repeat 100% 50%;
+	background-size:13px 24px}
+section.setting .check_info{position:relative;height:113px} /* 2015-08-10 수정 */
+section.setting .check_info .login_check_box{display:block;height:45px;overflow:hidden;position:relative;background:url(../../images/mdpnew/com/pw_ico1.png) no-repeat 0 50%;background-size:19px 18px}
+section.setting .check_info .login_check_box input[type=checkbox]{width:24px;height:24px;overflow:hidden;padding:0;border:0;margin:0;position:absolute;top:0;left:-9999em}
+section.setting .check_info .login_check_box label{
+	height:45px;line-height:42px;display:block;background:url(../../images/mdpnew/com/chk.png) no-repeat 100% 10px;background-size:24px auto;
+	cursor:pointer;overflow:hidden;padding-left:25px
+}
+section.setting .check_info .login_check_box label.checked{background-position:100% -116px}
+section.setting .check_info .find_pw_box{display:block;float:right;width:103px;height:39px;line-height:37px;border:1px solid #1e72a9;border-radius:4px;background:#ececec}
+section.setting .check_info .find_pw_box > a{display:block;width:100%;height:100%;font-size:14px;color:#1e72a9;text-align:center;font-family:MGB}
+section.setting .pw_change{background:url(../../images/mdpnew/com/pw_ico2.png) no-repeat 15px 50%;background-size:19px 18px}
+section.setting .vs_info{background:url(../../images/mdpnew/com/pw_ico3.png) no-repeat 15px 50%;background-size:19px 18px;padding-left:40px;position:relative}
+section.setting .vs_info > span{position:absolute;right:15px;color:#2584c5}
+section.setting .check_info .logout a{display:block;height:55px;margin:0;line-height:51px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;
+	background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:100% 100%;color:#fff;font-size:26px;text-shadow: -1px -1px #0059a2;
+	text-align:center;font-family:MGB;letter-spacing:-1px} /* 2015-08-10 추가 */
+
+/* 비밀번호 변경 */
+.change_password{padding:20px 15px}
+.change_password > p{font-size:17px;margin-bottom:20px;color:#555;font-family:MGB;letter-spacing:-1px}
+.change_password .input_row{
+	position:relative;border:1px solid #999;border-radius:4px;-moz-border-radius:4px;padding:10px 35px 10px 15px;
+	margin:0 0 10px;background:#fff;	height:25px;box-shadow:inset 0px 2px 0px #e0e0e0; /* x , y , 흐림 */
+}
+.change_password .input_row .input_box{display:block;overflow:hidden}
+.change_password .input_row .input_box label{font-size:17px;position:absolute;top:16px;left:15px;z-index:8;color:#999;line-height:16px;}
+.change_password .input_row .input_box input{
+	position:relative;z-index:9;width:100%;height:18px;padding:3px 0 4px;border:0;background:#fff;font-size:17px;color:#000;line-height:19px
+}
+.change_password .btn_login{display:block;height:53px;line-height:46px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;
+	;background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:100% 100%;text-align:center;
+}
+.change_password .btn_login .int_login{background:none;color:#fff;font-size:26px;text-shadow: -1px -1px #0059a2;font-family:MGB;width:100%;height:50px}
+
+/* 상차검수 */
+.forwarding_list .tit{padding-top:10px;padding-left:15px;height:25px;display:block;font-family:MGB;color:#555;font-size:17px;border-bottom:1px solid #999}
+.forwarding_list .check_info{position:relative;height:24px}
+.forwarding_list .check_info .check_box{display:block;width:24px;height:24px;overflow:hidden;position:relative;margin:0 auto}
+.forwarding_list .check_info .check_box input[type=checkbox]{width:24px;height:24px;overflow:hidden;padding:0;border:0;margin:0;position:absolute;top:0;left:-9999em}
+.forwarding_list .check_info .check_box label{width:24px;height:24px;line-height:999px;display:block;background:url(../../images/mdpnew/com/chk.png) no-repeat 0 0;background-size:24px auto;cursor:pointer;overflow:hidden;font-size:16px;color:#555;font-family:MGB}
+.forwarding_list .check_info .check_box label.checked{background-position:0 100%}
+.forwarding_list .cont{border:0;border-spacing:0;border-collapse: separate;width:100%}
+.forwarding_list .cont th{border-bottom:1px solid #999;border-left:1px solid #999;text-align:center;padding:8px 3px;font-size:15px;font-family:MGB;color:#333;line-height:1}
+.forwarding_list .cont td{border-bottom:1px solid #ccc;border-left:1px solid #ccc;text-align:center;padding:8px 3px;font-size:15px;font-family:MGB;color:#555}
+.forwarding_list .cont th:first-child,
+.forwarding_list .cont td:first-child{border-left:0}
+
+/* 도착보고 */
+.report .txt{background:#f5f5f5;border-bottom:1px solid #999;text-align:center;padding:20px 15px;color:#555;font-size:17px;font-family:MGB;
+	padding-top:115px;letter-spacing:-1px;word-spacing:-1px
+}
+.arrival .txt{background:url(../../images/mdpnew/com/sub_top1.png) no-repeat 50% 20px;background-size:120px 85px;letter-spacing:-1px}
+.issue .txt{background:url(../../images/mdpnew/com/sub_top2.png) no-repeat 50% 20px;background-size:120px 85px;letter-spacing:-1px}
+.report .btn_area{padding:20px 15px;background:#ffff}
+.arrival .btn_area{height:107px}
+.issue .btn_area{height:224px}
+.report .btn_area a{display:block;height:105px}
+.report .btn_area a{width:48%;border:1px solid #999;border-radius:4px;box-shadow:inset 0px 1px 0px #fff;
+	background:url(../../images/mdpnew/com/btnSub_bg.png) repeat-x 0 0;background-size:1px 105px;color:#fff;text-align:center;letter-spacing:-1px
+}
+.report .btn_area a:active{background:#ddd;box-shadow:inset 0px 1px 0px #aaa;}
+.report .btn_area a:nth-child(odd){float:left}
+.report .btn_area a:nth-child(even){float:right}
+.report .btn_area a:nth-child(1n+3){margin-top:10px}
+.report .btn_area a span{display:block;color:#555;font-size:17px;width:100%;padding-top:70px;font-family:MGB}
+.arrival .btn_area .btn1 span{background:url(../../images/mdpnew/com/ico_btn1.png) no-repeat 50% 10px;background-size:60px 60px}
+.arrival .btn_area .btn2 span{background:url(../../images/mdpnew/com/ico_btn2.png) no-repeat 50% 10px;background-size:60px 60px}
+.issue .btn_area .btn1 span{background:url(../../images/mdpnew/com/ico_btn3.png) no-repeat 50% 10px;background-size:60px 60px}
+.issue .btn_area .btn2 span{background:url(../../images/mdpnew/com/ico_btn4.png) no-repeat 50% 10px;background-size:60px 60px}
+.issue .btn_area .btn3 span{background:url(../../images/mdpnew/com/ico_btn5.png) no-repeat 50% 10px;background-size:60px 60px}
+.issue .btn_area .btn4 span{background:url(../../images/mdpnew/com/ico_btn6.png) no-repeat 50% 10px;background-size:60px 60px}
+.issue .call{clear:both;display:block;margin:0 15px 20px;border:1px solid #999;border-radius:4px;box-shadow:inset 0px 1px 0px #fff;
+	color:#555;background:#fff;height:50px;line-height:48px;font-size:18px;color:#555}
+.issue .call > span{display:block;width:288px;height:48px;margin:0 auto}
+.issue .call > span > span{display:block;float:left;line-height:48px;padding-left:45px;background:url(../../images/mdpnew/com/ico3.png) no-repeat 10px 50%;
+	background-size:25px 25px;height:50px;font-family:MGB;margin-right:5px;letter-spacing:-1px}
+.issue .call > span > strong{display:block;color:#0762a0;font-size:21px}
+
+/* 2015-12-14 도착보고 */
+.arrival .btn_area a{width:100%;margin-left:-1px;float:none !important}
+.arrival .btn_area a:first-child{margin-bottom:10px}
+
+
+/* 탭 */
+.tab{height:48px;padding:0;background:#1690e0;border:1px solid #0c76bf;font-size:0;position:relative}
+.tab a{display:inline-block;font-size:20px;color:#fff;font-family:MGB;width:50%;height:44px;position:absolute;top:-1px;color:#555;text-align:center;line-height:42px}
+.tab a:first-child{left:-1px;border-top:1px solid #999;border-left:1px solid #999;border-bottom:1px solid #0c76bf;border-right:1px solid #0c76bf;background:#fff url(../../images/mdpnew/com/tab_part.png) repeat-y 100% 0;background-size:2px 1px}
+.tab a:last-child{right:-1px;border-top:1px solid #999;border-right:1px solid #999;border-bottom:1px solid #0c76bf;border-left:1px solid #0c76bf;background:#fff url(../../images/mdpnew/com/tab_part.png) repeat-y 0 0;background-size:2px 1px}
+.tab a.on{color:#fff;background:transparent url(../../images/mdpnew/com/tab_arrow.png) no-repeat 50% 90%;background-size:9px 5px;
+	border:0;height:46px;box-shadow:none
+}
+.tab a:active{opacity:0.7}
+
+/* 수령인정보 */
+.op{width:100%;background:#f5f5f5;border-bottom:1px solid #999}
+.op > ul > li{height:33px;padding:7px 15px 7px 115px;border-top:1px solid #ccc;position:relative}
+.op > ul > li:first-child{border-top:0}
+.op .tit{display:block;height:100%;line-height:45px;font-size:18px;font-family:MGB;color:#555;letter-spacing:-1px;position:absolute;top:0;left:15px}
+.op .val{display:block;padding:0 0 0 10px;height:31px;line-height:28px;color:#999;border:1px solid #999;font-family:MGB;
+	background:url(../../images/mdpnew/com/select_arrow.png) no-repeat 95% 50%;background-size:19px 11px;font-size:17px;
+}
+.op a:active{background-color:#ddd !important}
+.op .txt{display:block;height:100%;line-height:31px;font-size:18px;font-family:MGB;color:#000;letter-spacing:-1px}
+
+
+/* 2015-12-14 사유입력 */
+.op .input_row.type2{
+	position:relative;border:1px solid #999;border-radius:4px;-moz-border-radius:4px;padding:4px 10px;
+	background:#fff;	height:23px;box-shadow:inset 0px 2px 0px #e0e0e0; /* x , y , 흐림 */
+}
+.op .input_row.type2 .input_box{display:block;overflow:hidden}
+.op .input_row.type2 .input_box label{font-size:17px;position:absolute;top:16px;left:15px;z-index:8;color:#999;line-height:16px;}
+.op .input_row.type2 .input_box input{font-family:MGB;text-decoration:none;
+	position:relative;z-index:9;width:100%;height:18px;padding:3px 0 4px;border:0;background:#fff;font-size:17px;color:#999;line-height:18px
+}
+
+
+/* 공지사항 검색 */
+.op.search{height:40px;padding:7px 15px;width:auto}
+.op.search .sort,
+.op.search .keyword{float:left;padding:0;border:0;height:40px}
+.op.search .sort{width:92px;margin-right:5px}
+.op.search .keyword{width:calc(100% - 135px);position:relative}
+.op.search .keyword .btn{display:block;width:38px;height:38px;border:1px solid #0762a0;border-left:0;position:absolute;top:0;right:-38px;
+	border-top-right-radius:4px;border-bottom-right-radius:4px;background:url(../../images/mdpnew/com/pop_btn_a.png) repeat-x 0 -1px;background-size:1px 39px;
+}
+.op.search .keyword .btn button{background:transparent url(../../images/mdpnew/com/ico8.png) no-repeat 50% 50%;background-size:22px 21px;
+	width:100%;height:100%;text-align:center;text-indent:-9999px;overflow:hidden;border-top-right-radius:4px;border-bottom-right-radius:4px;}
+.op.search .val{width:80px;height:38px;line-height:36px}
+.search_form .input_row{
+	position:relative;border:1px solid #0762a0;padding:0px 5px 0px;
+	background:#fff;height:38px;box-shadow:inset 0px 2px 0px #e0e0e0; /* x , y , 흐림 */
+}
+.search_form .input_row .input_box{display:block;overflow:hidden;padding:0;width:100%}
+.search_form .input_row .input_box label{font-size:16px;position:absolute;top:9px;left:15px;z-index:8;color:#999;line-height:16px;}
+.search_form .input_row .input_box input{
+	position:relative;z-index:9;width:100%;height:24px;line-height:20px;margin-top:8px;border:0;background:#fff;font-size:17px;color:#999;font-family:MGB;letter-spacing:-1px
+}
+.search_form .input_row .input_box input::-moz-input-placeholder{line-height:18px}
+.search_form .input_row .input_box input::-webkit-input-placeholder{line-height:18px}
+
+.check_form .op .tit{font-size:16px}
+.check_form .op > ul > li > div{float:left;position:relative;height:34px}
+.check_form .op > ul > li > div .tit{height:34px;line-height:32px}
+.check_form .op > ul > li{clear:both;padding-left:0px}
+.check_form .op .input_row{
+	position:relative;border:1px solid #999;border-radius:4px;-moz-border-radius:4px;padding:0 5px;
+	margin:0 0 10px 77px;background:#fff;height:32px;box-shadow:inset 0px 2px 0px #e0e0e0; /* x , y , 흐림 */
+}
+.check_form .op .input_row .input_box{display:block;overflow:hidden;padding:0;width:100%}
+.check_form .op .input_row .input_box label{font-size:16px;position:absolute;top:10px;left:15px;z-index:8;color:#999;line-height:16px;}
+.check_form .op .input_row .input_box input{
+	position:relative;z-index:9;width:100%;height:22px;border:0;background:#fff;font-size:16px;color:#999;font-family:MGB;letter-spacing:-1px;line-height:18px;margin-top:3px;padding-bottom:3px
+}
+
+/* 공지사항 List */
+.list_noti{clear:both}
+.list_noti li{width:100%}
+.list_noti li a{padding:15px;display:block;position:relative;border-bottom:1px solid #ccc}
+.list_noti li a:active{background-color:#ddd}
+.list_noti li a > span{display:block}
+.list_noti .tit{padding-bottom:20px;padding-right:15px;background:url(../../images/mdpnew/com/arrow_list.png) no-repeat 100% 50%;background-size:13px 24px;
+	font-size:18px;font-family:MGB;color:#555;letter-spacing:-1px}
+.list_noti .txt{position:absolute;bottom:15px;left:15px;font-family:MGB;font-size:16px;color:#999;height:16px;letter-spacing:-0.5px}
+.list_noti .txt > span{float:left;height:16px;line-height:16px;display:block;background:url(../../images/mdpnew/com/part.png) no-repeat 100% 3px;background-size:1px 16px;padding-right:4px;margin-right:2px}
+
+.list_noti .txt > span:last-child{margin-right:0;padding-right:0;background:none}
+.list_noti .btn{padding:15px;text-align:center;font-size:0}
+.list_noti .btn a{display:inline-block;width:38px;height:38px;border:1px solid #999;border-radius:4px;text-indent:-9999px;overflow:hidden;
+	background:url(../../images/mdpnew/com/btn_bg.png) repeat-x 0 0;background-size:1px 38px;margin:0 7px}
+.list_noti .btn a:active{background:#ddd}
+.list_noti .btn a span{display:block;width:100%;height:100%}
+.list_noti .btn .prev span{background:url(../../images/mdpnew/com/prev.png) no-repeat 48% 50%;background-size:10px 22px}
+.list_noti .btn .next span{background:url(../../images/mdpnew/com/next.png) no-repeat 52% 50%;background-size:10px 22px}
+.list_noti .btn .page{display:inline-block;height:40px;line-height:40px;font-size:16px;font-family:'MGB';color:#555;vertical-align:top;margin:0 10px} /* 2015-08-26 추가 */
+
+/* 동기화서비스 */
+.mcomd-more { clear:both; width:60%; margin:0 auto; padding:0 0 1.875em }
+.mcomd-more a { text-decoration: none; }
+.mcomd-more div { padding:0.625em 0; text-align:center; overflow:hidden; color:#000; font-weight:bold; text-shadow:none;
+		background:#fff; background-image: -webkit-gradient(linear,left top,left bottom,from(#eff3f5),to(#eaf7fd));
+		background-image: -webkit-gradient(top, #eff3f5, #eaf7fd);
+		background-image: -moz-gradient(top, #eff3f5, #eaf7fd);
+		background-image: -o-gradient(top, #eff3f5, #eaf7fd);
+		border-top:1px solid #ccc; border-left:1px solid #ccc; border-right:1px solid #999; border-bottom:1px solid #999;margin-top:5px;}
+
+/* 공지사항 View */
+.subject{padding:15px;border-bottom:2px solid #979797;z-index:8;background:#f5f5f5;position:relative}
+.subject > span{display:block}
+.subject .tit{padding-bottom:20px;font-size:20px;font-family:MGB;color:#555;letter-spacing:-1px}
+.subject .txt{position:absolute;bottom:15px;left:15px;font-family:MGB;font-size:16px;color:#999;height:14px;letter-spacing:-0.5px}
+.subject .txt > span{float:left;height:16px;line-height:16px;display:block;background:url(../../images/mdpnew/com/part.png) no-repeat 100% 3px;background-size:1px 16px;padding-right:4px;margin-right:2px}
+.subject .txt > span:last-child{margin-right:0;padding-right:0;background:none}
+.view_cont{padding:15px;font-size:17px;color:#555;letter-spacing:-1;font-family:MGB}
+ /* 2015-09-08 추가 */
+.file_add{height:45px;line-height:43px;border-bottom:2px solid #ccc;font-family:MGB;padding:0 60px 0 15px;background-color:#fff;font-size:16px;color:#777;position:relative}
+.file_add a{color:#777}
+.file_add button{display: inline-block;width:26px;height:26px;line-height:22px;color:#fff;font-size:17px;text-align:center;position:absolute;top:10px;right:15px;
+	border:1px solid #999;border-radius:2px;box-shadow:inset 0px 1px 0px #fff;background:url(../../images/mdpnew/com/move_bg.png) repeat-x 0 0;background-size:1px 26px;
+	text-indent:-9999px;overflow:hidden;margin:0 2px}
+.file_add button:active{background:#ddd;box-shadow:inset 0px 1px 0px #ddd}
+.file_add button span{display:block;position:absolute;top:0;left:0;width:100%;height:100%;background:url(../../images/mdpnew/com/file_down.png) no-repeat 50% 50%;background-size:15px 14px}
+
+
+
+/* 배송실적 */
+.result{height:auto}
+.list_noti .tit{position:relative}
+.list_noti .tit .count{display:block;height:16px;padding:4px 0;position:absolute;top:0;right:35px;background:#e0e0e0;border-radius:4px;width:auto}
+.list_noti .tit .count > span{display:block;float:left;color:#0762a0;font-size:17px;height:16px;line-height:1;padding:0 5px}
+.list_noti .tit .count .cs{border-right:1px solid #999;padding:0 7px 0 5px}
+
+/* 셀렉트박스 UI */
+.select_list{border:1px solid #999;border-top:0;background:#fff;display:none;position:absolute;top:40px;z-index:10;
+	width:-moz-calc(100% - 132px);
+    width:-webkit-calc(100% - 132px);
+    width:-o-calc(100% - 132px);
+    width:calc(100% - 132px);
+}
+.select_list a{font-family:MGB;color:#555;font-size:17px;padding-left:10px;height:30px;line-height:28px;display:block;letter-spacing:-1px}
+.select_list a.on{text-decoration:underline;color:#2784c7;background:#e8f7fc}
+
+/* 확인버튼 */
+.confirm{height:55px;padding:20px 15px;display:block;z-index:10;background:#fff;border-bottom:1px solid #ccc}
+.confirm > a {display:block;width:48%;height:55px;line-height:51px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;
+	background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:100% 100%;color:#fff;font-size:22px;text-shadow: -1px -1px #0059a2;
+	text-align:center;font-family:MGB;letter-spacing:-2px
+} /* 2016-01-21 수정 */
+.confirm > a:first-child{float:left;background-image:url(../../images/mdpnew/com/btnStart_bg2.png);text-shadow: -1px -1px #444;box-shadow:inset 0px 1px 0px #adadad;border:1px solid #444}
+.confirm > a:last-child{float:right}
+.confirm > a:active{opacity:0.7}
+.confirm > a.sty2{background-image:url(../../images/mdpnew/com/btnStart_bg.png);text-shadow: -1px -1px #0059a2;box-shadow:inset 0px 1px 0px #7bb5db;border:1px solid #0663a0} /* 2016-01-21 추가 */
+
+/* 상세내용 */
+.detail_view{margin-bottom:20px;position:relative}
+.detail_view .count{height:43px;background:#f5f5f5;border-bottom:1px solid #ccc;padding:0 15px;line-height:40px;font-size:16px;font-family:MGB;font-weight:bold} /* 2016-01-21 수정 */
+.detail_view .count > span{color:#555;display:block;float:left;height:43px;margin-right:10px;padding-right:12px;background:url(../../images/mdpnew/com/part.png) no-repeat 100% 50%;background-size:2px 14px}
+.detail_view .count > span:last-child{background:none;padding:0;margin:0}
+.detail_view .count > span > span{display:block;float:left}
+.detail_view .count > span strong{color:#da291c;display:block;float:left;padding-top:1px;margin-left:4px}
+.detail_view .count::after{content:'';clear:both}
+.detail_view .cont{border:1px solid #999;border-radius:4px;background:#fff;margin:20px 15px 0;box-shadow:0 3px 0 #e5e5e5}
+.detail_view .cont table{border:0;border-spacing:0;border-collapse: separate;width:100%}
+.detail_view .cont table th,.detail_view .cont table td{padding:10px;font-size:14px;font-family:MGB;color:#555;border-bottom:1px solid #ccc;letter-spacing:-1px}
+.detail_view .cont table th{background:#f5f5f5;text-align:left;border-right:1px solid #ccc}
+.detail_view .cont table tr:first-child th{border-top-left-radius:4px}
+.detail_view .cont table tr:last-child th{border-bottom-left-radius:4px;border-bottom:0}
+.detail_view .cont table tr:last-child td{border-bottom:0}
+.detail_view .cont table td .bx{display:block;float:left;width:65px;height:26px;background:#e0e0e0;
+	border-radius:2px;font-size:15px;line-height:22px;text-align:center;color:#0762a0;letter-spacing:-1px}
+.detail_view .cont table td span.orderId1{text-align:center;margin-top:3px;font-size:15px;letter-spacing:-1px;line-height:1;margin-bottom:1px}
+.detail_view .cont table td span.orderId2{text-align:center;color:#DB0000;font-family:MGB;font-size:20px;letter-spacing:-1px;line-height:1;margin-bottom:1px}
+
+
+/*2020-01-21 정기배포 : TMS 행복기사 App 신규화면 관련 css추가*/
+.detail_view .cont table th.ct{text-align:center}
+.detail_view .cont table td .insf{display:block;float:left;width:65px;height:26px;line-height:23px;background:#f3313c;color:#fff;
+	border-radius:2px;font-size:17px;text-align:center}
+.detail_view .cont table td .trnf{display:block;float:left;width:65px;height:26px;line-height:23px;background:#000000;color:#fff;
+	border-radius:2px;font-size:17px;text-align:center}
+.detail_view .count div > a.rtab{position:absolute;right:15px;width:140px;height:40px;line-height:36px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;
+	background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:100% 100%;color:#fff;font-size:22px;text-shadow: -1px -1px #0059a2;
+	text-align:center;font-family:MGB;letter-spacing:-2px
+}
+.detail_view .count div > a.rtenab{position:absolute;right:15px;width:140px;height:40px;line-height:36px;border:1px solid #444;border-radius:4px;box-shadow:inset 0px 1px 0px #adadad;
+	background:url(../../images/mdpnew/com/btnStart_bg2.png) repeat-x 0 0;background-size:100% 100%;color:#fff;font-size:22px;text-shadow: -1px -1px #444;
+	text-align:center;font-family:MGB;letter-spacing:-2px
+}
+/* 2020-01-22 물류팀 요청 클릭 이벤트영역:폰트사이즈 up,색상 파란계열 */
+.list .fr > a >span.juso1{font-family:MGB;font-size:20px;}
+.list .fr > a >span.juso1{margin-right:32px;line-height:1.2;letter-spacing:-1px;vertical-align:top}
+
+/* 2020-02-03 상차장,장척물 관련 cs추가 */
+.info .cz {display:block;position:absolute;top:10px;right:88px;width:90px;}
+.info .cz .ct span{display:block;font-family:MGB;font-size:15px;color:#555;text-align:center;height:20px;margin-top:2px;margin-bottom:2px;}
+.info .cz .zn span.zn1{display:block;font-family:MGB;font-size:15px;color:#555;text-align:center;height:20px;margin-top:2px;}
+.info .cz .zn span.zn2{display:block;font-family:MGB;font-size:15px;color:#555;text-align:center;height:20px;margin-bottom:2px;}
+.info .cz .ct{display:block;border:2px solid #999;margin-bottom:2px;/* border-radius:4px; */}
+.info .cz .zn{display:block;border:2px solid #999;background:#ffe400;/* border-radius:4px; */}
+	
+/* 사진첩, 카메라 2016-01-21 */
+.detail_view .btn_app{position:absolute;top:2px;right:15px}
+.detail_view .btn_app button,
+.detail_view .btn_app input{display:block;float:left;width:39px;height:39px;background-color:transparent;background-repeat:no-repeat;background-position:0 0;background-size:39px 83px;text-indent:-9999px;overflow:hidden}
+.detail_view .btn_app .album{background-image:url(../../images/mdpnew/com/app_btn1.png)}
+.detail_view .btn_app .camera{background-image:url(../../images/mdpnew/com/app_btn2.png)}
+.detail_view .btn_app button:first-child,
+.detail_view .btn_app input:first-child{margin-right:8px}
+.detail_view .btn_app .ACTIVE{background-position:0 100%}	
+
+/* 페이지오류 */
+.error{background:#f5f5f5;width:100%;height:100%}
+.error .inner{position:absolute;top:50%;height:275px;margin-top:-137px;letter-spacing:-1px;width:100%}
+.error .inner .tit{padding-top:100px;height:25px;line-height:23px;text-align:center;color:#0762a0;font-family:MGB;
+	background:url(../../images/mdpnew/com/error.png) no-repeat 50% 0;background-size:85px 85px}
+.error .inner .txt{text-align:center;width:100%;font-size:17px;font-family:MGB;color:#555;height:45px;line-height:30px}
+.error .inner .desc{margin:0 15px;border:1px solid #999;border-radius:4px;background:#fff;padding:10px;text-align:center;color:#555;font-size:15px;box-shadow:0 3px 0px #dcdcdc}
+
+
+/* KPI 관리 2015-12-18 */
+.kpi .date{border-bottom:2px solid #979797;font-family:MGB;padding:15px 15px 14px;background-color:#f5f5f5;color:#999;font-size:16px;font-weight:normal;line-height:12px}
+.kpi ul li{border-bottom:1px solid #ccc;font-family:MGB;padding:13px 70px 13px 15px;background-color:#fff;font-size:18px;color:#333;position:relative;line-height:18px}
+.kpi ul li span{display:block}
+.kpi ul li .t1{margin-bottom:1px}
+.kpi ul li .t2{position:absolute;right:15px;top:50%;height:22px;margin-top:-9px;font-size:20px;color:#2584c5}
+.kpi .chk{display:block;padding:20px 15px}
+.kpi .chk a{display:block;height:55px;margin:0;line-height:50px;border:1px solid #0663a0;border-radius:4px;box-shadow:inset 0px 1px 0px #7bb5db;
+	background:url(../../images/mdpnew/com/btnStart_bg.png) repeat-x 0 0;background-size:100% 100%;color:#fff;font-size:26px;text-shadow: -1px -1px #0059a2;
+	text-align:center;font-family:MGB;letter-spacing:-1px}
+.kpi .chk a:active{opacity:0.7}

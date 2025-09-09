@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMORD0010">
+
+	<typeAlias alias="NEDMORD0010VO" type="com.lottemart.epc.edi.order.model.NEDMORD0010VO" />
+	
+	<resultMap id="NEDMORD0010VOMap" class="NEDMORD0010VO">
+		<result property="ordDy" 			column="ORD_DY" 			/>	<!-- 발주일자 -->
+		<result property="prodCd" 			column="PROD_CD" 			/>	<!-- 상품코드 -->
+		<result property="prodNm" 			column="PROD_NM" 			/>	<!-- 상품명 -->
+		<result property="ordIpsu" 			column="ORD_IPSU" 			/>	<!-- 입수 -->
+		<result property="ordUnit" 			column="ORD_UNIT" 			/>	<!-- 발주단위 -->
+		<result property="purUnitCdNm" 		column="PUR_UNIT_CD_NM" 	/>	<!-- 발주단위명 -->
+		<result property="ordQty" 			column="ORD_QTY" 			/>	<!-- 발주수량 -->
+		<result property="buyPrc" 			column="BUY_PRC" 			/>	<!-- 발주금액 -->
+	</resultMap>
+
+	<!-- 상품별 -->
+	<select id="selectOrdPordList" resultMap="NEDMORD0010VOMap" parameterClass="NEDMORD0010VO">
+		/* NEDMORD0010.selectOrdPordList */
+		SELECT	/*+index(A IX_TPC_ORD_PROD_2)*/
+				TO_CHAR(TO_DATE(A.ORD_DY, 'yyyymmdd'), 'YYYY-MM-DD') AS ORD_DY
+			,	A.PROD_CD
+			,	A.PROD_NM
+			,	A.ORD_IPSU
+			,	A.ORD_UNIT
+			,	C.CD_NM AS PUR_UNIT_CD_NM
+			,	SUM(A.ORD_QTY) AS ORD_QTY
+			,	SUM(A.BUY_PRC) AS BUY_PRC
+		FROM	TPC_ORD_PROD A
+				LEFT OUTER JOIN TPC_CODE C ON C.MAJOR_CD = 'CSA01' AND C.MINOR_CD = A.ORD_UNIT
+		WHERE 	1 = 1
+			AND A.ORD_DY BETWEEN REPLACE(#srchStartDate#, '-', '')
+			AND REPLACE(#srchEndDate#, '-', '')
+			AND A.PDC_ORD_SLIP_NO IS NULL
+			
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty property="venCds" prepend="AND">
+					<iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				A.VEN_CD = #searchEntpCd#
+			</isNotEmpty>
+			
+			<isNotEmpty property="searchStoreAl"  prepend="AND">
+				<iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=",">
+					#searchStoreAl[]#
+				</iterate>
+			</isNotEmpty>
+			
+			<isNotEmpty  property="searchProductVal"  prepend="AND">
+				A.PROD_CD = #searchProductVal#
+			</isNotEmpty>
+			
+		GROUP BY 	A.ORD_DY
+				,	A.PROD_CD
+				,	A.PROD_NM
+				,	A.ORD_IPSU
+				,	A.ORD_UNIT
+				,	C.CD_NM
+		ORDER BY A.ORD_DY
+	</select>
+
+</sqlMap>

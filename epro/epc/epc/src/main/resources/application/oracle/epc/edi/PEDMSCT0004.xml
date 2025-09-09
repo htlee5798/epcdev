@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMSCT0004">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<typeAlias alias="stringClass"	type="String" />
+
+
+<!-- 견적서조회 -->
+<select id="TSC_ESTIMATION-SELECT01" parameterClass="map"  resultClass="resultClass">
+	/* PEDMSCT0004.TSC_ESTIMATION-SELECT01 */
+	SELECT  PID,
+			VEN_CD,
+			DOC_NM,
+			FILE_SEQ,
+			FILE_NM,
+			TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+	FROM	TED_ESTIMATION
+	 
+	WHERE   TO_CHAR(REG_DATE,'YYYYMMDD') BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+			
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+		      <iterate prepend="VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+		        #venCds[]# 
+		      </iterate> 
+		    </isNotEmpty>
+		    
+		    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+		    	VEN_CD = #entp_cd#
+	 	    </isNotEmpty>
+	
+	ORDER BY REG_DATE DESC
+</select>
+
+<delete id="TSC_ESTIMATION-DELETE01" parameterClass="String">
+
+	DELETE FROM TED_ESTIMATION WHERE PID=#PID#
+
+</delete>
+
+<delete id="TSC_ESTIMATION_SHEET-DELETE01" parameterClass="String">
+
+	DELETE FROM TED_ESTIMATION_SHEET WHERE PID=#PID#
+	
+</delete>
+
+<!-- 견적서 세부 조회 상단 -->
+<select id="TSC_ESTIMATION_TOP-SELECT01" parameterClass="String"  resultClass="resultClass">
+
+/*PEDMSCT0004.TSC_ESTIMATION_TOP-SELECT01*/
+	SELECT  PID,
+			VEN_CD,
+			DOC_NM,
+			FILE_NM,
+			FILE_SEQ
+			
+	FROM	TED_ESTIMATION
+	WHERE   PID = #pid#
+</select>
+
+<!-- 견적서 세부 조회 하단 -->
+<select id="TSC_ESTIMATION_BOTTOM-SELECT01" parameterClass="String"  resultClass="resultClass">
+	SELECT  PID,
+		    ES_PC,
+		    ES_STANDARD,	 
+		    ES_PROD_CD,	 
+		    ES_PROD_NM,	 
+		    ES_PACK_TYPE,	
+		    ES_GRADE,	 
+		    ES_PRICE,
+		    ES_ORGIN,
+		    ES_DETAIL,
+		    TO_CHAR(REG_DATE,'YYYY-MM-DD') AS REG_DATE
+			
+	FROM	TED_ESTIMATION_SHEET
+	WHERE   PID = #pid#
+	ORDER BY REG_DATE DESC
+</select>
+
+<update id="TSC_ESTIMATION-UPDATE01" parameterClass="map" >
+	UPDATE TED_ESTIMATION
+	   SET VEN_CD=#entp_cd#, DOC_NM=#e_text#, FILE_SEQ=#file_seq#, FILE_NM=#file_nm#, REG_DATE=CURRENT_TIMESTAMP(0)
+	   
+	WHERE PID=#input_pid#
+</update>
+
+
+
+</sqlMap>

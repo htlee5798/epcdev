@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+    <sqlMap namespace="pscmsbt0001">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+      <!-- 업체별 매출공제 목록 -->
+    <select id="selectPaySubStnList" resultClass="dataMap">
+     	<![CDATA[
+    /* PSCMSBT0001.selectPaySubStnList*/
+			SELECT   RANK() OVER(ORDER BY M.ORD_DY, M.STR_CD, M.ORDER_ID,M.PROD_CD ,ROWNUM  ) NUM
+			       , M.STR_CD         /* 점포코드 */
+			       , M.VENDOR_ID
+			       , M.VENDOR_NM
+			       , M.SALE_VENDOR_ID
+			       , VE.VENDOR_NM AS SALE_VENDOR_NM
+			       , M.ORDER_ID
+			       , M.FIRST_ORDER_ID			       
+			       , M.PROD_CD        /* 인터넷상품코드*/
+			       , M.PROD_NM        /* 상품명   */
+			       , M.MEMBER_NO      /* 회원번호 */
+			       , M.ORD_DY         /* 주문일자 */
+			       , SUBSTR(M.CONF_DATE,1,8) AS CONF_DATE    /* 매출일자 */
+			       , M.AMT AS BUY_PRC /* 결재금액 */
+                   , M.PAY_AMT        /*지불금액*/
+			       , M.SETL_TYPE_CD     /* 결재상태코드*/
+			       , M.SETL_TYPE_NM
+			       , M.ORD_STS_CD
+			       , M.ORD_STS_NM   /* 주문상태 */
+			       , M.SALE_STS_CD
+			       , M.SALE_STS_NM  /* 매출상태 */
+			       , M.CNT
+			       , (SELECT MD_PROD_CD FROM TPR_PRODUCT WHERE PROD_CD = M.PROD_CD) MD_PROD_CD 
+			       FROM(SELECT STR_CD         /* 점포코드 */
+			                 , ORDER_ID
+			                 , FIRST_ORDER_ID
+			                 , SALE_VENDOR_ID
+			                 , VENDOR_ID
+			                 , VENDOR_NM			                 
+			                 , MEMBER_NO      /* 회원번호 */
+			                 , ORD_DY         /* 주문일자 */
+			                 , CONF_DATE      /* 매출일자 */
+			                 , PROD_CD        /* 인터넷상품코드*/
+			                 , PROD_NM        /* 상품명   */
+			                 , DELI_AMT + AMT AS AMT    /* 결재금액 */
+                             , PAY_AMT
+			                 , SETL_TYPE_CD
+                             , OR008.CD_NM AS SETL_TYPE_NM   /* 결재상태 */
+			                 , ORD_STS_CD
+			                 , OR002.CD_NM AS ORD_STS_NM   /* 주문상태 */
+			                 , SALE_STS_CD AS SALE_STS_CD
+			                 , OR003.CD_NM AS SALE_STS_NM  /* 매출상태 */
+			                 , COUNT(1) OVER() AS CNT
+			              FROM (SELECT  /*+ USE_NL(PL O D OI CI CP PP VC) */
+			                           O.ORDER_ID
+			                         , O.FIRST_ORDER_ID
+			                         , OI.PROD_CD
+			                         , OI.STR_VENDOR_ID AS VENDOR_ID
+			                         , D.SETL_TYPE_CD
+			                         , MAX(VE.SALE_VENDOR_ID) AS SALE_VENDOR_ID
+			                         , MAX(VE.VENDOR_NM) AS VENDOR_NM
+			                         , MIN(O.STR_CD)             AS STR_CD
+			                         , MIN(O.MEMBER_NO)          AS MEMBER_NO
+			                         , MIN(O.ORD_DY)            AS ORD_DY
+			                         , MIN(O.LST_SALE_CFM_DATE)  AS CONF_DATE
+			                         , MIN(OI.PROD_NM)           AS PROD_NM
+			                         , MIN(O.ORD_STS_CD)         AS ORD_STS_CD 
+			                         , MIN(O.SALE_STS_CD)        AS SALE_STS_CD
+			                         , MAX(OI.TOT_SELL_AMT) AS AMT
+			                         ,(SELECT NVL(SUM(TOT_SELL_AMT),0) 
+			                           FROM TOR_ORDER_ITEM ODI , TVE_VENDOR VD
+			                           WHERE O.ORDER_ID = ODI.ORDER_ID AND ODI.ORD_ITEM_DIVN_CD IN ('11','12','13')
+			                             AND ODI.STR_VENDOR_ID = VD.VENDOR_ID
+			                           ) AS DELI_AMT
+                                    ,SUM(DPST_AMT + SIN_DC) AS PAY_AMT
+			                      FROM TOR_ORDER O
+			                         , TOR_DEMAND D
+			                         , TOR_ORDER_ITEM OI
+			                         , (SELECT DISTINCT SALE_DY,STR_CD,ORDER_ID,PROD_CD,ORDER_ITEM_SEQ 
+                                        FROM
+                                        (  SELECT /*+RULE*/ DISTINCT SALE_DY,STR_CD,ORDER_ID,PROD_CD,ORDER_ITEM_SEQ 
+                                            FROM TRST_SUBSTN_PROD_LOG PL 
+                                            WHERE PL.SALE_DY BETWEEN #frDt# AND #toDt#  
+
+                                            UNION ALL
+
+                                            SELECT A.SALE_DY,A.STR_CD,OI.ORDER_ID,OI.PROD_CD , OI.ORDER_ITEM_SEQ
+                                            FROM (SELECT DISTINCT SALE_DY,STR_CD,ORDER_ID
+                                                  FROM TRST_SUBSTN_PROD_LOG PL 
+                                                  WHERE PL.SALE_DY BETWEEN #frDt# AND #toDt# 
+                                                    AND VEN_TYPE = '6') A , TOR_ORDER_ITEM OI , TVE_VENDOR VD
+                                            WHERE A.ORDER_ID = OI.ORDER_ID
+                                              AND OI.STR_VENDOR_ID = VD.VENDOR_ID
+                                        )X
+                                        WHERE X.PROD_CD <> '90005') PL        
+			                         , TPR_PRODUCT PP 
+			                         , V_CA_MD_CATEGORY VC
+			                         , TVE_VENDOR VE
+			                     WHERE PL.ORDER_ID       = O.ORDER_ID
+			                       AND O.ORDER_ID        = OI.ORDER_ID
+			                       AND OI.ORD_ITEM_DIVN_CD NOT IN ('11','12','13')
+			                       AND O.ORDER_ID        = D.ORDER_ID        
+				]]>
+	
+			 				<isNotEmpty property="ordStsCd">
+						    		   AND  O.ORD_STS_CD              = #ordStsCd# /* 주문상태*/
+						    </isNotEmpty>	                     		               
+		               
+	
+			 				<isNotEmpty property="saleStsCd">
+						    		   AND  O.SALE_STS_CD              = #saleStsCd# /* 매출상태*/
+						    </isNotEmpty>
+				<![CDATA[
+			                       AND OI.PROD_CD    = PP.PROD_CD
+			                       AND OI.PROD_CD    = PL.PROD_CD
+					               AND PP.CAT_CD     = VC.L3_CD
+			                       AND OI.STR_VENDOR_ID = VE.VENDOR_ID
+		
+				]]>
+						 				<isNotEmpty property="vendorId">
+									    		   AND  OI.STR_VENDOR_ID              = #vendorId# /* 업체코드*/
+									    </isNotEmpty>
+									    
+										<isEmpty property="vendorId">
+											<isNotEmpty  property="venCds"  prepend="AND"> 
+												<iterate prepend="OI.STR_VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+										        	#venCds[]# 
+												</iterate> 
+										    </isNotEmpty>
+										</isEmpty>									    
+					                     		               
+			
+						 				<isNotEmpty property="catCd">
+									    		   AND  VC.L1_CD              = #catCd# /* 분류코드*/
+									    </isNotEmpty>
+					                     		               
+			
+						 				<isNotEmpty property="prodCd">
+									    		   AND  OI.PROD_CD              = #prodCd# /* 인터넷상품코드*/
+									    </isNotEmpty>
+					                     		               
+				<![CDATA[			                       
+			                     GROUP BY O.ORDER_ID,O.FIRST_ORDER_ID
+			                            , OI.PROD_CD,OI.STR_VENDOR_ID,  OI.ORD_ITEM_DIVN_CD , D.SETL_TYPE_CD
+			                 ) V
+			                 , TET_CODE OR002
+			                 , TET_CODE OR003
+			                 , TET_CODE OR008
+			             WHERE V.ORD_STS_CD  = OR002.MINOR_CD(+)
+			               AND V.SALE_STS_CD = OR003.MINOR_CD(+)
+			               AND V.SETL_TYPE_CD = OR008.MINOR_CD(+)
+				]]>
+			 				<isNotEmpty property="ordStsCd">
+						    		   AND  V.ORD_STS_CD              = #ordStsCd# /* 주문상태*/
+						    </isNotEmpty>	                     		               
+		               
+	
+			 				<isNotEmpty property="saleStsCd">
+						    		   AND  V.SALE_STS_CD              = #saleStsCd# /* 매출상태*/
+						    </isNotEmpty>
+						    
+						    <isNotEmpty property="setlTypeCd">
+						    		    AND  V.SETL_TYPE_CD              = #setlTypeCd# /* 결재상태*/
+						    </isNotEmpty>
+					                     		               
+				<![CDATA[
+			               AND OR002.MAJOR_CD(+) = 'OR002'
+			               AND OR003.MAJOR_CD(+) = 'OR003'
+			               AND OR008.MAJOR_CD(+) = 'OR008'
+			           ) M , TVE_VENDOR VE
+			     WHERE M.SALE_VENDOR_ID = VE.VENDOR_ID
+			       AND VE.TRD_TYP_FG = '6'  --위수탁업체
+			     ORDER BY FIRST_ORDER_ID,ORDER_ID ,VENDOR_ID
+			     
+		       	]]>
+		     
+    </select>    
+</sqlMap>

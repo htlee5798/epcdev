@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="ImageLoadQuery">
+
+	<!-- 이미지 정보 조회 공통 ResultMap -->
+	<resultMap id="selectImageInfoMap" class="java.util.HashMap">
+		<result property="SAVE_FILE_NM"		column="SAVE_FILE_NM"	/>	<!-- 저장파일명 -->
+		<result property="ORG_FILE_NM"		column="ORG_FILE_NM"	/>	<!-- 원본파일명 -->
+		<result property="FILE_PATH" 		column="FILE_PATH"		/>	<!-- 파일업로드경로 -->
+		<result property="FILE_SIZE"		column="FILE_SIZE"		/>	<!-- 파일크기 -->
+	</resultMap>
+
+	<!-- ESG 이미지 정보 조회 -->
+	<select id="selectImageInfoProductEsg" parameterClass="java.util.HashMap" resultMap="selectImageInfoMap">
+		/* ImageLoadQuery.selectImageInfoProductEsg */
+		SELECT
+			A.SAVE_FILE_NM 		/* 저장파일명 */
+			, A.ORG_FILE_NM		/* 원본파일명 */
+			, A.FILE_PATH 		/* 파일업로드경로 */
+			, A.FILE_SIZE  		/* 파일사이즈 */
+		FROM TPC_PROD_ESG_FILE A
+		WHERE A.ESG_FILE_ID = #atchFileId#::VARCHAR
+	</select>
+	
+	<!-- 신상품 입점제안 이미지 정보 조회 -->
+	<select id="selectImageInfoNewProdProp" parameterClass="java.util.HashMap" resultMap="selectImageInfoMap">
+		/* ImageLoadQuery.selectImageInfoNewProdProp */
+		SELECT
+			A.SAVE_FILE_NM		/* 저장파일명 */
+			, A.ORG_FILE_NM		/* 원본파일명 */
+			, A.FILE_PATH		/* 파일업로드경로 */
+			, A.FILE_SIZE		/* 파일사이즈 */
+		FROM TPC_PROD_NEW_PROP_IMG A
+		WHERE A.IMG_ID = #atchFileId#::VARCHAR
+	</select>
+
+	
+</sqlMap>	

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:26 KST 2025
+java-core-2.6-sources.jar>neonexus=
+java-core-2.6.jar>neonexus=
+java-core-2.6.pom>neonexus=

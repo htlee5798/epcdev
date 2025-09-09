@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+    <sqlMap namespace="pscmsbt0003">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+     <!-- 업체별 매출공제 목록 -->
+    <select id="selectSubStnDeductList" resultClass="dataMap">
+     	<![CDATA[
+	    /* PSCMSBT0003.selectSubStnDeductList*/
+    SELECT X.FIRST_ORDER_ID 	  
+		      ,MAX(X.MEMBER_NO) AS MEMBER_NO
+		      ,MAX(X.ORD_DY) AS ORD_DY
+		      ,MC.L1_CD AS CAT_CD
+		      ,MAX(MC.L1_NM) AS CAT_NM
+		      ,X.PROD_CD
+		      ,MAX(PD.PROD_NM) AS PROD_NM      
+		      ,MAX(X.SELL_PRC) AS SELL_PRC
+		      ,SUM(X.TAX_AMT) AS TAX_AMT
+              ,SUM(X.SALE_AMT) AS SALE_AMT 
+		      ,SUM(X.DC_AMT) AS DC_AMT 
+		      
+		      ,MAX(X.PRFT_RATE) AS PRFT_RATE
+		      ,SUM(PRFT_AMT) AS PRFT_AMT
+		      ,MAX(X.COM_SHCH_RT) AS COM_SHCH_RT  --업체분담율
+		      ,MAX(X.CORP_SHCH_RT) AS CORP_SHCH_RT   --자사분담율
+		      ,MAX(X.CARD_SHCH_RT) AS CARD_SHCH_RT  --카드사분담율
+		      ,SUM(X.COM_AMT) AS COM_AMT
+		      ,SUM(X.CORP_AMT) AS CORP_AMT
+		      ,0 AS MILEAGE_AMT 
+		      ,0 AS BANNER_AMT 
+		      ,0 AS DELIVERY_AMT 
+		FROM(
+		SELECT DISTINCT OD.FIRST_ORDER_ID 
+		      ,OD.ORDER_ID   
+		      ,OD.MEMBER_NO  
+		      ,OI.STR_VENDOR_ID
+              ,VE.TRD_TYP_FG
+		      ,OD.ORD_STS_CD  --주문상태
+		      ,OD.SALE_STS_CD  --매출상태
+		      ,OD.ORD_DY
+		      ,OI.PROD_CD      
+              ,OI.SELL_PRC
+		      --,0 AS TAX_AMT
+			  ,ROUND(DECODE(OI.TAXAT_DIVN_CD ,'1', OI.SELL_PRC - (OI.SELL_PRC / 1.1) , 0),0) AS TAX_AMT
+		      ,OI.ORD_AMT 
+              ,CASE WHEN SH.SALE_FG = '3' THEN OI.ORD_AMT ELSE OI.ORD_AMT * -1 END AS SALE_AMT
+              ,CASE WHEN SH.SALE_FG = '3' THEN (SELECT NVL(SUM(OE.EVNT_APPLY_QTY * OE.EVNT_APPLY_AMT),0)  FROM  TOR_ORDER_ITEM_EVENT OE
+                											WHERE OI.ORDER_ID = OE.ORDER_ID(+)
+                      										  AND OI.ORDER_ITEM_SEQ = OE.ORDER_ITEM_SEQ(+))
+                      										  
+                      								ELSE((SELECT NVL(SUM(OE.EVNT_APPLY_QTY * OE.EVNT_APPLY_AMT),0)  FROM  TOR_ORDER_ITEM_EVENT OE
+                											WHERE OI.ORDER_ID = OE.ORDER_ID(+)
+                      										  AND OI.ORDER_ITEM_SEQ = OE.ORDER_ITEM_SEQ(+))) * -1 END AS DC_AMT
+                      
+		      
+              ,CASE WHEN SH.SALE_FG = '3' THEN OI.TOT_SELL_AMT ELSE OI.TOT_SELL_AMT * -1 END AS TOT_SELL_AMT
+		      ,IP.PRFT_RATE
+              ,ROUND(CASE WHEN SH.SALE_FG = '3' THEN OI.ORD_AMT * (IP.PRFT_RATE/100) ELSE (OI.ORD_AMT * (IP.PRFT_RATE/100)) * -1 END,0) AS PRFT_AMT
+
+		      ,0 AS COM_SHCH_RT  --업체분담율
+		      ,0 AS CORP_SHCH_RT  --자사분담율
+		      ,0  AS CARD_SHCH_RT  --카드사분담율
+		      ,0 AS COM_AMT
+		      ,0 AS CORP_AMT
+		FROM (SELECT DISTINCT SH.WORKSTATIONID AS POS_NO   --POS NO
+		                     ,TP.SALE_TYPE AS SALE_FG
+					         ,SH.BUSINESSDAYDATE AS SALE_DT  --일자
+					         ,SH.ORGIN_ORDER_ID  
+					         ,SH.ORDER_ID         --주문번호
+			  FROM TSA_TLOGSELECT SH
+			     , TET_TLOG_POS TP
+			     , TLOGSEND LS 
+			  WHERE 1=1
+			    AND SH.BUSINESSDAYDATE   BETWEEN #frDt# AND #toDt#
+			    AND SH.WORKSTATIONID = TP.POS_NO
+                AND TP.SALE_TYPE IN ('3','4') 
+			    AND SH.RECORDQUALIFIER = '1'
+		  	    AND SH.RETAILSTOREID  = LS.RETAILSTOREID
+	            AND SH.BUSINESSDAYDATE = LS.BUSINESSDAYDATE
+	            AND SH.WORKSTATIONID   = LS.WORKSTATIONID
+	            AND SH.TRANSNUMBER     = LS.TRANSNUMBER
+  	            AND SH.TRANSTYPECODE     = LS.TRANSTYPECODE	   /* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */ 	        
+                AND LS.RESULT_STATUS = 'C'
+		       AND SH.TRANSTYPECODE NOT IN ('0060','0050')
+			    AND NOT EXISTS (
+			        SELECT 1
+			        FROM TLOGERR C
+			        WHERE C.RETAILSTOREID = SH.RETAILSTOREID
+			        AND C.BUSINESSDAYDATE = SH.BUSINESSDAYDATE
+			        AND C.WORKSTATIONID = SH.WORKSTATIONID
+			        AND C.TRANSNUMBER = SH.TRANSNUMBER
+			        AND NVL(C.RESULT_ERR_MESSAGE, 'NULL') NOT IN ('기존재 영수증입니다.', 'TLOGF -> BAPI 구조 변경 시 오류')
+			    )
+		    ) SH
+		    ,TOR_ORDER OD
+		    ,TOR_ORDER_ITEM OI   
+		    ,TPR_STORE_ITEM_PRICE IP 
+		    ,TVE_VENDOR VE
+		WHERE 1=1
+		  AND SH.ORDER_ID = OD.ORDER_ID
+		  AND SH.ORDER_ID = OI.ORDER_ID
+          AND OI.ORD_ITEM_DIVN_CD  NOT IN ('11','12','13')  --배송비 제외
+		  AND OD.STR_CD = IP.STR_CD
+		  AND OI.PROD_CD = IP.PROD_CD
+		  AND OI.ITEM_CD = IP.ITEM_CD
+
+         ]]>
+		<isNotEmpty property="vendorId">
+		  	AND  OI.STR_VENDOR_ID     = #vendorId# /* 협력업체코드*/
+		</isNotEmpty>
+		  
+		<isEmpty property="vendorId">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+				<iterate prepend="OI.STR_VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+		        	#venCds[]# 
+				</iterate> 
+		    </isNotEmpty>
+		</isEmpty>	         
+ 		<![CDATA[ 		  
+		  AND OI.STR_VENDOR_ID  = VE.VENDOR_ID
+		  
+		UNION ALL
+		
+		SELECT DISTINCT OD.FIRST_ORDER_ID 
+		      ,OD.ORDER_ID   
+		      ,OD.MEMBER_NO  
+		      ,OI.STR_VENDOR_ID
+              ,VE.TRD_TYP_FG		      
+		      ,OD.ORD_STS_CD  --주문상태
+		      ,OD.SALE_STS_CD  --매출상태
+		      ,OD.ORD_DY
+		      ,OI.PROD_CD
+		      ,OI.SELL_PRC
+		      ,0 AS TAX_AMT
+		      ,0 AS ORD_AMT 
+              ,0 AS SALE_AMT 
+		      ,0 AS DC_AMT
+		      ,0 AS TOT_SELL_AMT
+		      ,0 AS PRFT_RATE
+		      ,0 AS PRFT_AMT
+		      ,NVL(CP.COM_SHCH_RT,0) + NVL(CDP.COM_SHCH_RT,0) AS COM_SHCH_RT  --업체분담율
+		      ,100 - (NVL(CP.CARDCO_SHCH_RT,0) + NVL(CDP.CARDCO_SHCH_RT,0) + NVL(CP.COM_SHCH_RT,0) + NVL(CDP.COM_SHCH_RT,0)) AS CORP_SHCH_RT  --자사분담율
+		      ,NVL(CP.CARDCO_SHCH_RT,0) + NVL(CDP.CARDCO_SHCH_RT,0)  AS CARD_SHCH_RT  --카드사분담율
+		      ,NVL(CARD_DIV_AMT,0) + NVL(CUPON_DIV_AMT,0) AS COM_AMT
+		      ,NVL(CARD_COM_SHCH,0) + NVL(CPN_COM_SHCH,0) AS CORP_AMT
+		FROM TRST_SUBSTN_PROD_LOG PL
+		    ,TOR_ORDER OD
+		    ,TOR_ORDER_ITEM OI                        
+		    ,TOR_ORDER_ITEM_EVENT OE1
+		    ,TMA_COUPON_ISSUED CI
+		    ,TMA_COUPON CP
+		    ,TOR_ORDER_ITEM_EVENT OE2  
+		    ,TMA_COUPON CDP
+		    ,TVE_VENDOR VE
+		WHERE 1=1
+		  AND PL.SALE_DY BETWEEN #frDt# AND #toDt#
+		  AND OD.ORDER_ID 			= OI.ORDER_ID
+		  AND OD.ORDER_ID       	= OE1.ORDER_ID
+          AND OI.ORDER_ITEM_SEQ 	= OE1.ORDER_ITEM_SEQ
+		  AND OE1.PROMO_CL_MST_NO   = CI.COUPON_ID
+		  AND CI.REP_COUPON_ID 		= CP.REP_COUPON_ID 
+		  AND OI.ORDER_ID 			= OE2.ORDER_ID
+		  AND OI.ORDER_ITEM_SEQ 	= OE2.ORDER_ITEM_SEQ
+		  AND OE2.PROMO_CL_MST_NO 	= CDP.REP_COUPON_ID  --즉시상품할인
+		  AND OI.ORDER_ID 			= PL.ORDER_ID
+		  AND OI.ORDER_ITEM_SEQ 	= PL.ORDER_ITEM_SEQ
+		  AND PL.VEN_TYPE IN ('1','2','5')
+		  AND (CP.REP_COUPON_ID IS NOT NULL OR CDP.REP_COUPON_ID IS NOT NULL )
+         ]]>
+		<isNotEmpty property="vendorId">
+		  	AND  OI.STR_VENDOR_ID     = #vendorId# /* 협력업체코드*/
+		</isNotEmpty>
+		  
+		<isEmpty property="vendorId">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+				<iterate prepend="OI.STR_VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+		        	#venCds[]# 
+				</iterate> 
+		    </isNotEmpty>
+		</isEmpty>	         
+ 		<![CDATA[ 			  
+		  AND OI.STR_VENDOR_ID  = VE.VENDOR_ID
+		  
+		  )X,TPR_PRODUCT PD
+		  , V_CA_MD_CATEGORY MC  
+		  ,TET_CODE OR002
+		  ,TET_CODE OR003
+		  WHERE X.PROD_CD = PD.PROD_CD
+		    AND X.PROD_CD = PD.PROD_CD
+		    AND PD.CAT_CD   = MC.L3_CD(+)
+		    AND X.ORD_STS_CD  = OR002.MINOR_CD(+)
+			AND X.SALE_STS_CD = OR003.MINOR_CD(+)
+		    AND OR002.MAJOR_CD(+) = 'OR002'
+			AND OR003.MAJOR_CD(+) = 'OR003'
+		 ]]>	
+		<isNotEmpty property="catCd">
+		  	AND  PD.CAT_CD              = #catCd# /* 분류*/
+		</isNotEmpty>
+                      
+         
+ 		<![CDATA[ 			
+		GROUP BY X.FIRST_ORDER_ID 
+		      ,MC.L1_CD
+		      ,X.PROD_CD
+		UNION ALL
+		
+		 SELECT '' AS FIRST_ORDER_ID
+	       ,'' AS MEMBER_NO
+	       ,'' AS ORD_DY 
+	       ,'' AS CAT_CD
+	       ,'' AS CAT_NM
+	       ,'' AS PROD_CD
+	       ,'' AS PROD_NM
+	       ,0 AS SELL_PRC
+	       ,0 AS TAX_AMT
+              ,0 AS SALE_AMT
+	       ,0 AS DC_AMT
+	       ,0 AS PRFT_RATE
+	       ,0 AS PRFT_AMT
+	       ,0 AS COM_SHCH_RT
+	       ,0 AS CORP_SHCH_RT
+	       ,0 AS CARD_SHCH_RT
+	       ,0 AS COM_AMT
+	       ,0 AS CORP_AMT 
+	       ,SUM(A.MILEAGE_AMT) AS MILEAGE_AMT
+	       ,SUM(A.BANNER_AMT) AS BANNER_AMT
+	       ,SUM(A.DELIVERY_AMT) AS DELIVERY_AMT
+		 FROM(
+		 SELECT CAT_CD      
+		       ,CASE WHEN SUBSTN_TYPE_CD = '003'  THEN SPLY_PRC ELSE 0 END AS MILEAGE_AMT 
+		       ,CASE WHEN SUBSTN_TYPE_CD = '004'  THEN SPLY_PRC ELSE 0 END AS BANNER_AMT 
+		       ,CASE WHEN SUBSTN_TYPE_CD = '005'  THEN SPLY_PRC ELSE 0 END AS DELIVERY_AMT 
+		 FROM TRST_SUBSTN SS
+		 WHERE 1=1
+         ]]>
+		<isNotEmpty property="vendorId">
+		  	AND  SS.VENDOR_ID     = #vendorId# /* 협력업체코드*/
+		</isNotEmpty>
+		  
+		<isEmpty property="vendorId">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+				<iterate prepend="SS.VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+		        	#venCds[]# 
+				</iterate> 
+		    </isNotEmpty>
+		</isEmpty>	         
+ 		<![CDATA[
+		   AND SS.ACCOT_YM = #accotYm#
+		   AND SS.SEQ = #seq#
+		   AND SS.SUBSTN_TYPE_CD IN ('003','004','005')
+		)A
+
+         ]]>
+	
+    </select>    
+    
+      <!-- 업체별 매출공제집계 -->
+    <select id="selectSubStnDeductSumList" resultClass="dataMap">
+     	<![CDATA[
+	    SELECT SUM(SALE_AMT) AS ORD_AMT 
+		     , SUM(DC_AMT) AS DC_AMT
+		     ,SUM(SALE_AMT) - SUM(DC_AMT) AS SALE_AMT 
+		     , 0 AS IN_AMT
+		     , SUM(SALE_AMT) - 0 AS CHARGE_AMT
+		     
+		     ,SUM(NVL(COM_AMT,0) + NVL(MILEAGE_AMT,0) + NVL(BANNER_AMT,0) ) AS DEDUCT_AMT
+		     ,SUM(NVL(DELIVERY_AMT,0)) AS DELIVERY_AMT
+		     , 0 + SUM(NVL(COM_AMT,0) + NVL(MILEAGE_AMT,0) + NVL(BANNER_AMT,0) ) + SUM(NVL(DELIVERY_AMT,0)) AS ADJ_AMT
+
+		FROM(
+    SELECT X.FIRST_ORDER_ID 
+	  
+		      ,MAX(X.MEMBER_NO) AS MEMBER_NO
+		      ,MAX(X.ORD_DY) AS ORD_DY
+		      ,MC.L1_CD AS CAT_CD
+		      ,MAX(MC.L1_NM) AS CAT_NM
+		      ,X.PROD_CD
+		      ,MAX(PD.PROD_NM) AS PROD_NM      
+		      ,MAX(X.SELL_PRC) AS SELL_PRC
+		      ,SUM(X.TAX_AMT) AS TAX_AMT
+              ,SUM(X.SALE_AMT) AS SALE_AMT 
+		      ,SUM(X.DC_AMT) AS DC_AMT 
+		      
+		      ,MAX(X.PRFT_RATE) AS PRFT_RATE
+		      ,SUM(PRFT_AMT) AS PRFT_AMT
+		      ,MAX(X.COM_SHCH_RT) AS COM_SHCH_RT  --업체분담율
+		      ,MAX(X.CORP_SHCH_RT) AS CORP_SHCH_RT   --자사분담율
+		      ,MAX(X.CARD_SHCH_RT) AS CARD_SHCH_RT  --카드사분담율
+		      ,SUM(X.COM_AMT) AS COM_AMT
+		      ,SUM(X.CORP_AMT) AS CORP_AMT
+		      ,0 AS MILEAGE_AMT 
+		      ,0 AS BANNER_AMT 
+		      ,0 AS DELIVERY_AMT 
+		FROM(
+		SELECT DISTINCT OD.FIRST_ORDER_ID 
+		      ,OD.ORDER_ID   
+		      ,OD.MEMBER_NO  
+		      ,OI.STR_VENDOR_ID
+              ,VE.TRD_TYP_FG
+		      ,OD.ORD_STS_CD  --주문상태
+		      ,OD.SALE_STS_CD  --매출상태
+		      ,OD.ORD_DY
+		      ,OI.PROD_CD      
+              ,OI.SELL_PRC
+			  ,ROUND(DECODE(OI.TAXAT_DIVN_CD ,'1', OI.SELL_PRC - (OI.SELL_PRC / 1.1) , 0),0) AS TAX_AMT
+		      ,OI.ORD_AMT 
+              ,CASE WHEN SH.SALE_FG = '3' THEN OI.ORD_AMT ELSE OI.ORD_AMT * -1 END AS SALE_AMT
+		      ,CASE WHEN SH.SALE_FG = '3' THEN (SELECT NVL(SUM(OE.EVNT_APPLY_QTY * OE.EVNT_APPLY_AMT),0)  FROM  TOR_ORDER_ITEM_EVENT OE
+                											WHERE OI.ORDER_ID = OE.ORDER_ID(+)
+                      										  AND OI.ORDER_ITEM_SEQ = OE.ORDER_ITEM_SEQ(+))
+                      										  
+                      								ELSE((SELECT NVL(SUM(OE.EVNT_APPLY_QTY * OE.EVNT_APPLY_AMT),0)  FROM  TOR_ORDER_ITEM_EVENT OE
+                											WHERE OI.ORDER_ID = OE.ORDER_ID(+)
+                      										  AND OI.ORDER_ITEM_SEQ = OE.ORDER_ITEM_SEQ(+))) * -1 END AS DC_AMT
+		      
+              ,CASE WHEN SH.SALE_FG = '3' THEN OI.TOT_SELL_AMT ELSE OI.TOT_SELL_AMT * -1 END AS TOT_SELL_AMT
+		      ,IP.PRFT_RATE
+			  ,ROUND(CASE WHEN SH.SALE_FG = '3' THEN OI.ORD_AMT * (IP.PRFT_RATE/100) ELSE (OI.ORD_AMT * (IP.PRFT_RATE/100)) * -1 END,0) AS PRFT_AMT
+		      ,0 AS COM_SHCH_RT  --업체분담율
+		      ,0 AS CORP_SHCH_RT  --자사분담율
+		      ,0  AS CARD_SHCH_RT  --카드사분담율
+		      ,0 AS COM_AMT
+		      ,0 AS CORP_AMT
+		FROM (SELECT DISTINCT SH.WORKSTATIONID AS POS_NO   --POS NO
+		                     ,TP.SALE_TYPE AS SALE_FG
+					         ,SH.BUSINESSDAYDATE AS SALE_DT  --일자
+					         ,SH.ORGIN_ORDER_ID  
+					         ,SH.ORDER_ID         --주문번호
+			  FROM TSA_TLOGSELECT SH
+			     , TET_TLOG_POS TP
+			     , TLOGSEND LS 
+			  WHERE 1=1
+			    AND SH.BUSINESSDAYDATE   BETWEEN #frDt# AND #toDt#
+			    AND SH.WORKSTATIONID = TP.POS_NO
+                AND TP.SALE_TYPE IN ('3','4') 
+			    AND SH.RECORDQUALIFIER = '1'
+		  	    AND SH.RETAILSTOREID  = LS.RETAILSTOREID
+	            AND SH.BUSINESSDAYDATE = LS.BUSINESSDAYDATE
+	            AND SH.WORKSTATIONID   = LS.WORKSTATIONID
+	            AND SH.TRANSNUMBER     = LS.TRANSNUMBER
+  	            AND SH.TRANSTYPECODE     = LS.TRANSTYPECODE	  	/* tr전송시 lpoint에러로 인해 재전송을 할 경우 중복 에러를 해결하기위해 key추가 */          
+                AND LS.RESULT_STATUS = 'C'
+		       AND SH.TRANSTYPECODE NOT IN ('0060','0050')
+			    AND NOT EXISTS (
+			        SELECT 1
+			        FROM TLOGERR C
+			        WHERE C.RETAILSTOREID = SH.RETAILSTOREID
+			        AND C.BUSINESSDAYDATE = SH.BUSINESSDAYDATE
+			        AND C.WORKSTATIONID = SH.WORKSTATIONID
+			        AND C.TRANSNUMBER = SH.TRANSNUMBER
+			        AND NVL(C.RESULT_ERR_MESSAGE, 'NULL') NOT IN ('기존재 영수증입니다.', 'TLOGF -> BAPI 구조 변경 시 오류')
+			    )
+			) SH
+		    ,TOR_ORDER OD
+		    ,TOR_ORDER_ITEM OI   
+		    ,TPR_STORE_ITEM_PRICE IP 
+		    ,TVE_VENDOR VE
+		WHERE 1=1
+		  AND SH.ORDER_ID = OD.ORDER_ID
+		  AND SH.ORDER_ID = OI.ORDER_ID
+          AND OI.ORD_ITEM_DIVN_CD  NOT IN ('11','12','13')  --배송비 제외
+		  AND OD.STR_CD = IP.STR_CD
+		  AND OI.PROD_CD = IP.PROD_CD
+		  AND OI.ITEM_CD = IP.ITEM_CD
+
+         ]]>
+		<isNotEmpty property="vendorId">
+		  	AND  OI.STR_VENDOR_ID     = #vendorId# /* 협력업체코드*/
+		</isNotEmpty>
+		  
+		<isEmpty property="vendorId">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+				<iterate prepend="OI.STR_VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+		        	#venCds[]# 
+				</iterate> 
+		    </isNotEmpty>
+		</isEmpty>	         
+ 		<![CDATA[ 		  
+		  AND OI.STR_VENDOR_ID  = VE.VENDOR_ID
+		  
+		UNION ALL
+		
+		SELECT DISTINCT OD.FIRST_ORDER_ID 
+		      ,OD.ORDER_ID   
+		      ,OD.MEMBER_NO  
+		      ,OI.STR_VENDOR_ID
+              ,VE.TRD_TYP_FG
+		      ,OD.ORD_STS_CD  --주문상태
+		      ,OD.SALE_STS_CD  --매출상태
+		      ,OD.ORD_DY
+		      ,OI.PROD_CD
+		      ,OI.SELL_PRC
+		      ,0 AS TAX_AMT
+		      ,0 AS ORD_AMT 
+              ,0 AS SALE_AMT 
+		      ,0 AS DC_AMT
+		      ,0 AS TOT_SELL_AMT
+		      ,0 AS PRFT_RATE
+		      ,0 AS PRFT_AMT
+		      ,NVL(CP.COM_SHCH_RT,0) + NVL(CDP.COM_SHCH_RT,0) AS COM_SHCH_RT  --업체분담율
+		      ,100 - (NVL(CP.CARDCO_SHCH_RT,0) + NVL(CDP.CARDCO_SHCH_RT,0) + NVL(CP.COM_SHCH_RT,0) + NVL(CDP.COM_SHCH_RT,0)) AS CORP_SHCH_RT  --자사분담율
+		      ,NVL(CP.CARDCO_SHCH_RT,0) + NVL(CDP.CARDCO_SHCH_RT,0)  AS CARD_SHCH_RT  --카드사분담율
+		      ,NVL(CARD_DIV_AMT,0) + NVL(CUPON_DIV_AMT,0) AS COM_AMT
+		      ,NVL(CARD_COM_SHCH,0) + NVL(CPN_COM_SHCH,0) AS CORP_AMT
+		FROM TRST_SUBSTN_PROD_LOG PL
+		    ,TOR_ORDER OD
+		    ,TOR_ORDER_ITEM OI                        
+		    ,TOR_ORDER_ITEM_EVENT OE1
+		    ,TMA_COUPON_ISSUED CI
+		    ,TMA_COUPON CP
+		    ,TOR_ORDER_ITEM_EVENT OE2  
+		    ,TMA_COUPON CDP
+		    ,TVE_VENDOR VE
+		WHERE 1=1
+		  AND PL.SALE_DY BETWEEN #frDt# AND #toDt#
+		  AND OD.ORDER_ID 			= OI.ORDER_ID
+		  AND OD.ORDER_ID       	= OE1.ORDER_ID
+          AND OI.ORDER_ITEM_SEQ 	= OE1.ORDER_ITEM_SEQ
+		  AND OE1.PROMO_CL_MST_NO   = CI.COUPON_ID
+		  AND CI.REP_COUPON_ID 		= CP.REP_COUPON_ID 
+		  AND OI.ORDER_ID 			= OE2.ORDER_ID
+		  AND OI.ORDER_ITEM_SEQ 	= OE2.ORDER_ITEM_SEQ
+		  AND OE2.PROMO_CL_MST_NO 	= CDP.REP_COUPON_ID  --즉시상품할인
+		  AND OI.ORDER_ID 			= PL.ORDER_ID
+		  AND OI.ORDER_ITEM_SEQ 	= PL.ORDER_ITEM_SEQ
+		  AND PL.VEN_TYPE IN ('1','2','5')
+		  AND (CP.REP_COUPON_ID IS NOT NULL OR CDP.REP_COUPON_ID IS NOT NULL )
+         ]]>
+		<isNotEmpty property="vendorId">
+		  	AND  OI.STR_VENDOR_ID     = #vendorId# /* 협력업체코드*/
+		</isNotEmpty>
+		  
+		<isEmpty property="vendorId">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+				<iterate prepend="OI.STR_VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+		        	#venCds[]# 
+				</iterate> 
+		    </isNotEmpty>
+		</isEmpty>	         
+ 		<![CDATA[ 			  
+		  AND OI.STR_VENDOR_ID  = VE.VENDOR_ID
+		  
+		  )X,TPR_PRODUCT PD
+		  , V_CA_MD_CATEGORY MC  
+		  ,TET_CODE OR002
+		  ,TET_CODE OR003
+		  WHERE X.PROD_CD = PD.PROD_CD
+		    AND X.PROD_CD = PD.PROD_CD
+		    AND PD.CAT_CD   = MC.L3_CD(+)
+		    AND X.ORD_STS_CD  = OR002.MINOR_CD(+)
+			AND X.SALE_STS_CD = OR003.MINOR_CD(+)
+		    AND OR002.MAJOR_CD(+) = 'OR002'
+			AND OR003.MAJOR_CD(+) = 'OR003'
+		 ]]>	
+		<isNotEmpty property="catCd">
+		  	AND  PD.CAT_CD              = #catCd# /* 분류*/
+		</isNotEmpty>
+                      
+         
+ 		<![CDATA[ 			
+		GROUP BY X.FIRST_ORDER_ID 
+		      ,MC.L1_CD
+		      ,X.PROD_CD
+		UNION ALL
+		
+		 SELECT '' AS FIRST_ORDER_ID
+	       ,'' AS MEMBER_NO
+	       ,'' AS ORD_DY 
+	       ,'' AS CAT_CD
+	       ,'' AS CAT_NM
+	       ,'' AS PROD_CD
+	       ,'' AS PROD_NM
+	       ,0 AS SELL_PRC
+	       ,0 AS TAX_AMT
+              ,0 AS SALE_AMT
+	       ,0 AS DC_AMT
+	       ,0 AS PRFT_RATE
+	       ,0 AS PRFT_AMT
+	       ,0 AS COM_SHCH_RT
+	       ,0 AS CORP_SHCH_RT
+	       ,0 AS CARD_SHCH_RT
+	       ,0 AS COM_AMT
+	       ,0 AS CORP_AMT 
+	       ,SUM(A.MILEAGE_AMT) AS MILEAGE_AMT
+	       ,SUM(A.BANNER_AMT) AS BANNER_AMT
+	       ,SUM(A.DELIVERY_AMT) AS DELIVERY_AMT
+		 FROM(
+		 SELECT CAT_CD      
+		       ,CASE WHEN SUBSTN_TYPE_CD = '003'  THEN SPLY_PRC ELSE 0 END AS MILEAGE_AMT 
+		       ,CASE WHEN SUBSTN_TYPE_CD = '004'  THEN SPLY_PRC ELSE 0 END AS BANNER_AMT 
+		       ,CASE WHEN SUBSTN_TYPE_CD = '005'  THEN SPLY_PRC ELSE 0 END AS DELIVERY_AMT 
+		 FROM TRST_SUBSTN SS
+		 WHERE 1=1
+         ]]>
+		<isNotEmpty property="vendorId">
+		  	AND  SS.VENDOR_ID     = #vendorId# /* 협력업체코드*/
+		</isNotEmpty>
+		  
+		<isEmpty property="vendorId">
+			<isNotEmpty  property="venCds"  prepend="AND"> 
+				<iterate prepend="SS.VENDOR_ID IN " property="venCds" open="(" close=")" conjunction=","> 
+		        	#venCds[]# 
+				</iterate> 
+		    </isNotEmpty>
+		</isEmpty>	         
+ 		<![CDATA[
+		   AND SS.ACCOT_YM = #accotYm#
+		   AND SS.SEQ = #seq#
+		   AND SS.SUBSTN_TYPE_CD IN ('003','004','005')
+		)A
+		)Z
+         ]]>
+	
+    </select>    
+        
+</sqlMap>

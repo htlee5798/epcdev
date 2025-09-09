@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="/js/jquery/jquery-1.5.2.js"></script>
+<script type="text/javascript" src="/js/pp/common.js"></script>
+</head>
+
+<script>
+//jQeury 초기화
+$(document).ready(function(){
+	$('#strDt').click(function() {
+		openCal('form1.strDt');
+	});
+	$('#endDt').click(function() {
+		openCal('form1.endDt');
+	});
+}); // end of ready
+
+</script>
+<body>
+<form name="form1">
+<h1>Calendar Sample</h1>
+
+<table border="1">
+	<tr>
+		<td>test</td>
+		<td>
+			<input type="text" name="strDt" id="strDt" />
+			<input type="text" name="endDt" id="endDt" />
+		</td>
+	</tr>
+</table>
+
+</form>
+</body>
+</html> 

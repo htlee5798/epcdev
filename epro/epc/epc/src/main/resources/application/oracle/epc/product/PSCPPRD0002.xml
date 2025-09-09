@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0002">
+
+    <typeAlias alias="pscpprd0002VO" type="com.lottemart.epc.product.model.PSCPPRD0002VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectPrdCommonCodeList" resultClass="pscpprd0002VO">
+    <![CDATA[
+    /* pscpprd0002.selectPrdCommonCodeList */
+    SELECT 
+        MAJOR_CD AS majorCd
+      , MINOR_CD AS minorCd
+      , CD_NM AS cdNm
+    FROM
+        TET_CODE
+    WHERE 1=1
+    AND MAJOR_CD IN 
+        (
+            'SM117'
+          , 'ET030'
+          , 'PRD25'
+          , 'PRD10'
+          , 'PRD17'
+          , 'PRD06'
+          , 'PRD09'
+          , 'PRD12'
+          , 'PRD14'
+          , 'PRD46'
+        )
+    AND USE_YN='Y'
+    ORDER BY 
+        MAJOR_CD
+      , ORDER_SEQ
+    ]]>
+    </select>
+
+    <select id="selectPrdPresentList" resultClass="pscpprd0002VO">
+    <![CDATA[
+    /* pscpprd0002.selectPrdPresentList */
+       SELECT 
+        ROWNUM cnt
+      , DECODE(B.FEDAY_MALL_REP_STR_YN,'Y', B.STR_NM||'(명절대표몰)',B.STR_NM)||
+            '('||DECODE(A.STR_CD, '981', C.PEST_DESC, D.PEST_CMPL_NM) ||
+            ':'||C.PEST_START_DY||'~'||C.PEST_END_DY||')' AS presentNm
+    FROM 
+        TPR_STORE_ITEM_PRICE  A
+      , TST_STORE  B  
+      , TPR_PEST_GOODS  C
+      , TPR_CMPL_PEST_GOODS  D
+    WHERE 1=1
+    AND A.STR_CD    = B.STR_CD
+    AND A.STR_CD    = C.STR_CD
+    AND A.PROD_CD   = #prodCd#
+    AND A.PROD_CD   = C.PROD_CD
+    AND A.ITEM_CD   = C.ITEM_CD
+    AND C.PEST_EXTRA_CD = D.PEST_CMPL_CD
+    AND B.ONLINE_YN = 'Y'
+    AND C.USE_YN = 'Y'
+    ORDER BY 
+        B.STR_NM, A.ITEM_CD
+    ]]>
+    </select>
+
+    <select id="selectPrdInfo" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0002.selectPrdInfo */
+    SELECT PR.PROD_CD
+         , MD_SRCMK_CD
+         , MD_PROD_CD
+         , EVT_PROD_NM
+         , PROD_NM
+         , MD_PROD_NM
+         , MD_PROD_SHORT_NM
+         , MC.CAT_NM
+         , TRIM(PR.CATEGORY_ID) AS CATEGORY_ID
+         , PR.TEMPLATE_ID
+         , TP.TEMPLATE_TITLE_NM
+         , PR.HOME_CD
+         , HC.CD_NM AS HOME_NM
+         , PR.BRAND_NM
+         , PR.BRAND_CD
+         , BR.BRAND_NM AS MD_BRAND_NM
+         , PR.MAKER_NM
+         , PR.MAKER_CD
+         , MK.MAKER_NM AS MD_MAKER_NM
+         , MAIN_MTRL_NM
+         , PR.VENDOR_ID
+         , VD.VENDOR_NM
+         , PR.STAFF_DC_RATE
+         , TRIM(TO_CHAR(PR.MIN_ORD_PSBT_QTY, '99,999')) AS MIN_ORD_PSBT_QTY
+         , TRIM(TO_CHAR(PR.MAX_ORD_PSBT_QTY, '99,999')) AS MAX_ORD_PSBT_QTY
+         , PR.PROD_STANDARD_NM
+         , (SELECT MAX(SELL_PSBT_YN)
+              FROM TPR_STORE_ITEM_PRICE A
+                 , TST_STORE B
+             WHERE PR.PROD_CD = A.PROD_CD
+               AND A.STR_CD = B.STR_CD
+               AND B.ONLINE_YN = 'Y') AS USE_YN
+           , CASE WHEN REGEXP_LIKE(PR.CAT_CD, '^(034001|034004|034005|034006)') AND NOT REGEXP_LIKE(PR.CAT_CD, '^(034001005|034006005)')
+                       THEN PR.BUY_PRC
+                       ELSE NVL((SELECT BUY_PRC FROM TPR_STORE_ITEM_PRICE
+                                  WHERE PROD_CD = PR.PROD_CD
+                                    AND STR_CD = (SELECT STR_CD FROM TPR_STORE_ITEM_PRICE
+                                                   WHERE PROD_CD = PR.PROD_CD
+                                                     AND STR_CD IN ('307', '981', '985') LIMIT 1)
+                                    AND ITEM_CD = '001'), 0)
+             END AS BUY_PRC  /* 원가 */
+           , CASE WHEN REGEXP_LIKE(PR.CAT_CD, '^(034001|034004|034005|034006)') AND NOT REGEXP_LIKE(PR.CAT_CD, '^(034001005|034006005)')
+                       THEN PR.SELL_PRC
+                       ELSE NVL((SELECT SELL_PRC FROM TPR_STORE_ITEM_PRICE
+                                  WHERE PROD_CD = PR.PROD_CD
+                                    AND STR_CD = (SELECT STR_CD FROM TPR_STORE_ITEM_PRICE
+                                                   WHERE PROD_CD = PR.PROD_CD
+                                                     AND STR_CD IN ('307', '981', '985') LIMIT 1)
+                                    AND ITEM_CD = '001'), 0)
+             END AS SELL_PRC  /* 매가 */
+           , CASE WHEN REGEXP_LIKE(PR.CAT_CD, '^(034001|034004|034005|034006)') AND NOT REGEXP_LIKE(PR.CAT_CD, '^(034001005|034006005)')
+                       THEN PR.CURR_SELL_PRC
+                       ELSE NVL((SELECT CURR_SELL_PRC FROM TPR_STORE_ITEM_PRICE
+                                  WHERE PROD_CD = PR.PROD_CD
+                                    AND STR_CD = (SELECT STR_CD FROM TPR_STORE_ITEM_PRICE
+                                                   WHERE PROD_CD = PR.PROD_CD
+                                                     AND STR_CD IN ('307', '981', '985') LIMIT 1)
+                                    AND ITEM_CD = '001'), 0)
+             END AS CURR_SELL_PRC  /* 판매가 */
+           ,(SELECT MIN(SOUT_YN)
+               FROM TPR_STORE_ITEM_PRICE A
+                  , TST_STORE B
+              WHERE PR.PROD_CD = A.PROD_CD
+                AND A.STR_CD = B.STR_CD
+                AND B.ONLINE_YN = 'Y') SOUT_YN
+         , CASE PROD_PATEN_DIVN_CD
+                WHEN '0' THEN '0'
+                ELSE TRIM(TO_CHAR((SELECT ROUND((PP.CURR_SELL_PRC / PP.DP_TOT_QTY) * PP.DP_BASE_QTY, 0) AS UNIT_SALE_PRC
+                                     FROM TPR_PRODUCT PP
+                                    WHERE PP.DP_TOT_QTY != 0
+                                      AND PP.DP_UNIT_CD IS NOT NULL
+                                      AND PP.PROD_CD = PR.PROD_CD), '9,999,999,999'))
+           END AS UNIT_SALE_PRC
+         , CASE PROD_PATEN_DIVN_CD
+                WHEN '0' THEN '0'
+                ELSE ( SELECT CD_NM FROM TET_CODE E WHERE MAJOR_CD = 'PRD17' AND MINOR_CD = PR.DP_UNIT_CD )
+           END AS DP_UNIT_NM
+         , DP_UNIT_CD
+         , CASE PROD_PATEN_DIVN_CD
+                WHEN '0' THEN '0'
+                ELSE TRIM(TO_CHAR(PR.DP_TOT_QTY, '99,999'))
+           END AS DP_TOT_QTY
+         , CASE PROD_PATEN_DIVN_CD
+                WHEN '0' THEN '0'
+                ELSE TRIM(TO_CHAR(PR.DP_BASE_QTY, '99,999'))
+           END AS DP_BASE_QTY
+         , VARIATION_YN
+         , PROD_HRZN_LENG
+         , PROD_HIGT
+         , PROD_VTCL_LENG
+         , NFOML_VARIATION_DESC
+         , ''  /* PR.AU_USE_YN[2015.10.21 by kmlee 옥션 제휴 종료로 제외시킴] */
+         , ''  /* DECODE(PR.AU_SELL_STOP_DATE,'','Y','N') AS AU_SALE_YN */
+         , ''  /* PR.AU_SELL_STOP_DATE */
+         , ''  /* PR.AU_PROD_CD */
+         , PR.OPTN_LOAD_SET_QTY
+         , PR.OPTN_LOAD_CONTENT
+         , PR.RSERV_ORD_PSBT_START_DY
+         , TO_CHAR(TO_DATE(PR.RSERV_ORD_PSBT_START_DY,'YYYYMMDDHH24MI'),'YYYY-MM-DD') RSERV_ORD_PSBT_START_DAY
+         , TO_CHAR(TO_DATE(PR.RSERV_ORD_PSBT_START_DY,'YYYYMMDDHH24MI'),'HH24') RSERV_ORD_PSBT_START_HOUR
+         , PR.RSERV_ORD_PSBT_END_DY
+         , TO_CHAR(TO_DATE(PR.RSERV_ORD_PSBT_END_DY,'YYYYMMDDHH24MI'),'YYYY-MM-DD') RSERV_ORD_PSBT_END_DAY
+         , TO_CHAR(TO_DATE(PR.RSERV_ORD_PSBT_END_DY,'YYYYMMDDHH24MI'),'HH24') RSERV_ORD_PSBT_END_HOUR
+         , PR.RSERV_PROD_PICK_IDCT_DY
+         , TO_CHAR(TO_DATE(PR.RSERV_PROD_PICK_IDCT_DY,'YYYYMMDDHH24MI'),'YYYY-MM-DD') RSERV_PROD_PICK_IDCT_DAY
+         , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM335' AND MINOR_CD = PR.ONLINE_PROD_TYPE_CD) AS ONLINE_PROD_TYPE_NM
+         , PR.ONLINE_PROD_TYPE_CD
+         , PR.PROD_OPTION_DESC
+         , PR.HOPE_DELI_PSBT_DD
+         , PR.DISP_YN
+         , PR.CMBN_MALL_SELL_PSBT_YN
+         , PR.FEDAY_MALL_SELL_PSBT_YN
+         , PR.APRV_YN
+         , TO_CHAR(PR.REG_DATE ,'YYYY-MM-DD') AS REG_DATE
+         , REG.ADMIN_NM  AS REG_ID
+         , TO_CHAR(PR.APRV_DATE,'YYYY-MM-DD') AS APRV_DATE
+         , APR.ADMIN_NM  AS APRV_ID
+         , TO_CHAR(PR.MOD_DATE,'YYYY-MM-DD') AS MOD_DATE
+         , UPD.ADMIN_NM  AS MOD_ID
+         , TO_CHAR(PR.MD_REG_DATE,'YYYY-MM-DD') AS MD_REG_DATE
+         , PR.RECOMM_RECOM_PNT
+         , PR.PREST
+         , TRIM(TO_CHAR(DP_TOTAMT, '999,999,999')) AS DP_TOTAMT
+         , TRIM(TO_CHAR(FRSH_CONV_QTY, '999,999,999')) AS FRSH_CONV_QTY
+         , BIGHAND_BIGENTP_DIVN_CD
+         , (SELECT CD_NM
+              FROM TET_CODE Z
+             WHERE Z.MAJOR_CD = 'SM117'
+               AND Z.USE_YN='Y'
+               AND Z.MINOR_CD = PR.BIGHAND_BIGENTP_DIVN_CD  -- 손큰통큰구분코드
+           ) AS BIGHAND_BIGENTP_DIVN_NM
+         , PRODUCT_NATION_CD
+         , NVL(FEDAY_MALL_PROD_DIVN_CD, '0') AS FEDAY_MALL_PROD_DIVN_CD
+         , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD='PRD30' AND MINOR_CD=PROD_DIVN_CD) AS PROD_DIVN_NM
+         , PROD_DIVN_CD
+         , SNGL_BK_YN  -- 단일바구니여부
+         --전상법추가
+         , ( CASE WHEN ( SELECT COUNT(A.INFO_GRP_CD) CNT
+                           FROM TPR_PROD_ADD_INFO_VAL A
+                              , V_PR_ADD_INFO B
+                          WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+                            AND A.INFO_COL_CD = B.INFO_COL_CD
+                            AND A.PROD_CD = PR.PROD_CD
+                            AND B.L3_CD = PR.CAT_CD
+                       ) = 0 THEN 'N'
+                  WHEN ( SELECT COUNT(A.INFO_GRP_CD) CNT
+                           FROM TPR_PROD_ADD_INFO_VAL A
+                              , V_PR_ADD_INFO B
+                          WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+                            AND A.INFO_COL_CD = B.INFO_COL_CD
+                            AND A.PROD_CD = PR.PROD_CD
+                            AND B.L3_CD = PR.CAT_CD
+                       ) = ( SELECT COUNT(A.INFO_GRP_CD) CNT
+                               FROM V_PR_ADD_INFO A
+                              WHERE A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE PROD_CD = PR.PROD_CD)
+                                AND A.L3_CD = PR.CAT_CD
+                           ) THEN 'Y'
+                  ELSE 'N'
+             END ) AS ECOM_YN
+         , CASE WHEN (SELECT 'Y'
+                        FROM TPR_PROD_ADD_INFO_CNFM A
+                       WHERE PR.PROD_CD = A.PROD_CD
+                         LIMIT 1) = 'Y' THEN 'Y'
+                ELSE 'N'
+           END ECOM_YN_APPROVE
+         , CASE WHEN FN_GET_PROMO_COUNT(PR.PROD_CD) > 0 THEN 'Y' ELSE 'N' END  AS PROMOTION_YN
+         , PR.MODEL_NM
+         , PR.ECO_YN
+         , PR.ECO_NM
+         , PR.DLV_GA
+         , PR.DLV_DT
+         , PR.INS_CO
+         , PE.TYPE_CD
+         , PE.SELLER_RECOMM
+         /* 20180911 상품키워드 입력 기능 추가 */
+         , CASE WHEN (SELECT COUNT(1) FROM TPR_PRODUCT_KEYWORD WHERE SEQ != '000' AND PROD_CD = PR.PROD_CD) = 0 
+                     AND (SELECT COUNT(1) FROM TPR_PROD_MD_APRV_MST
+                           WHERE PROD_CD = PR.PROD_CD AND TYPE_CD = '005' AND APRV_CD IN ('001','002')) = 0 
+                THEN 'N' ELSE 'Y' END AS KEYWORD_YN
+         /* 20180911 상품키워드 입력 기능 추가 */
+         , (SELECT DISTINCT TSC.LRG_STD_CAT_NM 
+                   || CASE WHEN TSC.MID_STD_CAT_NM IS NOT NULL
+                           THEN ' > ' || TSC.MID_STD_CAT_NM END
+                   || CASE WHEN TSC.SML_STD_CAT_NM IS NOT NULL
+                           THEN ' > ' || TSC.SML_STD_CAT_NM END
+                   || CASE WHEN TSC.SUB_STD_CAT_NM IS NOT NULL
+                           THEN ' > ' || TSC.SUB_STD_CAT_NM END AS CAT_NM
+              FROM TEC_STD_CATEGORY TSC
+                 , TEC_CAT_PROD_MAPPING TCPM
+             WHERE PR.PROD_CD = TCPM.PROD_CD
+               AND TSC.STD_CAT_CD = TCPM.STD_CAT_CD
+             ) AS STD_CAT_NM
+         , NVL2(TPM.API_0001_DATE, 'Y', 'N') AS EC_LINK_YN
+         , NVL2(TPM.API_0001_DATE, 'LM'||PR.PROD_CD, '-') AS EC_PROD_CD
+         , PR.NOCH_DELI_YN AS NOCH_DELI_YN
+      FROM TPR_PRODUCT PR
+         , TPR_PRODUCT_EXTENSION PE
+         , TEC_PROD_MAPPING TPM
+         , TVE_VENDOR VD
+         , TCA_MD_CATEGORY MC
+         , TCA_TEMPLATE TP
+         , TET_CODE HC
+         , TPR_BRAND BR
+         , TPR_MAKER MK
+         , TAD_ADMIN REG
+         , TAD_ADMIN UPD
+         , TAD_ADMIN APR
+     WHERE PR.REP_PROD_CD_YN = 'N'
+       AND PR.PROD_CD = #prodCd#
+       AND PR.PROD_CD = PE.PROD_CD(+)
+       AND PR.VENDOR_ID = VD.VENDOR_ID
+       AND PR.CAT_CD = MC.CAT_CD(+)
+       AND PR.TEMPLATE_ID = TP.TEMPLATE_ID(+)
+       AND PR.HOME_CD = HC.MINOR_CD(+)
+       AND PR.BRAND_CD = BR.BRAND_CD(+)
+       AND PR.MAKER_CD = MK.MAKER_CD(+)
+       AND PR.REG_ID = REG.ADMIN_ID(+)
+       AND PR.MOD_ID = UPD.ADMIN_ID(+)
+       AND PR.APRV_ID = APR.ADMIN_ID(+)
+       AND HC.MAJOR_CD(+) = 'PRD16'
+       AND PR.PROD_CD = TPM.PROD_CD(+)
+       AND TPM.ITEM_CD(+) = '000'
+       AND TPM.STR_CD(+) = '000'
+    ]]>
+    </select>
+
+    <select id="selectPrdExtThemaDealInfo" resultClass="dataMap">
+    /* pscpprd0002.selectPrdExtThemaDealInfo */
+    SELECT PE.PROD_CD
+         , NVL(PE.THEMA_YN, 'N') AS THEMA_YN
+         , NVL(PE.DEAL_VIEW_CD, 'GRID_VIEW') AS DEAL_VIEW_CD
+		 , NVL(PE.DEAL_SC_DP_YN, 'Y') AS DEAL_SC_DP_YN
+      FROM TPR_PRODUCT_EXT PE
+     WHERE PE.PROD_CD = #prodCd#
+    </select>
+
+    <update id="updatePrdExtThemaDealInfo" parameterClass="dataMap">
+    /* pscpprd0002.updatePrdExtThemaDealInfo */
+    MERGE INTO TPR_PRODUCT_EXT PE
+    USING (SELECT PROD_CD
+             FROM TPR_PRODUCT
+            WHERE PROD_CD = #prodCd#) U
+       ON (PE.PROD_CD = U.PROD_CD)
+     WHEN NOT MATCHED THEN
+    INSERT (PROD_CD, THEMA_YN, DEAL_VIEW_CD, DEAL_SC_DP_YN, REG_DATE, REG_ID, MOD_DATE, MOD_ID)
+    VALUES (U.PROD_CD, #themaYn#, #dealViewCd#, #scDpYn#, CURRENT_TIMESTAMP(0), #regId#, CURRENT_TIMESTAMP(0), #modId#)
+      WHEN MATCHED THEN
+    UPDATE
+       SET THEMA_YN = #themaYn#
+         , DEAL_VIEW_CD = #dealViewCd#
+		 , DEAL_SC_DP_YN = #scDpYn#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+         , MOD_ID = #modId#
+     WHERE PROD_CD = U.PROD_CD
+    </update>
+
+    <select id="selectChkAuctionPrdInfoUpdate" resultClass="pscpprd0002VO">
+    <![CDATA[
+    /* pscpprd0002.selectChkAuctionPrdInfoUpdate */
+    SELECT 
+            A.PROD_CD prodCd
+           , DECODE(A.AU_HOME_CD, A.HOME_CD, 'N', 'Y') homeChgYn
+           ,(SELECT COUNT(1) 
+               FROM TPR_ITEM X 
+              WHERE X.PROD_CD = A.PROD_CD) AS itemCnt
+           ,(SELECT COUNT(1) 
+               FROM TPR_STORE_ITEM_PRICE X 
+              WHERE X.PROD_CD = A.PROD_CD 
+                AND X.ENTP_DELI_DIVN_CD IN ('1','3')) AS delivCnt
+    FROM   TPR_PRODUCT A
+          ,TCA_MD_CATEGORY B
+    WHERE  A.CAT_CD     = B.CAT_CD
+    AND    A.PROD_CD    = #prodCd#
+    AND    A.FEDAY_MALL_PROD_DIVN_CD NOT IN ('7','8')
+    AND    A.AU_USE_YN       = 'Y'
+    AND    B.AU_USE_YN       = 'Y'
+    AND    B.AU_CATEGORY_ID  IS NOT NULL
+    ]]>
+    </select>
+
+    <insert id="insertAuctionBatchLog">
+    <![CDATA[
+    /* pscpprd0002.insertAuctionBatchLog */
+    INSERT  INTO TAU_PROD_BATCH_LOG
+    (SEQ, STR_CD, PROD_CD, ITEM_CD, DATA_TYPE_CD, STS_CD, ERROR_CD, ERROR_MSG, REG_DATE, REG_ID, MOD_DATE, MOD_ID)
+    SELECT   SQ_SEQ_SEQ.NEXTVAL AS SEQ
+            ,'307'  AS STR_CD
+            ,#prodCd#  AS PROD_CD
+            ,'001'  AS ITEM_CD
+            ,'6'  AS TYPE_CD
+            ,'U'  AS STATUS_FG
+            ,'0'  AS ERR_FG
+            ,''  AS ERR_MSG
+            ,CURRENT_TIMESTAMP(0)
+            ,#regId#
+            ,CURRENT_TIMESTAMP(0) 
+            ,#regId#
+      FROM DUAL
+    ]]>
+    </insert>
+
+    <select id="selectchk11StPrdInfoUpdate" resultClass="pscpprd0002VO">
+    <![CDATA[
+    /* pscpprd0002.selectchk11StPrdInfoUpdate */
+    SELECT 
+            A.PROD_CD AS prodCd
+           ,C.SITE_CD AS siteCd
+           ,C.FEDAY_MALL_USE_YN AS fedayMallUseYn
+           ,DECODE(C.SITE_PRODUCT_CD,'','N','Y') AS siteRegYn
+           ,(SELECT COUNT(1) 
+               FROM TPR_ITEM X 
+              WHERE X.PROD_CD = A.PROD_CD ) AS itemCnt
+           ,(SELECT COUNT(1) 
+               FROM TPR_STORE_ITEM_PRICE X 
+              WHERE X.PROD_CD  = A.PROD_CD 
+                AND X.ENTP_DELI_DIVN_CD IN ('1','3')) AS delivCnt
+    FROM   TPR_PRODUCT A
+          ,TMLS_CATEGORY_MPPG B
+          ,TMLS_PRODUCT C
+    WHERE A.CAT_CD   =  B.CAT_CD
+    AND   A.PROD_CD  =  C.PROD_CD
+    AND   A.PROD_CD  =  #prodCd#
+    AND   A.FEDAY_MALL_PROD_DIVN_CD NOT IN ('7','8')
+    AND   C.USE_YN      = 'Y'
+    AND   C.SITE_CATEGORY_ID IS NOT NULL
+    ]]>
+    </select>
+
+    <insert id="insertSiteLinkInfo">
+    <![CDATA[
+    /* pscpprd0002.insertSiteLinkInfo */
+    INSERT INTO TMLS_PRODUCT_LINK_INFO
+    (SITE_CD,    PROD_CD,   LINK_DT,  LNKG_DIVN, LNKG_STS,
+     ERROR_DIVN, REG_DATE,  REG_ID,   MOD_DATE, MOD_ID)
+    VALUES
+    ('03',      #prodCd#, TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDDHH24MISS') , '6', 'U', 
+     '0',        CURRENT_TIMESTAMP(0),    #regId#, CURRENT_TIMESTAMP(0), #regId#)
+    ]]>
+    </insert>
+
+    <update id="updatePrdDetailInfo">
+    <![CDATA[
+    /* pscpprd0002.updatePrdDetailInfo */
+	UPDATE TPR_PRODUCT
+	   SET PROD_NM = #prodNm#,
+	       MAIN_MTRL_NM = #mainMtrlNm#,
+		   NFOML_VARIATION_DESC = #nfomlVariationDesc#,
+           BRAND_NM = #brandNm#,
+           MAKER_NM = #makerNm#,
+           PROD_STANDARD_NM = SUBSTRB(#prodStandardNm#,1,20),
+           VARIATION_YN = NVL(#variationYn#,VARIATION_YN),
+		   HOME_CD = #homeCd#,
+		   MODEL_NM = #modelNm#,
+           ECO_YN = #ecoYn#,
+           ECO_NM = #ecoNm#,
+           DLV_GA = #dlvGa#,
+           DLV_DT = #dlvDt#,
+           INS_CO = #insCo#,
+           PROD_OPTION_DESC = #prodOptionDesc#,
+    ]]>
+    <isEqual property="prodDivnCd" compareValue="02">
+    <![CDATA[
+           MIN_ORD_PSBT_QTY = NVL(REPLACE(#minOrdPsbtQty#, ',', ''),MIN_ORD_PSBT_QTY),
+		   MAX_ORD_PSBT_QTY = NVL(REPLACE(#maxOrdPsbtQty#, ',', ''),MAX_ORD_PSBT_QTY),
+           DISP_YN = NVL(#dispYn#,DISP_YN),
+		   CMBN_MALL_SELL_PSBT_YN = #cmbnMallSellPsbtYn#,
+		   FEDAY_MALL_SELL_PSBT_YN = #fedayMallSellPsbtYn#,
+           FEDAY_MALL_PROD_DIVN_CD = #fedayMallProdDivnCd#,
+    ]]>
+    </isEqual>
+	 <isNotEmpty property="optnLoadSetQty">
+           OPTN_LOAD_SET_QTY = #optnLoadSetQty#,
+     </isNotEmpty>
+     <isNotEmpty property="optnLoadContent">
+           OPTN_LOAD_CONTENT = #optnLoadContent#,
+     </isNotEmpty>
+     <isNotEmpty property="rservOrdPsbtStartDy">
+           RSERV_ORD_PSBT_START_DY  = #rservOrdPsbtStartDy#,
+     </isNotEmpty>
+     <isNotEmpty property="rservOrdPsbtEndDy">
+           RSERV_ORD_PSBT_END_DY = #rservOrdPsbtEndDy#,
+     </isNotEmpty>
+     <isNotEmpty property="rservProdPickIdctDy">
+           RSERV_PROD_PICK_IDCT_DY = #rservProdPickIdctDy#,
+     </isNotEmpty>
+     <isNotEmpty property="onlineProdTypeCd">
+           ONLINE_PROD_TYPE_CD = #onlineProdTypeCd#,
+     </isNotEmpty>
+     <isNotEmpty property="hopeDeliPsbtDd">
+           HOPE_DELI_PSBT_DD = #hopeDeliPsbtDd#,
+     </isNotEmpty>
+    <![CDATA[
+           DP_TOTAMT = REPLACE(#dpTotamt#, ',', ''),
+           FRSH_CONV_QTY = REPLACE(#frshConvQty#, ',', ''),
+           PRODUCT_NATION_CD = #productNationCd#,
+           DP_BASE_QTY = REPLACE(#dpBaseQty#, ',', ''),
+           DP_TOT_QTY = REPLACE(#dpTotQty#, ',', ''),
+           DP_UNIT_CD = #dpUnitCd#,
+		   MOD_DATE = CURRENT_TIMESTAMP(0),
+		   MOD_ID = #regId#
+	 WHERE PROD_CD = #prodCd#
+    ]]>
+    </update>
+    
+    <select id="selectProdCommerceCheck" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0002.selectProdCommerceCheck - 전상법 상품 체크 */
+      SELECT CASE WHEN (
+                    		SELECT 	COUNT(A.INFO_GRP_CD) CNT
+                      		FROM 	TPR_PROD_ADD_INFO_VAL A, 
+                           			TPR_PROD_ADD_INFO_DET B 
+                     		WHERE A.PROD_CD = PR.PROD_CD
+                       		-- 2015.10.30 by kmlee 카테고리 체계 변경으로 L4_CD -> L3_CD
+                       		-- AND A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM V_PR_ADD_INFO WHERE L4_CD = PR.CAT_CD)
+                       		AND A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM V_PR_ADD_INFO WHERE L3_CD = PR.CAT_CD)
+                       		AND A.INFO_GRP_CD = B.INFO_GRP_CD
+                       		AND A.INFO_COL_CD = B.INFO_COL_CD
+                       		AND B.USE_YN = 'Y'
+                     		GROUP BY A.INFO_GRP_CD
+                    	) = (
+                    			SELECT 	COUNT(INFO_GRP_CD) CNT
+                      			FROM 	V_PR_ADD_INFO VI
+                      			-- 2015.10.30 by kmlee 카테고리 체계 변경으로 L4_CD -> L3_CD
+                            	-- WHERE 	INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM V_PR_ADD_INFO WHERE L4_CD = PR.CAT_CD) 
+                       			-- AND INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE PROD_CD = PR.PROD_CD) 
+                       			-- AND L4_CD = PR.CAT_CD 
+                       			WHERE 	INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM V_PR_ADD_INFO WHERE L3_CD = PR.CAT_CD) 
+                       			AND INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE PROD_CD = PR.PROD_CD) 
+                       			AND L3_CD = PR.CAT_CD
+                     			GROUP BY INFO_GRP_CD
+                    		)THEN 
+                    	  			CASE WHEN (SELECT COUNT(PROD_CD) FROM TPR_PROD_ADD_INFO_CNFM WHERE PROD_CD = PR.PROD_CD) > 0 
+                               					THEN 'Y' 
+                               					ELSE 'N' 
+                               		END
+                 ELSE 'N' 
+             END prodChk
+     FROM (SELECT PROD_CD, CAT_CD FROM TPR_PRODUCT
+            WHERE PROD_CD = #prodCd#) PR
+    ]]>
+    </select>
+
+    <select id="selectNewProdCommerceCheck" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0002.selectNewProdCommerceCheck - 전상법 상품 체크 NEW_PROD_CD */
+    SELECT CASE WHEN (
+                    	SELECT 	COUNT(A.INFO_GRP_CD) CNT
+                      	FROM 	TPR_PROD_ADD_INFO_VAL A, 
+                         	 	TPR_PROD_ADD_INFO_DET B 
+                     	WHERE 	A.NEW_PROD_CD = PR.PROD_CD
+                     	-- 2015.10.30 by kmlee 카테고리 체계 변경으로 L4_CD -> L3_CD
+                       	AND 	A.INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM V_PR_ADD_INFO WHERE L3_CD = PR.CAT_CD)
+                       	AND 	A.INFO_GRP_CD = B.INFO_GRP_CD
+                       	AND 	A.INFO_COL_CD = B.INFO_COL_CD
+                       	AND 	B.USE_YN = 'Y'
+                     	GROUP BY A.INFO_GRP_CD
+                     ) = (
+                    		SELECT 	COUNT(INFO_GRP_CD) CNT
+                      		FROM 	V_PR_ADD_INFO VI
+                      		-- 2015.10.30 by kmlee 카테고리 체계 변경으로 L4_CD -> L3_CD
+                     		WHERE 	INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM V_PR_ADD_INFO WHERE L3_CD = PR.CAT_CD)
+                       		AND 	INFO_GRP_CD IN (SELECT INFO_GRP_CD FROM TPR_PROD_ADD_INFO_VAL WHERE NEW_PROD_CD = PR.PROD_CD)
+                       		-- 2015.10.30 by kmlee 카테고리 체계 변경으로 L4_CD -> L3_CD 
+                       		AND 	L3_CD = PR.CAT_CD  
+                     		GROUP BY INFO_GRP_CD
+                         )THEN 'Y'
+                 ELSE 'N' 
+         END prodChk
+    FROM (
+    		SELECT PGM_ID       AS PROD_CD, 
+    			   L3_CD        AS CAT_CD 
+    		FROM   TPC_NEW_PROD_REG
+            WHERE  PGM_ID = #prodCd#
+         ) PR
+    ]]>
+    </select>
+
+     <insert id="insertProdHist">
+    <![CDATA[
+    /* pscpprd0002.insertProdHist - HIST 저장 */
+    INSERT INTO TPR_PRODUCT_HIST
+	( PROD_CD
+	, PROD_NM
+	, EVT_PROD_NM
+	, MD_PROD_CD
+	, MD_PROD_NM
+	, MD_PROD_SHORT_NM
+	, MD_SRCMK_CD
+	, REP_PROD_CD
+	, PROD_DIVN_CD
+	, CAT_CD
+	, CATEGORY_ID
+	, VENDOR_ID
+	, HOME_CD
+	, PRODUCT_NATION_CD
+	, MAIN_MTRL_NM
+	, ARTISTE_NM
+	, FRSH_PROD_SELL_UNIT_NM
+	, PROD_STANDARD_NM
+	, DP_UNIT_CD
+	, DP_TOT_QTY
+	, DP_BASE_QTY
+	, PROD_HRZN_LENG
+	, PROD_VTCL_LENG
+	, PROD_HIGT
+	, BRAND_CD
+	, BRAND_NM
+	, MAKER_CD
+	, MAKER_NM
+	, STAFF_DC_RATE
+	, MIN_ORD_PSBT_QTY
+	, MAX_ORD_PSBT_QTY
+	, BO_PKN_YN
+	, SNGL_BK_YN
+	, DISP_YN
+	, CMBN_MALL_SELL_PSBT_YN
+	, FEDAY_MALL_SELL_PSBT_YN
+	, FEDAY_MALL_PROD_DIVN_CD
+	, FEDAY_MALL_STK_MGR_STR_CD
+	, EVT_PROD_YN
+	, APRV_YN
+	, APRV_DATE
+	, APRV_ID
+	, BUY_PRC
+	, SELL_PRC
+	, CURR_SELL_PRC
+	, VARIATION_YN
+	, NFOML_VARIATION_DESC
+	, RECOMM_RECOM_PNT
+	, EMBTL_CD
+	, EMBTL_AMT
+	, PROD_PATEN_DIVN_CD
+	, PROD_TYPE_DIVN_CD
+	, NOPROD_DIVN_CD
+	, FRSH_DIVN_CD
+	, ASSORT_DIVN_CD
+	, HELEC_MODEL_NO
+	, FASH_CAT_CD
+	, ALCOL_TYPE_DIVN_CD
+	, FORGN_SRCG_DIVN_CD
+	, PROD_REG_DIVN_CD
+	, TAXAT_DIVN_CD
+	, SCARD_ISSUE_DIVN_CD
+	, PRC_ISSUE_DIVN_CD
+	, CTR_TYPE_DIVN_CD
+	, QTY_WEGT_DIVN_CD
+	, ENTP_DELI_TYPE_CD
+	, ENTP_DELI_MD_SEND_YN
+	, MAT_CONTENT
+	, MAKE_COM_NM
+	, NEW_PROD_VALI_END_DY
+	, MAX_KEEP_DD_CNT
+	, MD_REP_CD
+	, MD_REG_DATE
+	, COMM_RATE
+	, PROFIT_RATE
+	, REP_PROD_CD_YN
+	, DEL_STOP_DIVN_YN
+	, PROD_DESC
+	, TEMPLATE_ID
+	, DP_TOTAMT
+	, IMG_NCNT
+	, INET_SELL_QTY
+	, PROD_TAG_INFO_CONTENT
+	, FRSH_CONV_QTY
+	, BIGHAND_BIGENTP_DIVN_CD
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID
+	, PROD_ENG_NM
+	, ADL_YN
+	, NOCH_DELI_YN
+	, END_DATE
+	, DISP_REASON
+    )
+	SELECT
+	       PROD_CD
+	     , PROD_NM
+	     , EVT_PROD_NM
+	     , MD_PROD_CD
+	     , MD_PROD_NM
+	     , MD_PROD_SHORT_NM
+	     , MD_SRCMK_CD
+	     , REP_PROD_CD
+	     , PROD_DIVN_CD
+	     , CAT_CD
+	     , CATEGORY_ID
+	     , VENDOR_ID
+	     , HOME_CD
+	     , PRODUCT_NATION_CD
+	     , MAIN_MTRL_NM
+	     , ARTISTE_NM
+	     , FRSH_PROD_SELL_UNIT_NM
+	     , PROD_STANDARD_NM
+	     , DP_UNIT_CD
+	     , DP_TOT_QTY
+	     , DP_BASE_QTY
+	     , PROD_HRZN_LENG
+	     , PROD_VTCL_LENG
+	     , PROD_HIGT
+	     , BRAND_CD
+	     , BRAND_NM
+	     , MAKER_CD
+	     , MAKER_NM
+	     , STAFF_DC_RATE
+	     , MIN_ORD_PSBT_QTY
+	     , MAX_ORD_PSBT_QTY
+	     , BO_PKN_YN
+	     , SNGL_BK_YN
+	     , DISP_YN
+	     , CMBN_MALL_SELL_PSBT_YN
+	     , FEDAY_MALL_SELL_PSBT_YN
+	     , FEDAY_MALL_PROD_DIVN_CD
+	     , FEDAY_MALL_STK_MGR_STR_CD
+	     , EVT_PROD_YN
+	     , APRV_YN
+	     , APRV_DATE
+	     , APRV_ID
+	     , BUY_PRC
+	     , SELL_PRC
+	     , CURR_SELL_PRC
+	     , VARIATION_YN
+	     , NFOML_VARIATION_DESC
+	     , RECOMM_RECOM_PNT
+	     , EMBTL_CD
+	     , EMBTL_AMT
+	     , PROD_PATEN_DIVN_CD
+	     , PROD_TYPE_DIVN_CD
+	     , NOPROD_DIVN_CD
+	     , FRSH_DIVN_CD
+	     , ASSORT_DIVN_CD
+	     , HELEC_MODEL_NO
+	     , FASH_CAT_CD
+	     , ALCOL_TYPE_DIVN_CD
+	     , FORGN_SRCG_DIVN_CD
+	     , PROD_REG_DIVN_CD
+	     , TAXAT_DIVN_CD
+	     , SCARD_ISSUE_DIVN_CD
+	     , PRC_ISSUE_DIVN_CD
+	     , CTR_TYPE_DIVN_CD
+	     , QTY_WEGT_DIVN_CD
+	     , ENTP_DELI_TYPE_CD
+	     , ENTP_DELI_MD_SEND_YN
+	     , MAT_CONTENT
+	     , MAKE_COM_NM
+	     , NEW_PROD_VALI_END_DY
+	     , MAX_KEEP_DD_CNT
+	     , MD_REP_CD
+	     , MD_REG_DATE
+	     , COMM_RATE
+	     , PROFIT_RATE
+	     , REP_PROD_CD_YN
+	     , DEL_STOP_DIVN_YN
+	     , PROD_DESC
+	     , TEMPLATE_ID
+	     , DP_TOTAMT
+	     , IMG_NCNT
+	     , INET_SELL_QTY
+	     , PROD_TAG_INFO_CONTENT
+	     , FRSH_CONV_QTY
+	     , BIGHAND_BIGENTP_DIVN_CD
+	     , REG_DATE
+	     , REG_ID
+	     , MOD_DATE
+	     , MOD_ID
+	     , PROD_ENG_NM
+	     , ADL_YN
+	     , NOCH_DELI_YN
+	     , CURRENT_TIMESTAMP(0)
+	     , #dispReason#
+	  FROM TPR_PRODUCT
+	 WHERE PROD_CD = #prodCd#
+    ]]>
+    </insert>
+
+    <select id="countTprProdExInfo" resultClass="java.lang.Integer">
+	/* pscpprd0002.countTprProdExInfo */
+	SELECT   COUNT(*)
+	FROM     TPR_PRODUCT_EXTENSION
+	WHERE    PROD_CD = #prodCd#
+    </select>
+
+    <update id="updateExprDetailInfo">
+	/* pscpprd0002.updateExprDetailInfo */
+	MERGE INTO TPR_PRODUCT_EXTENSION A
+	USING (SELECT #prodCd# AS PROD_CD
+       	   FROM DUAL) U
+    ON(A.PROD_CD = U.PROD_CD)
+		WHEN NOT MATCHED THEN
+    		INSERT(PROD_CD, TYPE_CD, REG_DATE, REG_ID, MOD_DATE, MOD_ID, SELLER_RECOMM)
+    		VALUES(U.PROD_CD, #typeCd#, CURRENT_TIMESTAMP(0), #regId#, CURRENT_TIMESTAMP(0), #modId#, #sellerRecomm#)
+		WHEN MATCHED THEN
+			UPDATE SET
+				TYPE_CD = #typeCd#
+				,SELLER_RECOMM = #sellerRecomm#
+				,MOD_DATE = CURRENT_TIMESTAMP(0)
+				,MOD_ID = #modId#
+			WHERE PROD_CD = U.PROD_CD
+    </update>
+
+    <delete id="deleteTprProdExInfo">
+	/* pscpprd0002.deleteTprProdExInfo */
+	DELETE FROM TPR_PRODUCT_EXTENSION
+	WHERE PROD_CD = #prodCd#
+    </delete>
+
+    <select id="selectTypeCdCheck" resultClass="java.lang.Integer">
+	/* pscpprd0002.selectTypeCdCheck */
+	SELECT COUNT(*) 
+		FROM TPR_PRODUCT_EXTENSION
+		WHERE PROD_CD = #prodCd#
+		AND TYPE_CD = 'FRESH'
+    </select>
+
+    <!-- 20180911 상품키워드 입력 기능 추가 -->
+    <select id="selectKeywordYnChk" resultClass="java.lang.String">
+	/* pscpprd0002.selectKeywordYnChk */
+	SELECT DECODE(COUNT(*), 0, 'N', 'Y') AS KEYWORD_YN
+	FROM TPR_PRODUCT_KEYWORD 
+	WHERE SEQ != '000' AND PROD_CD = #prodCd#
+    </select>
+
+	<select id="selectKeywordAprvYnChk" resultClass="java.lang.String">
+	/* pscpprd0002.selectKeywordAprvYnChk */
+	SELECT DECODE(COUNT(*), 0, 'N', 'Y') AS APRV_YN
+	FROM  TPR_PROD_MD_APRV_MST
+	WHERE PROD_CD = #prodCd#
+	   AND TYPE_CD = '005'
+	   AND APRV_CD IN ('001','002')
+    </select>
+    <!-- 20180911 상품키워드 입력 기능 추가 -->
+</sqlMap>

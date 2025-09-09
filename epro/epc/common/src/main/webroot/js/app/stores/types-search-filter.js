@@ -1,0 +1,10 @@
+const PREFIX = 'searchFilter/';
+export const SEARCH_FILTER_OPEN = PREFIX + 'open';
+export const SEARCH_FILTER_CLOSE = PREFIX +'close';
+export const SEARCH_FILTER_IS_OPEN = PREFIX + 'isOpen';
+export const SEARCH_FILTER_TOTAL_COUNT = PREFIX + 'totalCount';
+export const SEARCH_FILTER_GTM_BUTTON_CLOSE = PREFIX + 'gtmButtonClose';
+export const SEARCH_FILTER_GTM_BUTTON_RESET = PREFIX + 'gtmButtonRest';
+export const SEARCH_FILTER_GTM_BUTTON_APPLY = PREFIX + 'gtmButtonApply';
+export const SEARCH_FILTER_DATA = PREFIX + 'data';
+export const SEARCH_FILTER_ACCORDION_MENU = PREFIX + 'accordionMenu';

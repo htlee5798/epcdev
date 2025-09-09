@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMSAL0020">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="nedmsal0020" type="com.lottemart.epc.edi.sale.model.NEDMSAL0020VO" />
+
+	<resultMap id="nedmsal0020StoreMap" class="nedmsal0020">
+		<result property="strNm" 	   column="STR_NM" />
+		<result property="strCd" 	   column="STR_CD" />
+		<result property="saleQty" 	   column="SALE_QTY" />
+		<result property="saleAmt" 	   column="SALE_AMT" />
+
+	</resultMap>
+	
+	
+<!-- 점포별 -->
+	<select id="TSC_STORE-SELECT01" parameterClass="nedmsal0020" resultMap="nedmsal0020StoreMap">
+	/* NEDMSAL0020.TSC_STORE-SELECT01 */
+		    select 
+    b.str_nm
+    ,A.STR_CD 
+    ,nvl(A.SALE_QTY,0)      as      SALE_QTY 
+    ,nvl(A.SALE_SALE_AMT,0) as      SALE_AMT
+
+    from (
+            SELECT  
+	     <isNotEmpty  property="searchStoreAl" >
+					<isNotEmpty  property="searchProductVal" > 
+						 /*+  index(A IX_PC_DY_STK_NEW01_05) */			 
+					</isNotEmpty>		 
+				</isNotEmpty> 
+				
+		       <isNotEmpty  property="searchProductVal" >		 
+				   	<isEmpty  property="searchStoreAl" >
+					 	/*+  index(A IX_PC_DY_STK_NEW01_05) */ 
+		       		</isEmpty>			 
+		       </isNotEmpty>		 
+			   <isNotEmpty  property="searchStoreAl" >
+	  		   		<isEmpty  property="searchProductVal" >
+				 		/*+  index(A IX_PC_DY_STK_NEW01_06) */ 
+			   		</isEmpty>
+	         	</isNotEmpty>	    
+		   			 A.STR_CD 
+                    ,SUM(A.SALE_QTY)        AS SALE_QTY        
+                    ,SUM(A.SALE_SALE_AMT)   AS SALE_SALE_AMT        
+            FROM TPC_DY_STK_NEW01 A 
+	    	WHERE A.STK_DY BETWEEN replace(#srchStartDate#,'-','') and replace(#srchEndDate#,'-','')	
+				<isEmpty property="searchEntpCd">
+					<isNotEmpty  property="venCds"  prepend="AND"> 
+				      <iterate prepend="A.VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+				        #venCds[]# 
+				      </iterate> 
+				    </isNotEmpty>
+				</isEmpty>		
+				
+			    <isNotEmpty  property="searchEntpCd"  prepend="AND"> 
+			    	A.VEN_CD = #searchEntpCd#
+			    </isNotEmpty>
+			    <isNotEmpty property="searchStoreAl"  prepend="AND"> 
+			     <iterate prepend="A.STR_CD IN " property="searchStoreAl" open="(" close=")" conjunction=","> 
+			       #searchStoreAl[]# 
+			     </iterate> 
+			   </isNotEmpty>
+			   <isNotEmpty  property="searchProductVal"  prepend="AND"> 
+			    	A.PROD_CD = #searchProductVal#
+			   </isNotEmpty>
+            GROUP BY  A.STR_CD
+    ) a,store b
+    where a.str_cd=b.str_cd
+    order  BY  a.STR_CD
+
+	</select>
+
+</sqlMap>

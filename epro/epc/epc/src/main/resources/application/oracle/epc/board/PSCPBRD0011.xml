@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="pscpbrd0011">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	<typeAlias alias="searchMap" type="java.util.HashMap"/>
+	<typeAlias alias="pscpbrd0011SaveVO" type="com.lottemart.epc.board.model.PSCPBRD0011SaveVO"/>
+	
+	<select id="selectOrderIdList" parameterClass="searchMap" resultClass="dataMap">
+		/*	pscpbrd0011.selectOrderIdList	*/
+		SELECT O.UP_ORDER_ID
+		    , O.ORDER_ID
+		    , (SELECT CUST_NM FROM TDE_ORDER_DELIVERY WHERE ORDER_ID = OI.ORDER_ID AND DELIVERY_ID = '000') AS CUST_NM
+		    , DM.RECP_PSN_NM
+		    , DM.VEN_CD
+		    , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE014' AND MINOR_CD = NVL(DM.VEN_DELI_STATUS_CD,'01')) VEN_DELI_STATUS_NM
+		    , V.ROWSPAN
+		    , OI.PROD_NM
+		    , OI.ORD_QTY
+		    , O.ORD_DY
+		FROM TOR_ORDER O, TOR_ORDER_ITEM OI, TDE_DELI_MST DM
+		    , (
+		        SELECT OI.ORDER_ID, COUNT(OI.ORDER_ID) AS ROWSPAN
+		        FROM TOR_ORDER O, TOR_ORDER_ITEM OI, TDE_DELI_MST DM
+		        WHERE O.ORDER_ID = OI.ORDER_ID 
+		        AND OI.ORDER_ID = DM.ORDER_ID
+		        AND OI.DELIVERY_ID = DM.DELIVERY_ID
+		        AND DM.DELIVERY_ID != '000'
+		        AND DM.DELI_METHOD_DIVN_CD = '20'
+		        AND DM.INVOICE_STATUS_CD = '10'
+		        AND DM.DELI_TYPE_CD IN ( '04', '06')
+		        AND O.ORD_DY BETWEEN #fromDate# AND #toDate#
+		        <iterate prepend="AND DM.VEN_CD IN " property="vendorId" open="(" close=")" conjunction=","> 
+		     		#vendorId[]# 
+		   		</iterate>
+		        GROUP BY OI.ORDER_ID
+		    ) V
+		WHERE O.ORDER_ID = OI.ORDER_ID 
+		AND OI.ORDER_ID = DM.ORDER_ID
+		AND OI.ORDER_ID = V.ORDER_ID
+		AND OI.DELIVERY_ID = DM.DELIVERY_ID
+		AND DM.DELIVERY_ID != '000'
+		AND DM.DELI_METHOD_DIVN_CD = '20'
+		AND DM.INVOICE_STATUS_CD = '10'
+		AND DM.DELI_TYPE_CD IN ( '04', '06')
+		AND O.ORD_DY BETWEEN #fromDate# AND #toDate#
+		<iterate prepend="AND DM.VEN_CD IN " property="vendorId" open="(" close=")" conjunction=","> 
+     		#vendorId[]# 
+   		</iterate>
+		ORDER BY O.UP_ORDER_ID, O.ORDER_ID
+	</select>  
+	
+	<select id="selectProductTotalCnt" resultClass="java.lang.Integer">
+    <![CDATA[
+    	/* pscpbrd0011.selectProductTotalCnt */
+        SELECT  COUNT(1) AS cnt
+        FROM  TPR_PRODUCT A
+	        WHERE A.APRV_YN = 'Y'
+	]]>	
+			<iterate prepend="AND A.VENDOR_ID IN " property="vendorId" open="(" close=")" conjunction=","> 
+	     		#vendorId[]# 
+	   		</iterate>
+	   		<isNotEmpty prepend="AND" property="prodCd">
+	   			A.PROD_CD  LIKE #prodCd#||'%'
+	   		</isNotEmpty>
+	   		<isNotEmpty prepend="AND" property="prodNm">
+	   			A.PROD_NM  LIKE #prodNm#||'%'
+	   		</isNotEmpty>
+    </select>
+	
+	<select id="selectProductList" parameterClass="searchMap" resultClass="dataMap">
+	<![CDATA[
+	    /* pscpbrd0011.selectPrdRecommendCrossList */
+		SELECT * FROM
+		(
+	        SELECT  
+	               ROWNUM AS NUM
+	               ,COUNT(1) OVER() AS TOTAL_COUNT
+	               ,A.PROD_CD AS PROD_CD 
+	               ,A.PROD_NM AS PROD_NM
+	               ,A.PROD_DESC AS PROD_DESC
+	               ,A.DISP_YN AS DISP_YN
+	               ,A.SELL_PRC AS SELL_PRC 
+	               ,A.CURR_SELL_PRC AS CURR_SELL_PRC
+	        FROM  TPR_PRODUCT A
+	        WHERE A.APRV_YN = 'Y'
+	]]>	
+			<iterate prepend="AND A.VENDOR_ID IN " property="vendorId" open="(" close=")" conjunction=","> 
+	     		#vendorId[]# 
+	   		</iterate>
+	   		<isNotEmpty prepend="AND" property="prodCd">
+	   			A.PROD_CD  LIKE #prodCd#||'%'
+	   		</isNotEmpty>
+	   		<isNotEmpty prepend="AND" property="prodNm">
+	   			A.PROD_NM  LIKE #prodNm#||'%'
+	   		</isNotEmpty>
+	<![CDATA[ 
+		)	
+		WHERE NUM BETWEEN #startRow# AND #endRow#
+    ]]>	
+	</select>
+	
+	<select id="selectCCagentTotalCnt" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(*)
+		  FROM TAD_ADMIN T
+		 WHERE T.ADMIN_TYPE_CD = '02'
+		   AND T.DEPT_NM = 'ccagent'
+		   AND T.LOGIN_ID LIKE 'cc%'
+		   AND T.RETIRE_YN = 'N'
+           AND T.ACTIVE_YN = 'Y'
+	]]>
+		<isNotEmpty prepend="AND" property="loginId">
+	   		T.LOGIN_ID LIKE #loginId#||'%'
+	   	</isNotEmpty>
+	   	<isNotEmpty prepend="AND" property="adminId">
+	   		T.ADMIN_NM LIKE '%'||#adminId#||'%'
+	   	</isNotEmpty>
+	</select>
+	
+	<select id="selectCCagentList" parameterClass="searchMap" resultClass="dataMap">
+	<![CDATA[
+		SELECT * FROM
+		(
+			SELECT ROWNUM AS NUM
+			      ,COUNT(1) OVER() AS TOTAL_COUNT
+				  ,T.LOGIN_ID
+			      ,T.ADMIN_ID
+			      ,T.ADMIN_NM 
+			  FROM TAD_ADMIN T
+			 WHERE T.ADMIN_TYPE_CD = '02'
+			   AND T.DEPT_NM = 'ccagent'
+			   AND T.LOGIN_ID LIKE 'cc%'
+			   AND T.RETIRE_YN = 'N'
+	           AND T.ACTIVE_YN = 'Y'
+	]]>
+			<isNotEmpty prepend="AND" property="loginId">
+		   		T.LOGIN_ID LIKE #loginId#||'%'
+		   	</isNotEmpty>
+		   	<isNotEmpty prepend="AND" property="adminId">
+		   		T.ADMIN_NM LIKE '%'||#adminId#||'%'
+		   	</isNotEmpty>
+	<![CDATA[ 
+		)	
+		WHERE NUM BETWEEN #startRow# AND #endRow#
+    ]]>		   	
+	</select>
+	
+	<select id="selectBoardAuthCellNo" resultClass="dataMap">
+		/* pscpbrd0011.selectBoardAuthCellNo */
+		SELECT A.ADMIN_ID
+		      ,REPLACE(A.CELL_NO,' ','') AS CELL_NO
+		  FROM TAD_ADMIN A, TAD_BOARD_USER_MNG B
+		 WHERE A.ADMIN_ID = B.ADMIN_ID
+	</select>
+	
+	
+	<!-- 상세보기팝업  -->
+    <insert id="insertCcQnaPopup">
+        /* pscpbrd0011.insertCcQnaPopup */
+		INSERT INTO TBO_BOARD
+		(
+		    BOARD_SEQ
+		  , LIST_SEQ          
+		  , UP_BOARD_SEQ      
+		  , BOARD_DIVN_CD  
+		  , BOARD_PRGS_STS_CD   
+		  , SCRP_OBJECT_CD    
+		  , CHILD_SCRP_CNT    
+		  , DEPTH
+		  , NTCE_START_DY
+		  , NTCE_END_DY
+		  , TITLE
+		  , CONTENT
+		  , VIEW_CNT
+		  , WRT_DY            
+		  , CLM_LGRP_CD       
+    <isNotEmpty property="atchFileId">
+          , ATCH_FILE_ID
+    </isNotEmpty>
+		  , ATCH_FILE_YN      
+		  , DEL_YN            
+		  , REG_ID
+		  , REG_DATE
+		  , MOD_ID
+		  , MOD_DATE
+		  , SCRP_KIND_CD      
+		  , ORDER_ID
+		  , ACCEPT_ID
+		  , ACCEPT_LOCA_CD
+		  , LET_1_REF
+		  , LET_2_REF
+		  , LET_3_REF
+		  , LET_4_REF
+		  , MEMBER_NM
+		  , CELL_NO
+		  , ANS_SMS_RECV_YN
+		  , EMAIL
+		)
+		VALUES
+		(
+		    LPAD(SQ_BOARD_SEQ_SEQ.NEXTVAL, 12, 0) 
+		  , LPAD(SQ_BOARD_SEQ_SEQ.CURRVAL, 12, 0) || '~'
+		  , ''
+		  , '36'
+		  , '1'
+		  , '0014'
+		  , 0
+		  , 1
+		  , TO_CHAR(CURRENT_TIMESTAMP(0), 'YYYYMMDD')
+		  , '99991231'
+		  , #title#
+		  , #content#
+		  , 0
+		  , TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+		  , #clmLgrpCd#
+	<isNotEmpty property="atchFileId">
+	      , #atchFileId#
+	</isNotEmpty>
+		  , #atchFileYn#
+		  , 'N'
+		  , #vendorId#
+		  , CURRENT_TIMESTAMP(0)
+		  , #vendorId#
+		  , CURRENT_TIMESTAMP(0)
+		  , 'Q'
+		  , #orderId#
+		  , #acceptId#
+		  , '7'
+		  , (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = #vendorId#)
+		  , #let2Ref#
+		  , #let3Ref#
+		  , #let4Ref#
+		  , #memberNm#
+		  , #cellNo#
+		  , #ansSmsRecvYn#
+		  , #email#
+		)
+    </insert>
+	
+</sqlMap>

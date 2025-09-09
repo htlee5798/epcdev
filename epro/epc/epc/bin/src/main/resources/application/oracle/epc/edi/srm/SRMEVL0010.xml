@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMEVL0010">
+
+	<typeAlias alias="srmevl0010vo"	type="com.lottemart.epc.edi.srm.model.SRMEVL0010VO" />
+	
+	<!-- 평가자로그인 정보조회 -->
+	<resultMap id="selectSRMEVLLoginMap" class="srmevl0010vo">
+		<result column="HOUSE_CODE"			property="houseCode" 		/>	<!-- 하우스코드 -->
+		<result column="USER_ID"			property="userId" 			/>	<!-- 사용자id -->
+		<result column="PASSWORD"			property="password" 		/>	<!-- 비밀번호 -->
+		<result column="USER_TYPE"			property="userType" 		/>	<!-- 사용자타입(20자리로 변경) -->
+		<result column="SELLER_CODE"		property="sellerCode" 		/>	<!-- 업체코드 -->
+		<result column="SELLER_NAME_LOC"	property="sellerNameLoc" 	/>	<!-- 업체명 -->
+		<result column="INOUT_KIND"			property="inoutKind" 		/>	<!-- 01 일반잠재업체,02 외부평가업체 -->
+		<result column="PASS_CHECK_CNT"		property="passCheckCnt"		/>	<!-- 비밀번호체크횟수 -->
+	</resultMap>
+	
+	<!-- 평가자로그인 정보조회  -->
+	<select id="selectSRMEVLLogin" parameterClass="srmevl0010vo" resultMap="selectSRMEVLLoginMap">
+		/* SRMEVL0010.selectSRMEVLLogin */
+		SELECT 	A.HOUSE_CODE
+			,	A.USER_ID
+			,	A.PASSWORD
+			,	A.USER_TYPE
+			,	NVL(A.PASS_CHECK_CNT, 0) AS PASS_CHECK_CNT
+		    ,	B.SELLER_CODE
+		    ,	B.SELLER_NAME_LOC
+		    ,	B.INOUT_KIND
+		FROM 	SUSMT A
+		    ,	SSUGL B
+		WHERE 
+				A.HOUSE_CODE = B.HOUSE_CODE
+		  AND	A.USER_ID = B.SELLER_CODE
+		  AND	A.USER_TYPE = 'S'
+		  AND	B.INOUT_KIND = '02'
+		  AND NVL(A.DEL_FLAG,'N') = 'N'
+		  AND NVL(B.DEL_FLAG,'N') = 'N'
+		  AND	A.HOUSE_CODE = #houseCode#
+		  AND	A.USER_ID	 = #sellerCode#
+	</select>
+	
+	<!-- 패스워드 실패 시 카운트 증가 -->
+	<update id="updatePassCheckCnt" parameterClass="srmevl0010vo">
+		/* SRMEVL0010.updatePassCheckCnt */
+		UPDATE	SUSMT
+				SET		PASS_CHECK_CNT	=	(	SELECT	NVL(PASS_CHECK_CNT, 0) +1
+												FROM	SUSMT
+												WHERE	HOUSE_CODE = #houseCode#
+												AND		USER_ID = #sellerCode#
+											)
+		WHERE	HOUSE_CODE = #houseCode#
+		AND		USER_ID = #sellerCode#
+	</update>
+	
+	<!-- 로그인 성공 시 카운트 초기화 -->
+	<update id="updatePassCheckCntReset" parameterClass="srmevl0010vo">
+		/* SRMEVL0010.updatePassCheckCntReset */
+		UPDATE	SUSMT
+				SET		PASS_CHECK_CNT	=	'0'
+		WHERE	HOUSE_CODE = #houseCode#
+		AND		USER_ID = #sellerCode#
+	</update>
+	
+</sqlMap>

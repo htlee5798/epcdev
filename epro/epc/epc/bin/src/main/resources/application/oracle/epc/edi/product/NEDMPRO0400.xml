@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0400">
+	<typeAlias alias="nedmpro0400vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0400VO" />
+	<typeAlias alias="resultL1Class"	type="com.lottemart.epc.edi.product.model.CommonProductVO" />				<!-- 팀, 대분류, 소분류, 계절리스트, 계절년도 전상법 리스트 공통 VO -->
+	
+	<!-- 신상품 제안 조회  -->
+	<resultMap id="proposeStorelistMap" class="nedmpro0400vo">
+		<result column="RNUM"				property="rnum" 		/>	<!--순번  -->
+		<result column="PRDT_STATUS"		property="prdtStatus" 	/>	<!-- 진행상태 -->
+		<result column="PROP_REG_NO"		property="propRegNo" 	/>	<!-- 입점제안번호 -->
+		<result column="VEN_CD"				property="venCd" 		/>	<!-- 파트너사코드 -->
+		<result column="TEAM_CD"			property="teamCd" 		/>	<!-- 팀 -->
+		<result column="L1_CD"				property="l1Cd" 		/>	<!-- 대분류명 -->
+		<result column="PROD_SHORT_NM"		property="prodShortNm" 	/>	<!-- 상품명 -->
+		<result column="PROD_STANDARD_NM"	property="prodStandardNm" 	/>	<!-- 규격 -->
+		<result column="NOR_PROD_PCOST"		property="norProdPcost" />	<!-- 원가 -->
+		<result column="PROD_SELL_PRC"		property="prodSellPrc" 	/>	<!-- 판매가 -->
+		<result column="PRFT_RATE"			property="prftRate" 	/>	<!-- 이익율 -->
+		<result column="NOR_SESN_CD"		property="norSesnCd" 	/>	<!-- 일반/시즌구분 -->
+		<result column="PRDT_RT"			property="prdtRt" 		/>	<!-- 루트 -->
+		<result column="INRCNT_QTY"			property="inrcntQty" 	/>	<!-- 입수 -->
+		<result column="DELV_PSBT_DD"		property="delvPsbtDd" 	/>	<!-- 납품가능일 -->
+		<result column="SELL_CD"			property="sellCd" 		/>	<!-- 유사(타겟)상품 판매코드 -->
+		<result column="SELL_CHAN_CD"		property="sellChanCd" 	/>	<!-- 판매채널 -->
+		<result column="FRZ_CD"				property="frzCd" 		/>	<!-- 상온/냉장/냉동 구분 -->
+		<result column="TRGT_SALE_CURR"		property="trgtSaleCurr" />	<!-- 목표매출(月) -->
+		<result column="PRDT_SPEC_RANGE"	property="prdtSpecRange"/>	<!-- 상품특성(고객범위) -->
+		<result column="PRDT_SPEC_AGE"		property="prdtSpecAge" 	/>	<!-- 상품특성(고객나이) -->
+		<result column="PRDT_SPEC_SEX"		property="prdtSpecSex" 	/>	<!-- 상품특성(고객연령) -->
+		<result column="REG_DATE"			property="regDt" 		/>	<!-- 등록일자 -->
+		<result column="IMG_ID"				property="imgId" 		/>	<!-- 이미지 아이디 -->
+		<result column="PRDT_REQ_YN"		property="prdtReqYn" 	/>	<!-- 요청 유무 -->
+		<result column="DEL_YN"				property="delYn" 		/>	<!-- 삭제여부 -->
+		<result column="IF_REQ_DT"			property="ifReqDt" 		/>	<!-- 인터페이스 등록일시 -->
+		<result column="IF_RCV_DT"			property="ifRcvDt" 		/>	<!-- 인터페이스 수신일시 -->
+		<result column="REG_ID"				property="regId" 		/>	<!-- 등록자 -->
+		<result column="MOD_ID"				property="modId" 		/>	<!-- 수정자 -->
+		<result column="MOD_DATE"			property="modDt" 		/>	<!-- 수정시간 -->
+	</resultMap>
+	
+	<!-- 신상품제안 이미지 파일 -->
+	<resultMap id="proposeStoreImglistMap" class="nedmpro0400vo">
+		<result column="SAVE_FILE_NM"		property="saveFileNm" 	/>	<!-- 저장파일명 -->
+		<result column="FILE_PATH"			property="filePath" 	/>	<!-- 파일경로 -->
+	</resultMap>
+
+	<!-- 신상품 제안 RFC 호출 데이터  -->
+	<resultMap id="selectTmpPropStoreInfoMap" class="java.util.HashMap">
+		<result column="ZZREQ_STATUS"		property="ZZREQ_STATUS" 	/>	<!-- 진행상태 -->
+		<result column="ZZREQ_NO"			property="ZZREQ_NO" 		/>	<!-- 입점제안번호 -->
+		<result column="LIFNR"				property="LIFNR" 			/>	<!-- 파트너사코드 -->
+		<result column="DEP_CD"				property="DEP_CD" 			/>	<!-- 팀 -->
+		<result column="MCHL1"				property="MCHL1" 			/>	<!-- 대분류명 -->
+		<result column="MAKTX"				property="MAKTX" 			/>	<!-- 상품명 -->
+		<result column="ZZPROD_STD"			property="ZZPROD_STD" 		/>	<!-- 규격 -->
+		<result column="ZZNETPR"			property="ZZNETPR" 			/>	<!-- 원가 -->
+		<result column="ZZENDPR"			property="ZZENDPR" 			/>	<!-- 판매가 -->
+		<result column="ZZNEWPROD_FG"		property="ZZNEWPROD_FG" 	/>	<!-- 일반/시즌구분 -->
+		<result column="ZZROUTE_TYP"		property="ZZROUTE_TYP" 		/>	<!-- 루트 -->
+		<result column="ZZIPSU"				property="ZZIPSU" 			/>	<!-- 입수 -->
+		<result column="ZZLDV_DATE"			property="ZZLDV_DATE" 		/>	<!-- 납품가능일 -->
+		<result column="ZZTARGET_PROD"		property="ZZTARGET_PROD" 	/>	<!-- 유사(타겟)상품 판매코드 -->
+		<result column="ZZMKT_FG_1"			property="ZZMKT_FG_1" 		/>	<!-- 판매채널 -->
+		<result column="ZZMKT_FG_2"			property="ZZMKT_FG_2" 		/>	<!-- 판매채널 -->
+		<result column="ZZMKT_FG_3"			property="ZZMKT_FG_3" 		/>	<!-- 판매채널 -->
+		<result column="ZZMKT_FG_4"			property="ZZMKT_FG_4" 		/>	<!-- 판매채널 -->
+		<result column="ZZTEMPB_TYP"		property="ZZTEMPB_TYP" 		/>	<!-- 상온/냉장/냉동 구분 -->
+		<result column="ZZPRC_RANGE"		property="ZZPRC_RANGE" 		/>	<!-- 상품특성 가격대 -->
+		<result column="ZZCUST_SEX"			property="ZZCUST_SEX" 		/>	<!-- 상품특성 성별 -->
+		<result column="ZZCUSCT_AGE"		property="ZZCUSCT_AGE" 		/>	<!-- 상품특성 나이 -->
+		<result column="ZZTARGET_REV"		property="ZZTARGET_REV" 	/>	<!--  -->
+		<result column="ZZRJT_REASON"		property="ZZRJT_REASON" 	/>	<!-- 반려사유 -->
+		<result column="LOEKZ"				property="LOEKZ" 			/>	<!-- 삭제여부 -->
+		<result column="ERNAM"				property="ERNAM" 			/>	<!-- 등록자 -->
+		<result column="ERDAT"				property="ERDAT" 			/>	<!-- 등록일자 -->
+		<result column="LOEKZ"				property="LOEKZ" 			/>	<!-- 삭제여부 -->
+		<result column="AENAM"				property="AENAM" 			/>	<!-- 수정자 -->
+		<result column="AEDAT"				property="AEDAT" 			/>	<!-- 수정시간 -->
+		<result column="EPC_IMG_FNAME"		property="EPC_IMG_FNAME" 	/>	<!-- 이미지경로 -->
+	</resultMap>
+	
+	<!-- 대분류 조회 MAP -->
+ 	<resultMap id="selectTempL1ListMap" 	class="resultL1Class">
+	    <result property="l1Cd"  		column="L1_CD" 	/>
+	    <result property="l1Nm" 		column="L1_NM" 	/>	   
+  	</resultMap>
+  	
+  	<!-- EXCEL LIST -->
+  	<resultMap id="proposeStoreExcelMap" class="java.util.HashMap">
+  		<result column="PRDT_STATUS"		property="PRDT_STATUS" 		/> 				<!-- 진행상태 -->
+  		<result column="VEN_CD"				property="VEN_CD" 			/> 				<!-- 업체코드 -->
+  		<result column="TEAM_CD"			property="TEAM_CD" 			/> 				<!-- 팀코드 -->
+  		<result column="L1_NM"				property="L1_NM" 			/> 				<!-- 대분류명 -->
+  		<result column="PROD_SHORT_NM"		property="PROD_SHORT_NM" 	/> 				<!-- 쇼카드상품명 -->
+  		<result column="PROD_STANDARD_NM"	property="PROD_STANDARD_NM" /> 				<!-- 규격 -->
+  		<result column="NOR_PROD_PCOST"		property="NOR_PROD_PCOST" 	/> 				<!-- 원가 -->
+  		<result column="PROD_SELL_PRC"		property="PROD_SELL_PRC" 	/> 				<!-- 판매가 -->
+  		<result column="PRFT_RATE"			property="PRFT_RATE" 		/> 				<!-- 이익율 -->
+  		<result column="NOR_SESN_CD"		property="NOR_SESN_CD" 		/> 				<!-- 일반/시즌 구분 -->
+  		<result column="PRDT_RT"			property="PRDT_RT" 			/> 				<!-- 루트 -->
+  		<result column="INRCNT_QTY"			property="INRCNT_QTY" 		/> 				<!-- 입수 -->
+  		<result column="DELV_PSBT_DD"		property="DELV_PSBT_DD" 	/> 				<!-- 납품일 -->
+  		<result column="SELL_CD"			property="SELL_CD" 			/> 				<!-- 유사상품판매코드 -->
+  		<result column="SELL_CHAN_CD"		property="SELL_CHAN_CD" 	/> 				<!-- 판매채널 -->
+  		<result column="FRZ_CD"				property="FRZ_CD" 			/> 				<!-- 온도조건 -->
+  		<result column="TRGT_SALE_CURR"		property="TRGT_SALE_CURR" 	/> 				<!-- 목표매출(월) -->
+  		<result column="PRDT_SPEC_RANGE"	property="PRDT_SPEC_RANGE" 	/> 				<!-- 상품특성가격 -->
+  		<result column="PRDT_SPEC_AGE"		property="PRDT_SPEC_AGE" 	/> 				<!-- 상품특성연령 -->
+  		<result column="PRDT_SPEC_SEX"		property="PRDT_SPEC_SEX" 	/> 				<!-- 상품특성 성별 -->
+  		<result column="REG_ID"				property="REG_ID" 			/> 				<!-- 등록자 -->
+  		<result column="REG_DATE"			property="REG_DATE" 		/> 				<!-- 등록시간 -->
+  	</resultMap>
+				
+			
+	<!-- COUNT -->
+	<select id="selectProposeStoreListCount" resultClass="Integer" parameterClass="nedmpro0400vo">
+		/* NEDMPRO0400.selectProposeStoreListCount */
+		SELECT  COUNT(1) AS CNT 
+			FROM
+			(	
+				SELECT 	A.PRDT_STATUS
+					,	A.VEN_CD
+					,	A.TEAM_CD
+					,	A.L1_CD
+					,	A.PROD_SHORT_NM
+					,	A.PROD_STANDARD_NM
+					,	A.NOR_PROD_PCOST
+					,	A.PROD_SELL_PRC
+					,	A.PRFT_RATE
+					,	A.NOR_SESN_CD
+					,	A.PRDT_RT
+					,	A.INRCNT_QTY
+					,	A.DELV_PSBT_DD
+					,	A.SELL_CD
+					,	A.SELL_CHAN_CD
+					,	A.FRZ_CD
+					,	A.TRGT_SALE_CURR
+					,	A.DEL_YN
+					,	A.REG_DATE
+					,   B.IMG_ID
+				FROM  TPC_PROD_NEW_PROP A
+				LEFT JOIN TPC_PROD_NEW_PROP_IMG B ON A.IMG_ID = B.IMG_ID
+			)T1	
+			WHERE 1=1
+			<isNotEmpty property="srchEntpCd" prepend="AND">
+				T1.VEN_CD = #srchEntpCd#
+			</isNotEmpty>
+			<isNotEmpty property="srchTeamCd" prepend="AND">
+				T1.TEAM_CD = #srchTeamCd#
+			</isNotEmpty>
+			<isNotEmpty property="srchL1Cd"  prepend="AND">
+				T1.L1_CD = #srchL1Cd#
+			</isNotEmpty>
+			<isNotEmpty property="srchProdNm"  prepend="AND">
+				T1.PROD_SHORT_NM LIKE '%' || #srchProdNm# || '%'
+			</isNotEmpty>
+			<isNotEmpty property="srchStatus" >
+				AND T1.PRDT_STATUS = #srchStatus#
+			</isNotEmpty>
+			AND T1.DEL_YN != 'Y'
+			AND T1.REG_DATE BETWEEN TO_DATE(#srchFromDt# || '000000', 'YYYYMMDDHH24MISS') AND TO_DATE(#srchEndDt# || '235959', 'YYYYMMDDHH24MISS') 
+	</select>
+	
+	<!-- LIST -->
+	<select id="selectProposeStoreList" resultMap="proposeStorelistMap" parameterClass="nedmpro0400vo">
+		/* NEDMPRO0400.selectProposeStoreList */
+		 SELECT C.RNUM
+				,C.PRDT_STATUS
+				,C.PROP_REG_NO
+				,C.VEN_CD
+				,C.TEAM_CD
+				,C.L1_CD
+				,C.PROD_SHORT_NM
+				,C.PROD_STANDARD_NM
+				,C.NOR_PROD_PCOST
+				,C.PROD_SELL_PRC
+				,C.PRFT_RATE
+				,C.NOR_SESN_CD
+				,C.PRDT_RT
+				,C.INRCNT_QTY
+				,C.DELV_PSBT_DD
+				,C.SELL_CD
+				,C.SELL_CHAN_CD
+				,C.FRZ_CD
+				,C.TRGT_SALE_CURR
+				,C.PRDT_SPEC_RANGE
+				,C.PRDT_SPEC_AGE
+				,C.PRDT_SPEC_SEX
+				,TO_CHAR(C.REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+				,C.PRDT_REQ_YN
+				,C.DEL_YN
+				,C.IF_REQ_DT
+				,C.IF_RCV_DT
+				,C.REG_ID
+				,C.MOD_ID
+				,C.MOD_DATE
+				,C.IMG_ID
+		FROM
+		(
+			SELECT  ROW_NUMBER() OVER (ORDER BY T1.REG_DATE DESC) 	 			AS RNUM
+				,	T1.PRDT_STATUS
+				, 	T1.PROP_REG_NO
+				,	T1.VEN_CD
+				,	T1.TEAM_CD
+				,	T1.L1_CD
+				,	T1.PROD_SHORT_NM
+				,	T1.PROD_STANDARD_NM
+				,	T1.NOR_PROD_PCOST
+				,	T1.PROD_SELL_PRC
+				,	T1.PRFT_RATE
+				,	T1.NOR_SESN_CD
+				,	T1.PRDT_RT
+				,	T1.INRCNT_QTY
+				,	T1.DELV_PSBT_DD
+				,	T1.SELL_CD
+				,	T1.SELL_CHAN_CD
+				,	T1.FRZ_CD
+				,	T1.TRGT_SALE_CURR
+				,	T1.PRDT_SPEC_RANGE
+				,	T1.PRDT_SPEC_AGE
+				,	T1.PRDT_SPEC_SEX
+				,	T1.REG_DATE
+				,	T1.PRDT_REQ_YN
+				,	T1.DEL_YN
+				,	T1.IF_REQ_DT
+				,   T1.IF_RCV_DT
+				, 	T1.REG_ID
+				, 	T1.MOD_ID
+				, 	T1.MOD_DATE
+				,	T1.IMG_ID
+			FROM
+			(	
+				SELECT 	A.PRDT_STATUS
+						, 	A.PROP_REG_NO
+						,	A.VEN_CD
+						,	A.TEAM_CD
+						,	A.L1_CD
+						,	A.PROD_SHORT_NM
+						,	A.PROD_STANDARD_NM
+						,	A.NOR_PROD_PCOST
+						,	A.PROD_SELL_PRC
+						,	A.PRFT_RATE
+						,	A.NOR_SESN_CD
+						,	A.PRDT_RT
+						,	A.INRCNT_QTY
+						,	A.DELV_PSBT_DD
+						,	A.SELL_CD
+						,	A.SELL_CHAN_CD
+						,	A.FRZ_CD
+						,	A.TRGT_SALE_CURR
+						,	A.PRDT_SPEC_RANGE
+						,	A.PRDT_SPEC_AGE
+						,	A.PRDT_SPEC_SEX
+						,	A.REG_DATE
+						,	A.PRDT_REQ_YN
+						,	A.DEL_YN
+						,	A.IF_REQ_DT
+						,   A.IF_RCV_DT
+						, 	A.REG_ID
+						, 	A.MOD_ID
+						, 	A.MOD_DATE
+						,   B.IMG_ID
+				FROM  TPC_PROD_NEW_PROP A
+				LEFT JOIN TPC_PROD_NEW_PROP_IMG B ON A.IMG_ID = B.IMG_ID	
+			)T1	
+		)C
+		WHERE 1=1
+		<isNotEmpty property="srchEntpCd" prepend="AND">
+			C.VEN_CD = #srchEntpCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchTeamCd"  prepend="AND">
+			C.TEAM_CD = #srchTeamCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchL1Cd"  prepend="AND">
+			C.L1_CD = #srchL1Cd#
+		</isNotEmpty>
+		<isNotEmpty property="srchProdNm"  prepend="AND">
+			C.PROD_SHORT_NM LIKE '%' || #srchProdNm# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="srchStatus">
+			AND C.PRDT_STATUS = #srchStatus#
+		</isNotEmpty>
+		AND C.DEL_YN != 'Y'
+		AND C.REG_DATE BETWEEN TO_DATE(#srchFromDt# || '000000', 'YYYYMMDDHH24MISS') AND TO_DATE(#srchEndDt# || '235959', 'YYYYMMDDHH24MISS') 		
+	</select>
+	
+	<!-- 신규 입점제안 등록번호 생성 -->
+<!-- 	<select id="selectNewPropRegNo" resultClass="String" parameterClass="String">
+	/* NEDMPRO0400.selectNewPropRegNo */
+	 SELECT 'M' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD') ||
+       LPAD((COALESCE(MAX(SUBSTRING(prop_reg_no FROM 10)::INTEGER), 0) + 1)::TEXT, 5, '0') AS new_prop_reg_no
+	FROM TPC_PROD_NEW_PROP
+	WHERE SUBSTRING(prop_reg_no FROM 1 FOR 9) = 'M' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')
+	</select> -->
+	
+	<!-- 신규 입점제안 등록번호 생성 -->
+	<select id="selectNewPropRegNo" resultClass="String" parameterClass="String">
+		/* NEDMPRO0400.selectNewPropRegNo */
+		SELECT TO_CHAR(CURRENT_TIMESTAMP, 'YYMM') ||
+		       LPAD((COALESCE(MAX(SUBSTRING(prop_reg_no FROM 5)::INTEGER), 0) + 1)::TEXT, 6, '0') AS new_prop_reg_no
+		FROM TPC_PROD_NEW_PROP
+		WHERE SUBSTRING(prop_reg_no FROM 1 FOR 4) = TO_CHAR(CURRENT_TIMESTAMP, 'YYMM')
+	</select>
+	
+	<!-- 신규 입점제안 이미지 아이디 생성 -->
+	<select id="selectNewImgId" resultClass="String" parameterClass="Integer">
+	/* NEDMPRO0400.selectNewImgId */
+	SELECT 'M' || TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDDHH24MISSMS') || #seq# AS new_img_id
+	</select>
+	
+	<select id="selectOrgFileNm" resultClass="String" parameterClass="String">
+		/* NEDMPRO0400.selectOrgFileNm */
+		SELECT ORG_FILE_NM
+		FROM TPC_PROD_NEW_PROP_IMG
+		WHERE IMG_ID = #imgId#
+	</select>
+	
+	<!-- 신규 입점 제안 정보 저장  -->
+	<insert id="insertNewPropStore" parameterClass="nedmpro0400vo">
+	/* NEDMPRO0400.insertNewPropStore */
+	INSERT INTO TPC_PROD_NEW_PROP
+	(
+		PROP_REG_NO
+		, TEAM_CD
+		, L1_CD
+		, VEN_CD
+		, PROD_SHORT_NM
+		, PROD_STANDARD_NM
+		, NOR_PROD_PCOST
+		, PROD_SELL_PRC
+		, PRFT_RATE
+		, DELV_PSBT_DD
+		, NOR_SESN_CD
+		, PRDT_RT
+		, INRCNT_QTY
+		, SELL_CD
+		, SELL_CHAN_CD
+		, FRZ_CD
+		, TRGT_SALE_CURR
+		, PRDT_SPEC_RANGE
+		, PRDT_SPEC_AGE
+		, PRDT_SPEC_SEX
+		, PRDT_STATUS
+		, PRDT_REQ_YN
+		, IMG_ID
+		, DEL_YN
+		, IF_REQ_DT
+		, IF_RCV_DT
+		, REG_ID
+		, REG_DATE
+		, MOD_ID
+		, MOD_DATE
+	)
+	VALUES
+	(
+		#propRegNo:VARCHAR#
+		 ,#teamCd#
+		 ,#l1Cd#
+		 ,#venCd#
+		 ,#prodShortNm#
+		 ,#prodStandardNm#
+		 ,#norProdPcost#
+		 ,#prodSellPrc#
+		 ,#prftRate#
+		 ,#delvPsbtDd#
+		 ,#norSesnCd#
+		 ,#prdtRt#
+		 ,#inrcntQty#
+		 ,#sellCd#
+		 ,#sellChanCd#
+		 ,#frzCd#
+		 ,#trgtSaleCurr#
+		 ,#prdtSpecRange#
+		 ,#prdtSpecAge#
+		 ,#prdtSpecSex#
+		 ,#prdtStatus#
+		 ,#prdtReqYn#
+		 ,#imgId#
+		 ,'N'
+		 ,#ifReqDt#
+		 ,#ifRcvDt#
+		 ,#regId#
+		 ,NOW()
+		 ,#regId#
+		 ,NOW()
+	)
+	</insert>
+	
+	<!-- 입점제안 정보 수정 -->
+	<update id="updateNewPropStore" parameterClass="nedmpro0400vo">
+	/* NEDMPRO0400.updateNewPropStore */
+	UPDATE TPC_PROD_NEW_PROP 
+		SET TEAM_CD = #teamCd#
+			, L1_CD = #l1Cd#
+			, VEN_CD = #venCd#
+			, PROD_SHORT_NM = #prodShortNm#
+			, PROD_STANDARD_NM = #prodStandardNm#
+			, NOR_PROD_PCOST = #norProdPcost#
+			, PROD_SELL_PRC = #prodSellPrc#
+			, PRFT_RATE = #prftRate#
+			, DELV_PSBT_DD = #delvPsbtDd#
+			, NOR_SESN_CD = #norSesnCd#
+			, PRDT_RT = #prdtRt#
+			, SELL_CD = #sellCd#
+			, SELL_CHAN_CD = #sellChanCd#
+			, FRZ_CD = #frzCd#
+			, TRGT_SALE_CURR = #trgtSaleCurr#
+			, PRDT_SPEC_RANGE = #prdtSpecRange#
+			, PRDT_SPEC_AGE = #prdtSpecAge#
+			, PRDT_SPEC_SEX = #prdtSpecSex#
+			, PRDT_STATUS = #prdtStatus#
+			, PRDT_REQ_YN = #prdtReqYn#
+			, IMG_ID = #imgId#
+			, MOD_ID = #modId#
+			, MOD_DATE = NOW()
+	WHERE PROP_REG_NO = #propRegNo# 
+	</update>
+	
+	<!-- 신규 입점 이미지 파일 저장  -->
+	<insert id="insertNewPropStoreImg"  parameterClass="nedmpro0400vo">
+	/* NEDMPRO0400.insertNewPropStoreImg */
+	INSERT INTO TPC_PROD_NEW_PROP_IMG
+	(
+		IMG_ID
+		, ORG_FILE_NM
+		, SAVE_FILE_NM
+		, FILE_SIZE
+		, FILE_PATH
+		, DEL_YN
+		, REG_ID
+		, REG_DATE
+		, MOD_ID
+		, MOD_DATE
+	)
+	VALUES(
+		#imgId#
+		, #orgFileNm#
+		, #saveFileNm#
+		, #fileSize#
+		, #filePath#
+		, 'N'
+		, #regId#
+		, NOW()
+		, #regId#
+		, NOW()
+	)
+	</insert>
+	
+	<!-- 신규 입점 이미지 파일 수정 -->
+	<update id="updateNewPropStoreImg"  parameterClass="nedmpro0400vo">
+		/* NEDMPRO0400.updateNewPropStoreImg */
+		UPDATE TPC_PROD_NEW_PROP_IMG 
+		SET	ORG_FILE_NM = #orgFileNm#
+			, SAVE_FILE_NM = #saveFileNm#
+			, FILE_SIZE = #fileSize#
+			, FILE_PATH = #filePath#
+			, MOD_ID = #modId#
+			, MOD_DATE = NOW()
+		WHERE IMG_ID = #imgId#
+	</update>
+	
+	<!-- 등록된 이미지 파일 상세보기  -->
+	<select id="selectDetailImgInfo"  resultMap="proposeStoreImglistMap" parameterClass="String">
+	/* NEDMPRO0400.selectDetailImgInfo */
+		SELECT FILE_PATH
+				,SAVE_FILE_NM
+		FROM TPC_PROD_NEW_PROP_IMG
+		WHERE IMG_ID = #imgId#
+	</select>
+	
+	<!-- 신규 입점제안 상품 삭제  -->
+	<delete id="deleteNewPropStore" parameterClass="nedmpro0400vo">
+	/* NEDMPRO0400.deleteNewPropStore */
+		UPDATE TPC_PROD_NEW_PROP 
+		SET DEL_YN = 'Y'
+		WHERE PROP_REG_NO = #propRegNo#
+	</delete>
+	
+	<!-- 신규 입점제안 상품 이미지 삭제 -->
+	<delete id="deleteImgNewPropStore" parameterClass="nedmpro0400vo">
+	/* NEDMPRO0400.deleteImgNewPropStore */
+		UPDATE TPC_PROD_NEW_PROP_IMG 
+		SET DEL_YN = 'Y'
+		WHERE IMG_ID = #imgId#
+	</delete>
+	
+	<!-- 신규 입점제안 상품 rfc에 넘길 데이터 -->
+	<select id="selectTmpPropStoreInfo" parameterClass="nedmpro0400vo" resultMap="selectTmpPropStoreInfoMap">
+	/* NEDMPRO0400.selectTmpPropStoreInfo */
+		SELECT 	A.PRDT_STATUS		AS ZZREQ_STATUS
+				, 	A.PROP_REG_NO	AS ZZREQ_NO
+				,	A.VEN_CD		AS LIFNR
+				,	A.TEAM_CD		AS DEP_CD
+				,	A.L1_CD			AS MCHL1
+				,	A.PROD_SHORT_NM		 AS MAKTX
+				,	A.PROD_STANDARD_NM	AS ZZPROD_STD
+				,	A.NOR_PROD_PCOST	AS ZZNETPR
+				,	A.PROD_SELL_PRC		AS ZZENDPR
+				, 	A.NOR_SESN_CD		AS ZZNEWPROD_FG
+				,	A.PRDT_RT			AS ZZROUTE_TYP
+				,	A.INRCNT_QTY		AS ZZIPSU
+				,	A.DELV_PSBT_DD		AS ZZLDV_DATE
+				,	A.SELL_CD			AS ZZTARGET_PROD
+				,	CASE WHEN 'KR02' IN (SELECT UNNEST(STRING_TO_ARRAY(A.SELL_CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_1	/* 채널적용여부(롯데마트) */
+				,	CASE WHEN 'KR03' IN (SELECT UNNEST(STRING_TO_ARRAY(A.SELL_CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_2	/* 채널적용여부(maxx) */
+				,	CASE WHEN 'KR04' IN (SELECT UNNEST(STRING_TO_ARRAY(A.SELL_CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_3	/* 채널적용여부(롯데슈퍼) */
+				,	CASE WHEN 'KR09' IN (SELECT UNNEST(STRING_TO_ARRAY(A.SELL_CHAN_CD,','))) THEN 'X' ELSE NULL END AS ZZMKT_FG_4	/* 채널적용여부(오카도) */
+				,	A.FRZ_CD			AS ZZTEMPB_TYP
+				,	A.TRGT_SALE_CURR	AS ZZTARGET_REV
+				, 	A.PRDT_SPEC_RANGE	AS ZZPRC_RANGE
+				, 	A.PRDT_SPEC_AGE		AS ZZCUSCT_AGE
+				, 	A.PRDT_SPEC_SEX		AS ZZCUST_SEX
+				, 	A.RTN_RSN 		AS ZZRJT_REASON
+				,	A.DEL_YN		AS LOEKZ
+				, 	A.REG_ID	AS ERNAM
+				,   A.REG_DATE 	AS ERDAT
+				, 	A.MOD_ID	AS AENAM
+				, 	A.MOD_DATE	AS AEDAT
+				, 	B.FILE_PATH || B.SAVE_FILE_NM AS EPC_IMG_FNAME
+		FROM  TPC_PROD_NEW_PROP A
+		LEFT JOIN TPC_PROD_NEW_PROP_IMG B ON A.IMG_ID = B.IMG_ID	
+		WHERE 1=1
+		AND A.PROP_REG_NO = #propRegNo#
+		AND A.PRDT_STATUS = '0'
+		AND A.DEL_YN != 'Y'
+	</select>
+	
+	<!-- 신규 입점제안 상품 RFC 상태 업데이트 -->
+	<update id="updateNewPropStoreReqYn" parameterClass="hashmap">
+	/* NEDMPRO0400.updateNewPropStoreReqYn */
+	    UPDATE TPC_PROD_NEW_PROP
+	    SET PRDT_REQ_YN = 'Y',
+	    	IF_REQ_DT = NOW(),
+	        MOD_ID = #modId#,
+	        MOD_DATE = NOW()
+	    WHERE PROP_REG_NO = #ZZREQ_NO#
+	</update>
+	
+	<!-- 팀에해당하는 대분류 조회 -->
+	<select id="selectTempL1List" parameterClass="java.util.Map"  resultMap="selectTempL1ListMap">
+	/* NEDMPRO0400.selectTempL1List */
+		SELECT  L1_CD
+			,	L1_NM
+		FROM TPC_L1_CD
+		WHERE TEAM_CD = #groupCode#	
+		<isNotEmpty property="l1Cd"  prepend="AND">
+			L1_CD = #l1Cd#	
+		</isNotEmpty>
+		GROUP BY L1_CD, L1_NM
+		ORDER BY 2		
+	</select>
+	
+	<!-- 신상품입점 제안 엑셀 데이터 조회  -->
+	<select id="selectNewPropStoreExcelInfo" resultMap="proposeStoreExcelMap" parameterClass="nedmpro0400vo">
+		/* NEDMPRO0400.selectNewPropStoreExcelInfo */
+		SELECT 	
+				CASE 
+					WHEN A.PRDT_STATUS = '0' THEN '파트너사등록'
+					WHEN A.PRDT_STATUS = '1' THEN '반려'
+					WHEN A.PRDT_STATUS = '2' THEN '승인'
+					ELSE '-'
+				  END PRDT_STATUS		
+				,	A.VEN_CD
+				,	A.TEAM_CD
+				,	FN_GET_CAT_NM(A.L1_CD) AS L1_NM
+				,	A.PROD_SHORT_NM
+				,	A.PROD_STANDARD_NM
+				,	A.NOR_PROD_PCOST
+				,	A.PROD_SELL_PRC
+				,  CONCAT(
+			        COALESCE(A.PRFT_RATE, 0)::TEXT,'%'
+			    ) AS PRFT_RATE
+				, CASE 
+					WHEN A.NOR_SESN_CD = '1' THEN '일반'
+					WHEN A.NOR_SESN_CD = '2' THEN '시즌'
+					ELSE ''
+				  END NOR_SESN_CD		
+				, CASE 
+					WHEN A.PRDT_RT = '1' THEN '루트'
+					WHEN A.PRDT_RT = '2' THEN '루트'
+					ELSE ''
+				  END PRDT_RT		
+				,	A.INRCNT_QTY
+				,	TO_DATE(A.DELV_PSBT_DD,'YYYYMMDD') AS DELV_PSBT_DD
+				,	A.SELL_CD
+				,(
+			        SELECT STRING_AGG(
+			            CASE TRIM(code)
+			                WHEN 'KR02' THEN '롯데마트'
+			                WHEN 'KR03' THEN 'MAXX'
+			                WHEN 'KR04' THEN '롯데슈퍼'
+			                WHEN 'KR09' THEN '오카도'
+			                ELSE '-'
+			            END,
+			            ','
+			        )
+			        FROM UNNEST(STRING_TO_ARRAY(A.SELL_CHAN_CD, ',')) AS code
+			     ) AS SELL_CHAN_CD
+				, CASE 
+					WHEN A.FRZ_CD = '1' THEN '상온'
+					WHEN A.FRZ_CD = '2' THEN '저온'
+					WHEN A.FRZ_CD = '3' THEN '패션'
+					WHEN A.FRZ_CD = '4' THEN '신선PC'
+					ELSE ''
+				  END FRZ_CD		
+				,	A.TRGT_SALE_CURR
+				,	 CASE 
+						WHEN A.PRDT_SPEC_RANGE = '1' THEN '가성비'
+						WHEN A.PRDT_SPEC_RANGE = '2' THEN '프리미엄'
+						WHEN A.PRDT_SPEC_RANGE = '3' THEN '저가형'
+						ELSE ''
+					END PRDT_SPEC_RANGE /* 상품특성 가격 */
+				,	 CASE 
+						WHEN A.PRDT_SPEC_AGE = '1' THEN 'YOUNG'
+						WHEN A.PRDT_SPEC_AGE = '2' THEN 'SILVER'
+						WHEN A.PRDT_SPEC_AGE = '3' THEN '일반'
+						ELSE ''
+					END PRDT_SPEC_AGE /* 상품특성 연령 */
+				,	 CASE 
+						WHEN A.PRDT_SPEC_SEX = '1' THEN '남'
+						WHEN A.PRDT_SPEC_SEX = '2' THEN '여'
+						ELSE ''
+					END PRDT_SPEC_SEX /* 상품특성 성별 */
+				, 	A.REG_ID
+				,	TO_CHAR(A.REG_DATE,'YYYY-MM-DD') AS REG_DATE /* 등록시간 */
+		FROM  TPC_PROD_NEW_PROP A
+		WHERE 1=1
+		<isNotEmpty property="srchEntpCd" prepend="AND">
+			A.VEN_CD = #srchEntpCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchTeamCd"  prepend="AND">
+			A.TEAM_CD = #srchTeamCd#
+		</isNotEmpty>
+		<isNotEmpty property="srchL1Cd"  prepend="AND">
+			A.L1_CD = #srchL1Cd#
+		</isNotEmpty>
+		<isNotEmpty property="srchProdNm"  prepend="AND">
+			A.PROD_SHORT_NM LIKE '%' || #srchProdNm# || '%'
+		</isNotEmpty>
+		<isNotEmpty property="srchStatus">
+			AND A.PRDT_STATUS = #srchStatus#
+		</isNotEmpty>
+		AND A.DEL_YN != 'Y'
+		AND A.REG_DATE BETWEEN TO_DATE(#srchFromDt# || '000000', 'YYYYMMDDHH24MISS') AND TO_DATE(#srchEndDt# || '235959', 'YYYYMMDDHH24MISS')
+	</select>
+	
+</sqlMap>

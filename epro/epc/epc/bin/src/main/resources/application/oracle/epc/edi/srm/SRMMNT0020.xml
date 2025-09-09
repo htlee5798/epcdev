@@ -1,0 +1,1221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMMNT0020">
+	
+	<typeAlias alias="OptionTagVO"		type="com.lottemart.epc.common.model.OptionTagVO" />
+	<typeAlias alias="SRMMNT0020VO"		type="com.lottemart.epc.edi.srm.model.SRMMNT0020VO"/>
+	<typeAlias alias="SRMMNT002001VO"		type="com.lottemart.epc.edi.srm.model.SRMMNT002001VO"/>
+	<typeAlias alias="CommonFileVO"	type="com.lottemart.epc.common.model.CommonFileVO" />
+
+	<!--대분류 코드 RESULT MAP-->
+	<resultMap id="catLv1CodeResult" class="OptionTagVO">
+		<result property="code" column="MINOR_CD"/>
+		<result property="name" column="CD_NM"/>
+	</resultMap>
+
+	<!--모니터링 LIST 조회 RESULT MAP-->
+	<resultMap id="selectSRMmoniteringListResultMap" class="SRMMNT0020VO">
+		<result column="RNUM" 						property="rnum"							/><!---->
+		<result column="HOUSE_CODE" 				property="houseCode"					/><!---->
+		<!--<result column="EV_IEM_NO" 					property="evIemNo"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_NO" 				property="evItemNo"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_IE_SEQ" 					property="evIeSeq"						/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="VENDOR_CODE" 				property="vendorCode"					/><!---->
+		<result column="EG_NO" 						property="egNo"							/><!---->
+		<result column="EG_NAME" 					property="egName"							/><!---->
+		<result column="EV_TPL_NO" 					property="evTplNo"						/><!---->
+		<result column="EV_TPL_SUBJECT" 				property="evTplSubject"					/><!---->
+		<result column="COUNT_YEAR" 				property="countYear"					/><!---->
+		<result column="COUNT_MONTH" 				property="countMonth"					/><!---->
+		<!--<result column="PURCHASE_ORG" 				property="purchaseOrg"					/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="CHANNEL_CODE" 				property="channelCode"					/><!---->
+		<!--<result column="PURCHASE_TYPE" 				property="purchaseType"					/>&lt;!&ndash;&ndash;&gt;-->
+
+		<result column="CAT_LV1_CODE" 				property="catLv1Code"					/><!---->
+		<result column="CAT_LV2_CODE" 				property="catLv2Code"					/><!---->
+		<!--<result column="EV_ITEM_TYPE1_NAME" 		property="evItemType1Name"				/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE2_NAME" 		property="evItemType2Name"				/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="EV_CHANNEL_NAME" 			property="evChannelName"				/><!---->
+		<!--<result column="EV_TYPE_NAME" 				property="evTypeName"					/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="SG_NAME1" 					property="sgName1"						/><!---->
+		<result column="SG_NAME2" 					property="sgName2"						/><!---->
+		<result column="VENDOR_NAME" 				property="vendorName"					/><!---->
+		<result column="SORT_SEQ" 					property="sortSeq"						/><!---->
+		<result column="DISPLAY_FLAG" 				property="displayFlag"					/><!---->
+		<result column="RESULT_VALUE_SUM" 			property="resultValueSum"				/><!---->
+		<!--<result column="RESULT_VALUE_CNT" 			property="resultValueCnt"				/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="EV_SCORE_SUM" 				property="evScoreSum"					/><!---->
+		<result column="IMPROVE_COUNT" 				property="improveCount"					/><!---->
+		<result column="EV_GRADE_CLASS" 				property="evGradeClass"					/><!---->
+		<!--<result column="EV_ITEM_TYPE1_CODE" 		property="evItemType1Code"				/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE2_CODE" 		property="evItemType2Code"				/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="IMP_CNT" 					property="impCnt"					/><!---->
+	</resultMap>
+
+	<!--모니터링 LIST 조회 RESULT MAP-->
+	<resultMap id="selectSRMmoniteringDetailResultMap" class="SRMMNT002001VO">
+		<result column="HOUSE_CODE" 				property="houseCode"					/><!---->
+		<result column="EG_NO" 						property="egNo"							/><!---->
+		<result column="EV_TPL_NO" 					property="evTplNo"						/><!---->
+		<result column="EV_TPL_SUBJECT" 			property="evTplSubject"						/><!---->
+		<result column="EV_ITEM_NO" 				property="evItemNo"						/><!---->
+		<result column="EV_IE_SEQ" 					property="evIeSeq"						/><!---->
+		<result column="PURCHASE_ORG" 				property="purchaseOrg"					/><!---->
+		<result column="CHANNEL_CODE" 				property="channelCode"					/><!---->
+		<result column="PURCHASE_TYPE" 				property="purchaseType"					/><!---->
+		<result column="CAT_LV1_CODE" 				property="catLv1Code"					/><!---->
+		<result column="CAT_LV2_CODE" 				property="catLv2Code"					/><!---->
+		<result column="CAT_LV1_NAME" 				property="catLv1Name"					/><!---->
+		<result column="CAT_LV2_NAME" 				property="catLv2Name"					/><!---->
+		<result column="EV_ITEM_TYPE1_NAME" 		property="evItemType1Name"				/><!---->
+		<result column="EV_ITEM_TYPE2_NAME" 		property="evItemType2Name"				/><!---->
+		<result column="EV_IEM_NO" 					property="evIemNo"						/><!---->
+		<result column="VENDOR_CODE" 				property="vendorCode"					/><!---->
+		<result column="VENDOR_NAME" 				property="vendorName"					/><!---->
+		<result column="COUNT_YEAR" 				property="countYear"					/><!---->
+		<result column="COUNT_MONTH" 				property="countMonth"					/><!---->
+		<result column="SG_NO" 						property="sgNo"							/><!---->
+		<result column="EL_NAME" 					property="elName"						/><!---->
+		<result column="EL_CONTENTS" 				property="elContents"					/><!---->
+		<result column="EL_UNIT" 					property="elUnit"						/><!---->
+		<result column="EL_PRICE_UNIT" 				property="elPriceUnit"					/><!---->
+		<result column="EV_SCORE" 					property="evScore"						/><!---->
+		<result column="ITEM_GRADE" 				property="itemGrade"					/><!---->
+		<result column="RESULT_VALUE" 				property="resultValue"					/><!---->
+		<result column="DEL_FLAG" 					property="delFlag"						/><!---->
+		<result column="SORT_SEQ" 					property="sortSeq"						/><!---->
+		<result column="DISPLAY_FLAG" 				property="displayFlag"					/><!---->
+		<result column="RESULT_VALUE_SUM" 			property="resultValueSum"				/><!---->
+		<result column="RESULT_VALUE_CNT" 			property="resultValueCnt"				/><!---->
+		<result column="IMPROVE_COUNT" 				property="improveCount"					/><!---->
+		<result column="EV_ITEM_TYPE1_CODE" 		property="evItemType1Code"				/><!---->
+		<result column="EV_ITEM_TYPE2_CODE" 		property="evItemType2Code"				/><!---->
+		<result column="RESULT_ETC" 				property="resultEtc"					/><!---->
+		<result column="EV_TPL_SCORE" 				property="evTplScore"					/><!---->
+		<result column="SP_YN" 						property="spYn"							/><!---->
+		<result column="REMARK_YN" 					property="remarkYn"						/><!---->
+		<result column="RTN_CONTENT" 				property="rtnContent"						/><!---->
+	</resultMap>
+
+	<!--모니터링 차트 조회 RESULT MAP-->
+	<resultMap id="selectSRMmoniteringDetailChartResultMap" class="SRMMNT002001VO">
+		<result column="HOUSE_CODE" 				property="houseCode"					/><!---->
+		<result column="EV_IEM_NO" 					property="evIemNo"						/><!---->
+		<result column="EV_ITEM_NO" 				property="evItemNo"						/><!---->
+		<!--<result column="EV_IE_SEQ" 					property="evIeSeq"						/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="VENDOR_CODE" 				property="vendorCode"					/><!---->
+		<!--<result column="EV_TPL_NO" 					property="evTplNo"						/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="COUNT_YEAR" 				property="countYear"					/><!---->
+		<result column="COUNT_MONTH" 				property="countMonth"					/><!---->
+		<!--<result column="PURCHASE_ORG" 				property="purchaseOrg"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="CHANNEL_CODE" 				property="channelCode"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="PURCHASE_TYPE" 				property="purchaseType"					/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="CAT_LV1_CODE" 				property="catLv1Code"					/><!---->
+		<result column="CAT_LV2_CODE" 				property="catLv2Code"					/><!---->
+		<!--<result column="EV_ITEM_TYPE1_NAME" 		property="evItemType1Name"				/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE2_NAME" 		property="evItemType2Name"				/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="SG_NO" 						property="sgNo"							/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_NAME" 					property="elName"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_CONTENTS" 				property="elContents"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_UNIT" 					property="elUnit"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_PRICE_UNIT" 				property="elPriceUnit"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_SCORE" 					property="evScore"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="RESULT_VALUE" 				property="resultValue"					/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="RESULT_VALUE_VENDOR" 			property="resultValueVendor"					/><!---->
+		<result column="RESULT_VALUE_AVG" 				property="resultValueAvg"					/><!---->
+		<!--<result column="DEL_FLAG" 					property="delFlag"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="SORT_SEQ" 					property="sortSeq"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="DISPLAY_FLAG" 				property="displayFlag"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE1_CODE" 		property="evItemType1Code"				/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE2_CODE" 		property="evItemType2Code"				/>&lt;!&ndash;&ndash;&gt;-->
+	</resultMap>
+
+	<!--현재까지 평가점수-->
+	<resultMap id="selectSRMmoniteringDetailCurrentValueResultMap" class="SRMMNT002001VO">
+		<!--<result column="HOUSE_CODE" 				property="houseCode"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_IEM_NO" 					property="evIemNo"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_NO" 				property="evItemNo"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_IE_SEQ" 					property="evIeSeq"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="VENDOR_CODE" 				property="vendorCode"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_TPL_NO" 					property="evTplNo"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="COUNT_YEAR" 				property="countYear"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="COUNT_MONTH" 				property="countMonth"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="PURCHASE_ORG" 				property="purchaseOrg"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="CHANNEL_CODE" 				property="channelCode"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="PURCHASE_TYPE" 				property="purchaseType"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="CAT_LV1_CODE" 				property="catLv1Code"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="CAT_LV2_CODE" 				property="catLv2Code"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE1_NAME" 		property="evItemType1Name"				/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="EV_ITEM_TYPE2_NAME" 		property="evItemType2Name"				/><!---->
+		<!--<result column="SG_NO" 						property="sgNo"							/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_NAME" 					property="elName"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_CONTENTS" 				property="elContents"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_UNIT" 					property="elUnit"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EL_PRICE_UNIT" 				property="elPriceUnit"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_SCORE" 					property="evScore"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="RESULT_VALUE" 				property="resultValue"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="DEL_FLAG" 					property="delFlag"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="SORT_SEQ" 					property="sortSeq"						/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="DISPLAY_FLAG" 				property="displayFlag"					/>&lt;!&ndash;&ndash;&gt;-->
+		<!--<result column="EV_ITEM_TYPE1_CODE" 		property="evItemType1Code"				/>&lt;!&ndash;&ndash;&gt;-->
+		<result column="EV_ITEM_TYPE2_CODE" 		property="evItemType2Code"				/><!---->
+		<result column="EV_SCORE_AVG" 				property="evScoreAvg"					/><!---->
+	</resultMap>
+
+
+
+	<!--비고, 특이사항 조회 map-->
+	<resultMap id="selectSRMmoniteringDetailRemarkEtcResultMap" class="SRMMNT002001VO">
+		<result column="EL_NAME" 					property="elName"						/><!---->
+		<result column="EL_CONTENTS" 				property="elContents"					/><!---->
+		<result column="EL_UNIT" 					property="elUnit"						/><!---->
+		<result column="EL_PRICE_UNIT" 				property="elPriceUnit"					/><!---->
+		<result column="CHANGE_DATE" 				property="changeDate"					/><!---->
+		<result column="CHANGE_USER_ID" 			property="changeUserId"					/><!---->
+		<result column="DEL_FLAG" 					property="delFlag"						/><!---->
+		<result column="SORT_SEQ" 					property="sortSeq"						/><!---->
+		<result column="DISPLAY_FLAG" 				property="displayFlag"					/><!---->
+		<result column="OUT_DISPLAY_FLAG" 			property="outDisplayFlag"				/><!---->
+		<result column="REMARK1" 					property="remark1"						/><!---->
+		<result column="REMARK2" 					property="remark2"						/><!---->
+		<result column="DISPLAY_SORT_SEQ" 			property="displaySortSeq"				/><!---->
+	</resultMap>
+
+	<!--등급 예제 조회 map-->
+	<resultMap id="selectSRMmoniteringDetailGradeExempleResultMap" class="SRMMNT002001VO">
+		<result column="GRADE" 					property="grade"							/><!---->
+		<result column="EV_ID_CONTENTS" 		property="evIdContents"						/><!---->
+	</resultMap>
+
+	<!--등급 조회 map-->
+	<resultMap id="selectSRMmoniteringDetailGradeResultMap" class="SRMMNT002001VO">
+		<result column="EV_GRADE_CLASS" 		property="evGradeClass"					/><!---->
+		<result column="EV_SCORE_SUM" 			property="evScoreSum"						/><!---->
+		<result column="RESULT_VALUE_SUM" 		property="resultValueSum"						/><!---->
+	</resultMap>
+
+	<!--PLC등급 리스트 조회 map-->
+	<resultMap id="selectSRMmoniteringDetailPlcResultMap" class="SRMMNT002001VO">
+		<result column="COUNT_YEAR" 			property="countYear"					/><!---->
+		<result column="COUNT_MONTH" 			property="countMonth"						/><!---->
+		<result column="CAT_LV1_CODE" 			property="catLv1Code"						/><!---->
+		<result column="CAT_LV2_CODE" 			property="catLv2Code"						/><!---->
+		<result column="SKU_NUMBER" 			property="skuNumber"						/><!---->
+		<result column="SKU_NAME" 				property="skuName"						/><!---->
+		<result column="PLC_GRADE" 				property="plcGrade"						/><!---->
+	</resultMap>
+
+	<!--불량등록건수 팝업map-->
+	<resultMap id="selectSRMmoniteringDetailDefectiveListResultMap" class="SRMMNT002001VO">
+		<result column="DOCNO" 					property="docno"							/><!---->
+		<result column="HOUSE_CODE" 			property="houseCode"						/><!---->
+		<result column="SKU_NUMBER" 			property="skuNumber"						/><!---->
+		<result column="SKU_NAME" 				property="skuName"							/><!---->
+		<result column="VENDOR_CODE" 			property="vendorCode"						/><!---->
+		<result column="VENDOR_NAME" 			property="vendorName"						/><!---->
+		<result column="STATS" 					property="stats"							/><!---->
+		<result column="STATS_TEXT" 			property="statsText"						/><!---->
+		<result column="ROUTE" 					property="route"							/><!---->
+		<result column="ROUTE_TEXT" 			property="routeText"						/><!---->
+		<result column="TYP01" 					property="typ01"							/><!---->
+		<result column="TYP01_TEXT" 			property="typ01Text"						/><!---->
+		<result column="TYP02" 					property="typ02"							/><!---->
+		<result column="TYP02_TEXT" 			property="typ02Text"						/><!---->
+		<result column="PROWN" 					property="prown"							/><!---->
+		<result column="PROWN_TEXT" 			property="prownText"						/><!---->
+		<result column="LDESC" 					property="ldesc"							/><!---->
+		<result column="EXPDT" 					property="expdt"							/><!---->
+		<result column="USRID" 					property="usrid"							/><!---->
+		<result column="REGDT" 					property="regdt"							/><!---->
+		<result column="CPDAT" 					property="cpdat"							/><!---->
+		<result column="MATERIAL_CLASS3" 		property="materialClass3"					/><!---->
+	</resultMap>
+
+	<resultMap id="selectSRMmoniteringDetailImpReqResultMap" class="SRMMNT002001VO">
+		<result column="HOUSE_CODE" 			property="houseCode"						/><!---->
+		<result column="EV_EI_NO" 				property="evEiNo"							/><!---->
+		<result column="COUNT_YEAR" 			property="countYear"						/><!---->
+		<result column="COUNT_MONTH" 			property="countMonth"						/><!---->
+		<result column="EG_NO" 					property="egNo"								/><!---->
+		<result column="EV_TPL_NO" 				property="evTplNo"							/><!---->
+		<result column="VENDOR_CODE" 			property="vendorCode"						/><!---->
+		<result column="VENDOR_NAME" 			property="vendorName"						/><!---->
+		<result column="CAT_LV1_CODE" 			property="catLv1Code"						/><!---->
+		<result column="CAT_LV1_NAME" 			property="catLv1Name"						/><!---->
+		<result column="CAT_LV2_CODE" 			property="catLv2Code"						/><!---->
+		<result column="CAT_LV2_NAME" 			property="catLv2Name"						/><!---->
+		<result column="IMP_REQ_MEMO" 			property="impReqMemo"						/><!---->
+		<result column="IMP_REQ_USER_ID" 		property="impReqUserId"						/><!---->
+		<result column="EV_CTRL_USER_NAME" 		property="evCtrlUserName"					/><!---->
+		<result column="IMP_PLAN_DUE_DATE" 		property="impPlanDueDate"					/><!---->
+		<result column="IMP_PLAN_DATE" 			property="impPlanDate"						/><!---->
+		<result column="IMP_PLAN_USER_ID" 		property="impPlanUserId"					/><!---->
+		<result column="IMP_PLAN_MEMO" 			property="impPlanMemo"						/><!---->
+		<result column="DEPT_MD" 				property="deptMd"							/><!---->
+		<result column="DEPT_USER" 				property="deptUser"							/><!---->
+		<result column="ATTACH_NO" 				property="attachNo"							/><!---->
+		<result column="ATTACH_COUNT" 			property="attachCount"						/><!---->
+		<result column="PROGRESS_CODE" 			property="progressCode"						/><!---->
+		<result column="PROGRESS_NAME" 			property="progressName"						/><!---->
+		<result column="IMP_RESULT" 			property="impResult"						/><!---->
+		<result column="IMPROVE_REQ_DATE" 		property="improveReqDate"					/><!---->
+		<result column="ADD_USER_ID" 			property="addUserId"						/><!---->
+		<result column="CHANGE_DATE" 			property="changeDate"						/><!---->
+		<result column="CHANGE_USER_ID" 		property="changeUserId"						/><!---->
+		<result column="DEL_FLAG" 				property="delFlag"							/><!---->
+		<result column="EV_CHANNEL_CODE" 		property="evChannelCode"					/><!---->
+		<result column="EV_CHANNEL_NAME" 		property="evChannelName"					/><!---->
+		<result column="EG_NAME" 				property="egName"							/><!---->
+		<result column="EV_TPL_SUBJECT" 		property="evTplSubject"						/><!---->
+		<result column="IMP_REQ_CONTENT" 		property="impReqContent"					/><!---->
+	</resultMap>
+
+
+	<!-- 파일정보조회 resultMap -->
+	<resultMap id="selectSRMmoniteringDetailImpReqFileListResultMap" class="CommonFileVO">
+		<result column="DOC_NO"						property="fileId" 					/>	<!-- 파일ID -->
+		<result column="DOC_SEQ"					property="fileSeq" 					/>	<!-- 순번 -->
+		<result column="DES_FILE_NAME"				property="tempFileName" 			/>	<!-- 서버저장파일명 -->
+		<result column="SRC_FILE_NAME"				property="fileNmae" 				/>	<!-- 원본파일명 -->
+	</resultMap>
+
+	<!--사업자번호로 venCd 조회 map-->
+	<resultMap id="selectCeoLoginVenCdLIstResultMap" class="SRMMNT0020VO">
+		<result column="VEN_CD" 					property="venCd"						/><!---->
+	</resultMap>
+
+	<!-- 대분류 코드 조회-->
+	<select id="selectCatLv1CodeList" parameterClass="SRMMNT0020VO" resultMap="catLv1CodeResult">
+		/*SRMMNT0020.selectCatLv1CodeList*/
+		SELECT
+				SG_NO AS MINOR_CD
+				, SG_NAME AS CD_NM
+		FROM
+				SSGMT
+		WHERE
+				DEPTH = #depth#
+			AND CHG_FG NOT IN('D')
+		<isNotEqual property="depth" compareValue="1">
+			AND PARENT_SG_NO = #parentSgNo#
+		</isNotEqual>
+		ORDER BY SG_NO
+	</select>
+
+	<!--모니터링 LIST 조회-->
+	<select id="selectSRMmoniteringListCount" parameterClass="SRMMNT0020VO" resultClass="Integer">
+		/*SRMMNT0020.selectSRMmoniteringListCount*/
+		SELECT
+				COUNT(*) AS TOTAL_CNT
+		FROM
+				(
+					SELECT
+							EVERM.VENDOR_CODE
+					FROM
+							SEVER_M_MONTH EVERM
+							JOIN  SEVER_M_MONTH_01 EVERM02
+								ON  EVERM.HOUSE_CODE     = EVERM02.HOUSE_CODE
+								AND  EVERM.COUNT_YEAR     = EVERM02.COUNT_YEAR
+								AND  EVERM.COUNT_MONTH    = EVERM02.COUNT_MONTH
+								AND  EVERM.EG_NO          = EVERM02.EG_NO
+								AND  EVERM.EV_TPL_NO      = EVERM02.EV_TPL_NO
+								AND  EVERM.CHANNEL_CODE   = EVERM02.CHANNEL_CODE
+								AND  EVERM.EV_ITEM_NO     = EVERM02.EV_ITEM_NO
+								AND  EVERM.EV_IE_SEQ      = EVERM02.EV_IE_SEQ
+								AND  EVERM.CAT_LV1_CODE   = EVERM02.CAT_LV1_CODE
+								AND  EVERM.CAT_LV2_CODE   = EVERM02.CAT_LV2_CODE
+								<isNotEmpty property="countYear">
+									AND  EVERM.COUNT_YEAR 	  = #countYear#
+								</isNotEmpty>
+								<isNotEmpty property="countMonth">
+									AND  EVERM.COUNT_MONTH = #countMonth#
+								</isNotEmpty>
+								<isNotEmpty property="egNo">
+									AND  EVERM.EG_NO          = #egNo#
+								</isNotEmpty>
+								<isNotEmpty property="evTplNo">
+									AND  EVERM.EV_TPL_NO      = #evTplNo#
+								</isNotEmpty>
+								<isNotEmpty property="channelCode">
+									AND  EVERM.CHANNEL_CODE   = #channelCode#
+								</isNotEmpty>
+							JOIN  SEVTM EVTM
+								ON  EVERM.HOUSE_CODE      = EVTM.HOUSE_CODE
+								AND  EVERM.EV_TPL_NO       = EVTM.EV_TPL_NO
+							JOIN  SEVTD EVTD
+								ON  EVERM.HOUSE_CODE      = EVTD.HOUSE_CODE
+								AND  EVERM.EV_TPL_NO       = EVTD.EV_TPL_NO
+								AND  EVERM.EV_ITEM_NO       = EVTD.EV_ITEM_NO
+							LEFT  OUTER JOIN SEVIM EVIM
+								ON  EVTD.HOUSE_CODE      = EVIM.HOUSE_CODE
+								AND  EVTD.EV_ITEM_NO      = EVIM.EV_ITEM_NO
+							LEFT  OUTER JOIN SEVEI EVEI
+								ON  EVERM.HOUSE_CODE     = EVEI.HOUSE_CODE
+								AND  EVERM.EV_TPL_NO      = EVEI.EV_TPL_NO
+								AND  EVERM.VENDOR_CODE    = EVEI.VENDOR_CODE
+								AND  EVERM.CAT_LV2_CODE   = EVEI.CAT_LV2_CODE
+								AND  EVERM.COUNT_YEAR     = EVEI.COUNT_YEAR
+								AND  EVERM.COUNT_MONTH    = EVEI.COUNT_MONTH
+		WHERE
+				NVL(EVERM.SORT_SEQ,0) = 0
+			AND NVL(EVERM.DEL_FLAG,'0') = '0'
+			<isNotEmpty property="venCds">
+				<iterate prepend="AND UPPER(EVERM.VENDOR_CODE) IN" property="venCds" open="(" close=")" conjunction=",">
+					UPPER(#venCds[]#)
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="channelCode">
+				AND  EVERM.CHANNEL_CODE   = #channelCode#
+			</isNotEmpty>
+			<isNotEmpty property="catLv1Code">
+				AND  EVERM.CAT_LV1_CODE     = #catLv1Code#
+			</isNotEmpty>
+			<isNotEmpty property="catLv2Code">
+				AND  EVERM.CAT_LV2_CODE    = #catLv2Code#
+			</isNotEmpty>
+		GROUP BY 	EVERM.HOUSE_CODE
+					, EVERM.VENDOR_CODE
+					, EVERM.EG_NO
+					, EVERM.EV_TPL_NO
+					, EVTM.EV_TPL_SUBJECT
+					, EVERM.COUNT_YEAR
+					, EVERM.COUNT_MONTH
+					, EVERM.CHANNEL_CODE
+					, EVERM.CAT_LV1_CODE
+					, EVERM.CAT_LV2_CODE
+					, EVERM.SORT_SEQ
+					, EVERM.DISPLAY_FLAG
+		) A
+	</select>
+
+	<!--모니터링 LIST 조회-->
+	<select id="selectSRMmoniteringList" parameterClass="SRMMNT0020VO" resultMap="selectSRMmoniteringListResultMap">
+		/*SRMMNT0020.selectSRMmoniteringList*/
+		SELECT
+				RNUM
+				,A.HOUSE_CODE
+				, A.VENDOR_CODE
+				, A.EG_NO
+				, A.EG_NAME
+				, A.EV_TPL_NO
+				, A.EV_TPL_SUBJECT
+				, A.COUNT_YEAR
+				, A.COUNT_MONTH
+				, A.CHANNEL_CODE
+				, A.CAT_LV1_CODE
+				, A.CAT_LV2_CODE
+				, A.EV_CHANNEL_NAME
+				, A.SG_NAME1
+				, A.SG_NAME2
+				, A.VENDOR_NAME
+				, A.SORT_SEQ
+				, A.DISPLAY_FLAG
+				, VEN.RESULT_VALUE_SUM
+				, ROUND(VEN.EV_SCORE_SUM,1) AS EV_SCORE_SUM
+				, A.IMPROVE_COUNT
+				, VEN.EV_GRADE_CLASS
+				,IMP_CNT
+		FROM
+				(
+					SELECT
+							ROW_NUMBER() OVER(ORDER BY EVERM.CAT_LV1_CODE, EVERM.CAT_LV2_CODE , EVERM.VENDOR_CODE) AS RNUM
+							,EVERM.HOUSE_CODE
+							, EVERM.VENDOR_CODE
+							, EVERM.EG_NO
+							, (SELECT EG_NAME FROM SEGMT EGMT WHERE EGMT.HOUSE_CODE = EVERM.HOUSE_CODE AND EGMT.EG_NO =  EVERM.EG_NO) AS EG_NAME
+							, EVERM.EV_TPL_NO
+							, EVERM.COUNT_YEAR
+							, EVERM.COUNT_MONTH
+							, EVERM.CHANNEL_CODE
+							, EVERM.CAT_LV1_CODE
+							, EVERM.CAT_LV2_CODE
+							, EVTM.EV_TPL_SUBJECT
+							--, GETCODETEXT1('SRM011', EVIM.EV_ITEM_TYPE1_CODE, 'KO') AS EV_ITEM_TYPE1_NAME
+							--, GETCODETEXT1('SRM011_1', EVIM.EV_ITEM_TYPE2_CODE, 'KO') AS EV_ITEM_TYPE2_NAME
+							, GETCODETEXT1('SRM028', EVERM.CHANNEL_CODE, 'KO') AS EV_CHANNEL_NAME
+							, GETSGCLASS(EVERM.HOUSE_CODE,'KO','1', EVERM.CAT_LV1_CODE) SG_NAME1
+							, GETSGCLASS(EVERM.HOUSE_CODE,'KO','1', EVERM.CAT_LV2_CODE) SG_NAME2
+							, GETPARTNERNAME( EVERM.VENDOR_CODE)  AS VENDOR_NAME
+							, NVL(EVERM.SORT_SEQ,0) AS SORT_SEQ
+							, EVERM.DISPLAY_FLAG
+							--, SUM(EVERM.RESULT_VALUE) AS RESULT_VALUE_SUM
+							--, SUM(EVERM.EV_SCORE) AS EV_SCORE_SUM
+							, SUM(CASE WHEN GETSCOREGRADE( EVERM.HOUSE_CODE
+															, EVERM.EV_ITEM_NO
+															, (
+																CASE WHEN EVERM.SORT_SEQ = '0' THEN (
+																										SELECT TO_CHAR(a.EV_ID_SCORE) FROM SEVID a
+																										WHERE a.EV_ITEM_NO = EVERM.EV_ITEM_NO
+																										AND a.DEL_FLAG = '0'
+																										AND TO_NUMBER(
+																														CASE WHEN EVERM.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+																														ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+																														END
+																													) <![CDATA[>=]]> TO_NUMBER(a.FROM_VALUE)
+																										AND TO_NUMBER(
+																														CASE WHEN EVERM.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+																														ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+																														END
+																													) <![CDATA[<=]]> TO_NUMBER(a.TO_VALUE)
+																									)
+																ELSE ''
+																END
+															)
+														) IN ('C','D','E') THEN 1
+														ELSE 0 END) AS IMPROVE_COUNT
+							--, SUM(CASE WHEN EVERM02.RESULT_VALUE_CNT != 0 AND (EVERM.RESULT_VALUE - EVERM02.RESULT_VALUE_SUM/EVERM02.RESULT_VALUE_CNT) <![CDATA[<]]> 0 THEN 1
+							--       ELSE 0 END) AS IMPROVE_COUNT
+							,(
+								SELECT
+										COUNT(1)
+								FROM
+										SEVEI EVEI
+								WHERE
+										EVEI.HOUSE_CODE     = EVERM.HOUSE_CODE
+									AND EVEI.COUNT_YEAR     = EVERM.COUNT_YEAR
+									AND EVEI.COUNT_MONTH    = EVERM.COUNT_MONTH
+									AND EVEI.EG_NO          = EVERM.EG_NO
+									AND EVEI.EV_TPL_NO      = EVERM.EV_TPL_NO
+									AND EVEI.CAT_LV2_CODE   = EVERM.CAT_LV2_CODE
+									AND EVEI.VENDOR_CODE    = EVERM.VENDOR_CODE
+							) AS IMP_CNT
+					FROM
+							SEVER_M_MONTH EVERM
+							JOIN
+								SEVER_M_MONTH_01 EVERM02
+								ON  EVERM.HOUSE_CODE     = EVERM02.HOUSE_CODE
+								AND  EVERM.COUNT_YEAR     = EVERM02.COUNT_YEAR
+								AND  EVERM.COUNT_MONTH    = EVERM02.COUNT_MONTH
+								AND  EVERM.EG_NO          = EVERM02.EG_NO
+								AND  EVERM.EV_TPL_NO      = EVERM02.EV_TPL_NO
+								AND  EVERM.CHANNEL_CODE   = EVERM02.CHANNEL_CODE
+								AND  EVERM.EV_ITEM_NO     = EVERM02.EV_ITEM_NO
+								AND  EVERM.EV_IE_SEQ      = EVERM02.EV_IE_SEQ
+								AND  EVERM.CAT_LV1_CODE   = EVERM02.CAT_LV1_CODE
+								AND  EVERM.CAT_LV2_CODE   = EVERM02.CAT_LV2_CODE
+								<isNotEmpty property="countYear">
+									AND  EVERM.COUNT_YEAR 	  = #countYear#
+								</isNotEmpty>
+								<isNotEmpty property="countMonth">
+									AND  EVERM.COUNT_MONTH = #countMonth#
+								</isNotEmpty>
+								<isNotEmpty property="egNo">
+									AND  EVERM.EG_NO          = #egNo#
+								</isNotEmpty>
+								<isNotEmpty property="evTplNo">
+									AND  EVERM.EV_TPL_NO      = #evTplNo#
+								</isNotEmpty>
+								<isNotEmpty property="channelCode">
+									AND  EVERM.CHANNEL_CODE   = #channelCode#
+								</isNotEmpty>
+							JOIN
+								SEVTM EVTM
+								ON  EVERM.HOUSE_CODE      = EVTM.HOUSE_CODE
+								AND  EVERM.EV_TPL_NO       = EVTM.EV_TPL_NO
+							JOIN
+								SEVTD EVTD
+								ON  EVERM.HOUSE_CODE      = EVTD.HOUSE_CODE
+								AND  EVERM.EV_TPL_NO       = EVTD.EV_TPL_NO
+								AND  EVERM.EV_ITEM_NO       = EVTD.EV_ITEM_NO
+							LEFT OUTER JOIN
+								SEVIM EVIM
+								ON  EVTD.HOUSE_CODE      = EVIM.HOUSE_CODE
+								AND  EVTD.EV_ITEM_NO      = EVIM.EV_ITEM_NO
+							LEFT  OUTER JOIN
+								SEVEI EVEI
+								ON  EVERM.HOUSE_CODE     = EVEI.HOUSE_CODE
+								AND  EVERM.EV_TPL_NO      = EVEI.EV_TPL_NO
+								AND  EVERM.VENDOR_CODE    = EVEI.VENDOR_CODE
+								AND  EVERM.CAT_LV2_CODE   = EVEI.CAT_LV2_CODE
+								AND  EVERM.COUNT_YEAR     = EVEI.COUNT_YEAR
+								AND  EVERM.COUNT_MONTH    = EVEI.COUNT_MONTH
+							WHERE  NVL(EVERM.SORT_SEQ,0) = 0
+								AND  NVL(EVERM.DEL_FLAG,'0') = '0'
+							<isNotEmpty property="venCds">
+								<iterate prepend="AND UPPER(EVERM.VENDOR_CODE) IN" property="venCds" open="(" close=")" conjunction=",">
+									UPPER(#venCds[]#)
+								</iterate>
+							</isNotEmpty>
+							<isNotEmpty property="channelCode">
+								AND  EVERM.CHANNEL_CODE   = #channelCode#
+							</isNotEmpty>
+							<isNotEmpty property="catLv1Code">
+								AND  EVERM.CAT_LV1_CODE     = #catLv1Code#
+							</isNotEmpty>
+							<isNotEmpty property="catLv2Code">
+								AND  EVERM.CAT_LV2_CODE    = #catLv2Code#
+							</isNotEmpty>
+					GROUP BY 	EVERM.HOUSE_CODE
+								, EVERM.VENDOR_CODE
+								, EVERM.EG_NO
+								, EVERM.EV_TPL_NO
+								, EVTM.EV_TPL_SUBJECT
+								, EVERM.COUNT_YEAR
+								, EVERM.COUNT_MONTH
+                   				, EVERM.CHANNEL_CODE
+								, EVERM.CAT_LV1_CODE
+								, EVERM.CAT_LV2_CODE
+                   				, EVERM.SORT_SEQ
+								, EVERM.DISPLAY_FLAG
+				) A
+		JOIN  SEVER_M_MONTH_VEN VEN
+			ON  A.HOUSE_CODE      = VEN.HOUSE_CODE
+			AND  A.COUNT_YEAR      = VEN.COUNT_YEAR
+			AND  A.COUNT_MONTH     = VEN.COUNT_MONTH
+			AND  A.CHANNEL_CODE    = VEN.CHANNEL_CODE
+			AND  A.EG_NO           = VEN.EG_NO
+			AND  A.EV_TPL_NO       = VEN.EV_TPL_NO
+			AND  A.CHANNEL_CODE    = VEN.CHANNEL_CODE
+			AND  A.CAT_LV1_CODE    = VEN.CAT_LV1_CODE
+			AND  A.CAT_LV2_CODE    = VEN.CAT_LV2_CODE
+			AND  A.VENDOR_CODE     = VEN.VENDOR_CODE
+		WHERE RNUM BETWEEN #firstIndex# AND #lastIndex#
+	</select>
+
+
+	<!--모니터링 상세 조회-->
+	<select id="selectSRMmoniteringDetail" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetail*/
+		SELECT
+				EGMD.HOUSE_CODE
+				, EGSG.EG_NO
+				, EVTM.EV_TPL_NO
+				, EVTM.EV_TPL_SUBJECT
+				, EVIE.EV_ITEM_NO
+				, EVIE.EV_IE_SEQ
+				, EVTM.PURCHASE_ORG
+				, EVTM.EV_CHANNEL_CODE AS CHANNEL_CODE
+				, EVTM.EV_TYPE_CODE AS PURCHASE_TYPE
+				, SUBSTR(SGMT.SG_NO,1,3) AS CAT_LV1_CODE
+				, SGMT.SG_NO AS CAT_LV2_CODE
+				, GETSGCLASS(EVERM.HOUSE_CODE,'KO','1', SUBSTR(SGMT.SG_NO,1,3)) AS CAT_LV1_NAME
+				, GETSGCLASS(EVERM.HOUSE_CODE,'KO','1', SGMT.SG_NO) AS CAT_LV2_NAME
+				, GETCODETEXT1('SRM011', EVIM.EV_ITEM_TYPE1_CODE, 'KO') AS EV_ITEM_TYPE1_NAME
+				, GETCODETEXT1('SRM011_1', EVIM.EV_ITEM_TYPE2_CODE, 'KO') AS EV_ITEM_TYPE2_NAME
+				, EVERM.EV_IEM_NO
+				, EVERM.VENDOR_CODE
+				, GETPARTNERNAME( EVERM.VENDOR_CODE)  AS VENDOR_NAME
+				, EVERM.COUNT_YEAR
+				, EVERM.COUNT_MONTH
+				, EVERM.SG_NO
+				, (CASE WHEN EVIE.SORT_SEQ = '0' THEN EVIM.EV_ITEM_SUBJECT ELSE EVIE.EL_NAME END) AS EL_NAME
+				, EVIE.EL_CONTENTS
+				, EVIE.EL_UNIT
+				, EVIE.EL_PRICE_UNIT
+				, EVERM.EV_SCORE
+				--			       , DECODE(EVIE.SORT_SEQ,0,
+				--                           GETSCOREGRADE(EGMD.HOUSE_CODE, EVIE.EV_ITEM_NO, ROUND(( EVERM.EV_SCORE / (SELECT EVTI.EV_TPL_SCORE/MAX(EVID.EV_ID_SCORE) FROM SEVID EVID WHERE EVID.EV_ITEM_NO =EVIE.EV_ITEM_NO AND EVID.DEL_FLAG='0') ),0))
+				--                            ,'')
+				--                     AS ITEM_GRADE
+				, GETSCOREGRADE( EVIE.HOUSE_CODE
+								, EVIE.EV_ITEM_NO
+								, (
+									CASE WHEN EVIE.SORT_SEQ = '0' THEN (
+																			SELECT
+																					TO_CHAR(a.EV_ID_SCORE) FROM SEVID a
+																			WHERE
+																					a.EV_ITEM_NO = EVIE.EV_ITEM_NO
+																				AND A.DEL_FLAG = '0'
+																				AND TO_NUMBER(
+																								CASE WHEN EVIE.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+																								ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+																								END
+																								) <![CDATA[>=]]> TO_NUMBER(A.FROM_VALUE)
+																				AND TO_NUMBER(
+																								CASE WHEN EVIE.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+																								ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+																								END
+																								) <![CDATA[<=]]> TO_NUMBER(A.TO_VALUE)
+																		)
+									ELSE ''
+									END
+								)
+				) AS ITEM_GRADE
+				, CASE WHEN EVIE.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+					ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+					END AS RESULT_VALUE
+				, EVERM.DEL_FLAG
+				, NVL(EVIE.SORT_SEQ,0) AS SORT_SEQ
+				, EVERM.DISPLAY_FLAG
+				, EVERM02.RESULT_VALUE_SUM
+				, EVERM02.RESULT_VALUE_CNT
+				, CASE WHEN GETSCOREGRADE( EVIE.HOUSE_CODE
+											, EVIE.EV_ITEM_NO
+											, (
+												CASE WHEN EVIE.SORT_SEQ = '0' THEN (
+																					SELECT TO_CHAR(a.EV_ID_SCORE) FROM SEVID a
+																					WHERE a.EV_ITEM_NO = EVIE.EV_ITEM_NO
+																					AND A.DEL_FLAG = '0'
+																					AND TO_NUMBER(
+																									CASE WHEN EVIE.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+																									ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+																									END
+																									) <![CDATA[>=]]> TO_NUMBER(A.FROM_VALUE)
+																					AND TO_NUMBER(
+																									CASE WHEN EVIE.EL_UNIT = '원' THEN ROUND(NVL(EVERM.RESULT_VALUE, 0), 0)
+																									ELSE ROUND(NVL(EVERM.RESULT_VALUE, 0), 1)
+																									END
+																									) <![CDATA[<=]]> TO_NUMBER(A.TO_VALUE)
+																					)
+												ELSE ''
+												END
+												)
+										) IN ('C','D','E') THEN 'Y'
+					ELSE '' END AS IMPROVE_COUNT
+				, EVIM.EV_ITEM_TYPE1_CODE
+				, EVIM.EV_ITEM_TYPE2_CODE
+				, EVERM.RESULT_ETC
+				, EVTI.EV_TPL_SCORE
+				, (SELECT CASE WHEN IE.REMARK1 IS NULL THEN 'N' ELSE 'Y' END FROM SEVIE IE WHERE IE.HOUSE_CODE = EVERM.HOUSE_CODE AND IE.EV_ITEM_NO = EVERM.EV_ITEM_NO AND IE.EV_IE_SEQ = EVERM.EV_IE_SEQ) AS SP_YN
+				, (SELECT CASE WHEN IE.REMARK2 IS NULL THEN 'N' ELSE 'Y' END FROM SEVIE IE WHERE IE.HOUSE_CODE = EVERM.HOUSE_CODE AND IE.EV_ITEM_NO = EVERM.EV_ITEM_NO AND IE.EV_IE_SEQ = EVERM.EV_IE_SEQ) AS REMARK_YN
+				, CHANGESPECIALWORD(GETCODETEXT1('SRM067', '90', UPPER(#locale#))) AS RTN_CONTENT
+		FROM
+				SEGMD EGMD
+			JOIN  SEGSG EGSG
+					ON  EGSG.HOUSE_CODE = EGMD.HOUSE_CODE
+					AND  EGSG.EG_NO      = EGMD.EG_NO
+					AND  EGMD.EG_NO    = #egNo#
+			JOIN  SSGMT SGMT
+					ON  SGMT.HOUSE_CODE   = EGSG.HOUSE_CODE
+					AND  SGMT.PARENT_SG_NO = EGSG.SG_NO
+					AND  SGMT.DEPTH = '2'
+					AND  SGMT.SG_NO     = #catLv2Code#
+			JOIN   SEVTD EVTD
+					ON   EGMD.HOUSE_CODE      = EVTD.HOUSE_CODE
+					AND   EGMD.EV_TPL_NO       = EVTD.EV_TPL_NO
+					AND   EGMD.EV_TPL_NO = #evTplNo#
+			JOIN  SEVTM EVTM
+					ON  EVTD.HOUSE_CODE      = EVTM.HOUSE_CODE
+					AND  EVTD.EV_TPL_NO       = EVTM.EV_TPL_NO
+			JOIN SEVIM EVIM
+					ON   EVTD.HOUSE_CODE      = EVIM.HOUSE_CODE
+					AND   EVTD.EV_ITEM_NO      = EVIM.EV_ITEM_NO
+					AND   NVL(EVIM.MONITORING_FLAG,'N') = 'Y'
+					--JOIN SEVIE EVIE
+			JOIN (
+SELECT
+      HOUSE_CODE, EV_ITEM_NO, EV_IE_SEQ, EL_NAME, EL_CONTENTS, EL_UNIT, EL_PRICE_UNIT, DEL_FLAG, SORT_SEQ
+      , DISPLAY_FLAG, OUT_DISPLAY_FLAG, REMARK1, REMARK2, DISPLAY_SORT_SEQ, GRAPH_YN, PLANT_WEIGHT_YN
+    FROM SEVIE A
+    WHERE 1=1 
+    AND NVL(A.DEL_FLAG, '0') = '0'
+   UNION ALL
+   SELECT
+HOUSE_CODE, EV_ITEM_NO, (EV_IE_SEQ || 'P') AS EV_IE_SEQ, EL_NAME || '(점별가중치적용)' AS EL_NAME, EL_CONTENTS, EL_UNIT, EL_PRICE_UNIT, DEL_FLAG, 10+SORT_SEQ AS SORT_SEQ
+   , DISPLAY_FLAG, OUT_DISPLAY_FLAG, REMARK1, REMARK2, DISPLAY_SORT_SEQ, GRAPH_YN, PLANT_WEIGHT_YN
+   FROM SEVIE B
+   WHERE 1=1 
+   AND NVL(B.DEL_FLAG, '0') = '0'
+       AND NVL(B.PLANT_WEIGHT_YN, 'N') = '1'
+       AND GETEGTPLPWYN('000', 'EG', #egNo#) = 'Y'
+AND GETEGTPLPWYN('000', 'TPL', #evTplNo#) = 'Y'
+) EVIE  
+					--2017.02.03 추가
+					ON   EVTD.HOUSE_CODE      = EVIE.HOUSE_CODE
+					AND   EVTD.EV_ITEM_NO      = EVIE.EV_ITEM_NO
+					--AND   EVTD.EV_ITEM_NO = 'EVI16050078'
+					--AND   EVIE.EV_IE_SEQ = 'IE160700008'
+				AND OUT_DISPLAY_FLAG = 1
+			LEFT OUTER JOIN  SEVTI EVTI
+					ON  EVTI.HOUSE_CODE = EGMD.HOUSE_CODE
+					AND  EVTI.EG_NO      = EGMD.EG_NO
+					AND  EVTI.EV_TPL_NO  = EVTD.EV_TPL_NO
+					AND  EVTI.EV_ITEM_NO = EVTD.EV_ITEM_NO
+			LEFT OUTER JOIN SEVER_M_MONTH EVERM
+					ON   EVERM.HOUSE_CODE     = EGMD.HOUSE_CODE
+					AND   EVERM.EG_NO          = EGMD.EG_NO
+					AND   EVERM.EV_TPL_NO      = EGMD.EV_TPL_NO
+					AND   EVERM.CAT_LV2_CODE   = SGMT.SG_NO
+					AND   EVERM.EV_ITEM_NO     = EVIE.EV_ITEM_NO
+					AND   EVERM.EV_IE_SEQ      = EVIE.EV_IE_SEQ
+					AND   EVERM.COUNT_YEAR     = #countYear#
+					AND   EVERM.COUNT_MONTH    = #countMonth#
+					AND   EVERM.VENDOR_CODE    = #vendorCode#
+			LEFT OUTER JOIN   SEVER_M_MONTH_01 EVERM02
+					ON   EVERM.HOUSE_CODE     = EVERM02.HOUSE_CODE
+					AND   EVERM.EG_NO          = EVERM02.EG_NO
+					AND   EVERM.EV_TPL_NO      = EVERM02.EV_TPL_NO
+					AND   EVERM.CAT_LV2_CODE   = EVERM02.CAT_LV2_CODE
+					AND   EVERM.COUNT_YEAR     = EVERM02.COUNT_YEAR
+					AND   EVERM.COUNT_MONTH    = EVERM02.COUNT_MONTH
+					AND   EVERM.EV_ITEM_NO     = EVERM02.EV_ITEM_NO
+					AND   EVERM.EV_IE_SEQ      = EVERM02.EV_IE_SEQ
+		WHERE  EVIE.DISPLAY_FLAG = '1'
+			AND EVTI.EV_TPL_SCORE > 0  
+		ORDER BY EVIM.EV_ITEM_TYPE2_CODE DESC, EVIM.SORT_SEQ, REPLACE(EVIE.EV_ITEM_NO, 'P', ''), EVIE.DISPLAY_SORT_SEQ ASC
+	</select>
+
+	<select id="selectSRMmoniteringDetailChart" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailChartResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailChart*/
+		SELECT
+				SMV.HOUSE_CODE
+				, SMV.COUNT_YEAR
+				, SMV.COUNT_MONTH
+				, NVL(EVERM.EV_IEM_NO,REPLACE('IEM'||SMV.COUNT_YEAR||SMV.COUNT_MONTH||#evItemNo#,'EVI','')) AS EV_IEM_NO
+				, NVL(EVERM.EV_ITEM_NO,#evItemNo#)                                 AS  EV_ITEM_NO
+				, NVL(EVERM.VENDOR_CODE,#vendorCode#)                               AS VENDOR_CODE
+				, NVL(EVERM.CAT_LV1_CODE,SUBSTR(#catLv2Code#,1,3))                 AS CAT_LV1_CODE
+				, NVL(EVERM.CAT_LV2_CODE,#catLv2Code#)                             AS CAT_LV2_CODE
+				, NVL(EVERM.RESULT_VALUE_VENDOR,0)                                    AS RESULT_VALUE_VENDOR
+				, NVL(EVERM.RESULT_VALUE_AVG,0)                                       AS RESULT_VALUE_AVG
+		FROM
+				(
+					SELECT
+							HOUSE_CODE
+							, COUNT_YEAR
+							, COUNT_MONTH
+					FROM
+							SEVER_M_MONTH_VEN SMV
+					WHERE
+							SMV.COUNT_YEAR||SMV.COUNT_MONTH <![CDATA[>=]]> TO_CHAR(ADD_MONTHS(TO_DATE(#countYear#||#countMonth#,'YYYYMM'),-6),'YYYYMM')
+						AND SMV.COUNT_YEAR||SMV.COUNT_MONTH <![CDATA[<=]]> #countYear#||#countMonth#
+					GROUP BY HOUSE_CODE, COUNT_YEAR, COUNT_MONTH
+					ORDER BY HOUSE_CODE, COUNT_YEAR, COUNT_MONTH
+				) SMV
+				LEFT OUTER JOIN
+								(
+									SELECT
+											EVERM.HOUSE_CODE
+											, MIN(EVERM.EV_IEM_NO) AS EV_IEM_NO
+											, EVERM.EV_ITEM_NO
+											, EVERM.VENDOR_CODE
+											, EVERM.COUNT_YEAR
+											, EVERM.COUNT_MONTH
+											, EVERM.CAT_LV1_CODE
+											, EVERM.CAT_LV2_CODE
+											, ROUND(DECODE( SUM(EVERM.RESULT_VALUE),0,'0.00',SUM(NVL(EVERM.RESULT_VALUE,'0')) ),2) AS RESULT_VALUE_VENDOR
+											,(
+												SELECT
+														ROUND(AVG(NVL(RESULT_VALUE,'0')),2)
+												FROM
+														SEVER_M_MONTH EVER
+												WHERE
+														1 = 1
+													AND EVER.HOUSE_CODE = EVERM.HOUSE_CODE
+													AND EVER.COUNT_YEAR = EVERM.COUNT_YEAR
+													AND EVER.COUNT_MONTH = EVERM.COUNT_MONTH
+													AND EVER.EG_NO = EVERM.EG_NO
+													AND EVER.EV_TPL_NO = EVERM.EV_TPL_NO
+													AND EVER.EV_ITEM_NO = EVERM.EV_ITEM_NO
+													AND EVER.CAT_LV2_CODE = EVERM.CAT_LV2_CODE
+													AND EVER.SORT_SEQ = EVERM.SORT_SEQ
+											) AS RESULT_VALUE_AVG
+									FROM
+											SEVER_M_MONTH EVERM
+												JOIN  SEVTM EVTM
+													ON   EVERM.HOUSE_CODE      = EVTM.HOUSE_CODE
+													AND  EVERM.EV_TPL_NO       = EVTM.EV_TPL_NO
+												JOIN   SEVTD EVTD
+													ON   EVERM.HOUSE_CODE      = EVTD.HOUSE_CODE
+													AND  EVERM.EV_TPL_NO       = EVTD.EV_TPL_NO
+													AND  EVERM.EV_ITEM_NO      = EVTD.EV_ITEM_NO
+												JOIN   SEVIE EVIE
+													ON 	EVERM.HOUSE_CODE 		= EVIE.HOUSE_CODE
+													AND EVERM.EV_ITEM_NO 		= EVIE.EV_ITEM_NO
+													AND EVERM.SORT_SEQ 		= EVIE.SORT_SEQ
+													AND EVIE.OUT_DISPLAY_FLAG = 1
+													AND NVL(EVIE.GRAPH_YN,0) 	= '1'
+									WHERE
+											EVERM.COUNT_YEAR||EVERM.COUNT_MONTH <![CDATA[>=]]> TO_CHAR(ADD_MONTHS(TO_DATE(#countYear#||#countMonth#,'YYYYMM'),-6),'YYYYMM')
+										AND EVERM.COUNT_YEAR||EVERM.COUNT_MONTH <![CDATA[<=]]> #countYear#||#countMonth#
+										AND  EVERM.VENDOR_CODE    = #vendorCode#
+										AND  EVERM.CAT_LV2_CODE   = #catLv2Code#
+										AND  EVERM.EV_TPL_NO 	  = #evTplNo#
+										AND  EVERM.EV_ITEM_NO     = #evItemNo#
+										GROUP BY 	EVERM.HOUSE_CODE
+													, EVERM.COUNT_YEAR
+													, EVERM.COUNT_MONTH
+													, EVERM.CAT_LV1_CODE
+													, EVERM.CAT_LV2_CODE
+													, EVERM.VENDOR_CODE
+													, EVERM.EV_ITEM_NO
+													, EVERM.EG_NO
+													, EVERM.EV_TPL_NO
+													, EVERM.SORT_SEQ
+										) EVERM
+					ON SMV.HOUSE_CODE       = EVERM.HOUSE_CODE
+					AND SMV.COUNT_YEAR       = EVERM.COUNT_YEAR
+					AND SMV.COUNT_MONTH      = EVERM.COUNT_MONTH
+		ORDER BY SMV.COUNT_YEAR, SMV.COUNT_MONTH
+	</select>
+
+	<!--현재까지평가점수-->
+	<select id="selectSRMmoniteringDetailCurrentValue" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailCurrentValueResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailCurrentValue*/
+		SELECT
+				--					EVERM.HOUSE_CODE
+				--				    , EVERM.COUNT_YEAR
+				--				    , EVERM.COUNT_MONTH
+				--				    , EVERM.EG_NO
+				--				    , EVERM.EV_TPL_NO
+				--				    , EVERM.CAT_LV2_CODE
+				EVIM.EV_ITEM_TYPE2_CODE
+				, GETCODETEXT1('SRM011_1', EVIM.EV_ITEM_TYPE2_CODE, 'KO') AS EV_ITEM_TYPE2_NAME
+				, NVL(ROUND(AVG(EVERM.EV_SCORE), 1), 0) AS EV_SCORE_AVG
+		FROM
+				SEGMD EGMD
+				JOIN SEGSG EGSG
+					ON EGSG.HOUSE_CODE = EGMD.HOUSE_CODE
+					AND EGSG.EG_NO = EGMD.EG_NO
+					AND EGMD.EG_NO = #egNo#
+				JOIN SSGMT SGMT
+					ON SGMT.HOUSE_CODE = EGSG.HOUSE_CODE
+					AND SGMT.PARENT_SG_NO = EGSG.SG_NO
+					AND SGMT.DEPTH = '2'
+					AND SGMT.SG_NO = #catLv2Code#
+				JOIN SEVTD EVTD
+					ON EGMD.HOUSE_CODE = EVTD.HOUSE_CODE
+					AND EGMD.EV_TPL_NO = EVTD.EV_TPL_NO
+					AND EGMD.EV_TPL_NO = #evTplNo#
+				JOIN SEVTM EVTM
+					ON EVTD.HOUSE_CODE = EVTM.HOUSE_CODE
+					AND EVTD.EV_TPL_NO = EVTM.EV_TPL_NO
+				JOIN SEVIM EVIM
+					ON EVTD.HOUSE_CODE = EVIM.HOUSE_CODE
+					AND EVTD.EV_ITEM_NO = EVIM.EV_ITEM_NO
+					AND NVL(EVIM.MONITORING_FLAG,'N') = 'Y'
+				JOIN SEVIE EVIE
+					ON EVTD.HOUSE_CODE = EVIE.HOUSE_CODE
+					AND EVTD.EV_ITEM_NO = EVIE.EV_ITEM_NO --AND   EVTD.EV_ITEM_NO = 'EVI16050078'
+				AND OUT_DISPLAY_FLAG = 1
+				LEFT OUTER JOIN SEVER_M_MONTH EVERM
+					ON EVERM.HOUSE_CODE = EGMD.HOUSE_CODE
+					AND EVERM.EG_NO = EGMD.EG_NO
+					AND EVERM.EV_TPL_NO = EGMD.EV_TPL_NO
+					AND EVERM.CAT_LV2_CODE = SGMT.SG_NO
+					AND EVERM.EV_ITEM_NO = EVIE.EV_ITEM_NO
+					AND EVERM.EV_IE_SEQ = EVIE.EV_IE_SEQ
+					AND EVERM.COUNT_YEAR = #countYear#
+					AND EVERM.COUNT_MONTH = #countMonth#
+					<isEqual property="vendorYn" compareValue="Y">
+						AND EVERM.VENDOR_CODE = #vendorCode#
+					</isEqual>
+				LEFT OUTER JOIN SEVER_M_MONTH_01 EVERM02
+				ON EVERM.HOUSE_CODE = EVERM02.HOUSE_CODE
+					AND EVERM.EG_NO = EVERM02.EG_NO
+					AND EVERM.EV_TPL_NO = EVERM02.EV_TPL_NO
+					AND EVERM.CAT_LV2_CODE = EVERM02.CAT_LV2_CODE
+					AND EVERM.COUNT_YEAR = EVERM02.COUNT_YEAR
+					AND EVERM.COUNT_MONTH = EVERM02.COUNT_MONTH
+					AND EVERM.EV_ITEM_NO = EVERM02.EV_ITEM_NO
+					AND EVERM.EV_IE_SEQ = EVERM02.EV_IE_SEQ
+--			WHERE EVERM.COUNT_YEAR IS NOT NULL
+			GROUP BY
+--					EVERM.HOUSE_CODE
+--					, EVERM.COUNT_YEAR
+--			        , EVERM.COUNT_MONTH
+--			        , EVERM.EG_NO
+--			        , EVERM.EV_TPL_NO
+--			        , EVERM.CAT_LV2_CODE
+			        EVIM.EV_ITEM_TYPE2_CODE
+   			ORDER BY EVIM.EV_ITEM_TYPE2_CODE DESC,  MIN(EVIE.SORT_SEQ)
+	</select>
+
+	<!--고객컴플레인수-->
+	<select id="selectSRMmoniteringDetailClaim" parameterClass="SRMMNT002001VO" resultClass="String">
+		/*SRMMNT0020.selectSRMmoniteringDetailClaim*/
+		SELECT
+				NVL(SUM(CLAIM_COUNT),0)
+		FROM
+				SEVCL EVCL
+		WHERE
+				EVCL.HOUSE_CODE     = '000'
+			AND EVCL.SELLER_CODE    = #vendorCode#
+			AND EVCL.COUNT_YEAR     = #countYear#
+			AND EVCL.COUNT_MONTH    = #countMonth#
+			AND EVCL.CAT_LV2_CODE   = #catLv2Code#
+			AND EVCL.STATUS	= '03' 	--승인건만
+	</select>
+
+	<!--대표자 로그인-->
+	<select id="selectCeoLoginVenCdLIst" parameterClass="String" resultMap="selectCeoLoginVenCdLIstResultMap">
+		/* SRMMNT0020.selectCeoLoginVenCdLIst */
+		SELECT
+				VENDOR_ID AS VEN_CD
+		FROM
+				TVE_VENDOR EV
+		WHERE
+				CONO = #irsNo#
+		ORDER BY VENDOR_ID
+	</select>
+
+	<!--등급조회-->
+	<select id="selectSRMmoniteringDetailGrade" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailGradeResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailGrade*/
+		SELECT
+				VEN.EV_GRADE_CLASS
+				, ROUND(VEN.EV_SCORE_SUM,1) AS EV_SCORE_SUM
+				, VEN.RESULT_VALUE_SUM
+		FROM
+				SEVER_M_MONTH_VEN VEN
+		WHERE
+				VEN.HOUSE_CODE     = '000'
+			AND VEN.COUNT_YEAR     = #countYear#
+			AND VEN.COUNT_MONTH    = #countMonth#
+			AND VEN.CHANNEL_CODE   = #channelCode#
+			AND VEN.EG_NO          = #egNo#
+			AND VEN.EV_TPL_NO      = #evTplNo#
+			AND VEN.CAT_LV2_CODE   = #catLv2Code#
+			AND VEN.VENDOR_CODE    = #vendorCode#
+	</select>
+
+	<!--비고, 특이사항 조회-->
+	<select id="selectSRMmoniteringDetailRemarkEtc" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailRemarkEtcResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailRemarkEtc*/
+		SELECT
+				EVIE.EL_NAME
+				, EVIE.EL_CONTENTS
+				, EVIE.EL_UNIT
+				, EVIE.EL_PRICE_UNIT
+				, EVIE.CHANGE_DATE
+				, EVIE.CHANGE_USER_ID
+				, EVIE.DEL_FLAG
+				, EVIE.SORT_SEQ
+				, EVIE.DISPLAY_FLAG
+				, EVIE.OUT_DISPLAY_FLAG
+				, EVIE.REMARK1
+				, EVIE.REMARK2
+				, EVIE.DISPLAY_SORT_SEQ
+		FROM
+				SEVIE EVIE
+		WHERE
+				1 = 1
+			AND EVIE.HOUSE_CODE = '000'
+			AND EVIE.EV_ITEM_NO = #evItemNo#
+			AND EVIE.EV_IE_SEQ = #evIeSeq#
+		ORDER BY EVIE.SORT_SEQ ASC
+	</select>
+
+	<!--등급 예제 조회-->
+	<select id="selectSRMmoniteringDetailGradeExemple" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailGradeExempleResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailGradeExemple*/
+		SELECT
+				GETSCOREGRADE(A.HOUSE_CODE, A.EV_ITEM_NO, A.EV_ID_SCORE) AS GRADE
+				, A.EV_ID_CONTENTS
+		FROM
+				SEVID A
+		WHERE
+				A.EV_ITEM_NO = #evItemNo#
+			AND A.DEL_FLAG = '0'
+		ORDER BY A.EV_ID_ORDER
+	</select>
+
+	<!--등급 예제 조회-->
+	<select id="selectSRMmoniteringDetailPlc" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailPlcResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailPlc*/
+		SELECT
+				SRM.COUNT_YEAR
+				, SRM.COUNT_MONTH
+				, SRM.CAT_LV1_CODE
+				, SRM.CAT_LV2_CODE
+				, SRM.SKU_NUMBER
+				, SRM.SKU_NAME
+				, SRM2.PLC_GRADE_MONTH AS PLC_GRADE
+		FROM
+				SAP2WEB_SRM0001_00 SRM
+				, SAP2WEB_SRM0005_01 SRM2
+		WHERE
+				SRM.PURCHASE_ORG = SRM2.PURCHASE_ORG
+			AND SRM.COUNT_YEAR   = SRM2.COUNT_YEAR
+			AND SRM.COUNT_MONTH  = SRM2.COUNT_MONTH
+			AND SRM.CAT_LV1_CODE = SRM2.CAT_LV1_CODE
+			AND SRM.CAT_LV2_CODE = SRM2.CAT_LV2_CODE
+			AND SRM.SKU_NUMBER   = SRM2.SKU_NUMBER
+			AND SRM.COUNT_YEAR   = #countYear#
+			AND SRM.COUNT_MONTH  = #countMonth#
+			AND SRM.VENDOR_CODE  = #vendorCode#
+			AND SRM.CAT_LV2_CODE = #catLv2Code#
+		GROUP BY SRM.COUNT_YEAR
+				, SRM.COUNT_MONTH
+				, SRM.CAT_LV1_CODE
+				, SRM.CAT_LV2_CODE
+				, SRM.SKU_NUMBER
+				, SRM.SKU_NAME
+				, SRM2.PLC_GRADE_MONTH
+		<isEmpty property="order">
+			ORDER BY SRM.SKU_NUMBER
+		</isEmpty>
+		<isNotEmpty property="order">
+			<isEqual property="order" compareValue="1">
+				<isEqual property="orderValue" compareValue="asc">
+					ORDER BY SRM.SKU_NUMBER
+				</isEqual>
+				<isEqual property="orderValue" compareValue="desc">
+					ORDER BY SRM.SKU_NUMBER DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="order" compareValue="2">
+				<isEqual property="orderValue" compareValue="asc">
+					ORDER BY SRM.SKU_NAME
+				</isEqual>
+				<isEqual property="orderValue" compareValue="desc">
+					ORDER BY SRM.SKU_NAME DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="order" compareValue="3">
+				<isEqual property="orderValue" compareValue="asc">
+					ORDER BY SRM2.PLC_GRADE_MONTH
+				</isEqual>
+				<isEqual property="orderValue" compareValue="desc">
+					ORDER BY SRM2.PLC_GRADE_MONTH DESC
+				</isEqual>
+			</isEqual>
+		</isNotEmpty>
+	</select>
+
+	<!--불량등록건수-->
+	<select id="selectSRMmoniteringDetailDefective" parameterClass="SRMMNT002001VO" resultClass="String">
+		/*SRMMNT0020.selectSRMmoniteringDetailDefective*/
+		SELECT
+				COUNT(SRM.MATNR) AS CNT
+		FROM
+				SAP2WEB_SRM0026_00 SRM
+				JOIN SMTGL MTGL
+					ON SRM.MATNR = MTGL.MATERIAL_NUMBER
+		WHERE
+				1=1
+			AND SRM.MATNR IN (
+								SELECT
+										A.SKU_NUMBER
+								FROM
+										SAP2WEB_SRM0001_00 A
+								WHERE
+										1=1
+									AND A.COUNT_YEAR = #countYear#
+									AND A.COUNT_MONTH = #countMonth#
+									AND A.VENDOR_CODE = #vendorCode#
+								GROUP BY A.SKU_NUMBER
+							)
+			AND SUBSTR(SRM.REGDT, 0, 6) = #countYear# || #countMonth#
+	</select>
+
+	<!--불량등록건수 팝업-->
+	<select id="selectSRMmoniteringDetailDefectiveList" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailDefectiveListResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailDefectiveList*/
+		SELECT
+				SRM.DOCNO
+				, '000' AS HOUSE_CODE
+				, SRM.MATNR AS SKU_NUMBER
+				, MTGL.DESCRIPTION_LOC AS SKU_NAME
+				, #vendorCode# AS VENDOR_CODE
+				, '' AS VENDOR_NAME
+				, SRM.STATS
+				, GETCODETEXT1('SRM069', SRM.STATS, UPPER(#locale#)) AS STATS_TEXT
+				, SRM.ROUTE
+				, GETCODETEXT1('SRM070', SRM.ROUTE, UPPER(#locale#)) AS ROUTE_TEXT
+				, SRM.TYP01
+				, GETCODETEXT1('SRM071', SRM.TYP01, UPPER(#locale#)) AS TYP01_TEXT
+				, SRM.TYP02
+				, GETCODETEXT1('SRM072', SRM.TYP02, UPPER(#locale#)) AS TYP02_TEXT
+				, SRM.PROWN
+				, GETCODETEXT1('SRM073', SRM.PROWN, UPPER(#locale#)) AS PROWN_TEXT
+				, SRM.LDESC
+				, SRM.EXPDT
+				, SRM.USRID
+				, SRM.REGDT
+				, SRM.CPDAT
+				, MTGL.MATERIAL_CLASS3
+		FROM
+				SAP2WEB_SRM0026_00 SRM
+				JOIN SMTGL MTGL
+					ON SRM.MATNR = MTGL.MATERIAL_NUMBER
+		WHERE
+				1=1
+				AND SRM.MATNR IN (
+									SELECT
+											A.SKU_NUMBER
+									FROM
+											SAP2WEB_SRM0001_00 A
+									WHERE
+											1=1
+										AND A.COUNT_YEAR = #countYear#
+										AND A.COUNT_MONTH = #countMonth#
+										AND A.VENDOR_CODE = #vendorCode#
+									GROUP BY A.SKU_NUMBER
+								)
+				AND SUBSTR(SRM.REGDT, 0, 6) = #countYear# || #countMonth#
+		ORDER BY SRM.DOCNO
+	</select>
+
+	<!--개선요청 조회-->
+	<select id="selectSRMmoniteringDetailImpReq" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailImpReqResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailImpReq*/
+		SELECT
+				EVEI.HOUSE_CODE
+				, EVEI.EV_EI_NO
+				, EVEI.COUNT_YEAR
+				, EVEI.COUNT_MONTH
+				, EVEI.EG_NO
+				, EVEI.EV_TPL_NO
+				, EVEI.VENDOR_CODE
+				, GETPARTNERNAME( EVEI.VENDOR_CODE) 	AS VENDOR_NAME
+				, EVEI.CAT_LV1_CODE
+				, GETSGCLASS(EVEI.HOUSE_CODE,UPPER(#locale#),'1', EVEI.CAT_LV1_CODE) CAT_LV1_NAME
+				, EVEI.CAT_LV2_CODE
+				, GETSGCLASS(EVEI.HOUSE_CODE,UPPER(#locale#),'1', EVEI.CAT_LV2_CODE) CAT_LV2_NAME
+				, EVEI.IMP_REQ_MEMO
+				, EVEI.IMP_REQ_USER_ID
+				, GETUSERNAME(EVEI.IMP_REQ_USER_ID, '000', UPPER(#locale#)) AS EV_CTRL_USER_NAME
+				, TO_CHAR(TO_DATE(EVEI.IMP_PLAN_DUE_DATE, 'YYYY-MM-DD'),'YYYY-MM-DD') AS IMP_PLAN_DUE_DATE
+				, TO_CHAR(TO_DATE(EVEI.IMP_PLAN_DATE, 'YYYY-MM-DD'),'YYYY-MM-DD') AS IMP_PLAN_DATE
+				, EVEI.IMP_PLAN_MEMO
+				, EVEI.IMP_PLAN_USER_ID
+				, DECODE(NVL(LENGTH(TRIM(EVEI.IMP_PLAN_MEMO)),0), 0, '0', '1') AS IMP_PLAN_COUNT
+				, EVEI.DEPT_MD
+				, EVEI.DEPT_USER
+				, EVEI.ATTACH_NO
+				, GETFILECOUNT(EVEI.ATTACH_NO) AS ATTACH_COUNT
+				, EVEI.PROGRESS_CODE
+				, GETCODETEXT1('SRM054', EVEI.PROGRESS_CODE, UPPER(#locale#)) AS  PROGRESS_NAME
+				, EVEI.IMP_RESULT
+				, 		TO_CHAR(EVEI.ADD_DATE,'YYYY-MM-DD') AS IMPROVE_REQ_DATE
+				, EVEI.ADD_USER_ID
+				, EVEI.CHANGE_DATE
+				, EVEI.CHANGE_USER_ID
+				, EVEI.DEL_FLAG
+				, EVTM.EV_CHANNEL_CODE
+				, GETCODETEXT1('SRM028', EVTM.EV_CHANNEL_CODE, UPPER(#locale#)) AS EV_CHANNEL_NAME
+				, EGMT.EG_NAME
+				, EVTM.EV_TPL_SUBJECT
+				, EVEI.IMP_REQ_CONTENT
+		FROM
+				SEVEI EVEI
+				JOIN  SEGMT EGMT
+					ON  EVEI.HOUSE_CODE = EGMT.HOUSE_CODE
+					AND  EVEI.EG_NO = EGMT.EG_NO
+				JOIN  SEVTM EVTM
+					ON  EVEI.HOUSE_CODE = EVTM.HOUSE_CODE
+					AND  EVEI.EV_TPL_NO  = EVTM.EV_TPL_NO
+		WHERE
+				EVEI.HOUSE_CODE     = '000'
+			AND EVEI.COUNT_YEAR     = #countYear#
+			AND EVEI.COUNT_MONTH    = #countMonth#
+			AND EVTM.EV_CHANNEL_CODE   = #channelCode#                                           --채널
+			AND EVEI.EG_NO          = #egNo#                                                --평가그룹
+			AND EVEI.EV_TPL_NO      = #evTplNo#                                            --평가템플릿
+			AND EVEI.CAT_LV2_CODE   = #catLv2Code#
+			AND EVEI.VENDOR_CODE    = #vendorCode#
+
+		ORDER BY EVEI.PROGRESS_CODE ASC, EVEI.EV_EI_NO DESC
+	</select>
+
+	<!--첨부파일 조회-->
+	<select id="selectSRMmoniteringDetailImpReqFileList" parameterClass="SRMMNT002001VO" resultMap="selectSRMmoniteringDetailImpReqFileListResultMap">
+		/*SRMMNT0020.selectSRMmoniteringDetailImpReqFileList*/
+		SELECT
+				DOC_NO
+				, DOC_SEQ
+				, DES_FILE_NAME
+				, SRC_FILE_NAME
+		FROM
+		        SEVEI A
+				,SFILE B
+		WHERE
+				A.ATTACH_NO = B.DOC_NO
+			AND A.HOUSE_CODE = #houseCode#
+			AND A.EV_EI_NO = #evEiNo#
+	</select>
+
+
+</sqlMap>
+

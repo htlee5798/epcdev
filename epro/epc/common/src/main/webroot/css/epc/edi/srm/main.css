@@ -1,0 +1,44 @@
+@charset "utf-8";
+
+/* main */
+#wrap.main_wrap {
+	position:absolute;
+	left:0; top:0; right:0; bottom:0;
+	padding-top:92px;
+	min-height:540px;
+	background:url("/images/epc/edi/srm/main/mv.jpg") no-repeat center top;
+	background-size:cover;
+}
+.main {
+	position:relative;
+	width:100%; height:100%;
+}
+.m_txt {
+	height:320px;
+	position:absolute;
+	top:50%; left:0;
+	width:100%;
+	margin-top:-160px;
+	text-align:center;
+	color:#fff;
+	font-size:17px;
+	line-height:30px;
+}
+.m_btn {
+	display:inline-block;
+	height:45px; line-height:45px;
+	padding:0 30px;
+	color:#fff !important;
+	background:#e60012;
+	font-size:16px;
+	font-weight:600;
+	border-radius:30px;
+	-webkit-border-radius:30px;
+	-moz-border-radius:30px;
+	-o-border-radius:30px;
+	margin:0 10px;
+}
+.m_btn img {
+	margin-left:7px;
+	vertical-align:middle;
+}

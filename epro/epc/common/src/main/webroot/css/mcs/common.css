@@ -1,0 +1,54 @@
+@charset "utf-8";
+
+/* Reset */
+*{margin:0;padding:0;}
+body,input,textarea,select,button,table {color:#666;font-family:Malgun Gothic,Dotum,applegothic,sans-serif,arial;font-size:12px;}
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section {display:block;}
+h1,h2,h3,h4,h5,h6 {font-size:1em;}
+img {vertical-align:top;border:0 none;}
+fieldset,iframe,frame {border:0 none;}
+input,select,textarea {vertical-align:middle;} 
+ul,ol {list-style:none;}
+i,em,dfn,address {font-style:normal;}
+a {text-decoration:none;display:inline-block;cursor:pointer;}
+a:hover,a:focus {text-decoration:none;}
+input[type='text'],input[type='password'],input[type='image'],input[type='search']{-webkit-appearance:none;-webkit-border-radius:0;}
+button {border:0;cursor:pointer}
+hr {display:none;}
+dfn {position:absolute;overflow:hidden;visibility:hidden;height:0;font:0/0 m;}
+legend, caption, .hide {visibility:hidden;position:absolute;top:0;left:0;width:1px;height:1px;font-size:0;line-height:0;}
+.clfix:after	{ content:""; display:block; clear:both; }
+.clfix			{ *zoom:1; }
+
+/* Align */
+.baseCon_box .btnC { text-align:center; }
+.baseCon_box .alignC { text-align:center; }
+.alignC { text-align:center; }
+.alignR { text-align:right; }
+
+/* None/Block */
+.dis_none { display:none; }
+.dis_block { display:block; }
+
+/* Margin & Padding */
+.mt05 { margin-top:5px !important; }
+.mt10 { margin-top:10px !important; }
+
+.ml10 { margin-left:10px !important; }
+.ml20 { margin-left:20px !important; }
+
+.mb05 { margin-bottom:5px !important; }
+.mb10 { margin-bottom:10px !important; }
+.mb13 { margin-bottom:13px !important; }
+.mb15 { margin-bottom:15px !important; }
+.mb18 { margin-bottom:18px !important; }
+.mb25 { margin-bottom:25px !important; }
+.mb30 { margin-bottom:30px !important; }
+.mb35 { margin-bottom:35px !important; }
+.mb40 { margin-bottom:40px !important; }
+.mb45 { margin-bottom:45px !important; }
+.mb50 { margin-bottom:50px !important; }
+.mb60 { margin-bottom:60px !important; }
+.mb80 { margin-bottom:80px !important; }
+
+.pb45 { padding-bottom:45px !important; }

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMJON0030">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="SRMJON0030VO"	type="com.lottemart.epc.edi.srm.model.SRMJON0030VO" />
+
+	<!-- 1차 스크리닝 LIST 조회 resultMap -->
+	<resultMap id="selectScreeningListResultMap" class="SRMJON0030VO">
+		<result column="RNUM"							property="rnum" 			    			/><!--No-->
+		<result column="EV_TPL_NO"						property="evTplNo" 			    			/><!--Evaluation Template No-->
+		<result column="EV_ITEM_NO"						property="evItemNo" 			    		/><!--Evaluation Item No-->
+		<result column="EV_ID_SEQ"						property="evIdSeq" 			    			/><!--항목순번-->
+		<result column="EV_ID_SCORE"					property="evIdScore" 			    		/><!--항목값-->
+		<result column="EV_ID_CONTENTS"					property="evIdContents" 			    	/><!--항목-->
+		<result column="EV_ITEM_SUBJECT"				property="evItemSubject" 			    	/><!--Evaluation Item Subject-->
+		<result column="EV_ITEM_CONTENTS"				property="evItemContents" 			  		/><!--Evaluation Item Content-->
+	</resultMap>
+
+	<!-- 1차 스크리닝 LIST 조회 resultMap -->
+	<resultMap id="selectCatLv1CodeListResultMap" class="SRMJON0030VO">
+		<result column="SG_NO"							property="sgNo" 			    			/><!--대분류코드-->
+		<result column="SG_NAME"						property="sgName" 			    			/><!--대분류 코드명-->
+		<result column="SC_KIND"						property="scKind" 			    			/><!--대분류 신용등급-->
+		<result column="REMARK"							property="remark" 			    			/><!--상세내용-->
+	</resultMap>
+
+
+	<!-- 1차 스크리닝 LIST 조회 -->
+	<select id="selectScreeningList" parameterClass="SRMJON0030VO" resultMap="selectScreeningListResultMap">
+		/*SRMJON0030.selectScreeningList*/
+		SELECT
+				ROWNUM RNUM
+				,A.*
+		FROM
+				(
+					SELECT
+							A.EV_TPL_NO
+							,B.EV_ITEM_NO
+							,D.EV_ID_SEQ
+							, D.EV_ID_SCORE
+							,C.EV_ITEM_SUBJECT
+							,C.EV_ITEM_CONTENTS
+							,D.EV_ID_CONTENTS
+							,COUNT(*)OVER(PARTITION BY B.EV_ITEM_NO) AS ROWSPAN
+					FROM
+							SEVTM A
+							,SEVTD B
+							,SEVIM C
+							,SEVID D
+					WHERE   A.HOUSE_CODE = B.HOUSE_CODE
+						AND A.EV_TPL_NO = B.EV_TPL_NO
+						AND B.HOUSE_CODE = C.HOUSE_CODE
+						AND B.EV_ITEM_NO = C.EV_ITEM_NO
+						AND C.HOUSE_CODE = D.HOUSE_CODE
+						AND C.EV_ITEM_NO = D.EV_ITEM_NO
+						<!--AND A.EV_TPL_NO = #evTplNo#-->
+						AND A.EV_TPL_NO = 	(
+											SELECT
+													TEXT1
+											FROM
+													SCODE
+											WHERE
+													TYPE = 'SRM056'
+												AND CODE = (CASE 	WHEN '06' = #channelCode# THEN '3'
+																	WHEN '99' = #channelCode# THEN '7'
+																	WHEN '01' = #channelCode# THEN (
+																							CASE WHEN 'C' = #scKind# THEN '1'||'C'
+																							WHEN ('B' = #scKind# OR #scKind# IS NULL) THEN '1'||'B'
+																							END
+																						)
+																	WHEN '02' = #channelCode# THEN (
+																							CASE WHEN 'C' = #scKind# THEN '2'||'C'
+																							WHEN ('B' = #scKind# OR #scKind# IS NULL) THEN '2'||'B'
+																							END
+																						)
+															END)
+											)
+						AND B.DEL_FLAG NOT IN ('1')
+		ORDER BY EV_ITEM_NO, EV_ID_SEQ, EV_ID_SCORE
+		) A
+	</select>
+
+	<!--1차스크리닝 결과 등록-->
+	<insert id="insertScreeningList" parameterClass="SRMJON0030VO">
+		/*SRMJON0030.insertScreeningList*/
+		INSERT INTO SEVEE_SCR
+				( HOUSE_CODE
+				, SHIPPER_TYPE
+				, IRS_NO
+				, CHANNEL_CODE
+				, CAT_LV1_CODE
+				, SEQ
+				, EV_TPL_NO
+				, EV_ITEM_NO
+				, EV_ID_SEQ
+				, EV_ID_SCORE
+				, ADD_DATE
+				, ADD_USER_ID
+				, CHANGE_DATE
+				, CHANGE_USER_ID)
+		VALUES
+				('000'
+				,#shipperType#
+				,#irsNo#
+				,#channelCode#
+				,#catLv1Code#
+				,(
+					SELECT
+							NVL(MAX(SEQ),0)+1
+					FROM
+							SEVEE_SCR
+					WHERE
+							HOUSE_CODE = '000'
+						AND SHIPPER_TYPE = #shipperType#
+						AND IRS_NO = #irsNo#
+						AND CHANNEL_CODE = #channelCode#
+						AND EV_TPL_NO = (
+											SELECT
+													TEXT1
+											FROM
+													SCODE
+											WHERE
+													TYPE = 'SRM056'
+												AND CODE = (CASE 	WHEN '06' = #channelCode# THEN '3'
+																	WHEN '99' = #channelCode# THEN '7'
+																	WHEN '01' = #channelCode# THEN (
+																									CASE WHEN 'C' = #scKind# THEN '1'||'C'
+																									WHEN ('B' = #scKind# OR #scKind# IS NULL) THEN '1'||'B'
+																									END
+																									)
+																	WHEN '02' = #channelCode# THEN (
+																									CASE WHEN 'C' = #scKind# THEN '2'||'C'
+																									WHEN ('B' = #scKind# OR #scKind# IS NULL) THEN '2'||'B'
+																									END
+																									)
+															END)
+										)
+						AND EV_ITEM_NO = #evItemNo#
+				)
+				,(
+					SELECT
+							TEXT1
+					FROM
+							SCODE
+					WHERE
+							TYPE = 'SRM056'
+						AND CODE = (CASE 	WHEN '06' = #channelCode# THEN '3'
+											WHEN '99' = #channelCode# THEN '7'
+											WHEN '01' = #channelCode# THEN (
+																			CASE WHEN 'C' = #scKind# THEN '1'||'C'
+																			WHEN ('B' = #scKind# OR #scKind# IS NULL) THEN '1'||'B'
+																			END
+																			)
+											WHEN '02' = #channelCode# THEN (
+																			CASE WHEN 'C' = #scKind# THEN '2'||'C'
+																			WHEN ('B' = #scKind# OR #scKind# IS NULL) THEN '2'||'B'
+																			END
+																			)
+									END)
+					)
+				,#evItemNo#
+				,#evIdSeq#
+				,#evIdScore#
+				,CURRENT_TIMESTAMP(0)
+				,#irsNo#
+				,CURRENT_TIMESTAMP(0)
+				,#irsNo#)
+	</insert>
+
+	<!--대분류 코드 조회-->
+	<select id="selectCatLv1CodeList" parameterClass="SRMJON0030VO" resultMap="selectCatLv1CodeListResultMap">
+		/*SRMJON0030.selectCatLv1CodeList*/
+		SELECT
+				SG_NO
+				,SG_NAME
+				,UPPER(SC_KIND) AS SC_KIND
+				,REMARK
+		FROM
+				SSGMT
+		WHERE
+				DEPTH = '1'
+			<!-- AND NVL(DEL_FLAG,' ') NOT IN('1','X') -->
+			AND NVL(CHG_FG,' ') NOT IN('D')
+			AND (SG_NO <![CDATA[ < ]]>  900 OR SG_NO='997')
+			<!-- AND SG_NO NOT IN('087','085') -->
+			AND SG_NO NOT IN('085')
+			<isNotEmpty property="catLv1Code">
+				AND SG_NAME LIKE '%'|| #catLv1Code# ||'%'
+			</isNotEmpty>
+			<isNotEmpty property="remark">
+				AND (
+						REMARK LIKE '%'|| #remark# ||'%'
+					OR
+						SG_NO IN (
+									SELECT
+											SUBSTR(SG_NO,0,3)
+									FROM
+											SSGMT
+									WHERE
+											DEPTH = '3'
+										AND SG_NAME LIKE '%'|| #remark# ||'%'
+						)
+				)
+			</isNotEmpty>
+		ORDER BY SG_NO
+	</select>
+</sqlMap>

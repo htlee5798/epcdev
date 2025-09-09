@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMWEB0030">
+
+	<typeAlias alias="nEDMWEB0030VO" type="com.lottemart.epc.edi.weborder.model.NEDMWEB0030VO" />
+	
+	<typeAlias alias="TedPoOrdPackVO" type="com.lottemart.epc.edi.weborder.model.TedPoOrdPackVO" />
+	
+	<resultMap id="tedOrdPackListMap" 		class="nEDMWEB0030VO">
+		<result property="packDivnCd" 		column="PACK_DIVN_CD"    	/><!--파일구분코드		-->
+		<result property="prodCd" 			column="VEN_CD"    			/><!--상품코드			-->
+		<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="strCd" 			column="STR_CD"    			/><!--첨포코드			-->
+		<result property="strNm" 			column="STR_NM"    			/><!--점포명				-->
+		<result property="prodCd" 			column="PROD_CD"    		/><!--상품코드			-->
+		<result property="ordReqNo" 		column="ORD_REQ_NO"    		/><!--발주등록번호		-->
+		<result property="packFileNm" 		column="PACK_FILE_NM"    	/><!--일괄파일등록명		-->
+		<result property="srcmkCd" 			column="SRCMK_CD"    		/><!--판매코드			-->
+		<result property="prodNm" 			column="PROD_NM"    		/><!--상품명				-->
+		<result property="prodStd" 			column="PROD_STD"    		/><!--상품규격			-->
+		<result property="ordIpsu" 			column="ORD_IPSU"    		/><!--발주입수			-->
+		<result property="ordUnit" 			column="ORD_UNIT"    		/><!--발주단위			-->
+		<result property="ordQty" 			column="ORD_QTY"    		/><!--발주수량			-->
+		<result property="ordBuyPrc" 		column="ORD_BUY_PRC"    	/><!--발주원가			-->
+		<result property="ordTotQtySum" 	column="ORD_TOT_QTY_SUM"    /><!--발주총수량			-->
+		<result property="ordTotPrcSum" 	column="ORD_TOT_PRC_SUM"   	/><!--발주금액			-->
+		<result property="regStsCd" 		column="REG_STS_CD"    		/><!--등록상태코드		-->
+		<result property="regStsNm" 		column="REG_STS_NM"    		/><!--등록상태명			-->
+		<result property="fileGrpCd" 		column="FILE_GRP_CD"    	/><!--파일그룹코드		-->
+	</resultMap>
+	
+	<resultMap id="tedOrdPackSumMap" 		class="nEDMWEB0030VO">
+	 	<result property="strCnt" 			column="STR_CNT"    			/><!--발주총수량합계			-->
+	 	<result property="prodCnt" 			column="PROD_CNT"    			/><!--발주총수량합계			-->
+		<result property="ordTotQtySum" 	column="ORD_TOT_QTY_SUM"    	/><!--발주총수량합계			-->
+		<result property="ordTotPrcSum" 	column="ORD_TOT_PRC_SUM"    	/><!--발주총금액합계			-->
+		<result property="ordTotAllQtySum" 	column="ORD_TOT_ALL_QTY_SUM"    /><!--충수량EA합계			-->
+	</resultMap>
+          
+    <resultMap id="ordPackStrListMap" 		class="nEDMWEB0030VO">
+	 	<result property="strCd" 			column="STR_CD"    			/><!--점포 코드			-->
+	 	<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="venCd" 			column="VEN_CD"    			/><!--협력업체코드		-->
+		<result property="ordReqNo" 		column="ORD_REQ_NO"    	    /><!--발주등록번호		-->
+		
+	</resultMap>
+                   
+    <resultMap id="ordPackListMap" 		class="nEDMWEB0030VO">
+		<result property="packDivnCd" 		column="PACK_DIVN_CD"    	/><!--파일구분코드		-->
+		<result property="venCd" 			column="VEN_CD"    			/><!--상품코드			-->
+		<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="strCd" 			column="STR_CD"    			/><!--첨포코드			-->
+		<result property="prodCd" 			column="PROD_CD"    		/><!--상품코드			-->
+		<result property="ordReqNo" 		column="ORD_REQ_NO"    		/><!--발주등록번호		-->
+		<result property="packFileNm" 		column="PACK_FILE_NM"    	/><!--일괄파일등록명		-->
+		<result property="srcmkCd" 			column="SRCMK_CD"    		/><!--판매코드			-->
+		<result property="prodNm" 			column="PROD_NM"    		/><!--상품명				-->
+		<result property="prodStd" 			column="PROD_STD"    		/><!--상품규격			-->
+		<result property="ordIpsu" 			column="ORD_IPSU"    		/><!--발주입수			-->
+		<result property="ordUnit" 			column="ORD_UNIT"    		/><!--발주단위			-->
+		<result property="ordBuyPrc" 		column="ORD_BUY_PRC"    	/><!--발주원가			-->
+		<result property="ordQty" 			column="ORD_QTY"    		/><!--발주수량			-->
+		<result property="regStsCd" 		column="REG_STS_CD"    		/><!--등록상태코드		-->
+		<result property="fileGrpCd" 		column="FILE_GRP_CD"    	/><!--파일그룹코드		-->
+	</resultMap>
+	 
+	<select id="selectOrdPackListTotCnt" parameterClass="nEDMWEB0030VO" resultClass="int" >
+	 	/* NEDMWEB0030.selectOrdPackListTotCnt */
+			SELECT COUNT(*) FROM (
+		 		SELECT   M1.*
+		 			   , (SELECT AREA_FG FROM STORE M2 WHERE M1.STR_CD = M2.STR_CD  ) AS AREA_FG
+		 		  FROM TPC_PO_ORD_PACK M1
+				 WHERE M1.VEN_CD= #venCd#
+				   AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+				   ) T 
+			       <dynamic prepend="WHERE">
+					   <isNotEmpty property="areaCd" prepend="AND" >
+		               		T.AREA_FG = #areaCd#
+		               </isNotEmpty>
+		               <isNotEmpty property="strCd" prepend="AND" >
+		               		T.STR_CD = #strCd#
+		               </isNotEmpty> 
+		               <isNotEmpty property="prodCd" prepend="AND" >
+		               		T.PROD_CD like #prodCd#||'%'
+		               </isNotEmpty> 
+		               <isNotEmpty property="packDivnCd" prepend="AND" >
+		               		T.PACK_DIVN_CD = #packDivnCd#
+		               </isNotEmpty> 
+		               <isEqual property="uploadGb" prepend="AND" compareValue="2">
+		               		T.REG_STS_CD = '00'
+		               </isEqual> 
+		               <isEqual property="uploadGb" prepend="AND" compareValue="3">
+		               		(T.REG_STS_CD <![CDATA[<>]]> '00' OR T.REG_STS_CD IS NULL)
+		               </isEqual> 
+	               </dynamic>
+	</select>
+	
+	<select id="selectOrdPackList" parameterClass="nEDMWEB0030VO" resultMap="tedOrdPackListMap">
+	 	/* NEDMWEB0030.selectOrdPackList */
+	 		SELECT	*
+			  FROM ( SELECT	ROWNUM RNUM,A.* FROM (
+					 	SELECT   M1.PACK_DIVN_CD          			AS PACK_DIVN_CD
+			                   , M1.VEN_CD       					AS VEN_CD
+			                   , M1.ORD_DY       					AS ORD_DY
+							   , M1.STR_CD 							AS STR_CD
+			                   , (SELECT STR_NM FROM STORE M2 WHERE M1.STR_CD = M2.STR_CD ) AS STR_NM
+			                   , M1.PROD_CD      					AS PROD_CD        
+			                   , M1.ORD_REQ_NO   					AS ORD_REQ_NO   
+			                   , M1.PACK_FILE_NM                    AS PACK_FILE_NM
+			                   , M1.SRCMK_CD     					AS SRCMK_CD
+			                   , M1.PROD_NM      					AS PROD_NM
+					           , M1.PROD_STD     					AS PROD_STD
+					           , M1.ORD_IPSU     					AS ORD_IPSU
+					           , M1.ORD_UNIT     					AS ORD_UNIT
+					           , M1.ORD_QTY      					AS ORD_QTY
+					           , M1.ORD_BUY_PRC      				AS ORD_BUY_PRC
+					           ,(M1.ORD_IPSU*M1.ORD_QTY) 			AS ORD_TOT_QTY_SUM
+					           ,(M1.ORD_IPSU*M1.ORD_QTY*ORD_BUY_PRC) AS ORD_TOT_PRC_SUM
+					           , M1.REG_STS_CD	 					AS REG_STS_CD
+					           , C1.CD_NM        					AS REG_STS_NM  
+					           , LPAD(M1.FILE_GRP_CD, 2, '0')  	 	AS FILE_GRP_CD
+					           , (SELECT AREA_FG FROM STORE M3 WHERE M1.STR_CD = M3.STR_CD ) AS AREA_FG
+					      FROM TPC_PO_ORD_PACK M1
+					                LEFT OUTER JOIN TPC_CODE C1 ON C1.MAJOR_CD='WPO03'  AND  M1.REG_STS_CD = C1.MINOR_CD
+					     WHERE M1.VEN_CD = #venCd#
+						   AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+					               ORDER BY M1.PACK_DIVN_CD DESC, M1.STR_CD, M1.PROD_CD
+					       ) A
+					       <dynamic prepend="WHERE">
+								<isNotEmpty property="areaCd" prepend="AND" >
+				               		A.AREA_FG = #areaCd#
+				                </isNotEmpty>
+				                <isNotEmpty property="strCd" prepend="AND" >
+				               		A.STR_CD = #strCd#
+				                </isNotEmpty> 
+				                <isNotEmpty property="prodCd" prepend="AND" >
+				               		A.PROD_CD like #prodCd#||'%'
+				                </isNotEmpty>
+				                <isNotEmpty property="packDivnCd" prepend="AND" >
+				               		A.PACK_DIVN_CD = #packDivnCd#
+				                </isNotEmpty> 
+				                <isEqual property="uploadGb" prepend="AND" compareValue="2">
+				               		A.REG_STS_CD = '00'
+				                </isEqual> 
+				                <isEqual property="uploadGb" prepend="AND" compareValue="3">
+				               		(A.REG_STS_CD <![CDATA[<>]]> '00' OR A.REG_STS_CD IS NULL)
+				                </isEqual>
+				           </dynamic>
+					)A
+			WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+	</select> 	
+	
+	<select id="selectOrdPackCntSum" parameterClass="nEDMWEB0030VO" resultMap="tedOrdPackSumMap">
+	 	/* NEDMWEB0030.selectOrdPackCntSum */
+	 	     SELECT  COUNT(DISTINCT(T.STR_CD))   AS STR_CNT
+                    ,COUNT(DISTINCT(T.PROD_CD))  AS PROD_CNT
+                    ,SUM(T.ORD_QTY)							AS ORD_TOT_QTY_SUM
+                    ,SUM((T.ORD_IPSU*T.ORD_QTY))				AS ORD_TOT_ALL_QTY_SUM
+                    ,SUM((T.ORD_IPSU*T.ORD_QTY*T.ORD_BUY_PRC)) 	AS ORD_TOT_PRC_SUM
+               FROM (  SELECT  * FROM (
+                       SELECT    M1.PACK_DIVN_CD          			AS PACK_DIVN_CD
+			                   , M1.VEN_CD       					AS VEN_CD
+							   , M1.STR_CD 							AS STR_CD
+			                   , M1.PROD_CD      					AS PROD_CD        
+			                   , M1.ORD_REQ_NO   					AS ORD_REQ_NO   
+			                   , M1.PROD_NM      					AS PROD_NM
+					           , M1.ORD_IPSU     					AS ORD_IPSU
+					           , M1.ORD_UNIT     					AS ORD_UNIT
+					           , M1.ORD_QTY      					AS ORD_QTY
+					           , M1.ORD_BUY_PRC      				AS ORD_BUY_PRC
+					           , M1.REG_STS_CD	 					AS REG_STS_CD
+					           , (SELECT AREA_FG FROM STORE M3 WHERE M1.STR_CD = M3.STR_CD ) AS AREA_FG
+					      FROM TPC_PO_ORD_PACK M1
+					     WHERE M1.VEN_CD = #venCd#
+						   AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+					       ) A
+					       <dynamic prepend="WHERE">
+								<isNotEmpty property="areaCd" prepend="AND" >
+				               		A.AREA_FG = #areaCd#
+				                </isNotEmpty>
+				                <isNotEmpty property="strCd" prepend="AND" >
+				               		A.STR_CD = #strCd#
+				                </isNotEmpty> 
+				                <isNotEmpty property="prodCd" prepend="AND" >
+				               		A.PROD_CD like #prodCd#||'%'
+				                </isNotEmpty>
+				                <isNotEmpty property="packDivnCd" prepend="AND" >
+				               		A.PACK_DIVN_CD = #packDivnCd#
+				                </isNotEmpty> 
+				                <isEqual property="uploadGb" prepend="AND" compareValue="2">
+				               		A.REG_STS_CD = '00'
+				                </isEqual> 
+				                <isEqual property="uploadGb" prepend="AND" compareValue="3">
+				               		(A.REG_STS_CD <![CDATA[<>]]> '00' OR A.REG_STS_CD IS NULL)
+				                </isEqual>
+				           </dynamic>
+               		) T
+	</select>
+	
+	<select id="selectNewFileGrpCd" resultClass="java.lang.String">
+		/* NEDMWEB0030.selectNewFileGrpCd */
+		  SELECT NVL(MAX(TO_NUMBER(FILE_GRP_CD)),0) + 1 AS FILE_GRP_CD
+		    FROM TPC_PO_ORD_PACK
+		   WHERE VEN_CD= #venCd#
+		     AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+	</select>
+	
+	<select id="selectNewPackDivnCd" resultClass="java.lang.String">
+		/* NEDMWEB0030.selectNewPackDivnCd */
+		SELECT	TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_ORD_PACK_SEQ.NEXTVAL,6,'0') FROM DUAL
+	</select>
+	
+	<insert id="insertOrdPackInfo" parameterClass="nEDMWEB0030VO">
+		/* NEDMWEB0030.insertOrdPackInfo */
+			INSERT INTO TPC_PO_ORD_PACK
+			  (
+				  PACK_DIVN_CD
+				, VEN_CD
+				, ORD_DY
+				, STR_CD
+				, PROD_CD
+				, PACK_FILE_NM
+				, ORD_QTY
+				, FILE_GRP_CD
+				, REG_ID
+			    , REG_DT
+			    , MOD_ID
+			    , MOD_DT
+			  ) VALUES (
+		  		  #packDivnCd#
+		  		, #venCd#
+		  		, TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+		  		, #strCd#
+		  		, #prodCd# 
+		  		, #packFileNm#
+		  		, #ordQty#
+		  		, #fileGrpCd#
+		  		, #regId#
+			    , CURRENT_TIMESTAMP(0)
+			    , #modId#
+			    , CURRENT_TIMESTAMP(0)
+			  )
+	</insert>
+	
+	<update id="updateOrdPackInfo" parameterClass="nEDMWEB0030VO">
+	 	/* NEDMWEB0030.updateOrdPackInfo */
+	 		UPDATE TPC_PO_ORD_PACK M1
+			    SET (   SRCMK_CD
+			          , PROD_NM
+			          , SHORT_NM
+				      , PROD_STD
+				      , ORD_IPSU
+				      , ORD_UNIT 
+					  , ORD_SALE_PRC
+					  , ORD_BUY_PRC
+					  , REG_STS_CD
+					  , L1_CD
+					  , L3_CD ) = 
+			        ( SELECT   M2.SRCMK_CD
+			                 , M2.PROD_NM
+			                 , M2.SHORT_NM
+							 , M2.PROD_STD
+							 , M2.ORD_IPSU
+							 , M2.ORD_UNIT 
+							 , M2.ORD_SALE_PRC
+							 , M2.ORD_BUY_PRC
+							 , '00' AS REG_STS_CD
+							 , L1_CD
+							 , L3_CD
+			            FROM TPC_ORD_SUPP_INFO_NEXTDAY M2 
+			           WHERE M1.STR_CD = M2.STR_CD
+			             AND M1.VEN_CD = M2.VEN_CD
+			             AND M1.ORD_DY = M2.ORD_DY
+			             AND M1.PROD_CD = M2.PROD_CD 
+			        )
+	          WHERE M1.PACK_DIVN_CD = #packDivnCd#
+	            AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	</update> 
+	
+	<update id="updateOrdPackStoreState" parameterClass="java.lang.String">
+	 	/* NEDMWEB0030.updateOrdPackStoreState */
+	 		 UPDATE TPC_PO_ORD_PACK
+				SET REG_STS_CD  = '01'
+			  WHERE PACK_DIVN_CD = #packDivnCd#
+				AND REG_STS_CD IS NULL
+	</update>
+	
+	<delete id="deleteExcelOrdInfo" parameterClass="nEDMWEB0030VO">
+    	/* NEDMWEB0030.deleteExcelOrdInfo */
+    	  DELETE FROM TPC_PO_ORD_PACK
+		   WHERE PACK_DIVN_CD = #packDivnCd#
+    </delete>
+	
+	<select id="selectExcelErrorCnt" resultClass="integer" parameterClass="nEDMWEB0030VO">
+    	/* NEDMWEB0030.selectExcelErrorCnt */
+		  	SELECT COUNT(*)
+	          FROM TPC_PO_ORD_PACK
+	         WHERE VEN_CD = #venCd#
+	           AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+	           AND REG_STS_CD <![CDATA[<>]]> '00'
+	 </select>
+	 
+	 <select id="selectExcelDuplCnt" resultClass="integer" parameterClass="nEDMWEB0030VO">
+    	/* NEDMWEB0030.selectExcelDuplCnt */
+		  	SELECT COUNT(*) FROM (
+	            SELECT VEN_CD, ORD_DY, STR_CD,PROD_CD
+	              FROM TPC_PO_ORD_PACK
+	             WHERE VEN_CD = #venCd#
+	               AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+	             GROUP BY VEN_CD, ORD_DY, STR_CD,PROD_CD
+	            HAVING COUNT(*) > 1
+	          )
+	 </select>
+	 
+	  <select id="selectOrdDuplCnt" resultClass="integer" parameterClass="nEDMWEB0030VO">
+    	/* NEDMWEB0030.selectOrdDuplCnt */
+		  	SELECT COUNT(*) 
+		  	  FROM TPC_PO_ORD_PACK M1
+             WHERE EXISTS ( SELECT * 
+                              FROM TPC_PO_ORD_PROD M2
+                             WHERE M2.VEN_CD = #venCd#
+                               AND M2.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+                               )
+	 </select>
+	 
+	 <select id="selectPackStrInfo" parameterClass="nEDMWEB0030VO" resultMap="ordPackStrListMap">
+	 	/* NEDMWEB0030.selectPackStrInfo */
+	 		SELECT  M1.STR_CD, M1.ORD_DY, M1.VEN_CD
+                  , (SELECT ORD_REQ_NO 
+                       FROM TPC_PO_ORD_PROD 
+                      WHERE VEN_CD = M1.VEN_CD
+                        AND STR_CD = M1.STR_CD
+                        AND ORD_DY = M1.ORD_DY
+                      GROUP BY ORD_REQ_NO
+                     ) AS ORD_REQ_NO
+             FROM ( SELECT STR_CD, ORD_DY, VEN_CD
+                      FROM TPC_PO_ORD_PACK
+                     WHERE VEN_CD = #venCd#
+                       AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+                     GROUP BY STR_CD, ORD_DY, VEN_CD
+                   ) M1
+	 </select>
+	 
+	 <select id="selectPackInfoList" parameterClass="TedPoOrdPackVO" resultMap="ordPackListMap">
+	 	/* NEDMWEB0030.selectPackInfoList */
+	 		SELECT   PACK_DIVN_CD
+					,VEN_CD
+					,ORD_DY
+					,STR_CD
+					,PROD_CD
+					,ORD_REQ_NO
+					,PACK_FILE_NM
+					,SRCMK_CD
+					,PROD_NM
+					,PROD_STD
+					,ORD_IPSU
+					,ORD_UNIT
+					,ORD_BUY_PRC
+					,ORD_QTY
+					,REG_STS_CD
+					,FILE_GRP_CD
+		       FROM TPC_PO_ORD_PACK
+		      WHERE VEN_CD = #venCd#
+			    AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1, 'YYYYMMDD')
+	 </select>
+	 
+	 <insert id="insertExcelProdInfo" parameterClass="nEDMWEB0030VO">
+	 	/* NEDMWEB0030.insertExcelProdInfo */
+	 		 INSERT INTO TPC_PO_ORD_PROD
+			  (
+				      ORD_REQ_NO
+				     ,PROD_CD, ORD_DY, STR_CD, VEN_CD
+				     ,SRCMK_CD, PROD_NM, SHORT_NM, L3_CD, PROD_STD
+				     ,ORD_IPSU, ORD_UNIT, ORD_SALE_PRC, ORD_BUY_PRC
+				     ,ORD_QTY, ORD_CFM_QTY, ORD_STK_QTY, REG_STS_CD, MD_MOD_CD
+				     ,REG_ID, REG_DT, MOD_ID, MOD_DT, L1_CD
+					 ,L3_CD
+			  )
+			  SELECT  #ordReqNo#
+			         ,M1.PROD_CD, M1.ORD_DY, M1.STR_CD, M1.VEN_CD
+			         ,M1.SRCMK_CD, M1.PROD_NM, M1.SHORT_NM, '', M1.PROD_STD
+			         ,M1.ORD_IPSU, M1.ORD_UNIT, M1.ORD_SALE_PRC, M1.ORD_BUY_PRC
+			         ,M1.ORD_QTY, M1.ORD_QTY, '0', '0', '00'
+			         ,#venCd#, CURRENT_TIMESTAMP(0), #venCd#, CURRENT_TIMESTAMP(0),L1_CD
+			         ,L3_CD
+			    FROM TPC_PO_ORD_PACK M1
+			   WHERE M1.VEN_CD = #venCd#
+			     AND M1.STR_CD  = #strCd#
+			     AND M1.ORD_DY = #ordDy#
+	</insert>  
+	
+	 <insert id="insertExcelMstInfo" parameterClass="nEDMWEB0030VO">
+	 	/* NEDMWEB0030.insertExcelMstInfo */
+			INSERT INTO TPC_PO_ORD_MST ( 
+                       ORD_REQ_NO
+                      ,VEN_CD
+                      ,VEN_NM
+                      ,STR_CD
+                      ,ORD_DY
+                      ,ORD_VSEQ
+                      ,ORD_TOT_QTY
+                      ,ORD_TOT_ALL_QTY
+                      ,ORD_TOT_PRC
+                      ,ORD_TOT_STK_QTY
+                      ,ORD_PRGS_CD
+                      ,PROC_EMP_NO
+                      ,REG_ID
+                      ,REG_DT
+                      ,MOD_ID
+                      ,MOD_DT
+          )
+           SELECT M1.ORD_REQ_NO
+                 ,M1.VEN_CD
+                 ,(SELECT VEN_NM 
+                     FROM TPC_VENDOR
+                    WHERE VEN_CD = #venCd#
+                      AND STR_CD = M1.STR_CD) AS VEN_NM
+                 ,M1.STR_CD
+                 ,M1.ORD_DY
+                 ,'1' ORD_VSEQ
+                 ,NULL ORD_TOT_QTY
+                 ,NULL ORD_TOT_ALL_QTY
+                 ,NULL ORD_TOT_PRC
+                 ,NULL ORD_TOT_STK_QTY
+                 ,'02' ORD_PRGS_CD
+                 ,NULL PROC_EMP_NO
+                 ,#venCd# REG_ID
+                 ,CURRENT_TIMESTAMP(0) REG_DT
+                 ,#venCd# MOD_ID
+                 ,CURRENT_TIMESTAMP(0) MOD_DT
+             FROM TPC_PO_ORD_PROD M1
+            WHERE VEN_CD = #venCd#
+              AND ORD_DY = #ordDy#
+              AND NOT EXISTS ( SELECT ORD_REQ_NO
+                                 FROM TPC_PO_ORD_MST M2
+                                WHERE M1.ORD_REQ_NO = M2.ORD_REQ_NO
+                              )
+          GROUP BY ORD_REQ_NO, VEN_CD, ORD_DY, STR_CD
+			
+	</insert>
+	
+	<update id="updateExcelOrdMstSum" parameterClass="nEDMWEB0030VO">
+		/* NEDMWEB0030.updateExcelOrdMstSum */
+			UPDATE  TPC_PO_ORD_MST M2
+		 	  SET ( 				 
+		            ORD_TOT_QTY				    
+		           ,ORD_TOT_ALL_QTY				   
+		           ,ORD_TOT_PRC
+		           ,MOD_ID
+		           ,MOD_DT	)	=		
+	           	  (SELECT  SUM(M1.ORD_QTY)                AS ORD_TOT_QTY           
+	                      ,SUM(M1.ORD_IPSU * M1.ORD_QTY)  AS ORD_TOT_ALL_QTY
+	                      ,SUM((M1.ORD_IPSU*M1.ORD_QTY) * M1.ORD_BUY_PRC) AS ORD_TOT_PRC
+	                      ,#venCd#
+	                      ,CURRENT_TIMESTAMP(0)
+	                 FROM TPC_PO_ORD_PROD M1
+	                WHERE M2.ORD_REQ_NO = M1.ORD_REQ_NO
+	                  AND M1.ORD_DY = #ordDy#
+	                  AND M1.VEN_CD = #venCd#)
+	            WHERE ORD_DY = #ordDy#
+	              AND VEN_CD= #venCd#
+    </update>
+    
+    <delete id="deleteOrdPackInfo" parameterClass="nEDMWEB0030VO">
+    	/* NEDMWEB0030.deleteOrdPackInfo */
+    	  DELETE FROM TPC_PO_ORD_PACK
+		   WHERE VEN_CD = #venCd#
+		     AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+    </delete>
+</sqlMap>

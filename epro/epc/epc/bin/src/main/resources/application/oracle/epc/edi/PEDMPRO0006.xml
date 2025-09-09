@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMPRO0006">
+
+	<typeAlias alias="resultClass"	    type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="pedmpro0006vo"    type="com.lottemart.epc.edi.product.model.PEDMPRO0006VO" />
+	<typeAlias alias="pedmpro00061vo"   type="com.lottemart.epc.edi.product.model.PEDMPRO00061VO" />
+
+	<!-- 상품... SQLINES DEMO *** -->
+	  <select id="selectBarcodeProductInfo" parameterClass="pedmpro0006vo" resultClass="resultClass">
+			/* SQLINES DEMO *** ectBarcodeProductInfo */
+			SELECT TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+		        	,A.SRCMK_CD
+		        	,A.PROD_CD 
+		        	,B.SHORT_NM                 
+		        	,A.ORD_IPSU
+		        	,C.L1_CD 
+		        	,B.VEN_CD
+		        	,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') REG_DT_NOW
+		        	,D.PGM_ID
+		        	,LPAD(  cast(cast(COALESCE(D.MAX_SEQ,'0') as numeric)+1 as character varying),3,'0')    AS MAX_SEQ
+		       FROM  SALE_MST@DL_MD_MARTNIS A
+		            ,PRODUCT@DL_MD_MARTNIS  B 
+		             LEFT OUTER JOIN  
+		             (  SELECT MAX(PGM_ID) AS PGM_ID, VEN_CD, SRCMK_CD, MAX(SEQ) AS MAX_SEQ
+		                  FROM NEW_SALE_LOGI_EDI@DL_MD_MARTNIS
+		                 WHERE SRCMK_CD =#searchSrcmkCd# 
+				           AND VEN_CD =#searchVenCd#
+		              GROUP BY  VEN_CD, SRCMK_CD
+		            )D  ON B.SRCMK_CD = D.SRCMK_CD
+		               AND B.VEN_CD   = D.VEN_CD
+		           ,CATEGORY@DL_MD_MARTNIS C
+		     WHERE A.PROD_CD = B.PROD_CD
+			   AND B.L4_CD  = C.CAT_CD
+		       AND C.LVL = '4'
+			   AND A.ORD_ABLE_FG= '1'
+			   AND B.SRCMK_CD = #searchSrcmkCd#
+			   AND B.VEN_CD   = #searchVenCd#
+		</select>
+	   
+	  <!-- 상품... SQLINES DEMO *** -->
+	  <select id="selectBarcodeList" parameterClass="pedmpro0006vo" resultClass="resultClass">
+			/* SQLINES DEMO *** ectBarcodeList */		  
+		   SELECT   
+              B.LOGI_CFM_FG                  AS LOGI_CFM_FG
+             ,A.LOGI_BCD                     AS LOGI_BCD
+             ,A.LOGI_BOX_IPSU                AS LOGI_BOX_IPSU
+             ,TO_CHAR(A.REG_DT,'YYYYMMDD') AS REG_DT
+             ,B.USE_FG         AS USE_FG
+             ,B.WIDTH          AS WIDTH
+             ,B.LENGTH         AS LENGTH
+             ,B.HEIGHT         AS HEIGHT
+             ,B.WG             AS WG
+             ,A.MIX_PROD_FG    AS MIX_PROD_FG
+             ,B.CONVEY_FG      AS CONVEY_FG
+             ,B.SORTER_FG      AS SORTER_FG
+             ,B.INNER_IPSU     AS INNER_IPSU
+             ,B.PLT_LAYER_QTY  AS PLT_LAYER_QTY
+             ,B.PLT_HEIGHT_QTY AS PLT_HEIGHT_QTY
+             ,B.INNER_IPSU*B.PLT_LAYER_QTY*B.PLT_HEIGHT_QTY AS TOTAL_BOX
+             ,A.SEQ AS SEQ
+             ,A.PGM_ID
+             ,A.CRSDK_FG
+             ,B.W_USE_FG
+             ,B.W_INNER_IPSU
+       FROM  NEW_SALE_LOGI_EDI@DL_MD_MARTNIS A
+             ,NEW_LOGI_CD_EDI@DL_MD_MARTNIS   B 
+        WHERE A.PGM_ID = B.PGM_ID
+          AND A.SEQ = B.SEQ  
+          AND A.SRCMK_CD != '8801051215465' 
+          AND A.SRCMK_CD = #searchSrcmkCd# 
+          AND A.VEN_CD   = #searchVenCd#
+        ORDER BY SEQ
+	  </select>
+	  
+	  <!-- SQLINES DEMO *** 생성해야함. -->
+	  <select id="selectPgmId"  resultClass="String">
+	  /* SQLINES DEMO *** ectPgmId */		
+	  		SELECT CONCAT(TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD'),LPAD(NEXTVAL('SQ_NEW_PROD_CD')::text, 11 ,0::text)) 
+	  		</select>
+	 
+	<insert id="insertNewLogiCdEdi" parameterClass="pedmpro00061vo"> 
+		 /* SQLINES DEMO *** ertNewLogiCdEdi */	
+		 INSERT INTO NEW_LOGI_CD_EDI@DL_MD_MARTNIS 
+			(     PGM_ID        
+				,SEQ           
+				,LOGI_BCD      
+				,LOGI_CFM_FG   
+				,USE_FG        
+				,MIX_PROD_FG   
+				,WG            
+				,WIDTH         
+				,LENGTH        
+				,HEIGHT        
+				,SIZE_UNIT     
+				,WG_UNIT       
+				,CONVEY_FG     
+				,SORTER_FG     
+				,INNER_IPSU    
+				,PLT_LAYER_QTY 
+				,PLT_HEIGHT_QTY
+				,REG_DT        
+				,LST_CHG_DT    
+				,LST_CHG_EMP_NO
+				,CHG_FG        
+				,CRSDK_FG 
+				,W_USE_FG
+            	,W_INNER_IPSU
+              )   
+				
+		VALUES(
+		           #pgmId#            
+		          ,#seq#              
+		          ,#logiBcd#          
+		          ,'02'               
+		          ,#useFg#            
+		          ,#mixProdFg#        
+		          ,#wg#               
+		          ,#width#            
+		          ,#length#           
+		          ,#height#           
+		          ,'01'               
+		          ,'01'               
+		          ,#conveyFg#         
+		          ,#sorterFg#         
+		          ,#innerIpsu#        
+		          ,#pltLayerQty#      
+		          ,#pltHeightQty#     
+		          ,CURRENT_TIMESTAMP(0)            
+		          ,CURRENT_TIMESTAMP(0)            
+		          ,'LOGI_EDI'         
+		          ,#chgFg#            
+		          ,#crsdkFg#          
+		      	  ,#wUseFg#  
+		      	  ,#wInnerIpsu#  
+		      ) 	
+	</insert>
+		     
+	<update id="updateNewLogiCdEdi" parameterClass="pedmpro00061vo">
+		/* SQLINES DEMO *** teNewLogiCdEdi*/	
+	 	UPDATE NEW_LOGI_CD_EDI@DL_MD_MARTNIS
+	 	   SET 
+	 	   
+	 	 		 LOGI_BCD            = #logiBcd#      
+		        ,LOGI_CFM_FG         = '02'          
+		        ,USE_FG              = #useFg#       
+		        ,MIX_PROD_FG         = #mixProdFg#   
+		        ,WG                  = #wg#          
+		        ,WIDTH               = #width#       
+		        ,LENGTH              = #length#      
+		        ,HEIGHT              = #height#      
+		        ,SIZE_UNIT           = '01'          
+		        ,WG_UNIT             = '01'          
+		        ,CONVEY_FG           = #conveyFg#    
+		        ,SORTER_FG           = #sorterFg#    
+		        ,INNER_IPSU          = #innerIpsu#   
+		        ,PLT_LAYER_QTY       = #pltLayerQty# 
+		        ,PLT_HEIGHT_QTY      = #pltHeightQty#
+		        ,LST_CHG_DT          = CURRENT_TIMESTAMP(0)       
+		        ,LST_CHG_EMP_NO      = 'LOGI_EDI'       
+		        ,CHG_FG              = #chgFg#    
+		        ,CRSDK_FG            = #crsdkFg#  
+		        ,W_USE_FG			 = #wUseFg#
+    			,W_INNER_IPSU		 = #wInnerIpsu#
+		          
+	 
+	  WHERE PGM_ID = #pgmId#
+	    AND SEQ    = #seq#
+	</update>
+	 
+	 	     
+	<insert id="insertNewLogiBcdEdi" parameterClass="pedmpro00061vo"> 
+		/* SQLINES DEMO *** ertNewLogiBcdEdi */
+		INSERT INTO NEW_LOGI_BCD_EDI@DL_MD_MARTNIS
+		(
+			 PGM_ID        
+			,SEQ           
+			,L1_CD         
+			,VEN_CD        
+			,LOGI_BCD      
+			,SRCMK_CD      
+			,LOGI_CFM_FG   
+			,USE_FG        
+			,MIX_PROD_FG   
+			,WG            
+			,WIDTH         
+			,LENGTH        
+			,HEIGHT        
+			,SIZE_UNIT     
+			,WG_UNIT       
+			,CONVEY_FG     
+			,SORTER_FG     
+			,INNER_IPSU    
+			,PLT_LAYER_QTY 
+			,PLT_HEIGHT_QTY
+			,LOGI_BOX_IPSU 
+			,TOTAL_IPSU    
+			,REG_DT        
+			,LST_CHG_DT    
+			,LST_CHG_EMP_NO
+			,CHG_FG        
+			,CRSDK_FG    
+			,W_USE_FG
+    		,W_INNER_IPSU
+			
+			  
+		)
+		VALUES
+		(
+			 #pgmId#       
+			,#seq#         
+			,#l1Cd#        
+			,#venCd#       
+			,#logiBcd#     
+			,#srcmkCd#     
+			,'02'          
+			,#useFg#       
+			,#mixProdFg#   
+			,#wg#          
+			,#width#       
+			,#length#      
+			,#height#      
+			,'01'          
+			,'01'          
+			,#conveyFg#    
+			,#sorterFg#    
+			,#innerIpsu#   
+			,#pltLayerQty# 
+			,#pltHeightQty#
+			,#logiBoxIpsu# 
+			,null          
+			,CURRENT_TIMESTAMP(0)       
+			,CURRENT_TIMESTAMP(0)       
+			,'LOGI_EDI'    
+			,#chgFg#       
+			,#crsdkFg#    
+			,#wUseFg#
+			,#wInnerIpsu# 
+		)
+	</insert>	     
+		     
+	<update id="updateNewLogiBcdEdi" parameterClass="pedmpro00061vo">
+	/* SQLINES DEMO *** teNewLogiBcdEdi*/
+		UPDATE NEW_LOGI_BCD_EDI@DL_MD_MARTNIS
+		   SET
+		   
+		     L1_CD                 =    #l1Cd#        
+			,VEN_CD                =    #venCd#       
+			,LOGI_BCD              =    #logiBcd#     
+			,SRCMK_CD              =    #srcmkCd#     
+			,LOGI_CFM_FG           =    '02'          
+			,USE_FG                =    #useFg#       
+			,MIX_PROD_FG           =    #mixProdFg#   
+			,WG                    =    #wg#          
+			,WIDTH                 =    #width#       
+			,LENGTH                =    #length#      
+			,HEIGHT                =    #height#      
+			,SIZE_UNIT             =    '01'          
+			,WG_UNIT               =    '01'          
+			,CONVEY_FG             =    #conveyFg#    
+			,SORTER_FG             =    #sorterFg#    
+			,INNER_IPSU            =    #innerIpsu#   
+			,PLT_LAYER_QTY         =    #pltLayerQty# 
+			,PLT_HEIGHT_QTY        =    #pltHeightQty#
+			,LOGI_BOX_IPSU         =    #logiBoxIpsu# 
+			,LST_CHG_EMP_NO        =    'LOGI_EDI'
+			,LST_CHG_DT            =    CURRENT_TIMESTAMP(0)
+			,W_USE_FG			   =	#wUseFg#
+    		,W_INNER_IPSU		   = 	#wInnerIpsu#
+			
+		WHERE PGM_ID = #pgmId#
+	      AND SEQ    = #seq#                                  
+	</update>                             
+	
+	<insert id="insertNewSaleLogiEdi" parameterClass="pedmpro00061vo">
+			/* SQLINES DEMO *** rtNewSaleLogiEdi*/
+		INSERT INTO NEW_SALE_LOGI_EDI@DL_MD_MARTNIS
+		(
+			PGM_ID        
+			,SEQ           
+			,SRCMK_CD      
+			,LOGI_BCD      
+			,MIX_PROD_FG   
+			,PROD_CD       
+			,L1_CD         
+			,VEN_CD        
+			,LOGI_BOX_IPSU 
+			,TOTAL_IPSU    
+			,REG_DT        
+			,LST_CHG_DT    
+			,LST_CHG_EMP_NO
+			,CHG_FG        
+			,CRSDK_FG  
+			,W_USE_FG
+            ,W_INNER_IPSU 
+		)
+		VALUES
+		(
+			 #pgmId#      
+			,#seq#        
+			,#srcmkCd#    
+			,#logiBcd#    
+			,#mixProdFg#  
+			,#prodCd#     
+			,#l1Cd#       
+			,#venCd#      
+			,#logiBoxIpsu#
+			,null       		
+			,CURRENT_TIMESTAMP(0)      
+			,CURRENT_TIMESTAMP(0)      
+			,'LOGI_EDI'   
+			,#chgFg#      
+			,#crsdkFg#  
+			,#wUseFg#
+			,#wInnerIpsu#
+		)
+	</insert>
+	
+	<update id="updateNewSaleLogiEdi" parameterClass="pedmpro00061vo">
+			/* SQLINES DEMO *** teNewSaleLogiEdi*/
+		UPDATE NEW_SALE_LOGI_EDI@DL_MD_MARTNIS
+		   SET
+		     SRCMK_CD               =    #srcmkCd#    
+			,LOGI_BCD               =    #logiBcd#    
+			,MIX_PROD_FG            =    #mixProdFg#  
+			,PROD_CD                =    #prodCd#     
+			,L1_CD                  =    #l1Cd#       
+			,VEN_CD                 =    #venCd#      
+			,LOGI_BOX_IPSU          =    #logiBoxIpsu#
+			,LST_CHG_DT             =    CURRENT_TIMESTAMP(0)      
+			,LST_CHG_EMP_NO         =    'LOGI_EDI'      
+			,CHG_FG                 =    #chgFg#     
+			,CRSDK_FG               =    #crsdkFg#    
+		    ,W_USE_FG				=	 #wUseFg#
+    		,W_INNER_IPSU			=	 #wInnerIpsu#                                 
+		WHERE PGM_ID = #pgmId#
+	      AND SEQ    = #seq# 	
+	</update>	                                  
+		
+		
+	<!-- SQLINES DEMO *** 본 정보 조회 -->
+	<select id="selectNewprodregInfo" parameterClass="pedmpro0006vo" resultClass="resultClass">
+	/* SQLINES DEMO *** ectNewprodregInfo */		
+		SELECT  TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+	           , SELL_CD        as SRCMK_CD
+	           , ''             as PROD_CD
+	           , PROD_NM        as PROD_NM
+	           , LGRP_CD        as L1_CD     
+	           , PUR_INRCNT_QTY as ORD_IPSU
+	           , ENTP_CD        as VEN_CD
+	           , TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') as REG_DT_NOW
+	           ,''              as PGM_ID
+	           , '001'          as MAX_SEQ
+             FROM TED_NEW_PROD_REG 
+            WHERE NEW_PROD_CD = #newProdCd#
+              AND PROD_DIVN_CD = '1'
+    </select>
+    
+    <!-- SQLINES DEMO *** 한 기본 정보 조회 -->
+	<select id="newBarcodeRegistTmp" parameterClass="String" resultClass="resultClass">
+	/* SQLINES DEMO *** BarcodeRegistTmp */		
+		SELECT  TO_CHAR(REG_DATE, 'YYYYMMDD') AS REG_DT
+	           , SELL_CD        as SRCMK_CD
+	           , ''             as PROD_CD
+	           , PROD_NM        as PROD_NM
+	           , LGRP_CD        as L1_CD     
+	           , PUR_INRCNT_QTY as ORD_IPSU
+	           , ENTP_CD        as VEN_CD
+	           , TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') as REG_DT_NOW
+	           , ''             as PGM_ID
+	           , '001'          as MAX_SEQ
+	           , #newprod#		as NEW_PROD_ID
+             FROM TED_NEW_PROD_REG 
+            WHERE NEW_PROD_CD = #newprod#
+   
+    </select>
+    
+    
+    <!-- SQLINES DEMO *** 록한 바코드 리스트 기본 정보 조회 -->
+	  <select id="selectBarcodeListTmp" parameterClass="pedmpro0006vo" resultClass="resultClass">
+			/* SQLINES DEMO *** ectBarcodeListTmp */		  
+		   SELECT
+		   	  A.SRCMK_CD   
+             ,B.LOGI_CFM_FG                  AS LOGI_CFM_FG
+             ,A.LOGI_BCD                     AS LOGI_BCD
+             ,A.LOGI_BOX_IPSU                AS LOGI_BOX_IPSU
+             ,TO_CHAR(A.REG_DT,'YYYYMMDD') AS REG_DT
+             ,B.USE_FG         AS USE_FG
+             ,B.WIDTH          AS WIDTH
+             ,B.LENGTH         AS LENGTH
+             ,B.HEIGHT         AS HEIGHT
+             ,B.WG             AS WG
+             ,A.MIX_PROD_FG    AS MIX_PROD_FG
+             ,B.CONVEY_FG      AS CONVEY_FG
+             ,B.SORTER_FG      AS SORTER_FG
+             ,B.INNER_IPSU     AS INNER_IPSU
+             ,B.PLT_LAYER_QTY  AS PLT_LAYER_QTY
+             ,B.PLT_HEIGHT_QTY AS PLT_HEIGHT_QTY
+             ,B.INNER_IPSU*B.PLT_LAYER_QTY*B.PLT_HEIGHT_QTY AS TOTAL_BOX
+             ,A.SEQ AS SEQ
+             ,A.PGM_ID
+             ,A.CRSDK_FG
+             ,A.W_USE_FG
+             ,A.W_INNER_IPSU
+             
+        FROM  NEW_SALE_LOGI_EDI@DL_MD_MARTNIS A
+             ,NEW_LOGI_CD_EDI@DL_MD_MARTNIS   B 
+        WHERE A.PGM_ID = B.PGM_ID
+          AND A.SEQ = '001'  
+          AND A.PGM_ID = #new_prod_id# 
+          AND A.VEN_CD   = #searchVenCd#
+        ORDER BY SEQ
+	  </select>
+    
+    
+</sqlMap>

@@ -1,0 +1,309 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: category.css
+ * description	: 카테고리, 전시 import
+ * date			: 2011.08.17
+************************************************************************/
+
+@import url(layout.css);
+
+/*common category*/
+.two_goods_product	{width:100%; padding-bottom:10px; overflow:hidden;}
+.two_goods_product	.list_product	{float:left; width:720px; margin-top:0; background:none;}
+.two_goods_product	.list_product	ul	{width:100%;}
+.two_goods_product	.list_product	li	{width:215px; height:429px; padding:0 0 0 20px;}
+.two_goods_product	.list_product	li.first	{padding-left:0;}
+.two_goods_product	.list_product	li	.photo_wrap	{margin-bottom:5px;}
+.two_goods_product	.list_product	li	.pr_price	{margin-bottom:0;}
+.two_goods_product	.list_product	li	.pr_price	.fixed	{height:19px; margin-bottom:-2px; color:#999;}
+.two_goods_product	.list_product	li	.pr_price	.t_roman	{font:26px CoHead; color:#333;}
+.two_goods_product	.list_product	li	.pr_name	{padding-top:4px;height:45px; line-height:18px; font:14px malgun, "Malgun Gothic"; color:#333;}
+.two_goods_product	.list_product	li	.tit_head	{width:100%; height:36px; margin:0 0 0 0;}
+.two_goods_product	.list_product	.tit_head	h2	{padding:1px 0 0 10px;}
+.two_goods_product	.list_product	.tit_head	.tit_right	{position:relative; margin-top:-17px;}
+.two_goods_product	.list_product	.tit_head	.tit_right	.icon	em	{position:absolute; left:-5000px; top:-5000px; width:0; height:0; font-size:0; line-height:0; overflow:hidden}
+.two_goods_product	.plan_banner	{float:left;}
+
+.summary_wrap	{height:35px; *height:33px; padding-top:20px;}
+.summary_wrap	p	{font:18px/19px malgun, "Malgun Gothic"; color:#333;}
+.summary_wrap	p	strong	{font-weight:normal; color:#ee1c24;}
+.summary_wrap	p	em	{font:20px CoHead; color:#ee1c24;}
+
+/*조건 검색*/
+.option_search	{padding-bottom:5px; background:url('/images/member/front/common/box-option-search-bottom.gif') no-repeat 0 bottom;}
+.option_search_t	{background:url('/images/member/front/common/box-option-search.gif') no-repeat 0 0;}
+.option_search	.os_head	{position:relative; width:100%; z-index:0;}
+.option_search	.os_head	h2	{height:34px; padding:11px 0 0 57px; background:url("/images/front/common/img_os_chk.gif") no-repeat 21px 9px; font-size:bold 16px malgun, "Malgun Gothic"; color:#333;}
+/* .option_search	.os_head	.guide_txt	{position:absolute; right:47px; top:16px; font:normal 11px Dotum; color:#999;} */
+.option_search	.os_head	.click_btn	{position:absolute; right:20px !important; top:7px; width:36px; height:36px; overflow:hidden;} /* 2012-04-23 */
+.option_search	.os_head	.click_btn	{cursor:pointer}
+.option_search	.os_head	.click_btn	img	{margin-top:0;}
+.option_search	.os_head	.click_btn	img.on	{margin-top:-36px;}
+.option_search	.option_conts	{width:910px; margin-top:4px; padding:9px 20px 6px; border-top:1px solid #c7c7c7;}
+.option_search	.option_conts	.over_h	{width:100%; overflow:hidden;}
+
+/*.option_search	.btn_p_sch	{position:absolute; right:7px; bottom:7px;}*/
+.option_search	.btn_p_sch	{float:right; margin-right:20px !important; _margin-right:3px; margin-top:-38px;} /* 2012-04-23 */
+
+
+.sch_cont	{float:left; width:877px; margin-top:-1px;}
+.sch_wrap	{float:left; width:100%; padding-top:1px; background:url("/images/front/common/bg-dot-sch.gif") repeat-x 0 top; overflow:hidden;}
+.sch_wrap	h3	{float:left; width:83px; padding-top:7px; padding-right:20px; font:14px malgun, "Malgun Gothic"; color:#333;}
+.sch_wrap	.sch_list	{float:left; width:774px; margin-top:-1px; background:url("/images/front/common/bg-dot-sch-list.gif") repeat-y 0 0; overflow:hidden;}
+.sch_wrap	.sch_list	.bg_r_cb	{float:left; margin-right:20px; padding:11px 0 9px; *padding:9px 0 7px; white-space:nowrap;}
+	:root	 .sch_wrap	.sch_list	.bg_r_cb	{padding:8px 0 9px;}
+.sch_wrap	.sch_list	.bg_r_cb	.checkbox	{margin-right:7px;}
+
+/*
+.option_search	.option_conts	ul	{float:left; width:100%; margin-top:-1px;}
+.option_search	.option_conts	li	{float:left; width:100%; padding:12px 0 11px; border-top:1px solid #e6e6e6;}
+.option_search	.option_conts	li	.option_t	{float:left; width:85px; margin-left:4px; font-size:13px; color:#333;}
+.option_search	.option_conts	li	.sel_wrap	{float:left; width:809px; font:normal 13px Dotum; color:#666; letter-spacing:0;}
+.option_search	.option_conts	li	.sel_row	{float:left; width:100%; margin-top:5px;}
+.option_search	.option_conts	li	.sel_row	.bg_r_cb	{float:left; width:146px; padding-right:10px; word-wrap:break-word;}
+.option_search	.option_conts	li	.sel_row	.label	{width:80px;}
+.option_search	.option_conts	.btn_wrap	{padding:10px 0; border-top:1px solid #e6e6e6;}
+*/
+
+/* category list */
+.category_smenu	{position:relative; z-index:5; width:950px; background:url('/images/member/front/category/box-category.gif') no-repeat 0 0; padding-top:10px;}
+	:root	.category_smenu	{padding-top:7px;}
+.category_smenu	.con	{overflow:hidden; height:100%; background:url('/images/member/front/category/box-category.gif') no-repeat 0 bottom; padding-bottom:6px;}
+.cate_area	{float:left; width:230px; padding:0 0 0 22px; cursor:pointer}
+.cate_area	h1	{width:180px; margin-top:-4px; font:bold 24px malgun, "Malgun Gothic"; color:#f88e12;}
+	:root	.cate_area	h1	{margin-top:-1px;}
+.cate_area	.click_btn	{position:absolute; left:210px; top:18px; cursor:pointer;}
+.cate_list	{float:left; border-left:1px solid #f89f12; padding-left:20px;}
+.cate_list	ul	{overflow:hidden; height:100%; width:653px; background:url('/images/member/front/category/bg-category-menu-list.gif') repeat-x 0 0; margin-top:-1px;}
+.cate_list	ul	li	{float:left; margin:0 10px 0 20px; padding:8px 0 9px 0; color:#333; line-height:18px; white-space:nowrap;}
+.cate_list	ul	li.on,	 .cate_list	ul	li.on	a	{color:#ee1c24; text-decoration:underline;}
+.cate_list	ul	li	a	{color:#333;}
+.cate_list	ul	li:hover,	.cate_list	ul	li	a:hover	{color:#ee1c24;}
+
+.layer_cate	{position:absolute; z-index:2; top:0; left:0; width:256px;}
+.layer_cate	.con	{padding-top:5px; background:url('/images/member/front/category/bg-category-list.gif') no-repeat 0 0;}
+.layer_cate	.con-btm	{width:256px; height:12px; background:url('/images/member/front/category/bg-category-list-btm.gif') no-repeat 0 bottom; *font-size:0;}
+.layer_cate	ul	{padding-left:26px;}
+.layer_cate	ul	li	{padding-top:10px; font:14px malgun, "Malgun Gothic"; color:#333;}
+.layer_cate	ul	li.on,	 .layer_cate	ul	li.on	a	{color:#ee1c24; text-decoration:underline;}
+.layer_cate	ul	li	a	{color:#333;}
+.layer_cate	ul	li:hover,	.layer_cate	ul	li	a:hover	{color:#ee1c24;}
+
+/* sub menu */
+.box_only_menu	{width:100%; padding-top:8px; background:url('/images/member/front/common/box-wgray-w950.gif') no-repeat left top}
+.box_only_menu_b	{padding:0 25px; background:url('/images/member/front/common/box-wgray-w950.gif') no-repeat left bottom;}
+.box_only_menu	.sub_menu	{padding:0 50px 7px 10px;}
+
+/* only_product_L */
+h3.only_product_L	{margin-bottom:10px;}
+
+/* Olny Lotte 제품 1depth list */
+.depth_n_list	{width:950px;}
+.depth_n_list	.cont	{width:950px; padding:13px 0 7px; background:url("/images/front/category/bg-bx-dn-cont.gif") repeat-y 0 0; overflow:hidden;}
+.depth_n_list	p.cap	{width:950px; height:5px; background:url("/images/front/category/bg-bx-dn-cap.gif") no-repeat 0 0; font-size:0; line-height:0;}
+.depth_n_list	p.btm	{width:950px; height:5px; background:url("/images/front/category/bg-bx-dn-btm.gif") no-repeat 0 0; font-size:0; line-height:0;}
+.depth_n_list	.dlist	{float:left;}
+.depth_n_list	.dlist	h3	{margin-bottom:11px; font:bold 15px malgun, "Malgun Gothic";}
+.depth_n_list	.dlist	h3	a:hover	{text-decoration:none;}
+.depth_n_list	.dlist	h3.fc1	a	{color:#cc1018;}
+.depth_n_list	.dlist	h3.fc2	a	{color:#a1770e;}
+.depth_n_list	.dlist	h3.fc3	a	{color:#316c4a;}
+.depth_n_list	.dlist	h3.fc4	a	{color:#1689b8;}
+.depth_n_list	.dlist	h3.fc5	a	{color:#7252a1;}
+.depth_n_list	.dlist	h3.fc6	a	{color:#c2441e;}
+.depth_n_list	.dlist	h3.fc7	a	{color:#003f90;}
+.depth_n_list	.dlist	h3.fc8	a	{color:#00457c;}
+.depth_n_list	.dlist	li	{padding-bottom:11px; line-height:13px;}
+.depth_n_list	.dlist	li	a:hover	{color:#f2362f;}
+.depth_n_list	.dlist	.mt15	{margin-top:15px;}
+.depth_n_list	.dlist	.mt39	{margin-top:39px;}
+.depth_n_list	.type1	{width:309px; padding-left:21px;}
+.depth_n_list	.type1	li	{float:left; width:152px;}
+.depth_n_list	.type2	{width:186px; padding-left:20px;}
+
+/* Only Lotte 메인 */
+.txt_pb	{margin-bottom:19px; padding-left:285px; background:url("/images/front/category/bg-lm-brand.gif") no-repeat 0 0;}
+.txt_pb	ul	{position:relative; top:-1px; _top:1px;}
+.txt_pb	li	{padding-bottom:5px; line-height:13px;}
+
+.ol_new	{margin-top:30px;}
+.ol_new	.ol_tab	{width:950px; height:46px;}
+.ol_new	.ol_tab	{width:950px; height:46px; background:url("/images/front/category/bg-ol-tab.gif") no-repeat 0 0;}
+.ol_new	.ol_tab	li	{float:left; color:#333; font:14px malgun, "Malgun Gothic"; font-weight:bold; text-align:center;}
+.ol_new	.ol_tab	li	div	{width:119px; height:46px; background:url("/images/front/category/bg-ol-tab-r.gif") no-repeat right 0;}/* 111229 추가/수정-119 */
+.ol_new	.ol_tab	li	div.end	{background:url("/images/front/category/bg-ol-tab-re.gif") no-repeat right 0;}
+.ol_new	.ol_tab	.first,	.ol_new	.ol_tab	.end	{width:118px;}/* 111229 추가/수정-118 */
+.ol_new	.ol_tab	li	div	p	{width:100%; height:100%; background:url("/images/front/category/bg-ol-tab-l.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li	.first	p	{background:url("/images/front/category/bg-ol-tab-lf.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li.on	div	{background:url("/images/front/category/bg-ol-tab-on-r.gif") no-repeat right 0;}
+.ol_new	.ol_tab	li.on	.first	{background:url("/images/front/category/bg-ol-tab-on-r.gif") no-repeat right 0;}
+.ol_new	.ol_tab	li.on	.end	{background:url("/images/front/category/bg-ol-tab-on-re.gif") no-repeat right 0;}
+.ol_new	.ol_tab	li.on	p	{background:url("/images/front/category/bg-ol-tab-on-l.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li.on	.first	p	{background:url("/images/front/category/bg-ol-tab-on-lf.gif") no-repeat left 0;}
+.ol_new	.ol_tab	li	a	{display:block; color:#333; height:30px; padding-top:12px;}
+.ol_new	.ol_tab	li	a:hover	{text-decoration:none;}
+.ol_new	.ol_tab	li.on	.fc1	a	{color:#cc1018;}
+.ol_new	.ol_tab	li.on	.fc2	a	{color:#a1770e;}
+.ol_new	.ol_tab	li.on	.fc3	a	{color:#316c4a;}
+.ol_new	.ol_tab	li.on	.fc4	a	{color:#1689b8;}
+.ol_new	.ol_tab	li.on	.fc5	a	{color:#7252a1;}
+.ol_new	.ol_tab	li.on	.fc6	a	{color:#c2441e;}
+.ol_new	.ol_tab	li.on	.fc7	a	{color:#003f90;}
+.ol_new	.ol_tab	li.on	.fc8	a	{color:#00457c;}
+.ol_new	.ol_nc	{width:910px; padding:36px 0 32px 40px; background:url("/images/front/category/bg-ol-new.gif") no-repeat 0 bottom; overflow:hidden;}
+.ol_new	.br_info	{float:left; width:327px;}
+.ol_new	.br_list	{float:left; width:552px; margin-left:30px;}
+.ol_new	.br_list	h3	{margin-top:-3px; color:#333; font:bold 20px malgun, "Malgun Gothic"; line-height:21px;}
+.ol_new	.br_list	h3	.en	{font:normal 22px CoHead; letter-spacing:1px;}
+.ol_new	.br_list	.list_product	{background:none #f7f7f7;}
+.ol_new	.br_list	.list_product	ul	{width:552px;}
+.ol_new	.br_list	.list_product	li	{width:184px; height:315px; padding-right:0;}
+.ol_top10	{margin-top:27px; padding-left:30px; padding-bottom:20px;}
+.ol_top10	h3	{color:#333; font:bold 20px malgun, "Malgun Gothic"; font-weight:bold; line-height:20px;}
+.ol_top10	h3	.en	{font:normal 22px CoHead; letter-spacing:1px;}
+.ol_top10	.list_product	{background-position:0 top;}
+.ol_top10	.list_product	ul	{width:920px;}
+.ol_top10	.list_product	ul	li	{width:184px; padding-right:0;}
+
+/* 손큰 피자 메인*/
+.big_hand_main	{background:url('/images/member/front/category/bg-hand-pizza-order.jpg') repeat-y;}
+.big_hand_main	.order	{position:relative; width:867px; margin:0 0 20px 42px; overflow:hidden; *zoom:1;}
+.big_hand_main	.order	ul	{float:left; width:870px;}
+.big_hand_main	.order	{}
+.big_hand_main	.order	li	{float:left; padding:28px 9px 0 10px; background:url('/images/member/front/category/line-pizza-order.gif') no-repeat right 20px;}
+.big_hand_main	.order	li	.prod_with_cart	{width:165px; overflow:hidden; margin:22px 0 0 15px; _font-size:0;}
+.big_hand_main	.order	li.banner	{padding:20px 0 0 0;}
+.big_hand_main	.order	li.pl20	{padding-left:20px;} /* 120523 추가 */
+.big_hand_main	.order	li.banner	img	{vertical-align:top}
+
+.big_hand_main	.order_shop	{width:868px; padding:0 40px 0 42px; height:321px; background:url('/images/member/front/category/bg-big-hand-pizza.gif') no-repeat 0 0;}
+.big_hand_main	.order_shop	table	{width:100%;}
+.big_hand_main	.order_shop	th	{padding:13px 0 14px; border-top:2px solid #dfdfdf; border-bottom:1px solid #dfdfdf; background:#f3f3f3;}
+.big_hand_main	.order_shop	td	 {text-align:center; padding:13px 0 16px; border-bottom:1px solid #dfdfdf;}
+.big_hand_main	.order_shop	td.left	{text-align:left; padding-left:15px;}
+
+/* 1depth 카테고리 */
+.m_wrap	{margin-top:30px;}
+.m_wrap	.visual	{font-size:0; line-height:0;}
+.m_wrap	.stit	{margin-bottom:10px;}
+.bnr_cate	{overflow:hidden; width:950px; height:164px; margin-bottom:10px;}
+.bnr_cate	li	{float:left; font-size:0; line-height:0;}
+
+h2.depth1_best	{margin-bottom:10px; color:#333; font:bold 20px malgun, "Malgun Gothic"; font-weight:bold; line-height:20px;}
+h2.depth1_best	em	{color:#ee1c24; font:normal 22px CoHead; vertical-align:-2px; letter-spacing:0;}
+
+
+/* 1depth 카테고리 : 신선식품 */
+.m1_cnt1	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m1-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m1_cnt1	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m1_cnt1	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:257px;}
+.m1_cnt1	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+.m1_cnt2	{position:relative; width:950; height:264px; background:url('/images/member/front/category/bg-m1-02.gif') no-repeat 0 0;}
+.m1_cnt2	.prod1	{position:absolute; left:0; top:1px; width:474px; height:262px;}
+.m1_cnt2	.prod2	{position:absolute; left:475px; top:1px; width:475px; height:262px;}
+
+/* 1depth 카테고리 : 가공식품 */
+.m2_cnt1	{position:relative; width:950; height:391px; background:url('/images/member/front/category/bg-m2-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m2_cnt1	.prod1	{position:absolute; left:0; top:1px; width:474px; height:260px;}
+.m2_cnt1	.prod2	{position:absolute; left:475px; top:1px; width:237px; height:260px;}
+.m2_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+.m2_cnt1	.prod4	{position:absolute; left:0; top:262px; width:316px; height:128px;}
+.m2_cnt1	.prod5	{position:absolute; left:317px; top:262px; width:316px; height:128px;}
+.m2_cnt1	.prod6	{position:absolute; left:634px; top:262px; width:316px; height:128px;}
+
+.m2_cnt2	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m2-02.gif') no-repeat 0 0;}
+.m2_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m2_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m2_cnt2	.prod3	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m2_cnt2	.prod4	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+/* 1depth 카테고리 : 유아/아동 */
+.m3_cnt1	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m3-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m3_cnt1	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m3_cnt1	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:257px;}
+.m3_cnt1	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+.m3_cnt2	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m3-02.gif') no-repeat 0 0;}
+.m3_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:128px;}
+.m3_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m3_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:128px;}
+.m3_cnt2	.prod4	{position:absolute; left:0; top:130px; width:316px; height:128px;}
+.m3_cnt2	.prod5	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m3_cnt2	.prod6	{position:absolute; left:634px; top:130px; width:316px; height:128px;}
+
+/* 1depth 카테고리 : 문구/완구 */
+.m4_cnt1	{position:relative; width:950; height:262px; background:url('/images/member/front/category/bg-m4-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m4_cnt1	.prod1	{position:absolute; left:0; top:1px; width:474px; height:260px;}
+.m4_cnt1	.prod2	{position:absolute; left:475px; top:1px; width:475px; height:260px;}
+
+.m4_cnt2	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m4-02.gif') no-repeat 0 0;}
+.m4_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:128px;}
+.m4_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m4_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:128px;}
+.m4_cnt2	.prod4	{position:absolute; left:0; top:130px; width:316px; height:128px;}
+.m4_cnt2	.prod5	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m4_cnt2	.prod6	{position:absolute; left:634px; top:130px; width:316px; height:128px;}
+
+/* 1depth 카테고리 : 생활용품 */
+.m5_cnt1	{position:relative; width:950; height:262px; background:url('/images/member/front/category/bg-m5-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m5_cnt1	.prod1	{position:absolute; left:0; top:1px; width:237px; height:260px;}
+.m5_cnt1	.prod2	{position:absolute; left:237px; top:1px; width:476px; height:260x;}
+.m5_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+
+.m5_cnt2	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m5-02.gif') no-repeat 0 0;}
+.m5_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m5_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m5_cnt2	.prod3	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m5_cnt2	.prod4	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+/* 1depth 카테고리 : 전자제품 */
+.m6_cnt1	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m6-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m6_cnt1	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m6_cnt1	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:257px;}
+.m6_cnt1	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+.m6_cnt2	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m6-02.gif') no-repeat 0 0;}
+.m6_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:128px;}
+.m6_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m6_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:128px;}
+.m6_cnt2	.prod4	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m6_cnt2	.prod5	{position:absolute; left:634px; top:130px; width:316px; height:128px;}
+
+/* 1depth 카테고리 : 취미/자동차 */
+.m7_cnt1	{position:relative; width:950; height:262px; background:url('/images/member/front/category/bg-m7-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m7_cnt1	.prod1	{position:absolute; left:0; top:1px; width:237px; height:260px;}
+.m7_cnt1	.prod2	{position:absolute; left:237px; top:1px; width:476px; height:260x;}
+.m7_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+
+.m7_cnt2	{position:relative; width:950; height:259px; background:url('/images/member/front/category/bg-m7-02.gif') no-repeat 0 0;}
+.m7_cnt2	.prod1	{position:absolute; left:0; top:1px; width:316px; height:257px;}
+.m7_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:128px;}
+.m7_cnt2	.prod3	{position:absolute; left:317px; top:130px; width:316px; height:128px;}
+.m7_cnt2	.prod4	{position:absolute; left:634px; top:1px; width:316px; height:257px;}
+
+/* 1depth 카테고리 : 패션잡화 */
+.m8_cnt1	{position:relative; width:950; height:262px; background:url('/images/member/front/category/bg-m8-01.gif') no-repeat 0 0; margin-bottom:30px;}
+.m8_cnt1	.prod1	{position:absolute; left:0; top:1px; width:237px; height:260px;}
+.m8_cnt1	.prod2	{position:absolute; left:237px; top:1px; width:476px; height:260x;}
+.m8_cnt1	.prod3	{position:absolute; left:713px; top:1px; width:237px; height:260px;}
+
+.m8_cnt2	{position:relative; width:950; height:691px; background:url('/images/member/front/category/bg-m8-02.gif') no-repeat 0 0;}
+.m8_cnt2	.prod1	{position:absolute; left:0; top:1px; width:317px; height:229px;}
+.m8_cnt2	.prod2	{position:absolute; left:317px; top:1px; width:316px; height:114px;}
+.m8_cnt2	.prod3	{position:absolute; left:634px; top:1px; width:316px; height:114px;}
+.m8_cnt2	.prod4	{position:absolute; left:317px; top:116px; width:316px; height:114px;}
+.m8_cnt2	.prod5	{position:absolute; left:634px; top:116px; width:316px; height:114px;}
+
+.m8_cnt2	.prod6	{position:absolute; left:0; top:231px; width:316px; height:229px;}
+.m8_cnt2	.prod7	{position:absolute; left:317px; top:231px; width:316px; height:114px;}
+.m8_cnt2	.prod8	{position:absolute; left:634px; top:231px; width:316px; height:114px;}
+.m8_cnt2	.prod9	{position:absolute; left:317px; top:346px; width:316px; height:114px;}
+.m8_cnt2	.prod10	{position:absolute; left:634px; top:346px; width:316px; height:114px;}
+
+.m8_cnt2	.prod11	{position:absolute; left:0; top:461px; width:316px; height:229px;}
+.m8_cnt2	.prod12	{position:absolute; left:317px; top:461px; width:316px; height:114px;}
+.m8_cnt2	.prod13	{position:absolute; left:634px; top:461px; width:316px; height:114px;}
+
+.m8_cnt2	.prod14	{position:absolute; left:317px; top:576px; width:316px; height:114px;}
+.m8_cnt2	.prod15	{position:absolute; left:634px; top:576px; width:316px; height:114px;}

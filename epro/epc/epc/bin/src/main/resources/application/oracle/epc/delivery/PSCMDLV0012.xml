@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMDLV0012">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+	<typeAlias alias="pscmdlv0012VO" type="com.lottemart.epc.delivery.model.PSCMDLV0012VO"/>
+	<typeAlias alias="LtsmsVO" type="com.lottemart.common.sms.model.LtsmsVO"/>
+
+	
+	<select id="selectPartnerNoFirmsOrderList"  parameterClass="dataMap"  resultClass="dataMap" remapResults="true">
+	/* PSCMDLV0012.selectPartnerNoFirmsOrderList */ 
+	<isEqual property="isPageYn" compareValue="Y">
+	 SELECT * 
+	   FROM(
+		   SELECT CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+				, ROWNUM AS NUM
+				, COUNT(*) OVER() TOTAL_COUNT
+				, E.* 
+			 FROM (
+	</isEqual>		 
+					SELECT /*+ LEADING(T1 OI) */  --@@ EXEM. 힌트변경
+						   O.ORDER_ID
+						 , O.ORD_DY
+						 , O.ORD_STS_CD
+						 , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'OR002' AND MINOR_CD = O.ORD_STS_CD) AS ORD_STS_NM
+						 , OI.STR_VENDOR_ID
+						 , P.ONLINE_PROD_TYPE_CD
+						 , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM335' AND MINOR_CD = P.ONLINE_PROD_TYPE_CD) AS ONLINE_PROD_TYPE_NM
+						 , P.PROD_CD
+						 , P.PROD_NM
+						 , DM.VEN_DELI_STATUS_CD
+						 , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE014' AND MINOR_CD = DM.VEN_DELI_STATUS_CD) AS VEN_DELI_STATUS_NM
+						 , HI.HODECO_CD
+						 , (SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE011' AND MINOR_CD = HI.HODECO_CD) AS HODECO_NM
+						 , NVL(HI.HODECO_INVOICE_NO,'') AS HODECO_INVOICE_NO
+						 , HI.HODECO_ADD_INVOICE_NO
+						 , (SELECT CD_NM || CASE WHEN LET_1_REF = '' OR LET_1_REF IS NULL THEN '' ELSE '-'||LET_1_REF END  FROM TET_CODE WHERE MAJOR_CD = 'DE055' AND MINOR_CD = 
+										  (CASE WHEN OI.SALE_STS_CD = '00' OR O.SALE_STS_CD = '00' THEN 
+											(
+											  CASE WHEN OI.SALE_STS_CD = '01' AND O.SALE_STS_CD = '00' THEN '205' 
+												   WHEN DM.VEN_DELI_STATUS_CD = '02' THEN ''
+												   WHEN HI.HODECO_INVOICE_NO IS NULL OR HI.HODECO_INVOICE_NO = '' THEN '201'
+												   WHEN OI.SALE_STS_CD = '00' AND ONLINE_PROD_TYPE_CD IN ('03','08','10') THEN '206'
+												ELSE  HI.ERROR_MSG END
+											  )
+											  ELSE '' END
+										   ) 
+						   ) AS  ERROR_REASON 
+						  , DECODE(O.SALE_STS_CD, '00', TRUNC(CURRENT_TIMESTAMP(0)) - TO_DATE(O.ORD_DY, 'YYYYMMDD'), '') AS NO_FIIRMS_DAY
+					  FROM TOR_ORDER O
+						 , TOR_ORDER_ITEM OI
+						 , TPR_PRODUCT P
+						 , TDE_DELI_MST DM
+						 , TDE_HODECO_INFO HI
+						 , (SELECT MIN(ORDER_ID) MIN_ORDER_ID, MAX(ORDER_ID) MAX_ORDER_ID 
+						 	  FROM TOR_ORDER 
+						 	 WHERE ORD_DY IN (
+											SELECT MIN(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #startDate# AND #endDate#
+											UNION ALL
+											SELECT MAX(ORD_DY) ORD_DY FROM TOR_ORDER WHERE ORD_DY  BETWEEN #startDate# AND #endDate#
+											)
+						   ) T1
+					 WHERE DM.ORDER_ID = O.ORDER_ID  --@@ EXEM. 조인조건 추가	
+					   AND O.ORDER_ID = OI.ORDER_ID
+					   AND OI.PROD_CD = P.PROD_CD
+					   AND OI.ORDER_ID = DM.ORDER_ID
+					   AND OI.DELIVERY_ID = DM.DELIVERY_ID
+					   AND DM.DELI_NO = HI.DELI_NO(+)
+					   AND OI.ORDER_ID BETWEEN T1.MIN_ORDER_ID AND T1.MAX_ORDER_ID
+					   AND (DM.DELI_METHOD_DIVN_CD = '20'
+					   		OR OI.PROD_CD IN ('0417731390001','0417731420005','0417731470000','0417731450002','0417731460001',
+											  '0417731440003','0417731430004','0417731480009','0417731400007','0417731410006',
+											  '0417737840005','0417737850004','0417737860003','0417737880001','0417737890000',
+											  '0417737870002'))
+					   AND DM.INVOICE_STATUS_CD = '10'
+					   AND DM.DELI_DIVN_CD = '10'
+					   AND DM.DELI_DIVN_DTL_CD IN ('11', '12')
+					   AND OI.DELIVERY_ID != '000'
+					   AND OI.ORD_ITEM_DIVN_CD = '00'
+				 	   AND (0, OI.STR_VENDOR_ID)
+					<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=",">
+								( 0, #vendorId[]# )
+					</iterate>
+					<isNotEmpty property="prodTypeCd" >
+						AND P.ONLINE_PROD_TYPE_CD = #prodTypeCd#
+					</isNotEmpty>
+					<isNotEmpty property="saleStsCd" >
+						AND O.ORD_STS_CD = #saleStsCd#
+					</isNotEmpty>
+						AND DM.DELI_TYPE_CD  in ( '04' , '06')
+						AND O.ORD_DY	BETWEEN #startDate# AND #endDate#
+					<isNotEmpty property="orderId">
+						AND O.ORDER_ID	= #orderId# 
+					</isNotEmpty>
+					<isNotEmpty property="deliStatusCode">
+					   AND NVL(DM.VEN_DELI_STATUS_CD, '01') = #deliStatusCode#
+					</isNotEmpty>
+					 ORDER  BY OI.ORDER_ID DESC, OI.DELIVERY_ID, OI.STR_VENDOR_ID
+	<isEqual property="isPageYn" compareValue="Y">
+			) E
+		)
+		WHERE PAGE = #currentPage#
+	</isEqual>
+	</select>
+	
+
+</sqlMap>

@@ -1,0 +1,76 @@
+@charset "utf-8";
+
+/*  reset 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+html>/**/body {}
+
+body, input, select, textarea, a { font:100%/1.4 'Nanum Gothic', '나눔고딕', Dotum, tahoma, Arial, Helvetica, sans-serif; font-size:13px; color:#333; }
+	
+body,div,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,
+form,fieldset,/*input,*/select,textarea, 
+blockquote,th,td,tr,a,img{margin:0;padding:0}
+a {text-decoration:none}
+a::-moz-focus-inner {border:none;}
+li{list-style:none}
+fieldset, img{border:0 none}
+table{border-collapse:collapse; border-spacing:0}
+img {vertical-align:middle;}
+[onclick] {cursor:pointer;}
+	
+/* Font-Face */
+@font-face{font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: bold;
+  src: url(../fonts/NanumGothic-Bold.eot);
+  src: url(../fonts/NanumGothic-Bold.eot?#iefix) format('embedded-opentype'),
+       url(../fonts/NanumGothic-Bold.woff2) format('woff2'),
+       url(../fonts/NanumGothic-Bold.woff) format('woff'),
+       url(../fonts/NanumGothic-Bold.ttf) format('truetype');
+}
+@font-face{font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/NanumGothic-Regular.eot);
+  src: url(../fonts/NanumGothic-Regular.eot?#iefix) format('embedded-opentype'),
+       url(../fonts/NanumGothic-Regular.woff2) format('woff2'),
+       url(../fonts/NanumGothic-Regular.woff) format('woff'),
+       url(../fonts/NanumGothic-Regular.ttf) format('truetype');
+}
+@font-face{font-family: 'Nanum Gothic';
+  font-style: normal;
+  font-weight: 800;
+  src: url(../fonts/NanumGothic-ExtraBold.eot);
+  src: url(../fonts/NanumGothic-ExtraBold.eot?#iefix) format('embedded-opentype'),
+       url(../fonts/NanumGothic-ExtraBold.woff2) format('woff2'),
+       url(../fonts/NanumGothic-ExtraBold.woff) format('woff'),
+       url(../fonts/NanumGothic-ExtraBold.ttf) format('truetype');
+}
+
+/* 기본 */
+div,div *,table,table *,ul,ul * {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+label { position:relative; display:inline-block; padding:4px 0 0 20px; }
+input[type="text"],input[type="password"],textarea { width:100%; border:1px solid #ccc; }
+input[type="checkbox"], input[type="radio"]{ position:absolute; left:0; bottom:-1px; }
+hr { margin:15px 0 20px; width:100%; height:2px; background:#ccc; border:none; }
+
+/* CTI_팝업 */
+h1 { padding:15px 15px 15px 55px; margin:0; background: no-repeat 15px 15px #536065; font-size:20px; color:#fff; }
+h1.vacate { background-image:url(./../images/h1_vacate.png);}
+h1.makecall { background-image:url(./../images/h1_makecall.png);}
+h1.answer { background-image:url(./../images/h1_answer.png);}
+h1.consultation { background-image:url(./../images/h1_consultation.png);}
+h2 { padding:0 0 10px 20px; margin-bottom:15px; background:url(./../images/bu_h2.png) no-repeat 0 6px; border-bottom:2px solid #4c5a5f; font-size:17px; color:#333; }
+
+h1 + div { padding:15px; }
+ul { overflow:hidden; padding:10px 0 15px; background:#f3f2ed; border-top:1px solid #ddd; border-bottom:1px solid #ddd; }
+li { float:left; margin-left:30px; }
+
+table { width:100%; border-top:1px solid #ddd; }
+tr > * { padding:5px 10px; min-height:33px; border-bottom:1px solid #ddd; }
+th { width:100px; background:#deeef5; text-align:left; }
+td { border-left:1px solid #ddd; }
+
+.btn { padding-top:20px; margin-top:15px; width:100%; border-top:1px solid #ccc; text-align:center; }
+.btn > * { padding:7px 15px; background:#537ea6; border:1px solid #4d779e; color:#fff; cursor:pointer; }
+.btn > *:hover {background:#4195d5; border:1px solid #1e88da;}
+.btn > * + * { margin-left:5px; }

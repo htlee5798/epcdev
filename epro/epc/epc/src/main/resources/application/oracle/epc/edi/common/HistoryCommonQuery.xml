@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="HistoryCommonQuery">
+
+	<typeAlias alias="HistoryVo" type="com.lottemart.epc.edi.comm.model.HistoryVo" />
+
+	<!-- 인터페이스 히스토리 등록 -->
+	<insert id="insertTpcIfLog" parameterClass="HistoryVo">
+		/* HistoryCommonQuery.insertTpcIfLog */
+		INSERT INTO TPC_IF_LOG
+		(
+			IF_GBN				/* 인터페이스 구분 */
+			, IF_CD				/* 인터페이스 코드 */
+			, IF_NM				/* 인터페이스 명 */
+			, REQ_PAYLOAD		/* 요청 파라미터 */
+			, RES_PAYLOAD		/* 응답 데이터 */
+			, RESULT_CD			/* 결과코드 */
+			, RESULT_MSG		/* 결과메세지 */
+			, IF_START_DT		/* 인터페이스 시작일시 */
+			, IF_END_DT			/* 인터페이스 종료일시 */
+			, IF_DURATION		/* 인터페이스 소요시간 */
+			, IF_TYPE			/* 인터페이스 유형 */
+			, IF_URL			/* 요청 URL */
+			, IF_DIRECTION		/* 인터페이스 방향 */
+			, SYS_GBN			/* 시스템구분 */
+			, CALL_USER_ID		/* 요청아이디 */
+			, CALL_USER_NM		/* 요청자명 */
+			, CALL_IP			/* 요청 IP */
+			, LOG_DT			/* 로그생성일시 */
+			, BATCH_LOG_ID		/* 배치로그아이디 */
+		)
+		VALUES
+		(
+			#ifGbn#
+			, #ifCd#
+			<isNotEmpty property="ifNm">
+			, #ifNm#
+			</isNotEmpty>
+			<isEmpty property="ifNm">
+			, FN_NEW_CODE_RTN(#ifGbn#, #ifCd#)
+			</isEmpty>
+			, #reqPayLoad#
+			, #resPayLoad#
+			, #resultCd#
+			, #resultMsg#
+			, #ifStartDt#
+			, #ifEndDt#
+			, CAST(COALESCE(NULLIF(#duration#, ''), '0') AS INTEGER)
+			, #ifType#
+			, #ifUrl#
+			, #ifDirection#
+			, #sysGbn#
+			, #callUserId#
+			, #callUserNm#
+			, #callIp#
+			, NOW()
+			, #batchLogId#
+		);
+	</insert>
+	
+	<!-- BATCH JOB LOG ID생성 -->
+	<select id="selectNewBatchJobLogId" resultClass="String">
+		/* HistoryCommonQuery.selectNewBatchJobLogId */
+		SELECT TO_CHAR(NOW(), 'YYYYMMDDHH24MISSMS')
+	</select>
+	
+	<!-- 배치 히스토리 등록 -->
+	<insert id="insertTpcBatchJobLog" parameterClass="HistoryVo">
+		/* HistoryCommonQuery.insertTpcBatchJobLog */
+		INSERT INTO TPC_BATCH_JOB_LOG
+		(
+			LOG_ID					/* 로그아이디 */
+			, JOB_ID				/* 배치잡아이디 */
+			, BATCH_TYPE			/* 배치유형 */
+			, BATCH_START_DT		/* 배치실행시작일시 */
+			, BATCH_END_DT			/* 배치실행종료일시 */
+			, BATCH_STATUS			/* 배치상태 */
+			, BATCH_MSG				/* 배치메세지 */
+			, BATCH_PARAMS			/* 배치실행파라미터 */
+			, RECCNT				/* 처리건수 */
+			, ACTIVE_NM				/* 실행자명 */
+			, ACTIVE_ID				/* 실행아이디 */
+			, BATCH_DURATION		/* 소요시간 */
+			, LOG_DT				/* 로그생성일시 */
+		)
+		VALUES
+		(
+			#logId#
+			, #jobId#
+			, #batchType#
+			, #batchStartDt#
+			, #batchEndDt#
+			, #batchStatus#
+			, #batchMsg#
+			, #batchParams#
+			, #reccnt:int#
+			, #workNm#
+			, #workId#
+			, CAST(COALESCE(NULLIF(#duration#, ''), '0') AS INTEGER)
+			, NOW()
+		);	
+	</insert>
+	
+	<!-- 배치 히스토리 상태 변경 -->
+	<update id="updateTpcBatchJobLog" parameterClass="HistoryVo">
+		/* HistoryCommonQuery.updateTpcBatchJobLog */
+		UPDATE TPC_BATCH_JOB_LOG
+		SET
+			BATCH_STATUS = #batchStatus#
+			, MESSAGE = #batchMsg#
+			, BATCH_MSG = #batchMsg#
+			, BATCH_START_DT = #batchStartDt#
+			, BATCH_END_DT = #batchEndDt#
+			, BATCH_DURATION = CAST(COALESCE(NULLIF(#duration#, ''), '0') AS INTEGER)
+			, BATCH_STATUS_CHG_DT = NOW()
+		WHERE LOG_ID = #logId#
+	</update>
+</sqlMap>	

@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" href="/js/jquery/themes/cupertino/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
+<link rel="stylesheet" href="/css/epc/style.css" />
+<script type="text/javascript" src="/js/jquery/jquery-1.5.2.js"></script>
+<script type="text/javascript" src="/js/jquery/jquery-ui-1.8.12.custom.min.js"></script>
+<script type="text/javascript" src="/js/epc/Ui_common.js"></script>
+<script type="text/javascript" src="/js/epc/common.js"></script>
+
+<script type="text/javascript">
+let _parameters = {};
+
+function getParameter() {
+    const paramObj = {};
+    const query = window.location.search.substring(1);
+    const pairs = query.split("&");
+    
+    for (const pair of pairs) {
+        if (pair) {
+            const [key, value] = pair.split("=");
+            if (key) paramObj[decodeURIComponent(key)] = decodeURIComponent(value || "");
+        }
+    }
+    return paramObj;
+}
+
+
+//jQeury 초기화
+$(document).ready(function(){
+	
+	//파라메터 로드
+	_parameters = getParameter();
+
+//	Common.installDatePicker();
+	// datepicker regional['ko'] 속성 정의.
+	$.datepicker.regional['ko'] = {
+		closeText: '닫기',
+		prevText: '이전달',
+		nextText: '다음달',
+		currentText: '오늘',
+		monthNames: ['1월','2월','3월','4월','5월','6월', '7월','8월','9월','10월','11월','12월'],
+		monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+		dayNames: ['일','월','화','수','목','금','토'],
+		dayNamesShort: ['일','월','화','수','목','금','토'],
+		dayNamesMin: ['일','월','화','수','목','금','토'],
+		dateFormat: 'yy-mm-dd', 
+		firstDay: 0,
+		isRTL: false
+	};
+
+	// datepicker 설정.
+	$.datepicker.setDefaults(
+			$.extend(
+				{
+					showMonthAfterYear: true, 
+					//showButtonPanel: true
+					changeMonth: true,
+                    changeYear: true
+				},
+				$.datepicker.regional['ko']
+			)
+	);
+	
+// 	$('#datepicker').datepicker({
+// 		onSelect: function(dateText, inst){
+// 			//var inputName = getInputName();
+// 			var inputName = _parameters.inputName;
+// 			var callbackFunc = _parameters.callbackFunc;
+// 			var inputField = eval('opener.document.'+inputName);
+			
+// 			if (inputField != null) {
+// 				$(inputField).val(dateText);
+// // 				if(callbackFunc != null) eval('opener.'+callbackFunc+'()');
+// 				if(callbackFunc != null) {
+// 					var seldate = $.trim(dateText).replace(/\D/g,"");	//yyyyMMdd
+// 					eval('opener.'+callbackFunc+'("document.'+inputName+'",'+seldate+')');
+// 				}
+				
+				
+// 				window.close();
+// 			}
+// 			else {
+// 				alert('inputName이 올바르지 않습니다: ' + inputName);
+// 			}
+// 		}
+// 	});
+
+	$('#datepicker').datepicker({
+		onSelect: function(dateText, inst){
+			const inputName = _parameters.inputName;
+		    const callbackFunc = _parameters.callbackFunc;
+
+		    if (!inputName) {
+		        alert("필수 파라미터 누락");
+		        return;
+		    }
+		    
+		    try{
+		    	/*** 부모창에서 inputName으로 element 찾기 ***/
+				// 반환 대상 input
+				const tgInput = $.trim(inputName).split(".");
+				
+				// 유효하지 않은 대상 input
+				if(tgInput == null || tgInput.length != 2){
+					alert("날짜 반환 필드를 찾을 수 없습니다!");
+			        return;
+				}
+				
+				const tgFormNm = tgInput[0] || null;		//target form Id or Name
+				const tgFieldNm = tgInput[1] || null; 		//target input Id or Name
+				
+				// 유효하지 않은 대상 input
+				if(tgFormNm == null || $.trim(tgFormNm) == "" || tgFieldNm == null || $.trim(tgFieldNm) == ""){
+					alert("날짜 반환 필드를 찾을 수 없습니다!");
+			        return;
+				}
+				
+				// 부모창 form element
+				const inputForm = window.opener.document.querySelector("#"+tgFormNm) || window.opener.document.querySelector("form[name='"+tgFormNm+"']");
+				// 부모창 input element
+				const inputField = inputForm.querySelector("#"+tgFieldNm) || inputForm.querySelector("input[name='"+tgFieldNm+"']");
+				
+				// input filed가 있을 경우, 대상 필드에 값 셋팅
+				if (inputField) {
+					$(inputField).val(dateText);
+				}
+		    	
+				// callback function 있을 경우, 호출
+				if(callbackFunc != null) {
+					// 부모창의 콜백 함수 실행
+		            const cbFunc = window.opener[callbackFunc];
+					// 날짜를 yyyyMMdd 형식으로 변환
+		            const seldate = $.trim(dateText).replace(/\D/g, "");
+					if(typeof cbFunc === "function"){
+						//callback function 실행
+						cbFunc($(inputField), seldate);
+					}
+				}
+			    
+				window.close();
+		    }catch(e){
+		    	alert("처리 중 오류 발생: " + e.message);
+		    }
+		}
+	});
+
+
+	//선택가능 최소 날짜
+	if(_parameters.minDt){
+		var minDt = $.trim(_parameters.minDt).replace(/\D/g,"");
+		if(minDt.length != 8) return;
+		var yy = minDt.substring(0,4);//연
+		var mm = minDt.substring(4,6);//월
+		var dd = minDt.substring(6,8);//일
+		
+		$('#datepicker').datepicker('option', 'minDate', new Date(yy, mm-1, dd));
+	}
+	
+	//선택가능 최대 날짜
+	if(_parameters.maxDt){
+		var maxDt = $.trim(_parameters.maxDt).replace(/\D/g,"");
+		if(maxDt.length != 8) return;
+		var yy = maxDt.substring(0,4);//연
+		var mm = maxDt.substring(4,6);//월
+		var dd = maxDt.substring(6,8);//일
+		
+		$('#datepicker').datepicker('option', 'maxDate', new Date(yy, mm-1, dd));
+	}
+	
+	//parameter로 넘어온 날짜가 있을 경우, default setting
+	var inputDate = $.trim(_parameters.inputDate).replace(/\D/g,"");
+	if(inputDate.length == 8){
+		var yy = inputDate.substring(0,4);//연
+		var mm = inputDate.substring(4,6);//월
+		var dd = inputDate.substring(6,8);//일
+		
+		var seldate = yy+"-"+mm+"-"+dd;
+		
+		if(yy > 2100 || yy < 1990){
+			return;
+		}
+		
+		if(mm > 12 || mm < 1){
+			return;
+		}
+		
+		if(dd > 31 || dd < 1){
+			return;
+		}
+		
+		$("#datepicker").datepicker("setDate", seldate);
+	}
+	
+
+});
+
+</script>
+<div id="datepicker" style="margin-left:9px;margin-top:8px;" />

@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Jan 14 14:03:29 KST 2025
+hibernate-validator-4.1.0.Final.jar>neonexus=
+hibernate-validator-4.1.0.Final-sources.jar>neonexus=
+hibernate-validator-4.1.0.Final.pom>neonexus=

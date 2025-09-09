@@ -1,0 +1,151 @@
+@charset "utf-8";
+/************************************************************************
+ * filename		: popup.css
+ * description	: popup, CSS import
+ * date			: 2011.08.16
+************************************************************************/
+
+body	{background-color:#FFF;}
+
+.btn_w_s a	{min-width:38px; _width:38px;}
+.btn_r_s a	{min-width:38px; _width:38px;}
+
+/*family가 돋움올 바뀌면서 높이 재정의 */
+.tb_h_common	tbody	td	{padding-top:7px; padding-bottom:7px; color:#999; line-height:16px;}
+.tb_h_common	tbody	tr.start	td	{padding-top:15px;}
+.tb_h_common	tbody	tr.end	td	{padding-bottom:11px;}
+
+/* 120112 추가/수정 */
+/*title*/
+h2.t_malgun_layer	{margin-bottom:5px; font:bold 14px malgun, "Malgun Gothic"; color:#333;}
+/* //120112 추가/수정 */
+
+/* layer popup */
+.lp_w_400	{width:400px;}
+.lp_w_430	{width:430px;}
+.lp_w_500	{width:500px;}
+.lp_w_640	{width:640px;}
+
+.layerpop	 {background-color:#fff;}
+.layerpop	.lpop_head	 {position:relative; background:url('/images/front/member/bg-layerPop-top.gif') repeat-x left bottom; margin:20px 20px 0 20px; padding-bottom:17px;}
+.layerpop	.lpop_head	 h1	{margin-left:10px;}
+.layerpop	.lpop_head	 .btn_close	{position:absolute; right:0; _right:20px; top:0;}
+.layerpop	.lpop_contents	{padding:20px 30px 0 30px;}
+.layerpop	.lpop_contents2	{padding:15px 20px 0 30px;}
+
+/* layer popup:box */
+.box_gray_lt	 {background:url('/images/front/common/box-gray-lt.gif') no-repeat 0 0 #fcfcfc;}
+.box_gray_rb	{background:url('/images/front/common/box-gray-rb.gif') no-repeat right bottom;}
+.box_gray_rt	{background:url('/images/front/common/box-gray-rt.gif') no-repeat right 0;}
+.box_gray_lb	{background:url('/images/front/common/box-gray-lb.gif') no-repeat 0 bottom; letter-spacing:-1px;}
+
+.box_w_440	{width:440px;}
+.box_w_440	.box_gray_lb, .box_w_580	.box_gray_lb	{padding:21px 10px 21px 21px;}
+.box_w_580	{width:580px;}
+.box_w_580	 .input_info	{width:539px;}
+.box_w_580	 .input_info	dt	{width:89px;}
+
+.f_w_340	{width:340px; margin:0 auto;display:block;}
+.f_w_340	.input_info	{width:340px;}
+.f_w_340	 .input_info	dt	 {width:55px;}
+
+.input_info	{width:400px; overflow:hidden; zoom:1;}
+.input_info	dt		{float:left; width:100px; padding-top:5px; color:#666; vertical-align:top; line-height:15px;}
+.input_info	dd	{float:left; padding-bottom:5px;}
+.input_info	dd.end	{padding-bottom:0;}
+
+/* 120112 추가/수정 */
+/*tbody 에 스크롤이 있을때*/
+.scroll_title_layer	table	{width:100%; border-top:2px solid #ccc;}
+.scroll_title_layer	thead	th	{padding-top:10px; padding-bottom:8px; border-bottom:1px solid #e6e6e6; background-color:#f5f5f5; font-weight:bold; color:#666;}
+.tb_h_c_scroll_layer	{border-top:0; overflow:-moz-scrollbars-vertical;
+	scrollbar-face-color: #fff;
+	scrollbar-shadow-color: #e6e6e6;
+	scrollbar-highlight-color: #fff;
+	scrollbar-3dlight-color: #e6e6e6;
+	scrollbar-darkshadow-color: #f3f3f3;
+	scrollbar-track-color: #f3f3f3;
+	scrollbar-arrow-color: #e6e6e6;
+	scrollbar-base-color: #FFFFFF;
+}
+.tb_h_c_scroll_layer	thead,	.tb_h_c_scroll	thead	tr,	.tb_h_c_scroll	thead	th	{visibility:hidden; height:0; font-size:0; line-height:0; margin:0; padding:0; border:0; background:none; overflow:hidden}
+.scroll_title_layer	table	th.t_center	{padding-left:4px; padding-right:24px; text-align:center;}
+.scroll_title_layer	table	th.t_right	{padding-left:5px; padding-right:29px; text-align:right;}
+.scroll_title_layer	table	th.t_r_15	{padding-left:5px; padding-right:34px; text-align:right;}
+
+
+/*tbody 에 스크롤이 있을때 넓이 정의 */
+.layerpop .lp_w_500	.tb_h_c_scroll_layer	{width:440px; overflow-y:scroll;}
+.layerpop .lp_w_500	.tb_h_c_scroll_layer	table	{width:420px;}
+
+/*tbody 에 스크롤이 있을때 높이 정의 */
+.coupon_search_layer	.tb_h_common	{height:100px; overflow-y:auto; border-bottom:1px solid #e6e6e6;}
+.coupon_search_layer	.tb_h_common	td	{color:#666; letter-spacing:0; line-height:16px;}
+.coupon_search_layer	.tb_h_common	tbody td.nodata {padding: 30px 0 !important; text-align: center;}
+
+.coupon_view	.tb_h_c_scroll_layer	{height:139px;}
+.coupon_search_layer	.autoheight	{height:100%;}
+.coupon_search_layer	.autoheight td	{padding-top:12px;padding-bottom:2px;}
+
+.product_view_layer	.tb_h_common	td	{line-height:16px;}
+.product_view_layer	.tb_scroll_1	{height:160px}
+.product_view_layer	.tb_scroll_2	{height:90px}
+
+.reduced_price_layer	.tb_h_common	{height:165px;}
+/* //120112 추가/수정 */
+
+/*input_info dd 에 넓이 정의 */
+.lp_w_500	.input_info	dd	{width:300px;}
+
+/* layer popup:box:p */
+.txt_m_info	{margin:-3px 0 -4px; color:#666; line-height:18px}
+
+/*tbody 에 스크롤이 있을때 넓이 정의 */
+.lp_w_500	.tb_h_c_scroll	{width:440px; overflow:auto;}
+.lp_w_500	.tb_h_c_scroll	table	{width:420px;}
+
+/* 기부 */
+.sch_donate	{padding-top:0 !important;}
+.sch_donate	.tb_h_c_scroll	{height:290px;}
+
+/* 총 기부금액 */
+.form_donate	{margin-left:-15px; text-align:center; color:#666;}
+.form_donate	label	{display:inline-block; width:78px; text-align:left;}
+.form_donate	.txt	{border-bottom:1px solid #999; font:normal 22px/24px CoHead; color:#333; text-align:right;}
+
+.scroll_title	table	{width:100%; border-top:2px solid #ccc;}
+.scroll_title	thead	th	{padding-top:10px; padding-bottom:7px; border-bottom:1px solid #e6e6e6; background-color:#f5f5f5; font-weight:bold; color:#666;}
+
+.tb_h_c_scroll	thead,	.tb_h_c_scroll	thead	tr,	.tb_h_c_scroll	thead	th	{visibility:hidden; height:0; font-size:0; line-height:0; margin:0; padding:0; border:0; background:none; overflow:hidden}
+.lpop_contents	.scroll_title	thead	th{background:#f4f4f4;}
+.lpop_contents	.scroll_title	thead	th.line	{background:url('/images/front/order/line-th-basket.gif') no-repeat right 0 #f4f4f4;}
+
+/**/
+.delivery_add	{line-height:18px;}
+.delivery_add	.t_11	{color:#999; margin-top:3px;}
+
+
+.box_w_440	.check_idbox	{margin:10px 10px 0 0; margin-right:10px; padding-top:15px; background:url('/images/front/common/line-dot.gif') repeat-x center top; text-align:center; font:12px malgun, "Malgun Gothic";}
+.box_w_440	.check_idbox	p	{margin-bottom:4px; font:11px Dotum; color:#999;}
+
+
+/* 주문 상품 품절 시 대체안 */
+.tx_alternative_1	{font-size:18px; text-align:center;}
+.tx_alternative_2	{margin-top:7px; color:#999; font-size:11px; line-height:18px; font-family:Dotum;}
+.tx_alternative_1_1	{margin-top:20px; line-height:18px; font-size:15px;} /* 2012-08-31 추가 */
+
+
+/* 멀티 배송 */
+#lpop_DeliveryMulti {display:none;}
+
+.lpop_DeliveryMulti .lpop_contents {padding:10px 30px 0 30px; font-size:12px;}
+.lpop_DeliveryMulti .multi_total {padding:10px 0;}
+.lpop_DeliveryMulti table input[type="checkbox"] {margin:0 5px;}
+.lpop_DeliveryMulti .tb_v_comm {}
+.lpop_DeliveryMulti .tb_v_comm table th {padding:0; background-image:none; line-height:40px; text-align:center;}
+.lpop_DeliveryMulti .tb_v_comm table th.line {background:#f4f4f4 url('/images/front/order/line-th-basket.gif') no-repeat right 0;}
+.lpop_DeliveryMulti .tb_v_comm table th.t_left {padding:0 0 0 5px; text-align:left;}
+.lpop_DeliveryMulti .tb_h_c_scroll_layer {width:440px; height:150px; padding:5px 0 0 0; border-bottom:1px solid #e6e6e6; overflow-y: scroll;}
+.lpop_DeliveryMulti .tb_h_c_scroll_layer table {}
+.lpop_DeliveryMulti .tb_h_c_scroll_layer table tr.selected {background:#fcf1f2;}
+.lpop_DeliveryMulti .tb_h_c_scroll_layer table td {padding:7px 5px;}

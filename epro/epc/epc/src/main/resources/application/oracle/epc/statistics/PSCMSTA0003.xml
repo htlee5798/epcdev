@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0003">
+	<typeAlias alias="pscmsta0003VO" type="com.lottemart.epc.statistics.model.PSCMSTA0003VO"/>
+	
+	
+	<select id="selectToDate" resultClass="dataMap">
+	<![CDATA[	
+		SELECT TO_CHAR(CURRENT_TIMESTAMP(0),'YYYY-MM-DD')TO_DATE,
+			   TO_CHAR(CURRENT_TIMESTAMP(0),'YYYY-MM')||'-'||'01'FIRST_DATE
+		FROM DUAL
+	]]>
+	</select>
+		
+	
+	<select id="getAsianaBalanceAccountList" parameterClass="pscmsta0003VO" resultClass="com.lottemart.common.util.DataMap">
+	/*  PSCMSTA0003.getAsianaBalanceAccountList */
+	<![CDATA[
+SELECT *
+	FROM (
+          SELECT   
+                   CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+                 , COUNT(*) OVER() TOTAL_COUNT
+                 , B.*   
+		FROM (    	                       
+		SELECT  RANK_NUM, ORD_DY, LST_SALE_CFM_DATE, ORDER_ID, MEMBER_NO, MEMBER_NM, DECODE(ADJ_CD,'B','일반','P','보너스') ADJ_CD, ALGN_MEMBER_NO, DPST_AMT, SAVU_MILE
+		  FROM
+		      (
+				SELECT 
+		]]>
+					   ROW_NUMBER()OVER(ORDER BY LST_SALE_CFM_DATE DESC, MEMBER_NO, ORDER_ID) RANK_NUM,
+		<![CDATA[					   
+					   TO_CHAR(TO_DATE(ORD_DY,'yyyy-mm-dd'),'yyyy-mm-dd')ORD_DY,
+		      		   LST_SALE_CFM_DATE,
+				       ORDER_ID,
+				       MEMBER_NO,
+				       MEMBER_NM,
+				       DECODE(C.NUM, 1, 'B', 'P') ADJ_CD,
+				       ALGN_MEMBER_NO,
+				       DPST_AMT,
+				       (TRUNC(DPST_AMT, -3) / 1000) * CASE WHEN C.NUM = 1 THEN 1      /* 1000원 단위 절사후 1000원 당 마일리지 적립*/
+				                                           ELSE SAVU_MILE -1 
+				                                      END  SAVU_MILE
+				FROM   (SELECT O.ORD_DY,
+				               O.ORDER_ID,
+				               O.MEMBER_NO,
+				               AM.SAVU_MILE,
+				               OB.ALGN_MEMBER_NO,
+				               OB.DPST_AMT,
+				               OB.MEMBER_NM,
+				               OB.LST_SALE_CFM_DATE
+				        FROM   (SELECT /*+ ORDERED */
+				                       O.ORDER_ID, 
+				                       O.FIRST_ORDER_ID, 
+				                       AO.ALGN_MEMBER_NO, 
+				                       AO.MILG_SCT, 
+				                       OD.DPST_AMT,
+				                       MM.MEMBER_NM,
+				                       O.LST_SALE_CFM_DATE
+				                FROM   TOR_ORDER O,
+				                       TOR_DEMAND OD,
+				                       TALGN_ORD_BASE AO,
+				                       TME_MEMBER MM
+				                WHERE  O.FIRST_ORDER_ID = AO.ORDER_ID
+				]]>                
+				           	   <isNotEmpty prepend="AND" property="custNm" > MM.MEMBER_NM like '%'||#custNm#||'%' </isNotEmpty>
+				           	   <isNotEmpty prepend="AND" property="orderId" > (O.ORDER_ID = #orderId# OR O.FIRST_ORDER_ID = #orderId#)  </isNotEmpty>
+				           	   <isNotEmpty prepend="AND" property="aMemberNo" > AO.ALGN_MEMBER_NO = #aMemberNo# </isNotEmpty>
+	 			               <isEqual property="searchGbn" compareValue="1">AND O.ORD_DY BETWEEN #fromDate# AND #toDate#</isEqual>
+	 			               <isEqual property="searchGbn" compareValue="2">AND O.LST_SALE_CFM_DATE BETWEEN #fromDate#||'000000' AND #toDate#||'999999'</isEqual>
+				                AND    OD.SETL_TYPE_CD IN ('01', '02', '04', '06', '07', '09', '10')
+				                AND    O.ORDER_ID       = OD.ORDER_ID
+				                AND    O.ORD_STS_CD = '11' /*결제완료*/
+				                AND    O.SALE_STS_CD  = '01' /*매출완료*/
+				                AND    AO.MILG_SCT    = '01' /*아시아나*/
+				                AND    O.MEMBER_NO = MM.MEMBER_NO(+)
+				               ) OB,
+				               TOR_ORDER O,
+				               TALGN_MILG_LOG AM
+				        WHERE  OB.FIRST_ORDER_ID = O.ORDER_ID
+				        AND    OB.MILG_SCT       = AM.MILE_DIVN_CD
+				        AND    O.ORD_DY      BETWEEN AM.START_DY AND AM.END_DY
+				       ) T,
+				       TET_COPY_NO C
+				WHERE  C.NUM <![CDATA[<=]]> CASE WHEN T.SAVU_MILE - 1 > 0 THEN 2
+				                     ELSE 1
+				                END  
+				  	)
+		     )B
+		)	     
+	     WHERE PAGE = #pageIndex#    
+		   
+	 
+	</select>
+
+
+
+	<select id="getAsianaBalanceAccountSum" parameterClass="pscmsta0003VO" resultClass="com.lottemart.common.util.DataMap">
+	/*  PSCMSTA0003.getAsianaBalanceAccountSum */
+			SELECT NVL(SUM(DPST_AMT),0) AS DPST_AMT
+					, NVL(SUM(SAVU_MILE),0) AS SAVU_MILE
+					, COUNT(*) AS CNT
+				FROM(
+				SELECT 
+				       DPST_AMT,
+				       (TRUNC(DPST_AMT, -3) / 1000) * CASE WHEN C.NUM = 1 THEN 1      /* 1000원 단위 절사후 1000원 당 마일리지 적립*/
+				                                           ELSE SAVU_MILE -1 
+				                                      END  SAVU_MILE
+				FROM   (SELECT AM.SAVU_MILE,
+				               OB.DPST_AMT
+				        FROM   (SELECT /*+ ORDERED */
+				                       O.ORDER_ID, 
+				                       O.FIRST_ORDER_ID, 
+				                       AO.ALGN_MEMBER_NO, 
+				                       AO.MILG_SCT, 
+				                       OD.DPST_AMT,
+				                       MM.MEMBER_NM,
+				                       O.LST_SALE_CFM_DATE
+				                FROM   TOR_ORDER O,
+				                       TOR_DEMAND OD,
+				                       TALGN_ORD_BASE AO,
+				                       TME_MEMBER MM
+				                WHERE  O.FIRST_ORDER_ID = AO.ORDER_ID
+				           	   <isNotEmpty prepend="AND" property="custNm" > MM.MEMBER_NM like '%'||#custNm#||'%' </isNotEmpty>
+				           	   <isNotEmpty prepend="AND" property="orderId" > (O.ORDER_ID = #orderId# OR O.FIRST_ORDER_ID = #orderId#)  </isNotEmpty>
+				           	   <isNotEmpty prepend="AND" property="aMemberNo" > AO.ALGN_MEMBER_NO = #aMemberNo# </isNotEmpty>
+	 			               <isEqual property="searchGbn" compareValue="1">AND O.ORD_DY BETWEEN #fromDate# AND #toDate#</isEqual>
+	 			               <isEqual property="searchGbn" compareValue="2">AND O.LST_SALE_CFM_DATE BETWEEN #fromDate#||'000000' AND #toDate#||'999999'</isEqual>
+				                AND    OD.SETL_TYPE_CD IN ('01', '02', '04', '06', '07', '09', '10')
+				                AND    O.ORDER_ID       = OD.ORDER_ID
+				                AND    O.ORD_STS_CD = '11' /*결제완료*/
+				                AND    O.SALE_STS_CD  = '01' /*매출완료*/
+				                AND    AO.MILG_SCT    = '01' /*아시아나*/
+				                AND    O.MEMBER_NO = MM.MEMBER_NO(+)
+				               ) OB,
+				               TOR_ORDER O,
+				               TALGN_MILG_LOG AM
+				        WHERE  OB.FIRST_ORDER_ID = O.ORDER_ID
+				        AND    OB.MILG_SCT       = AM.MILE_DIVN_CD
+				        AND    O.ORD_DY      BETWEEN AM.START_DY AND AM.END_DY
+				       ) T,
+				       TET_COPY_NO C
+				WHERE  C.NUM <![CDATA[<=]]> CASE WHEN T.SAVU_MILE - 1 > 0 THEN 2
+				                     ELSE 1
+				                END  
+				  	)
+	</select>
+
+	
+	<select id="getAsianaBalanceAccountListExcel" parameterClass="pscmsta0003VO" resultClass="com.lottemart.common.util.DataMap">
+	/*	PSCMSTA0003.getAsianaBalanceAccountListExcel	*/
+	<![CDATA[
+SELECT  RANK_NUM, ORD_DY, LST_SALE_CFM_DATE, ORDER_ID, MEMBER_NO, MEMBER_NM, DECODE(ADJ_CD,'B','일반','P','보너스') ADJ_CD, ALGN_MEMBER_NO, DPST_AMT, SAVU_MILE
+  FROM
+      (
+		SELECT
+	]]>
+			   ROW_NUMBER()OVER(ORDER BY LST_SALE_CFM_DATE DESC, MEMBER_NO, ORDER_ID) RANK_NUM,
+	<![CDATA[					   
+			   TO_CHAR(TO_DATE(ORD_DY,'yyyy-mm-dd'),'yyyy-mm-dd')ORD_DY,
+      		   LST_SALE_CFM_DATE,
+		       ORDER_ID,
+		       MEMBER_NO,
+		       MEMBER_NM,
+		       DECODE(C.NUM, 1, 'B', 'P') ADJ_CD,
+		       ALGN_MEMBER_NO,
+		       DPST_AMT,
+		       (TRUNC(DPST_AMT, -3) / 1000) * CASE WHEN C.NUM = 1 THEN 1      /* 1000원 단위 절사후 1000원 당 마일리지 적립*/
+		                                           ELSE SAVU_MILE -1 
+		                                      END  SAVU_MILE
+			FROM   (SELECT O.ORD_DY,
+			               O.ORDER_ID,
+			               O.MEMBER_NO,
+			               AM.SAVU_MILE,
+			               OB.ALGN_MEMBER_NO,
+			               OB.DPST_AMT,
+			               OB.MEMBER_NM,
+			               OB.LST_SALE_CFM_DATE
+			        FROM   (SELECT /*+ ORDERED */
+			                       O.ORDER_ID, 
+			                       O.FIRST_ORDER_ID, 
+			                       AO.ALGN_MEMBER_NO, 
+			                       AO.MILG_SCT, 
+			                       OD.DPST_AMT,
+			                       MM.MEMBER_NM,
+			                       O.LST_SALE_CFM_DATE
+			                FROM   TOR_ORDER O,
+			                       TOR_DEMAND OD,
+			                       TALGN_ORD_BASE AO,
+			                       TME_MEMBER MM
+			                WHERE  O.FIRST_ORDER_ID = AO.ORDER_ID
+			]]>                
+			           	   <isNotEmpty prepend="AND" property="custNm" > MM.MEMBER_NM like '%'||#custNm#||'%' </isNotEmpty>
+			           	   <isNotEmpty prepend="AND" property="orderId" > (O.ORDER_ID = #orderId# OR O.FIRST_ORDER_ID = #orderId#)  </isNotEmpty>
+			           	   <isNotEmpty prepend="AND" property="aMemberNo" > AO.ALGN_MEMBER_NO = #aMemberNo# </isNotEmpty>
+			               <isEqual property="searchGbn" compareValue="1">AND O.ORD_DY BETWEEN #fromDate# AND #toDate#</isEqual>
+			               <isEqual property="searchGbn" compareValue="2">AND O.LST_SALE_CFM_DATE BETWEEN #fromDate#||'000000' AND #toDate#||'999999'</isEqual>
+			                AND    OD.SETL_TYPE_CD IN ('01', '02', '04', '06', '07', '09', '10')
+			                AND    O.ORDER_ID       = OD.ORDER_ID
+			                AND    O.ORD_STS_CD = '11' /*결제완료*/
+			                AND    O.SALE_STS_CD  = '01' /*매출완료*/
+			                AND    AO.MILG_SCT    = '01' /*아시아나*/
+			                AND    O.MEMBER_NO = MM.MEMBER_NO(+)
+			               ) OB,
+			               TOR_ORDER O,
+			               TALGN_MILG_LOG AM
+			        WHERE  OB.FIRST_ORDER_ID = O.ORDER_ID
+			        AND    OB.MILG_SCT       = AM.MILE_DIVN_CD
+			        AND    O.ORD_DY      BETWEEN AM.START_DY AND AM.END_DY
+			       ) T,
+			       TET_COPY_NO C
+			WHERE  C.NUM<![CDATA[<=]]> CASE WHEN T.SAVU_MILE - 1 > 0 THEN 2
+			                     ELSE 1
+			                END  
+			  	)
+	 
+	</select>	
+</sqlMap>

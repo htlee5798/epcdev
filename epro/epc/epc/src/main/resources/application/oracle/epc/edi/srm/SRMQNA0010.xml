@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMQNA0010">
+    <typeAlias alias="srmqna0000Vo"	type="com.lottemart.epc.edi.srm.model.SRMQNA0000VO" />
+    <typeAlias alias="srmqna0010Vo"	type="com.lottemart.epc.edi.srm.model.SRMQNA0010VO" />
+
+    <!-- 공통 코드  -->
+    <resultMap id="qnaCommonCode" class="com.lottemart.epc.edi.srm.model.SRMQNA0000VO">
+        <result column="CODE" property="code" /> <!-- 코드 -->
+        <result column="NAME" property="name" /> <!-- 이름 -->
+    </resultMap>
+
+    <!--카테고리 조회-->
+    <select id="selectQnaCategoryList" parameterClass="srmqna0000Vo" resultMap="qnaCommonCode">
+        SELECT
+           CODE
+         , NAME
+        FROM
+           SQNAP_CATEGORY
+        WHERE
+           FOOD_YN_FG = #foodYnFg#
+        ORDER BY
+           NAME
+    </select>
+
+    <!--점포 영역 조회-->
+    <select id="selectQnaStoreAreaList" parameterClass="srmqna0000Vo" resultMap="qnaCommonCode">
+        SELECT
+            CODE
+          , NAME
+        FROM
+            SQNAP_STORE_AREA
+        WHERE
+            MART_SUPER_FG = #martSuperFg#
+        ORDER BY
+            NAME
+    </select>
+
+    <!--영역별 점포 조회-->
+    <select id="selectQnaStoreList" parameterClass="srmqna0000Vo" resultMap="qnaCommonCode">
+        SELECT
+            CODE
+          , NAME
+        FROM
+            SQNAP_STORE
+        WHERE
+            STORE_AREA = #areaCd#
+        ORDER BY
+            NAME
+    </select>
+
+    <!-- 업체별 요청 순번 가져오기 -->
+    <select id="selectNextQnaReqSeq" parameterClass="srmqna0010Vo" resultClass="String">
+        SELECT
+            NVL(MAX(REQ_SEQ), '0') + 1
+        FROM
+            SQNAP_BOARD
+        WHERE
+            SELLER_CODE = #sellerCode#
+    </select>
+
+    <!--QNA 작성글 등록-->
+    <insert id="insertQnaInfo" parameterClass="srmqna0010Vo">
+        INSERT INTO
+            SQNAP_BOARD
+            (
+                REQ_SEQ
+              , SELLER_CODE
+              , SUBJECT
+              , CATEGORY
+              , MAIN_NAME
+              , SELLER_NAME_LOC
+              , EMAIL
+              , PHONE
+              , HOPE_STORE
+              , CONTENT
+              , AGREE_FILE_VER
+              , REG_ID
+              , REG_DATE
+              , IS_EMAIL_REPLY
+              , BOARD_ATTACH_NO
+              , COMP_INFO_ATTACH_NO
+              , BIZ_PLAN_ATTACH_NO
+              , BIZ_REG_CERT_ATTACH_NO
+            )
+            VALUES
+            (
+                #reqSeq#
+              , #sellerCode#
+              , #subject#
+              , #category#
+              , #mainName#
+              , #sellerNameLoc#
+              , #email#
+              , #phone#
+              , #hopeStore#
+              , #content#
+              , #agreeFileVer#
+              , #regId#
+              , CURRENT_TIMESTAMP(0)
+              , 'N'
+              , #boardAttachNo#
+              , #compInfoAttachNo#
+              , #bizPlanAttachNo#
+              , #bizRegCertAttachNo#
+            )
+    </insert>
+</sqlMap>

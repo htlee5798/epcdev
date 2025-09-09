@@ -1,0 +1,529 @@
+@charset "utf-8";
+@import url(common.css);
+
+/* Skip */
+#accessibility { position:absolute; left:0; top:-1000px; }
+#accessibility a { position:fixed; left:10px; right:10px; top:-1000px; z-index:10000; padding:10px 30px 7px; background-color:#fff; border:3px solid #333; text-align:center; color:#000; font-size:12px; font-weight:bold; }
+#accessibility a:focus { top:10px; }
+
+/* Header */
+h1.home { width:900px; height:43px; margin:5px auto; text-align:right; }
+#header { position:relative; z-index:100; }
+#header div.inner { position:relative; width:655px; height:101px; margin:0 auto; padding:0 0 0 245px; }
+#header span.site_logo { position:absolute; left:0; top:0; width:220px; height:101px; line-height:101px; background-color:#fff; text-align:center; border-bottom:1px solid #E5E5E5; }
+#header span.site_logo a { display:block; width:220px; height:33px; }
+#header span.site_logo img { margin-top:36px; }
+#header h2 { float:left; }
+#header div.step { float:right; width:450px; height:101px; background-repeat:no-repeat; background-position:right top; }
+
+/* Container */
+#container:after { clear:both; display:block; content:""; }
+#container { position:relative; z-index:50; width:900px; min-height:300px; margin:0 auto; background:url('https://member.lottetown.com/images/common/bg_container.gif') repeat-y 0 0; }
+#container div.join_left { position:relative; float:left; width:218px; }
+#container div.join_left h3.club_logo { margin:61px 0 0 0; text-align:center; }
+#container div.join_content { float:left; width:649px; padding:20px 10px 20px 20px; margin:0 auto; }
+#container div.join_content div.section_contents { margin-bottom:20px; }
+#container div.join_content div.section_contents p { padding-left:7px; text-indent:-7px; line-height:160%; }
+#container div.join_content div.section_contents p.pLeft { padding-left:8px; }
+#container div.security_guide { position:absolute; left:14px; bottom:10px; z-index:100; }
+
+/* Error */
+div.error_con { width:898px; padding:143px 0 200px 0; border-left:1px solid #ededed; border-right:1px solid #ededed; }
+div.error_con div.error_box { width:469px; height:194px; margin:0 auto 30px auto; padding:73px 0 0 325px; background:url('/images/mcs/member/vm/error_img01.jpg') no-repeat 76px 73px; border:3px solid #cc1d22; }
+div.error_con div.error_box dl { padding-top:16px; }
+div.error_con div.error_box dl dt { margin-bottom:30px; color:#333; font:19px malgun, "Malgun Gothic"; font-weight:bold; }
+div.error_con div.error_box dl dd { padding-right:30px; color:#666; font:16px malgun, "Malgun Gothic"; }
+div.error_con div.error_box dl dd span { color:#da281c; }
+
+div.error_con02 { width:980px; margin:0 auto; }
+div.error_con02 div.error_box { width:469px; height:194px; margin:0 auto 30px auto; padding:73px 0 0 325px; background:url('/images/mcs/member/vm/error_img01.jpg') no-repeat 76px 73px; border:3px solid #cc1d22; }
+div.error_con02 div.error_box dl { padding-top:16px; }
+div.error_con02 div.error_box dl dt { margin-bottom:30px; color:#333; font:19px malgun, "Malgun Gothic"; font-weight:bold; }
+div.error_con02 div.error_box dl dd { padding-right:30xp; color:#666; font:16px malgun, "Malgun Gothic"; }
+div.error_con02 div.error_box dl dd span { color:#da281c; }
+
+/* Active X 설치 안내 */
+div.activeX_layer { position:absolute; z-index:1000; left:50%; top:0; width:1050px; margin-left:-525px; background-color:#072e54; }
+div.activeX_layer div.inner { height:200px; }
+div.activeX_layer div.message { height:120px ;}
+div.activeX_layer div.ie_desc { height:93px; border-left:3px solid #072e54; border-right:3px solid #072e54; border-bottom:3px solid #072e54; background-color:#f3f0f0; }
+div.activeX_layer #isIE_layer  div.message { background:url("/images/mcs/common/sec_message_ie.png") no-repeat center center; }
+div.activeX_layer #isIE9_layer div.message { background:url("/images/mcs/common/sec_message_ie9.png") no-repeat center center; }
+div.activeX_layer #notIE_layer div.message { background:url("/images/mcs/common/sec_message_ieno.png") no-repeat center center; }
+div.activeX_layer .button_close { position:absolute; right:10px; top:10px; }
+div.activeX_layer .install_ie { height:65px; text-align:center; }
+div.activeX_layer dl { overflow:hidden; height:68px; padding:25px 0 0 160px; }
+div.activeX_layer dl dt { float:left; padding-top:10px; color:#072e54; font:17px malgun, "Malgun Gothic"; font-weight:bold; }
+div.activeX_layer dl dd { float:left; height:38px; margin-left:29px; padding-left:27px; background:url("/images/mcs/common/activex_list_bar.gif") no-repeat 0 0; color:#333; font:15px malgun, "Malgun Gothic"; }
+div.activeX_layer dl dd ul { clear:both; overflow:hidden; }
+div.activeX_layer dl dd ul li:first-child { margin-left:0; }
+div.activeX_layer dl dd ul li { float:left; margin-left:34px; padding-left:10px; background:url("/images/mcs/common/activex_list_icon.gif") no-repeat 0 8px; }
+div.activeX_layer dl dd p.help a { color:#da291c; text-decoration:underline; }
+
+/* STEP1 본인인증 */
+div.mem_box { position:relative; padding:0 45px; }
+div.mem_box p.tit01 { margin-bottom:15px; color:#333; font:16px malgun, "Malgun Gothic"; font-weight:bold; }
+div.mem_box p.tit02 { margin-bottom:20px; color:#333; font:16px malgun, "Malgun Gothic"; }
+div.mem_box div.inner { width:890px; padding:40px 0 40px 0; border:5px solid #eae6da; }
+div.mem_box div.line { width:740px; margin:0 auto; }
+div.mem_box p.largetitle { font-size:18px; color:#5e5e5e; letter-spacing:-2px; padding:20px 0 30px; font-weight:bold; }
+div.mem_box p.largetitle .eng { letter-spacing:-1px; }
+div.mem_box p.largetitle .impo { color:#ff0000; }
+div.mem_box .title { margin-bottom:15px; font-size:12px; color:#5e5e5e; font-weight:bold; }
+div.mem_box .desc { margin-bottom:10px; color:#848484; line-height:20px; letter-spacing:-1px; }
+div.mem_box .desc1 { margin-bottom:30px; color:#848484; line-height:20px; letter-spacing:-1px; }
+div.mem_box .desc2 { margin-bottom:10px; color:#ff0000; letter-spacing:-1px; }
+div.mem_box dl { margin-bottom:10px; padding:26px; background-color:#fafafa; border:1px solid #ccc; color:#666; line-height:1.6; letter-spacing:-1px; }
+div.mem_box dt { font-weight:bold; color:#5E5E5E; margin-bottom:5px; }
+div.mem_box dd { padding-left:10px; margin-bottom:15px; }
+div.mem_box ul.auth_method { overflow:hidden; width:580px; height:auto; margin:0 auto 30px auto; } /* 2014.12.12 */
+div.mem_box ul.auth_method li { width:429px; } /* 2014.12.12 */
+div.mem_box ul.auth_method li.phone { float:none;margin:0 auto; } /* 2014.12.12 */
+div.mem_box ul.auth_method li.phone a { display:block; height:210px; background:url("/images/mcs/member/cert_1.gif") no-repeat left top; } /* 2014.12.12 */
+div.mem_box ul.auth_method li.phone a:hover { background-image:url("/images/mcs/member/cert_1_1.gif"); } /* 2014.12.12 */
+div.mem_box ul.auth_method li.ipin { display:none;float:right; } /* 2014.12.12 */
+div.mem_box ul.auth_method li.ipin a.l1 { display:block; height:110px; background:url("/images/mcs/member/cert_2.gif") no-repeat left top; }
+div.mem_box ul.auth_method li.ipin:hover a.l1 { background-image:url("/images/mcs/member/cert_2_1.gif"); }
+div.mem_box ul.auth_method li.ipin a.l2 { display:block; height:22px; background:url("/images/mcs/member/cert_2_b.gif") no-repeat left top; }
+div.mem_box ul.auth_method li.ipin:hover a.l2 { background-image:url("/images/mcs/member/cert_2_b2.gif"); }
+div.mem_box .go_security { margin-right:3px; text-align:right; }
+div.mem_box .go_security a { color:#666; text-decoration:underline; }
+
+div.mem_box02 { position:relative; }
+div.mem_box02 p.tit01 { margin-bottom:15px; color:#333; font:14px malgun, "Malgun Gothic"; font-weight:bold; }
+div.mem_box02 p.tit02 { margin-bottom:20px; color:#333; font:14px malgun, "Malgun Gothic"; }
+div.mem_box02 div.inner { padding:30px 28px 30px 28px; border:5px solid #EAE6DA; }
+div.mem_box02 p.largetitle { font-size:18px; color:#5e5e5e; letter-spacing:-2px; padding:20px 0 30px; font-weight:bold; }
+div.mem_box02 p.largetitle .eng { letter-spacing:-1px; }
+div.mem_box02 p.largetitle .impo { color:#ff0000; }
+div.mem_box02 .title { margin-bottom:15px; font-size:12px; color:#5e5e5e; font-weight:bold; }
+div.mem_box02 .desc { margin-bottom:10px; color:#848484; line-height:20px; letter-spacing:-1px; }
+div.mem_box02 .desc1 { margin-bottom:20px; color:#848484; line-height:20px; letter-spacing:-1px; }
+div.mem_box02 .desc2 { margin-bottom:10px; color:#ff0000; letter-spacing:-1px; }
+div.mem_box02 dl { padding:10px; background-color:#FAFAFA; border:1px solid #CCC; color:#666; line-height:1.6; letter-spacing:-1px; }
+div.mem_box02 dt { font-weight:bold; color:#5E5E5E; margin-bottom:5px; }
+div.mem_box02 dd { padding-left:10px; margin-bottom:15px; }
+div.mem_box02 ul.auth_method { width:566px; height:150px; margin:0 auto; }
+div.mem_box02 ul.auth_method li { width:270px; }
+div.mem_box02 ul.auth_method li.phone { float:left; }
+div.mem_box02 ul.auth_method li.phone a { display:block; height:132px; background:url("/images/mcs/member/cert_1.gif") no-repeat left top; }
+div.mem_box02 ul.auth_method li.phone a:hover { background-image:url("/images/mcs/member/cert_1_1.gif"); }
+div.mem_box02 ul.auth_method li.ipin { float:right; }
+div.mem_box02 ul.auth_method li.ipin a.l1 { display:block; height:110px; background:url("/images/mcs/member/cert_2.gif") no-repeat left top; }
+div.mem_box02 ul.auth_method li.ipin:hover a.l1 { background-image:url("/images/mcs/member/cert_2_1.gif"); }
+div.mem_box02 ul.auth_method li.ipin a.l2 { display:block; height:22px; background:url("/images/mcs/member/cert_2_b.gif") no-repeat left top; }
+div.mem_box02 ul.auth_method li.ipin:hover a.l2 { background-image:url("/images/mcs/member/cert_2_b2.gif"); }
+
+div.mem_search { position:relative; width:625px; }
+div.mem_search.mAuto{ margin:0 auto; }
+div.mem_search div.inner {  margin-bottom:34px; height:250px; padding-bottom:48px; border-bottom:1px solid #e4e4e4; }
+div.mem_search div.inner h3 { margin-bottom:11px; }
+div.mem_search div.inner .txt { margin-bottom:34px; color:#333; }
+div.mem_search div.inner ul.auth_method li { width:300px; }
+div.mem_search div.inner ul.auth_method li.phone { float:left; }
+div.mem_search div.inner ul.auth_method li.phone a { display:block; height:164px; background:url("/images/mcs/member/cert_new_1.gif") no-repeat left top; }
+div.mem_search div.inner ul.auth_method li.phone a:hover { background-image:url("/images/mcs/member/cert_new_1_1.gif"); }
+div.mem_search div.inner ul.auth_method li.ipin { float:right; }
+div.mem_search div.inner ul.auth_method li.ipin a.l1 { display:block; height:127px; background:url("/images/mcs/member/cert_new_2.gif") no-repeat left top; }
+div.mem_search div.inner ul.auth_method li.ipin:hover a.l1 { background-image:url("/images/mcs/member/cert_new_2_1.gif"); }
+div.mem_search div.inner ul.auth_method li.ipin a.l2 { display:block; height:37px; background:url("/images/mcs/member/cert_new_2_b.gif") no-repeat left top; }
+div.mem_search div.inner ul.auth_method li.ipin:hover a.l2 { background-image:url("/images/mcs/member/cert_new_2_b2.gif"); }
+div.mem_search div.info_box { height:50px; padding-left:137px; background:url('/images/mcs/common/icon_info.gif') no-repeat 50px 0; }
+div.mem_search div.info_box dl { padding-left:30px; border-left:1px solid #e8e7e7; }
+div.mem_search div.info_box dl dt { font-weight:bold; }
+
+/* S : Footer */
+#c_footer { width:100%; }
+#d_footer { width:100%; }
+#footer { width:100%; }
+
+div.fcontent:after { clear:both; display:block; content:""; }
+div.fcontent { width:900px; margin:0 auto 20px auto; border-top:2px solid #e5e5e5; }
+div.fcontent div.logo { float:left; width:210px; padding:20px 0 0 30px; }
+div.fcontent div.fbox { position:relative; float:left; width:660px; padding:24px 0 0 0; }
+div.fbox ul.menu:after { clear:both; display:block; content:""; }
+div.fbox ul.menu { margin-bottom:15px; }
+div.fbox ul.menu li { float:left; margin-left:13px; padding-left:11px; background:url('/images/mcs/member/footer_menu_bar.gif') no-repeat 0 3px; }
+div.fbox ul.menu li a { color:#5a5858; font:12px Dotum, "돋움"; }
+div.fbox ul.menu li:first-child { margin:0; padding:0; background:none; }
+div.fbox div.addr { clear:both; }
+div.fbox div.addr p { color:#666; font-size:11px; line-height:19px; word-spacing:-1px; }
+div.fbox div.addr p a { vertical-align:top; }
+div.fbox div.addr p a img { margin-left:6px; vertical-align:top; }
+div.fbox div.addr address { color:#666; font-size:11px; line-height:19px; word-spacing:-1px; }
+div.fbox div.addr address a { vertical-align:top; }
+div.fbox div.addr address a img { margin-left:6px; vertical-align:top; }
+
+div.fcontent02:after { clear:both; display:block; content:""; }
+div.fcontent02 { width:980px; margin:0 auto; padding-bottom:20px; background-color:#f5f5f5; border-top:1px solid #e5e5e5; }
+div.fcontent02 div.logo { float:left; width:220px; padding:20px 0 0 60px; }
+div.fcontent02 div.fbox { position:relative; float:left; width:700px; padding:24px 0 0 0; }
+div.fcontent02 div.fbox div.affiliate { position:absolute; top:14px; right:45px; }
+
+div.fcontent03:after { clear:both; display:block; content:""; }
+div.fcontent03 { width:980px; margin:0 auto; padding-bottom:20px; background-color:#f5f5f5; border-top:1px solid #e5e5e5; }
+div.fcontent03 div.logo { float:left; width:220px; padding:20px 0 0 60px; }
+div.fcontent03 div.fbox { position:relative; float:left; width:700px; padding:24px 0 0 0; }
+div.fcontent03 div.fbox div.affiliate { position:absolute; top:14px; right:45px; }
+
+/* 관계사 사이트 */
+div.affiliate { position:absolute; top:14px; right:0; }
+div.affiliate a.view { width:172px; height:21px; padding:9px 0 0 10px; background:url('/images/mcs/common/f_bg_sel_off.gif') no-repeat 0 0; color:#666; font-size:11px; }
+div.affiliate a.view.on { background:url('/images/mcs/common/f_bg_sel_on.gif') no-repeat 0 0; }
+div.affiliate div.aff_box { position:relative; }
+div.affiliate div.aff_sel { overflow-y:scroll; overflow-x:hidden; position:absolute; top:-335px; left:-9999px; width:170px; height:280px; padding:9px 5px 15px 5px; background:#fff; border:1px solid #d9d9d9; font-size:11px; line-height:14px; z-index:60; }
+div.affiliate div.aff_sel.on { left:0; }
+div.affiliate div.aff_sel ul li { height:14px; margin:0; padding:0; }
+div.affiliate div.aff_sel ul li a { display:block; float:none; margin:0; padding:0 0 0 5px; background:0;color:#393939; text-indent:0; }
+div.affiliate div.aff_sel ul li a:hover { background:#39f; color:#fff; text-decoration:none; }
+/* E : Footer */
+
+/* 롯데마트 클럽 멤버스 회원 온라인 가입 메인 */
+p.join_btn { margin-bottom:42px; text-align:center; }
+
+div.method_box { width:770px; margin-top:21px; }
+div.method_box ul.tab_line { width:770px; height:33px; margin-bottom:20px; }
+div.method_box ul.tab_line li { position:relative; float:left; }
+div.method_box p.benefit { margin-bottom:20px; }
+
+div.method_box div.step_box { margin-bottom:40px; }
+div.method_box div.step_box h3 { margin-bottom:10px; }
+
+div.method_box div.mem_out { width:770px; margin-bottom:90px; }
+div.method_box div.mem_out h3 { margin-bottom:14px; }
+div.method_box div.mem_out dl { position:relative; border-top:2px solid #c7c7c7; border-bottom:1px solid #dedede; }
+div.method_box div.mem_out dl dt { float:left; width:115px; height:53px; padding:31px 0 0 15px; background-color:#f4f4f4;}
+div.method_box div.mem_out dl dd { float:left; padding:20px 0 0 19px; line-height:18px; }
+div.method_box div.mem_out dl dd a { position:absolute; top:24px; right:9px; }
+
+div.join_btn { margin-bottom:30px; }
+
+div.join_dtl {  }
+div.join_dtl h3 { margin-bottom:10px; }
+div.join_dtl .txt { margin-bottom:17px; }
+
+div.tab_box { position:relative; padding-top:38px; }
+div.tab_box .hide { display:none; }
+div.tab_box div.benefit_tab01 { position:absolute; top:0; left:0; }
+div.tab_box div.benefit_tab02 { position:absolute; top:0; left:320px; }
+div.tab_box div.benefit_tab01 a { display:block; width:320px; height:38px; background:url('/images/mcs/member/bg_tab01.gif') no-repeat 0 0; background-position:0 0; text-indent:-9999px; }
+div.tab_box div.benefit_tab01 a.on { background-position:0 -68px; }
+div.tab_box div.benefit_tab02 a { display:block; width:320px; height:38px; background:url('/images/mcs/member/bg_tab01.gif') no-repeat 0 0; background-position:-320px -68px; text-indent:-9999px; }
+div.tab_box div.benefit_tab02 a.on { background-position:-320px 0; }
+div.tab_box ul.benefit li { float:left; }
+div.tab_box div.content01, div.tab_box div.content02 { margin-bottom:20px; }
+div.tab_box h3 { margin-bottom:13px; }
+
+/* 보안프로그램 안내(팝업) */
+h3.list_btn2 { position:absolute; top:120px; height:36px; margin-left:20px; color:#333; font:22px malgun, "Malgun Gothic"; font-weight:bold; letter-spacing:-1px; }
+h3#num2_1 {left:0; width:600px;}
+h3#num2_2 {left:150px;}
+
+/* popup */
+div.popup { width:640px; }
+div.pop_header { height:100px; padding-left:25px; background-color:#da281c; border-bottom:1px solid #9b423c; }
+div.pop_content { padding:0 20px; }
+div.pop_content div.scr_guide { margin-top:60px; font:normal 12px/16px dotum; color:#838383; }
+div.pop_content div.scr_guide p {margin:15px 0;}
+div.pop_content div.scr_guide strong { color:#5e5e5e; font-size:12px; }
+div.pop_content div.scr_guide table.set { width:100%; border-collapse: collapse; border-top:2px solid #999999; border-bottom:1px solid #999999; margin-top:15px; font-size:11px; }
+div.pop_content div.scr_guide table.set caption { position:static; width:100%; height:25px; color:#5e5e5e; font:bold 12px/16px dotum; text-align:left; visibility:visible; }
+div.pop_content div.scr_guide table.set thead th { height:40px; }
+div.pop_content div.scr_guide table.set tbody th { height:40px; background:#fafafa; text-indent:20px; border-top:1px solid #ebebeb; text-align:left; font:normal 11px dotum; }
+div.pop_content div.scr_guide table.set tbody td { height:40px; border-top:1px solid #ebebeb; text-indent:20px; }
+
+/* 다둥이 회원 가입여부 */
+div.message_box { position:relative; min-height:90px; margin-bottom:30px; padding:10px 0; background:#F8F8F8 url("/images/mcs/member/bg_message_box.gif") no-repeat center bottom; }
+div.message_box .rbox { position:relative; margin-left:170px; width:470px; padding:10px 0 0 0; background:#FFF; }
+div.message_box .rbox p { color:#398100; font-weight:bold; font-size:15px; padding:0 10px 10px; background:#FFF; }
+div.message_box .bmsg { position:relative; margin-left:170px; width:470px; padding:10px 0 0 10px; font:normal 11px dotum; color:#707070; letter-spacing:0; }
+div.message_box .bmsg2 { position:relative; margin-left:170px; width:470px; padding:10px 0 0 10px; font:normal 12px dotum; color:#707070; letter-spacing:0; }
+div.message_box .txt { position:relative; margin-left:170px; width:470px; padding:10px 0 0 10px; font:normal 12px dotum; letter-spacing:0; }
+div.message_box .button_area { margin:40px 0 20px; text-align:center; }
+div.message_box .button_area a { margin:0 3px; }
+
+div.find_btm { background-color:#F8F8F8; }
+div.find_btm ul { padding:25px 15px 20px; }
+div.find_btm ul li { color:#707070; padding-left:15px; line-height:16px; margin-bottom:5px; }
+div.find_btm ul li * { vertical-align:middle; }
+div.find_btm ul li img { margin-top:-2px; }
+div.find_btm ul li.foreigner { color:#6C3A3B; }
+div.find_btm ul li.txt { background-position:left 1px; }
+div.find_btm ul li.txt * { vertical-align:baseline; }
+div.find_btm ul li.ask { color:#8BB444; font-weight:bold; background-position:left 1px; }
+div.find_btm ul li.ask a { color:#8BB444; text-decoration:underline; }
+
+/* 다둥이 회원가입 관련 Css */
+#d_wrap.mcs_bg { height:100%; background:#bfbfbf url('/images/mcs/member/bg_body.gif') repeat-x 0 0; }
+
+#c_wrap { width:100%; }
+#c_header { position:relative; width:100%; }
+#c_container { position:relative; width:100%; }
+#c_footer { width:100%; }
+
+#d_wrap { width:100%; }
+#d_header { position:relative; width:100%; }
+#d_container { position:relative; width:100%; }
+#d_footer { width:100%; }
+
+ul.tit_line { margin-bottom:10px; }
+ul.tit_line li.r1 { float:left; }
+ul.tit_line li.r1 { color:#333; font:12px malgun, "Malgun Gothic"; line-height:24px;  }
+ul.tit_line li.r2 { float:right; color:#333; font:12px malgun, "Malgun Gothic"; line-height:24px; }
+
+div.h_content { position:relative; width:980px; margin:0 auto; background-color:#fff; }
+div.h_content ul li { float:left; }
+div.h_content span.gra_left { display:block; position:absolute; top:12px; left:-20px; width:20px; height:100px; background:url('/images/mcs/member/gradation_left.png') no-repeat 0 0; }
+div.h_content span.gra_right { display:block; position:absolute; top:12px; right:-20px; width:20px; height:100px; background:url('/images/mcs/member/gradation_right.png') no-repeat 0 0; }
+
+div.c_content { background-color:#fff; }
+
+div.d_content { position:relative; width:980px; min-height:300px; margin:0 auto; background-color:#fff; }
+div.d_content p.step { margin-bottom:30px; text-align:center; }
+
+/* 다둥이 약관동의 */
+div.d_content div.agree_con { width:950px; margin:0 auto; }
+div.d_content div.agree_con h3.tit { font:16px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.agree_con .mem { margin-bottom:4px; color:#333; font:18px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.agree_con .mem span { color:#018ee8; }
+div.d_content div.agree_con div.agree_line { margin-bottom:30px; padding:20px 19px; border:5px solid #e7e7dd; }
+div.d_content div.agree_con div.agree_line h3 { margin-bottom:9px; font:16px "Dotum"; font-weight:bold; letter-spacing:-1px; }
+div.d_content div.agree_con div.agree_line div.agree1 { margin-bottom:40px; padding-bottom:38px; border-bottom:1px solid #e5e5e5; }
+div.d_content div.agree_con div.agree_line div.agree2 { margin-bottom:45px; }
+div.d_content div.agree_con div.agree_line div.agree_btn { float:right; width:296px; height:19px; padding:2px 0 0 19px; background:url('/images/mcs/member/bg_agree.gif') no-repeat 0 0; }
+div.d_content div.agree_con div.agree_line div.agree_btn label { color:#666; font-weight:bold; }
+div.d_content div.agree_con div.agree_line div.agree_box {
+	width:858px;
+	height:100px;
+	overflow-y:scroll;
+	margin:0 auto 10px auto;
+	padding:20px 20px 0 20px;
+	border:1px solid #e6e6e6;
+	scrollbar-face-color: #fff;
+	scrollbar-shadow-color: #dedede;
+	scrollbar-highlight-color: #fff;
+	scrollbar-3dlight-color: #dedede;
+	scrollbar-darkshadow-color: #fff;
+	scrollbar-track-color: #f3f3f3;
+	scrollbar-arrow-color: #e6e6e6;
+	scrollbar-base-color: #FFFFFF;
+}
+div.d_content div.agree_con div.agree_line div.agree_box h4 { margin-bottom:10px; font-size:14px; }
+div.d_content div.agree_con div.agree_line div.agree_box h5 { margin-bottom:10px; }
+div.d_content div.agree_con div.agree_line div.agree_box .txt01 { margin-bottom:10px; line-height:20px; }
+div.d_content div.agree_con div.agree_line div.agree_box .txt01 span { color:#ee1c24; font-weight:bold; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 { margin-bottom:30px; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 dt { margin-bottom:10px; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 dt span { color:#ee1c24; font-weight:bold; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 dd { margin-bottom:10px; line-height:20px; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 dd.line { padding-left:10px; text-indent:-10px; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 dd.line02 { padding-left:16px; text-indent:-16px; }
+div.d_content div.agree_con div.agree_line div.agree_box dl.txt_box01 dd span { color:#ee1c24; font-weight:bold; }
+div.d_content div.agree_con div.agree_line div.agree_box ol.txt_box02 li { margin-bottom:4px; line-height:20px; }
+
+div.d_content div.agree_con div.agree_line div.agree_control { position:relative; }
+div.d_content div.agree_con div.agree_line div.agree_control dl dt h4 { margin-bottom:8px; font:13px "Dotum"; font-weight:normal; letter-spacing:-1px; line-height:26px; }
+div.d_content div.agree_con div.agree_line div.agree_control dl dd a.dtl_btn { position:absolute; top:0; left:202px; width:83px; height:24px; background:url('/images/mcs/member/btn_detail_view_off.gif') no-repeat 0 0; text-indent:-9999px; }
+div.d_content div.agree_con div.agree_line div.agree_control dl dd a.dtl_btn.on { background:url('/images/mcs/member/btn_detail_view_on.gif') no-repeat 0 0; }
+div.d_content div.agree_con div.agree_line div.agree_control dl dd div.agree_box { display:none; }
+div.d_content div.agree_con div.agree_line div.agree_control div.agree_btn02 { position:absolute; top:0; right:0; width:296px; height:19px; padding:2px 0 0 19px; background:url('/images/mcs/member/bg_agree.gif') no-repeat 0 0; }
+div.d_content div.agree_con div.agree_line div.agree_control div.agree_btn02 label { color:#666; font-weight:bold; }
+div.d_content div.agree_con div.all_agree { margin-bottom:27px; padding:5px 0; border-top:1px solid #e5e5e5; border-bottom:1px solid #e5e5e5; }
+div.d_content div.agree_con div.all_agree span { display:inline-block; font:13px "Dotum"; font-weight:bold; line-height:20px; }
+div.d_content div.agree_con div.all_agree a { display:inline; margin-left:5px; }
+div.d_content div.agree_con .v_line { vertical-align:-2px; }
+
+/* 다둥이 회원 정보입력 */
+div.d_content div.regist_form { width:950px; margin:0 auto; }
+div.d_content div.regist_form h3.tit { font:16px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.regist_form .mem { margin-bottom:4px; color:#333; font:18px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.regist_form .mem span { color:#018ee8; }
+div.d_content div.regist_form p.txt_box { margin-bottom:10px; font:16px malgun, "Malgun Gothic"; }
+div.d_content div.regist_form p.check_child { margin-bottom:30px; color:#333; font:13px malgun, "Malgun Gothic"; text-align:center; }
+div.d_content div.regist_form p.check_child label { margin-left:3px; font:12px malgun, "Malgun Gothic"; }
+div.d_content div.regist_form div.mem_regist { margin-bottom:20px; border-top:2px solid #c7c7c7; }
+div.d_content div.regist_form div.mem_regist table { border-bottom: 1px solid #dedede; }
+div.d_content div.regist_form div.mem_regist table th {
+	width:149px;
+	padding:12px 0 12px 15px;
+	border-bottom:1px solid #dedede;
+	background-color:#f5f5f5;
+	font:13px malgun, "Malgun Gothic";
+	font-weight:normal;
+	color:#666;
+	line-height:16px;
+	text-align:left;
+}
+div.d_content div.regist_form div.mem_regist table th span.fcolor { display:inline-block; margin-left:4px; color:#ea2534; }
+div.d_content div.regist_form div.mem_regist table td { padding:12px 20px; border-left:1px solid #dedede; border-bottom:1px solid #dedede; font:12px malgun, "Malgun Gothic"; color:#666; letter-spacing:0; line-height:16px; }
+div.d_content div.regist_form div.mem_regist table td input.type_text { height:28px; padding-left:10px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.regist_form div.mem_regist table td select { height:28px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.regist_form div.mem_regist table td p.txt { margin-top:11px; }
+div.d_content div.regist_form div.mem_regist table td .zip_code { display:inline; }
+div.d_content div.regist_form div.mem_regist table td .zip_code img { margin:3px 0 0 7px; }
+
+/* 다둥이 클럽 추가등록 사항 */
+div.d_content div.regist_form div.children { width:889px; height:276px; margin:0 auto 20px auto; padding-top:22px; background:url('/images/mcs/member/bg_children_regist.gif') no-repeat 0 0; }
+div.d_content div.regist_form div.children h3 { margin-bottom:14px; text-align:center; }
+div.d_content div.regist_form div.children table th { width:142px; padding:0 0 0 13px; font:13px malgun, "Malgun Gothic"; font-weight:normal; color:#666; line-height:16px; text-align:left; }
+div.d_content div.regist_form div.children table td { padding:6px 10px 7px 20px; font:12px malgun, "Malgun Gothic"; color:#666; letter-spacing:0; line-height:16px; }
+div.d_content div.regist_form div.children table td input.type_text { height:28px; padding-left:10px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.regist_form div.children table td select { height:28px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.regist_form div.licensee table td .btn_licensee img { vertical-align: middle;}
+div.d_content div.regist_form div.licensee table td p.txt { margin-top:11px; }
+div.d_content div.regist_form div.licensee table td .zip_code { display:inline; }
+div.d_content div.regist_form div.licensee table td .zip_code img { margin:3px 0 0 7px; }
+div.d_content span.btn_top { position:absolute; bottom:10px; right:15px; }
+
+/* 다둥이 회원 가입완료 */
+div.d_content div.benefit_box { width:950px; margin:0 auto 60px auto; }
+div.d_content div.benefit_box h3 { margin-bottom:11px; }
+div.d_content div.benefit_box ul li { float:left; margin:0 0 22px 6px; }
+div.d_content div.benefit_box ul li:first-child { margin-left:0; }
+
+div.d_content div.join_complete { width:950px; margin:0 auto; }
+div.d_content div.join_complete .mem { margin-bottom:50px; color:#333; font:18px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.join_complete .mem span { color:#018ee8; }
+div.d_content div.join_complete p.name { margin-bottom:15px; color:#333; font:28px malgun, "Malgun Gothic"; font-weight:bold; letter-spacing:-1px; }
+div.d_content div.join_complete p.name span { color:#ee1c25; }
+div.d_content div.join_complete p.txt { margin-bottom:30px; color:#7a7a7a; }
+div.d_content div.join_complete div.card_info { width:890px; margin:0 auto 20px auto; }
+div.d_content div.join_complete div.card_info ul.card_box{ border-top:2px solid #f10519; border-bottom:1px solid #d9d9d9; }
+div.d_content div.join_complete div.card_info ul.card_box li { float:left; }
+div.d_content div.join_complete div.card_info ul.card_box li.r1 { width:310px; margin-top:21px; text-align:center; }
+div.d_content div.join_complete div.card_info ul.card_box li.r2 { width:534px; padding:35px 0 0 45px; background-color:#f7f7f7; border-left:1px solid #ececec; }
+div.d_content div.join_complete div.card_info ul.card_box li.r2 dl dt { margin-bottom:12px; color:#333; font:18px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.join_complete div.card_info ul.card_box li.r2 dl dd { margin-bottom:27px; font:12px malgun, "Malgun Gothic"; }
+div.d_content div.join_complete div.card_info ul.card_box li.r2 dl dd span { color:#e80516; }
+div.d_content div.join_complete div.receive { height:21px; margin-bottom:60px; padding:14px 0; background:url('/images/mcs/member/vm/bg_box01.gif') no-repeat center 0; text-align:center; }
+div.d_content div.join_complete div.receive p { color:#333; font:16px malgun, "Malgun Gothic"; }
+div.d_content div.join_complete div.receive p span { color:#ee1c25; }
+
+/* 빅마켓 회원 정보입력 */
+div.d_content div.regist_form div.licensee { margin-bottom:40px; }
+div.d_content div.regist_form div.licensee h3 { margin-bottom:15px; color:#333; font:18px malgun,"Malgun Gothic"; font-weight:bold; }
+div.d_content div.regist_form div.licensee_form { border-top:2px solid #c7c7c7; }
+div.d_content div.regist_form div.licensee_form table { border-bottom: 1px solid #dedede; }
+div.d_content div.regist_form div.licensee_form table th {
+	width:149px;
+	padding:18px 0 16px 15px;
+	border-bottom:1px solid #dedede;
+	background-color:#f5f5f5;
+	font:13px malgun, "Malgun Gothic";
+	font-weight:normal;
+	color:#666;
+	line-height:16px;
+	text-align:left;
+}
+div.d_content div.regist_form div.licensee_form table th span.fcolor { display:inline-block; margin-right:4px; color:#ea2534; }
+div.d_content div.regist_form div.licensee_form table td { padding:14px 20px; border-left:1px solid #dedede; border-bottom:1px solid #dedede; font:12px malgun, "Malgun Gothic"; color:#666; letter-spacing:0; line-height:16px; }
+div.d_content div.regist_form div.licensee_form table td input.type_text { height:28px; padding-left:10px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.regist_form div.licensee_form table td select { height:28px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.regist_form div.licensee_form table td span { margin-left:18px; }
+div.d_content div.regist_form div.licensee_form table td a.btn_licensee { display:inline; }
+div.d_content div.regist_form div.licensee_form table td a.btn_licensee img{ margin:3px 0 0 7px; }
+
+/* 빅마켓 멤버스 회원 온라인 조회 */
+div.d_content div.online { width:950px; margin:0 auto; }
+div.d_content div.online div.card_info { width:950px; margin:0 auto 44px auto; }
+div.d_content div.online div.card_info ul.card_box{ border-top:2px solid #f10519; border-bottom:1px solid #d9d9d9; }
+div.d_content div.online div.card_info ul.card_box li { float:left; }
+div.d_content div.online div.card_info ul.card_box li.r1 { width:310px; margin-top:21px; text-align:center; }
+div.d_content div.online div.card_info ul.card_box li.r2 { width:594px; height:120px; padding:25px 0 0 45px; background-color:#f7f7f7; border-left:1px solid #ececec; }
+div.d_content div.online div.card_info ul.card_box li.r2 p.name { color:#333; font:14px malgun, "Malgun Gothic"; }
+div.d_content div.online div.card_info ul.card_box li.r2 p.member { margin-bottom:26px; color:#333; font:14px malgun, "Malgun Gothic"; }
+div.d_content div.online div.card_info ul.card_box li.r2 p.member span { color:#fa1311; }
+div.d_content div.online div.card_info ul.card_box li.r2 p.date { color:#333; font:14px malgun, "Malgun Gothic"; }
+div.d_content div.online div.card_info ul.card_box li.r2 p.date span { color:#018ee8; }
+div.d_content div.online p.ment { margin-bottom:42px; color:#333; font:16px malgun, "Malgun Gothic"; text-align:center; }
+div.d_content div.online ul.pay_box { margin-bottom:10px; padding:10px 20px; background-color:#f4f4f4; border-top:1px solid #c7c7c7; border-bottom:1px solid #c7c7c7; }
+div.d_content div.online ul.pay_box li.btn { float:left; }
+div.d_content div.online ul.pay_box li.btn a { vertical-align:middle; }
+div.d_content div.online ul.pay_box li.btn a img { vertical-align:middle; }
+div.d_content div.online ul.pay_box li.pay { float:right; color:#000; font:20px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.online ul.pay_box li.pay span { color:#fa1311; }
+div.d_content div.online div.modify_box { margin-bottom:50px; }
+div.d_content div.online div.modify_box h3 { margin-bottom:3px; padding:20px 0; color:#333; font:18px malgun, "Malgun Gothic"; font-weight:bold; }
+div.d_content div.online div.modify_box dl { border-top:2px solid #c7c7c7; border-bottom:1px solid #dedede; }
+div.d_content div.online div.modify_box dl dt { float:left; width:114px; padding:15px 0 15px 16px; background-color:#f4f4f4; }
+div.d_content div.online div.modify_box dl dd { float:left; padding:15px 0 0 15px; }
+div.d_content div.online div.modify_box dl dd input { height:28px; padding-left:10px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.online div.modify_box dl dd select { height:30px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+div.d_content div.online div.modify_box dl dd a { display:inline; margin-left:4px; }
+
+div.d_content div.coupon_box { width:730px; margin:0 auto 50px auto; }
+div.d_content div.coupon_box div.coupon { width:412px; height:271px; margin-bottom:20px; padding:0 0 0 318px; background:url('/images/mcs/member/vm/bg_coupon_box.jpg') no-repeat 0 0; }
+div.d_content div.coupon_box div.coupon h3 { margin-bottom:10px; }
+div.d_content div.coupon_box div.coupon p { width:380px; }
+div.d_content div.coupon_box div.coupon p.txt01 { margin-bottom:10px; color:#333; font:16px malgun, "Malgun Gothic"; letter-spacing:-1px; }
+div.d_content div.coupon_box div.coupon p.txt02 { margin-bottom:13px; color:#e80516; font:15px malgun, "Malgun Gothic"; font-weight:bold; text-align:center; }
+div.d_content div.coupon_box div.coupon p.txt03 { margin-bottom:13px; padding:9px 0; border-top:1px solid #dfd8cc; border-bottom:1px solid #dfd8cc; color:#7b7b7b; font:12px malgun, "Malgun Gothic"; letter-spacing:-1px; text-align:center; }
+div.d_content div.coupon_box div.coupon p.txt04 { padding-left:8px; color:#333; font:12px malgun, "Malgun Gothic"; text-indent:-8px; }
+div.d_content div.coupon_box div.coupon p.txt01 span { font:12px malgun, "Malgun Gothic"; }
+div.d_content div.coupon_box div.coupon p.txt04 span { color:#f0393d; }
+
+/* 연회비 환불 테이블 */
+div.refund { margin-bottom:25px; }
+div.refund h3 { margin-bottom:4px; color:#333; font:18px malgun, "Malgun Gothic"; font-weight:bold; }
+div.refund .txt { margin-bottom:15px; }
+div.refund table { width:100%; border-collapse:collapse; border-spacing:0; }
+div.refund table tr { border-top:1px solid #d3d9db; border-bottom:1px solid #ccc; }
+div.refund table th { padding:11px 10px; padding-right:10px; border-left:1px solid #ccc; background-color:#e6e6e6; color:#666; text-align:center; vertical-align:top; }
+div.refund table th:first-child { border-left:none; }
+div.refund table td { padding:11px 10px; background-color:#fafafa; border-left:1px solid #ccc; }
+div.refund table td:first-child { border-left:none; }
+
+/* 박마켓 멤버스 회원 popup */
+#popup_vm { width:100%; }
+#pop_header { width:100%; margin-bottom:16px; padding:15px 0 15px 0; background:url('/images/mcs/member/pop_header_bg.png') repeat-x 0 bottom; }
+#pop_content { width:100%; }
+
+/* 빅마켓 멤버스 탈회상담 신청 */
+#pop_header h2 { padding-left:15px; }
+#pop_content ul.txt_box { margin:0 15px 20px 15px;}
+#pop_content ul.txt_box li { color:#666; font:13px malgun, "Malgun Gothic"; }
+#pop_content ul.txt_box li:first-child { margin-bottom:12px; }
+#pop_content div.secession { margin:0 15px 10px 15px; padding:10px; background-color:#fafafa; border:1px solid #c7c7c7; border-radius:5px; -webkit-border-radius:5px; }
+#pop_content div.secession table tr th { padding-bottom:15px; color:#666; font-weight:normal; line-height:1.5em; text-align:left; vertical-align:top; }
+#pop_content div.secession table tr td { margin-left:10px; padding-bottom:15px; }
+#pop_content div.secession table tr td.name { font:15px malgun, "Malgun Gothic"; }
+#pop_content div.secession table tr td.name span { color:#999; font:12px malgun, "Malgun Gothic"; letter-spacing:-1px; }
+#pop_content div.secession table tr td input { height:28px; padding-left:10px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+#pop_content div.secession table tr td select { height:30px; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; }
+#pop_content div.secession table tr td .txt { margin-top:4px; color:#999; }
+#pop_content div.secession table tr td textarea { width:100%; margin-top:4px; background-color:#fff; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; color:#666; }
+#pop_content div.secession dl dt { margin-bottom:5px; }
+#pop_content div.secession dl dd textarea { width:100%; background-color:#fff; border-top:1px solid #9e9e9e; border-right:1px solid #dedede; border-bottom:1px solid #dedede; border-left:1px solid #9e9e9e; color:#666; }
+
+/* 빅마켓 멤버스 비회원 로그인 */
+#pop_content div.mem_check { margin:20px 15px 0 15px; }
+#pop_content div.mem_check h2 { margin-bottom:14px; }
+#pop_content div.mem_check .txt { margin-bottom:25px; color:#6a6a6a; }
+#pop_content div.mem_check ul.auth_method { width:566px; height:135px; margin:0 auto 30px auto; }
+#pop_content div.mem_check ul.auth_method li { width:270px; }
+#pop_content div.mem_check ul.auth_method li.phone { float:left; }
+#pop_content div.mem_check ul.auth_method li.phone a { display:block; height:132px; background:url("/images/mcs/member/cert_1.gif") no-repeat left top; }
+#pop_content div.mem_check ul.auth_method li.phone a:hover { background-image:url("/images/mcs/member/cert_1_1.gif"); }
+#pop_content div.mem_check ul.auth_method li.ipin { float:right; }
+#pop_content div.mem_check ul.auth_method li.ipin a.l1 { display:block; height:110px; background:url("/images/mcs/member/cert_2.gif") no-repeat left top; }
+#pop_content div.mem_check ul.auth_method li.ipin:hover a.l1 { background-image:url("/images/mcs/member/cert_2_1.gif"); }
+#pop_content div.mem_check ul.auth_method li.ipin a.l2 { display:block; height:22px; background:url("/images/mcs/member/cert_2_b.gif") no-repeat left top; }
+#pop_content div.mem_check ul.auth_method li.ipin:hover a.l2 { background-image:url("/images/mcs/member/cert_2_b2.gif"); }
+#pop_content div.mem_check div.mem_box03 { position:relative; }
+#pop_content div.mem_check div.mem_box03 div.inner { padding:10px 0 10px 0; }
+#pop_content div.mem_check div.mem_box03 div.line { margin:0 auto; }
+#pop_content div.mem_check div.mem_box03 p.largetitle { font-size:18px; color:#5e5e5e; letter-spacing:-2px; padding:20px 0 30px; font-weight:bold; }
+#pop_content div.mem_check div.mem_box03 p.largetitle .eng { letter-spacing:-1px; }
+#pop_content div.mem_check div.mem_box03 p.largetitle .impo { color:#ff0000; }
+#pop_content div.mem_check div.mem_box03 .title { margin-bottom:15px; font-size:12px; color:#5e5e5e; font-weight:bold; }
+#pop_content div.mem_check div.mem_box03 .desc { margin-bottom:10px; color:#848484; line-height:20px; letter-spacing:-1px; }
+#pop_content div.mem_check div.mem_box03 .desc1 { margin-bottom:30px; color:#848484; line-height:20px; letter-spacing:-1px; }
+#pop_content div.mem_check div.mem_box03 .desc2 { margin-bottom:10px; color:#ff0000; letter-spacing:-1px; }
+#pop_content div.mem_check div.mem_box03 dl { margin-bottom:10px; padding:26px; background-color:#fafafa; border:1px solid #ccc; color:#666; line-height:1.6; letter-spacing:-1px; }
+#pop_content div.mem_check div.mem_box03 dt { font-weight:bold; color:#5E5E5E; margin-bottom:5px; }
+#pop_content div.mem_check div.mem_box03 dd { padding-left:10px; margin-bottom:15px; }
+#pop_content div.mem_check div.mem_box03 .go_security { margin-right:3px; text-align:right; }
+#pop_content div.mem_check div.mem_box03 .go_security a { color:#666; text-decoration:underline; }
+
+div.new_mem02 { position:relative; margin-bottom:30px; text-align:center; }
+div.new_mem02 a.btn { position:absolute; top:178px; right:89px; }

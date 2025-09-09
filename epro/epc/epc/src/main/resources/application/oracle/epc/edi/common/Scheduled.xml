@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="Scheduled">
+	<typeAlias alias="scheduledVO"    	type="com.lottemart.epc.edi.comm.model.ScheduledVO" />		<!-- 스케줄러 VO -->
+	<typeAlias alias="nEDMPRO0040VO"	type="com.lottemart.epc.edi.product.model.NEDMPRO0040VO" />	<!-- 임시보관함 VO -->
+
+	<!-- 행사정보 등록내역 조회 Map -->	
+	<resultMap id="selectProEventAppDetailMap"		class="scheduledVO">
+		<!-- <result column="VKORG_GBN"					property="vkorgGbn" 		/> -->	<!-- 계열사 구분 -->
+		<result column="REQ_OFRCD"					property="reqOfrcd" 		/>	<!-- 파트너사행사번호 -->
+		<result column="IF_CD"						property="ifCd" 			/>	<!-- ecs 연계 코드 -->
+		<!-- <result column="DC_CNT"						property="dcCnt" 			/> -->	<!-- 계약순번 -->
+		<result column="DC_STAT"					property="dcStat" 			/>	<!-- 진행상태 -->
+		<result column="DC_NUM"						property="dcNum" 			/>	<!-- 계약번호 -->
+		<result column="DC_NUM2"					property="dcNum2" 			/>	<!-- 계약번호2 -->
+		<result column="VKORG"						property="vkorg" 			/>	<!-- 계열사 -->
+		<result column="APPR_STATUS"				property="apprStatus" 		/>	<!-- 행사 진행상태 -->
+		<!-- <result column="CONT_CODE"					property="contCode" 		/> -->	<!-- ecs 연계 계약 번호 -->
+		<!-- <result column="CONT_CODE2"					property="contCode2" 		/> -->	<!-- ecs 연계 계약 번호2 -->
+	</resultMap>
+    
+    <resultMap id="rfcCallDataMap"	class="java.util.HashMap">
+		<result property="REQ_OFFER"				nullValue=""		/>	<!-- 파트너사행사번호 -->
+		<result property="APPR_STATUS"				nullValue=""		/>	<!-- 승인여부 -->
+		<result property="DOC_NO1"					nullValue=""		/>	<!-- 전자계약번호1 -->
+		<result property="DOC_NO2"					nullValue=""		/>	<!-- 전자계약번호2 -->
+		<result property="DOC_NO3"					nullValue=""		/>	<!-- 전자계약번호3 -->
+		<result property="DOC_HTML1"				nullValue=""		/>	<!-- 계약본문1 -->
+		<result property="DOC_HTML2"				nullValue=""		/>	<!-- 계약본문2 -->
+		<result property="DOC_HTML3"				nullValue=""		/>	<!-- 계약본문3 -->
+	</resultMap>
+	
+    <!-- 계약 진행상태(계약완료) 상세 조회 -->
+    <select id="selectProEventIfStsList" parameterClass="scheduledVO" resultMap="selectProEventAppDetailMap" >
+    /* Scheduled.selectProEventIfStsList */
+		 SELECT 
+					A.REQ_OFRCD
+				,	A.IF_CD
+				, 	A.VKORG
+				,	A.APPR_STATUS
+				,	A.DC_NUM
+				,	A.DC_NUM2
+				,	A.DC_STAT
+		FROM(
+			SELECT 		
+					A.REQ_OFRCD
+				,	A.IF_CD
+				, 	A.VKORG
+				,	A.APPR_STATUS
+				,	A.DC_NUM
+				,	A.DC_NUM2
+				,	CASE WHEN A.VKORG = 'KR04' THEN CASE WHEN A.DC_STAT = '05' AND A.DC_STAT2 = '05' THEN '05'
+													 	 WHEN A.DC_STAT = '05' AND A.DC_STAT2 = '07' THEN '05'
+													 	 WHEN A.DC_STAT = '07' AND A.DC_STAT2 = '05' THEN '05'
+													 	 WHEN A.DC_STAT = '07' AND A.DC_STAT2 = '07' THEN '07'
+														 ELSE A.DC_STAT END
+					ELSE A.DC_STAT END AS DC_STAT
+			FROM(
+				SELECT 
+						A.REQ_OFRCD
+					,	C.IF_CD
+					,	CASE WHEN C.DC_STAT IN ('10', '11', '50', '60') THEN '05'
+						 	 WHEN C.DC_STAT IN ('40') THEN CASE WHEN C.DC_STAT = '40' AND D.DC_ONOFF = '4' THEN '07'
+						 									ELSE '05' END
+						 	 WHEN C.DC_STAT IN ('90') THEN '07' 
+						ELSE C.DC_STAT END AS DC_STAT
+					,	D.DC_NUM
+					, 	A.VKORG
+					, 	A.APPR_STATUS
+					,	G.DC_NUM AS DC_NUM2
+					,	CASE WHEN F.DC_STAT IN ('10', '11', '50', '60') THEN '05'
+						 	 WHEN F.DC_STAT IN ('40') THEN CASE WHEN F.DC_STAT = '40' AND G.DC_ONOFF = '4' THEN '07'
+						 									ELSE '05' END
+						 	 WHEN F.DC_STAT IN ('90') THEN '07' 
+						 ELSE F.DC_STAT END AS DC_STAT2
+				FROM TPC_PROD_EVNT A
+				INNER JOIN(
+					SELECT 	
+								A.REQ_OFRCD
+							,	B.DC_NUM
+							,	MAX(B.DC_CNT ) AS DC_CNT
+					FROM TPC_PROD_EVNT A
+					INNER JOIN IF_ECS_DETAIL_EPC B ON A.CONT_CODE  = B.CONT_CODE
+					WHERE A.APPR_STATUS IN ('04', '05', '99', '44', '98')
+					--AND B.DC_STAT IN ('10', '40', '90')
+					GROUP BY A.REQ_OFRCD, B.DC_NUM
+				)B ON A.REQ_OFRCD = B.REQ_OFRCD
+				LEFT JOIN IF_RETURN C ON A.CONT_CODE = C.CONT_CODE
+				LEFT JOIN IF_ECS_DETAIL_EPC D ON B.DC_NUM  = D.DC_NUM
+												AND B.DC_CNT = D.DC_CNT
+				LEFT JOIN(
+					SELECT 	
+								A.REQ_OFRCD
+							,	B.DC_NUM
+							,	MAX(B.DC_CNT ) AS DC_CNT
+					FROM TPC_PROD_EVNT A
+					INNER JOIN IF_ECS_DETAIL_EPC B ON A.CONT_CODE2  = B.CONT_CODE
+					WHERE A.APPR_STATUS IN ('04', '05', '99', '44', '98')
+					--AND B.DC_STAT IN ('10', '40', '90')
+					GROUP BY A.REQ_OFRCD, B.DC_NUM
+				)E ON A.REQ_OFRCD = E.REQ_OFRCD
+				LEFT JOIN IF_RETURN F ON A.CONT_CODE2 = F.CONT_CODE
+				LEFT JOIN IF_ECS_DETAIL_EPC G ON E.DC_NUM  = G.DC_NUM
+												AND E.DC_CNT = G.DC_CNT
+			)A
+		)A
+		WHERE A.DC_STAT != A.APPR_STATUS
+    </select>
+ 
+    <select id="selectProEventIfStsList_20250514" parameterClass="scheduledVO" resultMap="selectProEventAppDetailMap" >
+    /* Scheduled.selectProEventIfStsList */
+		 SELECT
+				A.VKORG_GBN
+			,	A.REQ_OFRCD
+			,	A.IF_CD
+			,	A.DC_CNT
+			,	A.DC_STAT
+			,	A.DC_NUM
+			,	A.VKORG
+			,	A.APPR_STATUS
+			,	(SELECT CONT_CODE FROM TPC_PROD_EVNT WHERE REQ_OFRCD = A.REQ_OFRCD ) AS CONT_CODE
+			,	(SELECT CONT_CODE2 FROM TPC_PROD_EVNT WHERE REQ_OFRCD = A.REQ_OFRCD ) AS CONT_CODE2
+		FROM
+		(
+			 /* 마트, 슈퍼 */
+			 SELECT                                     
+					'1' AS VKORG_GBN
+				,	A.REQ_OFRCD				 /* 파트너사행사번호 	*/
+				,	B.IF_CD
+				,	MAX(B.SEQ) AS DC_CNT
+				,	CASE WHEN B.DC_STAT IN ('10') THEN '05'
+						 WHEN B.DC_STAT IN ('40') THEN CASE WHEN B.DC_STAT = '40' AND C.DC_ONOFF = '1' THEN '05'
+						 									WHEN B.DC_STAT = '40' AND C.DC_ONOFF = '4' THEN '07'
+						 									ELSE B.DC_STAT END
+						 WHEN B.DC_STAT IN ('90') THEN '07' 
+					ELSE B.DC_STAT END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				, C.DC_NUM
+				, A.VKORG
+				, A.APPR_STATUS
+			FROM TPC_PROD_EVNT A
+			INNER JOIN IF_RETURN B ON A.CONT_CODE = B.CONT_CODE
+			INNER JOIN IF_ECS_DETAIL_EPC C ON A.CONT_CODE  = C.CONT_CODE
+			WHERE A.APPR_STATUS IN ('04', '05', '99', '44', '98') 
+			AND B.DC_STAT IN ('10', '40', '90') 
+			AND COALESCE(B.SEND_FG, '0') = '0'
+			GROUP BY A.REQ_OFRCD, B.IF_CD, B.DC_STAT, C.DC_NUM, A.VKORG, A.APPR_STATUS, C.DC_ONOFF
+			
+			UNION ALL
+			/* CS유통 */
+			SELECT                                     
+					'2' AS VKORG_GBN
+				,	A.REQ_OFRCD				 /* 파트너사행사번호 	*/
+				,	B.IF_CD
+				,	MAX(B.SEQ) AS DC_CNT
+				,	CASE WHEN B.DC_STAT IN ('10') THEN '05'
+						 WHEN B.DC_STAT IN ('40') THEN CASE WHEN B.DC_STAT = '40' AND C.DC_ONOFF = '1' THEN '05'
+						 									WHEN B.DC_STAT = '40' AND C.DC_ONOFF = '4' THEN '07'
+						 									ELSE B.DC_STAT END
+						 WHEN B.DC_STAT IN ('90') THEN '07' 
+					ELSE B.DC_STAT END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				, C.DC_NUM
+				, A.VKORG
+				, A.APPR_STATUS
+			FROM TPC_PROD_EVNT A
+			INNER JOIN IF_RETURN B ON A.CONT_CODE2 = B.CONT_CODE
+			INNER JOIN IF_ECS_DETAIL_EPC C ON A.CONT_CODE2  = C.CONT_CODE
+			WHERE A.APPR_STATUS IN ('04', '05', '99', '44', '98') 
+			AND B.DC_STAT IN ('10', '40', '90') 
+			AND COALESCE(B.SEND_FG, '0') = '0'
+			GROUP BY A.REQ_OFRCD, B.IF_CD, B.DC_STAT, C.DC_NUM, A.APPR_STATUS, C.DC_ONOFF
+		)A
+		WHERE A.DC_STAT != A.APPR_STATUS
+    </select>
+    
+    <!-- 행사 마스터 데이터 계약 진행상태(계약삭제 / 계약폐기) -->
+    <select id="selectProEventIfDelStsList" parameterClass="scheduledVO" resultMap="selectProEventAppDetailMap" >
+    /* Scheduled.selectProEventIfDelStsList */
+		 SELECT 
+					A.REQ_OFRCD
+				,	A.IF_CD
+				, 	A.VKORG
+				,	A.APPR_STATUS
+				,	A.DC_NUM
+				,	A.DC_NUM2
+				,	A.DC_STAT
+		FROM(
+			SELECT 		
+					A.REQ_OFRCD
+				,	A.IF_CD
+				, 	A.VKORG
+				,	A.APPR_STATUS
+				,	A.DC_NUM
+				,	A.DC_NUM2
+				,	CASE WHEN A.VKORG = 'KR04' THEN CASE WHEN A.DC_STAT = '99' AND A.DC_STAT2 IN ('07', '97') THEN '07'
+														 WHEN A.DC_STAT IN ('07', '97') AND A.DC_STAT2 = '99' THEN '07'
+														 WHEN A.DC_STAT = '44' AND A.DC_STAT2 = '44' THEN '44'
+														 WHEN A.DC_STAT = '98' AND A.DC_STAT2 = '98' THEN '98'
+														 WHEN A.DC_STAT = '99' AND A.DC_STAT2 = '99' THEN '99'
+														ELSE '07' END
+					ELSE A.DC_STAT END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+			FROM(
+				SELECT 
+						A.REQ_OFRCD
+					,	C.IF_CD
+					,	CASE WHEN C.DC_STAT IN ('99', '44', '98') THEN C.DC_STAT
+						ELSE C.DC_STAT END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */	
+					,	D.DC_NUM
+					, 	A.VKORG
+					, 	A.APPR_STATUS
+					,	G.DC_NUM AS DC_NUM2
+					,	CASE WHEN F.DC_STAT IN ('99', '44', '98') THEN F.DC_STAT
+						ELSE F.DC_STAT END AS DC_STAT2	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				FROM TPC_PROD_EVNT A
+				INNER JOIN(
+					SELECT 	
+								A.REQ_OFRCD
+							,	B.DC_NUM
+							,	MAX(B.DC_CNT ) AS DC_CNT
+					FROM TPC_PROD_EVNT A
+					INNER JOIN IF_ECS_DETAIL_EPC B ON A.CONT_CODE  = B.CONT_CODE
+					WHERE A.APPR_STATUS IN ('04','05','07')
+					AND B.DC_STAT IN ('99', '44', '98')
+					GROUP BY A.REQ_OFRCD, B.DC_NUM
+				)B ON A.REQ_OFRCD = B.REQ_OFRCD
+				LEFT JOIN IF_RETURN C ON A.CONT_CODE = C.CONT_CODE
+				LEFT JOIN IF_ECS_DETAIL_EPC D ON B.DC_NUM  = D.DC_NUM
+												AND B.DC_CNT = D.DC_CNT
+				LEFT JOIN(
+					SELECT 	
+								A.REQ_OFRCD
+							,	B.DC_NUM
+							,	MAX(B.DC_CNT ) AS DC_CNT
+					FROM TPC_PROD_EVNT A
+					INNER JOIN IF_ECS_DETAIL_EPC B ON A.CONT_CODE2  = B.CONT_CODE
+					WHERE A.APPR_STATUS IN ('04','05','07')
+					AND B.DC_STAT IN ('99', '44', '98')
+					GROUP BY A.REQ_OFRCD, B.DC_NUM
+				)E ON A.REQ_OFRCD = E.REQ_OFRCD
+				LEFT JOIN IF_RETURN F ON A.CONT_CODE2 = F.CONT_CODE
+				LEFT JOIN IF_ECS_DETAIL_EPC G ON E.DC_NUM  = G.DC_NUM
+												AND E.DC_CNT = G.DC_CNT
+			)A
+		)A
+		WHERE A.DC_STAT != A.APPR_STATUS
+    </select>
+ 
+    <select id="selectProEventIfDelStsList_20250514" parameterClass="scheduledVO" resultMap="selectProEventAppDetailMap" >
+    /* Scheduled.selectProEventIfDelStsList */
+		 SELECT
+				A.VKORG_GBN
+			,	A.REQ_OFRCD
+			,	A.IF_CD
+			,	A.DC_CNT
+			,	A.DC_STAT
+			,	A.DC_NUM
+			,	A.VKORG
+			,	A.APPR_STATUS
+		FROM
+		(
+			 /* 마트, 슈퍼 */
+			 SELECT                                     
+					'1' AS VKORG_GBN
+				,	A.REQ_OFRCD				 /* 파트너사행사번호 	*/
+				,	B.IF_CD
+				,	MAX(B.SEQ) AS DC_CNT
+				,	CASE WHEN B.DC_STAT IN ('99', '44', '98') THEN B.DC_STAT
+					ELSE B.DC_STAT END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				, C.DC_NUM
+				, A.VKORG
+				, A.APPR_STATUS
+			FROM TPC_PROD_EVNT A
+			INNER JOIN IF_RETURN B ON A.CONT_CODE = B.CONT_CODE
+			INNER JOIN IF_ECS_DETAIL_EPC C ON A.CONT_CODE  = C.CONT_CODE
+			WHERE A.APPR_STATUS IN ('07') 
+			AND B.DC_STAT IN ('99', '44', '98') 
+			AND COALESCE(A.DC_CHG_IF, '0') = '0'
+			GROUP BY A.REQ_OFRCD, B.IF_CD, B.DC_STAT, C.DC_NUM, A.VKORG, A.APPR_STATUS
+			
+			UNION ALL
+			/* CS유통 */
+			SELECT                                     
+					'2' AS VKORG_GBN
+				,	A.REQ_OFRCD				 /* 파트너사행사번호 	*/
+				,	B.IF_CD
+				,	MAX(B.SEQ) AS DC_CNT
+				,	CASE WHEN B.DC_STAT IN ('99', '44', '98') THEN B.DC_STAT
+					ELSE B.DC_STAT END AS DC_STAT	/* 진행상태( 99 : 계약폐기, 44 : 계약삭제, 98 : 인터페이스 계약 삭제 ) */
+				, C.DC_NUM
+				, A.VKORG
+				, A.APPR_STATUS
+			FROM TPC_PROD_EVNT A
+			INNER JOIN IF_RETURN B ON A.CONT_CODE2 = B.CONT_CODE
+			INNER JOIN IF_ECS_DETAIL_EPC C ON A.CONT_CODE2  = C.CONT_CODE
+			WHERE A.APPR_STATUS IN ('07') 
+			AND B.DC_STAT IN ('99', '44', '98') 
+			AND COALESCE(A.DC_CHG_IF, '0') = '0'
+			GROUP BY A.REQ_OFRCD, B.IF_CD, B.DC_STAT, C.DC_NUM, A.APPR_STATUS
+		)A
+		WHERE A.DC_STAT != A.APPR_STATUS
+    </select>
+	
+	<!-- 행사 마스터 진행상태 update -->
+	<update id="updateProdEvnt" parameterClass="scheduledVO">
+	/* Scheduled.updateProdEvnt */
+	UPDATE TPC_PROD_EVNT
+	SET APPR_STATUS = #dcStat#
+	,	MOD_DATE = NOW()
+	,	MOD_ID = #workId#
+	,	DC_CHG_IF = #dcChgIf#
+	<isEqual property="dcChgIf" compareValue="1">
+	,	DOC_NO1 = NULL
+	,	DOC_NO2 = NULL
+	,	DOC_NO3 = NULL
+	</isEqual>
+	<isEqual property="dcStat" compareValue="07">
+		<isNotEmpty property="docNo1">
+		,	DOC_NO1 = #docNo1#	
+		</isNotEmpty>
+	
+		<isNotEmpty property="docNo2">
+		,	DOC_NO2 = #docNo2#	
+		</isNotEmpty>
+	
+		<isNotEmpty property="docNo3">
+		,	DOC_NO3 = #docNo3#	
+		</isNotEmpty>
+	</isEqual>
+	WHERE REQ_OFRCD = #reqOfrcd#
+	</update>
+	
+	<!-- if_return 상태값 update -->
+	<update id="updateIfReturn" parameterClass="scheduledVO">
+	/* Scheduled.updateIfReturn */
+	UPDATE IF_RETURN
+	SET SEND_FG = '1'
+	WHERE IF_CD = CAST(#ifCd# AS NUMERIC)
+	AND SEQ = CAST(#dcCnt# AS NUMERIC)
+	</update>
+
+	
+	<!-- RFC 호출 정보 조회 -->
+	<select id="selectEvntRfcCallData" parameterClass="scheduledVO" resultMap="rfcCallDataMap">
+		/* Scheduled.selectEvntRfcCallData */
+		SELECT                                     
+			  REQ_OFRCD	AS REQ_OFFER	/* 파트너사행사번호 	*/ 
+			, APPR_STATUS	/* 파트너사코드 	*/  
+			, DOC_NO1		/* 전자계약번호1	*/
+			, DOC_NO2		/* 전자계약번호2	*/
+			, DOC_NO3		/* 전자계약번호3	*/
+			, (SELECT DOC_HTML FROM IF_RETURN_DOC WHERE A.DOC_NO1 = DC_NUM) AS DOC_HTML1
+			, (SELECT DOC_HTML FROM IF_RETURN_DOC WHERE A.DOC_NO2 = DC_NUM) AS DOC_HTML2
+			, (SELECT DOC_HTML FROM IF_RETURN_DOC WHERE A.DOC_NO3 = DC_NUM) AS DOC_HTML3
+			FROM TPC_PROD_EVNT A
+			WHERE A.REQ_OFRCD = #reqOfrcd#
+			AND A.DEL_YN = 'N'
+	</select>
+	
+	<!-- 원가변경요청 계약번호 UPDATE -->
+	<update id="updateProdChgCostDcNum" parameterClass="scheduledVO">
+		/* Scheduled.updateProdChgCostDcNum */
+		UPDATE TPC_PROD_CHG_COST_ITEM A
+		SET DC_NUM = B.DC_NUM
+			, MOD_DATE = NOW()
+			, MOD_ID = 'Batch'
+		FROM IF_ECS_DETAIL_EPC B
+		WHERE A.CONT_CODE = B.CONT_CODE				/* 공문서 EPC문서번호가 있으면서 */
+		AND A.CONT_CODE <![CDATA[<>]]> ''			/* 원가변경 테이블에 계약번호가 업데이트되지 않은 상태일 경우 */
+		AND (A.DC_NUM IS NULL OR A.DC_NUM = '')		/* 전자계약상태 테이블에 연계된 계약번호가 있는 건 */
+		AND B.DC_NUM IS NOT NULL
+	</update>
+	
+	<!-- 신상품확정요청_자동발송 플래그 업데이트 -->
+	<update id="updateTpcNewProdRegAutoSendFg" parameterClass="nEDMPRO0040VO">
+		/* Scheduled.updateTpcNewProdRegAutoSendFg */
+		UPDATE TPC_NEW_PROD_REG
+		SET AUTO_SEND_FG = 'X'
+			, AUTO_SEND_DT = NOW()
+		WHERE
+		<isNotEmpty property="prodArr">
+			<iterate prepend="PGM_ID IN " property="prodArr" open="(" close=")" conjunction=",">
+				#prodArr[].pgmId#
+			</iterate>
+		</isNotEmpty>
+		<isEmpty property="prodArr">1=0</isEmpty>
+	</update>
+	
+	<!-- 파트너사 실적 저장 -->
+	<insert id="updateMainVenPrfr" parameterClass="java.util.HashMap">	  
+    	/*Scheduled.updateMainVenPrfr*/
+    	MERGE INTO TPC_MAIN_VEN_PRFR A
+			USING (
+				SELECT
+					  #DY#		AS DY		/* 일자 */
+					, #VEN_CD#	AS VEN_CD	/* 파트너사코드 */
+					, #CHAN_CD#	AS CHAN_CD	/* 채널코드 */
+					, #TEAM_CD#	AS TEAM_CD	/* 팀코드 */
+					, #L1_CD#	AS L1_CD	/* 대분류 */
+					, #L2_CD#	AS L2_CD	/* 중분류 */
+			) B
+				ON ( 
+							A.DY = B.DY 
+						AND A.VEN_CD = B.VEN_CD 
+						AND A.CHAN_CD = B.CHAN_CD 
+						AND A.TEAM_CD = B.TEAM_CD 
+						AND A.L1_CD = B.L1_CD 
+						AND A.L2_CD = B.L2_CD
+					)
+			WHEN MATCHED THEN
+				UPDATE SET
+					  MOD_DATE      = NOW()   
+					, MOD_ID        = 'Batch'       
+					<isNotEmpty property="BUY_AMT">
+					, BUY_AMT		= CAST(#BUY_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, SALES_AMT		= CAST(#SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="TOT_SALES_AMT">
+					, TOT_SALES_AMT	= CAST(#TOT_SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, SALES_QTY		= CAST(#SALES_QTY# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_RATE">
+					, SALES_RATE	= CAST(#SALES_RATE# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="BUY_RATE">
+					, BUY_RATE		= CAST(#BUY_RATE# AS NUMERIC)
+					</isNotEmpty>
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  DY
+					, VEN_CD
+					, CHAN_CD
+					, TEAM_CD
+					, L1_CD
+					, L2_CD
+					<isNotEmpty property="BUY_AMT">
+					, BUY_AMT
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, SALES_AMT
+					</isNotEmpty>
+					<isNotEmpty property="TOT_SALES_AMT">
+					, TOT_SALES_AMT
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, SALES_QTY
+					</isNotEmpty>
+					<isNotEmpty property="SALES_RATE">
+					, SALES_RATE
+					</isNotEmpty>
+					<isNotEmpty property="BUY_RATE">
+					, BUY_RATE
+					</isNotEmpty>
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) values (
+					  #DY#
+					, #VEN_CD#
+					, #CHAN_CD#
+					, #TEAM_CD#
+					, #L1_CD#
+					, #L2_CD#
+					<isNotEmpty property="BUY_AMT">
+					, CAST(#BUY_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, CAST(#SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="TOT_SALES_AMT">
+					, CAST(#TOT_SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, CAST(#SALES_QTY# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_RATE">
+					, CAST(#SALES_RATE# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="BUY_RATE">
+					, CAST(#BUY_RATE# AS NUMERIC)
+					</isNotEmpty>
+					, NOW()
+					, 'Batch'
+					, NOW()
+					, 'Batch'
+				);
+ 	</insert>
+	
+	<!-- 파트너사 매입액 저장 -->
+	<insert id="updateMainVenBuy" parameterClass="java.util.HashMap">	  
+    	/*Scheduled.updateMainVenBuy*/
+    	MERGE INTO TPC_MAIN_VEN_BUY A
+			USING (
+				SELECT
+					  #DY#		AS DY		/* 일자 */
+					, #VEN_CD#	AS VEN_CD	/* 파트너사코드 */
+					, #PROD_CD#	AS PROD_CD	/* 상품코드 */
+					, #SELL_CD#	AS SELL_CD	/* 판매코드 */
+			) B
+				ON ( 
+							A.DY = B.DY 
+						AND A.VEN_CD = B.VEN_CD 
+						AND A.PROD_CD = B.PROD_CD 
+						AND A.SELL_CD = B.SELL_CD 
+					)
+			WHEN MATCHED THEN
+				UPDATE SET
+					  MOD_DATE	= NOW()   
+					, MOD_ID	= 'Batch'
+					<isNotEmpty property="CHAN_CD">
+					, CHAN_CD	= #CHAN_CD#
+					</isNotEmpty>
+					<isNotEmpty property="TEAM_CD">
+					, TEAM_CD	= #TEAM_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L1_CD">
+					, L1_CD		= #L1_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L2_CD">
+					, L2_CD		= #L2_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L3_CD">
+					, L3_CD		= #L3_CD#
+					</isNotEmpty>
+					<isNotEmpty property="BUY_AMT">
+					, BUY_AMT	= CAST(#BUY_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="BUY_QTY">
+					, BUY_QTY	= CAST(#BUY_QTY# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, SALES_AMT	= CAST(#SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, SALES_QTY	= CAST(#SALES_QTY# AS NUMERIC)
+					</isNotEmpty>
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  DY
+					, VEN_CD
+					, PROD_CD
+					, SELL_CD
+					<isNotEmpty property="CHAN_CD">
+					, CHAN_CD
+					</isNotEmpty>
+					<isNotEmpty property="TEAM_CD">
+					, TEAM_CD
+					</isNotEmpty>
+					<isNotEmpty property="L1_CD">
+					, L1_CD
+					</isNotEmpty>
+					<isNotEmpty property="L2_CD">
+					, L2_CD
+					</isNotEmpty>
+					<isNotEmpty property="L3_CD">
+					, L3_CD
+					</isNotEmpty>
+					<isNotEmpty property="BUY_AMT">
+					, BUY_AMT
+					</isNotEmpty>
+					<isNotEmpty property="BUY_QTY">
+					, BUY_QTY
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, SALES_AMT
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, SALES_QTY
+					</isNotEmpty>
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) values (
+					  #DY#
+					, #VEN_CD#
+					, #PROD_CD#
+					, #SELL_CD#
+					<isNotEmpty property="CHAN_CD">
+					, #CHAN_CD#
+					</isNotEmpty>
+					<isNotEmpty property="TEAM_CD">
+					, #TEAM_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L1_CD">
+					, #L1_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L2_CD">
+					, #L2_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L3_CD">
+					, #L3_CD#
+					</isNotEmpty>
+					<isNotEmpty property="BUY_AMT">
+					, CAST(#BUY_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="BUY_QTY">
+					, CAST(#BUY_QTY# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, CAST(#SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, CAST(#SALES_QTY# AS NUMERIC)
+					</isNotEmpty>
+					, NOW()
+					, 'Batch'
+					, NOW()
+					, 'Batch'
+				);
+ 	</insert>
+	
+	<!-- 신상품 실적 저장 -->
+	<insert id="updateMainNewProdPrfr" parameterClass="java.util.HashMap">	  
+    	/*Scheduled.updateMainNewProdPrfr*/
+    	MERGE INTO TPC_MAIN_NEW_PROD_PRFR A
+			USING (
+				SELECT
+					  #DY#		AS DY		/* 일자 */
+					, #VEN_CD#	AS VEN_CD	/* 파트너사코드 */
+					, #PROD_CD#	AS PROD_CD	/* 상품코드 */
+			) B
+				ON ( 
+							A.DY = B.DY 
+						AND A.VEN_CD = B.VEN_CD 
+						AND A.PROD_CD = B.PROD_CD 
+					)
+			WHEN MATCHED THEN
+				UPDATE SET
+					  MOD_DATE      = NOW()   
+					, MOD_ID        = 'Batch'       
+					<isNotEmpty property="CHAN_CD">
+					, CHAN_CD	= #CHAN_CD#
+					</isNotEmpty>
+					<isNotEmpty property="TEAM_CD">
+					, TEAM_CD	= #TEAM_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L1_CD">
+					, L1_CD		= #L1_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L2_CD">
+					, L2_CD		= #L2_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L3_CD">
+					, L3_CD		= #L3_CD#
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, SALES_AMT	= CAST(#SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="PROD_PROFIT">
+					, PROD_PROFIT = CAST(#PROD_PROFIT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="profit_rate">
+					, PROFIT_RATE = CAST(#PROFIT_RATE# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="sales_qty">
+					, SALES_QTY	= CAST(#SALES_QTY# AS NUMERIC)
+					</isNotEmpty>
+             WHEN NOT MATCHED THEN                                                                  
+				INSERT (
+					  DY
+					, VEN_CD
+					, PROD_CD
+					<isNotEmpty property="CHAN_CD">
+					, CHAN_CD
+					</isNotEmpty>
+					<isNotEmpty property="TEAM_CD">
+					, TEAM_CD
+					</isNotEmpty>
+					<isNotEmpty property="L1_CD">
+					, L1_CD
+					</isNotEmpty>
+					<isNotEmpty property="L2_CD">
+					, L2_CD
+					</isNotEmpty>
+					<isNotEmpty property="L3_CD">
+					, L3_CD
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, SALES_AMT
+					</isNotEmpty>
+					<isNotEmpty property="PROD_PROFIT">
+					, PROD_PROFIT
+					</isNotEmpty>
+					<isNotEmpty property="PROFIT_RATE">
+					, PROFIT_RATE
+					</isNotEmpty>
+					<isNotEmpty property="SALES_QTY">
+					, SALES_QTY
+					</isNotEmpty>
+					, MOD_DATE
+					, MOD_ID
+					, REG_DATE
+					, REG_ID
+				) values (
+					  #DY#
+					, #VEN_CD#
+					, #PROD_CD#
+					<isNotEmpty property="CHAN_CD">
+					, #CHAN_CD#
+					</isNotEmpty>
+					<isNotEmpty property="TEAM_CD">
+					, #TEAM_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L1_CD">
+					, #L1_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L2_CD">
+					, #L2_CD#
+					</isNotEmpty>
+					<isNotEmpty property="L3_CD">
+					, #L3_CD#
+					</isNotEmpty>
+					<isNotEmpty property="SALES_AMT">
+					, CAST(#SALES_AMT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="prod_profit">
+					, CAST(#PROD_PROFIT# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="profit_rate">
+					, CAST(#PROFIT_RATE# AS NUMERIC)
+					</isNotEmpty>
+					<isNotEmpty property="sales_qty">
+					, CAST(#SALES_QTY# AS NUMERIC)
+					</isNotEmpty>
+					, NOW()
+					, 'Batch'
+					, NOW()
+					, 'Batch'
+				);
+ 	</insert>
+ 	
+ 	<!-- 특정 연도의 휴일정보 삭제 -->
+ 	<delete id="deleteTpcHolidayYear" parameterClass="java.util.Map">
+ 		/* Scheduled.deleteTpcHolidayYear */
+ 		DELETE FROM TPC_HOLIDAY WHERE YYYY = #YYYY#;
+ 	</delete>
+ 	
+	<!-- 휴일(주말) 및 공휴일 등록 -->
+	<insert id="insertTpcHoliday" parameterClass="java.util.Map">
+		/* Scheduled.insertTpcHoliday */
+		WITH TB_NAT_HOLIDAY AS (	/* 국가공휴일(java에서 조회) */
+			SELECT
+				S.DY	/* 일자 */
+				, STRING_AGG(S.DY_NM, '|') AS DY_NM	/* 휴일명 */
+				, 'X'		AS HOLI_DY_FG			/* 공휴일여부 */
+			FROM (
+				<iterate property="DATA_LIST" conjunction="UNION ALL">
+				SELECT
+					#DATA_LIST[].DY#::DATE	AS DY			/* 일자 */
+					, #DATA_LIST[].DY_NM#	AS DY_NM		/* 휴일명 */
+				</iterate>
+			)S
+			GROUP BY S.DY 
+		)
+		, TB_WEEKEND AS (			/* 주말 */
+			SELECT
+				WKND::DATE AS DY					/* 일자 */
+				, '주말' AS DY_NM						/* 휴일명 */
+				, NULL	AS HOLI_DY_FG				/* 공휴일여부 */
+			FROM GENERATE_SERIES(
+			    TO_DATE(#YYYY#, 'YYYY')::DATE,              -- 올해 1월 1일
+			    (TO_DATE(#YYYY#, 'YYYY') + INTERVAL '1 YEAR - 1 DAY')::DATE,  -- 올해 12월 31일
+			    INTERVAL '1 DAY'
+			) AS WKND
+			WHERE EXTRACT(ISODOW FROM WKND) IN (6, 7)	-- 6:토요일, 7:일요일
+			AND WKND NOT IN (SELECT DY FROM TB_NAT_HOLIDAY)
+		)
+		INSERT INTO TPC_HOLIDAY (DY, YYYY, DY_NM, DOW, HOLI_DY_FG, REST_DY_FG)
+		SELECT
+			TO_CHAR(T.DY, 'YYYYMMDD') AS DY		/* 일자 */
+			, #YYYY#::VARCHAR AS YYYY			/* 연도 */
+			, T.DY_NM							/* 휴일명 */
+			, T.DOW								/* 요일 */
+			, T.HOLI_DY_FG						/* 공휴일여부 */
+			, CASE WHEN T.DOW IN (6, 7) THEN 'X' ELSE NULL END AS REST_DY_FG	/* 휴일(주말)여부 */
+		FROM (
+			SELECT
+				A.DY				/* 일자 */
+				, A.DY_NM			/* 휴일명 */
+				, EXTRACT(ISODOW FROM A.DY::DATE) AS DOW	/* 요일 */
+				, A.HOLI_DY_FG		/* 공휴일여부 */
+			FROM TB_NAT_HOLIDAY A
+			UNION ALL
+			SELECT
+				A.DY				/* 일자 */
+				, A.DY_NM			/* 휴일명 */
+				, EXTRACT(ISODOW FROM A.DY::DATE) AS DOW	/* 요일 */
+				, A.HOLI_DY_FG		/* 공휴일여부 */
+			FROM TB_WEEKEND A
+		)T
+	</insert>
+	
+	<!-- 오늘이 휴일인지 체크 -->
+	<select id="selectTodayIsHolidayYn" resultClass="String">
+		/* Scheduled.selectTodayIsHolidayYn */
+		SELECT CASE WHEN COUNT(1) > 0 THEN 'Y' ELSE 'N' END AS IS_HOLIDAY
+		FROM TPC_HOLIDAY A
+		WHERE A.DY = TO_CHAR(NOW(), 'YYYYMMDD')
+	</select>
+	
+</sqlMap>	

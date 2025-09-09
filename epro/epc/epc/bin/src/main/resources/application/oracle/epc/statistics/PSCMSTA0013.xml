@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMSTA0013">
+	<typeAlias alias="pscmsta0013VO" type="com.lottemart.epc.statistics.model.PSCMSTA0013VO"/>
+	
+	<select id="selectCrossPicUpList"  parameterClass="pscmsta0013VO" resultClass="dataMap">
+	/* PSCMSTA0013.selectCrossPicUpList */ 
+	SELECT * 
+		FROM(
+			SELECT CEIL(ROWNUM / #recordCountPerPage#  ) PAGE
+			, COUNT(*) OVER() TOTAL_COUNT
+			, B.*
+			FROM(
+				SELECT /*+leading(DM , CPS) */
+				    ROW_NUMBER() OVER(ORDER BY DM.DELI_HOPE_DY ) NUM
+				    ,(SELECT ORD_DY FROM TOR_ORDER WHERE ORDER_ID = DM.ORDER_ID) AS ORD_DY
+				    ,(SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+				    ,(SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A, TDE_ORDER_DELIVERY B WHERE B.ORDER_ID = DM.ORDER_ID AND A.EXT_STR_TYPE = '001' AND A.EXT_STR_CD = B.EXT_STR_CD LIMIT 1) AS EXT_STR_NM
+				    ,DM.DELI_HOPE_DY
+				    ,DM.ORDER_ID
+				    ,(SELECT SUM(NVL(DPST_AMT, 0) + NVL(PROC_COMM, 0)) FROM TOR_DEMAND WHERE ORDER_ID = DM.ORDER_ID ) TOT_SELL_AMT
+				    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE020' AND  MINOR_CD = DM.DELI_DIVN_CD) AS DELI_DIVN_CD 
+				    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE002' AND  MINOR_CD = DM.DELI_STATUS_CD) AS DELI_STATUS_CD 
+				    ,TO_CHAR(TO_DATE(DM.DELI_FNSH_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS DELI_FNSH_DATE
+				    ,FN_MASKING_RTN(RECP_PSN_NM,'8')  AS RECP_PSN_NM
+				    ,FIRST_BK_NO
+                    ,CPS.PICKUP_DY 
+                    ,CPS.PICKUP_STATUS
+				    FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS
+				    WHERE DM.ORDER_ID = CPS.ORDER_ID(+) 
+				      AND DM.INVOICE_STATUS_CD = '10' 
+				      AND DM.DELI_HOPE_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			      <isNotEmpty property="martStrNo" >
+        	          AND DM.DELI_STR_CD = #martStrNo#
+		          </isNotEmpty>
+		          <isNotEmpty property="deliStatus" >
+        	          AND DM.DELI_STATUS_CD = #deliStatus#
+		          </isNotEmpty>
+			      <isNotEmpty property="pickupStatus" >
+        	          AND CPS.PICKUP_STATUS = #pickupStatus#
+		          </isNotEmpty>
+				      AND EXISTS (
+				      			  SELECT 1 
+			                      FROM TDE_ORDER_DELIVERY 
+			                      WHERE ORDER_ID = DM.ORDER_ID 
+			                      AND DELIVERY_ID = DM.DELIVERY_ID 
+			                      AND EXT_STR_TYPE = '001' 
+			                     <isNotEmpty property="superStrNo" >
+			                      AND EXT_STR_CD = #superStrNo#
+			                     </isNotEmpty>
+				                  AND EXT_STR_CD IS NOT NULL
+				                  )
+			 )B 
+		)
+      WHERE PAGE = #pageIndex# 
+	</select>
+
+	<select id="selectCrossPicUpListExcel"  parameterClass="pscmsta0013VO" resultClass="dataMap">
+	/* PSCMSTA0013.selectCrossPicUpListExcel */ 
+				SELECT /*+leading(DM , CPS) */
+				    ROW_NUMBER() OVER(ORDER BY DM.DELI_HOPE_DY ) NUM
+				    ,(SELECT ORD_DY FROM TOR_ORDER WHERE ORDER_ID = DM.ORDER_ID) AS ORD_DY
+				    ,(SELECT STR_NM FROM TST_STORE WHERE STR_CD = DM.DELI_STR_CD) AS STR_NM
+				    ,(SELECT A.EXT_STR_NM FROM TST_STORE_MAPPING A, TDE_ORDER_DELIVERY B WHERE B.ORDER_ID = DM.ORDER_ID AND A.EXT_STR_TYPE = '001' AND A.EXT_STR_CD = B.EXT_STR_CD LIMIT 1) AS EXT_STR_NM
+				    ,DM.DELI_HOPE_DY
+				    ,DM.ORDER_ID
+				    ,(SELECT SUM(NVL(DPST_AMT, 0) + NVL(PROC_COMM, 0)) FROM TOR_DEMAND WHERE ORDER_ID = DM.ORDER_ID ) TOT_SELL_AMT
+				    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE020' AND  MINOR_CD = DM.DELI_DIVN_CD) AS DELI_DIVN_CD  
+				    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'DE002' AND  MINOR_CD = DM.DELI_STATUS_CD) AS DELI_STATUS_CD 
+				    ,TO_CHAR(TO_DATE(DM.DELI_FNSH_DATE, 'YYYYMMDDHH24MISS'),'YYYYMMDD') AS DELI_FNSH_DATE
+				    ,FN_MASKING_RTN(RECP_PSN_NM,'8')  AS RECP_PSN_NM
+				    ,FIRST_BK_NO
+				    ,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'SM174' AND MINOR_CD = CPS.PICKUP_STATUS) AS PICKUP_STATUS  
+                    ,CPS.PICKUP_DY 
+				    FROM TDE_DELI_MST DM, TED_CROSS_PICKUP_STATUS CPS
+				    WHERE DM.ORDER_ID = CPS.ORDER_ID(+)
+				      AND DM.INVOICE_STATUS_CD = '10' 
+				      AND DM.DELI_HOPE_DY BETWEEN REPLACE(#startDate#, '-', '') AND REPLACE(#endDate#, '-', '')
+			      <isNotEmpty property="martStrNo" >
+        	          AND DELI_STR_CD = #martStrNo#
+		          </isNotEmpty>
+		          <isNotEmpty property="deliStatus" >
+        	          AND DM.DELI_STATUS_CD = #deliStatus#
+		          </isNotEmpty>
+			      <isNotEmpty property="pickupStatus" >
+        	          AND CPS.PICKUP_STATUS = #pickupStatus#
+		          </isNotEmpty>
+				      AND EXISTS (
+				      			  SELECT 1 
+			                      FROM TDE_ORDER_DELIVERY 
+			                      WHERE ORDER_ID = DM.ORDER_ID 
+			                      AND DELIVERY_ID = DM.DELIVERY_ID 
+			                      AND EXT_STR_TYPE = '001' 
+			                     <isNotEmpty property="superStrNo" >
+			                      AND EXT_STR_CD = #superStrNo#
+			                     </isNotEmpty>
+				                  AND EXT_STR_CD IS NOT NULL
+				                  )
+	</select>
+	
+	<select id="selectSuperStrList"  resultClass="dataMap">
+		/* PSCMSTA0013.selectSuperStrList */
+		  SELECT  EXT_STR_NM, EXT_STR_CD
+	      FROM TST_STORE_MAPPING
+	      WHERE EXT_STR_TYPE = '001'
+	      ORDER BY EXT_STR_NM
+	</select>
+	
+	<select id="selectMartStrList" resultClass="dataMap">
+		/* PSCMSTA0013.selectMartStrList */
+		 SELECT  STR_CD, STR_NM
+	     FROM TST_STORE 
+	     WHERE (ONLINE_YN = 'Y' OR ONLINE_REP_STR_YN = 'Y')
+	     ORDER BY STR_NM    
+    </select>
+    
+    <select id="selectPickupStsList" resultClass="dataMap">
+    /* PSCMSTA0013.selectPickupStsList */
+    SELECT CD_NM, MINOR_CD
+    FROM TET_CODE
+    WHERE MAJOR_CD = 'SM174'
+    </select>
+
+    <select id="selectDeliStatusList" resultClass="dataMap">
+    /* PSCMSTA0013.selectDeliStatus */
+    SELECT MINOR_CD, CD_NM
+	FROM TET_CODE
+	WHERE MAJOR_CD = 'DE002'
+	AND USE_YN = 'Y'
+    </select>
+    
+    <insert id='insertPickupStatus' >
+    /* PSCMSTA0013.insertPickupStatus */
+    MERGE INTO TED_CROSS_PICKUP_STATUS A
+      USING (
+            SELECT #orderId# AS ORDER_ID
+            FROM DUAL
+      )B ON(
+         A.ORDER_ID = B.ORDER_ID
+      )
+      WHEN MATCHED THEN
+      UPDATE SET 
+      PICKUP_STATUS = #pickupStatus#
+      , MOD_ID = #adminId#
+      , MOD_DATE = CURRENT_TIMESTAMP(0)
+      WHEN NOT MATCHED THEN
+      INSERT(
+      ORDER_ID
+      ,PICKUP_STATUS
+      ,PICKUP_DY
+      ,REG_DATE
+      ,REG_ID
+      ,MOD_ID
+      ,MOD_DATE
+      )
+      VALUES(
+      #orderId#
+      ,#pickupStatus#
+      ,TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD')
+      ,CURRENT_TIMESTAMP(0)
+      ,#adminId#
+      ,#adminId#
+      ,CURRENT_TIMESTAMP(0)
+      )
+    </insert>
+    
+</sqlMap>

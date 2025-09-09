@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0004">
+
+    <typeAlias alias="pscpprd0004VO" type="com.lottemart.epc.product.model.PSCPPRD0004VO" />
+    <typeAlias alias="pscpprd00041VO" type="com.lottemart.epc.product.model.PSCPPRD00041VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+    <select id="selectPrdThemaList" resultClass="pscpprd00041VO">
+    /* pscpprd0004.selectPrdThemaList */
+    SELECT ROWNUM AS seq
+         , DT.PROD_CD AS prodCd
+         , DT.THEMA_SEQ AS themaSeq
+         , DT.THEMA_NM AS themaNm
+         , DT.ORDER_SEQ AS orderSeq
+         , (SELECT CASE WHEN DP.ORDER_SEQ = 1 THEN 'Y' ELSE '' END
+             FROM TPR_CROSS_SELLING DP
+            WHERE DP.PROD_CD = #prodCd#
+              AND DP.PROD_CD = DT.PROD_CD
+              AND DP.THEMA_SEQ = DT.THEMA_SEQ
+              AND DP.ORDER_SEQ = 1 ) AS repProdExistsYn
+         , (SELECT P.PROD_CD
+              FROM TPR_CROSS_SELLING DP
+                 , TPR_PRODUCT P
+             WHERE DP.PROD_CD = #prodCd#
+               AND DP.ASSO_CD = P.PROD_CD
+               AND DP.PROD_CD = DT.PROD_CD
+               AND DP.THEMA_SEQ = DT.THEMA_SEQ
+               AND DP.MAIN_PROD_YN = 'Y' ) AS mainProdCd
+         , (SELECT P.PROD_NM
+              FROM TPR_CROSS_SELLING DP
+                 , TPR_PRODUCT P
+             WHERE DP.PROD_CD = #prodCd#
+               AND DP.ASSO_CD = P.PROD_CD
+               AND DP.PROD_CD = DT.PROD_CD
+               AND DP.THEMA_SEQ = DT.THEMA_SEQ
+               AND DP.MAIN_PROD_YN = 'Y' ) AS mainProdNm
+	     , (SELECT COUNT(PROD_CD)
+              FROM TPR_CROSS_SELLING A
+             WHERE A.PROD_CD = #prodCd#
+               AND A.PROD_CD = DT.PROD_CD
+               AND A.THEMA_SEQ = DT.THEMA_SEQ ) AS prodQty
+      FROM TPR_DEAL_THEMA DT
+     WHERE DT.PROD_CD = #prodCd#
+     ORDER BY DT.ORDER_SEQ
+    </select>
+
+    <select id="selectPrdRecommendList" resultClass="pscpprd0004VO">
+    /* pscpprd0004.selectPrdRecommendList */
+    SELECT T.* 
+         , CASE WHEN dispYn = 'N' THEN '판매중지'
+                WHEN SOUT_YN = 0  THEN '판매중'
+                WHEN dispYn = 'Y' AND SOUT_YN = ITEM_CNT AND RSERV_STK_QTY = 0 THEN '품절'
+                ELSE ''
+           END AS sellFlag
+      FROM (SELECT A.PROD_CD AS prodCd
+                 , A.ASSO_CD AS assoCd
+                 , B.PROD_NM AS prodNm
+                 , B.BUY_PRC AS buyPrc
+                 , B.SELL_PRC AS sellPrc
+                 , B.CURR_SELL_PRC AS currSellPrc
+                 , B.APRV_YN AS aprvYn
+                 , A.DISP_YN AS dispYn
+                 , B.DISP_YN AS headDispYn
+                 , A.ORDER_SEQ AS orderSeq
+                 , CASE WHEN A.ORDER_SEQ = 1 THEN 'Y' ELSE 'N' END AS repYn
+                 , A.BATCH_ORDER_SEQ AS batchOrderSeq
+                 , A.PROD_LINK_KIND_CD AS prodLinkKindCd 
+                 , B.PROD_DESC AS prodDesc
+                 , '/'||SUBSTRB(B.MD_SRCMK_CD,1,5)||'/'||B.MD_SRCMK_CD||'_1_60.jpg' AS imgPath
+                 , DECODE(A.PROD_LINK_KIND_CD, '01', '가격비교상품', '02', '관련상품', '-', '04', '딜상품') AS prodLinkKindNm
+                 , NVL(A.THEMA_SEQ, '0') AS themaSeq
+                 , A.MAIN_PROD_YN AS mainProdYn
+                 , (SELECT SUM(RSERV_STK_QTY)
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = B.PROD_CD ) AS RSERV_STK_QTY
+                 , (SELECT SUM(DECODE(SOUT_YN,'Y',1,'N',0))
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = B.PROD_CD) AS SOUT_YN
+                 , (SELECT COUNT(1)
+                      FROM TPR_STORE_ITEM_PRICE TIP
+                     WHERE TIP.PROD_CD = B.PROD_CD) AS ITEM_CNT
+              FROM TPR_CROSS_SELLING A
+                 , TPR_PRODUCT B
+             WHERE A.ASSO_CD = B.PROD_CD
+               AND A.PROD_CD = #prodCd#
+               <isNotEmpty property="themaSeq">AND A.THEMA_SEQ = #themaSeq#</isNotEmpty>
+               <isEmpty property="themaSeq">AND NVL(A.THEMA_SEQ, '0') = '0'</isEmpty>
+               <isNotEmpty property="prodLinkKindCd">AND A.PROD_LINK_KIND_CD LIKE #prodLinkKindCd# ||'%'</isNotEmpty>
+           ) T
+     ORDER BY T.batchOrderSeq 
+    </select>
+
+    <select id="selectPrdRecommendCrossTotalCnt" resultClass="java.lang.Integer">
+    /* pscpprd0004.selectPrdRecommendCrossTotalCnt */
+    SELECT SUM(cnt) AS cnt
+      FROM ( SELECT COUNT(1) AS cnt
+               FROM TPR_PRODUCT A
+              WHERE A.VENDOR_ID = #vendorId#
+                AND (#assoCd# IS NOT NULL OR #assoNm# IS NOT NULL)
+                AND A.PROD_CD  LIKE #assoCd#||'%'
+                AND A.PROD_NM  LIKE #assoNm#||'%'
+                AND A.APRV_YN = 'Y'
+                AND ( (#prodLinkKindCd# != '03') OR (#prodLinkKindCd# = '03' AND A.PROD_TYPE_DIVN_CD = '2'))  
+              UNION ALL
+             SELECT /*+ FULL(A) */ 
+                    COUNT(1) AS cnt
+               FROM TPR_PRODUCT A
+              WHERE A.VENDOR_ID = #vendorId#
+                AND (#assoCd# IS NULL AND #assoNm# IS NULL)
+                AND A.PROD_CD  LIKE #assoCd#||'%'
+                AND A.PROD_NM  LIKE #assoNm#||'%'
+                AND A.APRV_YN = 'Y'
+                AND ( (#prodLinkKindCd# != '03') OR (#prodLinkKindCd# = '03' AND A.PROD_TYPE_DIVN_CD = '2'))
+           )
+    </select>
+
+    <select id="selectPrdRecommendCrossList" resultClass="pscpprd0004VO">
+    /* pscpprd0004.selectPrdRecommendCrossList */
+    SELECT *
+      FROM ( SELECT ROWNUM AS num
+                  , COUNT(1) OVER() AS cnt
+                  , A.PROD_CD AS assoCd
+                  , A.PROD_NM AS assoNm
+                  , A.PROD_DESC AS prodDesc
+                  , A.DISP_YN AS dispYn
+                  , A.SELL_PRC AS sellPrc
+                  , A.CURR_SELL_PRC AS currSellPr
+                  , (SELECT DECODE(COUNT(*),0,'02','01')
+                       FROM TPR_CROSS_SELLING Z
+                      WHERE Z.PROD_CD  = #prodCd#
+                        AND Z.ASSO_CD  = A.PROD_CD
+                    ) AS existChk
+                  , '/'||SUBSTRB(MD_SRCMK_CD,1,5)||'/'||MD_SRCMK_CD||'_1_60.jpg' AS imgPath
+                  , #prodCd# AS prodCd
+               FROM TPR_PRODUCT A
+              WHERE A.VENDOR_ID = #vendorId#
+                AND A.PROD_CD LIKE #assoCd#||'%'
+                AND A.PROD_NM LIKE #assoNm#||'%'
+                AND A.APRV_YN = 'Y'
+                AND ( (#prodLinkKindCd# != '03')
+                     OR (#prodLinkKindCd# = '03' AND A.PROD_TYPE_DIVN_CD = '2'))
+           )
+    WHERE num BETWEEN #startRow# AND #endRow#
+    </select>
+
+    <insert id="insertPrdRecommend" parameterClass="pscpprd0004VO">
+    /* pscpprd0004.insertPrdRecommend */
+    INSERT INTO TPR_CROSS_SELLING
+    ( PROD_CD
+    , ASSO_CD
+    , DISP_YN
+    , PROD_LINK_KIND_CD
+    , ORDER_SEQ
+    , BATCH_ORDER_SEQ
+    , THEMA_SEQ
+    , MAIN_PROD_YN
+    , REG_ID
+    , REG_DATE
+    , MOD_ID
+    , MOD_DATE)
+    VALUES
+    ( #prodCd#
+    , #assoCd#
+    , #dispYn#
+    , #prodLinkKindCd#
+    , #orderSeq#
+    , #batchOrderSeq#
+    , #themaSeq#
+    , #mainProdYn#
+    , #regId#
+    , CURRENT_TIMESTAMP(0)
+    , #regId#
+    , CURRENT_TIMESTAMP(0))
+    </insert>
+
+    <delete id="deletePrdRecommend" parameterClass="pscpprd0004VO">
+    /* pscpprd0004.deletePrdRecommend */
+    DELETE TPR_CROSS_SELLING
+     WHERE PROD_CD = #prodCd#
+       AND ASSO_CD = #assoCd#
+    </delete>
+
+    <update id="updatePrdRecommend" parameterClass="pscpprd0004VO">
+    /* pscpprd0004.updatePrdRecommend */
+    UPDATE TPR_CROSS_SELLING
+       SET BATCH_ORDER_SEQ = #batchOrderSeq#
+         , ORDER_SEQ = #orderSeq#
+         , DISP_YN = #dispYn#
+         , MOD_ID = #regId#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD = #prodCd#
+       AND ASSO_CD = #assoCd#
+    </update>
+
+    <insert id="insertPrdThema" parameterClass="pscpprd00041VO">
+    /* pscpprd0004.insertPrdThema */
+    INSERT INTO TPR_DEAL_THEMA
+    ( PROD_CD
+    , THEMA_SEQ
+    , THEMA_NM
+    , ORDER_SEQ
+    , REG_ID
+    , REG_DATE
+    , MOD_ID
+    , MOD_DATE )
+    VALUES
+    ( #prodCd#
+    , #themaSeq#
+    , #themaNm#
+    , #orderSeq#
+    , #regId#
+    , CURRENT_TIMESTAMP(0)
+    , #modId#
+    , CURRENT_TIMESTAMP(0) )
+    </insert>
+
+    <delete id="deletePrdThema" parameterClass="pscpprd00041VO">
+    /* pscpprd0004.deletePrdThema */
+    DELETE FROM TPR_DEAL_THEMA
+     WHERE PROD_CD = #prodCd#
+       <isNotEmpty property="themaSeq">
+       AND THEMA_SEQ = #themaSeq#
+       </isNotEmpty>
+    </delete>
+
+    <update id="updatePrdThema" parameterClass="pscpprd00041VO">
+    /* pscpprd0004.updatePrdThema */
+    UPDATE TPR_DEAL_THEMA
+       SET THEMA_NM = #themaNm#
+         , ORDER_SEQ = #orderSeq#
+         , MOD_ID = #modId#
+         , MOD_DATE = CURRENT_TIMESTAMP(0)
+     WHERE PROD_CD = #prodCd#
+       AND THEMA_SEQ = #themaSeq#
+    </update>
+
+    <delete id="deletePrdThemaProd" parameterClass="pscpprd00041VO">
+    /* pscpprd0004.deletePrdThemaProd */
+    DELETE TPR_CROSS_SELLING
+     WHERE PROD_CD = #prodCd#
+       <isNotEmpty property="themaSeq">
+       AND THEMA_SEQ = #themaSeq#
+       </isNotEmpty>
+    </delete>
+
+</sqlMap>

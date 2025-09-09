@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>롯데CRM센터</title>
+<meta http-equiv="X-UA-Compatible" content="IE=9" >
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link href="./cti.css" rel="stylesheet" type="text/css">
+
+<style>
+	
+		body { margin:0; padding:0; }
+		.cti td { padding:0 2px; }
+		.cti td img { CURSOR: pointer; }
+
+    body, input, select, textarea, a { font:100%/1.4 'Nanum Gothic', '나눔고딕', Dotum, tahoma, Arial, Helvetica, sans-serif; font-size:13px; color:#333; }
+		
+		table	{ font-size:12; }
+		
+</style>
+
+<script language="JavaScript" src="./../js/SE_util.js"></script>
+<script language="JavaScript" src="./../js/SC_msgConstants.js"></script>
+<script language="JavaScript" src="./../js/SS_envConstants.js"></script>
+
+<script>
+    
+  function keyCheck() {
+    
+    if(event.keyCode == 13) {
+    
+      doDialing();
+
+    }
+    
+  }
+  
+  
+  function setValues() {
+  
+	//window.resizeTo(350,370);
+	window.resizeTo(350,430);
+    
+    //if( confirm(opener.arrDialTelNo[0]+"/"+opener.arrDialTelNo[1]+"/"+opener.arrDialTelNo[2]+"/"+opener.arrDialTelNo[3]) ==  false) return;
+    
+    var el;
+  
+    for (var i = 0 ; i< opener.arrDialTelNo.length ; i++) {
+    
+      if (opener.arrDialTelNo[i] != "0") {
+        
+        el = document.getElementById("txTelNo"+i);
+        
+        if (el != null) el.value = opener.arrDialTelNo[i];
+        
+        //alert(document.getElementById("txTelNo"+i).value + "/"+i);
+        
+      }
+      
+    }
+    
+    document.all.txTelNo0.value = opener.dialTelNo.value;
+
+  }
+
+  function getTelNoIdx() {
+  
+    var arrRd = document.all.rdTelNo;
+    
+    for (var i=0; i < arrRd.length; i++) {
+    
+      if (arrRd[i].checked == true ) TelNoIdx = i;
+    
+    }
+    
+  }
+
+  function doValidation() {
+	  
+		DialTelNo = trim(document.getElementById("txTelNo"+TelNoIdx).value).replace('-', '');
+		
+		DialTelNo = replaceAll(DialTelNo,"-","");
+
+    if (!isTelNo(DialTelNo)) {
+    
+      usrAlert(ErrMsgIsNotTelNo); 
+      
+      return false;
+      
+    }
+    		
+    if(confirm(QstMsgDoRun + " - 전화걸기 : " + DialTelNo) ==  false) return false;
+    
+    return true
+    
+  }
+
+  function doDialing() {
+    
+    getTelNoIdx();
+    
+    if(!doValidation()) return;
+
+    opener.doDialCall(DialTelNo);
+    
+    self.close();  
+  
+  }
+  
+  function doCancel() {
+    
+    self.close();
+  
+  }
+
+  //variable
+  
+  var DialTelNo = "";
+  var TelNoIdx = 0;
+
+
+</script>
+
+</head>
+
+<body onKeyDown="keyCheck();" onload="setValues()">
+  
+  <h1 class="makecall">전화 걸기</h1>
+
+  <div class="cti">
+  
+    <h2>고객 연락처</h2>
+
+      <!-- 내용 테이블 -->
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:left;">
+        <tr>
+          <th><label for="rdTelNo0"><input type="radio" name="rdTelNo" id="rdTelNo0" value="" checked>전화</label></th>
+					<td><div align="right"><input name="txTelNo" type="text" id="txTelNo0" size="15" style="font-size:12px;"></div></td>
+      	</tr>
+<!--       	
+        <tr>
+          <th><label for="rdTelNo1"><input type="radio" name="rdTelNo" id="rdTelNo1" value="">휴대폰</label></th>
+					<td><div align="right"><input name="txTelNo" type="text" id="txTelNo1" size="15" style="font-size:12px;"></div></td>
+      	</tr>  																
+        <tr>
+          <th><label for="rdTelNo2"><input type="radio" name="rdTelNo" id="rdTelNo2" value="">사무실</label></th>
+					<td><div align="right"><input name="txTelNo" type="text" id="txTelNo2" size="15" style="font-size:12px;"></div></td>
+      	</tr>
+        <tr>
+          <th><label for="rdTelNo3"><input type="radio" name="rdTelNo" id="rdTelNo3" value="">기타</label></th>
+					<td><div align="right"><input name="txTelNo" type="text" id="txTelNo3" size="15" style="font-size:12px;"></div></td>
+      	</tr> 
+ -->     	
+      </table>
+      <!-- //내용 테이블 -->
+
+  	  <div class="btn"><span onclick="javascript:doDialing()">통화</span><span onclick="javascript:doCancel()">취소</span></div>
+  	    
+  </div>
+
+<script language="javascript">
+  function window::onload() {
+   document.getElementById("txTelNo0").focus();
+  }
+ </script>
+
+</body>
+</html>

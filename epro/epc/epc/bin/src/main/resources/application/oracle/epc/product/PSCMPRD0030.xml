@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMPRD0030">
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+    <typeAlias alias="PSCPPRD0020VO" type="com.lottemart.epc.product.model.PSCPPRD0020VO"/>
+
+	<!-- 전상법 상품분류 조회-->
+	<select id="selectInfoGrpCdList" resultClass="dataMap">
+	<![CDATA[	
+		/* PSCMPRD0030.selectInfoGrpCdList */
+		SELECT A.INFO_GRP_CD
+		          , A.INFO_GRP_NM
+		  FROM TPR_PROD_ADD_INFO_MST A
+	              ,(
+	                SELECT /*+ index(TPR_PROD_ADD_INFO_VAL IX_PR_PROD_ADD_INFO_VAL_02) */INFO_GRP_CD
+	                  FROM TPR_PROD_ADD_INFO_VAL
+	                 WHERE PROD_CD IN (
+	                                                  SELECT PROD_CD 
+	                                                   FROM TPR_PRODUCT
+	                  								 WHERE 1=1
+		                  							     AND ( 0 , VENDOR_ID ) IN 
+	]]>		                  							
+	                  								  <iterate property="vendorId" open="(" close=")" conjunction=","> 
+												        ( 0, #vendorId[]# )
+												      </iterate>
+	<![CDATA[												      
+	                  								)
+	                 GROUP BY INFO_GRP_CD
+	               ) B
+	    WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+        GROUP BY A.INFO_GRP_CD, A.INFO_GRP_NM
+	]]>
+	</select>
+	
+		<!-- 전상법 상품분류 상세 조회-->
+	<select id="selectInfoGrpDetList" resultClass="dataMap">
+	<![CDATA[
+		/* PSCMPRD0030.selectInfoGrpDetList */
+		  SELECT 
+     	  RANK()OVER(ORDER BY INFO_COL_CD DESC) AS  num
+     	  ,INFO_COL_CD AS infoColCd
+   		 ,INFO_GRP_CD AS infoGrpCd
+		 ,INFO_COL_NM  AS infoColNm
+		 FROM TPR_PROD_ADD_INFO_DET
+    	 WHERE INFO_GRP_CD = #infoGrpCd#
+    	 AND USE_YN='Y'
+	]]>
+	</select>
+	
+	<!-- 전상법 상품분류 cnt -->
+	<select id="cntInfoGrpDetList"  resultClass="java.lang.Integer">
+		<![CDATA[
+		/* PSCMPRD0030.selectInfoGrpDetList */
+		 SELECT	COUNT(1) AS  COUNT 
+		  FROM TPR_PROD_ADD_INFO_DET
+    	 WHERE INFO_GRP_CD = #infoGrpCd#
+	]]>
+	</select>
+	
+	<!-- 전상법 상품분류 -->
+	
+	<!-- 전상법 컬럼 정보 조회-->
+	<select id="selectElecCommColList" resultClass="dataMap">
+	<![CDATA[
+		/* PSCMPRD0030.selectElecCommColList */
+		SELECT INFO_COL_CD
+			 , INFO_COL_NM
+		  FROM TPR_PROD_ADD_INFO_DET
+		 WHERE INFO_GRP_CD = #infoGrpCd#
+		 AND USE_YN ='Y'
+		 ORDER BY ORDER_SEQ
+	]]>
+	</select>
+	
+	<!-- 전상법 컬럼값 조회-->
+	<select id="selectElecCommValList" resultClass="dataMap" remapResults="true">
+ 	<![CDATA[
+ 		/* PSCMPRD0030.selectElecCommList */
+ 		SELECT ROW_NUMBER() OVER(ORDER BY PROD_NM) AS RNUM
+ 		      ,PROD_CD
+ 		      ,PROD_NM
+ 		      ,#infoGrpCd# AS INFO_GRP_CD
+ 		      $sqlVal$
+ 		  FROM
+ 		      (
+		 		SELECT  B.INFO_COL_CD
+		 		       ,B.COL_VAL
+		 		       ,B.PROD_CD
+		 		       ,C.PROD_NM
+			  	  FROM TPR_PROD_ADD_INFO_DET A
+			         , TPR_PROD_ADD_INFO_VAL B
+			         , TPR_PRODUCT C
+			     WHERE A.INFO_GRP_CD = B.INFO_GRP_CD
+			       AND A.INFO_COL_CD = B.INFO_COL_CD
+			       AND B.PROD_CD = C.PROD_CD
+			       AND A.INFO_GRP_CD = #infoGrpCd#
+			       AND B.DISP_YN = 'Y'
+			       AND TO_CHAR(C.REG_DATE,'YYYYMMDD') BETWEEN #startDate# AND #endDate#
+			       AND (0, C.VENDOR_ID) 
+	]]>
+				<iterate prepend="IN" property="vendorId" open="(" close=")" conjunction=","> 
+					(0, #vendorId[]# )
+			   	</iterate>
+		 		<isNotEmpty property="prodVal">
+		 			<isEqual property="prodFlag" compareValue="4"> <!-- 상품명 -->
+		 				AND C.PROD_NM LIKE '%' || #prodVal# || '%'
+		 			</isEqual>
+		 			<isEqual property="prodFlag" compareValue="1"> <!-- 상품코드 -->
+		 				AND B.PROD_CD 
+		 				<iterate prepend="IN" property="prodCdArr" open="(" close=")" conjunction=","> 
+							#prodCdArr[]# 
+						</iterate>
+		 			</isEqual>
+		 		</isNotEmpty>
+		 	)
+	   GROUP BY PROD_CD, PROD_NM, #infoGrpCd#
+	</select>
+
+	<!-- 전상법 수정-->
+	<update id="updateElecComm">
+		/* PSCMPRD0030.updateElecComm */
+		UPDATE TPR_PROD_ADD_INFO_VAL
+		   SET MOD_ID = #modId#
+		      ,MOD_DATE = CURRENT_TIMESTAMP(0)
+		      <isNotEmpty property="colVal">
+		      ,COL_VAL = #colVal#
+		      </isNotEmpty>
+		 WHERE INFO_GRP_CD = #infoGrpCd#
+		   AND INFO_COL_CD = #infoColCd#
+		   AND PROD_CD = #prodCd#
+	</update>
+</sqlMap>

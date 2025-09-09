@@ -1,0 +1,7 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Apr 17 14:33:01 KST 2025
+junit-3.8.1-sources.jar>neonexus=
+junit-3.8.1.jar>central=
+junit-3.8.1.jar>neonexus=
+junit-3.8.1.pom>central=
+junit-3.8.1.pom>neonexus=

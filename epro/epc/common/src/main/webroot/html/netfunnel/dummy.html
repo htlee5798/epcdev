@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>NetFUNNEL - Lottemart Mall</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		img {max-width:100%; vertical-align:top;-webkit-user-select:none;}
+		strong, em,span, p{margin:0; padding:0; border:0; font:inherit; font-size:100%; vertical-align:baseline;text-decoration:none !important;}
+		.wrapper-cartdelay-layer {position: fixed;top: 0;left: 0;right: 0;bottom: 0;z-index: 55;text-align: center}
+		.wrapper-cartdelay-layer.active .layer-mask {background-color: rgba(0,0,0,.8);}
+		.wrapper-cartdelay-layer .title{padding-top:33px;}
+		.wrapper-cartdelay-layer .title img{width:180px;height:auto;}
+		.wrapper-cartdelay-layer .title p{font-size:10px;color:#666;margin-top:10px;}
+		.wrapper-cartdelay-layer .wrap-cartdelay-layer{position: absolute;top: 50%;left: 50%;z-index: 3;-webkit-transform: translate(-50%,-50%);transform: translate(-50%,-50%);}
+		.wrapper-cartdelay-layer .wrap-cartdelay-layer{overflow-x: hidden;overflow-y: auto;-webkit-overflow-scrolling: touch;width: 260px;max-height: 90vh;background:#fff;}
+		.wrapper-cartdelay-layer .wrap-delay{text-align: center;padding:0 20px}
+		.wrapper-cartdelay-layer .delay-bar{background: #eeeeee;width:100%;height: 11px;position: relative;border-radius: 5px;top:42px; }
+		.wrapper-cartdelay-layer .delay-bar .bar{position: absolute;top:0;left:0;background:#f22e36;height: 11px;border-radius: 5px;}
+		.wrapper-cartdelay-layer .delay-bar .bar:after{display: inline-block;width: 32px;height: 28px;background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD8AAAA3CAMAAACM0mKAAAAAmVBMVEUAAADyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjbyLjZ8TewVAAAAMnRSTlMAcKCQwPoMOwb3Ak4v89ZlKc+v60ESt6qbh15bM+/dyMKkjX5I4ndVHedpRSMZFJSDEAHVekMAAAKoSURBVEjHpZbpYqIwGEXRNggoi+uIVuu+1K097/9wg7E4SQTB4fwQkniBfNzcYC0Ev4j3hvU6AoXm6/oOCnvnZb0XtX4ZAQ2rAgHUquiH8KeK/gumVfQfwLmC3nFhZVXgE5byZDWslyE+6vo3GFyPtks5fP19j8GVep+StB8KKK/YWLyVoAPoXgQWVmlCWOs9E/is4rdPmJTXt2Gj98SAvgTtfr/vKGfqkICerm89LMEAmEtzdYFYHWoAtqXjQ6h1uMDketsDGNOtQZCRJkO1fSJBmroORnH/QN3Ub6BtPqO8pDMhoauOTeHL1PdA2JojpcyzmoA+3zPwYepto4BLEFzLPJdHWv+GVuA6RRk2h2SaXGyfwVoP6GWm1+owV5ozOExgv4XxDO3aA3grzLA97Ookfbh2HU3RhXF2hvXVcgjvVrqOtZS/KUfgmJFhQs2w6GoRxydha4209b6FifckwyRNGEij4NvSC/59aCGHHrmo/TW4JLe6OXeHOrcZxFn6EezVQKzd4nCbpIurOCZpZO+2EbC72zEMj9dphKFzNWMYhjtlpZ6y9J4P29ezS/NFXGWvjOH9P7JLfWe+V6A2s8uMjKhA/phduueD9wICCPJLU8yzjebcpgQz28rDW9UKOXgFBY4iJ3vEiSK7sLwDAf78mGHvjgui8/FUvuGG+7BCxgKJ+HoiH5HiGvfplfnUtbvQHf2cNsJMWC8At3buhz6snTz9GEQrfY7IdF0zPVnl6S9pTHprGBk7ZvuePt95+vk9pmfGB/H3PYDr8j/ZLNIF7JgRX4Oply7fZZ6+mc5yeY8yJbTki3v6qe9MQcSNw1zdL+4TYtjrvQHtfAP3BL90d4b7fM0ZuTNwkaxbD8buIpkcrGecFlMh2puMdfLzHQgRxOe0/ReTm5Mkh/6CEwAAAABJRU5ErkJggg==') no-repeat;background-size: 32px auto;content: '';position: absolute;top:-28px;right:0}
+		.wrapper-cartdelay-layer .my-count{overflow:hidden;display: block;padding-top:50px;font-size:15px;line-height: 15px;margin-bottom:2px; }
+		.wrapper-cartdelay-layer .count{display:block;font-size:10px;color:#666666;margin-bottom:10px;}
+		.wrapper-cartdelay-layer .point1{color:#ed1c24;}
+		.wrapper-cartdelay-layer .delay-info{border-top:1px solid #dddddd;margin:0 14px 29px}
+		.wrapper-cartdelay-layer .delay-info p{font-size:10px; color:#666;margin-top:10px;}
+	</style>
+</head>
+<body>
+	<script src="scripts/netfunnel.js"></script>
+	<script src="scripts/netfunnel.skin.js"></script>
+	<script>
+		(function() {
+			var urlObj = (function() {
+				var queries = window.location.search.replace(/^\?/, '').split('&'), queryObj = [];
+					for(var key in queries) {
+						var split = (queries[key] + '').split('=');
+						queryObj[split[0]] = split[1];
+					}
+					return {
+						searchParams: {
+							get: function(name) {
+							return queryObj[name] ? decodeURIComponent(queryObj[name]) : null;
+						}
+					}
+				};
+			})();
+			var actionId = urlObj.searchParams.get('actionId') || 'index',
+				targetUrl = urlObj.searchParams.get('targetUrl') || '/mobile/todayhot/mobileTodayhotMain.do';
+
+			NetFunnel_Action({action_id: actionId}, targetUrl);
+		})();
+	</script>
+</body>
+</html>

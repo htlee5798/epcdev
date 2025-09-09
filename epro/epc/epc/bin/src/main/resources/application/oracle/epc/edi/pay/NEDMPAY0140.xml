@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0140">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	<!-- 패밀리론 -->
+	<typeAlias alias="NEDMPAY0140VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0140VO" />
+	<resultMap id="NEDMPAY0140VOMap" class="NEDMPAY0140VO">
+		<result property="slipNo" 				column="SLIP_NO" />
+		<result property="payDy" 				column="PAY_DY" />
+		<result property="sendAmt" 				column="SEND_AMT" />
+		<result property="ableAmt" 				column="ABLE_AMT" />
+		<result property="splyAmt" 				column="SPLY_AMT" />
+		<result property="logiAmt" 				column="LOGI_AMT" />
+		<result property="salePromoAmt" 		column="SALE_PROMO_AMT" />
+		<result property="rtnAmt" 				column="RTN_AMT" />
+		<result property="payAmt" 				column="PAY_AMT" />
+		<result property="aaa" 					column="AAA" />
+		<result property="bbb" 					column="BBB" />
+		<result property="ccc" 					column="CCC" />
+		<result property="ddd" 					column="DDD" />
+	</resultMap>
+
+	<select id="TSC_FAMILY_LOAN-SELECT01" resultMap="NEDMPAY0140VOMap" parameterClass="NEDMPAY0140VO">
+		/* NEDMPAY0140.TSC_FAMILY_LOAN-SELECT01 */
+		SELECT	A.NETLOAN_SLIP_NO 		AS SLIP_NO
+			--,	GET_PAYDAY_FNC(A.SPLY_CYCLE, A.SPLY_SEQ, SUBSTR(A.BUY_DY, 1, 6)) AS PAY_DY
+			,	BUY_DY					AS PAY_DY
+			,	A.TOT_BANK_SEND_AMT 	AS SEND_AMT
+			,	A.TOT_BANK_ABLE_AMT 	AS ABLE_AMT
+			,	A.SPLY_AMT 				AS SPLY_AMT
+			,	A.LOGI_AMT 				AS LOGI_AMT
+			,	A.SALE_PROMO_AMT		AS SALE_PROMO_AMT
+			,	A.RTN_AMT 				AS RTN_AMT
+			,	A.PAY_AMT 				AS PAY_AMT
+			,	DECODE(SEND_FG, 02, A.PAY_AMT, 0) 						AS AAA
+			,	DECODE(SEND_FG, 02, ROUND(A.PAY_AMT * 0.8, 0), 0) 		AS BBB
+			,	A.TOT_BANK_SEND_AMT + DECODE(SEND_FG, 02, A.PAY_AMT,0) 	AS CCC
+			,	A.TOT_BANK_ABLE_AMT + DECODE(SEND_FG, 02, ROUND(A.PAY_AMT * 0.8, 0), 0) AS DDD
+		FROM	PLS_NETLOAN_HIST_NEW_SAP A
+		WHERE 	A.BUY_DY BETWEEN REPLACE(#srchStartDate#,'-','') AND REPLACE(#srchEndDate#,'-','')
+			<isEmpty property="searchEntpCd">
+				<isNotEmpty  property="venCds"  prepend="AND">
+					<iterate prepend="SUBSTR(A.VEN_CD, -6) IN " property="venCds" open="(" close=")" conjunction=",">
+						#venCds[]#
+					</iterate>
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty  property="searchEntpCd"  prepend="AND">
+				SUBSTR(A.VEN_CD, -6) = #searchEntpCd#
+			</isNotEmpty>
+		ORDER BY A.NETLOAN_SLIP_NO ASC
+	</select>
+
+</sqlMap>

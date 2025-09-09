@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMWEB0001">
+
+	<typeAlias alias="TedOrdList"  type="com.lottemart.epc.edi.weborder.model.TedOrdList" />
+	<typeAlias alias="searchWebOrder" type="com.lottemart.epc.edi.weborder.model.SearchWebOrder" />
+	<typeAlias alias="TedPoOrdMstVO" type="com.lottemart.epc.edi.weborder.model.TedPoOrdMstVO" />
+
+	<resultMap id="tedStoreOrdListMap" class="TedOrdList">
+	   <result property="strCd" 			column="STR_CD"    			/><!--점포코드			-->
+	   <result property="venNm" 			column="VEN_NM"    			/><!--협력업체명			-->
+	   <result property="strNm" 			column="STR_NM"    			/><!--점포명				-->
+	   <result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+	   <result property="ordTotQty" 		column="ORD_TOT_QTY"    	/><!--발주총수량			-->
+	   <result property="ordTotPrc" 		column="ORD_TOT_PRC"    	/><!--발주총금액			-->
+	   <result property="ordTotAllQty" 		column="ORD_TOT_ALL_QTY"    /><!--발주전체총수량		-->
+	   <result property="upYn" 				column="UP_YN"    			/><!--등록여부			-->
+	   <result property="ordPrgsCd" 		column="ORD_PRGS_CD"    	/><!--발주진행상태코드	-->
+	   <result property="cdNm" 				column="CD_NM"    			/><!--발주진행상태명칭	-->
+	   <result property="ordReqNo" 			column="ORD_REQ_NO"    		/><!--발주등록번호		-->
+	   <result property="prodTotSum" 		column="PROD_TOT_SUM"    	/><!--점포별 상품수량		-->
+	</resultMap>
+	
+	<resultMap id="tedStoreOrdDetMstListMap" class="TedOrdList">
+		<result property="prodCd" 			column="PROD_CD"    		/><!--상품코드			-->
+		<result property="strCd" 			column="STR_CD"    			/><!--점포코드			-->
+		<result property="venCd" 			column="VEN_CD"    			/><!--협력업체코드		-->
+		<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="srcmkCd" 			column="SRCMK_CD"    		/><!--판매코드			-->
+		<result property="prodNm" 			column="PROD_NM"    		/><!--상품명				-->
+		<result property="prodStd" 			column="PROD_STD"    		/><!--상품규격			-->
+		<result property="ordBuyPrc" 		column="ORD_BUY_PRC"    	/><!--발주원가			-->
+		<result property="ordIpsu" 			column="ORD_IPSU"    		/><!--발주입수			-->
+		<result property="ordUnit" 			column="ORD_UNIT"    		/><!--발주단위			-->
+		<result property="ordQty" 			column="ORD_QTY"    		/><!--발주수량			-->
+		<result property="ordReqNo" 		column="ORD_REQ_NO"    		/><!--발주등록번호		-->
+		
+	</resultMap>
+	
+	<resultMap id="tedStoreOrdDetSupListMap" class="TedOrdList">
+		<result property="prodCd" 			column="PROD_CD"    		/><!--상품코드			-->
+		<result property="strCd" 			column="STR_CD"    			/><!--점포코드			-->
+		<result property="venCd" 			column="VEN_CD"    			/><!--협력업체코드		-->
+		<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="srcmkCd" 			column="SRCMK_CD"    		/><!--판매코드			-->
+		<result property="prodNm" 			column="PROD_NM"    		/><!--상품명				-->
+		<result property="prodStd" 			column="PROD_STD"    		/><!--상품규격			-->
+		<result property="ordIpsu" 			column="ORD_IPSU"    		/><!--발주입수			-->
+		<result property="ordBuyPrc" 		column="ORD_BUY_PRC"    	/><!--발주원가			-->
+		<result property="ordUnit" 			column="ORD_UNIT"    		/><!--발주단위			-->
+	</resultMap>
+	
+	<resultMap id="tedStoreOrdCntSumMap" class="TedOrdList">
+	   <result property="ordTotQtySum" 			column="ORD_TOT_QTY_SUM"    		/><!--발주총수량합계			-->
+	   <result property="ordTotPrcSum" 			column="ORD_TOT_PRC_SUM"    		/><!--발주총금액합계			-->
+	   <result property="ordTotAllQtySum" 		column="ORD_TOT_ALL_QTY_SUM"    	/><!--충수량EA합계			-->
+	</resultMap>
+	
+	<resultMap id="tedOrdModInfoMap" class="TedOrdList">
+		<result property="prodCd" 			column="PROD_CD"    		/><!--상품코드			-->
+		<result property="ordDy" 			column="ORD_DY"    			/><!--발주일자			-->
+		<result property="strCd" 			column="STR_CD"    			/><!--점포코드			-->
+		<result property="venCd" 			column="VEN_CD"    			/><!--협력업체코드		-->
+	</resultMap>
+	
+	
+	<!-- 상품수가 많은 협력업체인지 조회 -->
+	<select id="selectVendorException" parameterClass="searchWebOrder" resultClass="int" >
+	 	/* PEDMWEB0001.selectVendorException */
+	 	SELECT COUNT(*) 
+	 	  FROM TED_PO_VENDOR_EXCEPTION
+	 	 WHERE VEN_CD = #venCd#
+	 	   AND ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	</select>
+	
+	<!-- 협력사 발주가능 DATA 및 기 등록 수량 조회 PAGING  -->
+	<select id="selectStoreOrdListTotCnt" parameterClass="searchWebOrder" resultClass="int" >
+	 	/* PEDMWEB0001.selectStoreOrdListTotCnt */
+	 	SELECT COUNT(*) FROM (
+          SELECT M1.STR_CD
+           FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+           		LEFT OUTER JOIN STORE@dl_md_martnis ST ON M1.STR_CD = ST.STR_CD
+                LEFT OUTER JOIN TED_PO_ORD_MST S1 
+                             ON S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+                            AND S1.VEN_CD = #venCd#
+                            AND M1.STR_CD = S1.STR_CD
+                            AND M1.ORD_DY = S1.ORD_DY
+                            AND M1.VEN_CD = S1.VEN_CD
+            WHERE M1.VEN_CD = #venCd#   
+              AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+              <isNotEmpty property="areaCd" prepend="AND" >
+	             ST.AREA_FG = #areaCd#
+	          </isNotEmpty>
+              <isEqual property="strSearchType"  compareValue="1">
+	              <isNotEmpty property="strCd"  prepend="AND" >
+	              		M1.STR_CD = #strCd#	
+		          </isNotEmpty>
+	          </isEqual>
+              <isEqual property="strSearchType" compareValue="2">
+            	  <isNotEmpty property="strCds" >
+	                  AND M1.STR_CD 
+						<iterate prepend="IN" property="strCds" open="(" close=")" conjunction="," >
+		               		#strCds[]#
+		           		</iterate>
+		           </isNotEmpty>		
+	          </isEqual>
+	          		 	
+		      <isEqual property="workGb" prepend="AND" compareValue="2">
+	               S1.ORD_REQ_NO IS NOT NULL
+	          </isEqual>
+	          <isEqual property="workGb" prepend="AND" compareValue="3">
+	               S1.ORD_REQ_NO IS NULL
+	          </isEqual>
+	          <isNotEmpty property="prodCd" prepend="AND" >
+	         	   M1.PROD_CD like #prodCd#||'%'
+	          </isNotEmpty>
+	          <isNotEmpty property="prodNm" prepend="AND" >
+	         	   M1.PROD_NM LIKE '%'||#prodNm#||'%'
+	          </isNotEmpty>
+           GROUP BY M1.STR_CD
+         )
+	</select>
+	
+	<!-- 협력사 발주가능 DATA 및 기 등록 수량 -->
+	<select id="selectStoreOrdList" parameterClass="searchWebOrder" resultMap="tedStoreOrdListMap">
+	 	/* PEDMWEB0001.selectStoreOrdList */
+	 	  SELECT	*
+		  FROM ( SELECT	ROWNUM RNUM,A.* FROM (
+				 	SELECT M1.STR_CD 			AS STR_CD    
+				 	      ,M1.VEN_NM			AS VEN_NM   
+				 	      ,M1.ORD_DY			AS ORD_DY            
+			              ,M2.STR_NM  			AS STR_NM
+			              ,NVL(SUM(S3.ORD_QTY), 0) 		AS ORD_TOT_QTY 
+		                  ,NVL(SUM(S3.ORD_QTY*S3.ORD_IPSU*S3.ORD_BUY_PRC), 0) 		AS ORD_TOT_PRC    
+		                  ,NVL(SUM(S3.ORD_QTY*S3.ORD_IPSU), 0) 		AS ORD_TOT_ALL_QTY  
+			              ,CASE WHEN S1.ORD_TOT_QTY IS NULL 
+			                  THEN 'N' ELSE 'Y' END AS UP_YN  
+			              ,S1.ORD_PRGS_CD  		AS ORD_PRGS_CD              
+			              ,S2.CD_NM             AS CD_NM  
+			              ,S1.ORD_REQ_NO        AS ORD_REQ_NO   
+			              ,COUNT(*)             AS PROD_TOT_SUM
+			         FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+			            	LEFT OUTER JOIN STORE@dl_md_martnis M2 ON M1.STR_CD = M2.STR_CD
+			            	LEFT OUTER JOIN TED_PO_ORD_MST S1 
+			                         	 ON S1.VEN_CD = #venCd#
+			                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+			                         	AND M1.STR_CD = S1.STR_CD
+			                        	AND M1.ORD_DY = S1.ORD_DY
+			                        	AND M1.VEN_CD = S1.VEN_CD
+			                LEFT OUTER JOIN TED_PO_ORD_PROD S3
+		                                   ON S3.VEN_CD = #venCd#
+		                                  AND S3.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+		                                  AND M1.STR_CD = S3.STR_CD
+		                                  AND M1.ORD_DY = S3.ORD_DY
+		                                  AND M1.VEN_CD = S3.VEN_CD
+		                                  AND M1.PROD_CD = S3.PROD_CD
+		                              	<isNotEmpty property="prodCd" prepend="AND" >
+							         	   S3.PROD_CD like #prodCd#||'%'
+							            </isNotEmpty>
+							            <isNotEmpty property="prodNm" prepend="AND" >
+							         	   S3.PROD_NM LIKE '%'||#prodNm#||'%'
+							            </isNotEmpty>
+			                LEFT OUTER JOIN TED_CODE S2 ON S2.MAJOR_CD='WPO01'  AND  S1.ORD_PRGS_CD = S2.MINOR_CD
+			       	 WHERE M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')   
+			           AND M1.VEN_CD = #venCd#
+			           	  <isNotEmpty property="areaCd" prepend="AND" >
+				             M2.AREA_FG = #areaCd#
+				          </isNotEmpty>
+			           	  <isEqual property="strSearchType"  compareValue="1">
+				              <isNotEmpty property="strCd"  prepend="AND" >
+				              		M1.STR_CD = #strCd#	
+					          </isNotEmpty>
+				          </isEqual>
+			              <isEqual property="strSearchType" compareValue="2">
+			            	   <isNotEmpty property="strCds" >
+				                    AND M1.STR_CD 
+									<iterate prepend="IN" property="strCds" open="(" close=")" conjunction="," >
+					               		#strCds[]#
+					          		</iterate>
+				          		</isNotEmpty>
+				         </isEqual>
+	          		 	
+			           	<isEqual property="workGb" prepend="AND" compareValue="2">
+			               S1.ORD_REQ_NO IS NOT NULL
+			           	</isEqual>
+			           	<isEqual property="workGb" prepend="AND" compareValue="3">
+			               S1.ORD_REQ_NO IS NULL
+			           	</isEqual>
+			           	<isNotEmpty property="prodCd" prepend="AND" >
+			         	   M1.PROD_CD like #prodCd#||'%'
+			            </isNotEmpty>
+			            <isNotEmpty property="prodNm" prepend="AND" >
+			         	   M1.PROD_NM LIKE '%'||#prodNm#||'%'
+			            </isNotEmpty>
+			         GROUP BY  M1.STR_CD
+				         	  ,M1.VEN_NM
+				              ,M2.STR_NM
+				              ,M1.ORD_DY
+				              ,S1.ORD_TOT_QTY
+				              ,S1.ORD_TOT_PRC
+				              ,S1.ORD_TOT_ALL_QTY
+				              ,S1.ORD_PRGS_CD
+				              ,S2.CD_NM
+				              ,S1.ORD_REQ_NO
+				    		  ,M2.AREA_FG, M2.SORT_ORDER
+				    ORDER BY M2.AREA_FG, M2.SORT_ORDER 
+			       ) A
+			 )A
+		WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+    </select>
+    
+	
+	<select id="selectStoreOrdList_FixedStrCd" parameterClass="searchWebOrder" resultMap="tedStoreOrdListMap">
+	 	/* PEDMWEB0001.selectStoreOrdList_FixedStrCd */
+			 	SELECT M1.STR_CD 			AS STR_CD    
+		 	      ,M1.VEN_NM			AS VEN_NM   
+		 	      ,M1.ORD_DY			AS ORD_DY            
+	              ,M2.STR_NM  			AS STR_NM                      
+	              ,NVL(S1.ORD_TOT_QTY, '0')  		AS ORD_TOT_QTY                  
+	              ,NVL(S1.ORD_TOT_PRC , '0')   		AS ORD_TOT_PRC               
+	              ,NVL(S1.ORD_TOT_ALL_QTY, '0')   	AS ORD_TOT_ALL_QTY  
+	              ,CASE WHEN S1.ORD_TOT_QTY IS NULL 
+	                  THEN 'N' ELSE 'Y' END AS UP_YN  
+	              ,S1.ORD_PRGS_CD  		AS ORD_PRGS_CD              
+	              ,S2.CD_NM             AS CD_NM  
+	              ,S1.ORD_REQ_NO        AS ORD_REQ_NO    
+	              ,COUNT(*)             AS PROD_TOT_SUM
+             FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+				  ,( SELECT  NVL(SUM(M1.ORD_QTY), 		0)  AS ORD_TOT_QTY_SUM                  
+			               ,NVL(SUM(M1.ORD_QTY*M1.ORD_IPSU*M1.ORD_BUY_PRC) , 		0)  AS ORD_TOT_PRC_SUM               
+			               ,NVL(SUM(M1.ORD_QTY*M1.ORD_IPSU), 	0)  AS ORD_TOT_ALL_QTY_SUM
+			          FROM TED_PO_ORD_PROD M1
+			          		LEFT OUTER JOIN STORE@dl_md_martnis ST ON M1.STR_CD = ST.STR_CD
+			          		LEFT OUTER JOIN TED_PO_ORD_MST S1 
+				                         	 ON S1.VEN_CD = #venCd#
+				                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+				                         	AND M1.STR_CD = S1.STR_CD
+				                        	AND M1.ORD_DY = S1.ORD_DY
+				                        	AND M1.VEN_CD = S1.VEN_CD
+			         WHERE M1.VEN_CD =  #venCd#
+			           AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+				  		
+				  )             
+	            	INNER JOIN STORE M2 ON M1.STR_CD = M2.STR_CD
+	            	LEFT OUTER JOIN TED_PO_ORD_MST S1 
+	                         	 ON S1.VEN_CD = #venCd#
+	                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	                         	AND M1.STR_CD = S1.STR_CD
+	                        	AND M1.ORD_DY = S1.ORD_DY
+	                        	AND M1.VEN_CD = S1.VEN_CD
+	                LEFT OUTER JOIN TED_CODE S2 ON S2.MAJOR_CD='WPO01'  AND  S1.ORD_PRGS_CD = S2.MINOR_CD
+	       	 WHERE M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')   
+	           AND M1.VEN_CD = #venCd#
+	             <isNotEmpty property="areaCd" prepend="AND" >
+		             M2.AREA_FG = #areaCd#
+		         </isNotEmpty>
+	           	 <isEqual property="strSearchType"  compareValue="1">
+				       <isNotEmpty property="strCd"  prepend="AND" >
+				          	M1.STR_CD = #strCd#	
+					   </isNotEmpty>
+		         </isEqual>
+	             <isEqual property="strSearchType" compareValue="2">
+	            	   <isNotEmpty property="strCds" >
+		                 	AND M1.STR_CD 
+							<iterate prepend="IN" property="strCds" open="(" close=")" conjunction="," >
+			               		#strCds[]#
+			          		</iterate>
+		          		</isNotEmpty>	
+		        </isEqual>
+	          
+	           	<isEqual property="workGb" prepend="AND" compareValue="2">
+	               S1.ORD_REQ_NO IS NOT NULL
+	           	</isEqual>
+	           	<isEqual property="workGb" prepend="AND" compareValue="3">
+	               S1.ORD_REQ_NO IS NULL
+	           	</isEqual>
+	         GROUP BY  M1.STR_CD
+		         	  ,M1.VEN_NM
+		              ,M2.STR_NM
+		              ,M1.ORD_DY
+		              ,S1.ORD_TOT_QTY
+		              ,S1.ORD_TOT_PRC
+		              ,S1.ORD_TOT_ALL_QTY
+		              ,S1.ORD_PRGS_CD
+		              ,S2.CD_NM
+		              ,S1.ORD_REQ_NO
+		    		  ,M2.AREA_FG, M2.SORT_ORDER
+		    ORDER BY M2.AREA_FG, M2.SORT_ORDER 
+	</select>
+	
+	<!-- 등록된 협력사 전점 전체 SUM -->
+	<select id="selectStoreOrdCntSum" parameterClass="searchWebOrder" resultMap="tedStoreOrdCntSumMap">
+		/* PEDMWEB0001.selectStoreOrdCntSum */
+	 	SELECT  NVL(SUM(M1.ORD_QTY), 		'0')  AS ORD_TOT_QTY_SUM                  
+               ,NVL(SUM(M1.ORD_QTY*M1.ORD_IPSU*M1.ORD_BUY_PRC) , 		'0')  AS ORD_TOT_PRC_SUM               
+               ,NVL(SUM(M1.ORD_QTY*M1.ORD_IPSU), 	'0')  AS ORD_TOT_ALL_QTY_SUM
+          FROM TED_PO_ORD_PROD M1
+          		LEFT OUTER JOIN STORE@dl_md_martnis ST ON M1.STR_CD = ST.STR_CD
+          		LEFT OUTER JOIN TED_PO_ORD_MST S1 
+	                         	 ON S1.VEN_CD = #venCd#
+	                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	                         	AND M1.STR_CD = S1.STR_CD
+	                        	AND M1.ORD_DY = S1.ORD_DY
+	                        	AND M1.VEN_CD = S1.VEN_CD
+         WHERE M1.VEN_CD =  #venCd#
+           AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+          	  <isNotEmpty property="areaCd" prepend="AND" >
+	             ST.AREA_FG = #areaCd#
+	          </isNotEmpty>
+              <isEqual property="strSearchType"  compareValue="1">
+	              <isNotEmpty property="strCd"  prepend="AND" >
+	              		M1.STR_CD = #strCd#	
+		          </isNotEmpty>
+	          </isEqual>
+              <isEqual property="strSearchType" compareValue="2">
+            	  <isNotEmpty property="strCds" >
+	                  AND M1.STR_CD 
+						<iterate prepend="IN" property="strCds" open="(" close=")" conjunction="," >
+		               		#strCds[]#
+		           		</iterate>
+		           </isNotEmpty>		
+	          </isEqual>
+	          		 	
+		      <isEqual property="workGb" prepend="AND" compareValue="2">
+	               S1.ORD_REQ_NO IS NOT NULL
+	          </isEqual>
+	          <isEqual property="workGb" prepend="AND" compareValue="3">
+	               S1.ORD_REQ_NO IS NULL
+	          </isEqual>
+	          <isNotEmpty property="prodCd" prepend="AND" >
+	         	   M1.PROD_CD like #prodCd#||'%'
+	          </isNotEmpty>
+	          <isNotEmpty property="prodNm" prepend="AND" >
+	         	   M1.PROD_NM LIKE '%'||#prodNm#||'%'
+	          </isNotEmpty>
+          
+    </select> 	
+	
+	
+	<!-- 업체,점포,별 발주상품 상세 목록 -->
+	<select id="selectOrdDetInfo" parameterClass="searchWebOrder" resultMap="tedStoreOrdDetMstListMap">
+		/* PEDMWEB0001.selectOrdMstInfo */
+	       SELECT  A.PROD_CD
+	              ,A.STR_CD
+	              ,A.VEN_CD
+	              ,A.ORD_DY
+	              ,A.SRCMK_CD
+	              ,A.PROD_NM
+	              ,A.PROD_STD
+	              ,A.ORD_BUY_PRC
+	              ,A.ORD_UNIT
+	              ,B.ORD_QTY
+	              ,A.ORD_IPSU
+	              ,B.ORD_REQ_NO
+	         FROM TED_ORD_SUPP_INFO_NEXTDAY A 
+                  LEFT OUTER JOIN TED_PO_ORD_PROD B 
+                  			   ON B.VEN_CD = #venCd#
+                              AND B.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+                              AND B.STR_CD = #strCd#
+                  			  AND A.VEN_CD = B.VEN_CD 
+                              AND A.ORD_DY = B.ORD_DY
+                              AND A.STR_CD = B.STR_CD
+                              AND A.PROD_CD = B.PROD_CD
+	        WHERE A.STR_CD = #strCd#
+	          AND A.VEN_CD = #venCd#
+	          AND A.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	          <isNotEmpty property="prodCd" prepend="AND" >
+	         	   A.PROD_CD like #prodCd#||'%'
+	          </isNotEmpty>
+	          <isNotEmpty property="prodNm" prepend="AND" >
+	         	   A.PROD_NM LIKE '%'||#prodNm#||'%'
+	          </isNotEmpty>
+	        ORDER BY A.PROD_CD
+	</select>
+	
+	<select id="selectNewOrdReqNo" resultClass="java.lang.String">
+		/* PEDMWEB0001.selectNewOrdReqNo */
+		SELECT	TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_ORD_MST_SEQ.NEXTVAL,6,'0') FROM DUAL
+	</select>
+	
+	<select id="selectOrdReqNo" parameterClass="TedPoOrdMstVO" resultClass="java.lang.String">
+		/* PEDMWEB0001.selectOrdReqNo */
+		SELECT ORD_REQ_NO 
+		  FROM TED_PO_ORD_MST
+		 WHERE VEN_CD = #venCd#
+		   AND ORD_DY = #ordDy#
+		   AND STR_CD = #strCd#
+	</select>
+	
+	
+	<!--  TED_PO_ORD_PROD를 이용한 TED_PO_ORD_PROD를 생성
+	      생성된 TED_PO_ORD_PROD를 참조하여 TED_PO_ORD_MST 생성
+	     (수정자: DADA,  2014.08.30 - 프로세스 선 후 처리 및  일괄처리 변경 )  
+	-->
+	<insert id="insertOrdMstInfo" parameterClass="TedPoOrdMstVO">
+	 	/* PEDMWEB0001.insertOrdMstInfo */
+		 INSERT INTO TED_PO_ORD_MST ( 
+                       ORD_REQ_NO
+                      ,VEN_CD
+                      ,VEN_NM
+                      ,STR_CD
+                      ,ORD_DY
+                      ,ORD_VSEQ
+                      ,ORD_TOT_QTY
+                      ,ORD_TOT_ALL_QTY
+                      ,ORD_TOT_PRC
+                      ,ORD_TOT_STK_QTY
+                      ,ORD_PRGS_CD
+                      ,PROC_EMP_NO
+                      ,REG_ID
+                      ,REG_DT
+                      ,MOD_ID
+                      ,MOD_DT
+          )
+           SELECT M1.ORD_REQ_NO
+                 ,M1.VEN_CD
+                 ,(SELECT max(VEN_NM) 
+                     FROM TED_VENDOR
+                    WHERE VEN_CD = #venCd#
+                      ) AS VEN_NM
+                 ,M1.STR_CD
+                 ,M1.ORD_DY
+                 ,'1' ORD_VSEQ
+                 ,NULL ORD_TOT_QTY
+                 ,NULL ORD_TOT_ALL_QTY
+                 ,NULL ORD_TOT_PRC
+                 ,NULL ORD_TOT_STK_QTY
+                 ,'02' ORD_PRGS_CD
+                 ,NULL PROC_EMP_NO
+                 ,#venCd# REG_ID
+                 ,CURRENT_TIMESTAMP(0) REG_DT
+                 ,#venCd# MOD_ID
+                 ,CURRENT_TIMESTAMP(0) MOD_DT
+             FROM TED_PO_ORD_PROD M1
+            WHERE VEN_CD = #venCd#
+              AND ORD_DY = #ordDy#
+              AND NOT EXISTS ( SELECT ORD_REQ_NO
+                                FROM TED_PO_ORD_MST M2
+                               WHERE M1.ORD_REQ_NO = M2.ORD_REQ_NO
+                              )
+          GROUP BY ORD_REQ_NO, VEN_CD, ORD_DY, STR_CD
+	</insert>
+	
+	<!--  TED_ORD_SUPP_INFO_NEXTDAY 이용한 TED_PO_ORD_PROD 생성
+	      TED_PO_ORD_PROD를 먼저생성하고 TED_PO_ORD_PROD를 참조하여 TED_PO_ORD_MST 생성
+	      (수정자: DADA,  2014.08.30 QUERY 변경)  
+	-->
+	<insert id="insertOrdProdInfo" parameterClass="TedOrdList">
+	 	/* PEDMWEB0001.insertOrdProdInfo */
+	 	INSERT INTO TED_PO_ORD_PROD
+		(
+			ORD_REQ_NO,     PROD_CD,       ORD_DY,         STR_CD,        VEN_CD
+			,SRCMK_CD,      PROD_NM,       SHORT_NM,       L4_CD,  	      PROD_STD
+			,ORD_IPSU,      ORD_UNIT,      ORD_SALE_PRC,   ORD_BUY_PRC,   ORD_QTY
+			,ORD_CFM_QTY,   ORD_STK_QTY,   REG_STS_CD,     MD_MOD_CD,	  REG_ID
+			,REG_DT,        MOD_ID,        MOD_DT,		   L1_CD     
+		 )
+	 		SELECT 
+	 		     NVL(M2.ORD_REQ_NO, TO_CHAR(CURRENT_TIMESTAMP(0),'YYMMDD')||LPAD(SQ_PO_ORD_MST_SEQ.NEXTVAL,6,'0'))  AS ORD_REQ_NO
+                ,M1.PROD_CD
+                ,M1.ORD_DY
+                ,M1.STR_CD
+                ,M1.VEN_CD
+                
+                ,M1.SRCMK_CD
+                ,M1.PROD_NM
+                ,M1.SHORT_NM
+                ,M1.L4_CD
+                ,M1.PROD_STD
+                
+                ,M1.ORD_IPSU
+                ,M1.ORD_UNIT
+                ,M1.ORD_SALE_PRC
+                ,M1.ORD_BUY_PRC
+                ,#ordQty#
+                
+                ,#ordQty#
+                ,'0'
+                ,#regStsCd#
+                ,#mdModCd#
+                
+                ,#venCd#
+                ,CURRENT_TIMESTAMP(0)
+                ,#venCd#
+                ,CURRENT_TIMESTAMP(0)
+                ,L1_CD		  
+
+          FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+              LEFT OUTER JOIN ( SELECT ORD_REQ_NO, VEN_CD, ORD_DY, STR_CD
+                                  FROM TED_PO_ORD_PROD 
+                                 WHERE VEN_CD = #venCd#
+                                   AND ORD_DY = #ordDy#
+                                   AND STR_CD  = #strCd#
+            				    GROUP BY ORD_REQ_NO, VEN_CD, ORD_DY, STR_CD
+            				  ) M2
+                            ON M1.STR_CD = M2.STR_CD
+                           AND M1.ORD_DY = M2.ORD_DY
+                           AND M1.VEN_CD = M2.VEN_CD 
+         WHERE M1.STR_CD  = #strCd#
+           AND M1.ORD_DY  = #ordDy#
+           AND M1.VEN_CD  = #venCd#
+           AND M1.PROD_CD = #prodCd#
+	</insert>  
+	
+	<update id="updateOrdProdInfo" parameterClass="TedOrdList">
+	 	/* PEDMWEB0001.updateOrdProdInfo */
+	 		 UPDATE TED_PO_ORD_PROD
+				SET  ORD_QTY     = #ordQty#
+				    ,ORD_CFM_QTY = #ordQty#
+				    ,MOD_ID		 = #modId#
+				    ,MOD_DT      = CURRENT_TIMESTAMP(0)
+			  WHERE PROD_CD      = #prodCd#
+				AND STR_CD       = #strCd#
+				AND VEN_CD       = #venCd#
+				AND ORD_DY       = #ordDy#
+	</update>
+	
+	
+	<!--  TED_PO_ORD_PROD를 이용한 TED_PO_ORD_MST 합계 UPDATE 일괄처리
+	      (수정자: DADA,  2014.08.30 QUERY 변경)  
+	-->
+	<update id="updateOrdMstProdSum" parameterClass="TedPoOrdMstVO">
+		/* PEDMWEB0001.updateOrdMstProdSum */
+		  UPDATE  TED_PO_ORD_MST M1
+		 	  SET ( 				 
+		            ORD_TOT_QTY				    
+		           ,ORD_TOT_ALL_QTY				   
+		           ,ORD_TOT_PRC
+		           ,MOD_ID
+		           ,MOD_DT	)	=		
+	           	  (SELECT  SUM(M2.ORD_QTY)                 AS ORD_TOT_QTY           
+	                      ,SUM(M2.ORD_IPSU  * M2.ORD_QTY)  AS ORD_TOT_ALL_QTY
+	                      ,SUM((M2.ORD_IPSU * M2.ORD_QTY) * M2.ORD_BUY_PRC) AS ORD_TOT_PRC
+	                      ,#venCd#
+	                      ,CURRENT_TIMESTAMP(0)
+	                 FROM TED_PO_ORD_PROD M2
+	                WHERE M1.ORD_REQ_NO = M2.ORD_REQ_NO
+	                  AND M2.VEN_CD = #venCd#
+	                  AND M2.ORD_DY = #ordDy#
+	               )
+	            WHERE M1.VEN_CD =  #venCd#
+	              AND M1.ORD_DY =  #ordDy#
+    </update>
+    
+    <delete id="deleteOrdProdInfo" parameterClass="TedOrdList">
+    	/* PEDMWEB0001.deleteOrdProdInfo */
+    	  DELETE FROM TED_PO_ORD_PROD
+		   WHERE ORD_REQ_NO = #ordReqNo#
+		     AND PROD_CD = #prodCd#
+    </delete>
+    
+    <!-- 선택된 prod 삭제- ORD_REQ_NO 기준 PROD_CD in조건 삭제  
+    	DADA : 2014.08.30 일괄처리 프로세스 변경으로 추가
+    -->
+    <delete id="deleteInOrdProdInfo" parameterClass="TedOrdList">
+    	/* PEDMWEB0001.deleteInOrdProdInfo */
+    	  DELETE FROM TED_PO_ORD_PROD
+		   WHERE ORD_REQ_NO = #ordReqNo#
+		     AND PROD_CD
+		     <iterate prepend="IN" property="prodCds" open="(" close=")" conjunction="," >
+          		 #prodCds[]#
+          	</iterate>
+    </delete>
+    
+    <select id="selectProdCnt" resultClass="integer" parameterClass="TedPoOrdMstVO">
+    	/* PEDMWEB0001.selectProdCnt */
+		 SELECT COUNT(*)  
+		   FROM TED_PO_ORD_PROD
+		  WHERE ORD_REQ_NO = #ordReqNo#
+	 </select>
+    
+    <delete id="deleteOrdMst" parameterClass="TedPoOrdMstVO">
+    	/* PEDMWEB0001.deleteOrdMst */
+    	  DELETE FROM TED_PO_ORD_MST
+		   WHERE ORD_REQ_NO = #ordReqNo#
+    </delete>
+    
+    <!-- 삭제된 PROD 목록중 전체삭제(점포) 체크 하여 MAST 삭제 
+    	 [ DADA : 2014.08.30 일괄처리로 프로세스 변경 ]
+    -->
+    <delete id="deleteAllOrdMst" parameterClass="TedPoOrdMstVO">
+	    /* PEDMWEB0001.deleteAllOrdMst */
+	    DELETE TED_PO_ORD_MST M1
+	          WHERE NOT EXISTS(
+	            SELECT M2.ORD_REQ_NO
+	              FROM TED_PO_ORD_PROD M2
+	             WHERE M1.ORD_REQ_NO = M2.ORD_REQ_NO )
+	          AND M1.VEN_CD = #venCd#
+	          AND M1.ORD_DY = #ordDy#
+    </delete>
+    
+    <select id="selectAppReqCnt" resultClass="integer" parameterClass="SearchWebOrder">
+    	/* PEDMWEB0001.selectAppReqCnt */
+		 SELECT COUNT(*) 
+           FROM TED_PO_ORD_MST M1
+          WHERE M1.ORD_PRGS_CD = '02'
+		    AND M1.VEN_CD = #venCd#
+		    AND M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	</select>
+    
+    <select id="selectAppReqChkCnt" resultClass="integer" parameterClass="SearchWebOrder">
+    	/* PEDMWEB0001.selectAppReqChkCnt */
+			 SELECT COUNT(*) 
+			   FROM (  SELECT  M1.PROD_CD
+			                  ,M1.ORD_DY
+			                  ,M1.STR_CD
+			                  ,M1.VEN_CD
+			             FROM TED_PO_ORD_PROD M1
+			            WHERE M1.VEN_CD = #venCd#
+			              AND M1.ORD_DY = #ordDy#
+			            MINUS
+			           SELECT  M1.PROD_CD
+			                  ,M1.ORD_DY
+			                  ,M1.STR_CD
+			                  ,M1.VEN_CD
+			             FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+			            WHERE M1.VEN_CD = #venCd#
+			              AND M1.ORD_DY = #ordDy#
+	        		) 
+	</select>
+	
+	<select id="selectAppReqFailInfo" resultMap="tedOrdModInfoMap" parameterClass="SearchWebOrder">
+    	/* PEDMWEB0001.selectAppReqFailInfo */
+	   		   SELECT  M1.PROD_CD
+	                  ,M1.ORD_DY
+	                  ,M1.STR_CD
+	                  ,M1.VEN_CD
+	             FROM TED_PO_ORD_PROD M1
+	            WHERE M1.VEN_CD = #venCd#
+	              AND M1.ORD_DY = #ordDy#
+	            MINUS
+	           SELECT  M1.PROD_CD
+	                  ,M1.ORD_DY
+	                  ,M1.STR_CD
+	                  ,M1.VEN_CD
+	             FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+	            WHERE M1.VEN_CD = #venCd#
+	              AND M1.ORD_DY = #ordDy#
+	</select>
+    
+    <update id="updateOrdMstState" parameterClass="TedPoOrdMstVO">
+	 	/* PEDMWEB0001.updateOrdMstState */
+	 		 UPDATE TED_PO_ORD_MST
+				SET  ORD_PRGS_CD = '02'
+				    ,MOD_ID		 = #modId#
+				    ,MOD_DT      = CURRENT_TIMESTAMP(0)
+			  WHERE VEN_CD       = #venCd#
+				AND ORD_DY       = #ordDy#
+	</update>
+	
+	<update id="updateOrdProdState" parameterClass="TedOrdList">
+	 	/* PEDMWEB0001.updateOrdProdState */
+	 		 UPDATE TED_PO_ORD_PROD
+				SET  MD_MOD_CD = '03'
+				    ,MOD_ID		 = #modId#
+				    ,MOD_DT      = CURRENT_TIMESTAMP(0)
+			  WHERE VEN_CD       = #venCd#
+				AND ORD_DY       = #ordDy#
+				AND STR_CD 		 = #strCd#
+				AND PROD_CD      = #prodCd#
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="selectStoreOrdListTotCnt_BACKUP" parameterClass="searchWebOrder" resultClass="int" >
+	 	/* PEDMWEB0001.selectStoreOrdListTotCnt */
+	 	SELECT COUNT(*) FROM (
+		 	SELECT M1.STR_CD 			AS STR_CD                      
+	              ,M2.STR_NM  			AS STR_NM                      
+	              ,NVL(S1.ORD_TOT_QTY, '0')  		AS ORD_TOT_QTY                  
+	              ,NVL(S1.ORD_TOT_PRC , '0')   	AS ORD_TOT_PRC               
+	              ,NVL(S1.ORD_TOT_ALL_QTY, '0')   	AS ORD_TOT_ALL_QTY                 
+	              ,CASE WHEN S1.ORD_TOT_QTY IS NULL 
+	                  THEN 'N' ELSE 'Y' END AS UP_YN  
+	              ,S1.ORD_PRGS_CD  		AS ORD_PRGS_CD              
+	              ,S2.CD_NM             AS CD_NM                
+	         FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+	            	INNER JOIN STORE M2 ON M1.STR_CD = M2.STR_CD
+	            	LEFT OUTER JOIN TED_PO_ORD_MST S1 
+	                         	ON M1.STR_CD = S1.STR_CD
+	                        	AND M1.ORD_DY = S1.ORD_DY
+	                        	AND M1.VEN_CD = S1.VEN_CD
+	                        	AND S1.VEN_CD = #venCd#
+	                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+	             	LEFT OUTER JOIN TED_CODE S2 ON S2.MAJOR_CD='WPO01'  AND  S1.ORD_PRGS_CD = S2.MINOR_CD
+	       	 WHERE M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')   
+	           AND M1.VEN_CD = #venCd#
+	           <isNotEmpty property="areaCd" prepend="AND" >
+	               M2.AREA_FG = #areaCd#
+	           </isNotEmpty>
+	           <isNotEmpty property="strCd" prepend="AND" >
+	               M1.STR_CD = #strCd#
+	           </isNotEmpty>
+	           <isEqual property="workGb" prepend="AND" compareValue="2">
+	               S1.ORD_REQ_NO IS NOT NULL
+	           </isEqual>
+	           <isEqual property="workGb" prepend="AND" compareValue="3">
+	               S1.ORD_REQ_NO IS NULL
+	           </isEqual>
+	         GROUP BY M1.STR_CD
+	              ,M2.STR_NM
+	              ,S1.ORD_TOT_QTY
+	              ,S1.ORD_TOT_PRC
+	              ,S1.ORD_TOT_ALL_QTY
+	              ,S1.ORD_PRGS_CD
+	              ,S2.CD_NM
+	     )
+	</select>
+	
+	
+	<select id="selectStoreOrdList_BAKUP" parameterClass="searchWebOrder" resultMap="tedStoreOrdListMap">
+	 	/* PEDMWEB0001.selectStoreOrdList */
+	 	SELECT	*
+		  FROM ( SELECT	ROWNUM RNUM,A.* FROM (
+				 	SELECT M1.STR_CD 			AS STR_CD    
+				 	      ,M1.VEN_NM			AS VEN_NM   
+				 	      ,M1.ORD_DY			AS ORD_DY            
+			              ,M2.STR_NM  			AS STR_NM                      
+			              ,NVL(S1.ORD_TOT_QTY, '0')  		AS ORD_TOT_QTY                  
+			              ,NVL(S1.ORD_TOT_PRC , '0')   		AS ORD_TOT_PRC               
+			              ,NVL(S1.ORD_TOT_ALL_QTY, '0')   	AS ORD_TOT_ALL_QTY  
+			              ,CASE WHEN S1.ORD_TOT_QTY IS NULL 
+			                  THEN 'N' ELSE 'Y' END AS UP_YN  
+			              ,S1.ORD_PRGS_CD  		AS ORD_PRGS_CD              
+			              ,S2.CD_NM             AS CD_NM  
+			              ,S1.ORD_REQ_NO        AS ORD_REQ_NO    
+			         FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+			            	INNER JOIN STORE M2 ON M1.STR_CD = M2.STR_CD
+			            	LEFT OUTER JOIN TED_PO_ORD_MST S1 
+			                         	ON M1.STR_CD = S1.STR_CD
+			                        	AND M1.ORD_DY = S1.ORD_DY
+			                        	AND M1.VEN_CD = S1.VEN_CD
+			                        	AND S1.VEN_CD = #venCd#
+			                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+			             	LEFT OUTER JOIN TED_CODE S2 ON S2.MAJOR_CD='WPO01'  AND  S1.ORD_PRGS_CD = S2.MINOR_CD
+			       	 WHERE M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')   
+			           AND M1.VEN_CD = #venCd#
+			           <isNotEmpty property="areaCd" prepend="AND" >
+			               M2.AREA_FG = #areaCd#
+			           </isNotEmpty>
+			           <isNotEmpty property="strCd" prepend="AND" >
+			               M1.STR_CD = #strCd#
+			           </isNotEmpty>
+			           <isEqual property="workGb" prepend="AND" compareValue="2">
+			               S1.ORD_REQ_NO IS NOT NULL
+			           </isEqual>
+			           <isEqual property="workGb" prepend="AND" compareValue="3">
+			               S1.ORD_REQ_NO IS NULL
+			           </isEqual>
+			         GROUP BY  M1.STR_CD
+				         	  ,M1.VEN_NM
+				              ,M2.STR_NM
+				              ,M1.ORD_DY
+				              ,S1.ORD_TOT_QTY
+				              ,S1.ORD_TOT_PRC
+				              ,S1.ORD_TOT_ALL_QTY
+				              ,S1.ORD_PRGS_CD
+				              ,S2.CD_NM
+				              ,S1.ORD_REQ_NO
+				     ORDER BY M1.STR_CD
+			       ) A
+			 )A
+		WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+	</select>
+	
+	
+	<select id="selectStoreOrdCntSum_BACKUP" parameterClass="searchWebOrder" resultMap="tedStoreOrdCntSumMap">
+	 	/* PEDMWEB0001.selectStoreOrdCntSum */
+	 	SELECT	 SUM(A.ORD_TOT_QTY)  		AS ORD_TOT_QTY_SUM                  
+          		,SUM(A.ORD_TOT_PRC)   		AS ORD_TOT_PRC_SUM               
+          		,SUM(A.ORD_TOT_ALL_QTY)   	AS ORD_TOT_ALL_QTY_SUM  
+		  FROM ( SELECT	ROWNUM RNUM,A.* FROM (
+				 	SELECT M1.STR_CD 			AS STR_CD                      
+			              ,M2.STR_NM  			AS STR_NM                      
+			              ,NVL(S1.ORD_TOT_QTY, '0')  		AS ORD_TOT_QTY                  
+			              ,NVL(S1.ORD_TOT_PRC , '0')   	AS ORD_TOT_PRC               
+			              ,NVL(S1.ORD_TOT_ALL_QTY, '0')   	AS ORD_TOT_ALL_QTY                 
+			              ,CASE WHEN S1.ORD_TOT_QTY IS NULL 
+			                  THEN 'N' ELSE 'Y' END AS UP_YN  
+			              ,S1.ORD_PRGS_CD  		AS ORD_PRGS_CD              
+			              ,S2.CD_NM             AS CD_NM                
+			         FROM TED_ORD_SUPP_INFO_NEXTDAY M1
+			            	INNER JOIN STORE M2 ON M1.STR_CD = M2.STR_CD
+			            	LEFT OUTER JOIN TED_PO_ORD_MST S1 
+			                         	ON M1.STR_CD = S1.STR_CD
+			                        	AND M1.ORD_DY = S1.ORD_DY
+			                        	AND M1.VEN_CD = S1.VEN_CD
+			                        	AND S1.VEN_CD = #venCd#
+			                        	AND S1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')
+			             	LEFT OUTER JOIN TED_CODE S2 ON S2.MAJOR_CD='WPO01'  AND  S1.ORD_PRGS_CD = S2.MINOR_CD
+			       	 WHERE M1.ORD_DY = TO_CHAR(CURRENT_TIMESTAMP(0)+1,'YYYYMMDD')   
+			           AND M1.VEN_CD = #venCd#
+			           <isNotEmpty property="areaCd" prepend="AND" >
+			               M2.AREA_FG = #areaCd#
+			           </isNotEmpty>
+			           <isNotEmpty property="strCd" prepend="AND" >
+			               M1.STR_CD = #strCd#
+			           </isNotEmpty>
+			           <isEqual property="workGb" prepend="AND" compareValue="2">
+			               S1.ORD_REQ_NO IS NOT NULL
+			           </isEqual>
+			           <isEqual property="workGb" prepend="AND" compareValue="3">
+			               S1.ORD_REQ_NO IS NULL
+			           </isEqual>
+			           <isNotEmpty property="prodCd" prepend="AND" >
+			         	   M1.PROD_CD like #prodCd#||'%'
+			           </isNotEmpty>
+			           <isNotEmpty property="prodNm" prepend="AND" >
+			         	   M1.PROD_NM LIKE '%'||#prodNm#||'%'
+			           </isNotEmpty>
+			         GROUP BY M1.STR_CD
+			              ,M2.STR_NM
+			              ,S1.ORD_TOT_QTY
+			              ,S1.ORD_TOT_PRC
+			              ,S1.ORD_TOT_ALL_QTY
+			              ,S1.ORD_PRGS_CD
+			              ,S2.CD_NM
+			          ORDER BY M1.STR_CD
+			       ) A
+			 )A
+		WHERE	RNUM BETWEEN  #startRowNo# AND #endRowNo#
+	</select>
+	
+</sqlMap>

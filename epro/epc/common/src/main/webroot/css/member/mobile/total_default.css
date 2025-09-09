@@ -1,0 +1,150 @@
+@charset "utf-8";
+/*@import url('culture_style.css');
+@import url('culture_style2.css');*/
+
+/* CSS Document */
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,button,figure,figcaption,aside,nav,header,footer,menu { margin:0; padding:0; -webkit-text-size-adjust:none; font-size:28px; font-family:AppleGothic, Gulim, 굴림, sans-serif ; color:#222; 
+-webkit-box-sizing:border-box;
+-moz-box-sizing:border-box;
+-o-box-sizing:border-box;
+box-sizing:border-box;
+}
+textarea {}
+select {}
+body {opacity:0;}
+img,fieldset { border:0; }
+ul, ol { list-style-type: none;}
+a {	color: #222; text-decoration: none; }
+a:hover {}
+em, address { font-style: normal;}
+.hide,hr,legend,caption { display:none; }
+table { border-spacing:0; border-collapse:collapse;}
+img { vertical-align:middle;}
+aside,figure,figurecaption,nav,header,footer,menu { display:block;}
+/* input 라운드디폴트
+input { -webkit-border-radius:1px; -webkit-appearance:none;} */
+input.radio { vertical-align:3px;}
+button { border:0; padding:0; background:transparent; cursor:pointer; overflow:visible;}
+/* Layout */
+body > header { position:relative; top:0; padding:50px 0 0 0;}
+body > header hgroup { height:110px; padding:0 0 0 30px; overflow:hidden;}
+body > header hgroup h1 {}
+body > header hgroup h1 img { margin:20px 0 0 0; display:inline-block;}
+body > header form { position:absolute; left:205px; top:85px; font-weight:bold;}
+body > header form fieldset { position:relative;}
+body > header form select { border:none; font-size:28px; font-weight:bold; color:#333;}
+body > header form img { display:none; position:absolute; right:-2px; top:10px;}
+
+header + section#contents { padding:0 0 30px 0;} /* 상단여백수정 */
+header + section#contents:after { content:""; display:block; clear:both;}
+body > footer { clear:both;}
+body > footer nav { height:60px; padding:0 20px; border-top:2px solid #d8d8d8; border-bottom:2px solid #d8d8d8; background:#f9f9f9; box-sizing:content-box; }
+body > footer nav li { float:left; position:relative; height:30px; padding:18px 8px 15px; font-size:20px; color:#333; text-shadow:1px 0 0 #333;} 
+body > footer nav li a {}
+body > footer nav li:after { content:""; display:block; position:absolute; right:0; top:22px; width:1px; height:15px; background:#cfcfcf;}
+body > footer nav li:first-child { padding-left:0;} 
+body > footer nav li:nth-child(4):after,
+body > footer nav li:nth-child(5):after { background:none;}
+body > footer nav li:nth-child(5) { position:absolute; right:30px; top:; padding:0; margin-top:16px;}
+body > footer nav li:nth-child(5) a { display:block; margin:-5px 0 0 0; width:90px; height:30px; line-height:30px; font-size:17px; border:2px solid #c1c1c1; border-bottom:2px solid #a8a8a8; text-align:center;
+background-image: linear-gradient(top, #FFFFFF 0%, #E8E8E8 100%);
+background-image: -o-linear-gradient(top, #FFFFFF 0%, #E8E8E8 100%);
+background-image: -moz-linear-gradient(top, #FFFFFF 0%, #E8E8E8 100%);
+background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #E8E8E8 100%);
+background-image: -ms-linear-gradient(top, #FFFFFF 0%, #E8E8E8 100%);
+
+background-image: -webkit-gradient(
+	linear,
+	left top,
+	left bottom,
+	color-stop(0, #FFFFFF),
+	color-stop(1, #E8E8E8)
+);
+}
+
+body > footer address { padding:20px 0; clear:both; font-size:16px; color:#6c6c6c; text-align:center;}
+
+
+h1 { font-size:35px; font-weight:bold; color:#222;}
+h2 { font-size:25px; font-weight:bold; color:#333;}
+
+.pd30 { padding:0 30px;}
+
+#contents { letter-spacing:-1.5px;}
+#contents > h1 { padding:0 0 0 30px; height:63px; color:#E70013; font-size:35px;}
+#contents > h2 { padding:0 0 0 30px; color:#333; font-size:25px;}
+
+.tab_type1 > nav li { float:left;}
+.tab_type1 > nav li a {display:block; margin:0 0 0 -1px; height:53px; background:#f5f5f5; border:1px solid #bebebe; border-left:2px solid #bebebe; text-align:center; line-height:53px; font-size:23px; font-weight:bold;}
+.tab_type1 > nav li.ui-tabs-selected a,
+.tab_type1 > nav li.on a { position:relative; z-index:2; color:#f10519; background:#fff; border:1px solid #f10519; border-left:2px solid #f10519;}
+.tab_type1.ui-tabs .ui-tabs-panel { clear:both; display: block; padding:20px 0 0 0;}
+.tab_type1.ui-tabs .ui-tabs-hide { display: none !important; }
+
+/*통합로그인*/
+.login_con { border-bottom:1px solid #d8d8d8;}
+.login_con header { min-height:100px; padding:28px 0 0 30px;  background: url(../../../images/member/mobile/bg_login2.gif) no-repeat right top; border-bottom:1px solid #ff0000;}
+.login_con header .top_prev { width:114px; height:45px; background: url(../../../images/member/mobile/bg_btn_prev.gif) no-repeat 0 0; display:table;}
+.login_con header .top_prev a { text-align:center; display:table-cell; font-size:20px; vertical-align:middle; text-shadow:1px 0 0 #333;}
+.login_con  h2 { border-top:1px solid #ebebeb; padding-top:34px !important; margin-bottom:12px; overflow:hidden; color:#e70013 !important; font-size:35px !important; text-shadow:1px 0 0 #e70013;}
+
+.total_login { clear:both; padding:0 30px; padding-top:20px; font-size:23px;}
+.total_login span { margin:30px 0 130px; display:block; line-height:31px; text-shadow:1px 0 0 #333;}
+.total_login fieldset { background-color:#f0f0f0; padding-bottom:30px;}
+.total_login ul { position:relative; padding:30px 30px 10px; margin:0; vertical-align:top; overflow:hidden; text-align:center;}
+.total_login ul li { width:80%; float:left; padding:0;}
+.total_login ul li input { border:1px solid #8d8d8d; height:43px !important;}
+.total_login ul li:nth-child(2) { width:15%; height:110px; padding:0 0 0 20px; vertical-align:top; display:block;}
+.total_login ul li:nth-child(2) input { height:110px !important; padding:0;  -webkit-border-radius:1px; -webkit-appearance:none;}
+.total_login ul li:nth-child(2) img { width:100%;}
+.total_login p { font-size:23px; vertical-align:middle;}
+.total_login p input { vertical-align:3px; margin-left:30px;  -webkit-border-radius:0px; /*-webkit-appearance:none;*/ border:0 !important;}
+.total_login > form > fieldset > ul > li > label { display:none;}
+.total_login > form > fieldset > ul > li:nth-child(1) { width:75%;}
+.total_login > form > fieldset > ul > li > input { height:40px; padding:3px; margin-bottom:12px; font-size:23px; color:#555; font-weight:normal;  -webkit-border-radius:1px; -webkit-appearance:none;}
+.total_login > form > fieldset > div  {margin:0 30px; overflow:hidden;}
+.total_login > form > fieldset > div > p { position:relative; width:190px; float:left; padding-left:0 !important;}
+.total_login > form > fieldset > div > p > input.checkbox { position:absolute; left:-25px; top:5px; z-index:1; width:14px; height:14px; border:0 !important;}
+.total_login > form > fieldset > div > p > label {padding:0 30px; line-height:30px;}
+.total_login > form > fieldset > div > p > label > em {position:absolute; z-index:2; left:0; top:-2px; background: url(../../../images/member/mobile/img_checkbox.png) no-repeat 0 2px;  width:29px; height:30px;}
+.total_login > form > fieldset > div > p.checked > label > em {background: url(../../../images/member/mobile/img_checkbox_on.png) no-repeat 0 2px;}
+.total_login_tab {}
+.total_login_tab h2 { padding:0 30px 10px;}  /* 디자인수정될 시 삭제 */
+.total_login_tab h3 { margin:-10px 0 20px 30px;}
+.total_login_tab > nav {}
+.total_login_tab > nav > ul > li {}
+.total_login_tab > nav > ul > li:nth-child(1) a { background:url(../../../images/member/mobile/tab_img_login_off.png) no-repeat center 11px;}
+.total_login_tab > nav > ul > li.on:nth-child(1) a { background: #f7f7f7 url(../../../images/member/mobile/tab_img_login_on.png) no-repeat center 11px;}
+.total_login_tab > nav > ul > li:nth-child(2) a { background:url(../../../images/member/mobile/tab_img_login2_off.png) no-repeat center 7px;}
+.total_login_tab > nav > ul > li.on:nth-child(2) a { background: #f7f7f7 url(../../../images/member/mobile/tab_img_login2_on.png) no-repeat center 7px;}
+.total_login_tab > nav > ul > li > a {}
+.total_login_tab > nav > ul > li > a > span { display:none;}
+
+/* 2013-03-08 신규 */
+p.txtusMb {margin:-15px 0 20px 30px;}
+div.loginButton {
+	overflow:hidden; zoom:1;
+	padding:20px 0 0;
+	color:#7c7c7c;
+}
+div.loginButton span {
+	float:left;
+	width:28%;
+	margin:0 auto;
+	padding:0 0 0 10px;
+	height:65px;
+	text-align:center;
+	background:url('//simage.lottemart.com/images/member/mobile/m_btn_l.gif') no-repeat 0 0;
+}
+div.loginButton span.diss1 {}
+div.loginButton span.diss2 {margin:0 0 0 6%;}
+div.loginButton span.diss3 {float:right;}
+div.loginButton span a {
+	display:block;
+	height:45px;
+	padding:20px 10px 0 0;
+	background:url('//simage.lottemart.com/images/member/mobile/m_btn_r.gif') no-repeat 100% 0;
+	color:#808080;
+	font-weight:bold;
+}
+div.loginButton span a:hover {color:#ed2c1b;}

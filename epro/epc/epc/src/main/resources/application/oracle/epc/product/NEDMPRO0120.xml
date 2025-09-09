@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPRO0120">
+	<typeAlias alias="nedmpro0120vo" type="com.lottemart.epc.edi.product.model.NEDMPRO0120VO" />
+	
+	<resultMap id="wholeStoreProductListMap" class="nedmpro0120vo">
+		<result column="RNUM"				property="rnum" 		/>	<!--  -... SQLINES DEMO  -->
+		<result column="SNUM"				property="snum" 		/>	<!--  -... SQLINES DEMO *** -->
+		<result column="STR_CD"				property="strCd" 		/>	<!-- 점포... SQLINES DEMO *** -->
+		<result column="STR_NM"				property="strNm" 		/>	<!-- 점포... SQLINES DEMO *** -->
+		<result column="PROD_CD"			property="prodCd" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="PROD_NM"			property="prodNm" 		/>	<!-- 상품... SQLINES DEMO *** -->
+		<result column="SRCMK_CD"			property="srcmkCd" 		/>	<!-- 판매... SQLINES DEMO *** -->
+		<result column="VEN_CD"				property="venCd" 		/>	<!-- 협력... SQLINES DEMO *** -->
+		<result column="CODE_STAUS"			property="codeStaus" 	/>	<!-- 상태... SQLINES DEMO *** -->
+		<result column="REG_DT"				property="regDt" 		/>	<!-- 등록... SQLINES DEMO *** -->
+	</resultMap>
+	
+	<!-- CO... SQLINES DEMO *** -->
+	<!-- SQLINES DEMO *** tWholeStoreProductCount" resultClass="Integer" parameterClass="nedmpro0120vo">
+		/* SQLINES DEMO *** ectWholeStoreProductCount */
+		SELECT 	COUNT(1) AS CNT
+		FROM
+		(
+			SELECT 	A.*,
+					COUNT(1) OVER () - RNUM + 1 AS SNUM
+			FROM
+			(
+				SELECT 	ROW_NUMBER() OVER(ORDER BY A.STR_CD DESC) AS RNUM,
+						A.STR_CD,
+						B.STR_NM,
+						A.PROD_CD,
+						A.PROD_NM,
+						A.SRCMK_CD,
+						A.VEN_CD,
+						CASE A.DEL_STOP_FG  WHEN '1' THEN  '삭제대기' ELSE CASE A.DEAL_STOP_FG  WHEN '2' THEN  '판매중단' ELSE (CASE A.ORD_STOP_FG WHEN '1' THEN '발주중단' ELSE '정상' END) END END AS CODE_STAUS,
+						TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+				FROM 	STR_PROD A,
+						STORE B,
+						SALE_MST C
+				WHERE 	A.STR_CD=B.STR_CD
+					AND A.PROD_CD = C.PROD_CD
+					AND A.VEN_CD = #srchEntpCode#
+					
+					<isNotEmpty  property="srchSellCode"  prepend="AND">
+						C.SRCMK_CD =  #srchSellCode#
+					</isNotEmpty>
+					<isNotEmpty  property="srchOneStrCd"  prepend="AND">
+						A.STR_CD = #srchOneStrCd#
+					</isNotEmpty>
+			) A
+		)
+	</select> -->
+
+	<!-- LI... SQLINES DEMO *** -->
+	<!-- SQLINES DEMO *** tWholeStoreProductList" resultMap="wholeStoreProductListMap" parameterClass="nedmpro0120vo">
+		/* SQLINES DEMO *** ectWholeStoreProductList */
+		SELECT 	*
+		FROM
+		(
+			SELECT 	A.*,
+					COUNT(1) OVER () - RNUM + 1 AS SNUM
+			FROM
+			(
+				SELECT 	ROW_NUMBER() OVER(ORDER BY A.STR_CD DESC) AS RNUM,
+						A.STR_CD,
+						B.STR_NM,
+						A.PROD_CD,
+						A.PROD_NM,
+						A.SRCMK_CD,
+						A.VEN_CD,
+						CASE A.DEL_STOP_FG  WHEN '1' THEN  '삭제대기' ELSE CASE A.DEAL_STOP_FG  WHEN '2' THEN  '판매중단' ELSE (CASE A.ORD_STOP_FG WHEN '1' THEN '발주중단' ELSE '정상' END) END END AS CODE_STAUS,
+						TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+				FROM 	STR_PROD A,
+						STORE B,
+						SALE_MST C
+				WHERE 	A.STR_CD	= B.STR_CD
+					AND A.PROD_CD 	= C.PROD_CD
+					AND A.VEN_CD 	= #srchEntpCode#
+					
+					<isNotEmpty  property="srchSellCode"  prepend="AND">
+						C.SRCMK_CD =  #srchSellCode#
+					</isNotEmpty>
+					<isNotEmpty  property="srchOneStrCd"  prepend="AND">
+						A.STR_CD = #srchOneStrCd#
+					</isNotEmpty>
+			) A
+		)
+		
+		<isEmpty  property="downloadFlag" >
+			<![CDATA[
+				WHERE TO_NUMBER(#firstIndex#) + 1 <= RNUM AND RNUM < TO_NUMBER(#lastIndex#) + 1
+			]]>
+		</isEmpty>
+		
+	</select> -->
+	
+	
+	<!-- CO... SQLINES DEMO *** -->
+	<select id="selectWholeStoreProductCount" resultClass="Integer" parameterClass="nedmpro0120vo">
+		/* SQLINES DEMO *** ectWholeStoreProductCount */
+		SELECT 	COUNT(1) AS CNT
+		FROM
+		(
+			SELECT 	A.*,
+					COUNT(1) OVER () - RNUM + 1 AS SNUM
+			FROM
+			(
+				SELECT 	ROW_NUMBER() OVER(ORDER BY A.STR_CD DESC) AS RNUM
+					,	A.STR_CD
+					,	B.STR_NM
+					,	A.PROD_CD
+					,	A.PROD_NM
+					,	A.SRCMK_CD
+					,	A.VEN_CD
+					,	CASE A.PROD_STATUS  WHEN '01' THEN  '정상상품'  WHEN '02' THEN  '점포발주중단'  WHEN '03' THEN  '발주중단'  WHEN '04' THEN  '판매중단'  WHEN '05' THEN  '삭제대기' END		AS CODE_STAUS
+					,	TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+				FROM 	STR_PROD 	A
+					,	STORE 		B
+					,	SALE_MST 	C
+				WHERE 	A.STR_CD	= B.STR_CD
+					AND A.PROD_CD 	= C.PROD_CD
+					AND A.VEN_CD 	= #srchEntpCode#
+					AND C.EAN_TYPE	= '1'
+					
+					<isNotEmpty  property="srchSellCode"  prepend="AND">
+						C.SRCMK_CD =  #srchSellCode#
+					</isNotEmpty>
+					<isNotEmpty  property="srchOneStrCd"  prepend="AND">
+						A.STR_CD = #srchOneStrCd#
+					</isNotEmpty>
+			) A
+		) A
+	</select>
+
+	<!-- 점포별 상품등록 현황 조회  -->
+	<select id="selectWholeStoreProductList" resultMap="wholeStoreProductListMap" parameterClass="nedmpro0120vo">
+		/* NEDMPRO0120.selectWholeStoreProductList */
+		SELECT 	T1.*
+		FROM
+		(
+			SELECT 	A.*,
+					COUNT(1) OVER () - RNUM + 1 AS SNUM
+			FROM
+			(
+				SELECT 	ROW_NUMBER() OVER(ORDER BY A.STR_CD DESC) AS RNUM
+					,	A.STR_CD
+					,	B.STR_NM
+					,	A.PROD_CD
+					,	A.PROD_NM
+					,	A.SRCMK_CD
+					,	A.VEN_CD
+					,	CASE A.PROD_STATUS  WHEN '01' THEN  '정상상품'  WHEN '02' THEN  '점포발주중단'  WHEN '03' THEN  '발주중단'  WHEN '04' THEN  '판매중단'  WHEN '05' THEN  '삭제대기' END		AS CODE_STAUS
+					,	TO_CHAR(A.REG_DT, 'YYYYMMDD') AS REG_DT
+				FROM 	STR_PROD 	A
+					,	STORE 		B
+					,	SALE_MST 	C
+				WHERE 	A.STR_CD	= B.STR_CD
+					AND A.PROD_CD 	= C.PROD_CD
+					AND A.VEN_CD 	= #srchEntpCode#
+					AND C.EAN_TYPE	= '1'
+					
+					<isNotEmpty  property="srchSellCode"  prepend="AND">
+						C.SRCMK_CD =  #srchSellCode#
+					</isNotEmpty>
+					<isNotEmpty  property="srchOneStrCd"  prepend="AND">
+						A.STR_CD = #srchOneStrCd#
+					</isNotEmpty>
+			) A
+		)T1
+		
+		<isEmpty  property="downloadFlag" >
+			<![CDATA[
+				WHERE CAST(#firstIndex# AS numeric) + 1 <= RNUM AND RNUM < CAST(#lastIndex# AS numeric) + 1
+			]]>
+		</isEmpty>
+		
+	</select>
+
+</sqlMap>

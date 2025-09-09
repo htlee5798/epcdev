@@ -1,0 +1,7 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Tue Apr 15 16:33:31 KST 2025
+http\://10.52.18.45\:8081/repository/maven-3rdparty/.error=Could not transfer artifact org.postgresql\:postgresql\:jar\:42.7.5 from/to onlinemall (http\://10.52.18.45\:8081/repository/maven-3rdparty)\: The operation was cancelled.
+@default-central-https\://repo.maven.apache.org/maven2/.lastUpdated=1741656630735
+http\://10.52.18.45\:8081/repository/maven-public/.lastUpdated=1744702411408
+https\://repo.maven.apache.org/maven2/.error=Could not transfer artifact org.postgresql\:postgresql\:jar\:42.7.5 from/to central (https\://repo.maven.apache.org/maven2)\: The operation was cancelled.
+@default-onlinemall-http\://10.52.18.45\:8081/repository/maven-3rdparty/.lastUpdated=1741656630698

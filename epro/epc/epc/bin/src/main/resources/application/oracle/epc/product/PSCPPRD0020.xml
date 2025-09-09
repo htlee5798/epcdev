@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="pscpprd0020">
+
+    <typeAlias alias="pscpprd0020VO" type="com.lottemart.epc.product.model.PSCPPRD0020VO" />
+    <typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectPrdCommerceCnt" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0020.selectPrdCommerceCnt - 전자상거래 카운트 쿼리 */
+    SELECT DECODE(INFO_GRP_CD_C, '', INFO_GRP_CD_A, INFO_GRP_CD_C) INFO_GRP_CD
+         , DECODE(INFO_GRP_CD_C, '', 0, 1) VAL_CNT
+         , CAT_CNT
+         , CAT_CD
+         , INFO_GRP_CD_C
+         , INFO_GRP_CD_A
+      FROM (SELECT CAT_CNT
+                 , CAT_CD
+                 , (SELECT MAX(INFO_GRP_CD) 
+	                  FROM TPR_PROD_ADD_INFO_MST
+	                 WHERE INFO_GRP_CD = INFO_GRP_CD_B
+	                   AND CAT_CD = C.CAT_CD) INFO_GRP_CD_C
+	             , INFO_GRP_CD_A
+	          FROM (SELECT MAX(B.INFO_GRP_CD) INFO_GRP_CD_B
+	                     , MAX(A.INFO_GRP_CD) INFO_GRP_CD_A
+	                     , COUNT(CAT_CD) CAT_CNT
+	                     , MAX(CAT_CD) CAT_CD 
+	                  FROM TPR_PROD_ADD_INFO_MST A
+	                     , (SELECT MAX(INFO_GRP_CD) INFO_GRP_CD 
+	                     	  FROM TPR_PROD_ADD_INFO_VAL  
+	                         WHERE PROD_CD = #prodCd#) B
+	                 WHERE CAT_CD = (SELECT LGRP_CD 
+	                 				   FROM TCA_MD_CATEGORY
+	                                  WHERE CAT_CD = (SELECT CAT_CD 
+	                                                    FROM TPR_PRODUCT
+	                                                   WHERE PROD_CD = #prodCd#))
+	               ) C
+	        )
+    ]]>
+    </select>
+
+    <select id="selectPrdCommerceCatCdList" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0020.selectPrdCommerceCatCdList - 전자상거래 select 쿼리 */
+    SELECT INFO_GRP_CD AS infoGrpCd
+	     , INFO_GRP_NM AS infoGrpNm
+	  FROM TPR_PROD_ADD_INFO_MST
+	 WHERE CAT_CD = #catCd#
+	   AND USE_YN = 'Y'
+	   AND CURRENT_TIMESTAMP(0) BETWEEN TO_DATE(VALI_START_DATE,'YYYYMMDDHH24MISS') AND TO_DATE(VALI_END_DATE,'YYYYMMDDHH24MISS')
+    ]]>
+    </select>
+
+    <select id="selectPrdCommerceList" resultClass="PSCPPRD0020VO">
+    <![CDATA[
+    /* pscpprd0020.selectPrdCommerceList - 전자상거래 목록 쿼리 */
+	WITH TMP_ADD_INFO AS (
+  		SELECT INFO_GRP_CD
+       		 , INFO_COL_CD
+       		 , PROD_CD
+       		 , NEW_PROD_CD
+       		 , COL_VAL
+       		 , DISP_YN
+       		 , REG_DATE
+       		 , REG_ID
+       		 , MOD_DATE
+       		 , MOD_ID
+    		  FROM TPR_PROD_ADD_INFO_VAL
+   		 WHERE PROD_CD = #prodCd#
+   		 UNION ALL
+  		SELECT INFO_GRP_CD
+       		 , INFO_COL_CD
+       		 , PROD_CD
+       		 , NEW_PROD_CD
+       		 , COL_VAL
+       		 , DISP_YN
+       		 , REG_DATE
+       		 , REG_ID
+       		 , MOD_DATE
+       		 , MOD_ID
+    		  FROM TPR_PROD_ADD_INFO_VAL
+   		 WHERE NEW_PROD_CD = #prodCd#
+	)
+	SELECT *
+	  FROM ( SELECT DET.ORDER_SEQ AS seq
+	              , ROW_NUMBER() OVER(PARTITION BY NEW_PROD_CD, DET.INFO_COL_CD ORDER BY VAL.PROD_CD ) AS INFO_PROD_SEQ
+	              , '1' AS chk
+	              , DET.INFO_GRP_CD AS infoGrpCd
+	              , DET.INFO_COL_CD AS infoColCd
+	              , DET.INFO_COL_NM AS infoColNm
+	              , DET.INFO_COL_DESC AS infoColDesc
+	              , VAL.COL_VAL AS colVal
+	              , VAL.NEW_PROD_CD AS pgmId
+	              , VAL.MOD_ID AS modId
+	              , TO_CHAR(VAL.MOD_DATE,'YYYY-MM-DD HH24:MI') AS modDate
+	           FROM TPR_PROD_ADD_INFO_DET DET
+	              LEFT OUTER JOIN TMP_ADD_INFO VAL ON DET.INFO_GRP_CD = VAL.INFO_GRP_CD 
+	              AND DET.INFO_COL_CD = VAL.INFO_COL_CD
+	              AND VAL.PROD_CD = #prodCd# OR VAL.NEW_PROD_CD = #prodCd#
+	          WHERE 
+	            AND DET.INFO_GRP_CD = #infoGrpCd#
+	            AND DET.USE_YN = 'Y'
+	            AND CURRENT_TIMESTAMP(0) BETWEEN TO_DATE(DET.VALI_START_DATE,'YYYYMMDDHH24MISS') AND TO_DATE(DET.VALI_END_DATE,'YYYYMMDDHH24MISS')
+	       ) AA
+	 WHERE INFO_PROD_SEQ = 1
+	 ORDER BY seq
+    ]]>
+    </select>
+
+    <insert id="insertPrdCommerce">
+    <![CDATA[
+    /* pscpprd0020.insertPrdCommerce - 전자상거래 입력 쿼리 */
+    INSERT INTO TPR_PROD_ADD_INFO_VAL
+	( INFO_GRP_CD
+	, INFO_COL_CD
+	, PROD_CD
+	, NEW_PROD_CD
+	, COL_VAL
+	, DISP_YN
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #infoGrpCd#
+	, #infoColCd#
+	, #prodCd#
+	, #newProdCd#
+	, #colVal#
+	, 'Y'
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+    ]]>
+    </insert>
+
+    <delete id="deletePrdCommerce">
+    <![CDATA[
+    /* pscpprd0020.deletePrdCommerce - 전자상거래 삭제 쿼리 */ 
+    DELETE TPR_PROD_ADD_INFO_VAL WHERE PROD_CD 	= #prodCd#
+    ]]>
+    </delete>
+
+	<select id="selectPrdCommerceTempList" resultClass="dataMap">
+    <![CDATA[
+    /* pscpprd0020.selectPrdCommerceTempList - 전자상거래 가등록 */
+    SELECT DECODE(INFO_GRP_CD_C, '', INFO_GRP_CD_A, INFO_GRP_CD_C) INFO_GRP_CD
+         , DECODE(INFO_GRP_CD_C,'', 0, 1) VAL_CNT
+         , CAT_CNT
+         , CAT_CD
+         , INFO_GRP_CD_C
+         , INFO_GRP_CD_A
+         , (SELECT COUNT(PGM_ID) 	-- 2015.11.30 change by 김남갑 
+         	  FROM TPC_NEW_PROD_REG -- 2015.11.30 change by 김남갑
+             WHERE PGM_ID = #prodCd#) AS CHECK_CNT
+      FROM (SELECT CAT_CNT
+				 , CAT_CD
+				 , (SELECT MAX(INFO_GRP_CD) 
+				      FROM TPR_PROD_ADD_INFO_MST
+				     WHERE INFO_GRP_CD = INFO_GRP_CD_B
+				       AND CAT_CD = C.CAT_CD) INFO_GRP_CD_C
+				 , INFO_GRP_CD_A
+			  FROM (SELECT MAX(B.INFO_GRP_CD) INFO_GRP_CD_B
+						 , MAX(A.INFO_GRP_CD) INFO_GRP_CD_A
+						 , COUNT(CAT_CD) CAT_CNT
+						 , MAX(CAT_CD) CAT_CD 
+					  FROM TPR_PROD_ADD_INFO_MST A
+						 , (SELECT MAX(INFO_GRP_CD) INFO_GRP_CD 
+						 	  FROM TPR_PROD_ADD_INFO_VAL A  
+							 WHERE A.NEW_PROD_CD = #prodCd#) B
+					 WHERE (CAT_CD = (SELECT LGRP_CD FROM TCA_MD_CATEGORY
+									   WHERE CAT_CD = (SELECT L3_CD -- 2015.12.21 change by 김남갑 -- SUBGRP_CD 
+									   					 FROM TPC_NEW_PROD_REG -- 2015.11.30 change by 김남갑
+                   										WHERE PGM_ID = #prodCd#)
+									 ) OR   (CAT_CD = (SELECT L1_CD -- 2015.12.21 change by 김남갑 -- LGRP_CD 
+									 				     FROM TPC_NEW_PROD_REG -- 2015.11.30 change by 김남갑
+                                     				    WHERE PGM_ID = #prodCd#))
+   						   )
+			) C
+		)
+    ]]>
+    </select>
+
+    <delete id="deletePrdCommerceHist">
+    <![CDATA[
+    /* pscpprd0020.deletePrdCommerceHist */
+    DELETE TPR_PRODUCT_ADD_INFO_HIST WHERE SEQ = #seq#
+    ]]>
+    </delete>
+
+    <insert id="insertPrdCommerceHist">
+    <![CDATA[
+    /* pscpprd0020.insertPrdCommerceHist */
+    INSERT INTO TPR_PRODUCT_ADD_INFO_HIST
+	( SEQ
+	, INFO_GRP_CD
+	, INFO_COL_CD
+	, NEW_PROD_CD
+	, COL_VAL
+	, REG_DATE
+	, REG_ID
+	, MOD_DATE
+	, MOD_ID )
+	VALUES
+	( #seq#
+	, #infoGrpCd#
+	, #infoColCd#
+	, #newProdCd#
+	, #colVal#
+	, CURRENT_TIMESTAMP(0)
+	, #regId#
+	, CURRENT_TIMESTAMP(0)
+	, #regId# )
+    ]]>
+    </insert>
+
+    <!-- 전상법이 승인된 정보 -->
+	<select id="prodCommerceUpdateInfo" resultClass="dataMap">
+	<![CDATA[
+	/* pscpprd0020.prodCommerceUpdateInfo - 전자상거래 가등록 */
+	SELECT TO_CHAR(CNFM_DATE, 'YYYY-MM-DD HH24:MI:SS') CNFM_DATE
+		 , (SELECT ADMIN_NM FROM TAD_ADMIN WHERE ADMIN_ID = CNFM_ID) CNFM_ID
+	  FROM (SELECT CNFM_DATE
+				 , CNFM_ID
+			  FROM TPR_PROD_ADD_INFO_CNFM
+			 WHERE PROD_CD = #prodCd#
+			 ORDER BY TO_NUMBER(SEQ) DESC
+		   )
+	 WHERE LIMIT 1
+	]]>
+	</select>
+</sqlMap>

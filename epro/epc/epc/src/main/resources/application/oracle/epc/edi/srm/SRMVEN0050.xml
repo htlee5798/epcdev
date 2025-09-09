@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SRMVEN0050">
+	<typeAlias alias = "SRMVEN0050VO" type="com.lottemart.epc.edi.srm.model.SRMVEN0050VO"/>
+	<typeAlias alias = "SRMVEN005001VO" type="com.lottemart.epc.edi.srm.model.SRMVEN005001VO"/>
+	
+	<!-- 성과평가 LIST 조회 Result Map -->
+	<resultMap id="selectSrmEvalResResultMap" class="SRMVEN0050VO">
+		<result column="RNUM" 						property="rnum" />
+		<result column="HOUSE_CODE" 				property="houseCode"/>
+		<result column="EV_NO" 						property="evNo"/>
+		<result column="EV_NAME" 					property="evName"/>
+		<result column="EG_NO" 						property="egNo"/>
+		<result column="EG_NAME" 					property="egName"/>
+		<result column="EV_CTRL_USER_ID" 			property="evCtrlUserId"/>
+		<result column="EV_CTRL_USER_NAME" 			property="evCtrlUserName"/>
+		<result column="EV_YEAR" 					property="evYear"/>
+		<result column="EV_YEAR_HALF" 				property="evYearHalf"/>
+		<result column="EV_YEAR_HALF_NAME" 			property="evYearHalfName"/>
+		<result column="STATUS" 					property="status"/>
+		<result column="SG_NO" 						property="sgNo"/>
+		<result column="EXEC_EV_TPL_NO" 			property="execEvTplNo"/>
+		<result column="EV_TPL_SUBJECT" 			property="evTplSubject"/>
+		<result column="EV_CHANNEL_CODE" 			property="evChannelCode"/>
+		<result column="EV_CHANNEL_NAME" 			property="evChannelName"/>
+		<result column="SG_NAME2" 					property="sgName2"/>
+		<result column="SG_NAME1" 					property="sgName1"/>
+		<result column="VENDOR_CODE" 				property="vendorCode"/>
+		<result column="VENDOR_NAME" 				property="vendorName"/>
+		<result column="EV_USER_CNT" 				property="evUserCnt"/>
+		<result column="EV_SCORE" 					property="evScore"/>
+		<result column="EVAL_GRADE_CLASS" 			property="evalGradeClass"/>
+		<result column="EV_GRADE_CLASS" 			property="evGradeClass"/>
+		<result column="ADD_DATE" 					property="addDate"/>
+		<result column="START_DATE" 				property="startDate"/>
+		<result column="CLOSE_DATE" 				property="closeDate"/>
+		<result column="BEFORE_EVAL_GRADE_CLASS" 	property="beforeEvalGradeClass"/>
+		<result column="AMEND_REASON" 				property="amendReason"/>
+		<result column="SG_1" 						property="sg1"/>
+		<result column="SG_2" 						property="sg2"/>
+		<result column="SG_3" 						property="sg3"/>
+		<result column="SG_4" 						property="sg4"/>
+		<result column="APPLY_FROM_DATE" 			property="applyFromDate"/>
+		<result column="APPLY_TO_DATE" 				property="applyToDate"/>
+	</resultMap>		
+	<!-- 성과평가 List 전체 카운트 조회  -->
+	
+	<resultMap id="selectSrmEvalResDetailPopupResultMap" class="SRMVEN005001VO">
+		<result column="HOUSE_CODE" 		property="houseCode"/>
+		<result column="EV_NO" 				property="evNo"/>
+		<result column="EV_NAME" 			property="evName"/>
+		<result column="EG_NO" 				property="egNo"/>
+		<result column="EG_NAME" 			property="egName"/>
+		<result column="EV_ITEM_TYPE1_NAME" property="evItemType1Name"/>
+		<result column="EV_ITEM_TYPE2_NAME" property="evItemType2Name"/>
+		<result column="EV_ITEM_SUBJECT" 	property="evItemSubject"/>
+		<result column="EV_ITEM_CONTENTS" 	property="evItemContents"/>
+		<result column="EV_CTRL_USER_ID" 	property="evCtrlUserId"/>
+		<result column="EV_CTRL_USER_NAME" 	property="evCtrlUserName"/>
+		<result column="EV_YEAR" 			property="evYear"/>
+		<result column="EV_YEAR_HALF" 		property="evYearHalf"/>
+		<result column="EV_YEAR_HALF_NAME" 	property="evYearHalfName"/>
+		<result column="STATUS" 			property="status"/>
+		<result column="SG_NO" 				property="sgNo"/>
+		<result column="EXEC_EV_TPL_NO" 	property="execEvTplNo"/>		
+		<result column="EV_CHANNEL_NAME" 	property="evChannelName"/>
+		<result column="EV_TYPE_NAME" 		property="evTypeName"/>
+		<result column="SG_NAME2" 			property="sgName2"/>
+		<result column="SG_NAME1" 			property="sgName1"/>
+		<result column="VENDOR_CODE" 		property="vendorCode"/>
+		<result column="VENDOR_NAME" 		property="vendorName"/>
+		<result column="EV_SCORE" 			property="evScore"/>
+		<result column="SG_1" 				property="sg1"/>
+		<result column="SG_2" 				property="sg2"/>
+		<result column="SG_3" 				property="sg3"/>
+		<result column="SG_4" 				property="sg4"/>
+		<result column="LANGUAGE" 			property="language"/>		
+		<result column="EV_TPL_NO" 			property="evTplNo"/>
+		<result column="EV_TPL_SUBJECT" 	property="evTplSubject"/>
+		<result column="EV_TPL_SCORE" 		property="evTplScore"/>
+		<result column="APPLY_FROM_DATE" 	property="applyFromDate"/>
+		<result column="APPLY_TO_DATE" 		property="applyToDate"/>	
+	</resultMap>
+	
+	<!-- 성과평가 LIST 조회 -->
+	<select id="selectSrmEvalRes" parameterClass="SRMVEN0050VO" resultMap="selectSrmEvalResResultMap">
+		/*SRMVEN0050VO.selectSrmEvalRes*/
+		SELECT 					
+					*
+		FROM(					
+					SELECT row_number() over(ORDER BY EVEM.EV_NO,EVEM.EG_NO,EVES.SG_NO,EVES.EV_TPL_NO,EVES.VENDOR_CODE, EVES.PROGRESS_CODE DESC) AS RNUM                
+									 , EVEM.HOUSE_CODE
+									 , EVEM.EV_NO
+									 , EVEM.EV_NAME
+									 , EVEM.EG_NO
+									 , EGMT.EG_NAME
+									 , EVEM.EV_CTRL_USER_ID
+									 , GETUSERNAME( EVEM.EV_CTRL_USER_ID,'000','KO') 			AS EV_CTRL_USER_NAME
+									 , EVEM.EV_YEAR
+									 , EVEM.EV_YEAR_HALF
+									 , GETCODETEXT1('SRM032', EVEM.EV_YEAR_HALF, 'KO') AS EV_YEAR_HALF_NAME
+									 , GETCODETEXT1('SRM022', EVES.PROGRESS_CODE, 'KO') 	AS STATUS
+									 , EVES.SG_NO
+									 , EGMD.EV_TPL_NO AS EXEC_EV_TPL_NO
+									 , EVTM.EV_TPL_SUBJECT
+									 , EVTM.EV_CHANNEL_CODE
+									 , GETCODETEXT1('SRM028', EVTM.EV_CHANNEL_CODE, 'KO') AS EV_CHANNEL_NAME
+									 , GETSGCLASS(EVES.HOUSE_CODE,'KO','1', EVES.SG_NO) SG_NAME2
+									 , GETSGCLASS(EVES.HOUSE_CODE,'KO','2', EVES.SG_NO) SG_NAME1
+									 , EVES.VENDOR_CODE
+									 , GETPARTNERNAME( EVES.VENDOR_CODE) 	AS VENDOR_NAME
+									 , (SELECT COUNT(DISTINCT EVEU.EV_USER_ID)
+										  FROM SEVEU EVEU 
+										 WHERE EVES.HOUSE_CODE = EVEU.HOUSE_CODE
+										   AND EVES.EV_NO 		= EVEU.EV_NO
+										   AND EVES.SG_NO 		= EVEU.SG_NO
+										   AND EVES.VENDOR_CODE = EVEU.VENDOR_CODE
+										   AND EVEU.DEL_FLAG 	= '0') 						AS EV_USER_CNT
+									 , NVL(EVES.EV_SCORE,0) AS EV_SCORE
+									 , EVES.EVAL_GRADE_CLASS
+									 , GETCODETEXT1('SRM024', EVES.EVAL_GRADE_CLASS, 'KO')  AS EV_GRADE_CLASS
+									 , TO_CHAR(EVEM.ADD_DATE, 'YYYY/MM/DD') 					AS ADD_DATE
+									 , TO_CHAR(EVEM.START_DATE, 'YYYY/MM/DD') 				AS START_DATE
+									 , TO_CHAR(EVEM.CLOSE_DATE, 'YYYY/MM/DD') 				AS CLOSE_DATE
+									 , EVES.BEFORE_EVAL_GRADE_CLASS
+									 , EVES.AMEND_REASON
+									 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','1', EVES.SG_NO) SG_1
+									 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','2', EVES.SG_NO) SG_2
+									 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','3', EVES.SG_NO) SG_3
+									 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','4', EVES.SG_NO) SG_4
+									 , EVEM.APPLY_FROM_DATE
+									 , EVEM.APPLY_TO_DATE
+								FROM SEVEM EVEM 	 
+								  JOIN SEGMT EGMT 
+									ON EVEM.HOUSE_CODE  = EGMT.HOUSE_CODE 
+								   AND EVEM.EG_NO       = EGMT.EG_NO
+								   AND EVEM.DEL_FLAG = '0'
+								  JOIN SEGMD EGMD 
+									ON EGMD.HOUSE_CODE = EGMT.HOUSE_CODE 
+								   AND EGMD.EG_NO      = EGMT.EG_NO 
+								  JOIN SEGSG EGSG
+									ON EGMT.HOUSE_CODE  = EGSG.HOUSE_CODE
+								   AND EGMT.EG_NO       = EGSG.EG_NO
+								  JOIN SSGMT SGMT
+									ON SGMT.HOUSE_CODE  = EGSG.HOUSE_CODE
+								   AND SGMT.PARENT_SG_NO= EGSG.SG_NO
+								  JOIN SEVTM EVTM 
+									ON EVTM.HOUSE_CODE = EGMD.HOUSE_CODE 
+								   AND EVTM.EV_TPL_NO = EGMD.EV_TPL_NO 
+								  JOIN SEVES EVES 
+								   ON EVES.HOUSE_CODE  = EVEM.HOUSE_CODE 
+								   AND EVES.EV_NO      = EVEM.EV_NO
+								   AND EVES.EV_TPL_NO  = EGMD.EV_TPL_NO
+								   AND EVES.SG_NO      = SGMT.SG_NO
+								   AND EVES.DEL_FLAG = '0'
+								 WHERE EVEM.HOUSE_CODE 	= '000' 
+								   AND EVEM.PROGRESS_CODE > '100'
+																		
+								   <isNotEmpty property="countYear">
+										AND EVEM.EV_YEAR = #countYear#			--평가기간 년도
+								   </isNotEmpty>     		   
+								   
+								   <isNotEmpty property="yearHalf">
+										AND EVEM.EV_YEAR_HALF   = #yearHalf#	--평가기간 상하반기
+								   </isNotEmpty>
+								   
+								   <isNotEmpty property="channelCode">
+										AND EVTM.EV_CHANNEL_CODE  = #channelCode#    --채널
+								   </isNotEmpty>
+								   
+								   <isNotEmpty property="venCd">
+										AND UPPER( EVES.VENDOR_CODE ) LIKE '%' || UPPER(#venCd#) || '%' -- 협력업체코드
+								   </isNotEmpty>
+												   
+								   <isNotEmpty property="catLv1Code">
+										 AND GETSGCLASSNO(EVES.HOUSE_CODE, 'KO', '3', EVES.SG_NO) = #catLv1Code#       --카테고리(대분류) 
+								   </isNotEmpty>
+								   
+								   <isNotEmpty property="catLv2Code">
+										AND GETSGCLASSNO(EVES.HOUSE_CODE, 'KO', '4', EVES.SG_NO) = #catLv2Code#       --카테고리(중분류)      		 
+								   </isNotEmpty>		
+			) A				
+			WHERE RNUM BETWEEN #firstIndex# AND #lastIndex#			   
+	</select>
+	
+	<select id="selectSrmEvalResCount" parameterClass="SRMVEN0050VO" resultClass="Integer">
+		/*SRMVEN0050VO.selectSrmEvalResCount*/
+		
+		SELECT 
+				count(*) As TOTAL_CNT
+		FROM
+				(		
+					SELECT EVEM.HOUSE_CODE
+					         , EVEM.EV_NO
+			    			 , EVEM.EV_NAME
+			    			 , EVEM.EG_NO
+			    			 , EGMT.EG_NAME
+			    			 , EVEM.EV_CTRL_USER_ID
+			    			 , GETUSERNAME( EVEM.EV_CTRL_USER_ID,'000','KO') 			AS EV_CTRL_USER_NAME
+			    			 , EVEM.EV_YEAR
+			    			 , EVEM.EV_YEAR_HALF
+			    			 , GETCODETEXT1('SRM032', EVEM.EV_YEAR_HALF, 'KO') AS EV_YEAR_HALF_NAME
+			    			 , GETCODETEXT1('SRM022', EVES.PROGRESS_CODE, 'KO') 	AS STATUS
+			    			 , EVES.SG_NO
+			    			 , EGMD.EV_TPL_NO AS EXEC_EV_TPL_NO
+			    			 , EVTM.EV_TPL_SUBJECT
+			    			 , EVTM.EV_CHANNEL_CODE
+			    			 , GETCODETEXT1('SRM028', EVTM.EV_CHANNEL_CODE, 'KO') AS EV_CHANNEL_NAME
+			    			 , GETSGCLASS(EVES.HOUSE_CODE,'KO','1', EVES.SG_NO) SG_NAME2
+						     , GETSGCLASS(EVES.HOUSE_CODE,'KO','2', EVES.SG_NO) SG_NAME1
+			    			 , EVES.VENDOR_CODE
+			    			 , GETPARTNERNAME( EVES.VENDOR_CODE) 	AS VENDOR_NAME
+			    			 , (SELECT COUNT(DISTINCT EVEU.EV_USER_ID)
+			      				  FROM SEVEU EVEU 
+			      				 WHERE EVES.HOUSE_CODE = EVEU.HOUSE_CODE
+			        			   AND EVES.EV_NO 		= EVEU.EV_NO
+			        			   AND EVES.SG_NO 		= EVEU.SG_NO
+			        			   AND EVES.VENDOR_CODE = EVEU.VENDOR_CODE
+			        			   AND EVEU.DEL_FLAG 	= '0') 						AS EV_USER_CNT
+			    			 , NVL(EVES.EV_SCORE,0) AS EV_SCORE
+			    			 , EVES.EVAL_GRADE_CLASS
+			    			 , GETCODETEXT1('SRM024', EVES.EVAL_GRADE_CLASS, 'KO')  AS EV_GRADE_CLASS
+			    			 , TO_CHAR(EVEM.ADD_DATE, 'YYYY/MM/DD') 					AS ADD_DATE
+			    			 , TO_CHAR(EVEM.START_DATE, 'YYYY/MM/DD') 				AS START_DATE
+			    			 , TO_CHAR(EVEM.CLOSE_DATE, 'YYYY/MM/DD') 				AS CLOSE_DATE
+			    			 , EVES.BEFORE_EVAL_GRADE_CLASS
+			    			 , EVES.AMEND_REASON
+			    			 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','1', EVES.SG_NO) SG_1
+			    			 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','2', EVES.SG_NO) SG_2
+			    			 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','3', EVES.SG_NO) SG_3
+			    			 , GETSGCLASSNO(EVES.HOUSE_CODE,'KO','4', EVES.SG_NO) SG_4
+			    			 , EVEM.APPLY_FROM_DATE
+			    			 , EVEM.APPLY_TO_DATE
+			    		FROM SEVEM EVEM 	 
+			  			  JOIN SEGMT EGMT 
+					        ON EVEM.HOUSE_CODE  = EGMT.HOUSE_CODE 
+					       AND EVEM.EG_NO       = EGMT.EG_NO
+					       AND EVEM.DEL_FLAG = '0'
+					      JOIN SEGMD EGMD 
+					        ON EGMD.HOUSE_CODE = EGMT.HOUSE_CODE 
+					       AND EGMD.EG_NO      = EGMT.EG_NO 
+					      JOIN SEGSG EGSG
+					        ON EGMT.HOUSE_CODE  = EGSG.HOUSE_CODE
+					       AND EGMT.EG_NO       = EGSG.EG_NO
+					      JOIN SSGMT SGMT
+					        ON SGMT.HOUSE_CODE  = EGSG.HOUSE_CODE
+					       AND SGMT.PARENT_SG_NO= EGSG.SG_NO
+					      JOIN SEVTM EVTM 
+					        ON EVTM.HOUSE_CODE = EGMD.HOUSE_CODE 
+					       AND EVTM.EV_TPL_NO = EGMD.EV_TPL_NO 
+					      JOIN SEVES EVES 
+					       ON EVES.HOUSE_CODE  = EVEM.HOUSE_CODE 
+					       AND EVES.EV_NO      = EVEM.EV_NO
+					       AND EVES.EV_TPL_NO  = EGMD.EV_TPL_NO
+					       AND EVES.SG_NO      = SGMT.SG_NO
+					       AND EVES.DEL_FLAG = '0'
+			  			 WHERE EVEM.HOUSE_CODE 	= '000' 
+			     		   AND EVEM.PROGRESS_CODE > '100'
+			     		   										
+			     		   <isNotEmpty property="countYear">
+			     		   		AND EVEM.EV_YEAR = #countYear#			--평가기간 년도
+			     		   </isNotEmpty>     		   
+			     		   
+			     		   <isNotEmpty property="yearHalf">
+			     		   		AND EVEM.EV_YEAR_HALF   = #yearHalf#	--평가기간 상하반기
+			     		   </isNotEmpty>
+			     		   
+			     		   <isNotEmpty property="channelCode">
+			     		   		AND EVTM.EV_CHANNEL_CODE  = #channelCode#    --채널
+			     		   </isNotEmpty>
+			     		   
+			     		   <isNotEmpty property="venCd">
+			     		   		AND UPPER( EVES.VENDOR_CODE ) LIKE '%' || UPPER(#venCd#) || '%' -- 협력업체코드
+			     		   </isNotEmpty>
+			     		        		   
+			     		   <isNotEmpty property="catLv1Code">
+			     		   		 AND GETSGCLASSNO(EVES.HOUSE_CODE, 'KO', '3', EVES.SG_NO) = #catLv1Code#       --카테고리(대분류) 
+			     		   </isNotEmpty>
+						   
+						   <isNotEmpty property="catLv2Code">
+						   		AND GETSGCLASSNO(EVES.HOUSE_CODE, 'KO', '4', EVES.SG_NO) = #catLv2Code#       --카테고리(중분류)      		 
+						   </isNotEmpty>	
+						   ORDER BY 
+			  			   	   EVEM.EV_NO
+			  			     , EVEM.EG_NO
+			  			     , EVES.SG_NO
+			  			     , EVES.EV_TPL_NO
+			  			     , EVES.VENDOR_CODE
+			  			     , EVES.PROGRESS_CODE DESC
+			  	) A	
+	</select>
+	
+	
+	<select id="selectSrmEvalResDetailPopup" parameterClass = "SRMVEN005001VO" resultMap = "selectSrmEvalResDetailPopupResultMap">
+				SELECT 
+					EVEM.HOUSE_CODE
+		         , EVEM.EV_NO
+    			 , EVEM.EV_NAME
+    			 , EVEM.EG_NO
+    			 , EGMT.EG_NAME
+    			 , GETCODETEXT1('SRM011', EVIM.EV_ITEM_TYPE1_CODE, 'KO') AS EV_ITEM_TYPE1_NAME  
+		         , GETCODETEXT1('SRM011_1', EVIM.EV_ITEM_TYPE2_CODE, 'KO') AS EV_ITEM_TYPE2_NAME  
+		         , EVIM.EV_ITEM_SUBJECT
+		         , EVIM.EV_ITEM_CONTENTS
+    			 , EVEM.EV_CTRL_USER_ID
+    			 , GETUSERNAME( EVEM.EV_CTRL_USER_ID,'000','KO') 			AS EV_CTRL_USER_NAME
+    			 , EVEM.EV_YEAR
+    			 , EVEM.EV_YEAR_HALF    			
+    			 , GETCODETEXT1('SRM032', EVEM.EV_YEAR_HALF, 'KO') AS EV_YEAR_HALF_NAME
+    			 , GETCODETEXT1('SRM022', EVET.PROGRESS_CODE, 'KO') 	AS STATUS
+    			 , EVET.SG_NO
+    			 , EVEM.EXEC_EV_TPL_NO
+    			 , GETCODETEXT1('SRM028', EVTM.EV_CHANNEL_CODE, 'KO') AS EV_CHANNEL_NAME
+			     , GETCODETEXT1('SRM029', EVTM.EV_TYPE_CODE, 'KO') AS EV_TYPE_NAME
+    			 , GETSGCLASS(EVET.HOUSE_CODE,'KO','1', EVET.SG_NO) SG_NAME2
+			     , GETSGCLASS(EVET.HOUSE_CODE,'KO','2', EVET.SG_NO) SG_NAME1
+    			 , EVET.VENDOR_CODE
+    			 , GETPARTNERNAME( EVET.VENDOR_CODE) 	AS VENDOR_NAME
+    			 , NVL(EVET.EV_SCORE,'0') AS EV_SCORE
+    			 , GETSGCLASSNO(EVET.HOUSE_CODE,'KO','1', EVET.SG_NO) SG_1
+    			 , GETSGCLASSNO(EVET.HOUSE_CODE,'KO','2', EVET.SG_NO) SG_2
+    			 , GETSGCLASSNO(EVET.HOUSE_CODE,'KO','3', EVET.SG_NO) SG_3
+    			 , GETSGCLASSNO(EVET.HOUSE_CODE,'KO','4', EVET.SG_NO) SG_4
+    			 , LANG.LANGUAGE
+    			 ,EGMD.EV_TPL_NO
+    			 ,(SELECT EVTM.EV_TPL_SUBJECT 
+    			 	FROM SEVTM EVTM
+    			 	WHERE EVTM.HOUSE_CODE  = EVEM.HOUSE_CODE
+    			 	AND EVTM.DEL_FLAG  = '0'
+    			 	AND EVTM.EV_TPL_NO  = EGMD.EV_TPL_NO)   AS EV_TPL_SUBJECT
+    			 ,(SELECT EVTI.EV_TPL_SCORE
+					FROM SEVTI EVTI 
+					WHERE EVTI.EG_NO = EGMT.EG_NO 
+					AND EVTI.EV_TPL_NO = EGMD.EV_TPL_NO
+					AND EVTI.EV_ITEM_NO = EVIM.EV_ITEM_NO
+					AND NVL(DEL_FLAG,'0') = '0') AS EV_TPL_SCORE
+				 , EVEM.APPLY_FROM_DATE
+				 , EVEM.APPLY_TO_DATE				 
+  			  FROM SEVEM EVEM
+			  JOIN SEGMT EGMT
+			    ON EVEM.HOUSE_CODE = EGMT.HOUSE_CODE
+			   AND EVEM.EG_NO      = EGMT.EG_NO
+			  JOIN SEGMD EGMD
+			    ON EVEM.HOUSE_CODE = EGMD.HOUSE_CODE
+			   AND EVEM.EG_NO      = EGMD.EG_NO
+			   AND EVEM.EV_NO      =  #evNo#
+			   AND EGMD.EG_NO      =  #egNo#
+			   AND EGMD.EV_TPL_NO  = #execEvTplNo#
+			   AND EVEM.PROGRESS_CODE > '100'
+			   AND EVEM.DEL_FLAG = '0'
+			  JOIN SEGSG EGSG
+                ON EGMD.HOUSE_CODE  = EGSG.HOUSE_CODE
+               AND EGMD.EG_NO       = EGSG.EG_NO
+	          JOIN SSGMT SGMT
+		        ON SGMT.HOUSE_CODE  = EGSG.HOUSE_CODE
+		       AND SGMT.PARENT_SG_NO= EGSG.SG_NO
+		       AND SGMT.SG_NO            = #sgNo#
+			  JOIN SEVTM EVTM 
+			    ON EGMD.HOUSE_CODE = EVTM.HOUSE_CODE 
+			   AND EGMD.EV_TPL_NO = EVTM.EV_TPL_NO
+			  JOIN SEVTD EVTD 
+			    ON EVTM.HOUSE_CODE = EVTD.HOUSE_CODE 
+			   AND EVTM.EV_TPL_NO = EVTD.EV_TPL_NO
+			  LEFT JOIN SEVIM EVIM 
+                ON EVTD.HOUSE_CODE  = EVIM.HOUSE_CODE 
+               AND EVTD.EV_ITEM_NO   = EVIM.EV_ITEM_NO
+			  LEFT OUTER JOIN (
+								SELECT * from
+								SEVET 
+						        WHERE 1=1
+						        AND UPPER(VENDOR_CODE ) = UPPER(#vendorCode#)
+								AND DEL_FLAG = '0'
+				)  EVET 
+		       ON EVET.HOUSE_CODE  = EVEM.HOUSE_CODE 
+		      AND EVET.EV_NO       = EVEM.EV_NO
+		      AND EVET.SG_NO       = SGMT.SG_NO
+		      AND EVET.EV_TPL_NO   = EVTD.EV_TPL_NO
+		      AND EVET.EV_ITEM_NO  = EVTD.EV_ITEM_NO
+    		  JOIN 
+			       (SELECT 'KO' AS LANGUAGE 
+			         FROM DUAL
+			       ) LANG ON 1=1
+  			 WHERE EVEM.HOUSE_CODE 	=  '000'
+     		   AND EVEM.EV_NO          = #evNo#
+     		   AND EVEM.EV_YEAR        = #evYear#												--평가기간 년도
+			   AND EVEM.EV_YEAR_HALF   = #evYearHalf#									        --평가기간 상하반기
+    		   AND UPPER(EVEM.EV_CTRL_USER_ID) = UPPER(#evCtrlUserId#)
+    		   AND EVTM.EV_CHANNEL_CODE  = #evChannelCode#                                    --채널 
+  			 ORDER BY 
+  			   	   EVEM.EV_NO
+  			     , EVEM.EG_NO
+  			     , EVEM.EV_CTRL_USER_ID
+  			     , EVTM.EV_TPL_NO
+  			     , EVIM.SORT_SEQ
+	</select>
+	
+</sqlMap>
+

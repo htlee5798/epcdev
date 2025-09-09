@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCMDLV0001">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap" />
+
+	<select id="selectVenStatusList" parameterClass="dataMap" resultClass="dataMap">
+	<![CDATA[	
+		/* PSCMDLV0001.selectVenStatusList */ 
+    SELECT *
+      FROM (
+            SELECT   
+                  CEIL(ROWNUM / #rowsPerPage#  ) PAGE
+                  , COUNT(*) OVER() TOTAL_COUNT
+                  , B.*   
+              FROM (    	    		
+	     	SELECT 
+	             S.*, A.* FROM 
+	              (SELECT VENDOR_ID, VENDOR_NM FROM TVE_VENDOR) S,
+	              (SELECT  
+	                     VEN_CD,COUNT(VEN_CD) TOTALCOUNT , DELI_STR_CD,
+	                    NVL(SUM(DECODE(DELI_STATUS_CD||DELI_TYPE_CD, '3006', 1)),0) DSTATUS_30,
+	                    NVL(SUM(DECODE(DELI_STATUS_CD||DELI_TYPE_CD, '3106', 1)),0) DSTATUS_31,                    
+	                    NVL(SUM(DECODE(DELI_STATUS_CD||DELI_TYPE_CD, '3306', 1)),0) DSTATUS_33,
+	                    NVL(SUM(DECODE(DELI_STATUS_CD||DELI_TYPE_CD, '3606', 1)),0) DSTATUS_36,
+	                    NVL(SUM(DECODE(DELI_STATUS_CD||DELI_TYPE_CD, '5106', 1)),0) DSTATUS_51,
+	                    NVL(SUM(DECODE(DELI_STATUS_CD||DELI_TYPE_CD, '5206', 1)),0) DSTATUS_52
+		               FROM (
+		                SELECT 
+		                    D.VEN_CD ,O.ORDER_ID,D.DELIVERY_ID, D.DELI_TYPE_CD, D.DELI_STR_CD,
+		                    MAX(I.DELI_STATUS_CD) DELI_STATUS_CD 
+		                  FROM
+		                  TOR_ORDER O,TDE_DELI_MST D,TOR_ORDER_ITEM I
+		                 WHERE I.ORDER_ID = O.ORDER_ID 
+		                   AND I.ORDER_ID = D.ORDER_ID 
+		                   AND I.DELIVERY_ID = D.DELIVERY_ID 
+		                   AND D.DELIVERY_ID !='000' 
+		                   AND I.DELI_STATUS_CD IN ('30','36','51','52','33','31')
+		                   AND O.ORD_RTN_DIVN_CD ='11'
+		                   AND O.ORD_STS_CD ='11' 
+		                   AND O.ORD_DY   BETWEEN #startDate# AND #endDate#
+	                      GROUP BY D.VEN_CD ,O.ORDER_ID,D.DELIVERY_ID, D.DELI_TYPE_CD , D.DELI_STR_CD
+		               ) GROUP BY VEN_CD , DELI_STR_CD
+					) A 
+					WHERE S.VENDOR_ID = A.VEN_CD
+					ORDER BY VENDOR_NM
+			     )B
+			)	     
+		     WHERE PAGE = #currentPage#    				             
+	]]>
+	</select>
+
+
+	
+</sqlMap>

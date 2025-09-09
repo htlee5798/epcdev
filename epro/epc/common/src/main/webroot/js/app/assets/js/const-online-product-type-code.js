@@ -1,0 +1,11 @@
+export const MAJOR_CD_ONLINE_PROD_TYPE = "SM335";
+export const ONLINE_PROD_TYPE_CD_NORMAL = "01";	// 일반상품
+export const ONLINE_PROD_TYPE_CD_MAKE = "02";		//주문제작상품
+export const ONLINE_PROD_TYPE_CD_INST = "03";		//설치상품
+export const ONLINE_PROD_TYPE_CD_CHOICE = "04";	// 골라담기
+export const ONLINE_PROD_TYPE_CD_DEAL = "05";		//딜상품
+export const ONLINE_PROD_TYPE_CD_ADD = "06";	// 추가구성품
+export const ONLINE_PROD_TYPE_CD_RESERVE = "07";		//예약상품
+export const ONLINE_PROD_TYPE_CD_ETC = "08";	// 무형상품
+export const ONLINE_PROD_TYPE_CD_OVERSEA = "09";	// 구매대행상품(해외배송)
+export const ONLINE_PROD_TYPE_CD_PROXY = "09";	// 구매대행상품

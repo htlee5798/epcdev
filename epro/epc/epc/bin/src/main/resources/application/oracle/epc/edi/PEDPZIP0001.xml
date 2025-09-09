@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDPZIP0001">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+
+
+<typeAlias alias="searchParam"   type="com.lottemart.epc.edi.comm.model.SearchParam" />
+
+
+
+<typeAlias alias="ediCommonCode" type="com.lottemart.epc.edi.comm.model.EdiCommonCode" />
+
+
+
+ <resultMap id="cityListMap" class="ediCommonCode">
+    <result property="detailName" column="CITY_NM" columnIndex="1"/>
+
+  </resultMap>
+  
+   <resultMap id="cityListResultMap" class="ediCommonCode">
+    <result property="detailName" column="GU_NM" columnIndex="1"/>
+
+  </resultMap>
+  
+  
+
+<select id="ZIP_CODE_SELECT01" parameterClass="map" resultClass="resultClass">
+			/*PEDPZIP0001.ZIP_CODE_SELECT01*/
+        SELECT /*+ INDEX(T1 IX_HO_POST_STR_01) */ T1.POST_NO
+               	, SUBSTR(T1.POST_NO ,0,3) AS POST_NO1
+            	, SUBSTR(T1.POST_NO ,4,3) AS POST_NO2  
+            	, TRIM(T1.SIDO||' '||T1.GUGUN||' '||T1.DONG) AS POST_ADDR
+            	, TRIM(T1.RI_NM||' '||T1.BNGI_NM||' '||T1.ISLND_NM||' '||T1.APART_NM) AS DTL_ADDR
+            	, T1.ALL_ADDR
+         FROM THO_POST_STR T1
+            , THO_HJ_POST_MST T3                    
+				WHERE T1.DONG LIKE '%'||#dong_nm#||'%'
+                  AND T1.POST_NO = T3.POST_NO
+                  AND T1.USE_YN = 'Y'
+                ORDER BY T1.POST_NO
+		   
+	</select>
+	
+	
+	<select id="STREET_CODE_SELECT01" parameterClass="map" resultClass="resultClass">
+			/*PEDPZIP0001.STREET_CODE_SELECT01*/
+      	SELECT 
+      	
+      			ZIP_CD
+               	, SUBSTR(ZIP_CD ,0,3) AS POST_NO1
+            	, SUBSTR(ZIP_CD ,4,3) AS POST_NO2
+            	,CITY_NM||' '||GU_NM||' '||TOWN_NM||' '||DONG_NM  AS POST_ADDR
+ 	,RI_NM||' '||ISLND_NM||' '||STREET_CD||' '||STREET_NM||' '||SUB_YN||' '||BIDNG_MGR_NO||' '||APART_NM  AS DTL_ADDR
+ 	, CITY_NM||' '||GU_NM||' '||STREET_NM||' '||BIDNG_MAIN_NO  as ALL_ADDR
+     , DONG_NM||' '||APART_NM as old_ALL_ADDR
+     
+      	FROM  TET_ZIP_CODE
+		WHERE 1=1 
+		AND CITY_NM = #cityNm#
+		<isNotEmpty prepend="AND" property="guNm"> GU_NM = #guNm#</isNotEmpty>		    
+		and STREET_NM LIKE '%'||#streetNm#||'%'
+		<isNotEmpty prepend="AND" property="apartNm"> APART_NM  LIKE '%'||#apartNm#||'%'</isNotEmpty>		    
+		
+		AND ADDR_SYST_DIVN_CD='02'
+		   
+	</select>
+	
+	<select id="getCityList" resultMap="cityListMap" parameterClass="searchParam">
+		/* PEDPZIP0001.getL1List */
+  		select  CITY_NM from TET_ZIP_CODE
+		where ADDR_SYST_DIVN_CD='02'
+		group by CITY_NM
+		order by CITY_NM	   	
+  	</select>  
+    
+    <select id="getSelectedGuNmList" resultMap="cityListResultMap" parameterClass="searchParam">
+		/* PEDPZIP0001.getCategoryL1List */
+      select  GU_NM from TET_ZIP_CODE
+	  where 1=1 
+	  and CITY_NM=#cityNm#
+	  and ADDR_SYST_DIVN_CD='02'	  
+	  group by GU_NM
+	  order by GU_NM
+	</select>	
+	  
+</sqlMap>

@@ -1,0 +1,52 @@
+<HTML>
+<HEAD>
+<TITLE>CNet.CAB</TITLE>
+</HEAD>
+<SCRIPT type="text/javascript" LANGUAGE="JavaScript">
+	function OCX_SetServer()
+	{
+		if(Message.Listen_Data(serverport.value,1))
+		{
+			returnValue.value = "SUC";
+		}
+		else
+		{
+			returnValue.value = "FAL";
+		}
+		//returnValue.value = Message.Listen_Data(serverport.value);
+	}
+		
+</SCRIPT>
+
+
+<SCRIPT language="javascript" FOR="Message" EVENT="CnetRecvData(retData)">
+		var strRcv = retData
+		returnValue.value = strRcv
+</SCRIPT>
+
+<BODY>
+<OBJECT ID="Message"
+CLASSID="CLSID:E46AD3AE-520A-4E5B-89F5-3B0DC273FC00"
+CODEBASE="CNet.CAB#version=1,0,0,11">
+</OBJECT>
+<table border=1 align=center>
+
+	<tr>
+		<td> 메인서버 Port</td>
+		<td> <input type=text name=serverport value=5051></td>
+	</tr>
+
+	<tr>
+		<td colspan=2 align=center>
+			<input type=button value="초기화" OnClick="OCX_SetServer();">
+		</td>
+	</tr>	
+	<tr>
+		<td> 리턴값</td>
+		<td><textarea name=returnValue rows="10" cols="40"></textarea></td>
+	</tr>			
+</table>
+<input type=hidden name=ListenValue>
+</BODY>
+</HTML>
+

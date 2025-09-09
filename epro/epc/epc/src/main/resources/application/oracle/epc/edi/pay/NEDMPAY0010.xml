@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="NEDMPAY0010">
+
+	<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+	<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+	<!-- 사업자 등록정보 -->
+	<typeAlias alias="NEDMPAY0010VO" type="com.lottemart.epc.edi.payment.model.NEDMPAY0010VO" />
+	<resultMap id="NEDMPAY0010VOMap" class="NEDMPAY0010VO">
+		<result property="strNm" 		column="STR_NM" />
+		<result property="strCd" 		column="STR_CD" />
+		<result property="bmanNo" 		column="BMAN_NO" />
+		<result property="addr" 		column="ADDR" />
+		<result property="ceoNm" 		column="CEO_NM" />
+		<result property="repTelNo" 	column="REP_TEL_NO" />
+		<result property="btyp" 		column="BTYP" />
+		<result property="bkind" 		column="BKIND" />
+		<result property="trdTypFg" 	column="TRD_TYP_FG" />
+		<!-- <result property="promoAmtRt" 	column="PROMO_AMT_RT" /> -->
+	</resultMap>
+
+	<select id="TSC_COMINFOR-SELECT01" resultMap="NEDMPAY0010VOMap" parameterClass="NEDMPAY0010VO">
+		/* NEDMPAY0010.TSC_COMINFOR-SELECT01 */		
+		SELECT	B.STR_NM
+			,	B.STR_CD
+			,	B.BMAN_NO
+			,	B.ADDR1 || B.ADDR2 AS ADDR
+			,	B.PRESID_NM AS CEO_NM
+			,	B.REP_TEL_NO
+			,	B.BTYP
+			,	B.BKIND
+			,	A.TRD_TYP_FG
+		FROM	TPC_VENDOR 	A
+			,	STORE 	B
+		WHERE A.STR_CD = B.STR_CD		
+		AND A.VEN_CD = #searchEntpCd# 		    
+		ORDER BY B.STR_CD
+	</select>
+
+</sqlMap>

@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PEDMDLY0000">
+
+<typeAlias alias="resultClass"	type="lcn.module.common.util.HashBox" />
+<typeAlias alias="paramClass"	type="lcn.module.common.util.HashBox" />
+
+<!-- 현황표 -->
+<select id="TSC_STATUS-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT  SUBSTR(DELI_REQ_CHG_DY2, 1, 4) ||'/'|| SUBSTR(DELI_REQ_CHG_DY2, 5, 2) ||'/'|| SUBSTR(DELI_REQ_CHG_DY2, 7, 2) AS ACCEPT_DY,
+	        COUNT(*) AS SALE_CNT, 
+	        SUM(DECODE(ACCEPT_FG, 1, 1, 0)) AS ACCEPT_CF_CNT,
+	        SUM(DECODE(DELI_END_FG, 1, 1, 0)) AS DELI_END_CNT,
+	        SUM(DECODE(DELI_END_FG, 3, 1, 0)) AS UDELI_DELAY_CNT,
+	        SUM(DECODE(DELI_END_FG, 3, 
+	                 DECODE(UDELI_REASON_FG2, 3, 1, '', 
+	                     DECODE(UDELI_REASON_FG1, 3, 1, '', 
+	                         DECODE(UDELI_REASON_FG, 3, 1, 0)
+	                     , 0)
+	                 , 0)
+	             , 0)) AS UDELI_DELAY_ADDR,
+	        SUM(DECODE(DELI_END_FG, 3, 
+	                 DECODE(UDELI_REASON_FG2, 4, 1, '', 
+	                     DECODE(UDELI_REASON_FG1, 4, 1, '', 
+	                         DECODE(UDELI_REASON_FG, 4, 1, 0)
+	                     , 0)
+	                 , 0)
+	             , 0)) AS UDELI_DELAY_CUST,
+	        SUM(DECODE(DELI_END_FG, 3, 
+	                 DECODE(UDELI_REASON_FG2, 4, 0, 3, 0, '', 
+	                     DECODE(UDELI_REASON_FG1, 4, 0, 3, 0, '', 
+	                         DECODE(UDELI_REASON_FG, 4, 0, 3, 0, 1)
+	                     , 1)
+	                 , 1)
+	             , 0))  AS UDELI_DELAY_ELSE,
+	        SUM(DECODE(DELI_END_FG, 2, 1, 0)) AS UDELI_FAIL_CNT,
+	        SUM(DECODE(DELI_END_FG, 2, 
+	                DECODE(UDELI_REASON_FG2, 1, 1, '', 
+	                    DECODE(UDELI_REASON_FG1, 1, 1, '', 
+	                        DECODE(UDELI_REASON_FG, 1, 1, 0)
+	                     , 0)
+	                 , 0)
+	              , 0)) AS UDELI_FAIL_INVEN,
+	        SUM(DECODE(DELI_END_FG, 2, 
+	                 DECODE(UDELI_REASON_FG2, 2, 1, '', 
+	                     DECODE(UDELI_REASON_FG1, 2, 1, '', 
+	                         DECODE(UDELI_REASON_FG, 2, 1, 0)
+	                     , 0)
+	                 , 0)
+	             , 0)) AS UDELI_FAIL_RECV, 
+	          0,
+	        SUM(DECODE(DELI_END_FG, 2, 
+	                 DECODE(UDELI_REASON_FG2, 1, 0, 2, 0, '', 
+	                     DECODE(UDELI_REASON_FG1, 1, 0, 2, 0, '', 
+	                         DECODE(UDELI_REASON_FG, 1, 0, 2, 0, 1)
+	                     , 1)
+	                 , 1)
+	             , 0))  AS UDELI_FAIL_ELSE,
+	       TO_CHAR((SUM(DECODE(DELI_END_FG, 1, 1, 0))/COUNT(*))*100, '999.9') AS DELI_END_RATE
+	FROM DELI_RECEIPT_PROD@dl_md_martnis
+	
+	WHERE MANUAL_CANCEL_FG = '0'
+	  AND DELI_REQ_CHG_DY2 BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	
+	    <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="DELI_VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	DELI_VEN_CD = #entp_cd#
+	    </isNotEmpty>
+
+        <isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]#
+	      </iterate> 
+	    </isNotEmpty>
+	
+	GROUP BY DELI_REQ_CHG_DY2  
+ 	  
+</select>
+
+<!-- 접수확인 -->
+<select id="TSC_DELIVERY_ACCEPT-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT	SUBSTR(A.SALE_DY, 3, 6)||'-'||A.STR_CD||'-'||A.POS_NO||'-'||A.TRD_NO||'-'||LPAD(A.SALE_PROD_SEQ,5,'0') AS DELI_SLIP_NO, 
+		    D.STR_NM,
+		    D.STR_CD,
+		    A.PROD_CD,
+		    A.PROD_NM,
+		    NVL(A.MODEL_NM, ' ') AS MODEL_NM,
+		    A.DELI_SALE_QTY,
+		    A.SALE_DY AS SALE_DY,
+		    B.CUST_NM,
+		    '(' || SUBSTR(B.ZIP, 1, 3) || '-' || SUBSTR(B.ZIP, 4, 3) || ')' || B.ADDR1 || ' ' || B.ADDR2 AS CUST_ADDR,
+		    B.CUST_TEL_NO1,
+		    NVL(B.CUST_TEL_NO2, ' ') AS CUST_TEL_NO2,
+		    A.ACCEPT_FG,
+		    SUBSTR(A.DELI_REQ_DY, 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_DY, 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_DY, 7, 2) AS DELI_REQ_DY,
+		    C.RECV_NM,
+		    '(' || SUBSTR(C.ZIP, 1, 3) || '-' || SUBSTR(C.ZIP, 4, 3) || ')' || C.ADDR1 || ' ' || C.ADDR2 AS RECV_ADDR,
+		    C.RECV_TEL_NO1,
+		    NVL(C.RECV_TEL_NO2, ' ') AS RECV_TEL_NO2,
+		    NVL(C.MAP,' ') AS MAP, 
+		    A.CHG_FG AS CHG_FG, 
+		    C.CHG_FG AS CHG_FG2,
+		    A.STR_CD AS STR_CD,
+		    A.POS_NO AS POS_NO, 
+		    A.RECV_SEQ AS RECV_SEQ,
+		    A.SALE_PROD_SEQ AS SALE_PROD_SEQ,
+		    TO_CHAR(NVL(A.CANCEL_FG, '0')) AS CANCEL_FG,
+		    DECODE(A.CANCEL_FG, '2', (SELECT SALE_DY||'/'||STR_CD||'/'||POS_NO||'/'||TRD_NO||'/'||SALE_PROD_SEQ FROM    DELI_RECEIPT_PROD@dl_md_martnis 
+											WHERE   SALE_DY = A.ORGIN_SALE_DY 
+											AND     LIMIT 1 
+											AND     STR_CD = A.STR_CD 
+											AND     POS_NO = A.ORGIN_POS_NO 
+											AND     TRD_NO = A.ORGIN_TRD_NO 
+											AND     SALE_PROD_SEQ = A.ORGIN_SALE_PROD_SEQ ), '') AS ORGIN_DELI_SLIP_NO , 
+		    A.TRD_NO AS TRD_NO, 
+		    SUBSTR(A.DELI_REQ_CHG_DY2 , 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_CHG_DY2 , 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_CHG_DY2 , 7, 2) AS ACCEPT_DY
+		         
+	FROM	DELI_RECEIPT_PROD@dl_md_martnis A, 
+			DELI_RECEIPT@dl_md_martnis B, 
+			DELI_RECEIPT_RECV@dl_md_martnis C, 
+			STORE@dl_md_martnis D 
+			WHERE   A.SALE_DY = B.SALE_DY
+			AND     A.STR_CD = B.STR_CD
+			AND     A.POS_NO = B.POS_NO
+			AND     A.TRD_NO = B.TRD_NO
+			AND     A.SALE_DY = C.SALE_DY
+			AND     A.STR_CD = C.STR_CD
+			AND     A.POS_NO = C.POS_NO
+			AND     A.TRD_NO = C.TRD_NO
+			AND     A.RECV_SEQ = C.RECV_SEQ
+			AND     A.STR_CD = D.STR_CD
+	        AND ( A.MANUAL_CANCEL_FG = '0') 
+			AND A.DELI_REQ_CHG_DY2  BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+		
+		
+		<isNotEqual property="hangmok" compareValue="all">
+	    	AND A.ACCEPT_FG = #hangmok#
+	    </isNotEqual>
+		
+		
+		<isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="DELI_VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	DELI_VEN_CD = #entp_cd#
+	    </isNotEmpty>
+
+        <isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    
+	        
+	 ORDER BY A.STR_CD
+</select>
+
+<!-- 접수확인 업데이트 -->
+<update id="TSC_DELIVERY_ACCEPT-UPDATE01" parameterClass="map">
+	UPDATE  DELI_RECEIPT_PROD@dl_md_martnis		
+						
+	SET  	ACCEPT_FG='1'							
+	 										
+	WHERE	SALE_DY = #sale_dy#
+	  AND   STR_CD = #str_cd#
+	  AND   POS_NO = #pos_no#
+	  AND   TRD_NO = #trd_no#
+	  AND   SALE_PROD_SEQ = #sale_prod_seq#
+	  
+</update>
+
+<!-- 취소전표 -->
+<select id="TSC_DELIVERY_CANCEL-SELECT01" parameterClass="map" resultClass="resultClass">
+	SELECT SUBSTR(A.SALE_DY, 3, 6)||'-'||A.STR_CD||'-'||A.POS_NO||'-'||A.TRD_NO||'-'||LPAD(A.SALE_PROD_SEQ, 5, '0') AS DELI_SLIP_NO,
+			       D.STR_NM,
+			       D.STR_CD,
+			       A.PROD_CD,
+			       A.PROD_NM,
+			       NVL(A.MODEL_NM, '') AS MODEL_NM,
+			       A.DELI_SALE_QTY,
+			       A.SALE_DY AS SALE_DY,
+			       B.CUST_NM,
+			       '(' || SUBSTR(B.ZIP, 1, 3) || '-' || SUBSTR(B.ZIP, 4, 3) || ')' || B.ADDR1 || ' ' || B.ADDR2 AS CUST_ADDR,
+			       B.CUST_TEL_NO1,
+			       NVL(B.CUST_TEL_NO2, ' ') AS CUST_TEL_NO2,
+			       A.ACCEPT_FG,
+			       SUBSTR(A.DELI_REQ_DY, 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_DY, 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_DY, 7, 2) AS DELI_REQ_DY,
+			       C.RECV_NM,
+			       '(' || SUBSTR(C.ZIP, 1, 3) || '-' || SUBSTR(C.ZIP, 4, 3) || ')' || C.ADDR1 || ' ' || C.ADDR2 AS RECV_ADDR,
+			       C.RECV_TEL_NO1,
+			       NVL(C.RECV_TEL_NO2, ' ') AS RECV_TEL_NO2,
+			       NVL(C.MAP,' ') AS MAP, 
+			       A.CHG_FG AS CHG_FG, 
+			       C.CHG_FG AS CHG_FG2,
+			       A.STR_CD AS STR_CD,
+			       A.POS_NO AS POS_NO,
+			       A.RECV_SEQ AS RECV_SEQ,
+			       A.SALE_PROD_SEQ AS PROD_SEQ,
+			       A.CANCEL_FG ,
+			       ' ' AS ORGIN_DELI_SLIP_NO, 
+  			       A.TRD_NO AS TRD_NO, 
+			       A.DELI_REQ_CHG_DY2  AS ACCEPT_DY  
+		FROM 	DELI_RECEIPT_PROD@dl_md_martnis A,
+		     	DELI_RECEIPT@dl_md_martnis B, 
+		     	DELI_RECEIPT_RECV@dl_md_martnis C, 
+		     	STORE@dl_md_martnis D 
+		WHERE	A.SALE_DY = B.SALE_DY 
+		AND     A.STR_CD = B.STR_CD 
+		AND     A.POS_NO = B.POS_NO 
+		AND     A.TRD_NO = B.TRD_NO 
+		AND     A.SALE_DY = C.SALE_DY 
+		AND     A.STR_CD = C.STR_CD 
+		AND     A.POS_NO = C.POS_NO 
+		AND     A.TRD_NO = C.TRD_NO 
+		AND     A.RECV_SEQ = C.RECV_SEQ 
+		AND     A.STR_CD = D.STR_CD 
+		AND		A.MANUAL_CANCEL_FG = '0' 
+		AND 	A.SALE_DY 		   = #sale_dy_str# 
+		AND  	A.STR_CD   		   = #str_cd_str# 
+		AND  	A.POS_NO  		   = #pos_no_str#
+		AND  	A.TRD_NO   		   = #trd_no_str# 
+		AND   	A.SALE_PROD_SEQ    = #sale_prod_seq_str#
+</select>
+
+<!-- 완료등록 -->
+<select id="TSC_DELIVERY_REG-SELECT01_20120120614bak" parameterClass="map" resultClass="resultClass">
+	/* PEDMDLY0000.TSC_DELIVERY_REG-SELECT01_20120120614bak*/
+	SELECT  SUBSTR(A.SALE_DY, 3, 6)||'-'||A.STR_CD||'-'||A.POS_NO||'-'||A.TRD_NO||'-'||LPAD(A.SALE_PROD_SEQ, 5, '0') AS DELI_SLIP_NO,
+	        D.STR_NM,
+	        A.SRCMK_CD,
+	        A.PROD_NM,
+	        A.MODEL_NM,
+	        A.DELI_SALE_QTY,
+	        SUBSTR(A.SALE_DY, 1, 4) ||'/'|| SUBSTR(A.SALE_DY, 5, 2) ||'/'|| SUBSTR(A.SALE_DY, 7, 2) AS SALE_DY,
+	        B.CUST_NM,
+	        '(' || SUBSTR(B.ZIP, 1, 3) || '-' || SUBSTR(B.ZIP, 4, 3) || ')' || B.ADDR1 || ' ' || B.ADDR2 AS CUST_ADDR,
+	        B.CUST_TEL_NO1,
+	        NVL(B.CUST_TEL_NO2, ' ') AS CUST_TEL_NO2,
+	        A.ACCEPT_FG,
+	        SUBSTR(A.DELI_REQ_DY, 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_DY, 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_DY, 7, 2) AS DELI_REQ_DY,
+	        C.RECV_NM,
+	        '(' || SUBSTR(C.ZIP, 1, 3) || '-' || SUBSTR(C.ZIP, 4, 3) || ')' || C.ADDR1 || ' ' || C.ADDR2 AS RECV_ADDR,
+	        C.RECV_TEL_NO1,
+	        NVL(C.RECV_TEL_NO2, ' ') AS RECV_TEL_NO2,
+	        NVL(C.MAP,' ') AS MAP,
+	        A.CHG_FG AS CHG_FG,
+	        C.CHG_FG AS CHG_FG2,
+		  	(SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.DELI_END_FG AND GRP_CD ='DLD02') AS DELI_STATUS_NM,
+		  	DECODE(DELI_END_FG, '0', '미등록', '1', '해당없음',
+		                         DECODE(UDELI_REASON_FG2, '0', '미등록', '', 
+		                             DECODE(UDELI_REASON_FG1, '0', '미등록', '',
+		                               DECODE(UDELI_REASON_FG, '0', '미등록', '', '미등록',
+		                               (SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.UDELI_REASON_FG AND GRP_CD ='DLD01'))
+		                             , (SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.UDELI_REASON_FG1 AND GRP_CD ='DLD01'))
+		                         , (SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.UDELI_REASON_FG2 AND GRP_CD ='DLD01'))
+		                    )   AS UDELI_REASON_NM,
+		  	NVL(DECODE(A.DELI_CANCEL_DY, '',
+		    	DECODE(A.DELI_END_FG,  '1', DELI_END_DY,
+		        	  '2', DELI_END_DY,
+		          	  '3', DECODE(DELI_REQ_CHG_DY2, '', DELI_REQ_CHG_DY2, DELI_REQ_CHG_DY1))
+		        	, A.DELI_CANCEL_DY), ' ') AS DELI_STATUS_DY , 
+		    SUBSTR(A.DELI_REQ_CHG_DY2, 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_CHG_DY2, 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_CHG_DY2, 7, 2) AS ACCEPT_DY,
+		    A.DELI_END_FG,
+		    A.STR_CD,
+			A.POS_NO,
+			A.TRD_NO,
+			A.SALE_PROD_SEQ
+	          
+	FROM    DELI_RECEIPT_PROD@dl_md_martnis A,
+		    DELI_RECEIPT@dl_md_martnis B,
+		    DELI_RECEIPT_RECV@dl_md_martnis C,
+		    STORE@dl_md_martnis D
+		  
+	WHERE   A.SALE_DY = B.SALE_DY
+	  AND   A.STR_CD    = B.STR_CD
+	  AND   A.POS_NO = B.POS_NO
+	  AND   A.TRD_NO = B.TRD_NO
+	  AND   B.SALE_DY = C.SALE_DY
+	  AND   B.STR_CD = C.STR_CD
+	  AND   B.POS_NO = C.POS_NO
+	  AND   B.TRD_NO = C.TRD_NO
+	  AND   A.RECV_SEQ = C.RECV_SEQ
+	  AND   A.STR_CD = D.STR_CD
+	  AND   (A.MANUAL_CANCEL_FG = '0')
+	  AND   A.CHG_FG IN ('I', 'U') 
+      AND   C.CHG_FG IN ('I', 'U')
+<![CDATA[
+      AND   A.CANCEL_FG <> '2'
+]]>
+	  AND   A.DELI_REQ_DY  BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	  
+	 <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="DELI_VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	DELI_VEN_CD = #entp_cd#
+	    </isNotEmpty>
+
+        <isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEqual property="hangmok" compareValue="all">
+	    	AND A.DELI_END_FG = #hangmok#
+	    </isNotEqual>
+</select>
+<!-- 완료등록 -->
+<select id="TSC_DELIVERY_REG-SELECT01" parameterClass="map" resultClass="resultClass">
+	/* PEDMDLY0000.TSC_DELIVERY_REG-SELECT01*/
+	SELECT  /*+ DRIVING_SITE(A) */
+	        SUBSTR(A.SALE_DY, 3, 6)||'-'||A.STR_CD||'-'||A.POS_NO||'-'||A.TRD_NO||'-'||LPAD(A.SALE_PROD_SEQ, 5, '0') AS DELI_SLIP_NO,
+	        D.STR_NM,
+	        A.SRCMK_CD,
+	        A.PROD_NM,
+	        A.MODEL_NM,
+	        A.DELI_SALE_QTY,
+	        SUBSTR(A.SALE_DY, 1, 4) ||'/'|| SUBSTR(A.SALE_DY, 5, 2) ||'/'|| SUBSTR(A.SALE_DY, 7, 2) AS SALE_DY,
+	        B.CUST_NM,
+	        '(' || SUBSTR(B.ZIP, 1, 3) || '-' || SUBSTR(B.ZIP, 4, 3) || ')' || B.ADDR1 || ' ' || B.ADDR2 AS CUST_ADDR,
+	        B.CUST_TEL_NO1,
+	        NVL(B.CUST_TEL_NO2, ' ') AS CUST_TEL_NO2,
+	        A.ACCEPT_FG,
+	        SUBSTR(A.DELI_REQ_DY, 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_DY, 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_DY, 7, 2) AS DELI_REQ_DY,
+	        C.RECV_NM,
+	        '(' || SUBSTR(C.ZIP, 1, 3) || '-' || SUBSTR(C.ZIP, 4, 3) || ')' || C.ADDR1 || ' ' || C.ADDR2 AS RECV_ADDR,
+	        C.RECV_TEL_NO1,
+	        NVL(C.RECV_TEL_NO2, ' ') AS RECV_TEL_NO2,
+	        NVL(C.MAP,' ') AS MAP,
+	        A.CHG_FG AS CHG_FG,
+	        C.CHG_FG AS CHG_FG2,
+		  	(SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.DELI_END_FG AND GRP_CD ='DLD02') AS DELI_STATUS_NM,
+		  	DECODE(DELI_END_FG, '0', '미등록', '1', '해당없음',
+		                         DECODE(UDELI_REASON_FG2, '0', '미등록', '', 
+		                             DECODE(UDELI_REASON_FG1, '0', '미등록', '',
+		                               DECODE(UDELI_REASON_FG, '0', '미등록', '', '미등록',
+		                               (SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.UDELI_REASON_FG AND GRP_CD ='DLD01'))
+		                             , (SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.UDELI_REASON_FG1 AND GRP_CD ='DLD01'))
+		                         , (SELECT DETAIL_NM FROM ALL_CD@dl_md_martnis WHERE DETAIL_CD = A.UDELI_REASON_FG2 AND GRP_CD ='DLD01'))
+		                    )   AS UDELI_REASON_NM,
+		  	NVL(DECODE(A.DELI_CANCEL_DY, '',
+		    	DECODE(A.DELI_END_FG,  '1', DELI_END_DY,
+		        	  '2', DELI_END_DY,
+		          	  '3', DECODE(DELI_REQ_CHG_DY2, '', DELI_REQ_CHG_DY2, DELI_REQ_CHG_DY1))
+		        	, A.DELI_CANCEL_DY), ' ') AS DELI_STATUS_DY , 
+		    SUBSTR(A.DELI_REQ_CHG_DY2, 1, 4) ||'/'|| SUBSTR(A.DELI_REQ_CHG_DY2, 5, 2) ||'/'|| SUBSTR(A.DELI_REQ_CHG_DY2, 7, 2) AS ACCEPT_DY,
+		    A.DELI_END_FG,
+		    A.STR_CD,
+			A.POS_NO,
+			A.TRD_NO,
+			A.SALE_PROD_SEQ
+	          
+	FROM    DELI_RECEIPT_PROD@dl_md_martnis A,
+		    DELI_RECEIPT@dl_md_martnis B,
+		    DELI_RECEIPT_RECV@dl_md_martnis C,
+		    STORE@dl_md_martnis D		  
+	WHERE   A.SALE_DY = B.SALE_DY
+	  AND   A.STR_CD    = B.STR_CD
+	  AND   A.POS_NO = B.POS_NO
+	  AND   A.TRD_NO = B.TRD_NO
+	  AND   B.SALE_DY = C.SALE_DY
+	  AND   B.STR_CD = C.STR_CD
+	  AND   B.POS_NO = C.POS_NO
+	  AND   B.TRD_NO = C.TRD_NO
+	  AND   A.RECV_SEQ = C.RECV_SEQ
+	  AND   A.STR_CD = D.STR_CD
+	  AND   (A.MANUAL_CANCEL_FG = '0')
+	  AND   A.CHG_FG IN ('I', 'U') 
+      AND   C.CHG_FG IN ('I', 'U')
+<![CDATA[
+      AND   A.CANCEL_FG <> '2'
+]]>
+	  AND   A.DELI_REQ_CHG_DY2  BETWEEN replace(#startDate#,'-','') and replace(#endDate#,'-','')
+	  
+	 <isNotEmpty  property="venCds"  prepend="AND"> 
+	      <iterate prepend="DELI_VEN_CD IN " property="venCds" open="(" close=")" conjunction=","> 
+	        #venCds[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEmpty  property="entp_cd"  prepend="AND"> 
+	    	DELI_VEN_CD = #entp_cd#
+	    </isNotEmpty>
+
+        <isNotEmpty property="storeVal"  prepend="AND"> 
+	      <iterate prepend="A.STR_CD IN " property="storeVal" open="(" close=")" conjunction=","> 
+	        #storeVal[]# 
+	      </iterate> 
+	    </isNotEmpty>
+	    
+	    <isNotEqual property="hangmok" compareValue="all">
+	    	AND A.DELI_END_FG = #hangmok#
+	    </isNotEqual>
+</select>
+
+<!-- 완료등록 업데이트 -->
+<update id="TSC_DELIVERY_REG-UPDATE01" parameterClass="map">
+
+	<isEqual property="forward_deli_status" compareValue="0">
+		UPDATE DELI_RECEIPT_PROD@dl_md_martnis 
+		
+		SET	DELI_END_FG='0'
+		
+		WHERE	SALE_DY = #sale_dy#
+		  AND   STR_CD = #str_cd#
+		  AND   POS_NO = #pos_no#
+		  AND   TRD_NO = #trd_no#
+		  AND   SALE_PROD_SEQ = #sale_prod_seq#
+	</isEqual>
+	
+	<isEqual property="forward_deli_status" compareValue="1">
+		UPDATE DELI_RECEIPT_PROD@dl_md_martnis 
+		
+		SET	DELI_END_FG='1'
+		,DELI_END_DY = #forward_end#
+		
+		WHERE	SALE_DY = #sale_dy#
+		  AND   STR_CD = #str_cd#
+		  AND   POS_NO = #pos_no#
+		  AND   TRD_NO = #trd_no#
+		  AND   SALE_PROD_SEQ = #sale_prod_seq#
+	</isEqual>
+	
+	<isEqual property="forward_deli_status" compareValue="2">
+		UPDATE DELI_RECEIPT_PROD@dl_md_martnis  
+		
+		SET	DELI_END_FG='2'
+		,UDELI_REASON_FG = DECODE(UDELI_REASON_FG, '',#forward_udeli#, UDELI_REASON_FG)
+		,UDELI_REASON_FG1 = DECODE(UDELI_REASON_FG, '', UDELI_REASON_FG1, DECODE(UDELI_REASON_FG1, '',#forward_udeli#, UDELI_REASON_FG1))
+		,UDELI_REASON_FG2 = DECODE(UDELI_REASON_FG, '', UDELI_REASON_FG2, DECODE(UDELI_REASON_FG1, '', UDELI_REASON_FG2,#forward_udeli#))
+		,DELI_END_DY = replace(#forward_end#,'-','')
+		
+		WHERE	SALE_DY = #sale_dy#
+		  AND   STR_CD = #str_cd#
+		  AND   POS_NO = #pos_no#
+		  AND   TRD_NO = #trd_no#
+		  AND   SALE_PROD_SEQ = #sale_prod_seq#
+	</isEqual>
+	
+	<isEqual property="forward_deli_status" compareValue="3">
+		UPDATE DELI_RECEIPT_PROD@dl_md_martnis 
+		
+		SET	DELI_END_FG='3'
+		,   	UDELI_REASON_FG = DECODE(UDELI_REASON_FG, '',#forward_udeli#, UDELI_REASON_FG)
+		,	UDELI_REASON_FG1 = DECODE(UDELI_REASON_FG, '', UDELI_REASON_FG1, DECODE(UDELI_REASON_FG1, '',#forward_udeli#, UDELI_REASON_FG1))
+		,    UDELI_REASON_FG2 = DECODE(UDELI_REASON_FG, '', UDELI_REASON_FG2, DECODE(UDELI_REASON_FG1, '', UDELI_REASON_FG2,#forward_udeli#))
+		,    DELI_REQ_CHG_DY1 = DECODE(DELI_REQ_CHG_DY1, '',replace(#forward_end#,'-',''), DELI_REQ_CHG_DY1)
+		,    DELI_REQ_CHG_DY2 = DECODE(DELI_REQ_CHG_DY1, '', DELI_REQ_CHG_DY2,replace(#forward_end#,'-',''))
+		
+		WHERE	SALE_DY = #sale_dy#
+		  AND   STR_CD = #str_cd#
+		  AND   POS_NO = #pos_no#
+		  AND   TRD_NO = #trd_no#
+		  AND   SALE_PROD_SEQ = #sale_prod_seq#
+	</isEqual>
+
+</update>
+
+	
+</sqlMap>

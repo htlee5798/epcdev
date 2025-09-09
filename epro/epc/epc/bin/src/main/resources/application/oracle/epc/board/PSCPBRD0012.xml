@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PSCPBRD0012">
+	<typeAlias alias="dataMap" type="com.lottemart.common.util.DataMap"/>
+	
+	<resultMap id="detailCcQna" class="com.lottemart.epc.board.model.PSCPBRD0012VO">
+		<result property="boardSeq" column="board_seq"/>
+		<result property="boardDivnCd" column="board_divn_cd"/>
+		<result property="listSeq" column="list_seq"/>
+		<result property="upBoardSeq" column="up_board_seq"/>
+		<result property="boardDpSeq" column="board_dp_seq"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="scrpKindCd" column="scrp_kind_cd"/>
+		<result property="memberNm" column="member_nm"/>
+		<result property="depth" column="depth"/>
+		<result property="viewCnt" column="view_cnt"/>
+		<result property="atchFileYn" column="atch_file_yn"/>
+		<result property="delYn" column="del_yn"/>
+		<result property="orderId" column="order_id"/>
+		<result property="scrpObjectCd" column="scrp_object_cd"/>
+		<result property="custQstDivnCd" column="cust_qst_divn_cd"/>
+		<result property="clmLgrpCd" column="clm_lgrp_cd"/>
+		<result property="boardPrgsStsCd" column="board_prgs_sts_cd"/>
+		<result property="telNo" column="tel_no"/>
+		<result property="cellNo" column="cell_no"/>
+		<result property="email" column="email"/>
+		<result property="ansSmsRecvYn" column="ans_sms_recv_yn"/>
+		<result property="wrtDy" column="wrt_dy"/>
+		<result property="acceptLocaCd" column="accept_loca_cd"/>
+		<result property="acceptId" column="accept_id"/>
+		<result property="acceptNm" column="accept_nm"/>
+		<result property="let1Ref" column="let_1_ref"/>
+		<result property="let2Ref" column="let_2_ref"/>
+		<result property="let3Ref" column="let_3_ref"/>
+		<result property="let4Ref" column="let_4_ref"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="regId" column="reg_id"/>
+		<result property="regNm" column="reg_nm"/>
+		<result property="modDate" column="mod_date"/>
+		<result property="modId" column="mod_id"/>
+		<result property="modNm" column="mod_nm"/>
+		<result property="atchFileId" column="atch_file_id"/>
+		<result property="clmLgrpNm" column="clm_lgrp_nm"/>
+		<result property="scrpKindNm" column="scrp_kind_nm"/>
+		<result property="acceptLocaNm" column="accept_loca_nm"/>
+	</resultMap>
+	
+	<select id="selectCcQnaDetailPopup" resultMap="detailCcQna">
+	/* PSCPBRD0012.selectCcQnaDetailPopup */ 
+		SELECT 
+			 A.BOARD_SEQ 
+			,A.BOARD_DIVN_CD 
+			,A.LIST_SEQ 
+			,A.UP_BOARD_SEQ 
+			,A.BOARD_DP_SEQ 
+			,A.TITLE 
+			,A.CONTENT 
+			,A.SCRP_KIND_CD 
+			,A.MEMBER_NM 
+			,A.DEPTH 
+			,A.VIEW_CNT 
+			,A.ATCH_FILE_YN 
+			,A.DEL_YN 
+			,A.ORDER_ID 
+			,A.SCRP_OBJECT_CD
+			,A.CUST_QST_DIVN_CD 
+			,A.CLM_LGRP_CD 
+			,A.BOARD_PRGS_STS_CD 
+			,A.TEL_NO 
+			,A.CELL_NO 
+			,A.EMAIL 
+			,A.ANS_SMS_RECV_YN 
+			,A.WRT_DY 
+			,A.ACCEPT_LOCA_CD 
+			,A.ACCEPT_ID
+			,(CASE WHEN A.ACCEPT_LOCA_CD = '2' 
+                   THEN (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.ACCEPT_ID)
+                   ELSE (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.ACCEPT_ID)
+               END
+             ) AS ACCEPT_NM 
+			,A.LET_1_REF 
+			,A.LET_2_REF 
+			,A.LET_3_REF 
+			,A.LET_4_REF 
+			,TO_CHAR(A.REG_DATE, 'YYYYMMDDHH24MISS') AS REG_DATE
+			,A.REG_ID
+			,(CASE WHEN A.ACCEPT_LOCA_CD = '2' 
+                   THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.REG_ID)
+                   ELSE CASE WHEN UP_BOARD_SEQ IS NOT NULL THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.REG_ID) ELSE (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.REG_ID) END
+               END
+             ) AS REG_NM
+			,TO_CHAR(A.MOD_DATE, 'YYYYMMDDHH24MISS') AS MOD_DATE 
+			,A.MOD_ID
+			,(CASE WHEN A.ACCEPT_LOCA_CD = '2' 
+                   THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.MOD_ID)
+                   ELSE CASE WHEN UP_BOARD_SEQ IS NOT NULL THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.MOD_ID) ELSE (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.MOD_ID) END
+               END
+             ) AS MOD_NM
+			,A.ATCH_FILE_ID
+			,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA001'  AND MINOR_CD = A.CLM_LGRP_CD) AS CLM_LGRP_NM
+			,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA003'  AND MINOR_CD = A.SCRP_KIND_CD) AS SCRP_KIND_NM
+			,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA005'  AND MINOR_CD = A.ACCEPT_LOCA_CD) AS ACCEPT_LOCA_NM			
+		FROM TBO_BOARD A
+		WHERE BOARD_SEQ = #boardSeq#
+	</select>
+	
+	<select id="selectCcQnaDetailList" resultMap="detailCcQna">
+	/* PSCPBRD0012.selectCcQnaDetailList */ 
+		SELECT 
+			 A.BOARD_SEQ 
+			,A.BOARD_DIVN_CD 
+			,A.LIST_SEQ 
+			,A.UP_BOARD_SEQ 
+			,A.BOARD_DP_SEQ 
+			,A.TITLE 
+			,A.CONTENT 
+			,A.SCRP_KIND_CD 
+			,A.MEMBER_NM 
+			,A.DEPTH 
+			,A.VIEW_CNT 
+			,A.ATCH_FILE_YN 
+			,A.DEL_YN 
+			,A.ORDER_ID 
+			,A.SCRP_OBJECT_CD
+			,A.CUST_QST_DIVN_CD 
+			,A.CLM_LGRP_CD 
+			,A.BOARD_PRGS_STS_CD 
+			,A.TEL_NO 
+			,A.CELL_NO 
+			,A.EMAIL 
+			,A.ANS_SMS_RECV_YN 
+			,A.WRT_DY 
+			,A.ACCEPT_LOCA_CD 
+			,A.ACCEPT_ID
+			,(CASE WHEN A.ACCEPT_LOCA_CD = '2' 
+                   THEN (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.ACCEPT_ID)
+                   ELSE (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.ACCEPT_ID)
+               END
+             ) AS ACCEPT_NM 
+			,A.LET_1_REF 
+			,A.LET_2_REF 
+			,A.LET_3_REF 
+			,A.LET_4_REF 
+			,TO_CHAR(A.REG_DATE, 'YYYY-MM-DD HH24:MM:SS') AS REG_DATE
+			,A.REG_ID
+			,(CASE WHEN A.ACCEPT_LOCA_CD = '2' 
+                   THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.REG_ID)
+                   ELSE CASE WHEN UP_BOARD_SEQ IS NOT NULL THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.REG_ID) ELSE (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.REG_ID) END
+               END
+             ) AS REG_NM
+			,TO_CHAR(A.MOD_DATE, 'YYYY-MM-DD HH24:MM:SS') AS MOD_DATE 
+			,A.MOD_ID
+			,(CASE WHEN A.ACCEPT_LOCA_CD = '2' 
+                   THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.MOD_ID)
+                   ELSE CASE WHEN UP_BOARD_SEQ IS NOT NULL THEN (SELECT ADMIN_NM FROM TAD_ADMIN WHERE LOGIN_ID = A.MOD_ID) ELSE (SELECT VENDOR_NM FROM TVE_VENDOR WHERE VENDOR_ID = A.MOD_ID) END
+               END
+             ) AS MOD_NM
+			,A.ATCH_FILE_ID
+			,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA001'  AND MINOR_CD = A.CLM_LGRP_CD) AS CLM_LGRP_NM
+			,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA003'  AND MINOR_CD = A.SCRP_KIND_CD) AS SCRP_KIND_NM
+			,(SELECT CD_NM FROM TET_CODE WHERE MAJOR_CD = 'QA005'  AND MINOR_CD = A.ACCEPT_LOCA_CD) AS ACCEPT_LOCA_NM			
+		FROM TBO_BOARD A
+		WHERE A.BOARD_DIVN_CD = '36'
+		START WITH A.BOARD_SEQ = #boardSeq#
+      CONNECT BY PRIOR A.BOARD_SEQ=UP_BOARD_SEQ
+		ORDER BY A.LIST_SEQ	DESC
+	</select>
+	
+	<!-- 게시판 등록 전 ,  관련 seq 얻어 오기. -->
+	<select id="selectBoardSeq" resultClass="dataMap" >
+ 		/* PSCPBRD0012.selectBoardSeq 게시판  등록 전  Sequence 생성.*/		
+     	SELECT 			
+			LPAD(SQ_BOARD_SEQ_SEQ.NEXTVAL,12,0) AS BOARD_SEQ,
+			LPAD(SQ_BOARD_SEQ_SEQ.CURRVAL,12,0) AS UP_BOARD_SEQ,
+			LPAD(SQ_BOARD_SEQ_SEQ.CURRVAL,12,0)||'~' AS LIST_SEQ
+		FROM
+			DUAL
+	</select>
+	
+	<!-- list sequence 얻어오기. 답변(RE)일 경우에만 사용 -->
+	<select id="selectBoardListlSeq" resultClass="dataMap" >
+	 	/* PSCPBRD0012.selectListlSeq 답변등록 List Sequence 생성.*/
+	    SELECT PG_BOARD.FN_GET_ORDER_SEQ(#boardSeq#) LIST_SEQ FROM DUAL
+	</select>	
+		
+	<insert id="insertReCcQnaDetailPopup">
+	INSERT INTO TBO_BOARD
+		(
+		    BOARD_SEQ
+		  , LIST_SEQ          
+		  , UP_BOARD_SEQ      
+		  , BOARD_DIVN_CD     
+		  , SCRP_OBJECT_CD    
+		  , CHILD_SCRP_CNT    
+		  , DEPTH
+		  , NTCE_START_DY
+		  , NTCE_END_DY
+		  , TITLE
+		  , CONTENT
+		  , VIEW_CNT
+		  , WRT_DY            
+    <isNotEmpty property="atchFileId">
+          , ATCH_FILE_ID
+    </isNotEmpty>
+		  , ATCH_FILE_YN      
+		  , DEL_YN            
+		  , REG_ID
+		  , REG_DATE
+		  , MOD_ID
+		  , MOD_DATE
+		  , SCRP_KIND_CD      
+		  , ORDER_ID
+		  , ACCEPT_ID
+		  , ACCEPT_LOCA_CD
+		  , LET_1_REF
+		  , LET_2_REF
+		  , LET_3_REF
+		  , LET_4_REF
+		  , MEMBER_NM
+		  , CELL_NO
+		  , ANS_SMS_RECV_YN
+		  , EMAIL
+		)
+		SELECT #boardSeq# AS BOARD_SEQ
+			  , #listSeq# AS LIST_SEQ
+			  , #upBoardSeq# AS UP_BOARD_SEQ
+			  , BOARD_DIVN_CD  
+			  , SCRP_OBJECT_CD    
+			  , CHILD_SCRP_CNT    
+			  , DEPTH+1 AS DEPTH
+			  , NTCE_START_DY
+			  , NTCE_END_DY
+			  , #title# AS TITLE
+			  , #content# AS CONTENT
+			  , 0 AS VIEW_CNT
+			  , TO_CHAR(CURRENT_TIMESTAMP(0),'YYYYMMDD') AS WRT_DY   
+	    <isNotEmpty property="atchFileId">
+	          , #atchFileId# AS ATCH_FILE_ID
+	    </isNotEmpty>
+			  , #atchFileYn# AS ATCH_FILE_YN      
+			  , 'N' AS DEL_YN            
+			  , #adminId# AS REG_ID
+			  , CURRENT_TIMESTAMP(0) AS REG_DATE
+			  , #adminId# AS MOD_ID
+			  , CURRENT_TIMESTAMP(0) AS MOD_DATE
+			  , 'A' AS SCRP_KIND_CD      
+			  , ORDER_ID
+			  , '' AS ACCEPT_ID
+			  , ACCEPT_LOCA_CD
+			  , LET_1_REF
+			  , LET_2_REF
+			  , LET_3_REF
+			  , LET_4_REF
+			  , MEMBER_NM
+			  , CELL_NO
+			  , ANS_SMS_RECV_YN
+			  , EMAIL
+		FROM TBO_BOARD
+       WHERE BOARD_SEQ = #upBoardSeq#
+	</insert>
+	
+	<update id="updateCcQnaDetailPopup">
+	/* PSCPBRD0012.updateCcQnaDetailPopup */ 
+		UPDATE TBO_BOARD SET
+			  MOD_ID = #adminId#
+			, MOD_DATE = CURRENT_TIMESTAMP(0)
+			<isNotEmpty property="atchFileId">
+			, ATCH_FILE_ID = #atchFileId#
+			</isNotEmpty>
+			<isNotEmpty property="boardPrgsStsCd">
+			, BOARD_PRGS_STS_CD = #boardPrgsStsCd#
+			</isNotEmpty>
+		WHERE BOARD_SEQ = #boardSeq#
+	</update>
+	
+	<update id="updateCcQnaDetailPopupReply">
+	/* PSCPBRD0012.updateCcQnaDetailPopupReply */ 
+		UPDATE TBO_BOARD SET
+			   MOD_DATE = CURRENT_TIMESTAMP(0)
+			  ,MOD_ID = #adminId#
+		WHERE UP_BOARD_SEQ = #boardSeq#
+	</update>
+	
+	<update id="updateCcQnaReadCount">
+	/* PSCPBRD0012.updateCcQnaReadCount */ 
+		UPDATE TBO_BOARD SET
+			VIEW_CNT = VIEW_CNT + 1
+		WHERE BOARD_SEQ = #nowBoardSeq#
+	</update>
+	
+	<update id="deleteAtchFileId">
+	/* PSCPBRD0012.deleteAtchFileId */ 
+		UPDATE TBO_BOARD 
+		SET	ATCH_FILE_ID = ''
+		WHERE BOARD_SEQ = #boardSeq#
+	</update>
+	
+</sqlMap>
